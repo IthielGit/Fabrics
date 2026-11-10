@@ -3,11 +3,14 @@ import { computeMeasurements } from '../../features/measurements/measurements'
 import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
-import type { DimensionElement, RoomElement, WallElement } from '../../types/document'
+import type { AxisElement, DimensionElement, RoomElement, WallElement } from '../../types/document'
 import NumberField from '../ui/NumberField'
 import TextField from '../ui/TextField'
 
-type PlanElement = WallElement | RoomElement | DimensionElement
+type PlanElement = WallElement | RoomElement | DimensionElement | AxisElement
+
+/** Longueur maximale d'un repère d'axe (tient dans la bulle). */
+const AXIS_LABEL_MAX_LENGTH = 4
 
 /** Une ligne « intitulé : valeur » en lecture seule. */
 function Measure({ label, value }: { label: string; value: string }) {
@@ -25,7 +28,9 @@ export default function PlanElementFields({ element }: { element: PlanElement })
   const elements = useEditorStore((state) => state.project?.document.elements)
   const patch = (change: (el: PlanElement) => PlanElement) =>
     updateElements([element.id], (el) =>
-      el.type === 'wall' || el.type === 'room' || el.type === 'dimension' ? change(el) : el,
+      el.type === 'wall' || el.type === 'room' || el.type === 'dimension' || el.type === 'axis'
+        ? change(el)
+        : el,
     )
 
   // Tous les éléments : la surface nette d'un mur tient compte de ses ouvertures.
@@ -35,11 +40,25 @@ export default function PlanElementFields({ element }: { element: PlanElement })
 
   return (
     <>
-      <TextField
-        label={fr.properties.name}
-        value={element.name}
-        onCommit={(name) => patch((el) => ({ ...el, name }))}
-      />
+      {element.type === 'axis' ? (
+        // Le nom d'un axe suit son repère (« Axe C »).
+        <TextField
+          label={fr.properties.axisLabel}
+          value={element.label}
+          maxLength={AXIS_LABEL_MAX_LENGTH}
+          onCommit={(label) =>
+            patch((el) =>
+              el.type === 'axis' ? { ...el, label, name: `${fr.elements.axis} ${label}` } : el,
+            )
+          }
+        />
+      ) : (
+        <TextField
+          label={fr.properties.name}
+          value={element.name}
+          onCommit={(name) => patch((el) => ({ ...el, name }))}
+        />
+      )}
 
       {element.type === 'wall' && (
         <>
@@ -115,7 +134,7 @@ export default function PlanElementFields({ element }: { element: PlanElement })
             )}
           </>
         )}
-        {element.type === 'dimension' && (
+        {(element.type === 'dimension' || element.type === 'axis') && (
           <Measure
             label={fr.properties.length}
             value={formatLength(
@@ -131,6 +150,7 @@ export default function PlanElementFields({ element }: { element: PlanElement })
       {(element.type === 'wall' || element.type === 'room') && (
         <p className="text-xs text-slate-500">{fr.properties.vertexHint}</p>
       )}
+      {element.type === 'axis' && <p className="text-xs text-slate-500">{fr.properties.axisHint}</p>}
     </>
   )
 }

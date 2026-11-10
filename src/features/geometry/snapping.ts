@@ -1,9 +1,15 @@
 import type { CanvasElement } from '../../types/document'
+import {
+  axisIntersections,
+  collectAxisSegments,
+  nearestPointOnAxes,
+  type AxisSegment,
+} from './axes'
 import { toPoints } from './polygon'
 import type { Point } from './viewport'
 import { wallFaceCorners, wallFaces } from './walls'
 
-export type SnapKind = 'vertex' | 'grid' | 'angle' | 'none'
+export type SnapKind = 'vertex' | 'axis' | 'grid' | 'angle' | 'none'
 
 export interface PointSnapResult {
   point: Point
@@ -21,6 +27,8 @@ export interface PointSnapContext {
   from: Point | null
   /** Maj enfoncée : contraindre la direction à un multiple de 45° depuis `from`. */
   constrain: boolean
+  /** Axes de construction : le point s'aimante sur leur ligne (voir `collectSnapAxes`). */
+  axes?: readonly AxisSegment[]
 }
 
 const SQRT_HALF = Math.SQRT1_2
@@ -70,18 +78,25 @@ function nearestVertex(point: Point, vertices: readonly Point[], threshold: numb
 
 /**
  * Aimantation d'un point en cours de placement. Ordre de priorité (docs/02-ARCHITECTURE.md) :
- * 1. un sommet existant à moins de `threshold` ;
- * 2. la grille, si elle est active ;
- * 3. avec Maj : la direction contrainte à un multiple de 45° depuis le point précédent
+ * 1. un sommet existant à moins de `threshold` (les croisements d'axes en font partie) ;
+ * 2. la ligne d'un axe de construction à moins de `threshold` (sauf avec Maj : la direction
+ *    contrainte prime) ;
+ * 3. la grille, si elle est active ;
+ * 4. avec Maj : la direction contrainte à un multiple de 45° depuis le point précédent
  *    (la grille s'applique alors le long de cette direction).
  */
 export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResult {
-  const { vertices, gridSize, threshold, from, constrain } = context
+  const { vertices, gridSize, threshold, from, constrain, axes } = context
   const constrained = constrain && from !== null
   let candidate = constrained ? constrainAngle(from, raw) : raw
 
   const vertex = nearestVertex(candidate, vertices, threshold)
   if (vertex) return { point: { ...vertex }, kind: 'vertex' }
+
+  if (!constrained && axes && axes.length > 0) {
+    const onAxis = nearestPointOnAxes(candidate, axes, threshold)
+    if (onAxis) return { point: onAxis, kind: 'axis' }
+  }
 
   if (gridSize !== null && gridSize > 0) {
     if (constrained) {
@@ -109,7 +124,7 @@ export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResul
 
 /**
  * Sommets du plan sur lesquels s'aimanter : points des murs, angles de leurs faces (et croisements
- * des faces de murs différents), sommets des pièces, extrémités des cotes.
+ * des faces de murs différents), sommets des pièces, extrémités des cotes, croisements des axes.
  * `excludeIds` écarte des éléments (par exemple celui dont on déplace un sommet).
  */
 export function collectSnapVertices(
@@ -136,7 +151,16 @@ export function collectSnapVertices(
   }
 
   vertices.push(...wallFaceCorners(walls))
+  vertices.push(...axisIntersections(collectAxisSegments(elements, excludeIds)))
   return vertices
+}
+
+/** Axes de construction visibles sur lesquels s'aimanter (voir `PointSnapContext.axes`). */
+export function collectSnapAxes(
+  elements: readonly CanvasElement[],
+  excludeIds: ReadonlySet<string> = new Set(),
+): AxisSegment[] {
+  return collectAxisSegments(elements, excludeIds)
 }
 
 export { wallFaces }

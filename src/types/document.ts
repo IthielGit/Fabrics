@@ -139,6 +139,14 @@ export interface OpeningElement extends BaseElement {
   side: 'left' | 'right';    // côté du mur vers lequel la porte s'ouvre
 }
 
+// Axe de construction (M7) : ligne de repère avec bulle et étiquette, commun à tous les niveaux
+// (pas de `levelId`). Points absolus, déplacement seul (règle D6).
+export interface AxisElement extends BaseElement {
+  type: 'axis';
+  points: [number, number, number, number]; // deux extrémités, absolues
+  label: string;             // « A », « 1 »… affiché dans les bulles
+}
+
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
-  | WallElement | RoomElement | DimensionElement | OpeningElement;
+  | WallElement | RoomElement | DimensionElement | OpeningElement | AxisElement;

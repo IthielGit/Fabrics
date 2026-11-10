@@ -187,9 +187,9 @@ Objectif : un projet Plan contient plusieurs étages.
 
 ## M7 — Axes de construction et mobilier
 
-- [ ] Outil Axe : ligne de repère avec bulle et étiquette ; numérotation automatique
+- [x] Outil Axe : ligne de repère avec bulle et étiquette ; numérotation automatique
       (A, B, C… pour un sens, 1, 2, 3… pour l'autre), modifiable
-- [ ] Les axes sont communs à tous les niveaux ; les points s'y aimantent
+- [x] Les axes sont communs à tous les niveaux ; les points s'y aimantent
 - [ ] Bibliothèque de mobilier et d'équipements **dessinés pour Fabrics, en « clean room »**
       (règle de `CLAUDE.md` : aucune source tierce) : **392 objets en 17 catégories + 24
       ensembles** (cuisines complètes : américaine, en L, en U… ; bars), entièrement spécifiés dans `docs/06-BIBLIOTHEQUE.md` (catalogue, dimensions

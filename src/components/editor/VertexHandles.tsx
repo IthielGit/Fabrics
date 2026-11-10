@@ -1,7 +1,8 @@
 import type Konva from 'konva'
 import { useRef } from 'react'
 import { Circle } from 'react-konva'
-import { collectSnapVertices, snapPoint } from '../../features/geometry/snapping'
+import type { AxisSegment } from '../../features/geometry/axes'
+import { collectSnapAxes, collectSnapVertices, snapPoint } from '../../features/geometry/snapping'
 import {
   canRemoveVertex,
   getSegmentMidpoints,
@@ -37,6 +38,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
   const plan = useEditorStore((state) => state.project?.document.plan)
   // Sommets sur lesquels s'aimanter, calculés une fois au début du geste.
   const snapVertices = useRef<Point[]>([])
+  const snapAxes = useRef<AxisSegment[]>([])
 
   if (!enabled || !element) return null
   const vertices = getVertices(element)
@@ -50,6 +52,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
       store.project?.document.elements ?? [],
       new Set([element.id]),
     )
+    snapAxes.current = collectSnapAxes(store.project?.document.elements ?? [], new Set([element.id]))
   }
 
   const handleDragMove = (index: number) => (event: Konva.KonvaEventObject<DragEvent>) => {
@@ -70,6 +73,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
       { x: node.x(), y: node.y() },
       {
         vertices: snapVertices.current,
+        axes: snapAxes.current,
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
         from: neighbour ?? null,

@@ -17,6 +17,7 @@ const ACCENT = '#4f46e5'
 
 const SNAP_COLORS: Record<SnapKind, string> = {
   vertex: '#16a34a', // sommet existant
+  axis: '#be123c', // ligne d'un axe de construction
   grid: '#64748b', // grille
   angle: '#2563eb', // direction contrainte
   none: '#4f46e5',
@@ -64,7 +65,7 @@ export default function PolylineDraftLayer({
           points={flattenPoints(path)}
           stroke={ACCENT}
           strokeWidth={1.5 / scale}
-          dash={tool === 'wall' ? [6 / scale, 4 / scale] : undefined}
+          dash={tool === 'wall' || tool === 'axis' ? [6 / scale, 4 / scale] : undefined}
         />
       )}
 

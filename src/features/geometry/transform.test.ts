@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement } from '../../types/document'
 import {
+  createAxisElement,
   createEllipseElement,
   createLineElement,
   createRectElement,
@@ -255,5 +256,31 @@ describe('applyNodeTransform', () => {
     const rect = createRectElement('R', 0, 0, 100, 50)
     applyNodeTransform(rect, { x: 9, y: 9, rotation: 9, scaleX: 9, scaleY: 9 })
     expect(rect).toMatchObject({ x: 0, y: 0, width: 100, height: 50, rotation: 0 })
+  })
+})
+
+describe('axes de construction', () => {
+  it('un axe a des points absolus : il se déplace par ses points, x et y restent à 0', () => {
+    const axis = createAxisElement('Axe A', 'A', [0, 3000, 10000, 3000])
+    expect(hasAbsolutePoints(axis)).toBe(true)
+    const moved = translateElement(axis, 100, -200)
+    expect(moved).toMatchObject({ points: [100, 2800, 10100, 2800], x: 0, y: 0 })
+  })
+
+  it('on déplace une extrémité (deux sommets, pas de sommet ajouté ni retiré)', () => {
+    const axis = createAxisElement('Axe A', 'A', [0, 3000, 10000, 3000])
+    expect(getVertices(axis)).toEqual([
+      { x: 0, y: 3000 },
+      { x: 10000, y: 3000 },
+    ])
+    expect(moveVertex(axis, 1, { x: 9000, y: 3500 })).toMatchObject({
+      points: [0, 3000, 9000, 3500],
+    })
+    expect(getSegmentMidpoints(axis)).toEqual([])
+    expect(canRemoveVertex(axis)).toBe(false)
+  })
+
+  it('un axe n’a jamais de niveau', () => {
+    expect(createAxisElement('Axe A', 'A', [0, 0, 1, 1]).levelId).toBeUndefined()
   })
 })

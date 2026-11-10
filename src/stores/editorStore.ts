@@ -6,6 +6,7 @@ import {
   copyLevelWalls,
   elementsOnLevel,
   insertLevelAbove,
+  isLevelIndependent,
   moveLevel as moveLevelInList,
   newTopLevel,
   nextLevelName,
@@ -35,6 +36,7 @@ export type EditorTool =
   | 'wall'
   | 'room'
   | 'dimension'
+  | 'axis'
   | 'door'
   | 'window'
   | 'calibrate'
@@ -44,6 +46,7 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
   'wall',
   'room',
   'dimension',
+  'axis',
   'door',
   'window',
   'calibrate',
@@ -388,10 +391,11 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     },
 
     addElement: (element) => {
-      // Un élément créé appartient au niveau actif (sauf s'il a déjà un niveau).
+      // Un élément créé appartient au niveau actif (sauf s'il a déjà un niveau, ou s'il est commun
+      // à tous les niveaux comme un axe).
       const { activeLevelId } = get()
       const placed =
-        activeLevelId !== null && element.levelId === undefined
+        activeLevelId !== null && element.levelId === undefined && !isLevelIndependent(element)
           ? { ...element, levelId: activeLevelId }
           : element
       commit((doc) => ({ ...doc, elements: [...doc.elements, placed] }), [placed.id])
@@ -522,7 +526,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const copies =
         activeLevelId === null
           ? result.elements
-          : result.elements.map((el) => ({ ...el, levelId: activeLevelId }))
+          : result.elements.map((el) => (isLevelIndependent(el) ? el : { ...el, levelId: activeLevelId }))
       if (copies.length === 0) return
       commit(
         (doc) => ({ ...doc, elements: [...doc.elements, ...copies] }),

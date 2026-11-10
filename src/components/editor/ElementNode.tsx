@@ -1,4 +1,5 @@
 import type { CanvasElement } from '../../types/document'
+import AxisShape from './shapes/AxisShape'
 import DimensionShape from './shapes/DimensionShape'
 import EllipseShape from './shapes/EllipseShape'
 import ImageShape from './shapes/ImageShape'
@@ -37,5 +38,7 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <DimensionShape element={element} {...interaction} />
     case 'opening':
       return <OpeningShape element={element} {...interaction} />
+    case 'axis':
+      return <AxisShape element={element} {...interaction} />
   }
 }

@@ -313,10 +313,17 @@ parcouru dans les deux sens → même surface ; mur en 3 segments → somme exac
 ## Aimantation (snapping)
 
 Ordre de priorité quand l'utilisateur place un point :
-1. extrémité ou sommet existant (mur, pièce, cote), ou angle d'une face de mur, à moins de
-   8 px écran ;
-2. grille si `snapToGrid` ;
-3. avec **Maj** enfoncée : contrainte à 0°, 45° ou 90° depuis le point précédent.
+1. extrémité ou sommet existant (mur, pièce, cote), angle d'une face de mur, ou croisement de
+   deux axes de construction, à moins de 8 px écran ;
+2. ligne d'un axe de construction (projection perpendiculaire) à moins de 8 px écran ; sans
+   effet avec Maj (la direction contrainte prime) ;
+3. grille si `snapToGrid` ;
+4. avec **Maj** enfoncée : contrainte à 0°, 45° ou 90° depuis le point précédent.
+
+Les **axes** sont communs à tous les niveaux (pas de `levelId`) : on s'y aimante sur n'importe
+quel niveau. Étiquettes automatiques : un axe qui va plutôt de gauche à droite reçoit une
+lettre (A, B… Z, AA…), un axe plutôt vertical reçoit un nombre (1, 2…), à la suite de la plus
+grande étiquette existante de son sens ; le repère se modifie dans Propriétés.
 
 Les guides d'alignement (bords et centres des éléments voisins) s'appliquent au déplacement
 d'éléments dans les deux modes.
@@ -413,7 +420,7 @@ pas sur une feuille, ce qui est normal puisque seule l'emprise du contenu est ex
 |---|---|
 | `V` | Sélection |
 | `T` / `R` / `O` / `L` | Texte / Rectangle / Ellipse / Ligne |
-| `W` / `P` / `D` | Mur / Pièce / Cote (plan) |
+| `W` / `P` / `D` / `A` | Mur / Pièce / Cote / Axe de construction (plan) |
 | `B` / `F` | Porte / Fenêtre (plan) |
 | `Échap` | Annuler le tracé en cours, puis désélectionner |
 | `Entrée` ou double-clic | Terminer un mur ou une pièce |

@@ -2,13 +2,14 @@ import { beforeEach, describe, expect, it } from 'vitest'
 import { clearClipboard } from '../features/documents/clipboard'
 import { createDesignProject, createPlanProject } from '../features/documents/createProject'
 import {
+  createAxisElement,
   createOpeningElement,
   createRectElement,
   createTextElement,
   createWallElement,
 } from '../features/documents/elements'
 import type { OpeningElement, TextElement, WallElement } from '../types/document'
-import { HISTORY_LIMIT, useEditorStore } from './editorStore'
+import { HISTORY_LIMIT, selectActiveElements, useEditorStore } from './editorStore'
 
 const store = () => useEditorStore.getState()
 const elements = () => store().project!.document.elements
@@ -666,5 +667,56 @@ describe('niveaux', () => {
     store().pasteClipboard()
     const pasted = elements().find((el) => el.levelId !== ground)
     expect(pasted?.levelId).toBe(levels()[1].id)
+  })
+})
+
+describe('axes de construction', () => {
+  const levels = () => store().project!.document.levels!
+  const axis = (label: string, y: number) => createAxisElement(`Axe ${label}`, label, [0, y, 10000, y])
+
+  beforeEach(() => {
+    store().loadProject(createPlanProject('Maison'))
+    clearClipboard()
+  })
+
+  it('un axe posé n’appartient à aucun niveau, mais un mur oui', () => {
+    store().addElement(axis('A', 0))
+    store().addElement(createWallElement('Mur', [0, 0, 4000, 0], 200, 2700))
+    expect(elements()[0].levelId).toBeUndefined()
+    expect(elements()[1].levelId).toBe(levels()[0].id)
+  })
+
+  it('un axe est visible, sélectionnable et aimantable sur tous les niveaux', () => {
+    store().addElement(axis('A', 0))
+    store().addLevel()
+    expect(selectActiveElements(store()).map((el) => el.type)).toEqual(['axis'])
+    store().selectAll()
+    expect(store().selectedIds).toHaveLength(1)
+  })
+
+  it('supprimer un niveau garde les axes', () => {
+    store().addElement(axis('A', 0))
+    store().addLevel()
+    store().removeLevel(levels()[1].id)
+    expect(elements().map((el) => el.type)).toEqual(['axis'])
+  })
+
+  it('coller un axe ne lui donne pas de niveau', () => {
+    store().addElement(axis('A', 0))
+    store().copySelection()
+    store().addLevel()
+    store().pasteClipboard()
+    const copies = elements().filter((el) => el.type === 'axis')
+    expect(copies).toHaveLength(2)
+    expect(copies.every((el) => el.levelId === undefined)).toBe(true)
+  })
+
+  it('l’outil Axe n’existe que dans un plan', () => {
+    store().loadProject(createDesignProject('post-square', 'Visuel'))
+    store().setTool('axis')
+    expect(store().activeTool).toBe('select')
+    store().loadProject(createPlanProject('Plan'))
+    store().setTool('axis')
+    expect(store().activeTool).toBe('axis')
   })
 })

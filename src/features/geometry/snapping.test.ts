@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement, DimensionElement, RoomElement, WallElement } from '../../types/document'
-import { collectSnapVertices, constrainAngle, snapPoint, type PointSnapContext } from './snapping'
+import { createAxisElement } from '../documents/elements'
+import {
+  collectSnapAxes,
+  collectSnapVertices,
+  constrainAngle,
+  snapPoint,
+  type PointSnapContext,
+} from './snapping'
 
 const NONE: PointSnapContext = {
   vertices: [],
@@ -133,6 +140,53 @@ describe('snapPoint', () => {
   it('avec Maj sans point précédent : pas de contrainte', () => {
     const result = snapPoint({ x: 123, y: 456 }, { ...NONE, constrain: true, from: null })
     expect(result.kind).toBe('none')
+  })
+})
+
+describe('aimantation sur les axes', () => {
+  const axes = [
+    { a: { x: 0, y: 3000 }, b: { x: 10000, y: 3000 } }, // horizontal
+    { a: { x: 4000, y: 0 }, b: { x: 4000, y: 8000 } }, // vertical
+  ]
+
+  it('un point proche d’un axe est ramené sur sa ligne', () => {
+    const result = snapPoint({ x: 2000, y: 3040 }, { ...NONE, axes })
+    expect(result.kind).toBe('axis')
+    expect(result.point).toEqual({ x: 2000, y: 3000 })
+  })
+
+  it('hors de la distance d’accroche, rien ne bouge', () => {
+    const result = snapPoint({ x: 2000, y: 3200 }, { ...NONE, axes })
+    expect(result).toEqual({ point: { x: 2000, y: 3200 }, kind: 'none' })
+  })
+
+  it('un sommet prime sur la ligne d’un axe (croisement des axes compris)', () => {
+    const crossing = { x: 4000, y: 3000 }
+    const result = snapPoint({ x: 4030, y: 3030 }, { ...NONE, axes, vertices: [crossing] })
+    expect(result).toEqual({ point: crossing, kind: 'vertex' })
+  })
+
+  it('l’axe prime sur la grille', () => {
+    const result = snapPoint({ x: 2030, y: 3030 }, { ...NONE, axes, gridSize: 100 })
+    expect(result).toEqual({ point: { x: 2030, y: 3000 }, kind: 'axis' })
+  })
+
+  it('avec Maj, la direction contrainte prime sur l’axe', () => {
+    const result = snapPoint(
+      { x: 2000, y: 3040 },
+      { ...NONE, axes, from: { x: 0, y: 2900 }, constrain: true },
+    )
+    expect(result.kind).toBe('angle')
+  })
+
+  it('collectSnapVertices contient les croisements des axes, collectSnapAxes les axes visibles', () => {
+    const horizontalAxis = createAxisElement('Axe A', 'A', [0, 3000, 10000, 3000])
+    const verticalAxis = createAxisElement('Axe 1', '1', [4000, 0, 4000, 8000])
+    const hiddenAxis = { ...createAxisElement('Axe B', 'B', [0, 100, 10000, 100]), hidden: true }
+    const elements: CanvasElement[] = [horizontalAxis, verticalAxis, hiddenAxis]
+    expect(collectSnapVertices(elements)).toEqual([{ x: 4000, y: 3000 }])
+    expect(collectSnapAxes(elements)).toHaveLength(2)
+    expect(collectSnapAxes(elements, new Set([verticalAxis.id]))).toHaveLength(1)
   })
 })
 

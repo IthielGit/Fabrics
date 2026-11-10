@@ -123,9 +123,10 @@ export default function PropertiesPanel() {
   function renderSingleElementFields(element: CanvasElement) {
     return (
       <div className="mt-3 space-y-3">
-        {(element.type === 'wall' || element.type === 'room' || element.type === 'dimension') && (
-          <PlanElementFields element={element} />
-        )}
+        {(element.type === 'wall' ||
+          element.type === 'room' ||
+          element.type === 'dimension' ||
+          element.type === 'axis') && <PlanElementFields element={element} />}
         {element.type === 'opening' && <OpeningFields element={element} />}
         {numericPropsFor(element).map((prop) => (
           <NumberField

@@ -1,4 +1,5 @@
 import type {
+  AxisElement,
   CanvasElement,
   DimensionElement,
   EllipseElement,
@@ -166,6 +167,18 @@ export function createDimensionElement(
   offset: number = DEFAULT_DIMENSION_OFFSET,
 ): DimensionElement {
   return { ...BASE, id: crypto.randomUUID(), type: 'dimension', name, x: 0, y: 0, points, offset }
+}
+
+/**
+ * Axe de construction entre deux points (coordonnées absolues en mm). Il est commun à tous les
+ * niveaux : il n'a jamais de `levelId`.
+ */
+export function createAxisElement(
+  name: string,
+  label: string,
+  points: [number, number, number, number],
+): AxisElement {
+  return { ...BASE, id: crypto.randomUUID(), type: 'axis', name, x: 0, y: 0, points, label }
 }
 
 /** Image déjà enregistrée dans le stockage (`assetId`), posée avec son coin haut-gauche en (x, y). */

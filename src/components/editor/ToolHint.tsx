@@ -8,6 +8,7 @@ export default function ToolHint() {
     tool === 'wall' ||
     tool === 'room' ||
     tool === 'dimension' ||
+    tool === 'axis' ||
     tool === 'door' ||
     tool === 'window' ||
     tool === 'calibrate'

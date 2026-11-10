@@ -37,6 +37,9 @@ export function useEditorShortcuts() {
         case 'tool-dimension':
           store.setTool('dimension')
           break
+        case 'tool-axis':
+          store.setTool('axis')
+          break
         case 'tool-door':
           store.setTool('door')
           break

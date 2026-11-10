@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement } from '../../types/document'
 import {
+  createAxisElement,
   createEllipseElement,
   createLineElement,
   createOpeningElement,
@@ -140,5 +141,25 @@ describe('ouvertures dans la zone exportée', () => {
   it('openingBounds renvoie null si le segment n’existe plus', () => {
     const missing = { ...door(), segmentIndex: 5 }
     expect(openingBounds(missing, wall)).toBeNull()
+  })
+})
+
+describe('emprise d’un axe', () => {
+  it('comprend la ligne et ses deux bulles', () => {
+    const axis = createAxisElement('Axe A', 'A', [0, 3000, 4000, 3000])
+    const box = elementBounds(axis)!
+    expect(box.x).toBeCloseTo(-500)
+    expect(box.x + box.width).toBeCloseTo(4500)
+    expect(box.y).toBeCloseTo(2750)
+    expect(box.height).toBeCloseTo(500)
+  })
+
+  it('un axe visible agrandit l’emprise exportée du plan', () => {
+    const wall = createWallElement('Mur', [0, 0, 1000, 0], 200, 2700)
+    const axis = createAxisElement('Axe 1', '1', [500, -2000, 500, 3000])
+    const withAxis = planExportExtent([wall, axis], 0)!
+    const without = planExportExtent([wall], 0)!
+    expect(withAxis.height).toBeGreaterThan(without.height)
+    expect(planExportExtent([wall, { ...axis, hidden: true }], 0)).toEqual(without)
   })
 })

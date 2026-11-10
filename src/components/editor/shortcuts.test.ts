@@ -26,6 +26,11 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut(key('d', { ctrlKey: true }))).toBe('duplicate')
   })
 
+  it('choisit l’outil Axe avec A (Ctrl+A reste « tout sélectionner »)', () => {
+    expect(resolveShortcut(key('a'))).toBe('tool-axis')
+    expect(resolveShortcut(key('a', { ctrlKey: true }))).toBe('select-all')
+  })
+
   it('choisit les outils Porte et Fenêtre avec B et F', () => {
     expect(resolveShortcut(key('b'))).toBe('tool-door')
     expect(resolveShortcut(key('f'))).toBe('tool-window')
@@ -61,7 +66,7 @@ describe('resolveShortcut', () => {
 
   it('ne confond pas une lettre seule avec une commande Ctrl', () => {
     expect(resolveShortcut(key('z'))).toBeNull()
-    expect(resolveShortcut(key('a'))).toBeNull()
+    expect(resolveShortcut(key('q'))).toBeNull()
     expect(resolveShortcut(key('c'))).toBeNull()
   })
 

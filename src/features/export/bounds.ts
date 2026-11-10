@@ -1,4 +1,5 @@
 import type { CanvasElement, OpeningElement, WallElement } from '../../types/document'
+import { axisBubblePoints } from '../geometry/axes'
 import type { Box } from '../geometry/box'
 import { unionBoxes } from '../geometry/box'
 import { dimensionGeometry } from '../geometry/dimension'
@@ -89,6 +90,11 @@ export function elementBounds(element: CanvasElement): Box | null {
         points.push(...geometry.line, ...geometry.extensions.flat())
       }
       return pointsBox(points)
+    }
+    case 'axis': {
+      // La ligne et ses deux bulles (qui dépassent des extrémités).
+      const [ax, ay, bx, by] = element.points
+      return pointsBox([{ x: ax, y: ay }, { x: bx, y: by }, ...axisBubblePoints(element.points)])
     }
     case 'opening':
       // Son emprise dépend du mur porteur (le battant d'une porte dépasse de l'épaisseur du mur) :

@@ -1,13 +1,16 @@
 import type Konva from 'konva'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
+  createAxisElement,
   createDimensionElement,
   createRoomElement,
   createWallElement,
   nextElementName,
 } from '../../features/documents/elements'
+import { nextAxisLabel } from '../../features/geometry/axes'
 import { flattenPoints, pointDistance } from '../../features/geometry/polygon'
 import {
+  collectSnapAxes,
   collectSnapVertices,
   snapPoint,
   type SnapKind,
@@ -18,7 +21,7 @@ import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement } from '../../types/document'
 import { isTypingTarget } from './isTypingTarget'
 
-export type PolylineTool = 'wall' | 'room' | 'dimension'
+export type PolylineTool = 'wall' | 'room' | 'dimension' | 'axis'
 
 export interface PolylineDraft {
   /** Points déjà posés (coordonnées du document, en mm). */
@@ -29,7 +32,7 @@ export interface PolylineDraft {
 }
 
 /** Nombre minimal de points pour valider un tracé. */
-const MIN_POINTS: Record<PolylineTool, number> = { wall: 2, room: 3, dimension: 2 }
+const MIN_POINTS: Record<PolylineTool, number> = { wall: 2, room: 3, dimension: 2, axis: 2 }
 
 /** Distance d'accroche, en pixels écran. */
 const SNAP_THRESHOLD_PX = 8
@@ -48,10 +51,10 @@ function samePoint(a: Point, b: Point): boolean {
 }
 
 /**
- * Tracé « point par point » d'un mur, d'une pièce ou d'une cote :
+ * Tracé « point par point » d'un mur, d'une pièce, d'une cote ou d'un axe :
  * clic = poser un point ; `Maj` = contraindre à 0/45/90° ; double-clic ou `Entrée` = terminer ;
  * `Échap` = annuler ; `Retour arrière` = retirer le dernier point. Les points s'aimantent aux
- * sommets existants, aux angles des faces de murs, puis à la grille.
+ * sommets existants, aux angles des faces de murs, aux axes de construction, puis à la grille.
  *
  * `scale` = pixels écran par mm (pour garder une distance d'accroche constante à l'écran).
  */
@@ -100,9 +103,11 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       if (!project) return { point: raw, kind: 'none' as SnapKind }
       const current = readDraft().points
       const plan = project.document.plan
+      const active = selectActiveElements(useEditorStore.getState())
       return snapPoint(raw, {
-        // On ne s'aimante qu'aux éléments du niveau actif.
-        vertices: [...planVertices(selectActiveElements(useEditorStore.getState())), ...current],
+        // On ne s'aimante qu'aux éléments du niveau actif (les axes valent pour tous les niveaux).
+        vertices: [...planVertices(active), ...current],
+        axes: collectSnapAxes(active),
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
         from: current.length > 0 ? current[current.length - 1] : null,
@@ -120,13 +125,22 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
 
     const { plan, levels } = project.document
     const state = useEditorStore.getState()
+    const flat = flattenPoints(points)
+
+    if (tool === 'axis') {
+      // Les axes sont communs à tous les niveaux : le repère suit la suite de tous les axes du plan.
+      const axisPoints: [number, number, number, number] = [flat[0], flat[1], flat[2], flat[3]]
+      const label = nextAxisLabel(project.document.elements, axisPoints)
+      addElement(createAxisElement(`${fr.elements.axis} ${label}`, label, axisPoints))
+      return
+    }
+
     const name = nextElementName(fr.elements[tool], tool, selectActiveElements(state))
     // Un nouveau mur prend la hauteur d'étage du niveau actif.
     const wallHeight =
       levels?.find((level) => level.id === state.activeLevelId)?.height ??
       plan?.defaultWallHeight ??
       2500
-    const flat = flattenPoints(points)
     if (tool === 'wall') {
       addElement(
         createWallElement(
@@ -168,8 +182,8 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       if (points.length > 0 && samePoint(point, points[points.length - 1])) return
 
       setDraft({ points: [...points, point], cursor: point, snapKind: kind })
-      // Une cote n'a que deux points.
-      if (tool === 'dimension' && points.length + 1 === 2) finish()
+      // Une cote et un axe n'ont que deux points.
+      if ((tool === 'dimension' || tool === 'axis') && points.length + 1 === 2) finish()
     },
     [tool, readDraft, snap, finish, setDraft],
   )
