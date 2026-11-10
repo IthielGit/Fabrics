@@ -1,7 +1,7 @@
 # 05 — Installation (en partant de zéro)
 
 Ce guide est pour toi, pas pour Claude. Fais les étapes 1 à 4 une seule fois.
-Supabase et Cloudflare ne servent qu'aux jalons M5 et M6 : Claude te guidera le moment venu.
+Supabase et Cloudflare ne servent qu'aux jalons M11 et M12 : Claude te guidera le moment venu.
 
 ## 1. Installer les outils
 
@@ -54,15 +54,15 @@ Extensions utiles en plus (facultatives) : **Tailwind CSS IntelliSense**, **ESLi
 1. Ouvre le panneau Claude Code.
 2. Copie-colle le prompt **P0** de `docs/04-PROMPTS.md`.
 3. Lis son résumé et ses questions, réponds, puis donne-lui le feu vert pour M0.
-4. Continue avec le prompt **P1** pour chaque jalon, dans l'ordre M0 → M6.
+4. Continue avec le prompt **P1** pour chaque jalon, dans l'ordre M0 → M12.
 
 ## Plus tard : comptes à créer (Claude te guidera)
 
 | Jalon | Service | Pourquoi | Coût |
 |---|---|---|---|
-| M5 | GitHub | Stocker le code, déclencher les déploiements | gratuit |
-| M5 | Cloudflare Pages | Mettre l'application en ligne | offre gratuite |
-| M6 | Supabase | Comptes utilisateurs, projets et images dans le cloud | offre gratuite (avec limites) |
+| M11 | GitHub | Stocker le code, déclencher les déploiements | gratuit |
+| M11 | Cloudflare Pages | Mettre l'application en ligne | offre gratuite |
+| M12 | Supabase | Comptes utilisateurs, projets et images dans le cloud | offre gratuite (avec limites) |
 
 Ne colle jamais une clé secrète dans la conversation ni dans un fichier versionné : elle va
 uniquement dans `.env.local` (et dans les réglages de Cloudflare). Seule la clé **anon** de

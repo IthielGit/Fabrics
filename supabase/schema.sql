@@ -1,4 +1,4 @@
--- Fabrics — schéma Supabase (jalon M6)
+-- Fabrics — schéma Supabase (jalon M12)
 -- À exécuter une fois dans Supabase : SQL Editor → New query → coller → Run.
 -- Correspond au type `Project` de docs/02-ARCHITECTURE.md (document stocké en JSON).
 

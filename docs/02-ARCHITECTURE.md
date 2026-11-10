@@ -2,7 +2,7 @@
 
 Tout est open source et utilisable gratuitement. Pas de serveur à écrire pour le MVP :
 le navigateur fait le rendu, les calculs et les exports ; Supabase stocke les comptes et les
-projets à partir du jalon M6.
+projets à partir du jalon M12.
 
 ## Stack et dépendances autorisées
 
@@ -20,9 +20,9 @@ Installe toujours la **dernière version stable** au moment de l'installation, s
 | Utilitaire | `clsx` | M1 | classes conditionnelles |
 | Tests | `vitest` | M1 | fonctions pures (géométrie, métrés, unités) |
 | PDF | `jspdf` | M4 | PNG/JPG viennent de Konva, sans bibliothèque |
-| Backend | `@supabase/supabase-js` | M6 | Auth + Postgres + Storage |
-| 3D | `three`, `@react-three/fiber`, `@react-three/drei` | M10 | **à confirmer par l'utilisateur au début de M10** ; version majeure de `@react-three/fiber` compatible avec `react` |
-| DXF (import) | `dxf-parser` | M12 | **à confirmer au début de M12** ; l'export DXF est écrit à la main (format texte), sans bibliothèque |
+| Backend | `@supabase/supabase-js` | M12 | Auth + Postgres + Storage |
+| 3D | `three`, `@react-three/fiber`, `@react-three/drei` | M8 | **à confirmer par l'utilisateur au début de M8** ; version majeure de `@react-three/fiber` compatible avec `react` |
+| DXF (import) | `dxf-parser` | M10 | **à confirmer au début de M10** ; l'export DXF est écrit à la main (format texte), sans bibliothèque |
 | Temps réel | `yjs`, `y-websocket` | M13 | hébergement à décider |
 
 Interdits sans accord : `html2canvas` (inutile, Konva exporte lui-même), `fabric`, bibliothèques
@@ -38,7 +38,7 @@ Tests : `idb-keyval` est simulé avec `vi.mock` (pas de `fake-indexeddb`).
 fabrics/
 ├── CLAUDE.md
 ├── docs/                      # ces documents
-├── supabase/schema.sql        # appliqué au jalon M6
+├── supabase/schema.sql        # appliqué au jalon M12
 ├── .env.example               # versionné
 ├── .env.local                 # NON versionné (clés Supabase)
 ├── index.html
@@ -62,11 +62,11 @@ fabrics/
     │   ├── editorStore.ts     # document ouvert, sélection, outil, historique
     │   └── projectsStore.ts   # liste des projets
     ├── lib/
-    │   └── supabase.ts        # client (M6)
+    │   └── supabase.ts        # client (M12)
     ├── pages/
     │   ├── HomePage.tsx
     │   ├── EditorPage.tsx
-    │   └── LoginPage.tsx      # M6
+    │   └── LoginPage.tsx      # M12
     └── components/
         ├── editor/            # Stage, Toolbar, PropertiesPanel, LayersPanel, MeasurementsPanel…
         │   └── shapes/        # un composant Konva par type d'élément
@@ -314,12 +314,12 @@ export interface ProjectRepository {
 ```
 
 - `LocalRepository` (M1) : IndexedDB via `idb-keyval`. Projets et images.
-- `SupabaseRepository` (M6) : table `projects` + bucket Storage `assets`, voir
+- `SupabaseRepository` (M12) : table `projects` + bucket Storage `assets`, voir
   `supabase/schema.sql`. Chemin des images : `<user_id>/<assetId>`.
 - Sauvegarde automatique : 1 seconde après la dernière modification (debounce), indicateur
   « Enregistrement… / Enregistré ✓ / Erreur » dans l'en-tête. Sauvegarde aussi à la fermeture
   de l'onglet (`visibilitychange`).
-- Au jalon M6 : un utilisateur connecté utilise `SupabaseRepository` ; à la première connexion,
+- Au jalon M12 : un utilisateur connecté utilise `SupabaseRepository` ; à la première connexion,
   on propose d'importer les projets locaux dans le cloud.
 
 ### Images partagées entre projets
@@ -328,7 +328,7 @@ Dupliquer un projet ou coller une image dans un autre projet **réutilise le mê
 (pas de copie du fichier). Conséquence :
 - `remove(projectId)` supprime le projet, puis supprime **uniquement** les images que plus
   aucun projet restant ne référence (parcours des `elements` de type `image`).
-- Cette règle vaut pour `LocalRepository` (M1) et `SupabaseRepository` (M6, par utilisateur).
+- Cette règle vaut pour `LocalRepository` (M1) et `SupabaseRepository` (M12, par utilisateur).
 - Supprimer une image du canevas ne supprime pas le fichier (l'annulation doit pouvoir la
   restaurer) ; le nettoyage se fait à la suppression du projet.
 
@@ -391,7 +391,7 @@ pas sur une feuille, ce qui est normal puisque seule l'emprise du contenu est ex
 
 Les raccourcis sont ignorés quand le focus est dans un champ de saisie.
 
-## Mode bâtiment (jalons M7 à M12)
+## Mode bâtiment (jalons M5 à M10)
 
 Cette section **prévoit** les règles ; le modèle de données ci-dessus reste la source de vérité
 tant que le jalon correspondant n'a pas commencé. Chaque jalon qui change le format du document
@@ -401,7 +401,7 @@ incrémente `FabricsDocument.version` et ajoute une **migration** pure et testé
 ### Ajouts prévus au modèle de données
 
 ```ts
-// M7 — version 2
+// M5 — version 2
 export interface OpeningElement extends BaseElement {
   type: 'opening';
   kind: 'door' | 'window' | 'bay';   // porte, fenêtre, baie
@@ -415,7 +415,7 @@ export interface OpeningElement extends BaseElement {
   side: 'left' | 'right';    // côté du mur vers lequel la porte s'ouvre
 }
 
-// M8 — version 3
+// M6 — version 3
 export interface Level {
   id: string;
   name: string;              // « Rez-de-chaussée », « Étage 1 »…
@@ -425,9 +425,9 @@ export interface Level {
 }
 // FabricsDocument.levels?: Level[]   (projets Plan uniquement, au moins un niveau)
 // BaseElement.levelId?: string       (éléments de plan ; absent = commun à tous les niveaux)
-// PlanSettings.northAngle: number    (degrés, M10)
+// PlanSettings.northAngle: number    (degrés, M8)
 
-// M9
+// M7
 export interface AxisElement extends BaseElement {
   type: 'axis';
   points: [number, number, number, number];
@@ -440,7 +440,7 @@ export interface FurnitureElement extends BaseElement {
   depth: number;             // mm
 }
 
-// M11
+// M9
 export interface SectionLineElement extends BaseElement {
   type: 'section';
   points: [number, number, number, number];
@@ -498,7 +498,7 @@ les éléments modifiés.
 - Bouton « Planche » : vue d'ensemble en lecture seule (niveaux, façades, coupes côte à côte),
   exportable en PDF.
 
-### Import, export, partage (M12)
+### Import, export, partage (M10)
 
 - DXF exporté : unités mm (`$INSUNITS = 4`), calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`,
   `AXES`, `MOBILIER` ; un fichier par niveau ou un seul fichier avec un calque par niveau.
@@ -507,22 +507,22 @@ les éléments modifiés.
 - glTF : `GLTFExporter` fourni par `three`.
 - Partage : table Supabase `shares` (jeton aléatoire, projet, actif, mot de passe haché
   optionnel, expiration), RLS activé ; la lecture publique passe par une fonction Postgres
-  qui vérifie le jeton. Ajout à `supabase/schema.sql` au début de M12.
+  qui vérifie le jeton. Ajout à `supabase/schema.sql` au début de M10.
 
 ## Variables d'environnement
 
 ```
-VITE_SUPABASE_URL=        # M6
-VITE_SUPABASE_ANON_KEY=   # M6, clé anon uniquement
+VITE_SUPABASE_URL=        # M12
+VITE_SUPABASE_ANON_KEY=   # M12, clé anon uniquement
 ```
 
 Sans ces variables, l'application fonctionne en mode local (pas de bouton de connexion).
 
 ## Hébergement
 
-- **Cloudflare Pages** (M5) : build `npm run build`, dossier `dist`. Ajouter une règle de
+- **Cloudflare Pages** (M11) : build `npm run build`, dossier `dist`. Ajouter une règle de
   redirection SPA : fichier `public/_redirects` contenant `/* /index.html 200`.
-- **Supabase** (M6) : offre gratuite. Attention : un projet gratuit inactif peut être mis en
+- **Supabase** (M12) : offre gratuite. Attention : un projet gratuit inactif peut être mis en
   pause ; vérifier les limites actuelles sur le site de Supabase.
 - **Temps réel** (M13) : Cloudflare Pages ne garde pas de connexion WebSocket ouverte ; il faudra
   choisir un hébergeur pour le serveur Yjs. Décision à prendre au début de M13.

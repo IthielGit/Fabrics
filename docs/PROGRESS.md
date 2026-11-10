@@ -18,14 +18,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M2 Contenu et mise en forme | terminé | 2026-11-10 |
 | M3 Mode plan et métrés | terminé | 2026-11-10 |
 | M4 Export | à faire | |
-| M5 Mise en ligne | à faire | |
-| M6 Comptes et sauvegarde cloud | à faire | |
-| M7 Ouvertures | après le MVP | |
-| M8 Niveaux | après le MVP | |
-| M9 Axes et mobilier | après le MVP | |
-| M10 Vue 3D | après le MVP | |
-| M11 Façades, coupes et planche | après le MVP | |
-| M12 Import, export et partage | après le MVP | |
+| M11 Mise en ligne | à faire | |
+| M12 Comptes et sauvegarde cloud | à faire | |
+| M5 Ouvertures | après le MVP | |
+| M6 Niveaux | après le MVP | |
+| M7 Axes et mobilier | après le MVP | |
+| M8 Vue 3D | après le MVP | |
+| M9 Façades, coupes et planche | après le MVP | |
+| M10 Import, export et partage | après le MVP | |
 | M13 Collaboration temps réel | après le MVP | |
 
 ## Journal
@@ -195,7 +195,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: page d'accueil et gestion des projets
 
 ### 2026-11-10 — M1 · Store des projets
-- Fait : `createProjectsStore(repo)` (dépôt injecté, donc testable) et `useProjectsStore` ; actions rafraîchir, créer Visuel / Plan (renvoient l'identifiant), renommer, dupliquer (suffixe « (copie) »), supprimer. `repository.ts` : point unique de choix du dépôt (local ; Supabase en M6).
+- Fait : `createProjectsStore(repo)` (dépôt injecté, donc testable) et `useProjectsStore` ; actions rafraîchir, créer Visuel / Plan (renvoient l'identifiant), renommer, dupliquer (suffixe « (copie) »), supprimer. `repository.ts` : point unique de choix du dépôt (local ; Supabase en M12).
 - Fichiers : `src/stores/projectsStore.ts`, `projectsStore.test.ts`, `src/features/persistence/repository.ts`, `src/i18n/fr.ts`
 - Vérification : build ✓ lint ✓ tests ✓ (34 au total)
 - Commit : feat: store des projets
@@ -263,7 +263,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D11 | Tests du dépôt local | `idb-keyval` simulé avec `vi.mock`. | Aucune nouvelle dépendance. |
 | D12 | `npm test` en M0 | Exigé seulement à partir de M1. | Le script n'existe qu'en M1. |
 | D13 | Nom du paquet | `fabrics` dans `package.json`. | npm refuse les majuscules (dossier `Fabrics`). |
-| D14 | Branche git | `git init -b main`. | Le déploiement automatique de M5 suit `main`. |
+| D14 | Branche git | `git init -b main`. | Le déploiement automatique de M11 suit `main`. |
 | D15 | Méthode | Un jalon à la fois, feu vert avant chaque jalon, même si un plan d'ensemble a été présenté. | Règle 1 de `CLAUDE.md`. |
 | D16 | Outil de lint | `npm run lint` = **oxlint** (fourni par le gabarit Vite actuel), pas ESLint. | Le gabarit officiel l'utilise ; la commande reste `npm run lint`, comme dans `CLAUDE.md`. |
 | D17 | Versions | Dernières versions stables à l'installation : React 19, Vite 8, TypeScript 7, Tailwind v4. `react-konva` (M1) devra être en version 19. | Règle « dernière version stable » de `docs/02-ARCHITECTURE.md`. |
@@ -273,7 +273,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D21 | Éléments masqués et métrés | Les murs et pièces masqués sont comptés dans les métrés. | Masquer ne change que l'affichage ; le métré décrit la géométrie du document. |
 | D22 | Contrainte d'angle (Maj) | Le point est la projection du curseur sur la direction autorisée (multiples de 45°), pas un point à la même distance. | Le point reste aligné avec le curseur : plus naturel, et exact sur les axes. |
 | D23 | Aimantation sur les faces de murs | On s'aimante aussi aux croisements des faces de murs différents (angles intérieurs). | Quatre murs séparés n'ont pas de sommet à leur angle intérieur : sans cela le critère 10,64 m² serait inatteignable. |
-| D24 | Phase « Bâtiment » | Ouvertures (M7), niveaux (M8), axes et mobilier (M9), 3D (M10), façades / coupes / planche (M11), import-export DXF / glTF et partage (M12) ajoutés **après le MVP** ; collaboration renumérotée M13 ; IA reportée. Dépendances 3D et DXF à confirmer au début de leur jalon. | Demande de l'utilisateur (capture d'un outil de bâtiment, 2026-11-10) ; le MVP reste inchangé pour être mis en ligne d'abord. |
+| D24 | Phase « Bâtiment » | Ouvertures (M5), niveaux (M6), axes et mobilier (M7), 3D (M8), façades / coupes / planche (M9), import-export DXF / glTF et partage (M10) ajoutés **après le MVP** ; collaboration renumérotée M13 ; IA reportée. Dépendances 3D et DXF à confirmer au début de leur jalon. | Demande de l'utilisateur (capture d'un outil de bâtiment, 2026-11-10) ; le MVP reste inchangé pour être mis en ligne d'abord. |
 
 ## Idées (hors jalon en cours)
 

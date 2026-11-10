@@ -24,7 +24,7 @@ Hors périmètre : **aucun devis, aucun prix, aucune quotation**. Les métrés s
 | 5 | `docs/PROGRESS.md` | Journal : où en est le projet |
 | — | `docs/04-PROMPTS.md` | Messages que l'utilisateur t'enverra (pour info) |
 | — | `docs/05-INSTALLATION.md` | Guide d'installation pour l'utilisateur |
-| — | `supabase/schema.sql` | Schéma de base de données (jalon M6 uniquement) |
+| — | `supabase/schema.sql` | Schéma de base de données (jalon M12 uniquement) |
 
 **En cas de contradiction**, l'ordre de priorité est :
 `CLAUDE.md` > `docs/02-ARCHITECTURE.md` > `docs/03-ROADMAP.md` > `docs/01-PRODUIT.md`.

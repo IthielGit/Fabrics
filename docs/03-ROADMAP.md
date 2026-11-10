@@ -1,6 +1,6 @@
 # 03 — Roadmap
 
-Jalons dans l'ordre. Le **MVP = M0 à M6**. Pas de durée : on passe au jalon suivant quand tous
+Jalons dans l'ordre. Le **MVP = M0 à M12**. Pas de durée : on passe au jalon suivant quand tous
 les critères d'acceptation du jalon en cours sont cochés et validés par l'utilisateur.
 
 Légende : `[ ]` à faire · `[x]` terminé (Claude coche au fur et à mesure).
@@ -23,7 +23,7 @@ Objectif : un projet vide qui démarre, se construit et passe le lint.
 - [x] Créer l'arborescence de `docs/02-ARCHITECTURE.md` (dossiers vides acceptés)
 - [x] Créer `src/i18n/fr.ts` et `src/types/document.ts` (copie exacte du modèle de données)
 - [x] Vérifier que `.gitignore` contient `node_modules`, `dist`, `.env.local`
-- [x] `git init -b main` + premier commit (branche `main`, nécessaire au déploiement de M5)
+- [x] `git init -b main` + premier commit (branche `main`, nécessaire au déploiement de M11)
 
 **Critères d'acceptation**
 - `npm run dev` affiche « Fabrics » sur http://localhost:5173, stylé avec Tailwind
@@ -139,7 +139,7 @@ Objectif : sortir un fichier utilisable de n'importe quel projet.
 
 ---
 
-## M5 — Mise en ligne
+## M11 — Mise en ligne
 
 Objectif : l'application est accessible publiquement (en mode local, sans compte).
 
@@ -155,7 +155,7 @@ Objectif : l'application est accessible publiquement (en mode local, sans compte
 
 ---
 
-## M6 — Comptes et sauvegarde cloud
+## M12 — Comptes et sauvegarde cloud
 
 Objectif : retrouver ses projets sur un autre appareil.
 
@@ -178,14 +178,14 @@ Objectif : retrouver ses projets sur un autre appareil.
 
 ---
 
-## Phase « Bâtiment » (M7 → M12, après le MVP)
+## Phase « Bâtiment » (M5 → M10, après le MVP)
 
 Objectif d'ensemble : dessiner un bâtiment niveau par niveau, puis obtenir automatiquement la
 vue 3D, les façades et les coupes. Les règles techniques sont dans `docs/02-ARCHITECTURE.md`,
 section « Mode bâtiment ». L'interface reste propre à Fabrics : on reprend des **fonctions**,
 jamais l'apparence d'un logiciel existant.
 
-## M7 — Ouvertures (portes et fenêtres)
+## M5 — Ouvertures (portes et fenêtres)
 
 Objectif : percer les murs et obtenir des métrés nets.
 
@@ -204,9 +204,9 @@ Objectif : percer les murs et obtenir des métrés nets.
 **Critères d'acceptation**
 - Un mur de 4,00 m × 2,50 m avec une porte de 0,90 × 2,10 m affiche 10,00 m² brut et 8,11 m² net
 - Une ouverture ne peut pas dépasser l'extrémité de son mur ni chevaucher une autre ouverture
-- Un projet créé avant M7 s'ouvre sans perte
+- Un projet créé avant M5 s'ouvre sans perte
 
-## M8 — Niveaux
+## M6 — Niveaux
 
 Objectif : un projet Plan contient plusieurs étages.
 
@@ -224,7 +224,7 @@ Objectif : un projet Plan contient plusieurs étages.
 - Un clic sur un mur du niveau de référence ne le sélectionne pas
 - Les totaux du bâtiment = somme des totaux des niveaux
 
-## M9 — Axes de construction et mobilier
+## M7 — Axes de construction et mobilier
 
 - [ ] Outil Axe : ligne de repère avec bulle et étiquette ; numérotation automatique
       (A, B, C… pour un sens, 1, 2, 3… pour l'autre), modifiable
@@ -240,7 +240,7 @@ Objectif : un projet Plan contient plusieurs étages.
 - Un lit 160 × 200 cm posé sur le plan mesure 1,60 × 2,00 m avec l'outil Cote
 - Un nouvel axe parallèle aux axes « A, B » reçoit « C »
 
-## M10 — Vue 3D
+## M8 — Vue 3D
 
 Objectif : voir le bâtiment en volume, à côté du plan, mis à jour en direct.
 
@@ -259,7 +259,7 @@ Objectif : voir le bâtiment en volume, à côté du plan, mis à jour en direct
 - Une fenêtre de 1,20 × 1,00 m à 0,90 m d'allège apparaît comme un trou à la bonne hauteur
 - Un bâtiment de 3 niveaux reste fluide (pas de saccade en tournant la caméra)
 
-## M11 — Façades, coupes et planche
+## M9 — Façades, coupes et planche
 
 Objectif : obtenir sans dessiner les façades et les coupes, et les présenter ensemble.
 
@@ -276,7 +276,7 @@ Objectif : obtenir sans dessiner les façades et les coupes, et les présenter e
 - Déplacer la ligne de coupe met la coupe à jour
 - Imprimée à 100 %, une hauteur d'étage de 2,50 m mesure 5,0 cm sur une façade à 1:50
 
-## M12 — Import, export et partage
+## M10 — Import, export et partage
 
 - [ ] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
 - [ ] Import DXF comme calque de fond verrouillé, sur un niveau, à l'échelle
