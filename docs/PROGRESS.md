@@ -18,14 +18,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M2 Contenu et mise en forme | terminé | 2026-11-10 |
 | M3 Mode plan et métrés | terminé | 2026-11-10 |
 | M4 Export | à faire | |
+| M5 Ouvertures | à faire | |
+| M6 Niveaux | à faire | |
+| M7 Axes et mobilier | à faire | |
+| M8 Vue 3D | à faire | |
+| M9 Façades, coupes et planche | à faire | |
+| M10 Import et export | à faire | |
 | M11 Mise en ligne | à faire | |
-| M12 Comptes et sauvegarde cloud | à faire | |
-| M5 Ouvertures | après le MVP | |
-| M6 Niveaux | après le MVP | |
-| M7 Axes et mobilier | après le MVP | |
-| M8 Vue 3D | après le MVP | |
-| M9 Façades, coupes et planche | après le MVP | |
-| M10 Import, export et partage | après le MVP | |
+| M12 Comptes, sauvegarde cloud et partage | à faire | |
 | M13 Collaboration temps réel | après le MVP | |
 
 ## Journal
@@ -274,6 +274,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D22 | Contrainte d'angle (Maj) | Le point est la projection du curseur sur la direction autorisée (multiples de 45°), pas un point à la même distance. | Le point reste aligné avec le curseur : plus naturel, et exact sur les axes. |
 | D23 | Aimantation sur les faces de murs | On s'aimante aussi aux croisements des faces de murs différents (angles intérieurs). | Quatre murs séparés n'ont pas de sommet à leur angle intérieur : sans cela le critère 10,64 m² serait inatteignable. |
 | D24 | Phase « Bâtiment » | Ouvertures (M5), niveaux (M6), axes et mobilier (M7), 3D (M8), façades / coupes / planche (M9), import-export DXF / glTF et partage (M10) ajoutés **après le MVP** ; collaboration renumérotée M13 ; IA reportée. Dépendances 3D et DXF à confirmer au début de leur jalon. | Demande de l'utilisateur (capture d'un outil de bâtiment, 2026-11-10) ; le MVP reste inchangé pour être mis en ligne d'abord. |
+| D25 | Ordre des jalons | La phase « Bâtiment » passe **avant** la mise en ligne et les comptes : M5 Ouvertures, M6 Niveaux, M7 Axes et mobilier, M8 3D, M9 Façades et coupes, M10 Import et export, M11 Mise en ligne, M12 Comptes, cloud et partage (fin du MVP), M13 Collaboration. Le partage par lien passe en M12 car il a besoin de Supabase. Remplace l'ordre de D24. | Demande de l'utilisateur (2026-11-10). |
 
 ## Idées (hors jalon en cours)
 

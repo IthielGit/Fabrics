@@ -139,46 +139,7 @@ Objectif : sortir un fichier utilisable de n'importe quel projet.
 
 ---
 
-## M11 — Mise en ligne
-
-Objectif : l'application est accessible publiquement (en mode local, sans compte).
-
-- [ ] Créer le dépôt GitHub et pousser le code (guider l'utilisateur pas à pas)
-- [ ] Ajouter `public/_redirects` (`/* /index.html 200`)
-- [ ] Connecter le dépôt à Cloudflare Pages (build `npm run build`, sortie `dist`)
-- [ ] Vérifier la version en ligne : création, sauvegarde, export
-- [ ] README : présentation, commandes, lien de la version en ligne
-
-**Critères d'acceptation**
-- L'URL `*.pages.dev` fonctionne, y compris en rechargeant directement une page `/p/…`
-- Chaque `git push` sur `main` redéploie automatiquement
-
----
-
-## M12 — Comptes et sauvegarde cloud
-
-Objectif : retrouver ses projets sur un autre appareil.
-
-- [ ] Guider la création du projet Supabase et l'exécution de `supabase/schema.sql`
-- [ ] `src/lib/supabase.ts` + `.env.local` ; variables ajoutées dans Cloudflare Pages
-- [ ] Page Connexion : inscription e-mail + mot de passe (avec vérification e-mail),
-      connexion, mot de passe oublié, déconnexion
-- [ ] Connexion Google (optionnelle, seulement si l'utilisateur la veut)
-- [ ] `SupabaseRepository` (table `projects`, bucket `assets`, URLs signées)
-- [ ] Choix automatique du dépôt : local si déconnecté, Supabase si connecté
-- [ ] À la première connexion : proposer d'importer les projets locaux
-- [ ] Gestion hors ligne simple : en cas d'échec réseau, garder une copie locale et réessayer
-
-**Critères d'acceptation**
-- Un projet créé sur l'ordinateur apparaît sur le téléphone avec le même compte
-- Un second compte ne voit **aucun** projet ni image du premier (tester avec deux comptes)
-- Sans variables Supabase, l'application fonctionne toujours en mode local
-
-**✅ Fin du MVP**
-
----
-
-## Phase « Bâtiment » (M5 → M10, après le MVP)
+## Phase « Bâtiment » (M5 → M10)
 
 Objectif d'ensemble : dessiner un bâtiment niveau par niveau, puis obtenir automatiquement la
 vue 3D, les façades et les coupes. Les règles techniques sont dans `docs/02-ARCHITECTURE.md`,
@@ -276,19 +237,59 @@ Objectif : obtenir sans dessiner les façades et les coupes, et les présenter e
 - Déplacer la ligne de coupe met la coupe à jour
 - Imprimée à 100 %, une hauteur d'étage de 2,50 m mesure 5,0 cm sur une façade à 1:50
 
-## M10 — Import, export et partage
+## M10 — Import et export
 
 - [ ] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
 - [ ] Import DXF comme calque de fond verrouillé, sur un niveau, à l'échelle
 - [ ] Export 3D (glTF) du bâtiment
+
+**Critères d'acceptation**
+- Le DXF exporté s'ouvre dans LibreCAD avec des longueurs exactes en mm
+- Un DXF importé garde ses dimensions (une ligne de 5 000 mm mesure 5,00 m)
+
+---
+
+## M11 — Mise en ligne
+
+Objectif : l'application est accessible publiquement (en mode local, sans compte).
+
+- [ ] Créer le dépôt GitHub et pousser le code (guider l'utilisateur pas à pas)
+- [ ] Ajouter `public/_redirects` (`/* /index.html 200`)
+- [ ] Connecter le dépôt à Cloudflare Pages (build `npm run build`, sortie `dist`)
+- [ ] Vérifier la version en ligne : création, sauvegarde, export
+- [ ] README : présentation, commandes, lien de la version en ligne
+
+**Critères d'acceptation**
+- L'URL `*.pages.dev` fonctionne, y compris en rechargeant directement une page `/p/…`
+- Chaque `git push` sur `main` redéploie automatiquement
+
+---
+
+## M12 — Comptes, sauvegarde cloud et partage
+
+Objectif : retrouver ses projets sur un autre appareil.
+
+- [ ] Guider la création du projet Supabase et l'exécution de `supabase/schema.sql`
+- [ ] `src/lib/supabase.ts` + `.env.local` ; variables ajoutées dans Cloudflare Pages
+- [ ] Page Connexion : inscription e-mail + mot de passe (avec vérification e-mail),
+      connexion, mot de passe oublié, déconnexion
+- [ ] Connexion Google (optionnelle, seulement si l'utilisateur la veut)
+- [ ] `SupabaseRepository` (table `projects`, bucket `assets`, URLs signées)
+- [ ] Choix automatique du dépôt : local si déconnecté, Supabase si connecté
+- [ ] À la première connexion : proposer d'importer les projets locaux
+- [ ] Gestion hors ligne simple : en cas d'échec réseau, garder une copie locale et réessayer
 - [ ] Partage par lien en lecture seule (plan, 3D, planche) ; désactivable à tout moment ;
       option mot de passe et date d'expiration
 - [ ] Table et règles de sécurité Supabase du partage (RLS), testées avec deux comptes
 
 **Critères d'acceptation**
-- Le DXF exporté s'ouvre dans LibreCAD avec des longueurs exactes en mm
-- Un lien désactivé ne montre plus rien, même rechargé
-- La personne qui reçoit le lien ne peut rien modifier
+- Un projet créé sur l'ordinateur apparaît sur le téléphone avec le même compte
+- Un second compte ne voit **aucun** projet ni image du premier (tester avec deux comptes)
+- Sans variables Supabase, l'application fonctionne toujours en mode local
+- Un lien de partage désactivé ne montre plus rien, même rechargé ; la personne qui reçoit
+  le lien ne peut rien modifier
+
+**✅ Fin du MVP**
 
 ---
 

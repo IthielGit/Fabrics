@@ -498,7 +498,7 @@ les éléments modifiés.
 - Bouton « Planche » : vue d'ensemble en lecture seule (niveaux, façades, coupes côte à côte),
   exportable en PDF.
 
-### Import, export, partage (M10)
+### Import et export (M10), partage (M12)
 
 - DXF exporté : unités mm (`$INSUNITS = 4`), calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`,
   `AXES`, `MOBILIER` ; un fichier par niveau ou un seul fichier avec un calque par niveau.
@@ -507,7 +507,7 @@ les éléments modifiés.
 - glTF : `GLTFExporter` fourni par `three`.
 - Partage : table Supabase `shares` (jeton aléatoire, projet, actif, mot de passe haché
   optionnel, expiration), RLS activé ; la lecture publique passe par une fonction Postgres
-  qui vérifie le jeton. Ajout à `supabase/schema.sql` au début de M10.
+  qui vérifie le jeton. Ajout à `supabase/schema.sql` au jalon M12.
 
 ## Variables d'environnement
 

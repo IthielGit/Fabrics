@@ -8,6 +8,11 @@ export function setThumbnailStage(stage: Konva.Stage | null): void {
   currentStage = stage
 }
 
+/** La scène Konva de l'éditeur ouvert (`null` si aucun éditeur n'est affiché). */
+export function getEditorStage(): Konva.Stage | null {
+  return currentStage
+}
+
 /**
  * Photographie la page (et seulement elle) en petite image PNG, sans les poignées de sélection
  * ni les guides. Renvoie `null` s'il n'y a pas de scène ou si la capture échoue.
