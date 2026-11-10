@@ -1,0 +1,84 @@
+# Journal de progression
+
+Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
+
+## État actuel
+
+- **Jalon en cours :** M0 — Mise en place
+- **Dernière tâche terminée :** M0 — toutes les tâches faites, sauf le premier commit (en attente de votre accord)
+- **Prochaine tâche :** valider M0 dans le navigateur, faire le premier commit, puis feu vert pour M1
+- **Problèmes connus :** — (voir D16 et D17 : lint = oxlint, TypeScript 7)
+
+## Jalons
+
+| Jalon | Statut | Validé par l'utilisateur le |
+|---|---|---|
+| M0 Mise en place | à valider | |
+| M1 Socle de l'éditeur | à faire | |
+| M2 Contenu et mise en forme | à faire | |
+| M3 Mode plan et métrés | à faire | |
+| M4 Export | à faire | |
+| M5 Mise en ligne | à faire | |
+| M6 Comptes et sauvegarde cloud | à faire | |
+| M7 Collaboration temps réel | après le MVP | |
+
+## Journal
+
+<!-- Format d'une entrée (la plus récente en haut) :
+### AAAA-MM-JJ — M1 · Outil rectangle
+- Fait : …
+- Fichiers : src/…, src/…
+- Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
+- Commit : feat: outil rectangle
+-->
+
+### 2026-11-10 — M0 · Mise en place
+- Fait : projet Vite (React 19 + TypeScript) à la racine ; Tailwind v4 (`@tailwindcss/vite`) ;
+  `react-router` avec les routes `/` et `/p/:projectId` (+ page « introuvable ») ;
+  arborescence de `docs/02-ARCHITECTURE.md` (`.gitkeep` dans les dossiers vides) ;
+  `src/i18n/fr.ts` ; `src/types/document.ts` (copie exacte du modèle) ; favicon original ;
+  `lang="fr"` et titre « Fabrics » ; `"strict": true` ajouté dans `tsconfig.app.json` ;
+  `.env.local` ajouté explicitement dans `.gitignore` ; `git init -b main`.
+- Fichiers : `package.json`, `vite.config.ts`, `index.html`, `tsconfig.app.json`, `.gitignore`,
+  `public/favicon.svg`, `src/main.tsx`, `src/App.tsx`, `src/index.css`,
+  `src/pages/HomePage.tsx`, `src/pages/EditorPage.tsx`, `src/i18n/fr.ts`,
+  `src/types/document.ts`.
+- Vérification : build ✓ lint ✓ (tests : pas avant M1) — serveur de dev : `/` et `/p/test`
+  répondent 200, CSS Tailwind servi. Contrôle visuel dans le navigateur à faire par
+  l'utilisateur.
+- Commit : à proposer (`chore: mise en place du projet (M0)`)
+
+## Décisions prises
+
+<!-- Toute décision qui s'écarte des docs ou les précise, avec la raison. -->
+
+### 2026-11-10 — Résolution des points flous de la lecture initiale
+
+Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md`,
+`docs/03-ROADMAP.md`.
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D1 | Surface des pièces | Surface **au tracé** (polygone dessiné). Aimantation aussi sur les angles des faces de murs. Mention dans le panneau Métrés. | Calcul simple et vérifiable ; l'utilisateur obtient la surface intérieure en traçant sur les faces. |
+| D2 | Échelle à l'écran | Barre d'état « Zoom 100 % · Impression 1:50 », jamais d'échelle « écran ». | Une échelle écran dépend du moniteur et serait fausse. |
+| D3 | Zone exportée d'un plan | Emprise des éléments visibles + 500 mm ; la page 20 × 15 m reste une zone de travail. Marges de 10 mm et bande cartouche de 20 mm. | Le plan par défaut ne tient sur aucune feuille à 1:50. |
+| D4 | Plafond d'export | 8 192 px par côté et 16 777 216 px au total ; options trop grandes grisées, dpi du PDF réduit si besoin. | Limites sûres des canvas navigateur. |
+| D5 | PDF d'un Visuel | Centré avec marges de 10 mm ; pleine page si même format A4 / A3. Formats A4 = 2480 × 3508 px, A3 = 3508 × 4961 px (300 dpi). | La conversion px → mm n'était pas définie. |
+| D6 | Points des éléments de plan | Coordonnées absolues, `x = y = 0`, `rotation = 0`, Transformer en déplacement seul. | Évite les ambiguïtés entre rotation, échelle et métrés. |
+| D7 | `DimensionElement.points` | Reste un tuple de 4 nombres. | Copie exacte du modèle exigée. |
+| D8 | Grille d'un Visuel | Repoussée (voir Idées). | Aucun réglage prévu dans le modèle. |
+| D9 | Images partagées | Même `assetId` à la duplication et au collage ; suppression d'un projet = suppression des seules images qui ne sont plus référencées. | Éviter de casser un projet dupliqué. |
+| D10 | Réordonner les calques | Glisser-déposer HTML5 natif + boutons Monter / Descendre. | Aucune nouvelle dépendance. |
+| D11 | Tests du dépôt local | `idb-keyval` simulé avec `vi.mock`. | Aucune nouvelle dépendance. |
+| D12 | `npm test` en M0 | Exigé seulement à partir de M1. | Le script n'existe qu'en M1. |
+| D13 | Nom du paquet | `fabrics` dans `package.json`. | npm refuse les majuscules (dossier `Fabrics`). |
+| D14 | Branche git | `git init -b main`. | Le déploiement automatique de M5 suit `main`. |
+| D15 | Méthode | Un jalon à la fois, feu vert avant chaque jalon, même si un plan d'ensemble a été présenté. | Règle 1 de `CLAUDE.md`. |
+| D16 | Outil de lint | `npm run lint` = **oxlint** (fourni par le gabarit Vite actuel), pas ESLint. | Le gabarit officiel l'utilise ; la commande reste `npm run lint`, comme dans `CLAUDE.md`. |
+| D17 | Versions | Dernières versions stables à l'installation : React 19, Vite 8, TypeScript 7, Tailwind v4. `react-konva` (M1) devra être en version 19. | Règle « dernière version stable » de `docs/02-ARCHITECTURE.md`. |
+
+## Idées (hors jalon en cours)
+
+<!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
+- Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
+- Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
