@@ -53,6 +53,28 @@ export function useEditorShortcuts() {
           event.preventDefault() // Retour arrière ne doit pas revenir à la page précédente
           store.removeElements(store.selectedIds)
           break
+        case 'copy':
+          store.copySelection()
+          break
+        case 'paste':
+          event.preventDefault()
+          store.pasteClipboard()
+          break
+        case 'select-all':
+          event.preventDefault() // sinon le navigateur sélectionne le texte de la page
+          store.selectAll()
+          break
+        case 'nudge-left':
+        case 'nudge-right':
+        case 'nudge-up':
+        case 'nudge-down': {
+          event.preventDefault()
+          const step = event.shiftKey ? 10 : 1 // « unités d'affichage » : px, ou mm sur un plan
+          const dx = action === 'nudge-left' ? -step : action === 'nudge-right' ? step : 0
+          const dy = action === 'nudge-up' ? -step : action === 'nudge-down' ? step : 0
+          store.nudgeSelection(dx, dy)
+          break
+        }
       }
     }
     window.addEventListener('keydown', onKeyDown)

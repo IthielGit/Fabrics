@@ -51,10 +51,24 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut(key('d'))).toBeNull()
   })
 
+  it('copie, colle et sélectionne tout', () => {
+    expect(resolveShortcut(key('c', { ctrlKey: true }))).toBe('copy')
+    expect(resolveShortcut(key('v', { ctrlKey: true }))).toBe('paste')
+    expect(resolveShortcut(key('a', { ctrlKey: true }))).toBe('select-all')
+    expect(resolveShortcut(key('v', { metaKey: true }))).toBe('paste')
+  })
+
+  it('déplace avec les flèches (Maj gardée par l’appelant pour le pas ×10)', () => {
+    expect(resolveShortcut(key('ArrowLeft'))).toBe('nudge-left')
+    expect(resolveShortcut(key('ArrowRight', { shiftKey: true }))).toBe('nudge-right')
+    expect(resolveShortcut(key('ArrowUp'))).toBe('nudge-up')
+    expect(resolveShortcut(key('ArrowDown'))).toBe('nudge-down')
+  })
+
   it('ignore les combinaisons avec Alt et les touches inconnues', () => {
     expect(resolveShortcut(key('r', { altKey: true }))).toBeNull()
     expect(resolveShortcut(key('x'))).toBeNull()
-    expect(resolveShortcut(key('c', { ctrlKey: true }))).toBeNull()
+    expect(resolveShortcut(key('x', { ctrlKey: true }))).toBeNull()
   })
 
   it('reconnaît Échap', () => {

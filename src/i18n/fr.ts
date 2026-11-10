@@ -127,6 +127,8 @@ export const fr = {
     imageTooLarge: (fileName: string, maxMegabytes: number) =>
       `« ${fileName} » est trop lourd (maximum ${maxMegabytes} Mo).`,
     imageUnreadable: (fileName: string) => `Impossible de lire ou d’enregistrer « ${fileName} ».`,
+    pasteUnitMismatch:
+      'Impossible de coller ici : un visuel (pixels) et un plan (millimètres) n’utilisent pas la même unité.',
   },
   notFound: {
     title: 'Page introuvable',

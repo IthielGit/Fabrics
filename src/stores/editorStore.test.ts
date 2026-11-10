@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { createDesignProject } from '../features/documents/createProject'
+import { clearClipboard } from '../features/documents/clipboard'
+import { createDesignProject, createPlanProject } from '../features/documents/createProject'
 import { createRectElement, createTextElement } from '../features/documents/elements'
 import type { TextElement } from '../types/document'
 import { HISTORY_LIMIT, useEditorStore } from './editorStore'
@@ -12,6 +13,7 @@ function rect(name: string) {
 }
 
 beforeEach(() => {
+  clearClipboard()
   store().loadProject(createDesignProject('post-square', 'Test'))
 })
 
@@ -115,6 +117,96 @@ describe('duplication', () => {
     expect(copy.x).toBe(20)
     expect(copy.y).toBe(20)
     expect(store().selectedIds).toEqual([copy.id])
+  })
+})
+
+describe('copier / coller', () => {
+  it('copie dans un projet et colle dans un autre', () => {
+    const a = rect('A')
+    store().addElement(a)
+    store().setSelection([a.id])
+    store().copySelection()
+
+    store().loadProject(createDesignProject('story', 'Autre projet'))
+    store().pasteClipboard()
+
+    expect(elements()).toHaveLength(1)
+    expect(elements()[0].name).toBe('A')
+    expect(elements()[0].id).not.toBe(a.id)
+    expect(store().selectedIds).toEqual([elements()[0].id])
+    store().undo()
+    expect(elements()).toHaveLength(0)
+  })
+
+  it('colle plusieurs fois avec un décalage croissant', () => {
+    const a = rect('A')
+    store().addElement(a)
+    store().copySelection()
+    store().pasteClipboard()
+    store().pasteClipboard()
+    expect(elements().map((el) => el.x)).toEqual([0, 20, 40])
+  })
+
+  it('refuse de coller un visuel dans un plan et le dit', () => {
+    const a = rect('A')
+    store().addElement(a)
+    store().copySelection()
+    store().loadProject(createPlanProject('Plan'))
+    store().pasteClipboard()
+    expect(elements()).toHaveLength(0)
+    expect(store().notice).toMatch(/unité/)
+  })
+})
+
+describe('tout sélectionner et déplacement aux flèches', () => {
+  it('sélectionne tout sauf les éléments verrouillés ou masqués', () => {
+    const a = rect('A')
+    const b = rect('B')
+    const c = rect('C')
+    store().addElement(a)
+    store().addElement(b)
+    store().addElement(c)
+    store().updateElements([b.id], (el) => ({ ...el, locked: true }))
+    store().updateElements([c.id], (el) => ({ ...el, hidden: true }))
+    store().selectAll()
+    expect(store().selectedIds).toEqual([a.id])
+  })
+
+  it('déplace la sélection de 1 puis de 10, sans bouger les éléments verrouillés', () => {
+    const a = rect('A')
+    const b = rect('B')
+    store().addElement(a)
+    store().addElement(b)
+    store().updateElements([b.id], (el) => ({ ...el, locked: true }))
+    store().setSelection([a.id, b.id])
+    store().nudgeSelection(1, 0, 1000)
+    store().nudgeSelection(0, 10, 5000)
+    expect(elements().map((el) => [el.x, el.y])).toEqual([
+      [1, 10],
+      [0, 0],
+    ])
+  })
+
+  it('fusionne les appuis rapprochés en un seul état d’historique', () => {
+    const a = rect('A')
+    store().addElement(a)
+    const before = store().history.past.length
+    store().nudgeSelection(1, 0, 10_000)
+    store().nudgeSelection(1, 0, 10_200)
+    store().nudgeSelection(1, 0, 10_400)
+    expect(elements()[0].x).toBe(3)
+    expect(store().history.past.length).toBe(before + 1)
+    store().undo()
+    expect(elements()[0].x).toBe(0)
+  })
+
+  it('ne fusionne pas des appuis espacés', () => {
+    const a = rect('A')
+    store().addElement(a)
+    const before = store().history.past.length
+    store().nudgeSelection(1, 0, 20_000)
+    store().nudgeSelection(1, 0, 30_000)
+    expect(store().history.past.length).toBe(before + 2)
   })
 })
 

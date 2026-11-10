@@ -10,6 +10,13 @@ export type ShortcutAction =
   | 'redo'
   | 'delete'
   | 'duplicate'
+  | 'copy'
+  | 'paste'
+  | 'select-all'
+  | 'nudge-left'
+  | 'nudge-right'
+  | 'nudge-up'
+  | 'nudge-down'
 
 export interface KeyInput {
   key: string
@@ -28,6 +35,9 @@ export function resolveShortcut(input: KeyInput): ShortcutAction | null {
     if (input.altKey) return null
     if (key === 'z') return input.shiftKey ? 'redo' : 'undo'
     if (key === 'd' && !input.shiftKey) return 'duplicate'
+    if (key === 'c' && !input.shiftKey) return 'copy'
+    if (key === 'v' && !input.shiftKey) return 'paste'
+    if (key === 'a' && !input.shiftKey) return 'select-all'
     if (key === '0' && !input.shiftKey) return 'fit-view'
     return null
   }
@@ -49,6 +59,14 @@ export function resolveShortcut(input: KeyInput): ShortcutAction | null {
     case 'delete':
     case 'backspace':
       return 'delete'
+    case 'arrowleft':
+      return 'nudge-left'
+    case 'arrowright':
+      return 'nudge-right'
+    case 'arrowup':
+      return 'nudge-up'
+    case 'arrowdown':
+      return 'nudge-down'
     default:
       return null
   }
