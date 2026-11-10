@@ -32,6 +32,17 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-10 — M1 · Dépôt local (IndexedDB)
+- Fait : interface `ProjectRepository`, `LocalRepository` (clés `project:`, `meta:`, `asset:`), nettoyage des images non référencées à la suppression d'un projet, URLs d'images mises en cache et libérées.
+- Fichiers : `src/features/persistence/{types,collectAssetIds,LocalRepository}.ts`, `LocalRepository.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (8 tests, `idb-keyval` simulé)
+- Commit : feat: dépôt local IndexedDB
+
+### 2026-11-10 — M1 · Retrait de la démo et dépendances
+- Fait : suppression de `src/App.css`, `src/assets/vite.svg`, `public/icons.svg` ; installation de `konva`, `react-konva` (19), `zustand`, `idb-keyval`, `lucide-react`, `clsx`, `vitest` ; script `npm test`.
+- Vérification : build ✓ lint ✓ (pas encore de test)
+- Commit : chore: retrait de la démo Vite et dépendances du jalon M1
+
 ### 2026-11-10 — M0 · Mise en place
 - Fait : projet Vite (React 19 + TypeScript) à la racine ; Tailwind v4 (`@tailwindcss/vite`) ;
   `react-router` avec les routes `/` et `/p/:projectId` (+ page « introuvable ») ;
