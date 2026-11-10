@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { createAutosaver } from '../../features/persistence/autosave'
 import { repository } from '../../features/persistence/repository'
 import { useEditorStore } from '../../stores/editorStore'
+import { captureThumbnail } from './thumbnail'
 
 const AUTOSAVE_DELAY_MS = 1000
 
@@ -10,7 +11,11 @@ export function useAutosave() {
   useEffect(() => {
     const autosaver = createAutosaver({
       delayMs: AUTOSAVE_DELAY_MS,
-      save: (project) => repository.save(project),
+      save: (project) => {
+        // Miniature régénérée à chaque sauvegarde ; si la capture échoue, on garde l'ancienne.
+        const thumbnail = captureThumbnail(project.document.page) ?? project.thumbnail
+        return repository.save({ ...project, thumbnail })
+      },
       onStatus: (status) => useEditorStore.getState().setSaveStatus(status),
     })
 

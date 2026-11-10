@@ -27,7 +27,16 @@ export default function ProjectCard({
         to={`/p/${project.id}`}
         className="flex h-32 items-center justify-center bg-slate-100 text-slate-400 hover:bg-slate-200"
       >
-        <KindIcon size={40} aria-hidden="true" />
+        {project.thumbnail ? (
+          <img
+            src={project.thumbnail}
+            alt=""
+            className="h-full w-full object-contain p-2"
+            draggable={false}
+          />
+        ) : (
+          <KindIcon size={40} aria-hidden="true" />
+        )}
       </Link>
       <div className="flex items-start justify-between gap-2 p-3">
         <Link to={`/p/${project.id}`} className="min-w-0">

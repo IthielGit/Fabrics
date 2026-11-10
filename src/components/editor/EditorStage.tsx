@@ -22,6 +22,7 @@ import { importImageFiles } from './importImages'
 import { isTypingTarget } from './isTypingTarget'
 import SelectionTransformer from './SelectionTransformer'
 import TextEditorOverlay from './TextEditorOverlay'
+import { setThumbnailStage } from './thumbnail'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
 
@@ -279,6 +280,7 @@ export default function EditorStage() {
     >
       {size.width > 0 && (
         <Stage
+          ref={setThumbnailStage}
           width={size.width}
           height={size.height}
           x={stagePosition.x}
