@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M5 — Ouvertures : toutes les tâches de code sont faites, en attente de validation par l'utilisateur dans le navigateur
-- **Dernière tâche terminée :** M5 · tâche 9 — export et calques
-- **Prochaine tâche :** l'utilisateur vérifie les 3 critères d'acceptation de M5 (mur 4,00 × 2,50 m + porte : 10,00 m² brut / 8,11 m² net ; ouverture bornée par son mur et ses voisines ; ancien projet sans perte), puis valide
+- **Jalon en cours :** M6 — Niveaux (plan à présenter, en attente du feu vert)
+- **Dernière tâche terminée :** M5 — validé par l'utilisateur le 2026-11-10
+- **Prochaine tâche :** M6, après feu vert sur la liste des tâches
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -18,7 +18,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M2 Contenu et mise en forme | terminé | 2026-11-10 |
 | M3 Mode plan et métrés | terminé | 2026-11-10 |
 | M4 Export | terminé | 2026-11-10 |
-| M5 Ouvertures | à valider | |
+| M5 Ouvertures | terminé | 2026-11-10 |
 | M6 Niveaux | à faire | |
 | M7 Axes et mobilier | à faire | |
 | M8 Vue 3D | à faire | |
