@@ -5,7 +5,7 @@ import { planOpeningPlacement, type PlacementProblem } from '../../features/geom
 import { openingClearances, wallSegment } from '../../features/geometry/openings'
 import type { Point } from '../../features/geometry/viewport'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { OpeningElement, WallElement } from '../../types/document'
 
 type PointerEvent = Konva.KonvaEventObject<MouseEvent | TouchEvent>
@@ -35,7 +35,7 @@ const NOTICES: Record<PlacementProblem, string> = {
  * Les murs masqués ou verrouillés sont ignorés. L'outil reste actif pour poser plusieurs ouvertures.
  */
 export function useOpeningTool(kind: OpeningToolKind | null, scale: number) {
-  const elements = useEditorStore((state) => state.project?.document.elements)
+  const elements = useEditorStore(selectActiveElements)
   const addElement = useEditorStore((state) => state.addElement)
   const setNotice = useEditorStore((state) => state.setNotice)
 

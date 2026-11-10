@@ -52,6 +52,7 @@ export async function captureRegion(request: RasterRequest, forcePlanZoom: boole
     ...stage.getLayers().slice(1),
     ...stage.find('Transformer'),
     ...stage.find('.grid'),
+    ...stage.find('.reference'),
   ].filter((node) => node.visible())
   const page = stage.findOne('.page')
   const pageStroke = page && 'strokeEnabled' in page ? (page as Konva.Rect).strokeEnabled() : true

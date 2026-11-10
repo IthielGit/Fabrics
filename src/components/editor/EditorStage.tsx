@@ -1,6 +1,6 @@
 import type Konva from 'konva'
-import { useEffect, useRef, useState } from 'react'
-import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Ellipse, Group, Layer, Line, Rect, Stage } from 'react-konva'
 import {
   createEllipseElement,
   createLineElement,
@@ -12,11 +12,12 @@ import {
   nextElementName,
 } from '../../features/documents/elements'
 import { drawOrder } from '../../features/documents/layers'
+import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import AlignmentGuides from './AlignmentGuides'
 import CalibrateDialog from './CalibrateDialog'
 import CalibrationDraftLayer from './CalibrationDraftLayer'
@@ -37,6 +38,8 @@ import { usePolylineDrawing, type PolylineTool } from './usePolylineDrawing'
 import VertexHandles from './VertexHandles'
 
 const WHEEL_ZOOM_STEP = 1.1
+/** Opacité du niveau de référence (le niveau du dessous), affiché en transparence. */
+const REFERENCE_OPACITY = 0.3
 /** En dessous de cette taille (px écran), un tracé ou une sélection est un simple clic. */
 const MIN_DRAG_PX = 4
 
@@ -65,6 +68,18 @@ export default function EditorStage() {
   const commitTextEdit = useEditorStore((state) => state.commitTextEdit)
   const stopEditingText = useEditorStore((state) => state.stopEditingText)
   const elementHandlers = useElementInteractions()
+  // Éléments du niveau actif : ce que l'on voit net, sélectionne et modifie.
+  const activeElements = useEditorStore(selectActiveElements)
+  const activeLevelId = useEditorStore((state) => state.activeLevelId)
+  const showLowerLevel = useEditorStore((state) => state.showLowerLevel)
+  const levels = project?.document.levels
+  const allElements = project?.document.elements
+  // Niveau de référence : les éléments du niveau du dessous, en transparence, sans interaction.
+  const referenceElements = useMemo(() => {
+    if (!showLowerLevel || !levels || !allElements || activeLevelId === null) return []
+    const below = levelBelow(levels, activeLevelId)
+    return below ? elementsOfLevel(allElements, below.id) : []
+  }, [showLowerLevel, levels, allElements, activeLevelId])
 
   const { ref: containerRef, size } = useContainerSize<HTMLDivElement>()
   const [spaceDown, setSpaceDown] = useState(false)
@@ -133,7 +148,8 @@ export default function EditorStage() {
   }, [])
 
   if (!project) return null
-  const { page, unit, elements } = project.document
+  const { page, unit } = project.document
+  const elements = activeElements
 
   const handleWheel = (event: Konva.KonvaEventObject<WheelEvent>) => {
     event.evt.preventDefault()
@@ -352,6 +368,18 @@ export default function EditorStage() {
                 gridSize={project.document.plan.gridSize}
                 scale={scale}
               />
+            )}
+            {referenceElements.length > 0 && (
+              <Group name="reference" listening={false} opacity={REFERENCE_OPACITY}>
+                {drawOrder(referenceElements).map((element) => (
+                  <ElementNode
+                    key={element.id}
+                    element={element}
+                    interactive={false}
+                    viewScale={scale}
+                  />
+                ))}
+              </Group>
             )}
             {drawOrder(elements).map((element) => (
               <ElementNode

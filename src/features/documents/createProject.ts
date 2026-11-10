@@ -1,4 +1,6 @@
+import { fr } from '../../i18n/fr'
 import type { FabricsDocument, PlanSettings, Project } from '../../types/document'
+import { createLevel } from './levels'
 import { CURRENT_DOCUMENT_VERSION } from './migrations'
 
 export type DesignFormatId = 'post-square' | 'story' | 'a4' | 'a3' | 'banner'
@@ -45,12 +47,14 @@ export function createDesignProject(
 }
 
 export function createPlanProject(name: string, now: Date = new Date()): Project {
+  // Un plan a toujours au moins un niveau : le rez-de-chaussée.
   const document: FabricsDocument = {
     version: CURRENT_DOCUMENT_VERSION,
     unit: 'mm',
     page: { ...PLAN_PAGE, background: '#ffffff' },
     elements: [],
     plan: { ...DEFAULT_PLAN_SETTINGS },
+    levels: [createLevel(fr.levels.groundFloor, 0)],
   }
   return newProject('plan', name, document, now)
 }

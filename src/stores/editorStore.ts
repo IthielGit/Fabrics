@@ -3,6 +3,18 @@ import { cloneElements, duplicateOffset } from '../features/documents/elements'
 import { copyToClipboard, takePasteCopies } from '../features/documents/clipboard'
 import { moveElementToSlot, sameOrder, stepElement } from '../features/documents/layers'
 import {
+  copyLevelWalls,
+  elementsOnLevel,
+  insertLevelAbove,
+  moveLevel as moveLevelInList,
+  newTopLevel,
+  nextLevelName,
+  removeLevel as removeLevelFromList,
+  updateLevel as updateLevelInList,
+  validActiveLevelId,
+  type LevelPatch,
+} from '../features/documents/levels'
+import {
   includeWallOpenings,
   reconcileOpenings,
   withWallOpeningIds,
@@ -57,6 +69,10 @@ interface EditorState {
   activeTool: EditorTool
   /** Texte en cours d'édition dans la zone de saisie superposée (état d'interface, pas du document). */
   editingTextId: string | null
+  /** Niveau affiché et modifiable (plans uniquement) ; état d'interface, hors historique. */
+  activeLevelId: string | null
+  /** Affiche le niveau du dessous en transparence (calque de référence). */
+  showLowerLevel: boolean
   /** Message affiché à l'utilisateur (par exemple un fichier refusé). */
   notice: string | null
   /** Guides d'alignement affichés pendant un déplacement (état d'interface, pas du document). */
@@ -86,6 +102,18 @@ interface EditorState {
   fitView: () => void
   setSaveStatus: (status: SaveStatus) => void
   renameProject: (name: string) => void
+
+  /** Change de niveau : la sélection est vidée (on ne sélectionne que sur le niveau actif). */
+  setActiveLevel: (id: string) => void
+  setShowLowerLevel: (show: boolean) => void
+  /** Ajoute un niveau au sommet du bâtiment et l'affiche. */
+  addLevel: () => void
+  /** Copie un niveau (ses murs et leurs ouvertures) juste au-dessus de lui et l'affiche. */
+  duplicateLevel: (id: string) => void
+  updateLevel: (id: string, patch: LevelPatch) => void
+  moveLevel: (id: string, direction: 'up' | 'down') => void
+  /** Supprime un niveau et ses éléments (le dernier niveau ne se supprime pas). */
+  removeLevel: (id: string) => void
 
   addElement: (element: CanvasElement) => void
   /** Remplace des éléments (par identifiant) : un seul état d'historique par appel. */
@@ -118,6 +146,35 @@ interface EditorState {
 }
 
 const EMPTY_HISTORY: History = { past: [], future: [] }
+const NO_ELEMENTS: readonly CanvasElement[] = []
+
+// Dernier résultat de `selectActiveElements` : même tableau tant que ni le document ni le niveau
+// ne changent (un sélecteur Zustand doit renvoyer une valeur stable).
+let activeCache: {
+  elements: readonly CanvasElement[]
+  levelId: string
+  result: readonly CanvasElement[]
+} | null = null
+
+/**
+ * Éléments du niveau actif (et ceux communs à tous les niveaux). Pour un visuel, tous les éléments.
+ * C'est ce que l'utilisateur voit, sélectionne et modifie : outils, calques, aimantation.
+ */
+export function selectActiveElements(state: {
+  project: Project | null
+  activeLevelId: string | null
+}): readonly CanvasElement[] {
+  const elements = state.project?.document.elements
+  if (!elements) return NO_ELEMENTS
+  const levelId = state.activeLevelId
+  if (levelId === null) return elements
+  if (activeCache?.elements === elements && activeCache.levelId === levelId) {
+    return activeCache.result
+  }
+  const result = elementsOnLevel(elements, levelId)
+  activeCache = { elements, levelId, result }
+  return result
+}
 
 // Document au début d'un geste en direct (voir `beginLiveEdit`).
 let liveBase: FabricsDocument | null = null
@@ -130,6 +187,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
   function commit(
     change: (document: FabricsDocument) => FabricsDocument,
     selectedIds?: string[],
+    extra?: Partial<EditorState>,
   ) {
     const { project, history, revision } = get()
     if (!project) return
@@ -145,7 +203,10 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         future: [],
       },
       revision: revision + 1,
+      // Le niveau actif doit toujours exister (par exemple après la suppression d'un niveau).
+      activeLevelId: validActiveLevelId(next.levels, get().activeLevelId),
       ...(selectedIds ? { selectedIds } : {}),
+      ...extra,
     })
   }
 
@@ -158,6 +219,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       project: { ...project, document },
       history,
       selectedIds: selectedIds.filter((id) => existing.has(id)),
+      // Annuler l'ajout d'un niveau ne doit pas laisser un niveau actif qui n'existe plus.
+      activeLevelId: validActiveLevelId(document.levels, get().activeLevelId),
       revision: revision + 1,
     })
   }
@@ -167,6 +230,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     selectedIds: [],
     activeTool: 'select',
     editingTextId: null,
+    activeLevelId: null,
+    showLowerLevel: true,
     notice: null,
     guides: [],
     zoom: 1,
@@ -184,6 +249,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         selectedIds: [],
         activeTool: 'select',
         editingTextId: null,
+        // On ouvre un plan sur son niveau le plus bas (le rez-de-chaussée).
+        activeLevelId: validActiveLevelId(project.document.levels, null),
         notice: null,
         zoom: 1,
         stagePosition: { x: 0, y: 0 },
@@ -198,6 +265,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         project: null,
         selectedIds: [],
         editingTextId: null,
+        activeLevelId: null,
         history: EMPTY_HISTORY,
         revision: 0,
       }),
@@ -247,8 +315,87 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       set({ project: { ...project, name }, revision: revision + 1 })
     },
 
-    addElement: (element) =>
-      commit((doc) => ({ ...doc, elements: [...doc.elements, element] }), [element.id]),
+    setActiveLevel: (id) => {
+      const { project, activeLevelId } = get()
+      if (!project?.document.levels?.some((level) => level.id === id) || id === activeLevelId) return
+      lastNudge = null
+      set({ activeLevelId: id, selectedIds: [], editingTextId: null, guides: [] })
+    },
+
+    setShowLowerLevel: (showLowerLevel) => set({ showLowerLevel }),
+
+    addLevel: () => {
+      const levels = get().project?.document.levels
+      if (!levels) return
+      const level = newTopLevel(levels, nextLevelName(levels, fr.levels.floorName))
+      commit((doc) => ({ ...doc, levels: [...levels, level] }), [], {
+        activeLevelId: level.id,
+        editingTextId: null,
+      })
+    },
+
+    duplicateLevel: (id) => {
+      const levels = get().project?.document.levels
+      const source = levels?.find((level) => level.id === id)
+      if (!levels || !source) return
+      const copy = {
+        ...newTopLevel(levels, nextLevelName(levels, fr.levels.floorName)),
+        height: source.height,
+        slabThickness: source.slabThickness,
+      }
+      commit(
+        (doc) => ({
+          ...doc,
+          levels: insertLevelAbove(levels, id, copy),
+          elements: [...doc.elements, ...copyLevelWalls(doc.elements, id, copy.id)],
+        }),
+        [],
+        { activeLevelId: copy.id, editingTextId: null },
+      )
+    },
+
+    updateLevel: (id, patch) =>
+      commit((doc) => {
+        if (!doc.levels) return doc
+        const levels = updateLevelInList(doc.levels, id, patch)
+        return levels === doc.levels ? doc : { ...doc, levels: [...levels] }
+      }),
+
+    moveLevel: (id, direction) =>
+      commit((doc) => {
+        if (!doc.levels) return doc
+        const levels = moveLevelInList(doc.levels, id, direction)
+        return levels === doc.levels ? doc : { ...doc, levels: [...levels] }
+      }),
+
+    removeLevel: (id) => {
+      const { project, activeLevelId } = get()
+      const levels = project?.document.levels
+      if (!levels || levels.length <= 1) return
+      const index = levels.findIndex((level) => level.id === id)
+      if (index === -1) return
+      // Le niveau affiché après la suppression : celui du dessous, sinon celui du dessus.
+      const fallback = (levels[index - 1] ?? levels[index + 1]).id
+      commit(
+        (doc) => ({
+          ...doc,
+          levels: [...removeLevelFromList(levels, id)],
+          elements: doc.elements.filter((el) => el.levelId !== id),
+        }),
+        [],
+        { activeLevelId: activeLevelId === id ? fallback : activeLevelId, editingTextId: null },
+      )
+    },
+
+    addElement: (element) => {
+      // Un élément créé appartient au niveau actif (sauf s'il a déjà un niveau).
+      const { activeLevelId } = get()
+      const placed =
+        activeLevelId !== null && element.levelId === undefined
+          ? { ...element, levelId: activeLevelId }
+          : element
+      commit((doc) => ({ ...doc, elements: [...doc.elements, placed] }), [placed.id])
+    },
 
     replaceElements: (elements) => {
       const byId = new Map(elements.map((el) => [el.id, el]))
@@ -347,7 +494,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const { project } = get()
       if (!project) return
       set({
-        selectedIds: project.document.elements
+        selectedIds: selectActiveElements(get())
           .filter((el) => !el.locked && !el.hidden)
           .map((el) => el.id),
       })
@@ -370,7 +517,12 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         return
       }
       if (result.status !== 'ok') return
-      const copies = result.elements
+      // Les copies collées vont sur le niveau actif, même si elles viennent d'un autre projet.
+      const { activeLevelId } = get()
+      const copies =
+        activeLevelId === null
+          ? result.elements
+          : result.elements.map((el) => ({ ...el, levelId: activeLevelId }))
       if (copies.length === 0) return
       commit(
         (doc) => ({ ...doc, elements: [...doc.elements, ...copies] }),
@@ -411,15 +563,21 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       lastNudge = { key, at: now, revision: get().revision }
     },
 
+    // Les calques n'affichent que le niveau actif : l'ordre se change parmi ses éléments, et les
+    // éléments des autres niveaux gardent leur place.
     reorderElement: (id, slot) =>
       commit((doc) => {
-        const elements = moveElementToSlot(doc.elements, id, slot)
+        const elements = reorderOnLevel(doc.elements, get().activeLevelId, (list) =>
+          moveElementToSlot(list, id, slot),
+        )
         return sameOrder(elements, doc.elements) ? doc : { ...doc, elements }
       }),
 
     stepElementOrder: (id, direction) =>
       commit((doc) => {
-        const elements = stepElement(doc.elements, id, direction)
+        const elements = reorderOnLevel(doc.elements, get().activeLevelId, (list) =>
+          stepElement(list, id, direction),
+        )
         return sameOrder(elements, doc.elements) ? doc : { ...doc, elements }
       }),
 
@@ -444,3 +602,20 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     },
   }
 })
+
+/**
+ * Applique un réordonnancement aux seuls éléments du niveau actif : ils reprennent, dans le
+ * nouvel ordre, les places qu'ils occupaient ; les autres éléments ne bougent pas.
+ */
+function reorderOnLevel(
+  elements: readonly CanvasElement[],
+  levelId: string | null,
+  reorder: (visible: readonly CanvasElement[]) => CanvasElement[],
+): CanvasElement[] {
+  if (levelId === null) return reorder(elements)
+  const visible = elementsOnLevel(elements, levelId)
+  const visibleIds = new Set(visible.map((el) => el.id))
+  const reordered = reorder(visible)
+  let next = 0
+  return elements.map((el) => (visibleIds.has(el.id) ? reordered[next++] : el))
+}

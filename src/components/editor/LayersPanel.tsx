@@ -17,7 +17,7 @@ import {
 } from 'lucide-react'
 import { useState, type DragEvent, type KeyboardEvent } from 'react'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement } from '../../types/document'
 
 const TYPE_ICONS: Record<CanvasElement['type'], LucideIcon> = {
@@ -35,7 +35,9 @@ const TYPE_ICONS: Record<CanvasElement['type'], LucideIcon> = {
 const ROW_BUTTON = 'rounded p-1 text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-transparent'
 
 export default function LayersPanel() {
-  const elements = useEditorStore((state) => state.project?.document.elements)
+  // Seuls les éléments du niveau actif sont listés.
+  const elements = useEditorStore(selectActiveElements)
+  const isOpen = useEditorStore((state) => state.project !== null)
   const selectedIds = useEditorStore((state) => state.selectedIds)
   const setSelection = useEditorStore((state) => state.setSelection)
   const updateElements = useEditorStore((state) => state.updateElements)
@@ -46,7 +48,7 @@ export default function LayersPanel() {
   const [dragId, setDragId] = useState<string | null>(null)
   const [dropSlot, setDropSlot] = useState<number | null>(null)
 
-  if (!elements) return null
+  if (!isOpen) return null
   // Le dessus est en haut de la liste.
   const rows = [...elements].reverse()
 

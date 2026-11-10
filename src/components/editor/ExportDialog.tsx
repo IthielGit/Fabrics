@@ -13,9 +13,9 @@ import {
   type ScaleChoice,
   type SheetFormat,
 } from '../../features/export/pdfLayout'
-import { computeMeasurements } from '../../features/measurements/measurements'
+import { computeBuildingMeasurements } from '../../features/measurements/measurements'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
 import Modal from '../ui/Modal'
 import { exportProject } from './exportProject'
@@ -72,15 +72,20 @@ export default function ExportDialog({ onClose }: { onClose: () => void }) {
 
 function ExportForm({ onClose }: { onClose: () => void }) {
   const project = useEditorStore((state) => state.project)
-  const elements = project?.document.elements
+  // Un plan s'exporte niveau par niveau : le niveau affiché. Le CSV couvre tout le bâtiment.
+  const elements = useEditorStore(selectActiveElements)
+  const document = project?.document
   const isPlan = project?.kind === 'plan'
 
   const extent = useMemo(
-    () => (isPlan && elements ? planExportExtent(elements) : null),
+    () => (isPlan ? planExportExtent(elements) : null),
     [isPlan, elements],
   )
-  const measurements = useMemo(() => computeMeasurements(elements ?? []), [elements])
-  const hasMeasures = measurements.rooms.length > 0 || measurements.walls.length > 0
+  const measurements = useMemo(
+    () => computeBuildingMeasurements({ elements: document?.elements ?? [], levels: document?.levels }),
+    [document?.elements, document?.levels],
+  )
+  const hasMeasures = measurements.total.rooms.length > 0 || measurements.total.walls.length > 0
 
   // Zone exportée, dans l'unité du document.
   const region = useMemo(() => {

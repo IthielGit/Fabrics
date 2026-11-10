@@ -539,3 +539,132 @@ describe('ouvertures et murs', () => {
     expect(walls()[0].points).toEqual([0, 0, 4000, 0])
   })
 })
+
+describe('niveaux', () => {
+  const levels = () => store().project!.document.levels!
+  const planStore = () => store().loadProject(createPlanProject('Maison'))
+  const wallAt = (name: string) => createWallElement(name, [0, 0, 4000, 0], 200, 2700)
+
+  it('un nouveau plan s’ouvre sur son rez-de-chaussée', () => {
+    planStore()
+    expect(levels()).toHaveLength(1)
+    expect(store().activeLevelId).toBe(levels()[0].id)
+  })
+
+  it('un visuel n’a pas de niveau', () => {
+    expect(store().activeLevelId).toBeNull()
+  })
+
+  it('un élément créé appartient au niveau actif', () => {
+    planStore()
+    store().addElement(wallAt('Mur 1'))
+    expect(elements()[0].levelId).toBe(levels()[0].id)
+  })
+
+  it('ajouter un niveau l’affiche ; annuler revient au précédent', () => {
+    planStore()
+    store().addLevel()
+    expect(levels().map((l) => l.name)).toEqual(['Rez-de-chaussée', 'Étage 1'])
+    expect(store().activeLevelId).toBe(levels()[1].id)
+    store().undo()
+    expect(levels()).toHaveLength(1)
+    expect(store().activeLevelId).toBe(levels()[0].id)
+  })
+
+  it('changer de niveau vide la sélection et masque les éléments des autres niveaux', () => {
+    planStore()
+    store().addElement(wallAt('Mur RDC'))
+    const ground = levels()[0].id
+    store().addLevel()
+    expect(store().selectedIds).toEqual([])
+    store().addElement(wallAt('Mur étage'))
+    store().selectAll()
+    expect(store().selectedIds).toHaveLength(1) // seulement le mur de l’étage
+    store().setActiveLevel(ground)
+    expect(store().selectedIds).toEqual([])
+    store().selectAll()
+    const names = store().selectedIds.map((id) => elements().find((el) => el.id === id)?.name)
+    expect(names).toEqual(['Mur RDC'])
+  })
+
+  it('les nouveaux murs gardent la hauteur donnée par le niveau (modifiable)', () => {
+    planStore()
+    store().updateLevel(levels()[0].id, { height: 3000 })
+    expect(levels()[0].height).toBe(3000)
+  })
+
+  it('dupliquer le rez-de-chaussée copie les murs et leurs ouvertures, pas les pièces', () => {
+    planStore()
+    const ground = levels()[0].id
+    const wall = wallAt('Mur 1')
+    store().addElement(wall)
+    store().addElement(
+      createOpeningElement('door', 'Porte 1', {
+        wallId: wall.id,
+        segmentIndex: 0,
+        offset: 2000,
+        side: 'left',
+      }),
+    )
+    store().addElement({
+      ...rect('Pièce'),
+      type: 'room',
+      points: [0, 0, 4000, 0, 4000, 3000],
+      fill: '#0f0',
+      showLabel: true,
+    } as never)
+
+    store().duplicateLevel(ground)
+    expect(levels().map((l) => l.name)).toEqual(['Rez-de-chaussée', 'Étage 1'])
+    expect(levels()[1].elevation).toBe(2700)
+    const copy = elements().filter((el) => el.levelId === levels()[1].id)
+    expect(copy.map((el) => el.type)).toEqual(['wall', 'opening'])
+    expect(elements().filter((el) => el.levelId === ground)).toHaveLength(3)
+    // La copie est indépendante : l'ouverture copiée est sur le mur copié.
+    const [copiedWall, copiedDoor] = copy as [WallElement, OpeningElement]
+    expect(copiedDoor.wallId).toBe(copiedWall.id)
+    expect(store().activeLevelId).toBe(levels()[1].id)
+  })
+
+  it('supprimer un niveau supprime ses éléments ; le dernier niveau ne se supprime pas', () => {
+    planStore()
+    const ground = levels()[0].id
+    store().removeLevel(ground)
+    expect(levels()).toHaveLength(1)
+
+    store().addLevel()
+    const upper = levels()[1].id
+    store().addElement(wallAt('Mur étage'))
+    store().removeLevel(upper)
+    expect(levels()).toHaveLength(1)
+    expect(elements()).toHaveLength(0)
+    expect(store().activeLevelId).toBe(ground)
+
+    store().undo() // supprimer un niveau s’annule d’un coup
+    expect(levels()).toHaveLength(2)
+    expect(elements()).toHaveLength(1)
+  })
+
+  it('l’ordre des calques ne touche pas aux éléments des autres niveaux', () => {
+    planStore()
+    store().addElement(wallAt('A0'))
+    store().addLevel()
+    store().addElement(wallAt('A1'))
+    store().addElement(wallAt('B1'))
+    const [a1, b1] = elements().filter((el) => el.levelId === levels()[1].id)
+    store().stepElementOrder(a1.id, 'up')
+    expect(elements().map((el) => el.name)).toEqual(['A0', 'B1', 'A1'])
+    expect(b1.name).toBe('B1')
+  })
+
+  it('un élément collé va sur le niveau actif', () => {
+    planStore()
+    const ground = levels()[0].id
+    store().addElement(wallAt('Mur 1'))
+    store().copySelection()
+    store().addLevel()
+    store().pasteClipboard()
+    const pasted = elements().find((el) => el.levelId !== ground)
+    expect(pasted?.levelId).toBe(levels()[1].id)
+  })
+})

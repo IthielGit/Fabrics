@@ -1,4 +1,11 @@
-import type { CanvasElement, OpeningElement, WallElement } from '../../types/document'
+import type {
+  CanvasElement,
+  FabricsDocument,
+  Level,
+  OpeningElement,
+  WallElement,
+} from '../../types/document'
+import { elementsOfLevel } from '../documents/levels'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
 
 export interface RoomMeasure {
@@ -139,4 +146,50 @@ export function computeMeasurements(elements: readonly CanvasElement[]): Measure
       bays: count('bay'),
     },
   }
+}
+
+export interface LevelMeasurements {
+  level: Level
+  measurements: Measurements
+}
+
+export interface BuildingMeasurements {
+  /** Métrés de chaque niveau, du plus bas au plus haut. */
+  levels: LevelMeasurements[]
+  /** Métrés du bâtiment : les listes et les totaux de tous les niveaux réunis. */
+  total: Measurements
+}
+
+/** Réunit plusieurs métrés en un seul : listes mises bout à bout, totaux additionnés. */
+export function sumMeasurements(list: readonly Measurements[]): Measurements {
+  const sum = (pick: (m: Measurements) => number) => list.reduce((acc, m) => acc + pick(m), 0)
+  return {
+    rooms: list.flatMap((m) => m.rooms),
+    walls: list.flatMap((m) => m.walls),
+    openings: list.flatMap((m) => m.openings),
+    totals: {
+      roomArea: sum((m) => m.totals.roomArea),
+      wallLength: sum((m) => m.totals.wallLength),
+      wallArea: sum((m) => m.totals.wallArea),
+      openingsArea: sum((m) => m.totals.openingsArea),
+      wallNetArea: sum((m) => m.totals.wallNetArea),
+      doors: sum((m) => m.totals.doors),
+      windows: sum((m) => m.totals.windows),
+      bays: sum((m) => m.totals.bays),
+    },
+  }
+}
+
+/**
+ * Métrés par niveau et pour tout le bâtiment. Chaque niveau ne compte que ses propres éléments
+ * (ceux dont `levelId` est le sien) ; les totaux du bâtiment sont la somme des niveaux.
+ */
+export function computeBuildingMeasurements(
+  document: Pick<FabricsDocument, 'elements' | 'levels'>,
+): BuildingMeasurements {
+  const levels = (document.levels ?? []).map((level) => ({
+    level,
+    measurements: computeMeasurements(elementsOfLevel(document.elements, level.id)),
+  }))
+  return { levels, total: sumMeasurements(levels.map((l) => l.measurements)) }
 }

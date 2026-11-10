@@ -1,7 +1,9 @@
+import { fr } from '../../i18n/fr'
 import type { FabricsDocument, Project } from '../../types/document'
+import { createLevel, DEFAULT_LEVEL_HEIGHT } from './levels'
 
 /** Version actuelle du format de document (voir `FabricsDocument.version`). */
-export const CURRENT_DOCUMENT_VERSION: FabricsDocument['version'] = 2
+export const CURRENT_DOCUMENT_VERSION: FabricsDocument['version'] = 3
 
 /** Document tel qu'il peut être lu depuis le stockage : version quelconque. */
 export type StoredDocument = Omit<FabricsDocument, 'version'> & { version: number }
@@ -32,8 +34,30 @@ export function migrateDocument(document: StoredDocument): FabricsDocument {
   let current: StoredDocument = document
   // v1 → v2 (M5) : ajout du type d'élément « opening ». Les éléments existants ne changent pas.
   if (current.version === 1) current = { ...current, version: 2 }
+  // v2 → v3 (M6) : un plan reçoit un niveau « Rez-de-chaussée » qui porte tous ses éléments.
+  if (current.version === 2) current = migrateV2ToV3(current)
 
   return current as FabricsDocument
+}
+
+/**
+ * v2 → v3 (M6). Un plan (document avec réglages de plan) reçoit un niveau « Rez-de-chaussée » à
+ * l'altitude 0, dont la hauteur reprend l'ancienne hauteur de mur par défaut (les murs existants
+ * gardent leur hauteur) ; tous ses éléments y sont rattachés. Un visuel ne change que de version.
+ */
+function migrateV2ToV3(document: StoredDocument): StoredDocument {
+  if (!document.plan) return { ...document, version: 3 }
+  const level = createLevel(
+    fr.levels.groundFloor,
+    0,
+    document.plan.defaultWallHeight || DEFAULT_LEVEL_HEIGHT,
+  )
+  return {
+    ...document,
+    version: 3,
+    levels: [level],
+    elements: document.elements.map((element) => ({ ...element, levelId: level.id })),
+  }
 }
 
 /** Met le document d'un projet au format actuel (même objet si rien ne change). */

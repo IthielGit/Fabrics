@@ -27,9 +27,11 @@ export function captureThumbnail(page: { width: number; height: number }): strin
   if (widthPx <= 0 || heightPx <= 0) return null
 
   // On masque ce qui n'appartient pas au document : couches d'aide et transformateur.
-  const helpers = [...stage.getLayers().slice(1), ...stage.find('Transformer')].filter((node) =>
-    node.visible(),
-  )
+  const helpers = [
+    ...stage.getLayers().slice(1),
+    ...stage.find('Transformer'),
+    ...stage.find('.reference'),
+  ].filter((node) => node.visible())
   helpers.forEach((node) => node.visible(false))
   try {
     return stage.toDataURL({

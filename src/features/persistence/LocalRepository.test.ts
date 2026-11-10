@@ -40,7 +40,7 @@ function makeProject(id: string, updatedAt: string, assetIds: string[] = []): Pr
     name: `Projet ${id}`,
     kind: 'design',
     document: {
-      version: 2,
+      version: 3,
       unit: 'px',
       page: { width: 1080, height: 1080, background: '#ffffff' },
       elements: assetIds.map(image),
@@ -69,7 +69,7 @@ describe('LocalRepository', () => {
     store.set('project:ancien', { ...old, document: { ...old.document, version: 1 } })
 
     const loaded = await repo.get('ancien')
-    expect(loaded?.document.version).toBe(2)
+    expect(loaded?.document.version).toBe(3)
     expect(loaded?.document.elements).toEqual(old.document.elements)
   })
 

@@ -14,7 +14,7 @@ import {
 } from '../../features/geometry/snapping'
 import type { Point } from '../../features/geometry/viewport'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement } from '../../types/document'
 import { isTypingTarget } from './isTypingTarget'
 
@@ -101,7 +101,8 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       const current = readDraft().points
       const plan = project.document.plan
       return snapPoint(raw, {
-        vertices: [...planVertices(project.document.elements), ...current],
+        // On ne s'aimante qu'aux éléments du niveau actif.
+        vertices: [...planVertices(selectActiveElements(useEditorStore.getState())), ...current],
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
         from: current.length > 0 ? current[current.length - 1] : null,
@@ -117,8 +118,14 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     setDraft({ ...EMPTY, cursor })
     if (!tool || !project || points.length < MIN_POINTS[tool]) return
 
-    const { elements, plan } = project.document
-    const name = nextElementName(fr.elements[tool], tool, elements)
+    const { plan, levels } = project.document
+    const state = useEditorStore.getState()
+    const name = nextElementName(fr.elements[tool], tool, selectActiveElements(state))
+    // Un nouveau mur prend la hauteur d'étage du niveau actif.
+    const wallHeight =
+      levels?.find((level) => level.id === state.activeLevelId)?.height ??
+      plan?.defaultWallHeight ??
+      2500
     const flat = flattenPoints(points)
     if (tool === 'wall') {
       addElement(
@@ -126,7 +133,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
           name,
           flat,
           plan?.defaultWallThickness ?? 200,
-          plan?.defaultWallHeight ?? 2500,
+          wallHeight,
         ),
       )
     } else if (tool === 'room') {

@@ -171,14 +171,14 @@ Objectif : percer les murs et obtenir des métrés nets.
 
 Objectif : un projet Plan contient plusieurs étages.
 
-- [ ] Liste des niveaux (rez-de-chaussée par défaut) : ajouter, renommer, réordonner,
+- [x] Liste des niveaux (rez-de-chaussée par défaut) : ajouter, renommer, réordonner,
       supprimer avec confirmation, dupliquer un niveau (copie des murs)
-- [ ] Chaque niveau a une altitude et une hauteur d'étage ; les nouveaux murs prennent la
+- [x] Chaque niveau a une altitude et une hauteur d'étage ; les nouveaux murs prennent la
       hauteur d'étage par défaut
-- [ ] Sélecteur de niveau dans l'éditeur ; on ne dessine et ne sélectionne que sur le niveau actif
-- [ ] Niveau inférieur affiché en transparence (calque de référence, désactivable)
-- [ ] Métrés par niveau et pour tout le bâtiment ; CSV avec une colonne « Niveau »
-- [ ] Migration : un projet existant reçoit un niveau « Rez-de-chaussée »
+- [x] Sélecteur de niveau dans l'éditeur ; on ne dessine et ne sélectionne que sur le niveau actif
+- [x] Niveau inférieur affiché en transparence (calque de référence, désactivable)
+- [x] Métrés par niveau et pour tout le bâtiment ; CSV avec une colonne « Niveau »
+- [x] Migration : un projet existant reçoit un niveau « Rez-de-chaussée »
 
 **Critères d'acceptation**
 - Je duplique le rez-de-chaussée en « Étage 1 » : les murs sont copiés, les pièces non

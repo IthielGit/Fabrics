@@ -90,7 +90,13 @@ export function useElementInteractions(): Handlers {
     const layer = event.target.getLayer() ?? undefined
     const boxOf = (node: Konva.Node): Box => node.getClientRect({ relativeTo: layer })
     const targets = Array.from(stage.find('.element'))
-      .filter((node) => node.isVisible() && !origins.has(node.id()) && !followers.has(node.id()))
+      .filter(
+        (node) =>
+          node.isVisible() &&
+          !origins.has(node.id()) &&
+          !followers.has(node.id()) &&
+          !node.findAncestor('.reference'), // le niveau de référence n'attire pas les éléments
+      )
       .map(boxOf)
     if (project) {
       const { width, height } = project.document.page

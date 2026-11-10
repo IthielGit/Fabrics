@@ -1,7 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement, OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { CSV_BOM, csvFileName, escapeCsvField, measurementsToCsv, type CsvLabels } from './csv'
-import { computeMeasurements } from './measurements'
+import {
+  computeBuildingMeasurements,
+  computeMeasurements,
+  type BuildingMeasurements,
+} from './measurements'
 
 const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
 
@@ -226,7 +230,23 @@ const LABELS: CsvLabels = {
   windows: 'Nombre de fenêtres',
   bays: 'Nombre de baies',
   kinds: { door: 'Porte', window: 'Fenêtre', bay: 'Baie' },
-  total: 'Total',
+  level: 'Niveau',
+  building: 'Bâtiment',
+  elevation: 'Altitude (mm)',
+  levelHeight: 'Hauteur d’étage (mm)',
+  levelTotals: 'Totaux par niveau',
+  roomsTotal: 'Surface des pièces (m²)',
+  wallsTotal: 'Longueur des murs (mm)',
+}
+
+const LEVEL = { id: 'L0', name: 'Rez', elevation: 0, height: 2700, slabThickness: 200 }
+
+/** Bâtiment d'un seul niveau « Rez », pour les tests du CSV. */
+function oneLevel(elements: CanvasElement[]): BuildingMeasurements {
+  return computeBuildingMeasurements({
+    levels: [LEVEL],
+    elements: elements.map((el) => ({ ...el, levelId: 'L0' })),
+  })
 }
 
 describe('csvFileName', () => {
@@ -271,33 +291,31 @@ describe('escapeCsvField', () => {
 })
 
 describe('measurementsToCsv', () => {
-  const measurements = computeMeasurements([
+  const building = oneLevel([
     room('Cuisine', [0, 0, 4000, 0, 4000, 3100, 0, 3100]),
     wall('Mur 1', [0, 0, 4000, 0], 200, 2500),
   ])
-  const csv = measurementsToCsv(measurements, LABELS)
+  const csv = measurementsToCsv(building, LABELS)
+  const lines = csv.slice(1).split('\r\n')
 
   it('commence par le BOM UTF-8 pour Excel', () => {
     expect(csv.startsWith(CSV_BOM)).toBe(true)
   })
 
   it('sépare par des points-virgules, avec des décimales à virgule et des fins de ligne CRLF', () => {
-    const lines = csv.slice(1).split('\r\n')
-    expect(lines).toContain('Nom;Surface (m²);Périmètre (mm)')
-    expect(lines).toContain('Cuisine;12,40;14200') // 4000 × 3100 mm ; 2 × (4000 + 3100)
-    expect(lines).toContain('Mur 1;4000;200;2500;10,00;0,00;10,00')
+    expect(lines).toContain('Niveau;Nom;Surface (m²);Périmètre (mm)')
+    expect(lines).toContain('Rez;Cuisine;12,40;14200') // 4000 × 3100 mm ; 2 × (4000 + 3100)
+    expect(lines).toContain('Rez;Mur 1;4000;200;2500;10,00;0,00;10,00')
   })
 
-  it('contient les totaux des deux tableaux', () => {
-    const lines = csv.slice(1).split('\r\n')
-    expect(lines).toContain('Total;12,40;')
-    expect(lines).toContain('Total;4000;;;10,00;0,00;10,00')
+  it('donne les totaux du niveau puis du bâtiment', () => {
+    expect(lines).toContain('Rez;0;2700;12,40;4000;10,00;0,00;10,00;0;0;0')
+    expect(lines).toContain('Bâtiment;;;12,40;4000;10,00;0,00;10,00;0;0;0')
   })
 
   it('garde les mêmes colonnes pour toutes les lignes d’un tableau', () => {
-    const lines = csv.slice(1).split('\r\n')
-    const wallRows = lines.slice(lines.indexOf('Murs') + 1).filter(Boolean)
-    expect(new Set(wallRows.map((l) => l.split(';').length))).toEqual(new Set([7]))
+    const wallRows = lines.slice(lines.indexOf('Murs') + 1, lines.indexOf('Totaux par niveau') - 1)
+    expect(new Set(wallRows.map((l) => l.split(';').length))).toEqual(new Set([8]))
   })
 
   it('termine par un saut de ligne', () => {
@@ -305,8 +323,8 @@ describe('measurementsToCsv', () => {
   })
 
   it('gère un plan vide', () => {
-    const empty = measurementsToCsv(computeMeasurements([]), LABELS)
-    expect(empty).toContain('Total;0,00;')
+    const empty = measurementsToCsv(oneLevel([]), LABELS)
+    expect(empty).toContain('Bâtiment;;;0,00;0;0,00;0,00;0,00;0;0;0')
   })
 })
 
@@ -322,38 +340,79 @@ describe('measurementsToCsv avec ouvertures', () => {
       offset: 3000,
     }),
   ]
-  const lines = measurementsToCsv(computeMeasurements(elements), LABELS).slice(1).split('\r\n')
+  const lines = measurementsToCsv(oneLevel(elements), LABELS).slice(1).split('\r\n')
 
   it('donne la surface nette du mur', () => {
     // 10,00 − (1,89 + 1,20) = 6,91
-    expect(lines).toContain('Mur 1;4000;200;2500;10,00;3,09;6,91')
+    expect(lines).toContain('Rez;Mur 1;4000;200;2500;10,00;3,09;6,91')
   })
 
-  it('ajoute un tableau des ouvertures, avec le mur, les dimensions et la surface', () => {
+  it('ajoute un tableau des ouvertures, avec le niveau, le mur, les dimensions et la surface', () => {
     const start = lines.indexOf('Ouvertures')
     expect(start).toBeGreaterThan(-1)
     expect(lines[start + 1]).toBe(
-      'Nom;Type;Mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)',
+      'Niveau;Nom;Type;Mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)',
     )
-    expect(lines[start + 2]).toBe('Porte 1;Porte;Mur 1;900;2100;0;1,89')
-    expect(lines[start + 3]).toBe('Fenêtre 1;Fenêtre;Mur 1;1200;1000;900;1,20')
+    expect(lines[start + 2]).toBe('Rez;Porte 1;Porte;Mur 1;900;2100;0;1,89')
+    expect(lines[start + 3]).toBe('Rez;Fenêtre 1;Fenêtre;Mur 1;1200;1000;900;1,20')
   })
 
-  it('termine le tableau par le total et le nombre de portes, fenêtres et baies', () => {
-    expect(lines).toContain('Total;;;;;;3,09')
-    expect(lines).toContain('Nombre de portes;1')
-    expect(lines).toContain('Nombre de fenêtres;1')
-    expect(lines).toContain('Nombre de baies;0')
+  it('compte les portes, fenêtres et baies dans les totaux', () => {
+    expect(lines).toContain('Bâtiment;;;0,00;4000;10,00;3,09;6,91;1;1;0')
   })
 
   it('garde les mêmes colonnes pour toutes les lignes du tableau des ouvertures', () => {
     const start = lines.indexOf('Ouvertures')
-    const rows = lines.slice(start + 1, start + 5)
-    expect(new Set(rows.map((l) => l.split(';').length))).toEqual(new Set([7]))
+    const rows = lines.slice(start + 1, start + 4)
+    expect(new Set(rows.map((l) => l.split(';').length))).toEqual(new Set([8]))
   })
 
   it('n’ajoute aucun tableau d’ouvertures quand il n’y en a pas', () => {
-    const none = measurementsToCsv(computeMeasurements([elements[0]]), LABELS)
-    expect(none).not.toContain('Nombre de portes')
+    const none = measurementsToCsv(oneLevel([elements[0]]), LABELS)
+    expect(none).not.toContain('\r\nOuvertures\r\n')
+  })
+})
+
+describe('métrés par niveau et pour le bâtiment', () => {
+  const levels = [
+    LEVEL,
+    { id: 'L1', name: 'Étage 1', elevation: 2700, height: 2700, slabThickness: 200 },
+  ]
+  const elements: CanvasElement[] = [
+    { ...room('R0', RECT_4X3), levelId: 'L0' },
+    { ...wall('M0', [0, 0, 4000, 0]), levelId: 'L0' },
+    { ...room('R1', L_SHAPE), levelId: 'L1' },
+    { ...wall('M1', [0, 0, 2000, 0]), levelId: 'L1' },
+    // Un élément commun à tous les niveaux n'est compté nulle part (pas de double comptage).
+    room('Commune', RECT_4X3),
+  ]
+  const building = computeBuildingMeasurements({ levels, elements })
+
+  it('calcule les métrés de chaque niveau avec ses seuls éléments', () => {
+    expect(building.levels.map((l) => l.level.id)).toEqual(['L0', 'L1'])
+    expect(building.levels[0].measurements.totals.roomArea).toBe(12_000_000)
+    expect(building.levels[1].measurements.totals.roomArea).toBe(10_000_000) // L : 12 − 2 m²
+  })
+
+  it('les totaux du bâtiment sont la somme des totaux des niveaux', () => {
+    const sum = (pick: (t: (typeof EMPTY_TOTALS)) => number) =>
+      building.levels.reduce((acc, l) => acc + pick(l.measurements.totals), 0)
+    expect(building.total.totals.roomArea).toBe(sum((t) => t.roomArea))
+    expect(building.total.totals.wallLength).toBe(sum((t) => t.wallLength))
+    expect(building.total.totals.wallArea).toBe(sum((t) => t.wallArea))
+    expect(building.total.totals.roomArea).toBe(22_000_000)
+    expect(building.total.totals.wallLength).toBe(6000)
+  })
+
+  it('un plan sans niveaux donne un bâtiment vide', () => {
+    expect(computeBuildingMeasurements({ elements }).levels).toEqual([])
+  })
+
+  it('le CSV porte une colonne Niveau et une ligne par niveau', () => {
+    const lines = measurementsToCsv(building, LABELS).slice(1).split('\r\n')
+    expect(lines).toContain('Rez;R0;12,00;14000')
+    expect(lines).toContain('Étage 1;R1;10,00;14000')
+    expect(lines).toContain('Étage 1;2700;2700;10,00;2000;5,00;0,00;5,00;0;0;0')
+    expect(lines).toContain('Bâtiment;;;22,00;6000;15,00;0,00;15,00;0;0;0')
   })
 })

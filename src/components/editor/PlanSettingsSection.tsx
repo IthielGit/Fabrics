@@ -75,13 +75,6 @@ export default function PlanSettingsSection() {
         step={10}
         onCommit={(mm) => updatePlanSettings({ defaultWallThickness: Math.max(1, mm) })}
       />
-      <NumberField
-        label={fr.planSettings.wallHeight}
-        suffix={fr.planSettings.unitMm}
-        value={plan.defaultWallHeight}
-        step={50}
-        onCommit={(mm) => updatePlanSettings({ defaultWallHeight: Math.max(1, mm) })}
-      />
     </div>
   )
 }

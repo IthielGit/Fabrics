@@ -96,11 +96,12 @@ export interface Project {
 }
 
 export interface FabricsDocument {
-  version: 2;                // incrémenté si le format change (migration : features/documents/migrations.ts)
+  version: 3;                // incrémenté si le format change (migration : features/documents/migrations.ts)
   unit: 'px' | 'mm';         // 'px' pour design, 'mm' pour plan
   page: Page;
   elements: CanvasElement[]; // ordre du tableau = ordre d'affichage (dernier = au-dessus)
   plan?: PlanSettings;       // présent seulement si kind = 'plan'
+  levels?: Level[];          // M6 : plans uniquement, au moins un niveau, triés par altitude croissante
 }
 
 export interface Page {
@@ -109,12 +110,21 @@ export interface Page {
   background: string;        // couleur hex
 }
 
+// Niveau (étage) d'un plan (M6).
+export interface Level {
+  id: string;
+  name: string;              // « Rez-de-chaussée », « Étage 1 »…
+  elevation: number;         // mm, altitude du plancher
+  height: number;            // mm, hauteur d'étage (défaut 2 700) ; les nouveaux murs la prennent
+  slabThickness: number;     // mm, épaisseur de dalle (défaut 200)
+}
+
 export interface PlanSettings {
   scale: number;             // dénominateur d'échelle d'impression par défaut : 50 → 1:50
   gridSize: number;          // mm, défaut 100 (10 cm)
   snapToGrid: boolean;
   defaultWallThickness: number; // mm, défaut 200
-  defaultWallHeight: number;    // mm, défaut 2500
+  defaultWallHeight: number;    // mm — plus utilisé depuis M6 (la hauteur d'un nouveau mur vient du niveau actif) ; conservé pour les anciens projets
 }
 
 interface BaseElement {
@@ -126,6 +136,7 @@ interface BaseElement {
   opacity: number;           // 0 → 1
   locked: boolean;
   hidden: boolean;
+  levelId?: string;          // M6 : niveau de l'élément (plans) ; absent = commun à tous les niveaux
 }
 
 export interface TextElement extends BaseElement {
@@ -428,7 +439,7 @@ incrémente `FabricsDocument.version` et ajoute une **migration** pure et testé
 ```ts
 // M5 — version 2 : OpeningElement, intégré au modèle ci-dessus.
 
-// M6 — version 3
+// M6 — version 3 (réalisé, voir le modèle de données ci-dessus)
 export interface Level {
   id: string;
   name: string;              // « Rez-de-chaussée », « Étage 1 »…
@@ -470,6 +481,20 @@ Règles :
   et taille (`x`, `y`, `rotation`, `width`, `depth`) comme une forme du Visuel. Les symboles
   sont des dessins Konva **créés pour Fabrics** (`src/components/editor/symbols/`).
 - `axis` et `section` suivent la règle D6 (points absolus, déplacement seul).
+
+### Niveaux (M6, réalisé)
+
+- Les niveaux sont triés par altitude. Monter ou descendre un niveau recalcule les altitudes
+  (chacun démarre où finit celui du dessous) ; modifier une altitude retrie la liste.
+- Le niveau actif est un état d'interface (`editorStore.activeLevelId`), hors historique. On ne
+  voit net, ne sélectionne et ne modifie que les éléments du niveau actif (`selectActiveElements`).
+  Le niveau du dessous est affiché à 30 % d'opacité, sans interaction ni aimantation, et n'apparaît
+  ni dans les exports ni dans les miniatures.
+- Un élément créé ou collé reçoit le `levelId` du niveau actif. Dupliquer un niveau copie ses murs
+  et leurs ouvertures (pas les pièces) juste au-dessus ; supprimer un niveau supprime ses éléments.
+- Les métrés d'un niveau ne comptent que ses propres éléments : les totaux du bâtiment sont la
+  somme des niveaux. Le CSV a une colonne « Niveau » et un tableau de totaux par niveau.
+- Les exports PNG, JPG et PDF d'un plan portent sur le niveau affiché.
 
 ### Métrés ajoutés
 

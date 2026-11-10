@@ -8,7 +8,7 @@ import {
 import { pointDistance } from '../../features/geometry/polygon'
 import type { Point } from '../../features/geometry/viewport'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import { isTypingTarget } from './isTypingTarget'
 
 type PointerEvent = Konva.KonvaEventObject<MouseEvent | TouchEvent>
@@ -63,7 +63,7 @@ export function useCalibrationTool(active: boolean) {
 
       const store = useEditorStore.getState()
       if (current.points.length === 0) {
-        const image = findImageAt(store.project?.document.elements ?? [], raw)
+        const image = findImageAt(selectActiveElements(store), raw)
         if (!image) {
           store.setNotice(fr.calibrate.noImage)
           return

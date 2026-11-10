@@ -11,11 +11,15 @@ import {
   type SheetFormat,
 } from '../../features/export/pdfLayout'
 import { measurementsToCsv } from '../../features/measurements/csv'
-import { computeMeasurements } from '../../features/measurements/measurements'
+import {
+  computeBuildingMeasurements,
+  computeMeasurements,
+} from '../../features/measurements/measurements'
 import { formatArea } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { dataUrlToBlob } from '../../lib/dataUrl'
 import { downloadBlob } from '../../lib/download'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { Project } from '../../types/document'
 import { captureRegion } from './exportStage'
 
@@ -41,15 +45,18 @@ export async function exportProject(project: Project, options: ExportOptions): P
   const fallback = isPlan ? fr.export.planFallbackName : fr.export.designFallbackName
   const fileName = exportFileName(options.fileName, options.type, fallback)
 
+  // Un plan s'exporte niveau par niveau (celui qui est affiché) ; le CSV couvre tout le bâtiment.
+  const shownElements = isPlan ? selectActiveElements(useEditorStore.getState()) : doc.elements
+
   if (options.type === 'csv') {
-    const csv = measurementsToCsv(computeMeasurements(doc.elements), fr.measurements.csv)
+    const csv = measurementsToCsv(computeBuildingMeasurements(doc), fr.measurements.csv)
     downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), fileName)
     return
   }
 
   // Zone exportée : la page d'un Visuel, l'emprise du contenu d'un plan.
   const region = isPlan
-    ? planExportExtent(doc.elements)
+    ? planExportExtent(shownElements)
     : { x: 0, y: 0, width: doc.page.width, height: doc.page.height }
   if (!region) throw new Error(fr.export.planEmpty)
   const background = doc.page.background
@@ -96,7 +103,7 @@ export async function exportProject(project: Project, options: ExportOptions): P
     { region, widthPx: size.width, heightPx: size.height, mimeType: 'image/png', background },
     true,
   )
-  const measurements = computeMeasurements(doc.elements)
+  const measurements = computeMeasurements(shownElements)
   const scaleDenominator = Math.round(placement.scale)
   const blob = await buildPlanPdf(dataUrl, sheet, placement.rect, placement.scale, {
     projectName: project.name,

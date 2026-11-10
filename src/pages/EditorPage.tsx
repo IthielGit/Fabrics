@@ -3,6 +3,8 @@ import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EditorStage from '../components/editor/EditorStage'
 import LayersPanel from '../components/editor/LayersPanel'
+import LevelSelector from '../components/editor/LevelSelector'
+import LevelsPanel from '../components/editor/LevelsPanel'
 import MeasurementsPanel from '../components/editor/MeasurementsPanel'
 import Notice from '../components/editor/Notice'
 import PropertiesPanel from '../components/editor/PropertiesPanel'
@@ -81,12 +83,14 @@ export default function EditorPage() {
         <div className="relative min-w-0 flex-1">
           <EditorStage />
           <Toolbar />
+          <LevelSelector />
           <ZoomControls />
           <Notice />
           <ToolHint />
         </div>
         <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white">
           <PropertiesPanel />
+          <LevelsPanel />
           <LayersPanel />
           <MeasurementsPanel />
         </aside>

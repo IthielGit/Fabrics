@@ -3,7 +3,7 @@ import { MAX_IMAGE_BYTES, checkImageFile, fitImageSize } from '../../features/do
 import type { Point } from '../../features/geometry/viewport'
 import { repository } from '../../features/persistence/repository'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 
 /** Lit les dimensions d'une image (en pixels) sans l'afficher. */
 function readImageSize(file: Blob): Promise<{ width: number; height: number }> {
@@ -53,7 +53,8 @@ export async function importImageFiles(files: File[], center: Point | null = nul
       // Le projet a pu changer pendant l'attente : on relit l'état courant.
       const { project, addElement } = useEditorStore.getState()
       if (!project) return
-      const { page, unit, elements } = project.document
+      const { page, unit } = project.document
+      const elements = selectActiveElements(useEditorStore.getState())
       const size = fitImageSize(natural, page, unit)
       const middle = center ?? { x: page.width / 2, y: page.height / 2 }
       const shift = duplicateOffset(unit) * placed // plusieurs images : on les décale

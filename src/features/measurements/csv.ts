@@ -1,9 +1,17 @@
 import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2 } from '../units/format'
-import type { Measurements } from './measurements'
+import type { BuildingMeasurements, Measurements } from './measurements'
 
 /** Intitulés du fichier (français, fournis par `src/i18n/fr.ts`). */
 export interface CsvLabels {
+  level: string
+  /** Libellé de la ligne qui totalise tous les niveaux. */
+  building: string
+  elevation: string
+  levelHeight: string
+  levelTotals: string
+  roomsTotal: string
+  wallsTotal: string
   rooms: string
   walls: string
   name: string
@@ -26,7 +34,6 @@ export interface CsvLabels {
   bays: string
   /** Nom de chaque type d'ouverture. */
   kinds: Record<'door' | 'window' | 'bay', string>
-  total: string
 }
 
 /**
@@ -61,82 +68,121 @@ const m2 = (mm2: number) => formatDecimal(mm2ToM2(mm2))
 
 /**
  * Métrés au format CSV : séparateur `;`, décimales à virgule, UTF-8 avec BOM, fins de ligne CRLF.
- * Tableaux des pièces, des murs (surfaces brute et nette) et des ouvertures, avec leurs totaux.
+ * Les tableaux des pièces, des murs (surfaces brute et nette) et des ouvertures ont une colonne
+ * « Niveau » ; un dernier tableau donne les totaux de chaque niveau et ceux du bâtiment.
  */
-export function measurementsToCsv(measurements: Measurements, labels: CsvLabels): string {
-  const { rooms, walls, openings, totals } = measurements
-  const lines: string[] = [
-    row(escapeCsvField(labels.rooms)),
-    row(
-      escapeCsvField(labels.name),
-      escapeCsvField(labels.area),
-      escapeCsvField(labels.perimeter),
+export function measurementsToCsv(building: BuildingMeasurements, labels: CsvLabels): string {
+  const { levels, total } = building
+  const text = escapeCsvField
+  const lines: string[] = []
+
+  /** Une ligne par élément, précédée du nom de son niveau. */
+  const perLevel = <T>(
+    pick: (m: Measurements) => T[],
+    format: (item: T) => string[],
+  ): string[] =>
+    levels.flatMap(({ level, measurements }) =>
+      pick(measurements).map((item) => row(text(level.name), ...format(item))),
+    )
+
+  lines.push(
+    row(text(labels.rooms)),
+    row(text(labels.level), text(labels.name), text(labels.area), text(labels.perimeter)),
+    ...perLevel(
+      (m) => m.rooms,
+      (room) => [text(room.name), m2(room.area), mm(room.perimeter)],
     ),
-    ...rooms.map((room) =>
-      row(escapeCsvField(room.name), m2(room.area), mm(room.perimeter)),
-    ),
-    row(escapeCsvField(labels.total), m2(totals.roomArea), ''),
     '',
-    row(escapeCsvField(labels.walls)),
+    row(text(labels.walls)),
     row(
-      escapeCsvField(labels.name),
-      escapeCsvField(labels.length),
-      escapeCsvField(labels.thickness),
-      escapeCsvField(labels.height),
-      escapeCsvField(labels.wallArea),
-      escapeCsvField(labels.openingsArea),
-      escapeCsvField(labels.wallNetArea),
+      text(labels.level),
+      text(labels.name),
+      text(labels.length),
+      text(labels.thickness),
+      text(labels.height),
+      text(labels.wallArea),
+      text(labels.openingsArea),
+      text(labels.wallNetArea),
     ),
-    ...walls.map((wall) =>
-      row(
-        escapeCsvField(wall.name),
+    ...perLevel(
+      (m) => m.walls,
+      (wall) => [
+        text(wall.name),
         mm(wall.length),
         mm(wall.thickness),
         mm(wall.height),
         m2(wall.wallArea),
         m2(wall.openingsArea),
         m2(wall.netArea),
-      ),
+      ],
     ),
-    row(
-      escapeCsvField(labels.total),
-      mm(totals.wallLength),
-      '',
-      '',
-      m2(totals.wallArea),
-      m2(totals.openingsArea),
-      m2(totals.wallNetArea),
-    ),
-  ]
-  if (openings.length > 0) {
+  )
+
+  if (total.openings.length > 0) {
     lines.push(
       '',
-      row(escapeCsvField(labels.openings)),
+      row(text(labels.openings)),
       row(
-        escapeCsvField(labels.name),
-        escapeCsvField(labels.kind),
-        escapeCsvField(labels.wall),
-        escapeCsvField(labels.width),
-        escapeCsvField(labels.height),
-        escapeCsvField(labels.sillHeight),
-        escapeCsvField(labels.area),
+        text(labels.level),
+        text(labels.name),
+        text(labels.kind),
+        text(labels.wall),
+        text(labels.width),
+        text(labels.height),
+        text(labels.sillHeight),
+        text(labels.area),
       ),
-      ...openings.map((opening) =>
-        row(
-          escapeCsvField(opening.name),
-          escapeCsvField(labels.kinds[opening.kind]),
-          escapeCsvField(opening.wallName),
+      ...perLevel(
+        (m) => m.openings,
+        (opening) => [
+          text(opening.name),
+          text(labels.kinds[opening.kind]),
+          text(opening.wallName),
           mm(opening.width),
           mm(opening.height),
           mm(opening.sillHeight),
           m2(opening.area),
-        ),
+        ],
       ),
-      row(escapeCsvField(labels.total), '', '', '', '', '', m2(totals.openingsArea)),
-      row(escapeCsvField(labels.doors), String(totals.doors)),
-      row(escapeCsvField(labels.windows), String(totals.windows)),
-      row(escapeCsvField(labels.bays), String(totals.bays)),
     )
   }
+
+  // Totaux : une ligne par niveau, puis le bâtiment (= la somme des niveaux).
+  const totalsRow = (title: string, altitude: string, floorHeight: string, m: Measurements) =>
+    row(
+      text(title),
+      altitude,
+      floorHeight,
+      m2(m.totals.roomArea),
+      mm(m.totals.wallLength),
+      m2(m.totals.wallArea),
+      m2(m.totals.openingsArea),
+      m2(m.totals.wallNetArea),
+      String(m.totals.doors),
+      String(m.totals.windows),
+      String(m.totals.bays),
+    )
+  lines.push(
+    '',
+    row(text(labels.levelTotals)),
+    row(
+      text(labels.level),
+      text(labels.elevation),
+      text(labels.levelHeight),
+      text(labels.roomsTotal),
+      text(labels.wallsTotal),
+      text(labels.wallArea),
+      text(labels.openingsArea),
+      text(labels.wallNetArea),
+      text(labels.doors),
+      text(labels.windows),
+      text(labels.bays),
+    ),
+    ...levels.map(({ level, measurements }) =>
+      totalsRow(level.name, mm(level.elevation), mm(level.height), measurements),
+    ),
+    totalsRow(labels.building, '', '', total),
+  )
+
   return CSV_BOM + lines.join(LINE_BREAK) + LINE_BREAK
 }

@@ -14,11 +14,21 @@ export interface Project {
 }
 
 export interface FabricsDocument {
-  version: 2;                // incrémenté si le format change (migration : features/documents/migrations.ts)
+  version: 3;                // incrémenté si le format change (migration : features/documents/migrations.ts)
   unit: 'px' | 'mm';         // 'px' pour design, 'mm' pour plan
   page: Page;
   elements: CanvasElement[]; // ordre du tableau = ordre d'affichage (dernier = au-dessus)
   plan?: PlanSettings;       // présent seulement si kind = 'plan'
+  levels?: Level[];          // M6 : projets Plan uniquement, au moins un niveau, triés par altitude croissante
+}
+
+// Niveau (étage) d'un plan (M6).
+export interface Level {
+  id: string;
+  name: string;              // « Rez-de-chaussée », « Étage 1 »…
+  elevation: number;         // mm, altitude du plancher
+  height: number;            // mm, hauteur d'étage (défaut 2 700) ; les nouveaux murs la prennent
+  slabThickness: number;     // mm, épaisseur de dalle (défaut 200)
 }
 
 export interface Page {
@@ -32,7 +42,7 @@ export interface PlanSettings {
   gridSize: number;          // mm, défaut 100 (10 cm)
   snapToGrid: boolean;
   defaultWallThickness: number; // mm, défaut 200
-  defaultWallHeight: number;    // mm, défaut 2500
+  defaultWallHeight: number;    // mm, défaut 2500 — plus utilisé depuis M6 (la hauteur d'un nouveau mur vient du niveau actif) ; conservé pour les anciens projets
 }
 
 interface BaseElement {
@@ -44,6 +54,7 @@ interface BaseElement {
   opacity: number;           // 0 → 1
   locked: boolean;
   hidden: boolean;
+  levelId?: string;          // M6 : niveau de l'élément (plans) ; absent = commun à tous les niveaux
 }
 
 export interface TextElement extends BaseElement {

@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M6 — Niveaux (plan à présenter, en attente du feu vert)
-- **Dernière tâche terminée :** M5 — validé par l'utilisateur le 2026-11-10
-- **Prochaine tâche :** M6, après feu vert sur la liste des tâches
+- **Jalon en cours :** M6 — Niveaux (terminé, à valider par l'utilisateur)
+- **Dernière tâche terminée :** M6 — Niveaux
+- **Prochaine tâche :** M7, après validation de M6 et feu vert sur son plan
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -19,7 +19,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M3 Mode plan et métrés | terminé | 2026-11-10 |
 | M4 Export | terminé | 2026-11-10 |
 | M5 Ouvertures | terminé | 2026-11-10 |
-| M6 Niveaux | à faire | |
+| M6 Niveaux | terminé (à valider) | |
 | M7 Axes et mobilier | à faire | |
 | M8 Vue 3D | à faire | |
 | M9 Façades, coupes et planche | à faire | |
@@ -37,6 +37,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-10 — M6 · Niveaux
+- Fait : un plan contient plusieurs **niveaux** (rez-de-chaussée par défaut). Panneau « Niveaux » : ajouter, renommer (double-clic), monter / descendre, dupliquer (les murs et leurs ouvertures sont copiés, pas les pièces), supprimer avec confirmation (annulable), altitude et hauteur d'étage du niveau actif. **Sélecteur de niveau** en haut du canevas, avec un interrupteur pour le niveau du dessous en **transparence** (référence : non sélectionnable, sans aimantation, absent des exports). On ne dessine, ne sélectionne, ne liste (calques) et n'aimante que sur le niveau actif ; un nouveau mur prend la hauteur d'étage. **Métrés** : tableaux du niveau actif, tableau « Bâtiment » (une ligne par niveau + total = somme des niveaux) ; **CSV** avec colonne « Niveau » et tableau des totaux par niveau et du bâtiment. Les exports PNG / JPG / PDF portent sur le niveau affiché. **Migration v2 → v3** : un plan reçoit un « Rez-de-chaussée » qui porte tous ses éléments (hauteur = ancienne hauteur de mur par défaut).
+- Fichiers : `src/types/document.ts`, `src/features/documents/{levels,migrations,createProject}(.test).ts`, `src/features/measurements/{measurements,csv}.ts`, `src/stores/editorStore(.test).ts`, `src/components/editor/{LevelSelector,LevelsPanel,EditorStage,MeasurementsPanel,LayersPanel,ExportDialog,exportProject,exportStage,thumbnail,usePolylineDrawing,useOpeningTool,useCalibrationTool,useElementInteractions,importImages,PlanSettingsSection}`, `src/pages/EditorPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (535 au total, dont 32 nouveaux sur les niveaux, la migration et le CSV) — rendu et interactions (sélecteur, transparence, clic sur un mur de référence) à contrôler dans le navigateur
+- Commit : feat: niveaux (étages) du plan
 
 ### 2026-11-10 — Unités « Métrique architectural » (consigne transversale)
 - Fait : tout le plan s'affiche et se saisit comme dans Revit (métrique) : **longueurs en mm entiers** (`3500 mm`, `200 mm`), surfaces en m² (`12,40 m²`). Appliqué à : cotes, aperçu des murs et des ouvertures, panneau Métrés (épaisseur comprise), propriétés d'un mur / cote, réglages du plan (épaisseur, hauteur, grille en mm : 50 / 100 / 200 / 500 / 1000), barre d'échelle du PDF (`1000 mm`), export CSV (longueurs en mm, surfaces en m²), fenêtre de calibrage. Un nombre saisi sans unité vaut des mm ; `m` et `cm` restent acceptés si écrits. Les helpers `mmToM`, `mmToCm` et `formatCentimeters` sont supprimés. Règle ajoutée dans `CLAUDE.md` et `docs/02-ARCHITECTURE.md` pour toutes les prochaines tâches. Les projets déjà enregistrés ne changent pas (le stockage était déjà en mm).
@@ -343,6 +349,16 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D23 | Aimantation sur les faces de murs | On s'aimante aussi aux croisements des faces de murs différents (angles intérieurs). | Quatre murs séparés n'ont pas de sommet à leur angle intérieur : sans cela le critère 10,64 m² serait inatteignable. |
 | D24 | Phase « Bâtiment » | Ouvertures (M5), niveaux (M6), axes et mobilier (M7), 3D (M8), façades / coupes / planche (M9), import-export DXF / glTF et partage (M10) ajoutés **après le MVP** ; collaboration renumérotée M13 ; IA reportée. Dépendances 3D et DXF à confirmer au début de leur jalon. | Demande de l'utilisateur (capture d'un outil de bâtiment, 2026-11-10) ; le MVP reste inchangé pour être mis en ligne d'abord. |
 | D25 | Ordre des jalons | La phase « Bâtiment » passe **avant** la mise en ligne et les comptes : M5 Ouvertures, M6 Niveaux, M7 Axes et mobilier, M8 3D, M9 Façades et coupes, M10 Import et export, M11 Mise en ligne, M12 Comptes, cloud et partage (fin du MVP), M13 Collaboration. Le partage par lien passe en M12 car il a besoin de Supabase. Remplace l'ordre de D24. | Demande de l'utilisateur (2026-11-10). |
+
+### 2026-11-10 — Niveaux (M6)
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D27 | Hauteur des murs | La hauteur d'un nouveau mur est celle du **niveau actif** (défaut 2 700 mm). Le réglage « Hauteur des murs » disparaît des réglages du plan ; `defaultWallHeight` reste dans le modèle pour les anciens projets (sert de hauteur au rez-de-chaussée migré). | Roadmap M6 : « les nouveaux murs prennent la hauteur d'étage par défaut » ; évite deux réglages concurrents. |
+| D28 | Ordre et altitudes | Niveaux triés par altitude. Monter / descendre un niveau recalcule les altitudes à partir du plus bas ; modifier une altitude retrie la liste. | L'ordre réordonné et les altitudes doivent rester cohérents (3D en M8). |
+| D29 | Niveau actif et référence | Niveau actif et interrupteur « niveau inférieur » sont des états d'interface (hors historique et hors document). | Changer d'étage n'est pas une modification du plan. |
+| D30 | Éléments sans niveau | Un élément sans `levelId` est commun à tous les niveaux (axes de M7) et n'entre dans les métrés d'aucun niveau. | Évite le double comptage ; totaux = somme des niveaux. |
+| D31 | Exports d'un plan | PNG, JPG et PDF portent sur le niveau affiché ; le CSV couvre tout le bâtiment. | La roadmap ne précise que le CSV ; une planche multi-niveaux arrive en M9. |
 
 ## Idées (hors jalon en cours)
 
