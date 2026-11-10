@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M1 — Socle de l'éditeur : toutes les tâches de code sont faites, en attente de validation par l'utilisateur dans le navigateur
-- **Dernière tâche terminée :** M1 · sauvegarde automatique, indicateur et titre éditable
-- **Prochaine tâche :** l'utilisateur vérifie les 3 critères d'acceptation de M1 (voir ci-dessous), puis valide
+- **Jalon en cours :** M2 — Contenu et mise en forme (plan présenté, en attente du feu vert)
+- **Dernière tâche terminée :** M1 — validé par l'utilisateur (dernier commit `18850c5`)
+- **Prochaine tâche :** M2, après feu vert sur la liste des tâches
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -14,7 +14,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | Jalon | Statut | Validé par l'utilisateur le |
 |---|---|---|
 | M0 Mise en place | terminé | 2026-11-10 |
-| M1 Socle de l'éditeur | à faire | |
+| M1 Socle de l'éditeur | terminé | 2026-11-10 |
 | M2 Contenu et mise en forme | à faire | |
 | M3 Mode plan et métrés | à faire | |
 | M4 Export | à faire | |
