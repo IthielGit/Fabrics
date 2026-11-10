@@ -1,0 +1,114 @@
+import { exportFileName, type ExportFileType } from '../../features/export/fileName'
+import { planExportExtent } from '../../features/export/bounds'
+import { imageExportSize, pdfRasterSize } from '../../features/export/limits'
+import { buildDesignPdf, buildPlanPdf } from '../../features/export/pdf'
+import {
+  designPdfPlacement,
+  planPdfPlacement,
+  sheetSize,
+  type Orientation,
+  type ScaleChoice,
+  type SheetFormat,
+} from '../../features/export/pdfLayout'
+import { measurementsToCsv } from '../../features/measurements/csv'
+import { computeMeasurements } from '../../features/measurements/measurements'
+import { formatArea } from '../../features/units/format'
+import { fr } from '../../i18n/fr'
+import { dataUrlToBlob } from '../../lib/dataUrl'
+import { downloadBlob } from '../../lib/download'
+import type { Project } from '../../types/document'
+import { captureRegion } from './exportStage'
+
+export interface ExportOptions {
+  type: ExportFileType
+  /** Nom saisi par l'utilisateur (l'extension est ajoutée si besoin). */
+  fileName: string
+  /** Multiplicateur de résolution (PNG et JPG). */
+  multiplier: number
+  /** Réglages du PDF. */
+  sheet: SheetFormat
+  orientation: Orientation
+  scale: ScaleChoice
+}
+
+/**
+ * Exporte le projet ouvert et fait télécharger le fichier. Lance une erreur si l'export est
+ * impossible (plan vide, plan qui ne tient pas sur la feuille, image refusée par le navigateur).
+ */
+export async function exportProject(project: Project, options: ExportOptions): Promise<void> {
+  const { document: doc } = project
+  const isPlan = project.kind === 'plan'
+  const fallback = isPlan ? fr.export.planFallbackName : fr.export.designFallbackName
+  const fileName = exportFileName(options.fileName, options.type, fallback)
+
+  if (options.type === 'csv') {
+    const csv = measurementsToCsv(computeMeasurements(doc.elements), fr.measurements.csv)
+    downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), fileName)
+    return
+  }
+
+  // Zone exportée : la page d'un Visuel, l'emprise du contenu d'un plan.
+  const region = isPlan
+    ? planExportExtent(doc.elements)
+    : { x: 0, y: 0, width: doc.page.width, height: doc.page.height }
+  if (!region) throw new Error(fr.export.planEmpty)
+  const background = doc.page.background
+
+  if (options.type === 'png' || options.type === 'jpg') {
+    const size = imageExportSize(region.width, region.height, doc.unit, options.multiplier)
+    const dataUrl = await captureRegion(
+      {
+        region,
+        widthPx: size.width,
+        heightPx: size.height,
+        mimeType: options.type === 'png' ? 'image/png' : 'image/jpeg',
+        quality: 0.92,
+        background,
+      },
+      isPlan,
+    )
+    downloadBlob(dataUrlToBlob(dataUrl), fileName)
+    return
+  }
+
+  // PDF
+  const sheet = sheetSize(options.sheet, options.orientation)
+  if (!isPlan) {
+    const placement = designPdfPlacement(
+      doc.page.width,
+      doc.page.height,
+      options.sheet,
+      options.orientation,
+    )
+    const { size } = pdfRasterSize(placement.width, placement.height)
+    const dataUrl = await captureRegion(
+      { region, widthPx: size.width, heightPx: size.height, mimeType: 'image/png', background },
+      false,
+    )
+    downloadBlob(await buildDesignPdf(dataUrl, sheet, placement, project.name), fileName)
+    return
+  }
+
+  const placement = planPdfPlacement(region, sheet, options.scale)
+  if (!placement.fits) throw new Error(fr.export.failed)
+  const { size } = pdfRasterSize(placement.rect.width, placement.rect.height)
+  const dataUrl = await captureRegion(
+    { region, widthPx: size.width, heightPx: size.height, mimeType: 'image/png', background },
+    true,
+  )
+  const measurements = computeMeasurements(doc.elements)
+  const scaleDenominator = Math.round(placement.scale)
+  const blob = await buildPlanPdf(dataUrl, sheet, placement.rect, placement.scale, {
+    projectName: project.name,
+    scaleText: placement.exact
+      ? fr.export.cartouche.scale(scaleDenominator)
+      : fr.export.cartouche.scaleFit(scaleDenominator),
+    dateText: fr.export.cartouche.date(new Date().toLocaleDateString('fr-BE')),
+    areaText:
+      measurements.rooms.length > 0
+        ? fr.export.cartouche.area(formatArea(measurements.totals.roomArea))
+        : undefined,
+    scaleBarLabel: fr.export.cartouche.scaleBar,
+  })
+  downloadBlob(blob, fileName)
+}

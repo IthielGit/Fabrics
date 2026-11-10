@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M4 — Export (plan à présenter, en attente du feu vert de l'utilisateur)
-- **Dernière tâche terminée :** M3 · ajout et retrait de sommets (M3 validé)
-- **Prochaine tâche :** présenter le plan de M4 et attendre « feu vert M4 »
+- **Jalon en cours :** M4 — Export : toutes les tâches de code sont faites, en attente de validation par l'utilisateur dans le navigateur
+- **Dernière tâche terminée :** M4 · fenêtre Exporter (PNG, JPG, PDF, CSV)
+- **Prochaine tâche :** l'utilisateur vérifie les 2 critères d'acceptation de M4 (PNG ×2 = 2160 px ; mur de 1 m à 1:50 = 2,0 cm), puis valide
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -17,7 +17,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M1 Socle de l'éditeur | terminé | 2026-11-10 |
 | M2 Contenu et mise en forme | terminé | 2026-11-10 |
 | M3 Mode plan et métrés | terminé | 2026-11-10 |
-| M4 Export | à faire | |
+| M4 Export | à valider | |
 | M5 Ouvertures | à faire | |
 | M6 Niveaux | à faire | |
 | M7 Axes et mobilier | à faire | |
@@ -37,6 +37,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-10 — M4 · Export (PNG, JPG, PDF, CSV)
+- Fait : bouton « Exporter » dans l'en-tête de l'éditeur → fenêtre avec format (PNG, JPG, PDF ; CSV pour un plan), nom du fichier, résolution (×0,5 / ×1 / ×2 / ×3, avec la taille en pixels ; les tailles au-dessus de 8 192 px par côté ou 16,7 millions de pixels sont grisées), feuille A4 / A3, orientation, échelle 1:20 / 1:50 / 1:100 / 1:200 ou « Ajuster à la page ». Image sans sélection, poignées, guides ni grille, taille exacte en pixels (échelle de la scène réglée au pixel près). Zone exportée : page entière d'un Visuel ; emprise du contenu visible + 500 mm pour un plan (plan vide : export refusé avec un message). PDF d'un Visuel centré avec marges de 10 mm, ou pleine page pour un A4 / A3 sur la même feuille. PDF de plan : taille papier = taille réelle ÷ échelle, bande de 20 mm en bas avec barre d'échelle de 1 m et cartouche (nom, échelle, date, surface des pièces) ; si le plan ne tient pas : avertissement + échelle qui tient + export bloqué tant qu'on ne change pas. `jspdf` chargé à la demande (n'alourdit pas l'ouverture de l'éditeur). Pour un plan, la vue est ramenée à 100 % pendant la capture (traits fins de même épaisseur quel que soit le zoom), puis remise.
+- Fichiers : src/features/export/{limits,bounds,pdfLayout,pdf,fileName}.ts (+ tests), src/components/editor/{exportStage,exportProject}.ts, ExportDialog.tsx, EditorHeader.tsx, src/lib/dataUrl.ts, src/i18n/fr.ts
+- Vérification : build ✓ lint ✓ tests ✓ (357 au total) — rendu réel et mesure à la règle à contrôler dans le navigateur
+- Commit : feat: fenêtre Exporter (PNG, JPG, PDF, CSV)
 
 ### 2026-11-10 — M3 · Ajout et retrait de sommets (correctif demandé)
 - Fait : sur un mur ou une pièce sélectionné, un petit point « + » apparaît au milieu de chaque côté (pour une pièce, y compris le côté de fermeture) ; un clic ajoute un sommet à cet endroit (la forme ne change pas, on le glisse ensuite) ; un double-clic sur un sommet le retire (minimum 2 sommets pour un mur, 3 pour une pièce ; une cote reste à 2). Un geste = un pas d'annulation. Rappel affiché dans Propriétés.

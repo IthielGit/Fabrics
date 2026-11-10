@@ -1,0 +1,291 @@
+import clsx from 'clsx'
+import { useMemo, useState } from 'react'
+import { planExportExtent } from '../../features/export/bounds'
+import type { ExportFileType } from '../../features/export/fileName'
+import { resolutionOptions } from '../../features/export/limits'
+import {
+  defaultOrientation,
+  matchingSheetFormat,
+  planPdfPlacement,
+  PLAN_SCALES,
+  sheetSize,
+  type Orientation,
+  type ScaleChoice,
+  type SheetFormat,
+} from '../../features/export/pdfLayout'
+import { computeMeasurements } from '../../features/measurements/measurements'
+import { fr } from '../../i18n/fr'
+import { useEditorStore } from '../../stores/editorStore'
+import Button from '../ui/Button'
+import Modal from '../ui/Modal'
+import { exportProject } from './exportProject'
+
+const OPTION =
+  'flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50'
+
+interface ChoiceProps {
+  name: string
+  checked: boolean
+  disabled?: boolean
+  onSelect: () => void
+  children: React.ReactNode
+}
+
+/** Une option d'un groupe de boutons radio, présentée comme une pastille. */
+function Choice({ name, checked, disabled, onSelect, children }: ChoiceProps) {
+  return (
+    <label
+      className={clsx(
+        OPTION,
+        checked ? 'border-indigo-600 bg-indigo-50 text-indigo-900' : 'border-slate-300 text-slate-700',
+      )}
+    >
+      <input
+        type="radio"
+        name={name}
+        checked={checked}
+        disabled={disabled}
+        onChange={onSelect}
+        className="accent-indigo-600"
+      />
+      {children}
+    </label>
+  )
+}
+
+function Group({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <fieldset className="space-y-2">
+      <legend className="text-sm font-medium text-slate-900">{label}</legend>
+      <div className="flex flex-wrap gap-2">{children}</div>
+    </fieldset>
+  )
+}
+
+/** Fenêtre « Exporter » : PNG, JPG, PDF et, pour un plan, CSV des métrés. */
+export default function ExportDialog({ onClose }: { onClose: () => void }) {
+  const project = useEditorStore((state) => state.project)
+  if (!project) return null
+  // Le contenu est remis à zéro à chaque ouverture : la fenêtre est démontée à la fermeture.
+  return <ExportForm key={project.id} onClose={onClose} />
+}
+
+function ExportForm({ onClose }: { onClose: () => void }) {
+  const project = useEditorStore((state) => state.project)
+  const elements = project?.document.elements
+  const isPlan = project?.kind === 'plan'
+
+  const extent = useMemo(
+    () => (isPlan && elements ? planExportExtent(elements) : null),
+    [isPlan, elements],
+  )
+  const measurements = useMemo(() => computeMeasurements(elements ?? []), [elements])
+  const hasMeasures = measurements.rooms.length > 0 || measurements.walls.length > 0
+
+  // Zone exportée, dans l'unité du document.
+  const region = useMemo(() => {
+    if (!project) return null
+    if (isPlan) return extent
+    return { x: 0, y: 0, width: project.document.page.width, height: project.document.page.height }
+  }, [project, isPlan, extent])
+
+  const options = useMemo(
+    () =>
+      region && project ? resolutionOptions(region.width, region.height, project.document.unit) : [],
+    [region, project],
+  )
+
+  const [type, setType] = useState<ExportFileType>('png')
+  const [fileName, setFileName] = useState(project?.name ?? '')
+  const [multiplier, setMultiplier] = useState<number>(() =>
+    options.find((o) => o.multiplier === 1 && o.allowed)
+      ? 1
+      : (options.find((o) => o.allowed)?.multiplier ?? 1),
+  )
+  const [sheet, setSheet] = useState<SheetFormat>(() =>
+    project && !isPlan
+      ? (matchingSheetFormat(project.document.page.width, project.document.page.height) ?? 'a4')
+      : 'a4',
+  )
+  const [orientation, setOrientation] = useState<Orientation>(() =>
+    region ? defaultOrientation(region.width, region.height) : 'portrait',
+  )
+  const [scale, setScale] = useState<ScaleChoice>(() => {
+    const wanted = project?.document.plan?.scale
+    return PLAN_SCALES.find((s) => s === wanted) ?? 50
+  })
+  const [busy, setBusy] = useState(false)
+  const [failed, setFailed] = useState(false)
+
+  if (!project) return null
+
+  const planPlacement =
+    isPlan && region ? planPdfPlacement(region, sheetSize(sheet, orientation), scale) : null
+
+  const emptyMessage =
+    type === 'csv'
+      ? hasMeasures
+        ? null
+        : fr.export.csvEmpty
+      : isPlan && !extent
+        ? fr.export.planEmpty
+        : null
+  const planDoesNotFit = type === 'pdf' && planPlacement !== null && !planPlacement.fits
+  const selectedOption = options.find((o) => o.multiplier === multiplier)
+  const tooBig = (type === 'png' || type === 'jpg') && selectedOption?.allowed === false
+  const canSubmit = !busy && emptyMessage === null && !planDoesNotFit && !tooBig
+
+  const handleSubmit = async () => {
+    setBusy(true)
+    setFailed(false)
+    try {
+      await exportProject(project, { type, fileName, multiplier, sheet, orientation, scale })
+      onClose()
+    } catch {
+      setFailed(true)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  const types: { id: ExportFileType; label: string }[] = [
+    { id: 'png', label: fr.export.formatPng },
+    { id: 'jpg', label: fr.export.formatJpg },
+    { id: 'pdf', label: fr.export.formatPdf },
+    ...(isPlan ? [{ id: 'csv' as const, label: fr.export.formatCsv }] : []),
+  ]
+
+  return (
+    <Modal title={fr.export.title} onClose={onClose}>
+      <div className="space-y-4">
+        <Group label={fr.export.format}>
+          {types.map((item) => (
+            <Choice
+              key={item.id}
+              name="export-format"
+              checked={type === item.id}
+              onSelect={() => setType(item.id)}
+            >
+              {item.label}
+            </Choice>
+          ))}
+        </Group>
+        <p className="-mt-2 text-xs text-slate-500">{fr.export.formatHint[type]}</p>
+
+        <div className="space-y-1">
+          <label htmlFor="export-file-name" className="text-sm font-medium text-slate-900">
+            {fr.export.fileName}
+          </label>
+          <div className="flex items-center gap-2">
+            <input
+              id="export-file-name"
+              type="text"
+              value={fileName}
+              maxLength={200}
+              onChange={(event) => setFileName(event.target.value)}
+              className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
+            />
+            <span className="text-sm text-slate-500">.{type}</span>
+          </div>
+        </div>
+
+        {(type === 'png' || type === 'jpg') && region && (
+          <Group label={fr.export.resolution}>
+            {options.map((option) => (
+              <Choice
+                key={option.multiplier}
+                name="export-resolution"
+                checked={multiplier === option.multiplier}
+                disabled={!option.allowed}
+                onSelect={() => setMultiplier(option.multiplier)}
+              >
+                <span className="font-medium">{fr.export.multiplier(option.multiplier)}</span>
+                <span className="text-xs text-slate-500">
+                  {fr.export.pixelSize(option.size.width, option.size.height)}
+                </span>
+              </Choice>
+            ))}
+          </Group>
+        )}
+        {tooBig && <p className="text-sm text-red-600">{fr.export.tooBig}</p>}
+
+        {type === 'pdf' && (
+          <>
+            <Group label={fr.export.sheet}>
+              <Choice name="export-sheet" checked={sheet === 'a4'} onSelect={() => setSheet('a4')}>
+                A4
+              </Choice>
+              <Choice name="export-sheet" checked={sheet === 'a3'} onSelect={() => setSheet('a3')}>
+                A3
+              </Choice>
+            </Group>
+            <Group label={fr.export.orientation}>
+              <Choice
+                name="export-orientation"
+                checked={orientation === 'portrait'}
+                onSelect={() => setOrientation('portrait')}
+              >
+                {fr.export.portrait}
+              </Choice>
+              <Choice
+                name="export-orientation"
+                checked={orientation === 'landscape'}
+                onSelect={() => setOrientation('landscape')}
+              >
+                {fr.export.landscape}
+              </Choice>
+            </Group>
+          </>
+        )}
+
+        {type === 'pdf' && isPlan && planPlacement && (
+          <>
+            <Group label={fr.export.scale}>
+              {PLAN_SCALES.map((value) => (
+                <Choice
+                  key={value}
+                  name="export-scale"
+                  checked={scale === value}
+                  onSelect={() => setScale(value)}
+                >
+                  {fr.export.scaleOption(value)}
+                </Choice>
+              ))}
+              <Choice name="export-scale" checked={scale === 'fit'} onSelect={() => setScale('fit')}>
+                {fr.export.scaleFit}
+              </Choice>
+            </Group>
+            {planDoesNotFit && (
+              <p role="alert" className="rounded-md bg-amber-50 p-3 text-sm text-amber-900">
+                {fr.export.scaleDoesNotFit(typeof scale === 'number' ? scale : 0)}
+                {planPlacement.fittingScale !== null
+                  ? fr.export.scaleSuggestion(planPlacement.fittingScale)
+                  : fr.export.scaleNoSuggestion}
+              </p>
+            )}
+            {scale === 'fit' && (
+              <p className="text-sm text-slate-600">
+                {fr.export.scaleFitNote(Math.round(planPlacement.scale))}
+              </p>
+            )}
+            {scale !== 'fit' && <p className="text-xs text-slate-500">{fr.export.printHint}</p>}
+          </>
+        )}
+
+        {emptyMessage && <p className="text-sm text-slate-600">{emptyMessage}</p>}
+        {failed && (
+          <p role="alert" className="text-sm text-red-600">
+            {fr.export.failed}
+          </p>
+        )}
+
+        <div className="flex justify-end gap-2 pt-2">
+          <Button onClick={onClose}>{fr.common.cancel}</Button>
+          <Button variant="primary" onClick={handleSubmit} disabled={!canSubmit}>
+            {busy ? fr.export.working : fr.export.submit}
+          </Button>
+        </div>
+      </div>
+    </Modal>
+  )
+}

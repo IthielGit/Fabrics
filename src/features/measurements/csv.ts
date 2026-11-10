@@ -1,3 +1,4 @@
+import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2, mmToCm, mmToM } from '../units/format'
 import type { Measurements } from './measurements'
 
@@ -20,13 +21,7 @@ export interface CsvLabels {
  * (`\ / : * ? " < > |`) ni points ou espaces en fin de nom.
  */
 export function csvFileName(projectName: string, suffix: string, fallback: string): string {
-  const cleaned = projectName
-    // eslint-disable-next-line no-control-regex -- les caractères de contrôle sont interdits dans un nom de fichier
-    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, ' ')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .replace(/[. ]+$/, '')
-  return `${cleaned || fallback}-${suffix}.csv`
+  return `${sanitizeFileName(projectName, fallback)}-${suffix}.csv`
 }
 
 const SEPARATOR = ';'

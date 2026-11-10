@@ -121,14 +121,14 @@ Objectif : réaliser les parcours B et C (hors export PDF).
 
 Objectif : sortir un fichier utilisable de n'importe quel projet.
 
-- [ ] Fenêtre Exporter : format (PNG, JPG, PDF ; CSV pour les plans), résolution, nom de fichier
-- [ ] PNG / JPG via Konva, sans la sélection, les guides ni la grille
-- [ ] PDF via `jspdf` : A4 / A3, portrait / paysage
-- [ ] PDF de Visuel : centré avec marges de 10 mm, ou pleine page si même format A4 / A3
-- [ ] PDF de plan à l'échelle choisie (1:20, 1:50, 1:100, 1:200, Ajuster) sur l'emprise du
+- [x] Fenêtre Exporter : format (PNG, JPG, PDF ; CSV pour les plans), résolution, nom de fichier
+- [x] PNG / JPG via Konva, sans la sélection, les guides ni la grille
+- [x] PDF via `jspdf` : A4 / A3, portrait / paysage
+- [x] PDF de Visuel : centré avec marges de 10 mm, ou pleine page si même format A4 / A3
+- [x] PDF de plan à l'échelle choisie (1:20, 1:50, 1:100, 1:200, Ajuster) sur l'emprise du
       contenu, cartouche et barre d'échelle ; avertissement si le plan ne tient pas sur la
       feuille, avec l'échelle qui tient
-- [ ] Plafond de résolution (8 192 px par côté, 16,7 Mpx au total) : options trop grandes
+- [x] Plafond de résolution (8 192 px par côté, 16,7 Mpx au total) : options trop grandes
       grisées
 
 **Critères d'acceptation**

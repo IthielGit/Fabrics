@@ -1,8 +1,10 @@
-import { ArrowLeft, Redo2, Undo2 } from 'lucide-react'
+import { ArrowLeft, Download, Redo2, Undo2 } from 'lucide-react'
 import { useState, type KeyboardEvent } from 'react'
 import { Link } from 'react-router'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
+import Button from '../ui/Button'
+import ExportDialog from './ExportDialog'
 import SaveIndicator from './SaveIndicator'
 
 const ICON_BUTTON =
@@ -18,6 +20,7 @@ export default function EditorHeader() {
 
   // Pendant la saisie on garde un brouillon ; le nom n'est validé qu'à la sortie du champ.
   const [draftName, setDraftName] = useState<string | null>(null)
+  const [exportOpen, setExportOpen] = useState(false)
 
   const commitName = () => {
     if (draftName !== null && draftName.trim()) renameProject(draftName.trim())
@@ -55,6 +58,10 @@ export default function EditorHeader() {
       <SaveIndicator />
 
       <div className="ml-auto flex items-center gap-1">
+        <Button onClick={() => setExportOpen(true)} className="mr-2 px-3 py-1.5">
+          <Download size={16} aria-hidden="true" />
+          {fr.export.open}
+        </Button>
         <button
           type="button"
           onClick={undo}
@@ -76,6 +83,7 @@ export default function EditorHeader() {
           <Redo2 size={18} />
         </button>
       </div>
+      {exportOpen && <ExportDialog onClose={() => setExportOpen(false)} />}
     </header>
   )
 }
