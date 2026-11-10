@@ -63,19 +63,19 @@ Objectif : créer un projet, dessiner des formes simples, tout retrouver après 
 
 Objectif : réaliser le parcours A (post Instagram) de bout en bout, sauf l'export.
 
-- [ ] Outil Texte : création au clic, édition au double-clic (zone de saisie superposée),
+- [x] Outil Texte : création au clic, édition au double-clic (zone de saisie superposée),
       police, taille, graisse, italique, couleur, alignement
-- [ ] Outil Ligne avec option flèche
-- [ ] Import d'image (bouton + glisser-déposer d'un fichier) ; stockage via `putAsset`
-- [ ] Panneau Propriétés : position, taille, rotation, opacité, remplissage, contour,
+- [x] Outil Ligne avec option flèche
+- [x] Import d'image (bouton + glisser-déposer d'un fichier) ; stockage via `putAsset`
+- [x] Panneau Propriétés : position, taille, rotation, opacité, remplissage, contour,
       épaisseur, arrondi — selon le type sélectionné ; champs en unités d'affichage
-- [ ] Panneau Calques : liste dans l'ordre d'affichage, renommer, masquer, verrouiller,
+- [x] Panneau Calques : liste dans l'ordre d'affichage, renommer, masquer, verrouiller,
       réordonner par glisser (HTML5 natif) et par boutons Monter / Descendre, sélection
       synchronisée avec le canevas
-- [ ] Copier / coller (y compris entre deux projets ouverts successivement)
-- [ ] Guides d'alignement et aimantation pendant le déplacement
-- [ ] Tous les raccourcis de `docs/02-ARCHITECTURE.md` qui concernent ces outils
-- [ ] Miniature du projet régénérée à la sauvegarde (petite image PNG) et affichée à l'Accueil
+- [x] Copier / coller (y compris entre deux projets ouverts successivement)
+- [x] Guides d'alignement et aimantation pendant le déplacement
+- [x] Tous les raccourcis de `docs/02-ARCHITECTURE.md` qui concernent ces outils
+- [x] Miniature du projet régénérée à la sauvegarde (petite image PNG) et affichée à l'Accueil
 
 **Critères d'acceptation**
 - Parcours A réalisable sans toucher au code
