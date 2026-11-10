@@ -16,6 +16,11 @@ export const fr = {
     projectLabel: 'Projet :',
     backToHome: 'Retour à l’accueil',
   },
+  projects: {
+    defaultDesignName: 'Visuel sans titre',
+    defaultPlanName: 'Plan sans titre',
+    copySuffix: '(copie)',
+  },
   elements: {
     rect: 'Rectangle',
     ellipse: 'Ellipse',
