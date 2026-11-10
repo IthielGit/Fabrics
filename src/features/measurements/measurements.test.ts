@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement, RoomElement, WallElement } from '../../types/document'
-import { CSV_BOM, escapeCsvField, measurementsToCsv, type CsvLabels } from './csv'
+import { CSV_BOM, csvFileName, escapeCsvField, measurementsToCsv, type CsvLabels } from './csv'
 import { computeMeasurements } from './measurements'
 
 const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
@@ -110,6 +110,29 @@ const LABELS: CsvLabels = {
   wallArea: 'Surface murale (m²)',
   total: 'Total',
 }
+
+describe('csvFileName', () => {
+  it('ajoute le suffixe et l’extension', () => {
+    expect(csvFileName('Cuisine', 'metres', 'plan')).toBe('Cuisine-metres.csv')
+  })
+
+  it('retire les caractères interdits dans un nom de fichier', () => {
+    expect(csvFileName('Plan: étage 1/2 ?', 'metres', 'plan')).toBe('Plan étage 1 2-metres.csv')
+  })
+
+  it('retire les points et espaces de fin', () => {
+    expect(csvFileName('Maison...  ', 'metres', 'plan')).toBe('Maison-metres.csv')
+  })
+
+  it('utilise le nom par défaut pour un nom vide ou entièrement interdit', () => {
+    expect(csvFileName('', 'metres', 'plan')).toBe('plan-metres.csv')
+    expect(csvFileName('???', 'metres', 'plan')).toBe('plan-metres.csv')
+  })
+
+  it('garde les accents', () => {
+    expect(csvFileName('Rénovation', 'metres', 'plan')).toBe('Rénovation-metres.csv')
+  })
+})
 
 describe('escapeCsvField', () => {
   it('laisse un texte simple tel quel (accents compris)', () => {

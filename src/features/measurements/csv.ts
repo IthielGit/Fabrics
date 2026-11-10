@@ -15,6 +15,20 @@ export interface CsvLabels {
   total: string
 }
 
+/**
+ * Nom du fichier CSV : `<nom du projet>-<suffixe>.csv`, sans caractères interdits par Windows
+ * (`\ / : * ? " < > |`) ni points ou espaces en fin de nom.
+ */
+export function csvFileName(projectName: string, suffix: string, fallback: string): string {
+  const cleaned = projectName
+    // eslint-disable-next-line no-control-regex -- les caractères de contrôle sont interdits dans un nom de fichier
+    .replace(/[\\/:*?"<>|\u0000-\u001f]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/[. ]+$/, '')
+  return `${cleaned || fallback}-${suffix}.csv`
+}
+
 const SEPARATOR = ';'
 const LINE_BREAK = '\r\n'
 /** Excel et LibreOffice lisent l'UTF-8 (accents) grâce à ce caractère invisible en début de fichier. */
