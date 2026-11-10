@@ -56,6 +56,12 @@ export const fr = {
     zoomValue: (percent: number) => `Zoom ${percent} %`,
     fitToScreen: 'Ajuster à l’écran',
   },
+  tools: {
+    label: 'Outils',
+    select: 'Sélection',
+    rect: 'Rectangle',
+    ellipse: 'Ellipse',
+  },
   elements: {
     rect: 'Rectangle',
     ellipse: 'Ellipse',

@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorStage from '../components/editor/EditorStage'
+import Toolbar from '../components/editor/Toolbar'
+import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import ZoomControls from '../components/editor/ZoomControls'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
@@ -12,6 +14,7 @@ export default function EditorPage() {
   const { projectId } = useParams()
   const loadProject = useEditorStore((state) => state.loadProject)
   const closeProject = useEditorStore((state) => state.closeProject)
+  useEditorShortcuts()
   // Résultat du chargement, associé au projet demandé : tant qu'il ne correspond pas
   // à l'adresse courante, on est en « chargement » (rien à remettre à zéro dans l'effet).
   const [result, setResult] = useState<{ projectId: string; state: LoadState } | null>(null)
@@ -66,6 +69,7 @@ export default function EditorPage() {
   return (
     <div className="relative h-screen w-screen overflow-hidden">
       <EditorStage />
+      <Toolbar />
       <ZoomControls />
     </div>
   )
