@@ -1,0 +1,61 @@
+import { describe, expect, it } from 'vitest'
+import { resolveShortcut, type KeyInput } from './shortcuts'
+
+const key = (k: string, mods: Partial<KeyInput> = {}): KeyInput => ({
+  key: k,
+  ctrlKey: false,
+  metaKey: false,
+  shiftKey: false,
+  altKey: false,
+  ...mods,
+})
+
+describe('resolveShortcut', () => {
+  it('choisit les outils avec V, R, O', () => {
+    expect(resolveShortcut(key('v'))).toBe('tool-select')
+    expect(resolveShortcut(key('r'))).toBe('tool-rect')
+    expect(resolveShortcut(key('o'))).toBe('tool-ellipse')
+  })
+
+  it('ignore la casse (Verr. Maj. activé)', () => {
+    expect(resolveShortcut(key('R'))).toBe('tool-rect')
+  })
+
+  it('supprime avec Suppr et Retour arrière', () => {
+    expect(resolveShortcut(key('Delete'))).toBe('delete')
+    expect(resolveShortcut(key('Backspace'))).toBe('delete')
+  })
+
+  it('annule avec Ctrl+Z et rétablit avec Ctrl+Maj+Z', () => {
+    expect(resolveShortcut(key('z', { ctrlKey: true }))).toBe('undo')
+    expect(resolveShortcut(key('Z', { ctrlKey: true, shiftKey: true }))).toBe('redo')
+  })
+
+  it('accepte Cmd (Mac) comme Ctrl', () => {
+    expect(resolveShortcut(key('z', { metaKey: true }))).toBe('undo')
+    expect(resolveShortcut(key('d', { metaKey: true }))).toBe('duplicate')
+  })
+
+  it('duplique avec Ctrl+D', () => {
+    expect(resolveShortcut(key('d', { ctrlKey: true }))).toBe('duplicate')
+  })
+
+  it('ajuste à l’écran avec Ctrl+0', () => {
+    expect(resolveShortcut(key('0', { ctrlKey: true }))).toBe('fit-view')
+  })
+
+  it('ne confond pas une lettre seule avec une commande Ctrl', () => {
+    expect(resolveShortcut(key('z'))).toBeNull()
+    expect(resolveShortcut(key('d'))).toBeNull()
+  })
+
+  it('ignore les combinaisons avec Alt et les touches inconnues', () => {
+    expect(resolveShortcut(key('r', { altKey: true }))).toBeNull()
+    expect(resolveShortcut(key('x'))).toBeNull()
+    expect(resolveShortcut(key('c', { ctrlKey: true }))).toBeNull()
+  })
+
+  it('reconnaît Échap', () => {
+    expect(resolveShortcut(key('Escape'))).toBe('escape')
+  })
+})
