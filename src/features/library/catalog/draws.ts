@@ -30,6 +30,8 @@ import {
   drawStove,
   drawUprightPiano,
 } from '../templates/living'
+import { barbecue, bed, buried, conifer, crate, fencePanel, ground, hedge, hotTub, letterBox, outbuilding, outdoorKitchen, palm, parasol, pond, pool, shelter, sunLounger, swingSet, trampoline, tree, wasteBins } from '../templates/outdoor'
+import { bicycle, bigVehicle, bikeRack, car, motorbike, parkingBay } from '../templates/vehicles'
 import { airConditioner, clearZone, doorSwing, evacuationArrow, exitSign, fitting, lamp, manifold, marker, meter, radiator, solarPanel, turningCircle } from '../templates/tech'
 import { desk, cornerDesk, lounge, phoneBooth, printer } from '../templates/office'
 import { ladderStair, lift, ramp, shaft, spiralStair, straightStair, turningStair, escalator } from '../templates/stairs'
@@ -274,3 +276,53 @@ assign(['pmr-clear-zone'], clearZone)
 assign(['door-swing-zone'], doorSwing)
 assign(['fire-compartment-mark'], marker('firecomp'))
 assign(['wheelchair-symbol'], marker('wheelchair'))
+
+// --- Extérieur et jardin ---
+assign(['tree-small', 'tree-medium', 'tree-large', 'tree-fruit', 'shrub'], tree)
+assign(['tree-conifer'], conifer)
+assign(['tree-palm'], palm)
+assign(['hedge'], hedge)
+assign(['flower-bed'], bed('flowers'))
+assign(['vegetable-patch'], bed('vegetables'))
+assign(['lawn'], ground('lawn'))
+assign(['gravel'], ground('gravel'))
+assign(['paving'], ground('paving'))
+assign(['pot-large', 'rain-barrel'], drawRound)
+assign(['planter-box', 'compost', 'sandbox'], crate)
+assign(['pond'], pond)
+assign(['swimming-pool'], pool('rect'))
+assign(['swimming-pool-round'], pool('round'))
+assign(['swimming-pool-l'], pool('l'))
+assign(['hot-tub'], hotTub)
+assign(['table-garden'], drawRectTable)
+assign(['chair-garden'], seat('chair'))
+assign(['sun-lounger'], sunLounger)
+assign(['parasol'], parasol)
+assign(['bbq'], barbecue)
+assign(['outdoor-kitchen'], outdoorKitchen)
+assign(['pergola'], shelter('pergola'))
+assign(['gazebo'], shelter('gazebo'))
+assign(['carport'], shelter('carport'))
+assign(['garden-shed'], outbuilding('shed'))
+assign(['greenhouse'], outbuilding('greenhouse'))
+assign(['cistern', 'septic-tank'], buried)
+assign(['waste-bins'], wasteBins)
+assign(['mailbox'], letterBox)
+assign(['trampoline'], trampoline)
+assign(['swing-set'], swingSet)
+assign(['fence-panel'], fencePanel)
+
+// --- Véhicules et stationnement ---
+assign(['car', 'car-compact', 'car-sedan', 'car-suv'], car)
+assign(['van'], bigVehicle('van'))
+assign(['truck'], bigVehicle('truck'))
+assign(['bus'], bigVehicle('bus'))
+assign(['motorcycle'], motorbike('moto'))
+assign(['scooter'], motorbike('scooter'))
+assign(['bicycle'], bicycle())
+assign(['cargo-bike'], bicycle(true))
+assign(['bike-rack'], bikeRack)
+assign(['parking-bay'], parkingBay('standard'))
+assign(['parking-bay-pmr'], parkingBay('pmr'))
+assign(['parking-bay-parallel'], parkingBay('parallel'))
+assign(['loading-bay'], parkingBay('loading'))

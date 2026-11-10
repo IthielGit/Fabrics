@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M7 — Axes de construction et mobilier (plan à présenter, en attente du feu vert ; catalogue prêt dans `docs/06-BIBLIOTHEQUE.md`)
-- **Dernière tâche terminée :** M7 · lot G (électricité, chauffage, sécurité et accessibilité)
-- **Prochaine tâche :** M7 · lot H (extérieur, véhicules)
+- **Dernière tâche terminée :** M7 · lot H (extérieur, véhicules)
+- **Prochaine tâche :** M7 · lot I (commerce et bars, santé et enseignement, loisirs)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -61,6 +61,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/library/templates/tech.ts`, `catalog/{draws,index}.ts`
 - Vérification : build ✓ lint ✓ tests ✓ (1423 au total)
 - Commit : feat: catalogue électricité, chauffage, sécurité
+
+### 2026-11-10 — M7 · Lot H · Extérieur et jardin, véhicules et stationnement
+- Fait : deux catégories ouvertes : **extérieur et jardin** (41) et **véhicules et stationnement** (16). Extérieur : arbres feuillus, arbustes, conifère (étoile), palmier, haie, massif de fleurs, potager, pelouse / gravier / dallage (zones), bassin, piscines (rectangulaire, ronde, en L retournable), spa, mobilier de jardin, bain de soleil, parasol (pointillé), barbecue, cuisine d'été, pergola, tonnelle, abri de voiture (pointillé), abri de jardin, serre, composteur, bac à sable, citerne et fosse enterrées (zones), local poubelles, trampoline, balançoire, clôture. Véhicules (silhouettes génériques, sans marque, face avant vers le bas) : voitures, camionnette, camion, autocar, moto, scooter, vélo, vélo cargo, arceaux ; places de stationnement (standard, PMR avec pictogramme, en créneau) et quai de chargement en zones.
+- Fichiers : `src/features/library/templates/{outdoor,vehicles}.ts`, `primitives.ts` (`translatePrimitives`), `catalog/{draws,index}.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1594 au total)
+- Commit : feat: catalogue extérieur et véhicules
 
 ### 2026-11-10 — M7 · Lot C · Panneau Bibliothèque
 - Fait : panneau « Bibliothèque » complet : **recherche** sans accents ni casse (« lave vaisselle » trouve « Lave-vaisselle »), sur le nom, les mots-clés et la catégorie, tous les mots devant être trouvés, résultats classés (début du nom, nom, mot-clé, catégorie) ; **catégories** en pastilles avec le nombre d'objets (« Tous » + une par catégorie remplie) ; **vignettes** (aperçu SVG, nom, dimensions en mm). **Pose** : clic sur une vignette puis clic sur le plan (l'outil reste actif, Échap pour quitter) ou **glisser-déposer** de la vignette sur le plan ; **aperçu fantôme** translucide à taille réelle sous le curseur, aimanté à la grille. Bouton **« Retourner »** dans Propriétés pour les objets asymétriques (`mirrorable`), tailles courantes en puces (lot B). Aucun objet du catalogue de test n'est asymétrique : le bouton apparaîtra avec les premiers objets asymétriques (lot D).

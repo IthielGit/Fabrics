@@ -65,6 +65,23 @@ export function arcPoints(
   return points
 }
 
+/** Même dessin décalé de (dx, dy). */
+export function translatePrimitives(primitives: readonly Primitive[], dx: number, dy: number): Primitive[] {
+  return primitives.map((p): Primitive => {
+    switch (p.kind) {
+      case 'rect':
+        return { ...p, x: p.x + dx, y: p.y + dy }
+      case 'circle':
+      case 'ellipse':
+      case 'arc':
+        return { ...p, cx: p.cx + dx, cy: p.cy + dy }
+      case 'line':
+      case 'polygon':
+        return { ...p, points: p.points.map((v, i) => v + (i % 2 === 0 ? dx : dy)) }
+    }
+  })
+}
+
 /** Même dessin dans un autre style (par exemple tout en pointillé pour un élément au-dessus du plan de coupe). */
 export function restyle(primitives: readonly Primitive[], style: PrimitiveStyle): Primitive[] {
   return primitives.map((p): Primitive => ({ ...p, style }))
