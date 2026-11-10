@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M7 — Axes de construction et mobilier (plan à présenter, en attente du feu vert ; catalogue prêt dans `docs/06-BIBLIOTHEQUE.md`)
-- **Dernière tâche terminée :** M7 · lot H (extérieur, véhicules)
-- **Prochaine tâche :** M7 · lot I (commerce et bars, santé et enseignement, loisirs)
+- **Dernière tâche terminée :** M7 · lot I (commerce et bars, santé et enseignement, loisirs)
+- **Prochaine tâche :** M7 · lot J (ensembles, récents et favoris, liste du mobilier dans le CSV, tests globaux)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -67,6 +67,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/library/templates/{outdoor,vehicles}.ts`, `primitives.ts` (`translatePrimitives`), `catalog/{draws,index}.ts`
 - Vérification : build ✓ lint ✓ tests ✓ (1594 au total)
 - Commit : feat: catalogue extérieur et véhicules
+
+### 2026-11-10 — M7 · Lot I · Commerce et bars, santé et enseignement, loisirs et sport
+- Fait : trois catégories ouvertes : **commerce et restauration** (31, bars compris), **santé et enseignement** (16), **loisirs et sport** (16) ; les 392 objets du catalogue sont désormais tous proposés. **Bars** : comptoirs droit, en L, en U, courbe (arc d'ellipse) et rond (service au centre), avec bord de service en pointillé ; arrière-bar, poste de service, meuble bar, chariot, bar d'intérieur avec arrière-bar, bar de jardin, bar de piscine (îlot et tabourets), table haute avec tabourets. Commerce : caisse, gondole, vitrine, portant, cabine d'essayage avec débattement, tables et banquettes de restaurant, buffet, plan de travail et piano de cuisson professionnels, chambre froide, estrade, régie, banc d'église, fauteuil de coiffeur. Santé : lit médicalisé, tables d'examen et de massage, brancard, fauteuil roulant, fauteuil de soins, pèse-personne ; enseignement : pupitres, bureau d'enseignant, tableau, paillasse et hotte de laboratoire, rayonnage. Loisirs : tennis de table, billard, baby-foot, appareils de sport, tapis de yoga, fauteuils de cinéma, aquarium, panier d'animal, machine d'atelier, terrains (basket, tennis, football à 5, pétanque) en zones. Correction : le billard passe en proportions verrouillées (sa taille « fixe » contredisait sa taille rapide 1100 × 2200).
+- Fichiers : `src/features/library/templates/venue.ts`, `catalog/{draws,index,specs}.ts`, `docs/06-BIBLIOTHEQUE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (1783 au total)
+- Commit : feat: catalogue commerce, bars, santé, loisirs
 
 ### 2026-11-10 — M7 · Lot C · Panneau Bibliothèque
 - Fait : panneau « Bibliothèque » complet : **recherche** sans accents ni casse (« lave vaisselle » trouve « Lave-vaisselle »), sur le nom, les mots-clés et la catégorie, tous les mots devant être trouvés, résultats classés (début du nom, nom, mot-clé, catégorie) ; **catégories** en pastilles avec le nombre d'objets (« Tous » + une par catégorie remplie) ; **vignettes** (aperçu SVG, nom, dimensions en mm). **Pose** : clic sur une vignette puis clic sur le plan (l'outil reste actif, Échap pour quitter) ou **glisser-déposer** de la vignette sur le plan ; **aperçu fantôme** translucide à taille réelle sous le curseur, aimanté à la grille. Bouton **« Retourner »** dans Propriétés pour les objets asymétriques (`mirrorable`), tailles courantes en puces (lot B). Aucun objet du catalogue de test n'est asymétrique : le bouton apparaîtra avec les premiers objets asymétriques (lot D).

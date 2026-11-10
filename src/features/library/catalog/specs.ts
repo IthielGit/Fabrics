@@ -401,7 +401,7 @@ export const SPECS: readonly SymbolSpec[] = [
   { id: 'library-shelf', category: 'health-education', width: 900, depth: 300, resize: 'length' },
   { id: 'kids-table', category: 'health-education', width: 800, depth: 600, resize: 'free' },
   { id: 'table-tennis', category: 'leisure', width: 1525, depth: 2740, resize: 'fixed' },
-  { id: 'billiard', category: 'leisure', width: 1270, depth: 2540, resize: 'fixed', sizes: [[1100, 2200]] },
+  { id: 'billiard', category: 'leisure', width: 1270, depth: 2540, resize: 'ratio', sizes: [[1100, 2200]] },
   { id: 'foosball', category: 'leisure', width: 700, depth: 1300, resize: 'fixed' },
   { id: 'treadmill', category: 'leisure', width: 800, depth: 1800, resize: 'free' },
   { id: 'exercise-bike', category: 'leisure', width: 550, depth: 1200, resize: 'free' },

@@ -44,6 +44,9 @@ const OPEN_CATEGORIES: ReadonlySet<SymbolCategory> = new Set<SymbolCategory>([
   'safety',
   'outdoor',
   'vehicles',
+  'hospitality',
+  'health-education',
+  'leisure',
 ])
 
 /** Tous les objets proposés, dans l'ordre du catalogue. */

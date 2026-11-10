@@ -621,7 +621,7 @@ Silhouettes **génériques** (pas de modèle ni de marque).
 | id | Nom | Taille | Tailles rapides | R | Marques |
 |---|---|---|---|---|---|
 | `table-tennis` | Table de tennis de table | 1525 × 2740 | | F | |
-| `billiard` | Billard | 1270 × 2540 | 1100 × 2200 | F | |
+| `billiard` | Billard | 1270 × 2540 | 1100 × 2200 | P | |
 | `foosball` | Baby-foot | 700 × 1300 | | F | |
 | `treadmill` | Tapis de course | 800 × 1800 | | L | |
 | `exercise-bike` | Vélo d'appartement | 550 × 1200 | | L | |
