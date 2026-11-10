@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M3 — Mode plan et métrés (plan présenté, en attente du feu vert)
-- **Dernière tâche terminée :** M2 — validé par l'utilisateur (dernier commit de code `60cfa4a`)
-- **Prochaine tâche :** M3, après feu vert sur la liste des tâches
+- **Jalon en cours :** M3 — Mode plan et métrés : toutes les tâches de code sont faites, en attente de validation par l'utilisateur dans le navigateur
+- **Dernière tâche terminée :** M3 · panneau Métrés et export CSV
+- **Prochaine tâche :** l'utilisateur vérifie les 4 critères d'acceptation de M3, puis valide
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -16,7 +16,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M0 Mise en place | terminé | 2026-11-10 |
 | M1 Socle de l'éditeur | terminé | 2026-11-10 |
 | M2 Contenu et mise en forme | terminé | 2026-11-10 |
-| M3 Mode plan et métrés | à faire | |
+| M3 Mode plan et métrés | à valider | |
 | M4 Export | à faire | |
 | M5 Mise en ligne | à faire | |
 | M6 Comptes et sauvegarde cloud | à faire | |

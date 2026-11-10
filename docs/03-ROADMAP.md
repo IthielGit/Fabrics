@@ -88,23 +88,23 @@ Objectif : réaliser le parcours A (post Instagram) de bout en bout, sauf l'expo
 
 Objectif : réaliser les parcours B et C (hors export PDF).
 
-- [ ] `src/features/units/` : conversions et formatage (`3,50 m`, `12,40 m²`) + tests
-- [ ] `src/features/geometry/` : distance, longueur de polyligne, aire (lacet), périmètre,
+- [x] `src/features/units/` : conversions et formatage (`3,50 m`, `12,40 m²`) + tests
+- [x] `src/features/geometry/` : distance, longueur de polyligne, aire (lacet), périmètre,
       centroïde, aimantation + tests
-- [ ] Grille en cm/m, barre d'état « Zoom 100 % · Impression 1:50 » en bas de l'écran
-- [ ] Outil Mur : clic par point, Maj = 0/45/90°, double-clic ou Entrée pour finir, Échap pour
+- [x] Grille en cm/m, barre d'état « Zoom 100 % · Impression 1:50 » en bas de l'écran
+- [x] Outil Mur : clic par point, Maj = 0/45/90°, double-clic ou Entrée pour finir, Échap pour
       annuler ; épaisseur et hauteur par défaut, modifiables dans Propriétés
-- [ ] Longueur du segment en cours affichée en direct pendant le tracé
-- [ ] Outil Pièce : polygone fermé, points aimantés aux sommets des murs et aux angles de
+- [x] Longueur du segment en cours affichée en direct pendant le tracé
+- [x] Outil Pièce : polygone fermé, points aimantés aux sommets des murs et aux angles de
       leurs faces ; étiquette au centre (nom + surface au tracé)
-- [ ] Murs, pièces et cotes : points absolus, déplacement seul avec le Transformer (règles de
+- [x] Murs, pièces et cotes : points absolus, déplacement seul avec le Transformer (règles de
       `docs/02-ARCHITECTURE.md`)
-- [ ] Outil Cote : deux points, valeur affichée en mètres, décalage réglable
-- [ ] Outil Calibrer pour une image importée (procédure de `docs/02-ARCHITECTURE.md`)
-- [ ] Édition des sommets : glisser un sommet d'un mur ou d'une pièce après création
-- [ ] Panneau Métrés (pièces, murs, totaux), mis à jour en temps réel
-- [ ] Export CSV des métrés
-- [ ] Ces outils n'apparaissent que dans les projets de type Plan
+- [x] Outil Cote : deux points, valeur affichée en mètres, décalage réglable
+- [x] Outil Calibrer pour une image importée (procédure de `docs/02-ARCHITECTURE.md`)
+- [x] Édition des sommets : glisser un sommet d'un mur ou d'une pièce après création
+- [x] Panneau Métrés (pièces, murs, totaux), mis à jour en temps réel
+- [x] Export CSV des métrés
+- [x] Ces outils n'apparaissent que dans les projets de type Plan
 
 **Critères d'acceptation**
 - Un rectangle de pièce de 4,00 × 3,00 m affiche 12,00 m² et 14,00 m
