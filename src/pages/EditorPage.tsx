@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EditorStage from '../components/editor/EditorStage'
 import Notice from '../components/editor/Notice'
+import PropertiesPanel from '../components/editor/PropertiesPanel'
 import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
@@ -73,11 +74,16 @@ export default function EditorPage() {
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">
       <EditorHeader />
-      <div className="relative min-h-0 flex-1">
-        <EditorStage />
-        <Toolbar />
-        <ZoomControls />
-        <Notice />
+      <div className="flex min-h-0 flex-1">
+        <div className="relative min-w-0 flex-1">
+          <EditorStage />
+          <Toolbar />
+          <ZoomControls />
+          <Notice />
+        </div>
+        <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white">
+          <PropertiesPanel />
+        </aside>
       </div>
     </div>
   )
