@@ -3,6 +3,7 @@ import {
   ChevronDown,
   ChevronUp,
   Circle,
+  DoorOpen,
   Eye,
   EyeOff,
   GripVertical,
@@ -28,6 +29,7 @@ const TYPE_ICONS: Record<CanvasElement['type'], LucideIcon> = {
   wall: Square,
   room: Square,
   dimension: Slash,
+  opening: DoorOpen,
 }
 
 const ROW_BUTTON = 'rounded p-1 text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-transparent'

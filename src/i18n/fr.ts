@@ -87,6 +87,9 @@ export const fr = {
     wall: 'Mur',
     room: 'Pièce',
     dimension: 'Cote',
+    door: 'Porte',
+    window: 'Fenêtre',
+    bay: 'Baie',
   },
   layers: {
     title: 'Calques',

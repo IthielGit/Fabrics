@@ -160,7 +160,7 @@ Objectif : percer les murs et obtenir des métrés nets.
       supprime ses ouvertures
 - [ ] Métrés : surface murale **nette** (brute − ouvertures), nombre et liste des ouvertures ;
       CSV mis à jour
-- [ ] Migration du document (version 1 → 2) testée
+- [x] Migration du document (version 1 → 2) testée
 
 **Critères d'acceptation**
 - Un mur de 4,00 m × 2,50 m avec une porte de 0,90 × 2,10 m affiche 10,00 m² brut et 8,11 m² net

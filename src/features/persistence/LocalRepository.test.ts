@@ -40,7 +40,7 @@ function makeProject(id: string, updatedAt: string, assetIds: string[] = []): Pr
     name: `Projet ${id}`,
     kind: 'design',
     document: {
-      version: 1,
+      version: 2,
       unit: 'px',
       page: { width: 1080, height: 1080, background: '#ffffff' },
       elements: assetIds.map(image),
@@ -62,6 +62,15 @@ describe('LocalRepository', () => {
     const project = makeProject('a', '2026-02-01T00:00:00.000Z')
     await repo.save(project)
     expect(await repo.get('a')).toEqual(project)
+  })
+
+  it('met au format actuel un projet enregistré en version 1', async () => {
+    const old = makeProject('ancien', '2026-01-01T00:00:00.000Z', ['a1'])
+    store.set('project:ancien', { ...old, document: { ...old.document, version: 1 } })
+
+    const loaded = await repo.get('ancien')
+    expect(loaded?.document.version).toBe(2)
+    expect(loaded?.document.elements).toEqual(old.document.elements)
   })
 
   it('renvoie null pour un projet inconnu', async () => {

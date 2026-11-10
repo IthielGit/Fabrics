@@ -1,4 +1,5 @@
 import { del, delMany, get, getMany, keys, set, setMany } from 'idb-keyval'
+import { migrateProject, type StoredProject } from '../documents/migrations'
 import type { Project } from '../../types/document'
 import { collectAssetIds } from './collectAssetIds'
 import type { ProjectRepository, ProjectSummary } from './types'
@@ -31,7 +32,9 @@ export class LocalRepository implements ProjectRepository {
   }
 
   async get(id: string): Promise<Project | null> {
-    return (await get<Project>(projectKey(id))) ?? null
+    // Les projets enregistrés par une ancienne version sont mis au format actuel à la lecture.
+    const stored = await get<StoredProject>(projectKey(id))
+    return stored ? migrateProject(stored) : null
   }
 
   async save(project: Project): Promise<void> {
@@ -54,7 +57,7 @@ export class LocalRepository implements ProjectRepository {
     const projectKeys = allKeys.filter(
       (key): key is string => typeof key === 'string' && key.startsWith('project:'),
     )
-    const others = await getMany<Project>(projectKeys)
+    const others = await getMany<StoredProject>(projectKeys)
     for (const other of others) {
       if (!other) continue
       for (const assetId of collectAssetIds(other.document)) candidates.delete(assetId)

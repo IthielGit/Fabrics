@@ -1,4 +1,5 @@
 import type { FabricsDocument, PlanSettings, Project } from '../../types/document'
+import { CURRENT_DOCUMENT_VERSION } from './migrations'
 
 export type DesignFormatId = 'post-square' | 'story' | 'a4' | 'a3' | 'banner'
 
@@ -35,7 +36,7 @@ export function createDesignProject(
   const format = DESIGN_FORMATS.find((f) => f.id === formatId)
   if (!format) throw new Error(`Format inconnu : ${formatId}`)
   const document: FabricsDocument = {
-    version: 1,
+    version: CURRENT_DOCUMENT_VERSION,
     unit: 'px',
     page: { width: format.width, height: format.height, background: '#ffffff' },
     elements: [],
@@ -45,7 +46,7 @@ export function createDesignProject(
 
 export function createPlanProject(name: string, now: Date = new Date()): Project {
   const document: FabricsDocument = {
-    version: 1,
+    version: CURRENT_DOCUMENT_VERSION,
     unit: 'mm',
     page: { ...PLAN_PAGE, background: '#ffffff' },
     elements: [],

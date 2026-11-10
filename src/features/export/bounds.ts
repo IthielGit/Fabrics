@@ -88,6 +88,10 @@ export function elementBounds(element: CanvasElement): Box | null {
       }
       return pointsBox(points)
     }
+    case 'opening':
+      // Une ouverture est contenue dans l'épaisseur de son mur, sauf le battant d'une porte :
+      // son emprise réelle demande le mur porteur (voir M5, tâche 9).
+      return null
   }
 }
 

@@ -34,5 +34,8 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <RoomShape element={element} {...interaction} />
     case 'dimension':
       return <DimensionShape element={element} {...interaction} />
+    case 'opening':
+      // Dessin des ouvertures : M5, tâche 3.
+      return null
   }
 }

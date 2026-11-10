@@ -96,7 +96,7 @@ export interface Project {
 }
 
 export interface FabricsDocument {
-  version: 1;                // incrémenté si le format change (prévoir une migration)
+  version: 2;                // incrémenté si le format change (migration : features/documents/migrations.ts)
   unit: 'px' | 'mm';         // 'px' pour design, 'mm' pour plan
   page: Page;
   elements: CanvasElement[]; // ordre du tableau = ordre d'affichage (dernier = au-dessus)
@@ -196,9 +196,23 @@ export interface DimensionElement extends BaseElement {
   offset: number;            // décalage de la ligne de cote, mm
 }
 
+// Ouverture (M5) : position relative à son mur, pas de points absolus.
+export interface OpeningElement extends BaseElement {
+  type: 'opening';
+  kind: 'door' | 'window' | 'bay';   // porte, fenêtre, baie
+  wallId: string;            // mur porteur ; supprimé avec lui
+  segmentIndex: number;      // segment de la polyligne du mur
+  offset: number;            // mm, du début du segment au centre de l'ouverture
+  width: number;             // mm
+  height: number;            // mm
+  sillHeight: number;        // mm, 0 pour une porte
+  hinge: 'start' | 'end';    // côté des gonds
+  side: 'left' | 'right';    // côté du mur vers lequel la porte s'ouvre
+}
+
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
-  | WallElement | RoomElement | DimensionElement;
+  | WallElement | RoomElement | DimensionElement | OpeningElement;
 ```
 
 Valeurs par défaut à la création d'un plan : page 20 000 × 15 000 mm, `scale: 50`,
@@ -401,19 +415,7 @@ incrémente `FabricsDocument.version` et ajoute une **migration** pure et testé
 ### Ajouts prévus au modèle de données
 
 ```ts
-// M5 — version 2
-export interface OpeningElement extends BaseElement {
-  type: 'opening';
-  kind: 'door' | 'window' | 'bay';   // porte, fenêtre, baie
-  wallId: string;            // mur porteur ; supprimé avec lui
-  segmentIndex: number;      // segment de la polyligne du mur
-  offset: number;            // mm, du début du segment au centre de l'ouverture
-  width: number;             // mm
-  height: number;            // mm
-  sillHeight: number;        // mm, 0 pour une porte
-  hinge: 'start' | 'end';    // côté des gonds
-  side: 'left' | 'right';    // côté du mur vers lequel la porte s'ouvre
-}
+// M5 — version 2 : OpeningElement, intégré au modèle ci-dessus.
 
 // M6 — version 3
 export interface Level {
