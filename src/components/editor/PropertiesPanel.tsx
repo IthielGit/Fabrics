@@ -16,6 +16,7 @@ import { useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement, TextElement } from '../../types/document'
 import ColorField from '../ui/ColorField'
 import NumberField from '../ui/NumberField'
+import PlanSettingsSection from './PlanSettingsSection'
 
 const ALIGNMENTS: { align: TextElement['align']; icon: LucideIcon; label: string }[] = [
   { align: 'left', icon: AlignLeft, label: fr.properties.alignLeft },
@@ -92,7 +93,10 @@ export default function PropertiesPanel() {
       <h2 className="text-sm font-semibold text-slate-900">{fr.properties.title}</h2>
 
       {selected.length === 0 && (
-        <p className="mt-3 text-sm text-slate-500">{fr.properties.empty}</p>
+        <>
+          <p className="mt-3 text-sm text-slate-500">{fr.properties.empty}</p>
+          <PlanSettingsSection />
+        </>
       )}
 
       {selected.length > 1 && (

@@ -6,7 +6,7 @@ import { fr } from '../i18n/fr'
 import type { Guide } from '../features/geometry/guides'
 import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
-import type { CanvasElement, FabricsDocument, Project } from '../types/document'
+import type { CanvasElement, FabricsDocument, PlanSettings, Project } from '../types/document'
 
 export type EditorTool =
   | 'select'
@@ -78,6 +78,8 @@ interface EditorState {
   updateElements: (ids: string[], updater: (element: CanvasElement) => CanvasElement) => void
   removeElements: (ids: string[]) => void
   duplicateElements: (ids: string[]) => void
+  /** Modifie les réglages du plan (échelle, grille, murs par défaut) ; sans effet dans un visuel. */
+  updatePlanSettings: (patch: Partial<PlanSettings>) => void
   /** Sélectionne tout ce qui est visible et déverrouillé. */
   selectAll: () => void
   copySelection: () => void
@@ -257,6 +259,16 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         copies.map((el) => el.id),
       )
     },
+
+    updatePlanSettings: (patch) =>
+      commit((doc) => {
+        if (!doc.plan) return doc
+        const plan = { ...doc.plan, ...patch }
+        const unchanged = (Object.keys(patch) as (keyof PlanSettings)[]).every(
+          (key) => plan[key] === doc.plan![key],
+        )
+        return unchanged ? doc : { ...doc, plan }
+      }),
 
     selectAll: () => {
       const { project } = get()

@@ -142,6 +142,28 @@ describe('outils réservés aux plans', () => {
   })
 })
 
+describe('réglages du plan', () => {
+  it('modifie l’échelle et la grille, et l’annulation les restaure', () => {
+    store().loadProject(createPlanProject('Plan'))
+    store().updatePlanSettings({ scale: 100, gridSize: 200 })
+    expect(store().project!.document.plan).toMatchObject({ scale: 100, gridSize: 200 })
+    store().undo()
+    expect(store().project!.document.plan).toMatchObject({ scale: 50, gridSize: 100 })
+  })
+
+  it('n’ajoute pas d’historique quand rien ne change', () => {
+    store().loadProject(createPlanProject('Plan'))
+    store().updatePlanSettings({ scale: 50 })
+    expect(store().history.past).toHaveLength(0)
+  })
+
+  it('est sans effet dans un visuel', () => {
+    store().updatePlanSettings({ scale: 100 })
+    expect(store().project!.document.plan).toBeUndefined()
+    expect(store().history.past).toHaveLength(0)
+  })
+})
+
 describe('copier / coller', () => {
   it('copie dans un projet et colle dans un autre', () => {
     const a = rect('A')

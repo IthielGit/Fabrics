@@ -54,6 +54,8 @@ export const fr = {
     loadError: 'Impossible d’ouvrir ce projet.',
     zoomLabel: 'Niveau de zoom',
     zoomValue: (percent: number) => `Zoom ${percent} %`,
+    zoomWithPrintScale: (percent: number, scale: number) =>
+      `Zoom ${percent} % · Impression 1:${scale}`,
     fitToScreen: 'Ajuster à l’écran',
     undo: 'Annuler',
     redo: 'Rétablir',
@@ -98,6 +100,18 @@ export const fr = {
     renameHint: 'Double-clic pour renommer',
     nameLabel: 'Nom du calque',
     drag: 'Glisser pour réordonner',
+  },
+  planSettings: {
+    title: 'Réglages du plan',
+    printScale: 'Échelle d’impression',
+    printScaleOption: (scale: number) => `1:${scale}`,
+    gridSize: 'Grille',
+    gridSizeOption: (centimeters: number) =>
+      centimeters >= 100 ? `${centimeters / 100} m` : `${centimeters} cm`,
+    snapToGrid: 'Aimanter sur la grille',
+    wallThickness: 'Épaisseur des murs',
+    wallHeight: 'Hauteur des murs',
+    unitCm: 'cm',
   },
   properties: {
     title: 'Propriétés',

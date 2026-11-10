@@ -20,6 +20,7 @@ import AlignmentGuides from './AlignmentGuides'
 import ElementNode from './ElementNode'
 import { importImageFiles } from './importImages'
 import { isTypingTarget } from './isTypingTarget'
+import PlanGrid from './PlanGrid'
 import SelectionTransformer from './SelectionTransformer'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
@@ -309,6 +310,14 @@ export default function EditorStage() {
               stroke="#94a3b8"
               strokeWidth={1 / scale}
             />
+            {project.document.plan && (
+              <PlanGrid
+                pageWidth={page.width}
+                pageHeight={page.height}
+                gridSize={project.document.plan.gridSize}
+                scale={scale}
+              />
+            )}
             {elements.map((element) => (
               <ElementNode
                 key={element.id}
