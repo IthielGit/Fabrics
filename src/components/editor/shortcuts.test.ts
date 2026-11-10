@@ -26,6 +26,12 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut(key('d', { ctrlKey: true }))).toBe('duplicate')
   })
 
+  it('choisit les outils Porte et Fenêtre avec B et F', () => {
+    expect(resolveShortcut(key('b'))).toBe('tool-door')
+    expect(resolveShortcut(key('f'))).toBe('tool-window')
+    expect(resolveShortcut(key('b', { ctrlKey: true }))).toBeNull()
+  })
+
   it('ignore la casse (Verr. Maj. activé)', () => {
     expect(resolveShortcut(key('R'))).toBe('tool-rect')
   })

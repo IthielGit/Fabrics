@@ -37,6 +37,12 @@ export function useEditorShortcuts() {
         case 'tool-dimension':
           store.setTool('dimension')
           break
+        case 'tool-door':
+          store.setTool('door')
+          break
+        case 'tool-window':
+          store.setTool('window')
+          break
         case 'escape':
           // Annule d'abord l'outil de tracé, puis désélectionne.
           if (store.activeTool !== 'select') store.setTool('select')

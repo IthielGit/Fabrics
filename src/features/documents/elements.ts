@@ -5,6 +5,7 @@ import type {
   FabricsDocument,
   ImageElement,
   LineElement,
+  OpeningElement,
   RectElement,
   RoomElement,
   TextElement,
@@ -110,6 +111,36 @@ export function createWallElement(
     thickness,
     height,
     fill: '#475569',
+  }
+}
+
+/** Dimensions par défaut d'une ouverture, en mm (hauteur d'allège comprise). */
+export const OPENING_DEFAULTS = {
+  door: { width: 900, height: 2100, sillHeight: 0 },
+  window: { width: 1200, height: 1000, sillHeight: 900 },
+  bay: { width: 2400, height: 2150, sillHeight: 0 },
+} as const satisfies Record<OpeningElement['kind'], { width: number; height: number; sillHeight: number }>
+
+/**
+ * Ouverture posée sur un mur. Elle n'a pas de position propre : `x`, `y` et `rotation` restent à 0,
+ * sa place vient de son mur (`wallId`, `segmentIndex`) et de `offset`.
+ */
+export function createOpeningElement(
+  kind: OpeningElement['kind'],
+  name: string,
+  placement: Pick<OpeningElement, 'wallId' | 'segmentIndex' | 'offset' | 'side'>,
+): OpeningElement {
+  return {
+    ...BASE,
+    id: crypto.randomUUID(),
+    type: 'opening',
+    name,
+    x: 0,
+    y: 0,
+    kind,
+    ...OPENING_DEFAULTS[kind],
+    ...placement,
+    hinge: 'start',
   }
 }
 

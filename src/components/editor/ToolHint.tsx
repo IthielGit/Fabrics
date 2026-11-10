@@ -5,7 +5,12 @@ import { useEditorStore } from '../../stores/editorStore'
 export default function ToolHint() {
   const tool = useEditorStore((state) => state.activeTool)
   const hint =
-    tool === 'wall' || tool === 'room' || tool === 'dimension' || tool === 'calibrate'
+    tool === 'wall' ||
+    tool === 'room' ||
+    tool === 'dimension' ||
+    tool === 'door' ||
+    tool === 'window' ||
+    tool === 'calibrate'
       ? fr.hints[tool]
       : null
   if (!hint) return null

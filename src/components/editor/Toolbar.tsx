@@ -3,6 +3,8 @@ import {
   BrickWall,
   Circle,
   Crosshair,
+  DoorOpen,
+  Grid2x2,
   ImagePlus,
   MousePointer2,
   Pentagon,
@@ -39,6 +41,8 @@ const PLAN_TOOLS: ToolDefinition[] = [
   { tool: 'wall', icon: BrickWall, label: fr.tools.wall, shortcut: 'W' },
   { tool: 'room', icon: Pentagon, label: fr.tools.room, shortcut: 'P' },
   { tool: 'dimension', icon: Ruler, label: fr.tools.dimension, shortcut: 'D' },
+  { tool: 'door', icon: DoorOpen, label: fr.tools.door, shortcut: 'B' },
+  { tool: 'window', icon: Grid2x2, label: fr.tools.window, shortcut: 'F' },
   { tool: 'calibrate', icon: Crosshair, label: fr.tools.calibrate },
 ]
 

@@ -272,3 +272,10 @@ export const fr = {
     backToHome: 'Retour à l’accueil',
   },
 } as const
+    door: 'Porte',
+    window: 'Fenêtre',
+    door: 'Survolez un mur et cliquez pour poser une porte (elle s’ouvre du côté du curseur) · Échap : quitter',
+    window: 'Survolez un mur et cliquez pour poser une fenêtre · Échap : quitter',
+    openingNoWall: 'Cliquez sur un mur pour y poser l’ouverture.',
+    openingNoRoom: 'Pas assez de place sur ce mur pour cette ouverture.',
+    openingTooTall: 'Cette ouverture est plus haute que le mur.',

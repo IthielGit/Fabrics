@@ -18,10 +18,19 @@ export type EditorTool =
   | 'wall'
   | 'room'
   | 'dimension'
+  | 'door'
+  | 'window'
   | 'calibrate'
 
 /** Outils qui n'existent que dans un projet de type Plan. */
-export const PLAN_TOOLS: readonly EditorTool[] = ['wall', 'room', 'dimension', 'calibrate']
+export const PLAN_TOOLS: readonly EditorTool[] = [
+  'wall',
+  'room',
+  'dimension',
+  'door',
+  'window',
+  'calibrate',
+]
 
 export function isPlanTool(tool: EditorTool): boolean {
   return PLAN_TOOLS.includes(tool)

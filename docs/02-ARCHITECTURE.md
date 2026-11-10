@@ -528,3 +528,4 @@ Sans ces variables, l'application fonctionne en mode local (pas de bouton de con
   pause ; vérifier les limites actuelles sur le site de Supabase.
 - **Temps réel** (M13) : Cloudflare Pages ne garde pas de connexion WebSocket ouverte ; il faudra
   choisir un hébergeur pour le serveur Yjs. Décision à prendre au début de M13.
+| `B` / `F` | Porte / Fenêtre (plan) |

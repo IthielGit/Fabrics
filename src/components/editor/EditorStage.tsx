@@ -22,6 +22,7 @@ import CalibrationDraftLayer from './CalibrationDraftLayer'
 import ElementNode from './ElementNode'
 import { importImageFiles } from './importImages'
 import { isTypingTarget } from './isTypingTarget'
+import OpeningPreviewLayer from './OpeningPreviewLayer'
 import PlanGrid from './PlanGrid'
 import PolylineDraftLayer from './PolylineDraftLayer'
 import SelectionTransformer from './SelectionTransformer'
@@ -30,6 +31,7 @@ import { setThumbnailStage } from './thumbnail'
 import { useCalibrationTool } from './useCalibrationTool'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
+import { useOpeningTool, type OpeningToolKind } from './useOpeningTool'
 import { usePolylineDrawing, type PolylineTool } from './usePolylineDrawing'
 import VertexHandles from './VertexHandles'
 
@@ -88,6 +90,10 @@ export default function EditorStage() {
       : null
   const polylineDrawing = usePolylineDrawing(polylineTool, scale)
   const calibration = useCalibrationTool(activeTool === 'calibrate')
+  // Pose de portes et de fenêtres sur les murs.
+  const openingKind: OpeningToolKind | null =
+    activeTool === 'door' || activeTool === 'window' ? activeTool : null
+  const openingTool = useOpeningTool(openingKind, scale)
   const selecting = activeTool === 'select' && !spaceDown
 
   // Communique la taille de la zone au store, et ajuste la page à l'écran à l'ouverture.
@@ -161,6 +167,8 @@ export default function EditorStage() {
       polylineDrawing.onPointerDown(event)
     } else if (activeTool === 'calibrate') {
       calibration.onPointerDown(event)
+    } else if (openingKind) {
+      openingTool.onPointerDown(event)
     } else if (drawing) {
       setDraft({ start: point, current: point, additive: false })
     } else if (activeTool === 'select') {
@@ -176,6 +184,7 @@ export default function EditorStage() {
   const handlePointerMove = (event: PointerEvent) => {
     if (polylineTool) polylineDrawing.onPointerMove(event)
     if (activeTool === 'calibrate') calibration.onPointerMove(event)
+    if (openingKind) openingTool.onPointerMove(event)
     if (!draft && !band) return
     const point = pointerInDocument(event)
     if (!point) return
@@ -390,6 +399,7 @@ export default function EditorStage() {
             {activeTool === 'calibrate' && (
               <CalibrationDraftLayer state={calibration.state} scale={scale} />
             )}
+            {openingKind && <OpeningPreviewLayer preview={openingTool.preview} scale={scale} />}
             {polylineTool && (
               <PolylineDraftLayer
                 tool={polylineTool}
