@@ -25,33 +25,9 @@ export const CATEGORIES: readonly SymbolCategory[] = [
   'sets',
 ]
 
-/**
- * Catégories proposées dans la bibliothèque. Les fiches de toutes les catégories sont dans
- * `specs.ts` ; une catégorie est ouverte au public quand ses dessins sont faits (lots D à I de M7).
- */
-const OPEN_CATEGORIES: ReadonlySet<SymbolCategory> = new Set<SymbolCategory>([
-  'living',
-  'dining',
-  'bedroom',
-  'storage',
-  'kitchen',
-  'bathroom',
-  'laundry',
-  'stairs',
-  'office',
-  'electrical',
-  'hvac',
-  'safety',
-  'outdoor',
-  'vehicles',
-  'hospitality',
-  'health-education',
-  'leisure',
-])
-
 /** Tous les objets proposés, dans l'ordre du catalogue. */
-export const SYMBOLS: readonly SymbolDef[] = SPECS.filter((spec) => OPEN_CATEGORIES.has(spec.category)).map(
-  (spec) => defineSymbol(spec, DRAWS[spec.id] ?? FALLBACK_DRAW),
+export const SYMBOLS: readonly SymbolDef[] = SPECS.map((spec) =>
+  defineSymbol(spec, DRAWS[spec.id] ?? FALLBACK_DRAW),
 )
 
 const BY_ID = new Map(SYMBOLS.map((symbol) => [symbol.id, symbol]))

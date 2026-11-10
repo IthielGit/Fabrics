@@ -10,6 +10,7 @@ import {
   type ScaleChoice,
   type SheetFormat,
 } from '../../features/export/pdfLayout'
+import { furnitureCsvRows } from '../library/furnitureRows'
 import { measurementsToCsv } from '../../features/measurements/csv'
 import {
   computeBuildingMeasurements,
@@ -49,7 +50,11 @@ export async function exportProject(project: Project, options: ExportOptions): P
   const shownElements = isPlan ? selectActiveElements(useEditorStore.getState()) : doc.elements
 
   if (options.type === 'csv') {
-    const csv = measurementsToCsv(computeBuildingMeasurements(doc), fr.measurements.csv)
+    const csv = measurementsToCsv(
+      computeBuildingMeasurements(doc),
+      fr.measurements.csv,
+      furnitureCsvRows(doc.elements),
+    )
     downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), fileName)
     return
   }

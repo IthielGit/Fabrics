@@ -399,3 +399,31 @@ export const LIBRARY_SYMBOL_TEXTS: Record<string, SymbolText> = {
   "sports-court-five": { name: "Terrain de football à 5 (zone)", keywords: ["terrain","football","zone","sports","court","five"] },
   "petanque": { name: "Terrain de pétanque (zone)", keywords: ["terrain","petanque","zone"] },
 }
+
+/** Noms et mots-clés des ensembles prêts à poser (compositions de plusieurs objets). */
+export const LIBRARY_SET_TEXTS: Record<string, SymbolText> = {
+  "set-dining-4": { name: "Table + 4 chaises", keywords: ["ensemble","table","chaises","rectangulaire"] },
+  "set-dining-6": { name: "Table + 6 chaises", keywords: ["ensemble","table","chaises","rectangulaire"] },
+  "set-dining-8": { name: "Table + 8 chaises", keywords: ["ensemble","table","chaises","rectangulaire"] },
+  "set-dining-round-6": { name: "Table ronde + 6 chaises", keywords: ["ensemble","table","ronde","chaises"] },
+  "set-living-corner": { name: "Salon d'angle", keywords: ["ensemble","salon","angle","canape","table","basse","tapis","meuble"] },
+  "set-living-straight": { name: "Salon droit", keywords: ["ensemble","salon","droit","canape","places","fauteuils","table","basse","tapis"] },
+  "set-bedroom-double": { name: "Chambre parentale", keywords: ["ensemble","chambre","parentale","lit","chevets","armoire","portes"] },
+  "set-bedroom-child": { name: "Chambre d'enfant", keywords: ["ensemble","chambre","enfant","lit","chevet","bureau","armoire"] },
+  "set-office-workstation": { name: "Poste de travail", keywords: ["ensemble","poste","travail","bureau","fauteuil","caisson"] },
+  "set-office-meeting-6": { name: "Salle de réunion 6", keywords: ["ensemble","salle","reunion","table","chaises"] },
+  "set-kitchen-linear": { name: "Cuisine linéaire 3 m", keywords: ["ensemble","cuisine","lineaire","bas","evier","plaque","frigo","hotte"] },
+  "set-kitchen-l": { name: "Cuisine en L", keywords: ["ensemble","cuisine","elements","angle","evier","plaque","frigo"] },
+  "set-kitchen-island": { name: "Cuisine avec îlot", keywords: ["ensemble","cuisine","ilot","lineaire","tabourets"] },
+  "set-bathroom-basic": { name: "Salle de bain complète", keywords: ["ensemble","salle","bain","complete","baignoire","meuble","vasque"] },
+  "set-bathroom-shower": { name: "Salle d'eau", keywords: ["ensemble","salle","eau","douche","meuble","vasque"] },
+  "set-wc-pmr": { name: "Sanitaire accessible PMR", keywords: ["ensemble","sanitaire","accessible","pmr","lavabo","barres","cercle"] },
+  "set-terrace-4": { name: "Salon de jardin", keywords: ["ensemble","salon","jardin","table","chaises","parasol"] },
+  "set-parking-3": { name: "3 places de stationnement", keywords: ["ensemble","places","stationnement","cote"] },
+  "set-kitchen-american": { name: "Cuisine américaine et coin repas", keywords: ["ensemble","cuisine","americaine","coin","repas","tabourets","bar","table","chaises"] },
+  "set-kitchen-american-l": { name: "Cuisine américaine en L et salon", keywords: ["ensemble","cuisine","americaine","salon","tabourets","canape","places","table","basse"] },
+  "set-kitchen-u-table": { name: "Cuisine en U avec table", keywords: ["ensemble","cuisine","table","chaises"] },
+  "set-bar-home": { name: "Coin bar", keywords: ["ensemble","coin","bar","interieur","tabourets"] },
+  "set-bar-l-restaurant": { name: "Bar de restaurant en L", keywords: ["ensemble","bar","restaurant","comptoir","arriere","tabourets"] },
+  "set-bar-garden": { name: "Bar de jardin", keywords: ["ensemble","bar","jardin","tabourets","parasol"] },
+}

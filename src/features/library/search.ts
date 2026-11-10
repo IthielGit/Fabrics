@@ -1,5 +1,3 @@
-import type { SymbolDef } from './types'
-
 /** Textes d'un objet utilisés par la recherche (fournis par `src/i18n/fr.ts`). */
 export interface SymbolSearchText {
   name: string
@@ -35,15 +33,15 @@ function scoreToken(token: string, name: string, keywords: readonly string[], ca
  * l'ordre du catalogue est gardé). Tous les mots saisis doivent être trouvés (nom, mots-clés ou
  * catégorie), sans tenir compte des accents ni de la casse. Une recherche vide renvoie tout.
  */
-export function searchSymbols(
-  symbols: readonly SymbolDef[],
+export function searchSymbols<T>(
+  symbols: readonly T[],
   query: string,
-  textOf: (symbol: SymbolDef) => SymbolSearchText,
-): SymbolDef[] {
+  textOf: (symbol: T) => SymbolSearchText,
+): T[] {
   const tokens = normalizeText(query).split(' ').filter(Boolean)
   if (tokens.length === 0) return [...symbols]
 
-  const scored: { symbol: SymbolDef; score: number; index: number }[] = []
+  const scored: { symbol: T; score: number; index: number }[] = []
   symbols.forEach((symbol, index) => {
     const text = textOf(symbol)
     const name = normalizeText(text.name)

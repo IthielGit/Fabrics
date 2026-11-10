@@ -1,5 +1,6 @@
 import { Download } from 'lucide-react'
 import { useMemo } from 'react'
+import { furnitureCsvRows } from '../library/furnitureRows'
 import { csvFileName, measurementsToCsv } from '../../features/measurements/csv'
 import {
   computeBuildingMeasurements,
@@ -40,7 +41,7 @@ export default function MeasurementsPanel() {
   const buildingEmpty = building.total.rooms.length === 0 && building.total.walls.length === 0
 
   const handleExport = () => {
-    const csv = measurementsToCsv(building, fr.measurements.csv)
+    const csv = measurementsToCsv(building, fr.measurements.csv, furnitureCsvRows(elements ?? []))
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
     downloadBlob(
       blob,

@@ -1,57 +1,77 @@
 import clsx from 'clsx'
-import { Search } from 'lucide-react'
+import { Search, Star } from 'lucide-react'
 import { useMemo, useState, type DragEvent } from 'react'
 import { CATEGORIES, SYMBOLS } from '../../features/library/catalog'
+import { SETS, type SetDef } from '../../features/library/catalog/sets'
 import { searchSymbols } from '../../features/library/search'
-import type { SymbolCategory } from '../../features/library/types'
+import type { SymbolCategory, SymbolDef } from '../../features/library/types'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import { FURNITURE_DRAG_TYPE } from './dragType'
-import SymbolPreview from './SymbolPreview'
+import SymbolPreview, { SetPreview } from './SymbolPreview'
 import { categoryName, symbolName, symbolSearchText } from './symbolText'
+import { useLibraryPrefs } from './useLibraryPrefs'
 
-type CategoryFilter = 'all' | SymbolCategory
+type Entry = SymbolDef | SetDef
+type Filter = 'all' | 'recents' | 'favorites' | SymbolCategory
+
+const ENTRIES: readonly Entry[] = [...SYMBOLS, ...SETS]
+const BY_ID = new Map(ENTRIES.map((entry) => [entry.id, entry]))
+const isSet = (entry: Entry): entry is SetDef => 'members' in entry
 
 /**
- * Panneau « Bibliothèque » d'un plan : recherche (sans accents), catégories, vignettes. Un clic
- * choisit l'objet puis un clic sur le plan le pose (l'outil reste actif) ; on peut aussi le
- * glisser directement sur le plan.
+ * Panneau « Bibliothèque » d'un plan : recherche (sans accents), catégories, récents et favoris,
+ * vignettes. Un clic choisit l'objet (ou l'ensemble) puis un clic sur le plan le pose (l'outil
+ * reste actif) ; on peut aussi le glisser directement sur le plan.
  */
 export default function LibraryPanel() {
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
   const activeTool = useEditorStore((state) => state.activeTool)
   const activeSymbol = useEditorStore((state) => state.furnitureSymbolId)
   const startPlacing = useEditorStore((state) => state.startPlacingFurniture)
+  const recents = useLibraryPrefs((state) => state.recents)
+  const favorites = useLibraryPrefs((state) => state.favorites)
+  const toggleFavorite = useLibraryPrefs((state) => state.toggleFavorite)
   const [query, setQuery] = useState('')
-  const [category, setCategory] = useState<CategoryFilter>('all')
+  const [filter, setFilter] = useState<Filter>('all')
 
-  // Résultats de la recherche, avant le filtre de catégorie (pour compter les objets par catégorie).
-  const found = useMemo(() => searchSymbols(SYMBOLS, query, symbolSearchText), [query])
+  // Résultats de la recherche, avant le filtre (pour compter les objets par catégorie).
+  const found = useMemo(() => searchSymbols(ENTRIES, query, symbolSearchText), [query])
   const counts = useMemo(() => {
     const byCategory = new Map<SymbolCategory, number>()
-    for (const symbol of found) byCategory.set(symbol.category, (byCategory.get(symbol.category) ?? 0) + 1)
+    for (const entry of found) byCategory.set(entry.category, (byCategory.get(entry.category) ?? 0) + 1)
     return byCategory
   }, [found])
 
   if (!isPlan) return null
 
-  const categories = CATEGORIES.filter((id) => SYMBOLS.some((symbol) => symbol.category === id))
-  const shown = category === 'all' ? found : found.filter((symbol) => symbol.category === category)
+  const foundIds = new Set(found.map((entry) => entry.id))
+  const fromList = (ids: readonly string[]) =>
+    ids.flatMap((id) => (foundIds.has(id) ? (BY_ID.get(id) ?? []) : []))
+  const shown: Entry[] =
+    filter === 'all'
+      ? found
+      : filter === 'recents'
+        ? fromList(recents)
+        : filter === 'favorites'
+          ? fromList(favorites)
+          : found.filter((entry) => entry.category === filter)
+  const categories = CATEGORIES.filter((id) => ENTRIES.some((entry) => entry.category === id))
 
   const handleDragStart = (id: string) => (event: DragEvent<HTMLButtonElement>) => {
     event.dataTransfer.setData(FURNITURE_DRAG_TYPE, id)
     event.dataTransfer.effectAllowed = 'copy'
   }
 
-  const chip = (id: CategoryFilter, label: string, count: number) => (
+  const chip = (id: Filter, label: string, count: number) => (
     <button
       key={id}
       type="button"
-      aria-pressed={category === id}
-      onClick={() => setCategory(id)}
+      aria-pressed={filter === id}
+      onClick={() => setFilter(id)}
       className={clsx(
         'rounded-full border px-2 py-0.5 text-xs',
-        category === id
+        filter === id
           ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
           : 'border-slate-300 text-slate-600 hover:bg-slate-100',
       )}
@@ -82,6 +102,8 @@ export default function LibraryPanel() {
 
       <div className="mt-2 flex flex-wrap gap-1">
         {chip('all', fr.library.allCategories, found.length)}
+        {chip('recents', fr.library.recents, fromList(recents).length)}
+        {chip('favorites', fr.library.favorites, fromList(favorites).length)}
         {categories.map((id) => chip(id, categoryName(id), counts.get(id) ?? 0))}
       </div>
 
@@ -89,17 +111,18 @@ export default function LibraryPanel() {
         <p className="mt-3 text-sm text-slate-500">{fr.library.noResult}</p>
       ) : (
         <ul className="mt-3 grid grid-cols-2 gap-2">
-          {shown.map((def) => {
-            const selected = activeTool === 'furniture' && activeSymbol === def.id
+          {shown.map((entry) => {
+            const selected = activeTool === 'furniture' && activeSymbol === entry.id
+            const favorite = favorites.includes(entry.id)
             return (
-              <li key={def.id}>
+              <li key={entry.id} className="relative">
                 <button
                   type="button"
                   draggable
-                  onDragStart={handleDragStart(def.id)}
-                  onClick={() => startPlacing(def.id)}
+                  onDragStart={handleDragStart(entry.id)}
+                  onClick={() => startPlacing(entry.id)}
                   aria-pressed={selected}
-                  title={symbolName(def.id)}
+                  title={symbolName(entry.id)}
                   className={clsx(
                     'flex h-full w-full flex-col items-center gap-1 rounded-md border p-2 text-center',
                     selected
@@ -107,11 +130,23 @@ export default function LibraryPanel() {
                       : 'border-slate-200 hover:bg-slate-50',
                   )}
                 >
-                  <SymbolPreview def={def} size={64} />
-                  <span className="line-clamp-2 text-xs text-slate-900">{symbolName(def.id)}</span>
+                  {isSet(entry) ? <SetPreview set={entry} size={64} /> : <SymbolPreview def={entry} size={64} />}
+                  <span className="line-clamp-2 text-xs text-slate-900">{symbolName(entry.id)}</span>
                   <span className="text-[11px] text-slate-500">
-                    {fr.library.size(def.width, def.depth)}
+                    {isSet(entry)
+                      ? `${fr.library.setBadge} · ${fr.library.size(entry.width, entry.depth)}`
+                      : fr.library.size(entry.width, entry.depth)}
                   </span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => toggleFavorite(entry.id)}
+                  aria-pressed={favorite}
+                  aria-label={favorite ? fr.library.removeFavorite : fr.library.addFavorite}
+                  title={favorite ? fr.library.removeFavorite : fr.library.addFavorite}
+                  className="absolute right-1 top-1 rounded p-0.5 text-slate-400 hover:bg-slate-200 hover:text-amber-500 aria-pressed:text-amber-500"
+                >
+                  <Star size={14} fill={favorite ? 'currentColor' : 'none'} aria-hidden="true" />
                 </button>
               </li>
             )

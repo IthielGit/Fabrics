@@ -1,8 +1,7 @@
 # 06 — Bibliothèque d'objets (jalon M7)
 
-**Statut : spécification prête. L'exécution se fait uniquement au jalon M7**, après M6 et sur feu
-vert de l'utilisateur (règle 1 de `CLAUDE.md`). Ce document est le « cahier de fabrication » :
-au début de M7, Claude le lit, présente le plan en lots (section 9) et exécute.
+**Statut : réalisé au jalon M7 (lots A à J).** Ce document reste la référence du catalogue ; les
+emprises des ensembles (section 5.18) sont celles calculées par `src/features/library/catalog/sets.ts`.
 
 Les dimensions sont en **mm** (largeur × profondeur) et viennent de **mesures usuelles et
 génériques** (normes courantes, tailles de marché habituelles). Règle « clean room » de
@@ -645,29 +644,29 @@ listes `{ symbol, dx, dy, rotation }` autour d'un point d'ancrage.
 
 | id | Nom | Contenu | Emprise |
 |---|---|---|---|
-| `set-dining-4` | Table + 4 chaises | table rectangulaire 4 + 4 chaises | 1800 × 1700 |
-| `set-dining-6` | Table + 6 chaises | table rectangulaire 6 + 6 chaises | 2400 × 1800 |
-| `set-dining-8` | Table + 8 chaises | table rectangulaire 8 + 8 chaises | 3000 × 1900 |
-| `set-dining-round-6` | Table ronde + 6 chaises | table ronde 6 + 6 chaises | 2200 × 2200 |
-| `set-living-corner` | Salon d'angle | canapé d'angle + table basse + tapis + meuble TV | 3600 × 3600 |
-| `set-living-straight` | Salon droit | canapé 3 places + 2 fauteuils + table basse + tapis | 3600 × 3200 |
-| `set-bedroom-double` | Chambre parentale | lit 160 × 200 + 2 chevets + armoire 3 portes | 2600 × 3000 |
-| `set-bedroom-child` | Chambre d'enfant | lit enfant + chevet + bureau d'enfant + armoire | 2800 × 2600 |
-| `set-office-workstation` | Poste de travail | bureau + fauteuil + caisson | 1600 × 1500 |
-| `set-office-meeting-6` | Salle de réunion 6 | table 6 + 6 chaises | 3200 × 1900 |
+| `set-dining-4` | Table + 4 chaises | table rectangulaire 4 + 4 chaises | 1200 × 1600 |
+| `set-dining-6` | Table + 6 chaises | table rectangulaire 6 + 6 chaises | 2600 × 1700 |
+| `set-dining-8` | Table + 8 chaises | table rectangulaire 8 + 8 chaises | 3200 × 1800 |
+| `set-dining-round-6` | Table ronde + 6 chaises | table ronde 6 + 6 chaises | 2130 × 2200 |
+| `set-living-corner` | Salon d'angle | canapé d'angle + table basse + tapis + meuble TV | 2500 × 4325 |
+| `set-living-straight` | Salon droit | canapé 3 places + 2 fauteuils + table basse + tapis | 2100 × 3400 |
+| `set-bedroom-double` | Chambre parentale | lit 160 × 200 + 2 chevets + armoire 3 portes | 2550 × 2900 |
+| `set-bedroom-child` | Chambre d'enfant | lit enfant + chevet + bureau d'enfant + armoire | 2450 × 2250 |
+| `set-office-workstation` | Poste de travail | bureau + fauteuil + caisson | 1800 × 1300 |
+| `set-office-meeting-6` | Salle de réunion 6 | table 6 + 6 chaises | 3300 × 1900 |
 | `set-kitchen-linear` | Cuisine linéaire 3 m | bas + évier + plaque + frigo + hotte | 3000 × 650 |
-| `set-kitchen-l` | Cuisine en L | éléments d'angle + évier + plaque + frigo | 3200 × 2400 |
-| `set-kitchen-island` | Cuisine avec îlot | linéaire + îlot + 3 tabourets | 3600 × 3400 |
-| `set-bathroom-basic` | Salle de bain complète | baignoire + meuble vasque + WC | 2500 × 1800 |
-| `set-bathroom-shower` | Salle d'eau | douche + meuble vasque + WC | 2200 × 1700 |
-| `set-wc-pmr` | Sanitaire accessible PMR | WC PMR + lavabo PMR + barres + cercle PMR | 2200 × 2200 |
+| `set-kitchen-l` | Cuisine en L | éléments d'angle + évier + plaque + frigo | 2900 × 2700 |
+| `set-kitchen-island` | Cuisine avec îlot | linéaire + îlot + 3 tabourets | 3000 × 3150 |
+| `set-bathroom-basic` | Salle de bain complète | baignoire + meuble vasque + WC | 1700 × 1600 |
+| `set-bathroom-shower` | Salle d'eau | douche + meuble vasque + WC | 2200 × 900 |
+| `set-wc-pmr` | Sanitaire accessible PMR | WC PMR + lavabo PMR + barres + cercle PMR | 2250 × 2250 |
 | `set-terrace-4` | Salon de jardin | table + 4 chaises + parasol | 3000 × 3000 |
 | `set-parking-3` | 3 places de stationnement | 3 places côte à côte | 7500 × 5000 |
-| `set-kitchen-american` | Cuisine américaine et coin repas | cuisine américaine + 3 tabourets de bar + table 4 + 4 chaises | 3600 × 4800 |
-| `set-kitchen-american-l` | Cuisine américaine en L et salon | cuisine américaine en L + 3 tabourets + canapé 3 places + table basse | 4200 × 5200 |
-| `set-kitchen-u-table` | Cuisine en U avec table | cuisine en U + table de cuisine + 4 chaises | 3600 × 4600 |
-| `set-bar-home` | Coin bar | bar d'intérieur + 4 tabourets de bar | 2400 × 2400 |
-| `set-bar-l-restaurant` | Bar de restaurant en L | comptoir de bar en L + arrière-bar + 6 tabourets de bar | 3600 × 3000 |
+| `set-kitchen-american` | Cuisine américaine et coin repas | cuisine américaine + 3 tabourets de bar + table 4 + 4 chaises | 3300 × 4400 |
+| `set-kitchen-american-l` | Cuisine américaine en L et salon | cuisine américaine en L + 3 tabourets + canapé 3 places + table basse | 3200 × 4950 |
+| `set-kitchen-u-table` | Cuisine en U avec table | cuisine en U + table de cuisine + 4 chaises | 3000 × 3000 |
+| `set-bar-home` | Coin bar | bar d'intérieur + 4 tabourets de bar | 2550 × 2000 |
+| `set-bar-l-restaurant` | Bar de restaurant en L | comptoir de bar en L + arrière-bar + 6 tabourets de bar | 3450 × 2450 |
 | `set-bar-garden` | Bar de jardin | bar de jardin + 4 tabourets de bar + parasol | 3000 × 3000 |
 
 ## 6. Comportement du panneau Bibliothèque

@@ -34,6 +34,27 @@ export interface CsvLabels {
   bays: string
   /** Nom de chaque type d'ouverture. */
   kinds: Record<'door' | 'window' | 'bay', string>
+  /** Intitulés du tableau du mobilier (absent : pas de tableau). */
+  furniture?: {
+    title: string
+    nominalTitle: string
+    zoneTitle: string
+    category: string
+    depth: string
+    count: string
+  }
+}
+
+/** Une ligne du tableau du mobilier : un objet de la bibliothèque, regroupé par taille. */
+export interface FurnitureCsvRow {
+  category: string
+  name: string
+  /** Largeur et profondeur, en mm. */
+  width: number
+  depth: number
+  count: number
+  /** `furniture` : mobilier ; `nominal` : symbole conventionnel ; `zone` : surface de référence. */
+  kind: 'furniture' | 'nominal' | 'zone'
 }
 
 /**
@@ -71,7 +92,11 @@ const m2 = (mm2: number) => formatDecimal(mm2ToM2(mm2))
  * Les tableaux des pièces, des murs (surfaces brute et nette) et des ouvertures ont une colonne
  * « Niveau » ; un dernier tableau donne les totaux de chaque niveau et ceux du bâtiment.
  */
-export function measurementsToCsv(building: BuildingMeasurements, labels: CsvLabels): string {
+export function measurementsToCsv(
+  building: BuildingMeasurements,
+  labels: CsvLabels,
+  furniture: readonly FurnitureCsvRow[] = [],
+): string {
   const { levels, total } = building
   const text = escapeCsvField
   const lines: string[] = []
@@ -145,6 +170,29 @@ export function measurementsToCsv(building: BuildingMeasurements, labels: CsvLab
         ],
       ),
     )
+  }
+
+  // Mobilier : liste (catégorie, nom, taille, nombre), jamais ajoutée aux surfaces ni aux longueurs.
+  // Les symboles conventionnels et les zones de référence sont comptés à part.
+  const furnitureLabels = labels.furniture
+  if (furnitureLabels) {
+    const tables: [FurnitureCsvRow['kind'], string][] = [
+      ['furniture', furnitureLabels.title],
+      ['nominal', furnitureLabels.nominalTitle],
+      ['zone', furnitureLabels.zoneTitle],
+    ]
+    for (const [kind, title] of tables) {
+      const rows = furniture.filter((item) => item.kind === kind)
+      if (rows.length === 0) continue
+      lines.push(
+        '',
+        row(text(title)),
+        row(text(furnitureLabels.category), text(labels.name), text(labels.width), text(furnitureLabels.depth), text(furnitureLabels.count)),
+        ...rows.map((item) =>
+          row(text(item.category), text(item.name), mm(item.width), mm(item.depth), String(item.count)),
+        ),
+      )
+    }
   }
 
   // Totaux : une ligne par niveau, puis le bâtiment (= la somme des niveaux).

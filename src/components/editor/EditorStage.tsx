@@ -17,11 +17,14 @@ import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
 import { getSymbol } from '../../features/library/catalog'
+import { getSet } from '../../features/library/catalog/sets'
+import { elementsForSet } from '../../features/library/placeSet'
 import { furniturePlacement } from '../../features/library/placement'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import { FURNITURE_DRAG_TYPE } from '../library/dragType'
+import { useLibraryPrefs } from '../library/useLibraryPrefs'
 import { symbolName } from '../library/symbolText'
 import AlignmentGuides from './AlignmentGuides'
 import CalibrateDialog from './CalibrateDialog'
@@ -68,6 +71,7 @@ export default function EditorStage() {
   const setViewportSize = useEditorStore((state) => state.setViewportSize)
   const fitView = useEditorStore((state) => state.fitView)
   const addElement = useEditorStore((state) => state.addElement)
+  const addElements = useEditorStore((state) => state.addElements)
   const setTool = useEditorStore((state) => state.setTool)
   const setSelection = useEditorStore((state) => state.setSelection)
   const editingTextId = useEditorStore((state) => state.editingTextId)
@@ -194,13 +198,26 @@ export default function EditorStage() {
    */
   const placeFurniture = (point: Point, symbolId?: string) => {
     const id = symbolId ?? useEditorStore.getState().furnitureSymbolId
-    const def = id ? getSymbol(id) : undefined
+    if (!id) return
+    const set = getSet(id)
+    if (set) {
+      // Un ensemble : tous ses objets d'un coup (un seul pas d'historique), centré sur le point.
+      const existing = new Map<string, number>()
+      for (const el of elements) {
+        if (el.type === 'furniture') existing.set(el.symbol, (existing.get(el.symbol) ?? 0) + 1)
+      }
+      addElements(elementsForSet(set, furniturePlacement(set, point, furnitureGrid), symbolName, existing))
+      useLibraryPrefs.getState().addRecent(set.id)
+      return
+    }
+    const def = getSymbol(id)
     if (!def) return
     const { x, y } = furniturePlacement(def, point, furnitureGrid)
     const count = elements.filter((el) => el.type === 'furniture' && el.symbol === def.id).length
     addElement(
       createFurnitureElement(`${symbolName(def.id)} ${count + 1}`, def.id, x, y, def.width, def.depth),
     ) // l'objet posé devient la sélection ; l'outil reste actif pour en poser d'autres
+    useLibraryPrefs.getState().addRecent(def.id)
   }
 
   const handlePointerDown = (event: PointerEvent) => {

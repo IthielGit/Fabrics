@@ -1,11 +1,13 @@
 import { Group } from 'react-konva'
 import { createFurnitureElement } from '../../features/documents/elements'
-import { getSymbol } from '../../features/library/catalog'
-import { furniturePlacement } from '../../features/library/placement'
 import type { Point } from '../../features/geometry/viewport'
+import { getSymbol } from '../../features/library/catalog'
+import { getSet } from '../../features/library/catalog/sets'
+import { furniturePlacement } from '../../features/library/placement'
 import FurnitureShape from './shapes/FurnitureShape'
 
 interface FurnitureGhostProps {
+  /** Objet ou ensemble en cours de pose. */
   symbolId: string
   /** Position du curseur sur le plan (mm). */
   point: Point
@@ -15,8 +17,30 @@ interface FurnitureGhostProps {
   scale: number
 }
 
-/** Aperçu translucide, à taille réelle, de l'objet qu'on est en train de poser. */
+/** Aperçu translucide, à taille réelle, de l'objet (ou de tous les objets de l'ensemble) qu'on est en train de poser. */
 export default function FurnitureGhost({ symbolId, point, grid, scale }: FurnitureGhostProps) {
+  const set = getSet(symbolId)
+  if (set) {
+    const origin = furniturePlacement(set, point, grid)
+    return (
+      <Group name="ghost" listening={false}>
+        {set.members.map((member, index) => (
+          <FurnitureShape
+            key={index}
+            element={{
+              ...createFurnitureElement('', member.symbol, origin.x + member.x, origin.y + member.y, member.width, member.depth),
+              id: `furniture-ghost-${index}`,
+              rotation: member.rotation,
+              mirrored: member.mirrored,
+              opacity: 0.55,
+            }}
+            interactive={false}
+            viewScale={scale}
+          />
+        ))}
+      </Group>
+    )
+  }
   const def = getSymbol(symbolId)
   if (!def) return null
   const { x, y } = furniturePlacement(def, point, grid)

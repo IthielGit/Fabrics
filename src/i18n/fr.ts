@@ -1,7 +1,7 @@
 // Tous les textes d'interface de Fabrics (français).
 // Aucun texte affiché à l'utilisateur ne doit être écrit directement dans un composant.
 
-import { LIBRARY_SYMBOL_TEXTS } from './libraryTexts'
+import { LIBRARY_SET_TEXTS, LIBRARY_SYMBOL_TEXTS } from './libraryTexts'
 
 export const fr = {
   app: {
@@ -174,6 +174,14 @@ export const fr = {
     csvFallbackName: 'plan',
     // Intitulés du fichier CSV
     csv: {
+      furniture: {
+        title: 'Mobilier et équipements',
+        nominalTitle: 'Symboles conventionnels (non à l’échelle)',
+        zoneTitle: 'Zones de référence',
+        category: 'Catégorie',
+        depth: 'Profondeur (mm)',
+        count: 'Nombre',
+      },
       level: 'Niveau',
       building: 'Bâtiment',
       elevation: 'Altitude (mm)',
@@ -271,6 +279,11 @@ export const fr = {
     searchLabel: 'Rechercher un objet',
     searchPlaceholder: 'Rechercher (lit, canapé, table…)',
     allCategories: 'Tous',
+    recents: 'Récents',
+    favorites: 'Favoris',
+    addFavorite: 'Ajouter aux favoris',
+    removeFavorite: 'Retirer des favoris',
+    setBadge: 'Ensemble',
     noResult: 'Aucun objet ne correspond à cette recherche.',
     size: (width: number, depth: number) => `${width} × ${depth} mm`,
     categories: {
@@ -294,7 +307,7 @@ export const fr = {
       sets: 'Ensembles',
     } as Record<string, string>,
     // Nom et mots-clés de recherche (synonymes courants) de chaque objet du catalogue.
-    symbols: LIBRARY_SYMBOL_TEXTS,
+    symbols: { ...LIBRARY_SYMBOL_TEXTS, ...LIBRARY_SET_TEXTS },
   },
   hints: {
     furniture: 'Cliquez sur le plan pour poser l’objet (autant de fois que voulu) · Échap : quitter',

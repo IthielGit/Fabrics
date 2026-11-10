@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M7 — Axes de construction et mobilier (plan à présenter, en attente du feu vert ; catalogue prêt dans `docs/06-BIBLIOTHEQUE.md`)
-- **Dernière tâche terminée :** M7 · lot I (commerce et bars, santé et enseignement, loisirs)
-- **Prochaine tâche :** M7 · lot J (ensembles, récents et favoris, liste du mobilier dans le CSV, tests globaux)
+- **Jalon en cours :** M7 — Axes de construction et mobilier (terminé, à valider par l'utilisateur)
+- **Dernière tâche terminée :** M7 · lot J (ensembles, récents et favoris, liste du mobilier, tests globaux) — M7 terminé, à valider
+- **Prochaine tâche :** valider M7 dans le navigateur ; idée à trancher : pivoter un objet de 90° au clavier (la touche R est déjà « Rectangle »)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -20,7 +20,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M4 Export | terminé | 2026-11-10 |
 | M5 Ouvertures | terminé | 2026-11-10 |
 | M6 Niveaux | terminé | 2026-11-10 |
-| M7 Axes et mobilier | à faire | |
+| M7 Axes et mobilier | terminé (à valider) | |
 | M8 Vue 3D | à faire | |
 | M9 Façades, coupes et planche | à faire | |
 | M10 Import et export | à faire | |
@@ -73,6 +73,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/library/templates/venue.ts`, `catalog/{draws,index,specs}.ts`, `docs/06-BIBLIOTHEQUE.md`
 - Vérification : build ✓ lint ✓ tests ✓ (1783 au total)
 - Commit : feat: catalogue commerce, bars, santé, loisirs
+
+### 2026-11-10 — M7 · Lot J · Ensembles, récents et favoris, liste du mobilier (CSV), tests globaux
+- Fait : **24 ensembles** prêts à poser (table + 4 / 6 / 8 chaises, table ronde + 6, salons, chambres, poste de travail, salle de réunion, cuisines linéaire / en L / avec îlot / américaines / en U, salles de bain et d'eau, sanitaire PMR, salon de jardin, 3 places de parking, coins bars) : chaque ensemble est une liste d'objets placés et tournés (les chaises tournent le dos à la table), avec son aperçu, sa vignette dans la catégorie « Ensembles » et son **aperçu fantôme** ; poser un ensemble crée tous ses objets **en un seul pas d'historique** (annuler les retire tous), sur le niveau actif, ils deviennent la sélection et restent indépendants. **Récents** (12 derniers objets ou ensembles posés) et **Favoris** (étoile sur chaque vignette) : mémorisés dans le navigateur (localStorage, tolérant aux erreurs), jamais dans le projet. **CSV** : tableau « Mobilier et équipements » (catégorie, nom, largeur, profondeur en mm, nombre, regroupé par objet et par taille), puis deux tableaux à part pour les symboles conventionnels et les zones de référence ; le mobilier n'entre dans aucun métré (surfaces, longueurs). Les emprises annoncées dans `docs/06-BIBLIOTHEQUE.md` sont remplacées par celles calculées. Roadmap M7 : bibliothèque, panneau et liste du mobilier cochés.
+- Fichiers : `src/features/library/{catalog/sets,placeSet,prefs,furnitureList,catalogGlobal.test}.ts`, `src/components/library/{LibraryPanel,SymbolPreview,useLibraryPrefs,furnitureRows}`, `src/components/editor/{EditorStage,FurnitureGhost,exportProject,MeasurementsPanel}`, `src/features/measurements/csv.ts`, `src/stores/editorStore.ts` (`addElements`), `src/i18n/{fr,libraryTexts}.ts`, `docs/{03-ROADMAP,06-BIBLIOTHEQUE}.md`
+- Vérification : build ✓ lint ✓ tests ✓ (1806 au total : 392 objets comptés par catégorie, aucune marque, ensembles, récents / favoris, CSV)
+- Commit : feat: ensembles, récents et favoris, liste du mobilier
 
 ### 2026-11-10 — M7 · Lot C · Panneau Bibliothèque
 - Fait : panneau « Bibliothèque » complet : **recherche** sans accents ni casse (« lave vaisselle » trouve « Lave-vaisselle »), sur le nom, les mots-clés et la catégorie, tous les mots devant être trouvés, résultats classés (début du nom, nom, mot-clé, catégorie) ; **catégories** en pastilles avec le nombre d'objets (« Tous » + une par catégorie remplie) ; **vignettes** (aperçu SVG, nom, dimensions en mm). **Pose** : clic sur une vignette puis clic sur le plan (l'outil reste actif, Échap pour quitter) ou **glisser-déposer** de la vignette sur le plan ; **aperçu fantôme** translucide à taille réelle sous le curseur, aimanté à la grille. Bouton **« Retourner »** dans Propriétés pour les objets asymétriques (`mirrorable`), tailles courantes en puces (lot B). Aucun objet du catalogue de test n'est asymétrique : le bouton apparaîtra avec les premiers objets asymétriques (lot D).
@@ -430,5 +436,6 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
 - Aimantation des murs et des sommets sur ceux du niveau de référence (aligner un étage sur celui du dessous) : utile après M6, pas dans le jalon.
+- Pivoter un objet de la bibliothèque de 90° au clavier (prévu par `docs/06-BIBLIOTHEQUE.md`, section 6) : la touche `R` est déjà l'outil Rectangle ; proposition : `Maj + R`. Rotation libre par poignée et par le champ Rotation déjà disponibles.
 - Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M13, à rediscuter).
 - Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : pose des objets contre un mur (aimantation), hauteurs 3D des objets (M8), import de symboles SVG / DXF par l'utilisateur, bibliothèque personnelle (ensembles enregistrés), niveau de détail « détaillé », étiquettes de cote automatiques, variantes de style, annotations de plan (flèche du nord, repère de niveau).
