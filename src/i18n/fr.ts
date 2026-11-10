@@ -1,6 +1,8 @@
 // Tous les textes d'interface de Fabrics (français).
 // Aucun texte affiché à l'utilisateur ne doit être écrit directement dans un composant.
 
+import { LIBRARY_SYMBOL_TEXTS } from './libraryTexts'
+
 export const fr = {
   app: {
     name: 'Fabrics',
@@ -292,14 +294,7 @@ export const fr = {
       sets: 'Ensembles',
     } as Record<string, string>,
     // Nom et mots-clés de recherche (synonymes courants) de chaque objet du catalogue.
-    symbols: {
-      'sofa-3': { name: 'Canapé 3 places', keywords: ['divan', 'sofa', 'salon', 'banquette'] },
-      'table-round-4': {
-        name: 'Table ronde 4 personnes',
-        keywords: ['table', 'repas', 'manger', 'cercle'],
-      },
-      'bed-queen': { name: 'Lit 160 × 200', keywords: ['lit', 'couchage', 'chambre', 'matelas'] },
-    } as Record<string, { name: string; keywords: string[] }>,
+    symbols: LIBRARY_SYMBOL_TEXTS,
   },
   hints: {
     furniture: 'Cliquez sur le plan pour poser l’objet (autant de fois que voulu) · Échap : quitter',

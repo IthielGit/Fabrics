@@ -20,6 +20,11 @@ import type { SymbolDef } from './types'
 
 const TOLERANCE = 1e-6
 
+/** Nombres arrondis au millionième de mm : deux retournements ne sont exacts qu'à l'arrondi flottant près. */
+function rounded<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value, (_key, v) => (typeof v === 'number' ? Math.round(v * 1e6) / 1e6 : v)))
+}
+
 function def(overrides: Partial<SymbolDef>): SymbolDef {
   return {
     id: 'test',
@@ -184,7 +189,7 @@ describe('catalogue', () => {
       for (const { width, depth } of sizes) {
         for (const mirrored of [false, true]) {
           const primitives = drawSymbol(symbol, width, depth, mirrored)
-          expect(primitives.some((p) => p.style === 'outline' || p.style === 'zone')).toBe(true)
+          expect(primitives.some((p) => p.style === 'outline' || p.style === 'above' || p.style === 'zone')).toBe(true)
           const box = primitivesBounds(primitives)!
           for (const value of Object.values(box)) expect(Number.isFinite(value)).toBe(true)
           expect(box.minX).toBeGreaterThanOrEqual(-TOLERANCE)
@@ -197,9 +202,8 @@ describe('catalogue', () => {
 
     it('retourner deux fois redonne le dessin', () => {
       const original = symbol.draw(symbol.width, symbol.depth)
-      expect(mirrorPrimitives(mirrorPrimitives(original, symbol.width), symbol.width)).toEqual(
-        original,
-      )
+      const twice = mirrorPrimitives(mirrorPrimitives(original, symbol.width), symbol.width)
+      expect(rounded(twice)).toEqual(rounded(original))
     })
   })
 })
@@ -215,8 +219,8 @@ describe('objet posé sur le plan', () => {
 
   it('le redimensionnement suit le mode et les limites du catalogue', () => {
     const next = applyNodeTransform(element(), { x: 500, y: 700, rotation: 0, scaleX: 1.5, scaleY: 0.5 })
-    // 1600 × 1,5 = 2400 (le maximum) ; 2000 × 0,5 = 1000 (au-dessus du minimum de 1500 → 1500).
-    expect(next).toMatchObject({ width: 2400, depth: 1500 })
+    // 1600 × 1,5 = 2400 (dans les limites) ; 2000 × 0,5 = 1000 (le minimum : la moitié de 2000).
+    expect(next).toMatchObject({ width: 2400, depth: 1000 })
   })
 
   it('une table ronde garde ses proportions', () => {

@@ -65,6 +65,31 @@ export function arcPoints(
   return points
 }
 
+/** Même dessin dans un autre style (par exemple tout en pointillé pour un élément au-dessus du plan de coupe). */
+export function restyle(primitives: readonly Primitive[], style: PrimitiveStyle): Primitive[] {
+  return primitives.map((p): Primitive => ({ ...p, style }))
+}
+
+/** Points d'un arc d'ellipse (angles en degrés, comme `arcPoints`), `[x1, y1, x2, y2, …]`. */
+export function ellipseArcPoints(
+  cx: number,
+  cy: number,
+  rx: number,
+  ry: number,
+  from: number,
+  to: number,
+  stepDegrees = 6,
+): number[] {
+  const sweep = to - from
+  const steps = Math.max(1, Math.ceil(Math.abs(sweep) / stepDegrees))
+  const points: number[] = []
+  for (let i = 0; i <= steps; i++) {
+    const angle = ((from + (sweep * i) / steps) * Math.PI) / 180
+    points.push(cx + rx * Math.cos(angle), cy + ry * Math.sin(angle))
+  }
+  return points
+}
+
 /** Symétrie gauche / droite d'une liste de coordonnées à plat : x → largeur − x. */
 function mirrorFlat(points: readonly number[], width: number): number[] {
   return points.map((value, index) => (index % 2 === 0 ? width - value : value))
