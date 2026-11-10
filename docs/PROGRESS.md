@@ -4,16 +4,16 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M0 — Mise en place
-- **Dernière tâche terminée :** M0 — toutes les tâches faites, sauf le premier commit (en attente de votre accord)
-- **Prochaine tâche :** valider M0 dans le navigateur, faire le premier commit, puis feu vert pour M1
-- **Problèmes connus :** — (voir D16 et D17 : lint = oxlint, TypeScript 7)
+- **Jalon en cours :** M1 — Socle de l'éditeur (plan présenté, en attente du feu vert)
+- **Dernière tâche terminée :** M0 — validé par l'utilisateur, commit `ceb3115`
+- **Prochaine tâche :** M1, après feu vert sur la liste des tâches
+- **Problèmes connus :** fichiers de démo Vite restants (`src/App.css`, `src/assets/vite.svg`, `public/icons.svg`) à supprimer (voir D16 et D17 : lint = oxlint, TypeScript 7)
 
 ## Jalons
 
 | Jalon | Statut | Validé par l'utilisateur le |
 |---|---|---|
-| M0 Mise en place | à valider | |
+| M0 Mise en place | terminé | 2026-11-10 |
 | M1 Socle de l'éditeur | à faire | |
 | M2 Contenu et mise en forme | à faire | |
 | M3 Mode plan et métrés | à faire | |
