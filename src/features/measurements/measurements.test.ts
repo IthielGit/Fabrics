@@ -103,10 +103,10 @@ const LABELS: CsvLabels = {
   walls: 'Murs',
   name: 'Nom',
   area: 'Surface (m²)',
-  perimeter: 'Périmètre (m)',
-  length: 'Longueur (m)',
-  thickness: 'Épaisseur (cm)',
-  height: 'Hauteur (m)',
+  perimeter: 'Périmètre (mm)',
+  length: 'Longueur (mm)',
+  thickness: 'Épaisseur (mm)',
+  height: 'Hauteur (mm)',
   wallArea: 'Surface murale (m²)',
   total: 'Total',
 }
@@ -165,15 +165,15 @@ describe('measurementsToCsv', () => {
 
   it('sépare par des points-virgules, avec des décimales à virgule et des fins de ligne CRLF', () => {
     const lines = csv.slice(1).split('\r\n')
-    expect(lines).toContain('Nom;Surface (m²);Périmètre (m)')
-    expect(lines).toContain('Cuisine;12,40;14,20') // 4,00 × 3,10 m ; 2 × (4,00 + 3,10)
-    expect(lines).toContain('Mur 1;4,00;20,0;2,50;10,00')
+    expect(lines).toContain('Nom;Surface (m²);Périmètre (mm)')
+    expect(lines).toContain('Cuisine;12,40;14200') // 4000 × 3100 mm ; 2 × (4000 + 3100)
+    expect(lines).toContain('Mur 1;4000;200;2500;10,00')
   })
 
   it('contient les totaux des deux tableaux', () => {
     const lines = csv.slice(1).split('\r\n')
     expect(lines).toContain('Total;12,40;')
-    expect(lines).toContain('Total;4,00;;;10,00')
+    expect(lines).toContain('Total;4000;;;10,00')
   })
 
   it('garde les mêmes colonnes pour toutes les lignes d’un tableau', () => {

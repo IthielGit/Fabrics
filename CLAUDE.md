@@ -82,6 +82,10 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
   Tous les textes d'interface passent par `src/i18n/fr.ts` (prépare la traduction future).
 - Logique métier (géométrie, métrés, unités) dans `src/features/*/` en **fonctions pures**,
   testées avec Vitest. Aucun calcul de métré dans un composant React.
+- **Unités : toujours « Métrique architectural » (comme Revit).** Longueurs en `mm` entiers
+  (`3500 mm`, jamais `3,50 m` ni `20 cm`), surfaces en `m²`, volumes en `m³`. S'applique à tout
+  affichage, champ de saisie, export et texte d'interface, présents et futurs. Un nombre saisi
+  sans unité est en mm. Détail dans `docs/02-ARCHITECTURE.md` (« Unités et échelle »).
 - Identifiants : `crypto.randomUUID()`.
 - Styles : Tailwind CSS uniquement.
 

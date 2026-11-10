@@ -1,5 +1,5 @@
 import { sanitizeFileName } from '../export/fileName'
-import { formatDecimal, mm2ToM2, mmToCm, mmToM } from '../units/format'
+import { formatDecimal, mm2ToM2 } from '../units/format'
 import type { Measurements } from './measurements'
 
 /** Intitulés du fichier (français, fournis par `src/i18n/fr.ts`). */
@@ -42,7 +42,8 @@ function row(...fields: string[]): string {
   return fields.join(SEPARATOR)
 }
 
-const m = (mm: number) => formatDecimal(mmToM(mm))
+/** Longueurs en mm entiers (Métrique architectural), surfaces en m². */
+const mm = (value: number) => formatDecimal(value, 0)
 const m2 = (mm2: number) => formatDecimal(mm2ToM2(mm2))
 
 /**
@@ -59,7 +60,7 @@ export function measurementsToCsv(measurements: Measurements, labels: CsvLabels)
       escapeCsvField(labels.perimeter),
     ),
     ...rooms.map((room) =>
-      row(escapeCsvField(room.name), m2(room.area), m(room.perimeter)),
+      row(escapeCsvField(room.name), m2(room.area), mm(room.perimeter)),
     ),
     row(escapeCsvField(labels.total), m2(totals.roomArea), ''),
     '',
@@ -74,13 +75,13 @@ export function measurementsToCsv(measurements: Measurements, labels: CsvLabels)
     ...walls.map((wall) =>
       row(
         escapeCsvField(wall.name),
-        m(wall.length),
-        formatDecimal(mmToCm(wall.thickness), 1),
-        m(wall.height),
+        mm(wall.length),
+        mm(wall.thickness),
+        mm(wall.height),
         m2(wall.wallArea),
       ),
     ),
-    row(escapeCsvField(labels.total), m(totals.wallLength), '', '', m2(totals.wallArea)),
+    row(escapeCsvField(labels.total), mm(totals.wallLength), '', '', m2(totals.wallArea)),
   ]
   return CSV_BOM + lines.join(LINE_BREAK) + LINE_BREAK
 }

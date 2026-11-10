@@ -1,6 +1,6 @@
 import { pointDistance } from '../../features/geometry/polygon'
 import { computeMeasurements } from '../../features/measurements/measurements'
-import { cmToMm, formatArea, formatLength, mmToCm } from '../../features/units/format'
+import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import type { DimensionElement, RoomElement, WallElement } from '../../types/document'
@@ -43,19 +43,20 @@ export default function PlanElementFields({ element }: { element: PlanElement })
         <>
           <NumberField
             label={fr.properties.wallThickness}
-            suffix={fr.properties.unitCm}
-            value={mmToCm(element.thickness)}
-            onCommit={(cm) =>
-              patch((el) => (el.type === 'wall' ? { ...el, thickness: cmToMm(Math.max(1, cm)) } : el))
+            suffix={fr.properties.unitMm}
+            value={element.thickness}
+            step={10}
+            onCommit={(mm) =>
+              patch((el) => (el.type === 'wall' ? { ...el, thickness: Math.max(1, mm) } : el))
             }
           />
           <NumberField
             label={fr.properties.wallHeight}
-            suffix={fr.properties.unitCm}
-            value={mmToCm(element.height)}
-            step={5}
-            onCommit={(cm) =>
-              patch((el) => (el.type === 'wall' ? { ...el, height: cmToMm(Math.max(1, cm)) } : el))
+            suffix={fr.properties.unitMm}
+            value={element.height}
+            step={50}
+            onCommit={(mm) =>
+              patch((el) => (el.type === 'wall' ? { ...el, height: Math.max(1, mm) } : el))
             }
           />
         </>
@@ -77,11 +78,11 @@ export default function PlanElementFields({ element }: { element: PlanElement })
       {element.type === 'dimension' && (
         <NumberField
           label={fr.properties.dimensionOffset}
-          suffix={fr.properties.unitCm}
-          value={mmToCm(element.offset)}
-          step={5}
-          onCommit={(cm) =>
-            patch((el) => (el.type === 'dimension' ? { ...el, offset: cmToMm(cm) } : el))
+          suffix={fr.properties.unitMm}
+          value={element.offset}
+          step={50}
+          onCommit={(mm) =>
+            patch((el) => (el.type === 'dimension' ? { ...el, offset: mm } : el))
           }
         />
       )}

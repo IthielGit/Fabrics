@@ -2,7 +2,7 @@ import { Download } from 'lucide-react'
 import { useMemo } from 'react'
 import { csvFileName, measurementsToCsv } from '../../features/measurements/csv'
 import { computeMeasurements } from '../../features/measurements/measurements'
-import { formatArea, formatCentimeters, formatLength } from '../../features/units/format'
+import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { downloadBlob } from '../../lib/download'
 import { useEditorStore } from '../../stores/editorStore'
@@ -107,7 +107,7 @@ export default function MeasurementsPanel() {
               <tr key={wall.id} onClick={() => setSelection([wall.id])} className={rowClass(wall.id)}>
                 <td className="max-w-20 truncate px-1 py-1">{wall.name}</td>
                 <td className={NUMBER}>{formatLength(wall.length)}</td>
-                <td className={NUMBER}>{formatCentimeters(wall.thickness)}</td>
+                <td className={NUMBER}>{formatLength(wall.thickness)}</td>
                 <td className={NUMBER}>{formatArea(wall.wallArea)}</td>
               </tr>
             ))}

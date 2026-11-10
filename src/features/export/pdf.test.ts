@@ -37,7 +37,7 @@ describe('PDF', () => {
       scaleText: 'Échelle 1:50',
       dateText: 'Date : 10/11/2026',
       areaText: 'Pièces : 12,00 m²',
-      scaleBarLabel: '1 m',
+      scaleBarLabel: '1000 mm',
     })
     const text = await textOf(blob)
     expect(text.startsWith('%PDF-')).toBe(true)

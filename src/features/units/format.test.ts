@@ -2,22 +2,17 @@ import { describe, expect, it } from 'vitest'
 import {
   cmToMm,
   formatArea,
-  formatCentimeters,
   formatDecimal,
   formatLength,
   mToMm,
   mm2ToM2,
-  mmToCm,
-  mmToM,
   parseLength,
 } from './format'
 
 describe('conversions', () => {
-  it('convertit mm ↔ m ↔ cm', () => {
-    expect(mmToM(3500)).toBe(3.5)
+  it('convertit m et cm en mm', () => {
     expect(mToMm(3.5)).toBe(3500)
     expect(cmToMm(20)).toBe(200)
-    expect(mmToCm(200)).toBe(20)
   })
 
   it('convertit des mm² en m²', () => {
@@ -41,34 +36,35 @@ describe('formatDecimal', () => {
   })
 })
 
-describe('formatLength / formatArea', () => {
-  it('affiche une longueur en mètres', () => {
-    expect(formatLength(3500)).toBe('3,50 m')
-    expect(formatLength(14_000)).toBe('14,00 m')
-    expect(formatLength(0)).toBe('0,00 m')
+describe('formatLength / formatArea (Métrique architectural)', () => {
+  it('affiche une longueur en millimètres entiers', () => {
+    expect(formatLength(3500)).toBe('3500 mm')
+    expect(formatLength(14_000)).toBe('14000 mm')
+    expect(formatLength(0)).toBe('0 mm')
+    expect(formatLength(200)).toBe('200 mm')
+  })
+
+  it('arrondit au millimètre', () => {
+    expect(formatLength(3499.6)).toBe('3500 mm')
   })
 
   it('affiche une surface en m²', () => {
     expect(formatArea(12_400_000)).toBe('12,40 m²')
     expect(formatArea(10_640_000)).toBe('10,64 m²')
   })
-
-  it('affiche une épaisseur en cm', () => {
-    expect(formatCentimeters(200)).toBe('20 cm')
-    expect(formatCentimeters(75)).toBe('7,5 cm')
-  })
 })
 
 describe('parseLength', () => {
-  it('lit des mètres avec virgule ou point', () => {
-    expect(parseLength('3,50 m')).toBe(3500)
-    expect(parseLength('3.5m')).toBe(3500)
-    expect(parseLength('3,5')).toBe(3500) // sans unité : mètres
+  it('sans unité, lit des millimètres', () => {
+    expect(parseLength('3500')).toBe(3500)
+    expect(parseLength('3500mm')).toBe(3500)
+    expect(parseLength('3500 mm')).toBe(3500)
   })
 
-  it('lit des centimètres et des millimètres', () => {
+  it('accepte aussi explicitement des mètres et des centimètres', () => {
+    expect(parseLength('3,50 m')).toBe(3500)
+    expect(parseLength('3.5m')).toBe(3500)
     expect(parseLength('350 cm')).toBe(3500)
-    expect(parseLength('3500mm')).toBe(3500)
   })
 
   it('ignore la casse et les espaces autour', () => {

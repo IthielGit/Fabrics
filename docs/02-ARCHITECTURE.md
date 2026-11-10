@@ -249,8 +249,12 @@ du papier (voir « Export »).
 - La barre d'état en bas de l'éditeur affiche les deux valeurs séparément, par exemple
   `Zoom 100 % · Impression 1:50`. On n'affiche jamais une échelle « écran » : elle dépend de
   la taille et de la résolution du moniteur et serait fausse.
-- Affichage : longueurs en `m` avec 2 décimales (`3,50 m`), surfaces en `m²` avec 2 décimales
-  (`12,40 m²`), séparateur décimal virgule. Fonctions dans `src/features/units/`.
+- Affichage : convention **Métrique architectural** (comme Revit). Longueurs en `mm` entiers,
+  sans décimale (`3500 mm`, jamais `3,50 m` ni `20 cm`) ; surfaces en `m²` avec 2 décimales
+  (`12,40 m²`) ; volumes en `m³` ; séparateur décimal virgule. Cela vaut pour l'interface, les
+  champs de saisie, les cotes, les exports (PDF, CSV) et la grille. Fonctions dans
+  `src/features/units/`.
+- Saisie : un nombre sans unité est en mm. `m` et `cm` restent acceptés si l'utilisateur les écrit.
 
 ### Calibrage d'une image de plan
 1. L'utilisateur importe une image (élément `image`).
@@ -393,6 +397,7 @@ pas sur une feuille, ce qui est normal puisque seule l'emprise du contenu est ex
 | `V` | Sélection |
 | `T` / `R` / `O` / `L` | Texte / Rectangle / Ellipse / Ligne |
 | `W` / `P` / `D` | Mur / Pièce / Cote (plan) |
+| `B` / `F` | Porte / Fenêtre (plan) |
 | `Échap` | Annuler le tracé en cours, puis désélectionner |
 | `Entrée` ou double-clic | Terminer un mur ou une pièce |
 | `Suppr` / `Retour arrière` | Supprimer la sélection |
@@ -528,4 +533,3 @@ Sans ces variables, l'application fonctionne en mode local (pas de bouton de con
   pause ; vérifier les limites actuelles sur le site de Supabase.
 - **Temps réel** (M13) : Cloudflare Pages ne garde pas de connexion WebSocket ouverte ; il faudra
   choisir un hébergeur pour le serveur Yjs. Décision à prendre au début de M13.
-| `B` / `F` | Porte / Fenêtre (plan) |

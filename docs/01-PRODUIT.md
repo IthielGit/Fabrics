@@ -24,11 +24,11 @@ même export). Seuls les outils disponibles et l'unité changent.
 
 | | Visuel (`design`) | Plan (`plan`) |
 |---|---|---|
-| Unité | pixel | millimètre (affiché en m / cm) |
+| Unité | pixel | millimètre (Métrique architectural : mm, m², m³) |
 | Formats de départ | Post carré 1080×1080, Story 1080×1920, A4, Affiche A3, Bannière 1500×500 | Feuille libre avec échelle |
 | Outils | Texte, rectangle, ellipse, ligne/flèche, image | Tous ceux du Visuel + mur, pièce, cote, calibrage d'image |
 | Panneau spécifique | — | **Métrés** (surfaces, périmètres, longueurs) |
-| Grille | optionnelle, en px | toujours disponible, en cm/m |
+| Grille | optionnelle, en px | toujours disponible, en mm |
 
 ## Périmètre du MVP (jalons M0 à M12)
 

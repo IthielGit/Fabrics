@@ -1,10 +1,9 @@
-import { cmToMm, mmToCm } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import NumberField from '../ui/NumberField'
 
 const PRINT_SCALES = [20, 50, 100, 200]
-const GRID_SIZES_CM = [5, 10, 20, 50, 100]
+const GRID_SIZES_MM = [50, 100, 200, 500, 1000]
 
 const SELECT_CLASS =
   'w-28 rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none'
@@ -19,8 +18,6 @@ export default function PlanSettingsSection() {
   const plan = useEditorStore((state) => state.project?.document.plan)
   const updatePlanSettings = useEditorStore((state) => state.updatePlanSettings)
   if (!plan) return null
-
-  const gridSizeCm = mmToCm(plan.gridSize)
 
   return (
     <div className="mt-4 space-y-3 border-t border-slate-200 pt-4">
@@ -50,13 +47,13 @@ export default function PlanSettingsSection() {
         </label>
         <select
           id="grid-size"
-          value={gridSizeCm}
-          onChange={(event) => updatePlanSettings({ gridSize: cmToMm(Number(event.target.value)) })}
+          value={plan.gridSize}
+          onChange={(event) => updatePlanSettings({ gridSize: Number(event.target.value) })}
           className={SELECT_CLASS}
         >
-          {withCurrent(GRID_SIZES_CM, gridSizeCm).map((cm) => (
-            <option key={cm} value={cm}>
-              {fr.planSettings.gridSizeOption(cm)}
+          {withCurrent(GRID_SIZES_MM, plan.gridSize).map((mm) => (
+            <option key={mm} value={mm}>
+              {fr.planSettings.gridSizeOption(mm)}
             </option>
           ))}
         </select>
@@ -73,16 +70,17 @@ export default function PlanSettingsSection() {
 
       <NumberField
         label={fr.planSettings.wallThickness}
-        suffix={fr.planSettings.unitCm}
-        value={mmToCm(plan.defaultWallThickness)}
-        onCommit={(cm) => updatePlanSettings({ defaultWallThickness: cmToMm(Math.max(1, cm)) })}
+        suffix={fr.planSettings.unitMm}
+        value={plan.defaultWallThickness}
+        step={10}
+        onCommit={(mm) => updatePlanSettings({ defaultWallThickness: Math.max(1, mm) })}
       />
       <NumberField
         label={fr.planSettings.wallHeight}
-        suffix={fr.planSettings.unitCm}
-        value={mmToCm(plan.defaultWallHeight)}
-        step={5}
-        onCommit={(cm) => updatePlanSettings({ defaultWallHeight: cmToMm(Math.max(1, cm)) })}
+        suffix={fr.planSettings.unitMm}
+        value={plan.defaultWallHeight}
+        step={50}
+        onCommit={(mm) => updatePlanSettings({ defaultWallHeight: Math.max(1, mm) })}
       />
     </div>
   )

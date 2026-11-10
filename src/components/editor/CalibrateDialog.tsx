@@ -10,7 +10,7 @@ interface CalibrateDialogProps {
   onCancel: () => void
 }
 
-/** Demande la distance réelle entre les deux points cliqués (`3,50 m`, `350 cm`, `3500 mm`). */
+/** Demande la distance réelle entre les deux points cliqués (en mm : `3500`). */
 export default function CalibrateDialog({ onConfirm, onCancel }: CalibrateDialogProps) {
   const [text, setText] = useState('')
   const [invalid, setInvalid] = useState(false)
