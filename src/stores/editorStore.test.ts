@@ -117,6 +117,22 @@ describe('duplication', () => {
   })
 })
 
+describe('vue', () => {
+  it('ajuste la page à la zone visible', () => {
+    store().setViewportSize({ width: 1000, height: 1000 })
+    store().fitView()
+    // page 1080 × 1080, marge de 48 px → zoom = (1000 − 96) / 1080
+    expect(store().zoom).toBeCloseTo(904 / 1080)
+    expect(store().stagePosition.x).toBeCloseTo(48)
+  })
+
+  it('ne fait rien tant que la taille de la zone est inconnue', () => {
+    store().setViewportSize({ width: 0, height: 0 })
+    store().fitView()
+    expect(store().zoom).toBe(1)
+  })
+})
+
 describe('revision et nom du projet', () => {
   it('augmente la révision à chaque modification', () => {
     const start = store().revision

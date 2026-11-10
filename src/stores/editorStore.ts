@@ -1,5 +1,7 @@
 import { create } from 'zustand'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
+import { fitToScreen, type Size } from '../features/geometry/viewport'
+import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, Project } from '../types/document'
 
 export type EditorTool = 'select' | 'rect' | 'ellipse'
@@ -18,6 +20,8 @@ interface EditorState {
   activeTool: EditorTool
   zoom: number
   stagePosition: { x: number; y: number }
+  /** Taille de la zone d'affichage du canevas (px), renseignée par le composant Stage. */
+  viewportSize: Size
   history: History
   saveStatus: SaveStatus
   /** Augmente à chaque modification du document (sert à déclencher la sauvegarde). */
@@ -28,6 +32,9 @@ interface EditorState {
   setTool: (tool: EditorTool) => void
   setSelection: (ids: string[]) => void
   setView: (view: { zoom: number; stagePosition: { x: number; y: number } }) => void
+  setViewportSize: (size: Size) => void
+  /** Ajuste le zoom et la position pour voir toute la page. */
+  fitView: () => void
   setSaveStatus: (status: SaveStatus) => void
   renameProject: (name: string) => void
 
@@ -83,6 +90,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     activeTool: 'select',
     zoom: 1,
     stagePosition: { x: 0, y: 0 },
+    viewportSize: { width: 0, height: 0 },
     history: EMPTY_HISTORY,
     saveStatus: 'saved',
     revision: 0,
@@ -105,6 +113,18 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     setTool: (activeTool) => set({ activeTool }),
     setSelection: (selectedIds) => set({ selectedIds }),
     setView: ({ zoom, stagePosition }) => set({ zoom, stagePosition }),
+    setViewportSize: (viewportSize) => set({ viewportSize }),
+
+    fitView: () => {
+      const { project, viewportSize } = get()
+      if (!project || viewportSize.width === 0 || viewportSize.height === 0) return
+      const view = fitToScreen(
+        project.document.page,
+        viewportSize,
+        pxPerUnit(project.document.unit),
+      )
+      set({ zoom: view.zoom, stagePosition: { x: view.x, y: view.y } })
+    },
     setSaveStatus: (saveStatus) => set({ saveStatus }),
 
     // Le nom n'est pas dans le document : pas d'historique, mais il faut sauvegarder.

@@ -48,10 +48,13 @@ export const fr = {
     size: (width: number, height: number) => `${width} × ${height} px`,
   },
   editor: {
-    title: 'Éditeur',
-    placeholder: 'Page éditeur provisoire — le canevas arrive au jalon M1.',
-    projectLabel: 'Projet :',
     backToHome: 'Retour à l’accueil',
+    notFoundTitle: 'Projet introuvable',
+    notFoundText: 'Ce projet n’existe pas ou a été supprimé.',
+    loadError: 'Impossible d’ouvrir ce projet.',
+    zoomLabel: 'Niveau de zoom',
+    zoomValue: (percent: number) => `Zoom ${percent} %`,
+    fitToScreen: 'Ajuster à l’écran',
   },
   elements: {
     rect: 'Rectangle',
