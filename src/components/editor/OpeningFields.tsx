@@ -1,6 +1,7 @@
 import { useId } from 'react'
 import {
   changeOpeningKind,
+  changeOpeningKindAndSize,
   flipHinge,
   flipSide,
   resizeOpening,
@@ -62,7 +63,13 @@ export default function OpeningFields({ element }: { element: OpeningElement }) 
           value={element.kind}
           onChange={(event) => {
             const kind = event.target.value as OpeningElement['kind']
-            patch((el) => changeOpeningKind(el, kind, wall?.height ?? Infinity))
+            const elements = useEditorStore.getState().project?.document.elements ?? []
+            const openings = elements.filter((el): el is OpeningElement => el.type === 'opening')
+            patch((el) =>
+              wall
+                ? changeOpeningKindAndSize(el, kind, wall, openings)
+                : changeOpeningKind(el, kind, Infinity),
+            )
           }}
           className="w-36 rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900"
         >

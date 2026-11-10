@@ -1,5 +1,5 @@
-import { Edges, OrbitControls } from '@react-three/drei'
-import { Canvas, useThree, type ThreeEvent } from '@react-three/fiber'
+import { OrbitControls } from '@react-three/drei'
+import { Canvas, useStore, useThree, type ThreeEvent } from '@react-three/fiber'
 import { memo, useEffect, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
 import type { Bounds3, BuildingModel, SlabShape, WallPiece } from '../../features/building/types'
@@ -46,9 +46,7 @@ const WallMesh = memo(function WallMesh({ piece, selected, onSelectWall }: WallM
       scale={[piece.size.x, piece.size.y, piece.size.z]}
       rotation={[0, piece.rotationY, 0]}
       onClick={handleClick}
-    >
-      <Edges threshold={15} color={selected ? '#4338ca' : '#475569'} />
-    </mesh>
+    />
   )
 })
 
@@ -104,6 +102,7 @@ function CameraRig({ bounds, fitToken }: { bounds: Bounds3 | null; fitToken: num
   const camera = useThree((state) => state.camera)
   const controls = useThree((state) => state.controls) as unknown as OrbitLike | null
   const invalidate = useThree((state) => state.invalidate)
+  const store = useStore()
   const boundsRef = useRef(bounds)
   useEffect(() => {
     boundsRef.current = bounds
@@ -117,14 +116,18 @@ function CameraRig({ bounds, fitToken }: { bounds: Bounds3 | null; fitToken: num
     const max = new THREE.Vector3(b.max.x, b.max.y, b.max.z).multiplyScalar(MM)
     const center = min.clone().add(max).multiplyScalar(0.5)
     const radius = Math.max(max.clone().sub(min).length() / 2, 1)
-    const fov = THREE.MathUtils.degToRad((camera as THREE.PerspectiveCamera).fov ?? 40)
-    const distance = (radius / Math.sin(fov / 2)) * 1.05
+    // Le panneau est souvent plus haut que large : on cadre selon le plus petit des deux angles de vue.
+    const { width, height } = store.getState().size
+    const aspect = width > 0 && height > 0 ? width / height : 1
+    const verticalFov = THREE.MathUtils.degToRad((camera as THREE.PerspectiveCamera).fov ?? 40)
+    const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * aspect)
+    const distance = (radius / Math.sin(Math.min(verticalFov, horizontalFov) / 2)) * 1.1
     const direction = new THREE.Vector3(0.7, 0.6, 1).normalize()
     camera.position.copy(center).addScaledVector(direction, distance)
     controls.target.copy(center)
     controls.update()
     invalidate()
-  }, [fitToken, hasBounds, camera, controls, invalidate])
+  }, [fitToken, hasBounds, camera, controls, invalidate, store])
 
   return null
 }

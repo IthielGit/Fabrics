@@ -6,6 +6,8 @@ import type { WallPiece } from './types'
 /** Sous cette taille (mm), un morceau est ignoré. */
 const MIN_SIZE = 1
 const CLOSE = 1e-6
+/** Recouvrement (mm) de l'allège et du linteau dans les trumeaux voisins. */
+const OVERLAP = 1
 
 /** Un tracé fermé : au moins 4 points, le dernier au même endroit que le premier. */
 function isClosedAxis(wall: Pick<WallElement, 'points'>): boolean {
@@ -103,8 +105,11 @@ export function buildWallPieces(
       })
     }
     for (const u of solid) add(u, 0, height)
-    for (const s of sills) add(s.u, 0, s.top)
-    for (const l of lintels) add(l.u, l.bottom, height)
+    // L'allège et le linteau pénètrent de 1 mm dans les trumeaux voisins (à l'intérieur du mur,
+    // donc invisible) : deux boîtes qui se touchent exactement laissent une couture à l'écran.
+    const overlap = (u: Span): Span => ({ from: u.from - OVERLAP, to: u.to + OVERLAP })
+    for (const s of sills) add(overlap(s.u), 0, s.top)
+    for (const l of lintels) add(overlap(l.u), l.bottom, height)
   }
   return pieces
 }

@@ -33,6 +33,28 @@ export function changeOpeningKind(
 }
 
 /**
+ * Change le type d'une ouverture et, si elle avait encore la taille par défaut de son ancien type
+ * (elle n'a pas été redimensionnée à la main), lui donne la taille par défaut du nouveau : une
+ * fenêtre de 1200 × 1000 devenue porte passe à 900 × 2100. Une taille personnalisée est gardée,
+ * de même que l'ancienne taille si la nouvelle ne tient pas (mur trop bas, pas assez de place).
+ */
+export function changeOpeningKindAndSize(
+  opening: OpeningElement,
+  kind: OpeningElement['kind'],
+  wall: Pick<WallElement, 'points' | 'height'>,
+  openings: readonly OpeningElement[],
+): OpeningElement {
+  const retyped = changeOpeningKind(opening, kind, wall.height)
+  if (retyped === opening) return opening
+  const previous = OPENING_DEFAULTS[opening.kind]
+  const untouched = opening.width === previous.width && opening.height === previous.height
+  if (!untouched) return retyped
+  const wanted = OPENING_DEFAULTS[kind]
+  const resized = resizeOpening(retyped, wanted, wall, openings)
+  return 'opening' in resized ? resized.opening : retyped
+}
+
+/**
  * Change la largeur, la hauteur ou l'allège d'une ouverture en vérifiant qu'elle tient toujours :
  * dans la hauteur du mur, sur son segment et sans chevaucher une voisine (le centre est décalé au
  * besoin). Renvoie le problème rencontré, sans rien modifier, si ce n'est pas possible.
