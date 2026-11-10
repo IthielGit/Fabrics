@@ -17,6 +17,8 @@ import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import AlignmentGuides from './AlignmentGuides'
+import CalibrateDialog from './CalibrateDialog'
+import CalibrationDraftLayer from './CalibrationDraftLayer'
 import ElementNode from './ElementNode'
 import { importImageFiles } from './importImages'
 import { isTypingTarget } from './isTypingTarget'
@@ -25,6 +27,7 @@ import PolylineDraftLayer from './PolylineDraftLayer'
 import SelectionTransformer from './SelectionTransformer'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
+import { useCalibrationTool } from './useCalibrationTool'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
 import { usePolylineDrawing, type PolylineTool } from './usePolylineDrawing'
@@ -84,6 +87,7 @@ export default function EditorStage() {
       ? activeTool
       : null
   const polylineDrawing = usePolylineDrawing(polylineTool, scale)
+  const calibration = useCalibrationTool(activeTool === 'calibrate')
   const selecting = activeTool === 'select' && !spaceDown
 
   // Communique la taille de la zone au store, et ajuste la page à l'écran à l'ouverture.
@@ -155,6 +159,8 @@ export default function EditorStage() {
 
     if (polylineTool) {
       polylineDrawing.onPointerDown(event)
+    } else if (activeTool === 'calibrate') {
+      calibration.onPointerDown(event)
     } else if (drawing) {
       setDraft({ start: point, current: point, additive: false })
     } else if (activeTool === 'select') {
@@ -169,6 +175,7 @@ export default function EditorStage() {
 
   const handlePointerMove = (event: PointerEvent) => {
     if (polylineTool) polylineDrawing.onPointerMove(event)
+    if (activeTool === 'calibrate') calibration.onPointerMove(event)
     if (!draft && !band) return
     const point = pointerInDocument(event)
     if (!point) return
@@ -380,6 +387,9 @@ export default function EditorStage() {
               />
             )}
             <AlignmentGuides pageWidth={page.width} pageHeight={page.height} scale={scale} />
+            {activeTool === 'calibrate' && (
+              <CalibrationDraftLayer state={calibration.state} scale={scale} />
+            )}
             {polylineTool && (
               <PolylineDraftLayer
                 tool={polylineTool}
@@ -398,6 +408,9 @@ export default function EditorStage() {
             )}
           </Layer>
         </Stage>
+      )}
+      {calibration.state.pending && (
+        <CalibrateDialog onConfirm={calibration.confirm} onCancel={calibration.cancel} />
       )}
       {editingElement?.type === 'text' && (
         <TextEditorOverlay

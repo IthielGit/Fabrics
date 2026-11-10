@@ -101,6 +101,23 @@ export const fr = {
     nameLabel: 'Nom du calque',
     drag: 'Glisser pour réordonner',
   },
+  calibrate: {
+    noImage: 'Cliquez le premier point sur une image importée.',
+    title: 'Calibrer l’image',
+    description: 'Quelle est la distance réelle entre les deux points cliqués ?',
+    label: 'Distance réelle',
+    placeholder: 'ex. 3,50 m',
+    invalid: 'Entrez une longueur positive, par exemple 3,50 m ou 350 cm.',
+    apply: 'Appliquer',
+    pointA: 'A',
+    pointB: 'B',
+  },
+  hints: {
+    wall: 'Clic : poser un point · Maj : angle droit · Double-clic ou Entrée : terminer · Échap : annuler',
+    room: 'Clic : poser un point · Maj : angle droit · Double-clic, Entrée ou clic sur le 1er point : fermer · Échap : annuler',
+    dimension: 'Cliquez deux points pour mesurer · Maj : angle droit · Échap : annuler',
+    calibrate: 'Cliquez deux points de l’image dont vous connaissez la distance réelle · Échap : annuler',
+  },
   planSettings: {
     title: 'Réglages du plan',
     printScale: 'Échelle d’impression',

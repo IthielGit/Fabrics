@@ -62,7 +62,14 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
   const storedRef = useRef<StoredDraft>(stored)
   const vertexCache = useRef<{ elements: readonly CanvasElement[]; vertices: Point[] } | null>(null)
 
+  // Changer d'outil (y compris pour « sélection ») repart de zéro : un tracé abandonné ne doit pas
+  // réapparaître au retour. Réglage d'état pendant le rendu, sans effet.
+  if (stored.tool !== tool) setStored({ tool, draft: EMPTY })
   const draft = stored.tool === tool ? stored.draft : EMPTY
+
+  useEffect(() => {
+    storedRef.current = stored
+  }, [stored])
 
   /** Tracé courant, lisible depuis les gestionnaires d'événements. */
   const readDraft = useCallback((): PolylineDraft => {
