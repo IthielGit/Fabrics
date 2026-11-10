@@ -2,6 +2,11 @@ import { create } from 'zustand'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
 import { copyToClipboard, takePasteCopies } from '../features/documents/clipboard'
 import { moveElementToSlot, sameOrder, stepElement } from '../features/documents/layers'
+import {
+  includeWallOpenings,
+  reconcileOpenings,
+  withWallOpeningIds,
+} from '../features/documents/wallOpenings'
 import { fr } from '../i18n/fr'
 import type { Guide } from '../features/geometry/guides'
 import { translateElement } from '../features/geometry/transform'
@@ -128,8 +133,11 @@ export const useEditorStore = create<EditorState>()((set, get) => {
   ) {
     const { project, history, revision } = get()
     if (!project) return
-    const next = change(project.document)
-    if (next === project.document) return
+    const changed = change(project.document)
+    if (changed === project.document) return
+    // Les ouvertures suivent leur mur quand sa forme change (sommet déplacé, ajouté, retiré).
+    const elements = reconcileOpenings(project.document.elements, changed.elements)
+    const next = elements === changed.elements ? changed : { ...changed, elements: [...elements] }
     set({
       project: { ...project, document: next },
       history: {
@@ -259,7 +267,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     },
 
     removeElements: (ids) => {
-      const target = new Set(ids)
+      // Supprimer un mur supprime aussi ses ouvertures.
+      const target = withWallOpeningIds(get().project?.document.elements ?? [], ids)
       commit(
         (doc) => {
           const elements = doc.elements.filter((el) => !target.has(el.id))
@@ -273,9 +282,12 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const { project } = get()
       if (!project) return
       const target = new Set(ids)
-      const sources = project.document.elements.filter((el) => target.has(el.id))
+      const selected = project.document.elements.filter((el) => target.has(el.id))
+      // Dupliquer un mur emmène ses ouvertures.
+      const sources = includeWallOpenings(project.document.elements, selected)
       if (sources.length === 0) return
       const copies = cloneElements(sources, duplicateOffset(project.document.unit))
+      if (copies.length === 0) return // par exemple une ouverture seule : elle ne se duplique pas sans son mur
       commit(
         (doc) => ({ ...doc, elements: [...doc.elements, ...copies] }),
         copies.map((el) => el.id),
@@ -290,13 +302,21 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const { project, revision } = get()
       if (!project) return
       const byId = new Map(elements.map((el) => [el.id, el]))
+      let from: readonly CanvasElement[] = project.document.elements
+      let replaced = project.document.elements.map((el) => byId.get(el.id) ?? el)
+      if (liveBase && elements.some((el) => el.type === 'wall')) {
+        // Un mur modifié en direct : ses ouvertures repartent de leur place au début du geste
+        // (même celles déjà écartées par un mouvement précédent), puis suivent le mur.
+        const current = new Map(project.document.elements.map((el) => [el.id, el]))
+        from = liveBase.elements
+        replaced = liveBase.elements.map((el) =>
+          el.type === 'opening' ? el : (byId.get(el.id) ?? current.get(el.id) ?? el),
+        )
+      }
       set({
         project: {
           ...project,
-          document: {
-            ...project.document,
-            elements: project.document.elements.map((el) => byId.get(el.id) ?? el),
-          },
+          document: { ...project.document, elements: [...reconcileOpenings(from, replaced)] },
         },
         revision: revision + 1,
       })
@@ -337,7 +357,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const { project, selectedIds } = get()
       if (!project) return
       const selected = project.document.elements.filter((el) => selectedIds.includes(el.id))
-      copyToClipboard(selected, project.document.unit)
+      // Copier un mur emmène ses ouvertures.
+      copyToClipboard(includeWallOpenings(project.document.elements, selected), project.document.unit)
     },
 
     pasteClipboard: () => {
@@ -350,6 +371,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       }
       if (result.status !== 'ok') return
       const copies = result.elements
+      if (copies.length === 0) return
       commit(
         (doc) => ({ ...doc, elements: [...doc.elements, ...copies] }),
         copies.map((el) => el.id),

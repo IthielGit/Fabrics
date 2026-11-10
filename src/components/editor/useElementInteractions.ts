@@ -23,9 +23,16 @@ interface DragSession {
   groupBox: Box | null
   /** Boîtes sur lesquelles on s'aimante : les autres éléments visibles et la page. */
   targets: Box[]
+  /** Ouvertures des murs déplacés : elles suivent leur mur à l'écran, sans être modifiées. */
+  followers: Map<string, Point>
 }
 
-const EMPTY_SESSION: DragSession = { origins: new Map(), groupBox: null, targets: [] }
+const EMPTY_SESSION: DragSession = {
+  origins: new Map(),
+  groupBox: null,
+  targets: [],
+  followers: new Map(),
+}
 
 /**
  * Sélection par clic (Maj = ajouter / retirer) et déplacement des éléments.
@@ -71,24 +78,37 @@ export function useElementInteractions(): Handlers {
       }
     }
 
+    // Les ouvertures d'un mur déplacé suivent le mur à l'écran (leur place est relative au mur).
+    const followers = new Map<string, Point>()
+    for (const element of project?.document.elements ?? []) {
+      if (element.type !== 'opening' || !origins.has(element.wallId)) continue
+      const node = stage.findOne(`#${element.id}`)
+      if (node) followers.set(element.id, { x: node.x(), y: node.y() })
+    }
+
     // Boîtes en coordonnées du document (le calque n'a pas de transformation propre).
     const layer = event.target.getLayer() ?? undefined
     const boxOf = (node: Konva.Node): Box => node.getClientRect({ relativeTo: layer })
     const targets = Array.from(stage.find('.element'))
-      .filter((node) => node.isVisible() && !origins.has(node.id()))
+      .filter((node) => node.isVisible() && !origins.has(node.id()) && !followers.has(node.id()))
       .map(boxOf)
     if (project) {
       const { width, height } = project.document.page
       targets.push({ x: 0, y: 0, width, height })
     }
 
-    session.current = { origins, groupBox: unionBoxes(draggedNodes.map(boxOf)), targets }
+    session.current = {
+      origins,
+      groupBox: unionBoxes(draggedNodes.map(boxOf)),
+      targets,
+      followers,
+    }
   }, [])
 
   const onDragMove = useCallback((event: Konva.KonvaEventObject<DragEvent>) => {
     const stage = event.target.getStage()
     const draggedId = event.target.id()
-    const { origins, groupBox, targets } = session.current
+    const { origins, groupBox, targets, followers } = session.current
     const origin = origins.get(draggedId)
     if (!stage || !origin) return
 
@@ -109,6 +129,9 @@ export function useElementInteractions(): Handlers {
     event.target.position({ x: origin.x + dx, y: origin.y + dy })
     for (const [id, start] of origins) {
       if (id === draggedId) continue
+      stage.findOne(`#${id}`)?.position({ x: start.x + dx, y: start.y + dy })
+    }
+    for (const [id, start] of followers) {
       stage.findOne(`#${id}`)?.position({ x: start.x + dx, y: start.y + dy })
     }
   }, [])

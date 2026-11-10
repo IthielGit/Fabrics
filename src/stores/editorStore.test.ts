@@ -1,8 +1,13 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { clearClipboard } from '../features/documents/clipboard'
 import { createDesignProject, createPlanProject } from '../features/documents/createProject'
-import { createRectElement, createTextElement } from '../features/documents/elements'
-import type { TextElement } from '../types/document'
+import {
+  createOpeningElement,
+  createRectElement,
+  createTextElement,
+  createWallElement,
+} from '../features/documents/elements'
+import type { OpeningElement, TextElement, WallElement } from '../types/document'
 import { HISTORY_LIMIT, useEditorStore } from './editorStore'
 
 const store = () => useEditorStore.getState()
@@ -408,5 +413,129 @@ describe('revision et nom du projet', () => {
     expect(elements()).toHaveLength(0)
     expect(store().history.past).toHaveLength(0)
     expect(store().revision).toBe(0)
+  })
+})
+
+describe('ouvertures et murs', () => {
+  /** Un plan avec un mur de 4 m et une porte au centre. */
+  function planWithDoor() {
+    store().loadProject(createPlanProject('Plan'))
+    const wall = createWallElement('Mur', [0, 0, 4000, 0], 200, 2500)
+    const door = createOpeningElement('door', 'Porte 1', {
+      wallId: wall.id,
+      segmentIndex: 0,
+      offset: 2000,
+      side: 'left',
+    })
+    store().addElement(wall)
+    store().addElement(door)
+    return { wall, door }
+  }
+  const openings = () => elements().filter((el): el is OpeningElement => el.type === 'opening')
+  const walls = () => elements().filter((el): el is WallElement => el.type === 'wall')
+
+  it('supprimer un mur supprime ses ouvertures, en un seul état annulable', () => {
+    const { wall } = planWithDoor()
+    store().removeElements([wall.id])
+    expect(elements()).toHaveLength(0)
+    store().undo()
+    expect(elements().map((el) => el.type)).toEqual(['wall', 'opening'])
+  })
+
+  it('supprimer une ouverture laisse le mur', () => {
+    const { door } = planWithDoor()
+    store().removeElements([door.id])
+    expect(elements().map((el) => el.type)).toEqual(['wall'])
+  })
+
+  it('dupliquer un mur copie aussi ses ouvertures, rattachées à la copie', () => {
+    const { wall, door } = planWithDoor()
+    store().duplicateElements([wall.id])
+    expect(walls()).toHaveLength(2)
+    expect(openings()).toHaveLength(2)
+    const copy = walls()[1]
+    const copiedDoor = openings()[1]
+    expect(copiedDoor.id).not.toBe(door.id)
+    expect(copiedDoor.wallId).toBe(copy.id)
+    expect(copiedDoor.offset).toBe(door.offset)
+    expect(openings()[0].wallId).toBe(wall.id)
+  })
+
+  it('dupliquer une ouverture seule ne fait rien', () => {
+    const { door } = planWithDoor()
+    const before = store().history.past.length
+    store().duplicateElements([door.id])
+    expect(openings()).toHaveLength(1)
+    expect(store().history.past.length).toBe(before)
+  })
+
+  it('copier puis coller un mur emmène ses ouvertures', () => {
+    const { wall } = planWithDoor()
+    store().setSelection([wall.id])
+    store().copySelection()
+    store().pasteClipboard()
+    expect(walls()).toHaveLength(2)
+    expect(openings()).toHaveLength(2)
+    expect(openings()[1].wallId).toBe(walls()[1].id)
+  })
+
+  it('copier une ouverture seule : rien n’est collé', () => {
+    const { door } = planWithDoor()
+    store().setSelection([door.id])
+    store().copySelection()
+    const before = elements().length
+    store().pasteClipboard()
+    expect(elements()).toHaveLength(before)
+  })
+
+  it('déplacer un mur garde ses ouvertures à la même place relative', () => {
+    const { wall, door } = planWithDoor()
+    store().updateElements([wall.id], (el) =>
+      el.type === 'wall' ? { ...el, points: el.points.map((v, i) => v + (i % 2 ? 300 : 500)) } : el,
+    )
+    expect(openings()[0]).toMatchObject({ id: door.id, offset: 2000, segmentIndex: 0 })
+  })
+
+  it('raccourcir un mur ramène l’ouverture sur le mur', () => {
+    const { wall } = planWithDoor()
+    store().replaceElements([{ ...wall, points: [0, 0, 2000, 0] }])
+    expect(openings()[0].offset).toBe(1550)
+    store().undo()
+    expect(openings()[0].offset).toBe(2000)
+  })
+
+  it('une ouverture qui ne tient plus est supprimée, et annuler la rend', () => {
+    const { wall } = planWithDoor()
+    store().replaceElements([{ ...wall, points: [0, 0, 500, 0] }])
+    expect(openings()).toHaveLength(0)
+    store().undo()
+    expect(openings()).toHaveLength(1)
+  })
+
+  it('ajouter un sommet place l’ouverture sur le bon segment', () => {
+    const { wall } = planWithDoor()
+    store().replaceElements([{ ...wall, points: [0, 0, 1000, 0, 4000, 0] }])
+    expect(openings()[0]).toMatchObject({ segmentIndex: 1, offset: 1000 })
+  })
+
+  it('un geste en direct rejoue depuis le début : l’ouverture écartée revient', () => {
+    const { wall } = planWithDoor()
+    store().beginLiveEdit()
+    store().liveReplaceElements([{ ...wall, points: [0, 0, 500, 0] }])
+    expect(openings()).toHaveLength(0)
+    store().liveReplaceElements([{ ...wall, points: [0, 0, 4000, 0] }])
+    expect(openings()).toHaveLength(1)
+    expect(openings()[0].offset).toBe(2000)
+    store().endLiveEdit()
+    expect(store().history.past).toHaveLength(3) // ajout du mur, ajout de la porte, puis le geste entier
+  })
+
+  it('faire glisser une ouverture seule ne touche pas aux murs', () => {
+    const { door } = planWithDoor()
+    store().beginLiveEdit()
+    store().liveReplaceElements([{ ...door, offset: 1000 }])
+    store().endLiveEdit()
+    expect(openings()[0].offset).toBe(1000)
+    expect(walls()[0].points).toEqual([0, 0, 4000, 0])
   })
 })

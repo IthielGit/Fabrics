@@ -233,13 +233,20 @@ export function createLineElement(
   }
 }
 
-/** Copies décalées des éléments donnés, avec de nouveaux identifiants. */
+/**
+ * Copies décalées des éléments donnés, avec de nouveaux identifiants. Une ouverture copiée avec son
+ * mur est rattachée à la copie du mur ; une ouverture dont le mur n'est pas copié est ignorée.
+ */
 export function cloneElements(
   elements: readonly CanvasElement[],
   offset: number,
 ): CanvasElement[] {
-  return elements.map((el) =>
+  const newIds = new Map<string, string>(elements.map((el) => [el.id, crypto.randomUUID()]))
+  return elements.flatMap((el): CanvasElement[] => {
     // Pour un mur, une pièce ou une cote, ce sont les points qui bougent (x et y restent à 0).
-    translateElement({ ...structuredClone(el), id: crypto.randomUUID() }, offset, offset),
-  )
+    const copy = translateElement({ ...structuredClone(el), id: newIds.get(el.id)! }, offset, offset)
+    if (copy.type !== 'opening') return [copy]
+    const wallId = newIds.get(copy.wallId)
+    return wallId ? [{ ...copy, wallId }] : []
+  })
 }

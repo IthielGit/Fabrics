@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M5 — Ouvertures (feu vert donné le 2026-11-10 ; choix par défaut acceptés)
-- **Dernière tâche terminée :** M5 · tâche 6 — propriétés des ouvertures
-- **Prochaine tâche :** M5 · tâche 7 — liens avec le mur (suppression, copie, déplacement, sommets, annuler)
+- **Dernière tâche terminée :** M5 · tâche 7 — liens avec le mur
+- **Prochaine tâche :** M5 · tâche 8 — métrés et CSV (surface murale nette, tableau des ouvertures)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -44,6 +44,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/units/format(.test).ts`, `src/features/measurements/{csv,measurements.test}.ts`, `src/components/editor/{MeasurementsPanel,PlanElementFields,PlanSettingsSection,CalibrateDialog}.tsx`, `src/i18n/fr.ts`, `src/features/export/pdf.test.ts`, `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md`
 - Vérification : build ✓ lint ✓ tests ✓ (422) — à contrôler dans le navigateur
 - Commit : feat: unités Métrique architectural (mm, m²)
+
+### 2026-11-10 — M5 · Liens entre murs et ouvertures
+- Fait : **supprimer un mur supprime ses ouvertures** (un seul état d'historique). **Dupliquer, copier ou coller un mur emmène ses ouvertures**, rattachées à la copie du mur ; une ouverture seule ne se duplique ni ne se colle (rien n'est ajouté à l'historique). **Déplacer un mur** : ses ouvertures le suivent, aussi en direct pendant le glissement. **Modifier la forme d'un mur** (glisser, ajouter ou retirer un sommet) : les ouvertures restent là où elles étaient (projetées sur le segment le plus proche, au bon segment si on ajoute un sommet), se décalent pour ne pas se chevaucher, et sont supprimées si elles ne tiennent plus ; pendant un glissement de sommet, le calcul repart du début du geste, donc une ouverture écartée un instant revient quand le mur se rallonge. Annuler restaure le mur et ses ouvertures d'un coup.
+- Fichiers : `src/features/documents/wallOpenings(.test).ts`, `elements.ts` (`cloneElements`), `src/stores/editorStore(.test).ts`, `src/components/editor/useElementInteractions.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (478 au total, dont 29 sur ces liens) — à contrôler dans le navigateur
+- Commit : feat: ouvertures liées à leur mur
 
 ### 2026-11-10 — M5 · Propriétés des ouvertures
 - Fait : panneau Propriétés d'une ouverture : nom, type (porte / fenêtre / baie), largeur, hauteur, allège (fenêtre et baie), boutons « Charnière de l'autre côté » et « Ouvrir de l'autre côté » (portes), opacité, surface. Les changements de taille sont vérifiés : refusés avec un message si l'ouverture dépasserait la hauteur du mur ou ne tiendrait plus sur son segment (le centre se décale au besoin pour ne pas chevaucher une voisine) ; le champ reprend alors sa valeur. Passer en porte ou baie remet l'allège à 0 ; passer en fenêtre donne l'allège par défaut (0,90 m), réduite si elle dépasserait le mur. Taille minimale 100 mm.
