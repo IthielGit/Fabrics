@@ -10,6 +10,7 @@ import type {
   TextElement,
   WallElement,
 } from '../../types/document'
+import { translateElement } from '../geometry/transform'
 import { DEFAULT_FONT_FAMILY } from './fonts'
 
 type Unit = FabricsDocument['unit']
@@ -206,10 +207,8 @@ export function cloneElements(
   elements: readonly CanvasElement[],
   offset: number,
 ): CanvasElement[] {
-  return elements.map((el) => ({
-    ...structuredClone(el),
-    id: crypto.randomUUID(),
-    x: el.x + offset,
-    y: el.y + offset,
-  }))
+  return elements.map((el) =>
+    // Pour un mur, une pièce ou une cote, ce sont les points qui bougent (x et y restent à 0).
+    translateElement({ ...structuredClone(el), id: crypto.randomUUID() }, offset, offset),
+  )
 }

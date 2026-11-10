@@ -2,6 +2,7 @@ import type Konva from 'konva'
 import { useCallback, useMemo, useRef } from 'react'
 import { translateBox, unionBoxes, type Box } from '../../features/geometry/box'
 import { computeSnap } from '../../features/geometry/guides'
+import { hasAbsolutePoints, translateElement } from '../../features/geometry/transform'
 import type { Point } from '../../features/geometry/viewport'
 import { pxPerUnit } from '../../features/units/scale'
 import { useEditorStore } from '../../stores/editorStore'
@@ -114,10 +115,17 @@ export function useElementInteractions(): Handlers {
     const updated = [...session.current.origins.keys()].flatMap((id) => {
       const node = stage.findOne(`#${id}`)
       const element = byId.get(id)
-      return node && element ? [{ ...element, x: node.x(), y: node.y() }] : []
+      if (!node || !element) return []
+      return [translateElement(element, node.x() - element.x, node.y() - element.y)]
     })
     session.current = EMPTY_SESSION
     replaceElements(updated)
+
+    // Murs, pièces et cotes gardent leur position à 0 : ce sont leurs points qui ont bougé.
+    // react-konva ne réécrit pas une position inchangée, on remet donc le nœud à sa place.
+    for (const element of updated) {
+      if (hasAbsolutePoints(element)) stage.findOne(`#${element.id}`)?.position({ x: element.x, y: element.y })
+    }
   }, [])
 
   // Double-clic sur un texte : on passe en édition.

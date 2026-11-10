@@ -24,7 +24,7 @@ const EPSILON = 1e-9
 /** Au-delà de ce rapport, un angle très aigu est « coupé » plutôt que prolongé en pointe. */
 const MAX_MITER_RATIO = 4
 
-function sameLocation(a: Point, b: Point): boolean {
+export function sameLocation(a: Point, b: Point): boolean {
   return Math.hypot(a.x - b.x, a.y - b.y) < 1e-6
 }
 

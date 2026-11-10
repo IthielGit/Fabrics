@@ -1,5 +1,28 @@
 import type { CanvasElement } from '../../types/document'
 
+/** Vrai pour les éléments de plan : leurs points sont absolus et leur position `x, y` reste à 0. */
+export function hasAbsolutePoints(element: CanvasElement): boolean {
+  return element.type === 'wall' || element.type === 'room' || element.type === 'dimension'
+}
+
+/**
+ * Déplace un élément de (dx, dy). Un mur, une pièce ou une cote déplace ses points (leur position
+ * `x, y` reste à 0, voir docs/02-ARCHITECTURE.md) ; les autres éléments déplacent `x, y`.
+ */
+export function translateElement(element: CanvasElement, dx: number, dy: number): CanvasElement {
+  switch (element.type) {
+    case 'wall':
+    case 'room':
+      return { ...element, points: element.points.map((v, i) => v + (i % 2 === 0 ? dx : dy)) }
+    case 'dimension': {
+      const [x1, y1, x2, y2] = element.points
+      return { ...element, points: [x1 + dx, y1 + dy, x2 + dx, y2 + dy] }
+    }
+    default:
+      return { ...element, x: element.x + dx, y: element.y + dy }
+  }
+}
+
 /** État d'un nœud Konva à la fin d'un déplacement, d'un redimensionnement ou d'une rotation. */
 export interface NodeTransform {
   x: number

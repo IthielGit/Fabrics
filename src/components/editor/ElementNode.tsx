@@ -5,6 +5,7 @@ import LineShape from './shapes/LineShape'
 import RectShape from './shapes/RectShape'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 import TextShape from './shapes/TextShape'
+import WallShape from './shapes/WallShape'
 
 interface ElementNodeProps extends ShapeInteraction {
   element: CanvasElement
@@ -25,8 +26,10 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <TextShape element={element} editing={editing} {...interaction} />
     case 'image':
       return <ImageShape element={element} {...interaction} />
+    case 'wall':
+      return <WallShape element={element} {...interaction} />
     default:
-      // Éléments de plan (mur, pièce, cote) : jalon M3.
+      // Pièce et cote : tâches suivantes de M3.
       return null
   }
 }

@@ -1,7 +1,7 @@
 import type Konva from 'konva'
 import { useEffect, useRef } from 'react'
 import { Transformer } from 'react-konva'
-import { applyNodeTransform } from '../../features/geometry/transform'
+import { applyNodeTransform, hasAbsolutePoints } from '../../features/geometry/transform'
 import { useEditorStore } from '../../stores/editorStore'
 
 const MIN_SIZE_PX = 5 // taille minimale à l'écran lors d'un redimensionnement
@@ -40,9 +40,13 @@ export default function SelectionTransformer({ enabled }: SelectionTransformerPr
     const transformer = transformerRef.current
     const stage = transformer?.getStage()
     if (!transformer || !stage) return
-    const lockedIds = new Set(elements?.filter((el) => el.locked || el.hidden).map((el) => el.id))
+    // Pas de poignées pour les éléments verrouillés ou masqués, ni pour les éléments de plan
+    // (murs, pièces, cotes) : ils se déplacent, et leurs sommets s'éditent un par un.
+    const excludedIds = new Set(
+      elements?.filter((el) => el.locked || el.hidden || hasAbsolutePoints(el)).map((el) => el.id),
+    )
     const nodes = selectedIds
-      .filter((id) => !lockedIds.has(id))
+      .filter((id) => !excludedIds.has(id))
       .map((id) => stage.findOne(`#${id}`))
       .filter((node): node is Konva.Node => node !== undefined)
     transformer.nodes(nodes)

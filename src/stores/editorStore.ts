@@ -4,6 +4,7 @@ import { copyToClipboard, takePasteCopies } from '../features/documents/clipboar
 import { moveElementToSlot, sameOrder, stepElement } from '../features/documents/layers'
 import { fr } from '../i18n/fr'
 import type { Guide } from '../features/geometry/guides'
+import { translateElement } from '../features/geometry/transform'
 import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, PlanSettings, Project } from '../types/document'
@@ -316,7 +317,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const next: FabricsDocument = {
         ...project.document,
         elements: project.document.elements.map((el) =>
-          movable.has(el.id) ? { ...el, x: el.x + dx, y: el.y + dy } : el,
+          movable.has(el.id) ? translateElement(el, dx, dy) : el,
         ),
       }
       const key = [...movable].sort().join(',')

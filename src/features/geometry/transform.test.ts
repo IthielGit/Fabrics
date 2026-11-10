@@ -1,6 +1,57 @@
 import { describe, expect, it } from 'vitest'
-import { createEllipseElement, createLineElement, createRectElement } from '../documents/elements'
-import { applyNodeTransform } from './transform'
+import type { CanvasElement } from '../../types/document'
+import {
+  createEllipseElement,
+  createLineElement,
+  createRectElement,
+  createRoomElement,
+  createWallElement,
+} from '../documents/elements'
+import { applyNodeTransform, hasAbsolutePoints, translateElement } from './transform'
+
+const plan = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
+
+describe('translateElement', () => {
+  it('déplace x et y d’un rectangle', () => {
+    const rect = createRectElement('R', 10, 20, 100, 50)
+    expect(translateElement(rect, 5, -3)).toMatchObject({ x: 15, y: 17, width: 100 })
+  })
+
+  it('déplace les points d’un mur sans toucher à sa position (qui reste à 0)', () => {
+    const wall = createWallElement('M', [0, 0, 4000, 0], 200, 2500)
+    const moved = translateElement(wall, 100, 200)
+    expect(moved).toMatchObject({ x: 0, y: 0, points: [100, 200, 4100, 200] })
+  })
+
+  it('déplace les points d’une pièce', () => {
+    const room = createRoomElement('P', [0, 0, 1000, 0, 1000, 1000])
+    expect(translateElement(room, -50, 50)).toMatchObject({
+      x: 0,
+      y: 0,
+      points: [-50, 50, 950, 50, 950, 1050],
+    })
+  })
+
+  it('déplace les deux extrémités d’une cote', () => {
+    const dim: CanvasElement = { ...plan, id: 'd', name: 'd', type: 'dimension', points: [0, 0, 1000, 0], offset: 300 }
+    expect(translateElement(dim, 10, 20)).toMatchObject({ points: [10, 20, 1010, 20] })
+  })
+
+  it('ne modifie pas l’élément d’origine', () => {
+    const wall = createWallElement('M', [0, 0, 4000, 0], 200, 2500)
+    translateElement(wall, 100, 100)
+    expect(wall.points).toEqual([0, 0, 4000, 0])
+  })
+})
+
+describe('hasAbsolutePoints', () => {
+  it('est vrai pour les éléments de plan seulement', () => {
+    expect(hasAbsolutePoints(createWallElement('M', [0, 0, 1, 1], 1, 1))).toBe(true)
+    expect(hasAbsolutePoints(createRoomElement('P', [0, 0, 1, 1, 2, 2]))).toBe(true)
+    expect(hasAbsolutePoints(createRectElement('R', 0, 0, 1, 1))).toBe(false)
+    expect(hasAbsolutePoints(createLineElement('L', 0, 0, 1, 1, 1))).toBe(false)
+  })
+})
 
 describe('applyNodeTransform', () => {
   it('déplace un rectangle sans changer sa taille', () => {

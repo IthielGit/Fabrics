@@ -21,11 +21,13 @@ import ElementNode from './ElementNode'
 import { importImageFiles } from './importImages'
 import { isTypingTarget } from './isTypingTarget'
 import PlanGrid from './PlanGrid'
+import PolylineDraftLayer from './PolylineDraftLayer'
 import SelectionTransformer from './SelectionTransformer'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
+import { usePolylineDrawing, type PolylineTool } from './usePolylineDrawing'
 
 const WHEEL_ZOOM_STEP = 1.1
 /** En dessous de cette taille (px écran), un tracé ou une sélection est un simple clic. */
@@ -66,7 +68,18 @@ export default function EditorStage() {
   const fittedProjectId = useRef<string | null>(null)
 
   const projectId = project?.id ?? null
-  const drawing = activeTool !== 'select'
+  // Pixels écran par unité du document (les hooks ci-dessous doivent précéder le `return` anticipé).
+  const unitScale = pxPerUnit(project?.document.unit ?? 'px')
+  const scale = zoom * unitScale
+  // Formes tracées au glisser (rectangle, ellipse, ligne, texte).
+  const drawing =
+    activeTool === 'rect' ||
+    activeTool === 'ellipse' ||
+    activeTool === 'line' ||
+    activeTool === 'text'
+  // Tracés point par point du plan : mur (pièce et cote : tâches suivantes).
+  const polylineTool: PolylineTool | null = activeTool === 'wall' ? activeTool : null
+  const polylineDrawing = usePolylineDrawing(polylineTool, scale)
   const selecting = activeTool === 'select' && !spaceDown
 
   // Communique la taille de la zone au store, et ajuste la page à l'écran à l'ouverture.
@@ -106,8 +119,6 @@ export default function EditorStage() {
 
   if (!project) return null
   const { page, unit, elements } = project.document
-  const unitScale = pxPerUnit(unit)
-  const scale = zoom * unitScale
 
   const handleWheel = (event: Konva.KonvaEventObject<WheelEvent>) => {
     event.evt.preventDefault()
@@ -138,7 +149,9 @@ export default function EditorStage() {
     const point = pointerInDocument(event)
     if (!point) return
 
-    if (drawing) {
+    if (polylineTool) {
+      polylineDrawing.onPointerDown(event)
+    } else if (drawing) {
       setDraft({ start: point, current: point, additive: false })
     } else if (activeTool === 'select') {
       // Un clic sur un élément est géré par l'élément lui-même ; un clic sur une poignée du
@@ -151,6 +164,7 @@ export default function EditorStage() {
   }
 
   const handlePointerMove = (event: PointerEvent) => {
+    if (polylineTool) polylineDrawing.onPointerMove(event)
     if (!draft && !band) return
     const point = pointerInDocument(event)
     if (!point) return
@@ -256,7 +270,7 @@ export default function EditorStage() {
   const editingElement = elements.find((el) => el.id === editingTextId)
   const draftBox = draft ? normalizeBox(draft.start, draft.current) : null
   const bandBox = band ? normalizeBox(band.start, band.current) : null
-  const cursor = spaceDown ? 'grab' : drawing ? 'crosshair' : 'default'
+  const cursor = spaceDown ? 'grab' : activeTool !== 'select' ? 'crosshair' : 'default'
 
   return (
     <div
@@ -361,6 +375,14 @@ export default function EditorStage() {
               />
             )}
             <AlignmentGuides pageWidth={page.width} pageHeight={page.height} scale={scale} />
+            {polylineTool && (
+              <PolylineDraftLayer
+                tool={polylineTool}
+                draft={polylineDrawing.draft}
+                scale={scale}
+                wallThickness={project.document.plan?.defaultWallThickness ?? 200}
+              />
+            )}
             {bandBox && (
               <Rect
                 {...bandBox}
