@@ -195,6 +195,8 @@ export const fr = {
     perimeter: 'Périmètre',
     wallArea: 'Surface murale',
     areaOnTrace: 'Surface mesurée sur le contour tracé.',
+    vertexHint:
+      'Glissez un point rond pour déplacer un sommet · cliquez un petit point au milieu d’un côté pour ajouter un sommet · double-cliquez un sommet pour le retirer.',
     unitCm: 'cm',
     unitPercent: '%',
     unitDegrees: '°',

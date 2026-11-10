@@ -20,7 +20,7 @@ Hors périmètre : **aucun devis, aucun prix, aucune quotation**. Les métrés s
 | 1 | `CLAUDE.md` | Règles de travail (ce fichier) |
 | 2 | `docs/01-PRODUIT.md` | Quoi construire et pourquoi, périmètre MVP |
 | 3 | `docs/02-ARCHITECTURE.md` | Comment construire : stack, modèle de données, calculs |
-| 4 | `docs/03-ROADMAP.md` | Jalons M0 → M7 avec critères d'acceptation |
+| 4 | `docs/03-ROADMAP.md` | Jalons M0 → M13 avec critères d'acceptation |
 | 5 | `docs/PROGRESS.md` | Journal : où en est le projet |
 | — | `docs/04-PROMPTS.md` | Messages que l'utilisateur t'enverra (pour info) |
 | — | `docs/05-INSTALLATION.md` | Guide d'installation pour l'utilisateur |

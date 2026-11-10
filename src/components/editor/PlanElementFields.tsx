@@ -115,6 +115,10 @@ export default function PlanElementFields({ element }: { element: PlanElement })
           />
         )}
       </div>
+
+      {(element.type === 'wall' || element.type === 'room') && (
+        <p className="text-xs text-slate-500">{fr.properties.vertexHint}</p>
+      )}
     </>
   )
 }

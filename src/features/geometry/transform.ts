@@ -58,6 +58,56 @@ export function moveVertex(element: CanvasElement, index: number, to: Point): Ca
   return element
 }
 
+/** Nombre minimal de sommets : 2 pour un mur, 3 pour une pièce. Une cote est fixe (2 sommets). */
+const MIN_VERTICES = { wall: 2, room: 3 } as const
+
+/** Un mur, une pièce : leur nombre de sommets peut changer (pas une cote). */
+function hasEditableVertexCount(element: CanvasElement): element is WallElement | RoomElement {
+  return element.type === 'wall' || element.type === 'room'
+}
+
+/**
+ * Milieux des côtés d'un mur ou d'une pièce, dans l'ordre : le milieu `i` est entre les sommets
+ * `i` et `i + 1` (pour une pièce, le dernier côté referme sur le premier sommet).
+ */
+export function getSegmentMidpoints(element: CanvasElement): Point[] {
+  if (!hasEditableVertexCount(element)) return []
+  const vertices = toPoints(element.points)
+  const count = element.type === 'room' ? vertices.length : vertices.length - 1
+  const midpoints: Point[] = []
+  for (let i = 0; i < count; i++) {
+    const a = vertices[i]
+    const b = vertices[(i + 1) % vertices.length]
+    midpoints.push({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 })
+  }
+  return midpoints
+}
+
+/** Ajoute un sommet au milieu du côté `segmentIndex` (voir `getSegmentMidpoints`). */
+export function insertVertexAtMidpoint(element: CanvasElement, segmentIndex: number): CanvasElement {
+  if (!hasEditableVertexCount(element)) return element
+  const midpoints = getSegmentMidpoints(element)
+  const middle = midpoints[segmentIndex]
+  if (!Number.isInteger(segmentIndex) || !middle) return element
+  const points = [...element.points]
+  points.splice((segmentIndex + 1) * 2, 0, middle.x, middle.y)
+  return { ...element, points }
+}
+
+/** Vrai si on peut retirer un sommet sans passer sous le minimum (2 pour un mur, 3 pour une pièce). */
+export function canRemoveVertex(element: CanvasElement): boolean {
+  return hasEditableVertexCount(element) && element.points.length / 2 > MIN_VERTICES[element.type]
+}
+
+/** Retire le sommet `index` ; l'élément reste inchangé s'il est déjà au nombre minimal de sommets. */
+export function removeVertex(element: CanvasElement, index: number): CanvasElement {
+  if (!hasEditableVertexCount(element) || !canRemoveVertex(element)) return element
+  if (!Number.isInteger(index) || index < 0 || index >= element.points.length / 2) return element
+  const points = [...element.points]
+  points.splice(index * 2, 2)
+  return { ...element, points }
+}
+
 /** État d'un nœud Konva à la fin d'un déplacement, d'un redimensionnement ou d'une rotation. */
 export interface NodeTransform {
   x: number

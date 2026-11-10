@@ -47,14 +47,34 @@ même export). Seuls les outils disponibles et l'unité changent.
 - Comptes utilisateurs (e-mail + mot de passe ; Google en option) et synchronisation cloud.
 - Mise en ligne publique sur Cloudflare Pages.
 
-**Exclus du MVP** (voir « Après le MVP » dans la roadmap)
+**Exclus du MVP**
 - Devis, prix, quotations : **jamais** dans ce produit tant que l'utilisateur ne le demande pas.
-- Collaboration temps réel (jalon M7, après le MVP).
-- Espaces de travail multi-membres, rôles, commentaires, partage par lien.
-- Modèles, bibliothèque d'icônes, identité de marque, historique de versions.
+- Phase « Bâtiment » (jalons M7 à M12, voir ci-dessous).
+- Collaboration temps réel (jalon M13).
+- Espaces de travail multi-membres, rôles, commentaires.
+- Modèles, identité de marque, historique de versions.
 - Abonnements, paiements, statistiques d'administration.
 - Traduction anglais / malgache, mode sombre (préparés mais non livrés).
-- 3D, export DWG/DXF, IA.
+- Assistant IA : reporté, à décider plus tard avec l'utilisateur.
+
+## Phase « Bâtiment » (après le MVP, jalons M7 à M12)
+
+Un projet Plan devient un **bâtiment** : on dessine chaque niveau, l'application en déduit
+le reste.
+
+| Jalon | Ce que l'utilisateur obtient |
+|---|---|
+| M7 Ouvertures | Portes et fenêtres posées dans les murs ; surface murale nette |
+| M8 Niveaux | Rez-de-chaussée, étages ; niveau du dessous en transparence ; métrés par niveau |
+| M9 Axes et mobilier | Axes repérés A, B / 1, 2 ; bibliothèque de mobilier dessinée pour Fabrics |
+| M10 Vue 3D | Le bâtiment en volume à côté du plan, mis à jour en direct |
+| M11 Façades et coupes | Façades N/S/E/O et coupes générées ; planche qui les présente côte à côte ; PDF |
+| M12 Import, export, partage | DXF (import et export), glTF, lien de partage en lecture seule |
+
+**Parcours D. Du plan au bâtiment**
+Nouveau plan → dessiner les murs du rez-de-chaussée → poser porte et fenêtres → dupliquer le
+niveau en « Étage 1 » et l'adapter → ouvrir la vue 3D → tracer une ligne de coupe → ouvrir la
+planche → exporter en PDF.
 
 ## Écrans
 

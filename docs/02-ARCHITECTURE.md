@@ -21,7 +21,9 @@ Installe toujours la **dernière version stable** au moment de l'installation, s
 | Tests | `vitest` | M1 | fonctions pures (géométrie, métrés, unités) |
 | PDF | `jspdf` | M4 | PNG/JPG viennent de Konva, sans bibliothèque |
 | Backend | `@supabase/supabase-js` | M6 | Auth + Postgres + Storage |
-| Temps réel | `yjs`, `y-websocket` | M7 | après le MVP, hébergement à décider |
+| 3D | `three`, `@react-three/fiber`, `@react-three/drei` | M10 | **à confirmer par l'utilisateur au début de M10** ; version majeure de `@react-three/fiber` compatible avec `react` |
+| DXF (import) | `dxf-parser` | M12 | **à confirmer au début de M12** ; l'export DXF est écrit à la main (format texte), sans bibliothèque |
+| Temps réel | `yjs`, `y-websocket` | M13 | hébergement à décider |
 
 Interdits sans accord : `html2canvas` (inutile, Konva exporte lui-même), `fabric`, bibliothèques
 d'UI complètes (MUI, Ant…), `uuid` (on utilise `crypto.randomUUID()`), `moment`,
@@ -389,6 +391,124 @@ pas sur une feuille, ce qui est normal puisque seule l'emprise du contenu est ex
 
 Les raccourcis sont ignorés quand le focus est dans un champ de saisie.
 
+## Mode bâtiment (jalons M7 à M12)
+
+Cette section **prévoit** les règles ; le modèle de données ci-dessus reste la source de vérité
+tant que le jalon correspondant n'a pas commencé. Chaque jalon qui change le format du document
+incrémente `FabricsDocument.version` et ajoute une **migration** pure et testée
+(`src/features/documents/migrations.ts`), appliquée à l'ouverture d'un projet.
+
+### Ajouts prévus au modèle de données
+
+```ts
+// M7 — version 2
+export interface OpeningElement extends BaseElement {
+  type: 'opening';
+  kind: 'door' | 'window' | 'bay';   // porte, fenêtre, baie
+  wallId: string;            // mur porteur ; supprimé avec lui
+  segmentIndex: number;      // segment de la polyligne du mur
+  offset: number;            // mm, du début du segment au centre de l'ouverture
+  width: number;             // mm
+  height: number;            // mm
+  sillHeight: number;        // mm, 0 pour une porte
+  hinge: 'start' | 'end';    // côté des gonds
+  side: 'left' | 'right';    // côté du mur vers lequel la porte s'ouvre
+}
+
+// M8 — version 3
+export interface Level {
+  id: string;
+  name: string;              // « Rez-de-chaussée », « Étage 1 »…
+  elevation: number;         // mm, altitude du plancher
+  height: number;            // mm, hauteur d'étage (défaut 2 700)
+  slabThickness: number;     // mm, épaisseur de dalle (défaut 200)
+}
+// FabricsDocument.levels?: Level[]   (projets Plan uniquement, au moins un niveau)
+// BaseElement.levelId?: string       (éléments de plan ; absent = commun à tous les niveaux)
+// PlanSettings.northAngle: number    (degrés, M10)
+
+// M9
+export interface AxisElement extends BaseElement {
+  type: 'axis';
+  points: [number, number, number, number];
+  label: string;             // « A », « 1 »… ; commun à tous les niveaux (pas de levelId)
+}
+export interface FurnitureElement extends BaseElement {
+  type: 'furniture';
+  symbol: string;            // identifiant dans la bibliothèque intégrée (ex. 'bed-double')
+  width: number;             // mm
+  depth: number;             // mm
+}
+
+// M11
+export interface SectionLineElement extends BaseElement {
+  type: 'section';
+  points: [number, number, number, number];
+  label: string;             // « A » → coupe A–A
+  lookLeft: boolean;         // sens de vue
+}
+```
+
+Règles :
+- `opening` : sa position est **relative au mur** ; elle n'a pas de points absolus. Le
+  Transformer ne l'utilise pas : on la fait coulisser le long du segment, bornée par les
+  extrémités du segment et les ouvertures voisines.
+- `furniture` : seule exception à la règle D6 parmi les éléments de plan : position, rotation
+  et taille (`x`, `y`, `rotation`, `width`, `depth`) comme une forme du Visuel. Les symboles
+  sont des dessins Konva **créés pour Fabrics** (`src/components/editor/symbols/`).
+- `axis` et `section` suivent la règle D6 (points absolus, déplacement seul).
+
+### Métrés ajoutés
+
+| Métré | Formule |
+|---|---|
+| Surface d'une ouverture | `width × height` |
+| Surface murale nette | surface murale brute − Σ surfaces des ouvertures du mur |
+| Métrés d'un niveau | mêmes tableaux, filtrés par `levelId` |
+| Totaux du bâtiment | somme des niveaux |
+
+### Modèle 3D (`src/features/building/`, fonctions pures)
+
+Le document est d'abord traduit en un modèle neutre, **sans Three.js**, testable avec Vitest :
+- chaque segment de mur → boîtes ; une ouverture coupe le segment en morceaux (trumeaux,
+  allège sous la fenêtre, linteau au-dessus) : **pas de calcul booléen** ;
+- chaque pièce → dalle (polygone extrudé de `slabThickness`) à l'altitude de son niveau ;
+- dernier niveau → toit plat sur l'emprise des pièces ;
+- coordonnées en mm, plan (x, y) → 3D (x, z), hauteur → y.
+
+Le composant 3D (`src/components/viewer3d/`) ne fait que dessiner ce modèle. Mise à jour
+limitée à une fois par image (`requestAnimationFrame`), géométrie recalculée seulement pour
+les éléments modifiés.
+
+### Façades et coupes (`src/features/building/views/`)
+
+- Façade = projection orthographique du modèle neutre sur un plan vertical (N, S, E, O selon
+  `northAngle`). Faces cachées traitées par **algorithme du peintre** : on trie les faces de
+  la plus lointaine à la plus proche et on les dessine remplies de blanc avec un contour, en
+  2D dans Konva.
+- Coupe = même principe, limité à ce qui est derrière la ligne de coupe ; les sections
+  coupées (intersection des boîtes avec le plan de coupe) sont remplies en noir.
+- Les vues sont **calculées**, jamais stockées dans le document.
+
+### Écran de l'éditeur (mode bâtiment)
+
+- À gauche : outils ; au centre : plan du niveau actif ; à droite : panneaux habituels, et
+  panneau 3D ouvrable, redimensionnable.
+- En haut du canevas : sélecteur de niveau.
+- Bouton « Planche » : vue d'ensemble en lecture seule (niveaux, façades, coupes côte à côte),
+  exportable en PDF.
+
+### Import, export, partage (M12)
+
+- DXF exporté : unités mm (`$INSUNITS = 4`), calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`,
+  `AXES`, `MOBILIER` ; un fichier par niveau ou un seul fichier avec un calque par niveau.
+- DXF importé : lignes et polylignes converties en éléments `line`, groupées et verrouillées
+  sur le niveau actif.
+- glTF : `GLTFExporter` fourni par `three`.
+- Partage : table Supabase `shares` (jeton aléatoire, projet, actif, mot de passe haché
+  optionnel, expiration), RLS activé ; la lecture publique passe par une fonction Postgres
+  qui vérifie le jeton. Ajout à `supabase/schema.sql` au début de M12.
+
 ## Variables d'environnement
 
 ```
@@ -404,5 +524,5 @@ Sans ces variables, l'application fonctionne en mode local (pas de bouton de con
   redirection SPA : fichier `public/_redirects` contenant `/* /index.html 200`.
 - **Supabase** (M6) : offre gratuite. Attention : un projet gratuit inactif peut être mis en
   pause ; vérifier les limites actuelles sur le site de Supabase.
-- **Temps réel** (M7) : Cloudflare Pages ne garde pas de connexion WebSocket ouverte ; il faudra
-  choisir un hébergeur pour le serveur Yjs. Décision à prendre au début de M7.
+- **Temps réel** (M13) : Cloudflare Pages ne garde pas de connexion WebSocket ouverte ; il faudra
+  choisir un hébergeur pour le serveur Yjs. Décision à prendre au début de M13.

@@ -20,7 +20,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M4 Export | à faire | |
 | M5 Mise en ligne | à faire | |
 | M6 Comptes et sauvegarde cloud | à faire | |
-| M7 Collaboration temps réel | après le MVP | |
+| M7 Ouvertures | après le MVP | |
+| M8 Niveaux | après le MVP | |
+| M9 Axes et mobilier | après le MVP | |
+| M10 Vue 3D | après le MVP | |
+| M11 Façades, coupes et planche | après le MVP | |
+| M12 Import, export et partage | après le MVP | |
+| M13 Collaboration temps réel | après le MVP | |
 
 ## Journal
 
@@ -31,6 +37,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-10 — M3 · Ajout et retrait de sommets (correctif demandé)
+- Fait : sur un mur ou une pièce sélectionné, un petit point « + » apparaît au milieu de chaque côté (pour une pièce, y compris le côté de fermeture) ; un clic ajoute un sommet à cet endroit (la forme ne change pas, on le glisse ensuite) ; un double-clic sur un sommet le retire (minimum 2 sommets pour un mur, 3 pour une pièce ; une cote reste à 2). Un geste = un pas d'annulation. Rappel affiché dans Propriétés.
+- Fichiers : src/features/geometry/transform.ts (+ tests), src/components/editor/VertexHandles.tsx, PlanElementFields.tsx, src/i18n/fr.ts
+- Vérification : build ✓ lint ✓ tests ✓ (319 au total) — clics et double-clics à contrôler dans le navigateur
+- Commit : feat: ajout et retrait de sommets
 
 ### 2026-11-10 — M3 · Panneau Métrés et export CSV
 - Fait : panneau « Métrés » (projets de type Plan uniquement), mis à jour en temps réel : tableau des pièces (nom, surface, périmètre), tableau des murs (nom, longueur, épaisseur, surface murale), totaux, mention « Surfaces mesurées sur le contour tracé » ; cliquer une ligne sélectionne l'élément sur le plan ; bouton « Exporter en CSV » (désactivé s'il n'y a rien à exporter) : fichier `<nom du projet>-metres.csv` (séparateur `;`, décimales à virgule, UTF-8 avec BOM, accents conservés ; caractères interdits dans un nom de fichier retirés). Aucun calcul dans les composants : tout vient de `features/measurements` et `features/units`.
@@ -261,6 +273,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D21 | Éléments masqués et métrés | Les murs et pièces masqués sont comptés dans les métrés. | Masquer ne change que l'affichage ; le métré décrit la géométrie du document. |
 | D22 | Contrainte d'angle (Maj) | Le point est la projection du curseur sur la direction autorisée (multiples de 45°), pas un point à la même distance. | Le point reste aligné avec le curseur : plus naturel, et exact sur les axes. |
 | D23 | Aimantation sur les faces de murs | On s'aimante aussi aux croisements des faces de murs différents (angles intérieurs). | Quatre murs séparés n'ont pas de sommet à leur angle intérieur : sans cela le critère 10,64 m² serait inatteignable. |
+| D24 | Phase « Bâtiment » | Ouvertures (M7), niveaux (M8), axes et mobilier (M9), 3D (M10), façades / coupes / planche (M11), import-export DXF / glTF et partage (M12) ajoutés **après le MVP** ; collaboration renumérotée M13 ; IA reportée. Dépendances 3D et DXF à confirmer au début de leur jalon. | Demande de l'utilisateur (capture d'un outil de bâtiment, 2026-11-10) ; le MVP reste inchangé pour être mis en ligne d'abord. |
 
 ## Idées (hors jalon en cours)
 
@@ -268,12 +281,4 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
-- **Vision « bâtiment » (capture d'écran de l'utilisateur, 2026-11-10)** — à découper en jalons après le MVP :
-  - Plusieurs niveaux par projet (rez-de-chaussée, étage 1…), avec hauteur d'étage.
-  - Portes et fenêtres insérées dans les murs (déjà dans « Après le MVP »).
-  - Axes de construction (lignes repérées A, B, C / 1, 2, 3).
-  - Mobilier et équipements (bibliothèque de symboles originaux).
-  - Élévations (façades) et coupes générées automatiquement à partir du plan.
-  - Vue 3D du bâtiment généré à partir des murs, hauteurs et ouvertures (exclue du MVP ; nouvelle dépendance à valider, ex. `three`).
-  - Assistant IA « Demander quelque chose » (exclu du MVP).
-  - Import / export (DXF…) et partage (exclus du MVP).
+- Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M13, à rediscuter).

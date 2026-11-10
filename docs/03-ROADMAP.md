@@ -178,7 +178,121 @@ Objectif : retrouver ses projets sur un autre appareil.
 
 ---
 
-## M7 — Collaboration temps réel (après le MVP)
+## Phase « Bâtiment » (M7 → M12, après le MVP)
+
+Objectif d'ensemble : dessiner un bâtiment niveau par niveau, puis obtenir automatiquement la
+vue 3D, les façades et les coupes. Les règles techniques sont dans `docs/02-ARCHITECTURE.md`,
+section « Mode bâtiment ». L'interface reste propre à Fabrics : on reprend des **fonctions**,
+jamais l'apparence d'un logiciel existant.
+
+## M7 — Ouvertures (portes et fenêtres)
+
+Objectif : percer les murs et obtenir des métrés nets.
+
+- [ ] Type `opening` (porte, fenêtre, baie) accroché à un mur (`wallId` + position le long de l'axe)
+- [ ] Outils Porte et Fenêtre : survol d'un mur = aperçu, clic = pose ; impossible hors d'un mur
+- [ ] Glisser une ouverture la fait coulisser le long de son mur, sans en sortir
+- [ ] Symboles 2D originaux : battant et arc d'ouverture (porte), double trait (fenêtre) ;
+      sens d'ouverture inversable (gauche / droite, intérieur / extérieur)
+- [ ] Propriétés : largeur, hauteur, hauteur d'allège (fenêtre), sens
+- [ ] Déplacer ou modifier le mur garde les ouvertures à leur place relative ; supprimer le mur
+      supprime ses ouvertures
+- [ ] Métrés : surface murale **nette** (brute − ouvertures), nombre et liste des ouvertures ;
+      CSV mis à jour
+- [ ] Migration du document (version 1 → 2) testée
+
+**Critères d'acceptation**
+- Un mur de 4,00 m × 2,50 m avec une porte de 0,90 × 2,10 m affiche 10,00 m² brut et 8,11 m² net
+- Une ouverture ne peut pas dépasser l'extrémité de son mur ni chevaucher une autre ouverture
+- Un projet créé avant M7 s'ouvre sans perte
+
+## M8 — Niveaux
+
+Objectif : un projet Plan contient plusieurs étages.
+
+- [ ] Liste des niveaux (rez-de-chaussée par défaut) : ajouter, renommer, réordonner,
+      supprimer avec confirmation, dupliquer un niveau (copie des murs)
+- [ ] Chaque niveau a une altitude et une hauteur d'étage ; les nouveaux murs prennent la
+      hauteur d'étage par défaut
+- [ ] Sélecteur de niveau dans l'éditeur ; on ne dessine et ne sélectionne que sur le niveau actif
+- [ ] Niveau inférieur affiché en transparence (calque de référence, désactivable)
+- [ ] Métrés par niveau et pour tout le bâtiment ; CSV avec une colonne « Niveau »
+- [ ] Migration : un projet existant reçoit un niveau « Rez-de-chaussée »
+
+**Critères d'acceptation**
+- Je duplique le rez-de-chaussée en « Étage 1 » : les murs sont copiés, les pièces non
+- Un clic sur un mur du niveau de référence ne le sélectionne pas
+- Les totaux du bâtiment = somme des totaux des niveaux
+
+## M9 — Axes de construction et mobilier
+
+- [ ] Outil Axe : ligne de repère avec bulle et étiquette ; numérotation automatique
+      (A, B, C… pour un sens, 1, 2, 3… pour l'autre), modifiable
+- [ ] Les axes sont communs à tous les niveaux ; les points s'y aimantent
+- [ ] Bibliothèque de mobilier et d'équipements **dessinés pour Fabrics** (table, chaise, lit,
+      canapé, rangement, WC, lavabo, douche, baignoire, évier, plan de travail, escalier, arbre)
+- [ ] Panneau Bibliothèque : recherche, glisser-déposer sur le plan ; objet à taille réelle,
+      redimensionnable et pivotable
+- [ ] Le mobilier n'entre pas dans les métrés ; il apparaît dans le CSV sous forme de liste
+      (nom, nombre)
+
+**Critères d'acceptation**
+- Un lit 160 × 200 cm posé sur le plan mesure 1,60 × 2,00 m avec l'outil Cote
+- Un nouvel axe parallèle aux axes « A, B » reçoit « C »
+
+## M10 — Vue 3D
+
+Objectif : voir le bâtiment en volume, à côté du plan, mis à jour en direct.
+
+- [ ] Dépendances 3D installées (voir `docs/02-ARCHITECTURE.md`, accord de l'utilisateur)
+- [ ] `src/features/building/` : fonctions pures qui transforment le document en modèle 3D
+      (murs extrudés, ouvertures découpées, dalles sous les pièces, toit plat) + tests
+- [ ] Panneau 3D à droite de l'éditeur, ouvrable / fermable, redimensionnable
+- [ ] Caméra orbitale (tourner, zoomer, déplacer), cube d'orientation avec points cardinaux
+      (nord réglable dans les réglages du plan)
+- [ ] Afficher tous les niveaux ou seulement jusqu'au niveau actif (vue « étage ouvert »)
+- [ ] Sélectionner un mur en 3D le sélectionne aussi sur le plan
+- [ ] Capture PNG de la vue 3D
+
+**Critères d'acceptation**
+- Modifier un mur sur le plan met la 3D à jour en moins d'une seconde
+- Une fenêtre de 1,20 × 1,00 m à 0,90 m d'allège apparaît comme un trou à la bonne hauteur
+- Un bâtiment de 3 niveaux reste fluide (pas de saccade en tournant la caméra)
+
+## M11 — Façades, coupes et planche
+
+Objectif : obtenir sans dessiner les façades et les coupes, et les présenter ensemble.
+
+- [ ] Façades (élévations) Nord, Sud, Est, Ouest générées à partir du modèle 3D
+- [ ] Outil Ligne de coupe sur le plan (repère A–A, B–B…, sens de vue) ; coupe générée,
+      matières coupées en noir
+- [ ] Vues générées en lecture seule, toujours à jour avec le plan
+- [ ] Planche : affichage côte à côte des niveaux, façades et coupes, avec leurs titres
+- [ ] Export PDF de la planche ou d'une vue seule, à l'échelle choisie, avec cartouche
+- [ ] Cotes de niveaux (altitudes) sur les façades et coupes
+
+**Critères d'acceptation**
+- Une façade montre chaque fenêtre du mur correspondant, à la bonne hauteur
+- Déplacer la ligne de coupe met la coupe à jour
+- Imprimée à 100 %, une hauteur d'étage de 2,50 m mesure 5,0 cm sur une façade à 1:50
+
+## M12 — Import, export et partage
+
+- [ ] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
+- [ ] Import DXF comme calque de fond verrouillé, sur un niveau, à l'échelle
+- [ ] Export 3D (glTF) du bâtiment
+- [ ] Partage par lien en lecture seule (plan, 3D, planche) ; désactivable à tout moment ;
+      option mot de passe et date d'expiration
+- [ ] Table et règles de sécurité Supabase du partage (RLS), testées avec deux comptes
+
+**Critères d'acceptation**
+- Le DXF exporté s'ouvre dans LibreCAD avec des longueurs exactes en mm
+- Un lien désactivé ne montre plus rien, même rechargé
+- La personne qui reçoit le lien ne peut rien modifier
+
+---
+
+## M13 — Collaboration temps réel
 
 - [ ] Choisir et documenter l'hébergement du serveur Yjs (option gratuite)
 - [ ] Représenter `elements` dans un `Y.Array` / `Y.Map` ; synchroniser avec `editorStore`
@@ -188,15 +302,16 @@ Objectif : retrouver ses projets sur un autre appareil.
 
 ---
 
-## Après le MVP (non planifié, à prioriser avec l'utilisateur)
+## Plus tard (non planifié, à prioriser avec l'utilisateur)
 
-- Ouvertures dans les murs (portes, fenêtres) déduites des surfaces murales
+- **Assistant IA « Demander quelque chose »** (plan, mise en page, couleurs, textes) — à
+  étudier après M13, à la demande de l'utilisateur
 - Modèles de visuels originaux, bibliothèque de composants, identité de marque
-- Partage par lien (lecture seule, mot de passe, expiration), QR code
+- QR code pour les liens de partage
 - Commentaires ancrés sur le canevas, mentions, notifications
 - Historique de versions avec restauration
 - Plusieurs pages par projet, mode présentation
 - Espaces de travail, membres et rôles (propriétaire, admin, éditeur, commentateur, lecteur)
 - Traductions anglais et malgache, mode sombre, accessibilité avancée
 - Abonnements et paiements, statistiques d'usage, conformité RGPD complète
-- Assistant IA (mise en page, couleurs, textes)
+- Toits en pente, escaliers paramétriques, export DWG

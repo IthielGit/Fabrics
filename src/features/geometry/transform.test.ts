@@ -9,9 +9,13 @@ import {
 } from '../documents/elements'
 import {
   applyNodeTransform,
+  canRemoveVertex,
+  getSegmentMidpoints,
   getVertices,
   hasAbsolutePoints,
+  insertVertexAtMidpoint,
   moveVertex,
+  removeVertex,
   translateElement,
 } from './transform'
 
@@ -94,6 +98,87 @@ describe('getVertices / moveVertex', () => {
     const wall = createWallElement('M', [0, 0, 100, 0], 200, 2500)
     moveVertex(wall, 0, { x: 9, y: 9 })
     expect(wall.points).toEqual([0, 0, 100, 0])
+  })
+})
+
+describe('ajout et retrait de sommets', () => {
+  it('donne les milieux des côtés d’un mur (sans refermer)', () => {
+    const wall = createWallElement('M', [0, 0, 4000, 0, 4000, 3000], 200, 2500)
+    expect(getSegmentMidpoints(wall)).toEqual([
+      { x: 2000, y: 0 },
+      { x: 4000, y: 1500 },
+    ])
+  })
+
+  it('donne aussi le milieu du côté de fermeture d’une pièce', () => {
+    const room = createRoomElement('P', [0, 0, 4000, 0, 4000, 3000, 0, 3000])
+    const midpoints = getSegmentMidpoints(room)
+    expect(midpoints).toHaveLength(4)
+    expect(midpoints[3]).toEqual({ x: 0, y: 1500 })
+  })
+
+  it('ne donne aucun milieu pour une cote ou un rectangle', () => {
+    const dim: CanvasElement = { ...plan, id: 'd', name: 'd', type: 'dimension', points: [0, 0, 10, 0], offset: 1 }
+    expect(getSegmentMidpoints(dim)).toEqual([])
+    expect(getSegmentMidpoints(createRectElement('R', 0, 0, 1, 1))).toEqual([])
+  })
+
+  it('insère un sommet au milieu d’un côté de mur', () => {
+    const wall = createWallElement('M', [0, 0, 4000, 0, 4000, 3000], 200, 2500)
+    expect(insertVertexAtMidpoint(wall, 0)).toMatchObject({
+      points: [0, 0, 2000, 0, 4000, 0, 4000, 3000],
+    })
+  })
+
+  it('insère un sommet sur le côté de fermeture d’une pièce', () => {
+    const room = createRoomElement('P', [0, 0, 4000, 0, 4000, 3000, 0, 3000])
+    expect(insertVertexAtMidpoint(room, 3)).toMatchObject({
+      points: [0, 0, 4000, 0, 4000, 3000, 0, 3000, 0, 1500],
+    })
+  })
+
+  it('ne change pas la surface d’une pièce en insérant un sommet', () => {
+    const room = createRoomElement('P', [0, 0, 4000, 0, 4000, 3000, 0, 3000])
+    expect(insertVertexAtMidpoint(room, 1)).toMatchObject({ type: 'room' })
+    expect(getVertices(insertVertexAtMidpoint(room, 1))).toHaveLength(5)
+  })
+
+  it('ignore un côté invalide, une cote et un rectangle', () => {
+    const wall = createWallElement('M', [0, 0, 100, 0], 200, 2500)
+    expect(insertVertexAtMidpoint(wall, 1)).toBe(wall)
+    expect(insertVertexAtMidpoint(wall, -1)).toBe(wall)
+    const rect = createRectElement('R', 0, 0, 1, 1)
+    expect(insertVertexAtMidpoint(rect, 0)).toBe(rect)
+  })
+
+  it('retire un sommet de mur ou de pièce', () => {
+    const wall = createWallElement('M', [0, 0, 100, 0, 100, 50], 200, 2500)
+    expect(removeVertex(wall, 1)).toMatchObject({ points: [0, 0, 100, 50] })
+    const room = createRoomElement('P', [0, 0, 4000, 0, 4000, 3000, 0, 3000])
+    expect(removeVertex(room, 0)).toMatchObject({ points: [4000, 0, 4000, 3000, 0, 3000] })
+  })
+
+  it('refuse de descendre sous 2 sommets (mur) ou 3 sommets (pièce)', () => {
+    const wall = createWallElement('M', [0, 0, 100, 0], 200, 2500)
+    expect(canRemoveVertex(wall)).toBe(false)
+    expect(removeVertex(wall, 0)).toBe(wall)
+    const room = createRoomElement('P', [0, 0, 1000, 0, 1000, 1000])
+    expect(canRemoveVertex(room)).toBe(false)
+    expect(removeVertex(room, 0)).toBe(room)
+  })
+
+  it('ne retire pas de sommet d’une cote et ignore un indice invalide', () => {
+    const dim: CanvasElement = { ...plan, id: 'd', name: 'd', type: 'dimension', points: [0, 0, 10, 0], offset: 1 }
+    expect(removeVertex(dim, 0)).toBe(dim)
+    const wall = createWallElement('M', [0, 0, 100, 0, 100, 50], 200, 2500)
+    expect(removeVertex(wall, 7)).toBe(wall)
+  })
+
+  it('ne modifie pas l’élément d’origine', () => {
+    const wall = createWallElement('M', [0, 0, 100, 0, 100, 50], 200, 2500)
+    insertVertexAtMidpoint(wall, 0)
+    removeVertex(wall, 1)
+    expect(wall.points).toEqual([0, 0, 100, 0, 100, 50])
   })
 })
 

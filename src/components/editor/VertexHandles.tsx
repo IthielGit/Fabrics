@@ -2,7 +2,14 @@ import type Konva from 'konva'
 import { useRef } from 'react'
 import { Circle } from 'react-konva'
 import { collectSnapVertices, snapPoint } from '../../features/geometry/snapping'
-import { getVertices, moveVertex } from '../../features/geometry/transform'
+import {
+  canRemoveVertex,
+  getSegmentMidpoints,
+  getVertices,
+  insertVertexAtMidpoint,
+  moveVertex,
+  removeVertex,
+} from '../../features/geometry/transform'
 import type { Point } from '../../features/geometry/viewport'
 import { useEditorStore } from '../../stores/editorStore'
 
@@ -78,13 +85,52 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
     useEditorStore.getState().endLiveEdit()
   }
 
-  const setCursor = (event: Konva.KonvaEventObject<MouseEvent>, cursor: string) => {
+  const setCursor = (event: Konva.KonvaEventObject<Event>, cursor: string) => {
     const container = event.target.getStage()?.container()
     if (container) container.style.cursor = cursor
   }
 
+  // Double-clic sur un sommet : on le retire (sauf au nombre minimal de sommets).
+  const handleRemove = (index: number) => (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
+    event.cancelBubble = true
+    const store = useEditorStore.getState()
+    const current = store.project?.document.elements.find((el) => el.id === element.id)
+    if (!current || !canRemoveVertex(current)) return
+    store.replaceElements([removeVertex(current, index)])
+    setCursor(event, '')
+  }
+
+  // Clic sur un « + » : on ajoute un sommet au milieu du côté (un seul état d'historique).
+  const handleInsert = (index: number) => (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
+    event.cancelBubble = true
+    const store = useEditorStore.getState()
+    const current = store.project?.document.elements.find((el) => el.id === element.id)
+    if (!current) return
+    store.replaceElements([insertVertexAtMidpoint(current, index)])
+    setCursor(event, '')
+  }
+
+  const midpoints = getSegmentMidpoints(element)
+
   return (
     <>
+      {midpoints.map((middle, index) => (
+        <Circle
+          key={`${element.id}-mid-${index}`}
+          x={middle.x}
+          y={middle.y}
+          radius={4 / scale}
+          fill="#c7d2fe"
+          stroke="#4f46e5"
+          strokeWidth={1 / scale}
+          hitStrokeWidth={8 / scale}
+          opacity={0.85}
+          onClick={handleInsert(index)}
+          onTap={handleInsert(index)}
+          onMouseEnter={(event) => setCursor(event, 'copy')}
+          onMouseLeave={(event) => setCursor(event, '')}
+        />
+      ))}
       {vertices.map((vertex, index) => (
         <Circle
           key={`${element.id}-${index}`}
@@ -99,6 +145,8 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
           onDragStart={handleDragStart}
           onDragMove={handleDragMove(index)}
           onDragEnd={handleDragEnd}
+          onDblClick={handleRemove(index)}
+          onDblTap={handleRemove(index)}
           onMouseEnter={(event) => setCursor(event, 'move')}
           onMouseLeave={(event) => setCursor(event, '')}
         />
