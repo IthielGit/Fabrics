@@ -1,4 +1,4 @@
-import { Line } from 'react-konva'
+import { Group, Line } from 'react-konva'
 import { sameLocation } from '../../../features/geometry/walls'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { WallElement } from '../../../types/document'
@@ -37,36 +37,37 @@ export default function WallShape({
   }
 
   return (
-    <>
+    // Un groupe : la surbrillance de sélection suit le mur quand on le déplace.
+    <Group
+      id={element.id}
+      name="element"
+      x={element.x}
+      y={element.y}
+      opacity={element.opacity}
+      visible={!element.hidden}
+      listening={interactive && !element.locked}
+      draggable={interactive && !element.locked}
+      onMouseDown={onPointerDown}
+      onTouchStart={onPointerDown}
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
+    >
       {selected && (
         <Line
           {...geometry}
           stroke="#6366f1"
           strokeWidth={element.thickness + 10 / viewScale}
           opacity={0.45}
-          visible={!element.hidden}
           listening={false}
         />
       )}
       <Line
         {...geometry}
-        id={element.id}
-        name="element"
-        x={element.x}
-        y={element.y}
         stroke={element.fill}
         strokeWidth={element.thickness}
         hitStrokeWidth={Math.max(element.thickness, MIN_HIT_WIDTH_PX / viewScale)}
-        opacity={element.opacity}
-        visible={!element.hidden}
-        listening={interactive && !element.locked}
-        draggable={interactive && !element.locked}
-        onMouseDown={onPointerDown}
-        onTouchStart={onPointerDown}
-        onDragStart={onDragStart}
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
       />
-    </>
+    </Group>
   )
 }

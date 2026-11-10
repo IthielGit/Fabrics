@@ -1,4 +1,5 @@
 import type { CanvasElement } from '../../types/document'
+import DimensionShape from './shapes/DimensionShape'
 import EllipseShape from './shapes/EllipseShape'
 import ImageShape from './shapes/ImageShape'
 import LineShape from './shapes/LineShape'
@@ -31,8 +32,7 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <WallShape element={element} {...interaction} />
     case 'room':
       return <RoomShape element={element} {...interaction} />
-    default:
-      // Cote : tâche suivante de M3.
-      return null
+    case 'dimension':
+      return <DimensionShape element={element} {...interaction} />
   }
 }

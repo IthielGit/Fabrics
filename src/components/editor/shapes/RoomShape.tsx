@@ -1,4 +1,4 @@
-import { Line, Text } from 'react-konva'
+import { Group, Line, Text } from 'react-konva'
 import { polygonArea, polygonCentroid } from '../../../features/geometry/polygon'
 import { formatArea } from '../../../features/units/format'
 import { useEditorStore } from '../../../stores/editorStore'
@@ -31,31 +31,32 @@ export default function RoomShape({
   const showLabel = element.showLabel && centroid !== null && element.points.length >= 6
 
   return (
-    <>
+    // Un groupe : l'étiquette suit la pièce quand on la déplace.
+    <Group
+      id={element.id}
+      name="element"
+      x={element.x}
+      y={element.y}
+      opacity={element.opacity}
+      visible={!element.hidden}
+      listening={interactive && !element.locked}
+      draggable={interactive && !element.locked}
+      onMouseDown={onPointerDown}
+      onTouchStart={onPointerDown}
+      onDragStart={onDragStart}
+      onDragMove={onDragMove}
+      onDragEnd={onDragEnd}
+    >
       <Line
-        id={element.id}
-        name="element"
-        x={element.x}
-        y={element.y}
         points={element.points}
         closed
         fill={element.fill}
         stroke={selected ? '#4f46e5' : '#6366f1'}
         strokeWidth={(selected ? 3 : 1.5) / viewScale}
         lineJoin="round"
-        opacity={element.opacity}
-        visible={!element.hidden}
-        listening={interactive && !element.locked}
-        draggable={interactive && !element.locked}
-        onMouseDown={onPointerDown}
-        onTouchStart={onPointerDown}
-        onDragStart={onDragStart}
-        onDragMove={onDragMove}
-        onDragEnd={onDragEnd}
       />
       {showLabel && centroid && (
         <Text
-          // Le texte suit la pièce quand on la déplace, mais ne réagit pas à la souris.
           x={centroid.x - LABEL_BOX_WIDTH_MM / 2}
           y={centroid.y - labelHeight / 2}
           width={LABEL_BOX_WIDTH_MM}
@@ -67,11 +68,9 @@ export default function RoomShape({
           lineHeight={1.3}
           fontStyle="bold"
           fill="#312e81"
-          opacity={element.opacity}
-          visible={!element.hidden}
           listening={false}
         />
       )}
-    </>
+    </Group>
   )
 }

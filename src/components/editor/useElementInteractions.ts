@@ -38,7 +38,9 @@ export function useElementInteractions(): Handlers {
 
   const onPointerDown = useCallback((event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     event.cancelBubble = true // empêche le rectangle de sélection de démarrer
-    const id = event.target.id()
+    // `currentTarget` = l'élément du document (un groupe pour un mur, une pièce ou une cote),
+    // alors que `target` serait la forme précise cliquée à l'intérieur.
+    const id = event.currentTarget.id()
     const { selectedIds, setSelection } = useEditorStore.getState()
     if (event.evt.shiftKey) {
       setSelection(selectedIds.includes(id) ? selectedIds.filter((i) => i !== id) : [...selectedIds, id])
@@ -131,7 +133,7 @@ export function useElementInteractions(): Handlers {
   // Double-clic sur un texte : on passe en édition.
   const onDoubleClick = useCallback((event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     const { project, startEditingText } = useEditorStore.getState()
-    const id = event.target.id()
+    const id = event.currentTarget.id()
     if (project?.document.elements.some((el) => el.id === id && el.type === 'text')) {
       startEditingText(id)
     }
