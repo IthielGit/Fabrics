@@ -16,6 +16,7 @@ import {
   rect,
 } from './primitives'
 import { resizeSymbol } from './resize'
+import { stairSteps } from './templates/stairs'
 import type { SymbolDef } from './types'
 
 const TOLERANCE = 1e-6
@@ -253,5 +254,29 @@ describe('textes du catalogue', () => {
 
   it('chaque catégorie utilisée a un intitulé', () => {
     for (const symbol of SYMBOLS) expect(fr.library.categories[symbol.category]).toBeTruthy()
+  })
+})
+
+describe('escaliers', () => {
+  it('le nombre de marches suit la longueur (giron ≈ 250 mm), au moins 3', () => {
+    expect(stairSteps(2800)).toBe(11)
+    expect(stairSteps(2500)).toBe(10)
+    expect(stairSteps(1000)).toBe(4)
+    expect(stairSteps(300)).toBe(3)
+    expect(stairSteps(0)).toBe(3)
+  })
+
+  it('un escalier droit de 2 800 mm a 11 marches : 10 traits de marche + la flèche', () => {
+    const stair = getSymbol('stair-straight')!
+    const primitives = stair.draw(900, 2800)
+    const treads = primitives.filter(
+      (p) => p.kind === 'line' && p.points.length === 4 && p.points[1] === p.points[3] && p.points[0] === 0 && p.points[2] === 900,
+    )
+    expect(treads).toHaveLength(10)
+  })
+
+  it('un escalier hélicoïdal et un escalier en L se retournent (asymétriques)', () => {
+    expect(getSymbol('stair-spiral')!.mirrorable).toBe(true)
+    expect(getSymbol('stair-l')!.mirrorable).toBe(true)
   })
 })

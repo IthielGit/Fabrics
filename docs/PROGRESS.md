@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M7 — Axes de construction et mobilier (plan à présenter, en attente du feu vert ; catalogue prêt dans `docs/06-BIBLIOTHEQUE.md`)
-- **Dernière tâche terminée :** M7 · lot E (cuisine, salle de bain, buanderie)
-- **Prochaine tâche :** M7 · lot F (escaliers, bureau)
+- **Dernière tâche terminée :** M7 · lot F (escaliers, bureau)
+- **Prochaine tâche :** M7 · lot G (électricité, chauffage, sécurité et accessibilité)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -49,6 +49,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/library/templates/{appliance,kitchen,bathroom}.ts`, `catalog/{draws,index,define}.ts`
 - Vérification : build ✓ lint ✓ tests ✓ (1138 au total : mêmes contrôles sur chacun des 178 objets ouverts)
 - Commit : feat: catalogue cuisine, salle de bain, buanderie
+
+### 2026-11-10 — M7 · Lot F · Escaliers, circulation verticale, bureau
+- Fait : deux catégories ouvertes : **escaliers et circulation verticale** (16) et **bureau et travail** (22). **Escaliers** : le nombre de marches est calculé depuis la longueur (`stairSteps` : giron ≈ 250 mm, au moins 3) ; escalier droit, quart tournant, demi-tournant, en L, en U (palier), hélicoïdal (noyau, marches en rayons, flèche en arc), échelle de meunier, rampes (rives, chevrons, flèche), ascenseurs et plateforme élévatrice (cabine, croix, seuil), escalier mécanique, gaine et trémie en zone de référence ; flèche de montée et virage dessinés ; les escaliers tournants se retournent. **Bureau** : postes avec écran et clavier (simple, direction, double, d'angle en L retournable), sièges, tables de réunion, banque d'accueil, caissons, armoire, étagère, casiers, tableau blanc (pointillé), imprimante / photocopieur, baie informatique, cabine isolée, coin détente, plante.
+- Fichiers : `src/features/library/templates/{stairs,office}.ts`, `catalog/{draws,index}.ts`, `library.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1252 au total, dont le nombre de marches d'un escalier de 2 800 mm = 11)
+- Commit : feat: catalogue escaliers et bureau
 
 ### 2026-11-10 — M7 · Lot C · Panneau Bibliothèque
 - Fait : panneau « Bibliothèque » complet : **recherche** sans accents ni casse (« lave vaisselle » trouve « Lave-vaisselle »), sur le nom, les mots-clés et la catégorie, tous les mots devant être trouvés, résultats classés (début du nom, nom, mot-clé, catégorie) ; **catégories** en pastilles avec le nombre d'objets (« Tous » + une par catégorie remplie) ; **vignettes** (aperçu SVG, nom, dimensions en mm). **Pose** : clic sur une vignette puis clic sur le plan (l'outil reste actif, Échap pour quitter) ou **glisser-déposer** de la vignette sur le plan ; **aperçu fantôme** translucide à taille réelle sous le curseur, aimanté à la grille. Bouton **« Retourner »** dans Propriétés pour les objets asymétriques (`mirrorable`), tailles courantes en puces (lot B). Aucun objet du catalogue de test n'est asymétrique : le bouton apparaîtra avec les premiers objets asymétriques (lot D).

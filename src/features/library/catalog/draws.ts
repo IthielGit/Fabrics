@@ -30,6 +30,8 @@ import {
   drawStove,
   drawUprightPiano,
 } from '../templates/living'
+import { desk, cornerDesk, lounge, phoneBooth, printer } from '../templates/office'
+import { ladderStair, lift, ramp, shaft, spiralStair, straightStair, turningStair, escalator } from '../templates/stairs'
 import { barTop, bin, cooker, cornerUnit, hob, kitchen, peninsula, sink, trolley } from '../templates/kitchen'
 import { drawBench, drawOfficeChair, seat } from '../templates/seat'
 import { drawSofa, sofaL } from '../templates/sofa'
@@ -177,3 +179,35 @@ assign(['water-softener'], appliance('softener'))
 assign(['vmc-unit'], appliance('vmc'))
 assign(['electrical-panel'], box('shelves'))
 assign(['meter-cupboard'], box('doors'))
+
+// --- Escaliers et circulation verticale ---
+assign(['stair-straight'], straightStair)
+assign(['stair-quarter'], turningStair('quarter'))
+assign(['stair-half'], turningStair('half'))
+assign(['stair-l'], turningStair('l'))
+assign(['stair-u'], turningStair('u'))
+assign(['stair-spiral'], spiralStair)
+assign(['stair-ladder'], ladderStair)
+assign(['ramp', 'ramp-pmr'], ramp)
+assign(['lift', 'lift-pmr', 'lift-goods', 'platform-lift'], lift)
+assign(['escalator'], escalator)
+assign(['shaft', 'stair-opening'], shaft)
+
+// --- Bureau et travail ---
+assign(['desk', 'desk-standing'], desk(1))
+assign(['desk-corner'], cornerDesk)
+assign(['desk-executive'], desk(1, true))
+assign(['desk-double'], desk(2))
+assign(['chair-visitor'], seat('chair'))
+assign(['meeting-table-6', 'meeting-table-10'], drawRectTable)
+assign(['meeting-table-round'], drawRoundTable)
+assign(['reception-desk'], barTop)
+assign(['filing-pedestal', 'filing-cabinet'], box('drawers'))
+assign(['shelf-unit'], box('shelves'))
+assign(['lockers'], box('doors'))
+assign(['whiteboard'], wallStrip(600))
+assign(['printer', 'copier'], printer)
+assign(['server-rack'], box('open'))
+assign(['phone-booth'], phoneBooth)
+assign(['lounge-office'], lounge)
+assign(['plant-office'], drawPlant)
