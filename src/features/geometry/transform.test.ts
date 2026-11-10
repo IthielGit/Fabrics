@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createEllipseElement, createRectElement } from '../documents/elements'
+import { createEllipseElement, createLineElement, createRectElement } from '../documents/elements'
 import { applyNodeTransform } from './transform'
 
 describe('applyNodeTransform', () => {
@@ -31,6 +31,18 @@ describe('applyNodeTransform', () => {
     const rect = createRectElement('R', 0, 0, 100, 50)
     const flipped = applyNodeTransform(rect, { x: 0, y: 0, rotation: 0, scaleX: -2, scaleY: 1 })
     expect(flipped).toMatchObject({ width: 200, height: 50 })
+  })
+
+  it('étire les points d’une ligne', () => {
+    const line = createLineElement('L', 10, 20, 100, 50, 4)
+    const resized = applyNodeTransform(line, { x: 10, y: 20, rotation: 0, scaleX: 2, scaleY: 3 })
+    expect(resized).toMatchObject({ x: 10, y: 20, points: [0, 0, 200, 150] })
+  })
+
+  it('déplace une ligne sans toucher à ses points', () => {
+    const line = createLineElement('L', 0, 0, 100, 50, 4)
+    const moved = applyNodeTransform(line, { x: 5, y: 6, rotation: 30, scaleX: 1, scaleY: 1 })
+    expect(moved).toMatchObject({ x: 5, y: 6, rotation: 30, points: [0, 0, 100, 50] })
   })
 
   it('ne modifie pas l’élément d’origine', () => {

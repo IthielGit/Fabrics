@@ -37,8 +37,15 @@ export function applyNodeTransform(element: CanvasElement, node: NodeTransform):
       }
     case 'text':
       return { ...element, ...base, width: element.width * scaleX }
+    case 'line':
+      // Les points sont relatifs à (x, y) : on les étire dans les axes du nœud.
+      return {
+        ...element,
+        ...base,
+        points: element.points.map((value, index) => value * (index % 2 === 0 ? scaleX : scaleY)),
+      }
     default:
-      // Lignes et éléments de plan : pas de redimensionnement par le transformateur (voir M2 / M3).
+      // Éléments de plan : pas de redimensionnement par le transformateur (voir M3).
       return { ...element, ...base }
   }
 }

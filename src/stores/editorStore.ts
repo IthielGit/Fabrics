@@ -4,7 +4,7 @@ import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, Project } from '../types/document'
 
-export type EditorTool = 'select' | 'rect' | 'ellipse'
+export type EditorTool = 'select' | 'rect' | 'ellipse' | 'line'
 export type SaveStatus = 'saved' | 'saving' | 'error'
 
 export const HISTORY_LIMIT = 100

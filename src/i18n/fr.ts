@@ -67,10 +67,12 @@ export const fr = {
     select: 'Sélection',
     rect: 'Rectangle',
     ellipse: 'Ellipse',
+    line: 'Ligne',
   },
   elements: {
     rect: 'Rectangle',
     ellipse: 'Ellipse',
+    line: 'Ligne',
   },
   notFound: {
     title: 'Page introuvable',

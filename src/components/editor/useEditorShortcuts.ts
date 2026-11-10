@@ -22,6 +22,9 @@ export function useEditorShortcuts() {
         case 'tool-ellipse':
           store.setTool('ellipse')
           break
+        case 'tool-line':
+          store.setTool('line')
+          break
         case 'escape':
           // Annule d'abord l'outil de tracé, puis désélectionne.
           if (store.activeTool !== 'select') store.setTool('select')

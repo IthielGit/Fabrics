@@ -2,10 +2,16 @@ import type {
   CanvasElement,
   EllipseElement,
   FabricsDocument,
+  LineElement,
   RectElement,
 } from '../../types/document'
 
 type Unit = FabricsDocument['unit']
+
+/** Épaisseur de trait par défaut d'une ligne (4 px, ou 50 mm sur un plan). */
+export function defaultStrokeWidth(unit: Unit): number {
+  return unit === 'mm' ? 50 : 4
+}
 
 /** Taille par défaut d'une forme créée d'un simple clic (200 px, ou 1 m sur un plan). */
 export function defaultShapeSize(unit: Unit): number {
@@ -73,6 +79,29 @@ export function createEllipseElement(
     fill: '#f59e0b',
     stroke: '#78350f',
     strokeWidth: 0,
+  }
+}
+
+/** Ligne du point (x, y) au point (x + dx, y + dy) : les points sont relatifs à (x, y). */
+export function createLineElement(
+  name: string,
+  x: number,
+  y: number,
+  dx: number,
+  dy: number,
+  strokeWidth: number,
+): LineElement {
+  return {
+    ...BASE,
+    id: crypto.randomUUID(),
+    type: 'line',
+    name,
+    x,
+    y,
+    points: [0, 0, dx, dy],
+    stroke: '#0f172a',
+    strokeWidth,
+    arrowEnd: false,
   }
 }
 

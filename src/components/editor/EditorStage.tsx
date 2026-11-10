@@ -1,10 +1,12 @@
 import type Konva from 'konva'
 import { useEffect, useRef, useState } from 'react'
-import { Ellipse, Layer, Rect, Stage } from 'react-konva'
+import { Ellipse, Layer, Line, Rect, Stage } from 'react-konva'
 import {
   createEllipseElement,
+  createLineElement,
   createRectElement,
   defaultShapeSize,
+  defaultStrokeWidth,
   nextElementName,
 } from '../../features/documents/elements'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
@@ -53,7 +55,7 @@ export default function EditorStage() {
   const fittedProjectId = useRef<string | null>(null)
 
   const projectId = project?.id ?? null
-  const drawing = activeTool === 'rect' || activeTool === 'ellipse'
+  const drawing = activeTool === 'rect' || activeTool === 'ellipse' || activeTool === 'line'
   const selecting = activeTool === 'select' && !spaceDown
 
   // Communique la taille de la zone au store, et ajuste la page à l'écran à l'ouverture.
@@ -146,6 +148,24 @@ export default function EditorStage() {
   }
 
   const finishDraft = (gesture: Gesture) => {
+    if (activeTool === 'line') {
+      const isClick = distance(gesture.start, gesture.current) * scale < MIN_DRAG_PX
+      const side = defaultShapeSize(unit)
+      const dx = isClick ? side : gesture.current.x - gesture.start.x
+      const dy = isClick ? 0 : gesture.current.y - gesture.start.y
+      addElement(
+        createLineElement(
+          nextElementName(fr.elements.line, 'line', elements),
+          gesture.start.x,
+          gesture.start.y,
+          dx,
+          dy,
+          defaultStrokeWidth(unit),
+        ),
+      )
+      setTool('select')
+      return
+    }
     if (activeTool !== 'rect' && activeTool !== 'ellipse') return
     const dragged = normalizeBox(gesture.start, gesture.current)
     const isClick = Math.min(dragged.width, dragged.height) * scale < MIN_DRAG_PX
@@ -253,6 +273,7 @@ export default function EditorStage() {
                 key={element.id}
                 element={element}
                 interactive={selecting}
+                viewScale={scale}
                 {...elementHandlers}
               />
             ))}
@@ -277,6 +298,14 @@ export default function EditorStage() {
                 fill="rgba(99,102,241,0.15)"
                 stroke="#4f46e5"
                 strokeWidth={1 / scale}
+                dash={[6 / scale, 4 / scale]}
+              />
+            )}
+            {draft && activeTool === 'line' && (
+              <Line
+                points={[draft.start.x, draft.start.y, draft.current.x, draft.current.y]}
+                stroke="#4f46e5"
+                strokeWidth={2 / scale}
                 dash={[6 / scale, 4 / scale]}
               />
             )}

@@ -63,12 +63,17 @@ export default function SelectionTransformer({ enabled }: SelectionTransformerPr
       listening={enabled}
       rotationSnaps={[0, 45, 90, 135, 180, 225, 270, 315]}
       rotationSnapTolerance={5}
+      flipEnabled={false}
       borderStroke="#4f46e5"
       anchorStroke="#4f46e5"
       anchorFill="#ffffff"
-      boundBoxFunc={(oldBox, newBox) =>
-        newBox.width < MIN_SIZE_PX || newBox.height < MIN_SIZE_PX ? oldBox : newBox
-      }
+      // On refuse de rétrécir sous la taille minimale, mais une ligne horizontale (hauteur
+      // quasi nulle) doit rester étirable : on ne bloque que si la boîte diminue encore.
+      boundBoxFunc={(oldBox, newBox) => {
+        const tooNarrow = newBox.width < MIN_SIZE_PX && newBox.width < oldBox.width
+        const tooShort = newBox.height < MIN_SIZE_PX && newBox.height < oldBox.height
+        return tooNarrow || tooShort ? oldBox : newBox
+      }}
       onTransformEnd={handleTransformEnd}
     />
   )
