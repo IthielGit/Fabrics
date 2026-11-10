@@ -41,9 +41,12 @@ export default function SelectionTransformer({ enabled }: SelectionTransformerPr
     const stage = transformer?.getStage()
     if (!transformer || !stage) return
     // Pas de poignées pour les éléments verrouillés ou masqués, ni pour les éléments de plan
-    // (murs, pièces, cotes) : ils se déplacent, et leurs sommets s'éditent un par un.
+    // (murs, pièces, cotes : ils se déplacent, et leurs sommets s'éditent un par un ; ouvertures :
+    // leur position dépend de leur mur).
     const excludedIds = new Set(
-      elements?.filter((el) => el.locked || el.hidden || hasAbsolutePoints(el)).map((el) => el.id),
+      elements
+        ?.filter((el) => el.locked || el.hidden || hasAbsolutePoints(el) || el.type === 'opening')
+        .map((el) => el.id),
     )
     const nodes = selectedIds
       .filter((id) => !excludedIds.has(id))

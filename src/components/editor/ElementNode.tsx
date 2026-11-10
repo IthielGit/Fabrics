@@ -3,6 +3,7 @@ import DimensionShape from './shapes/DimensionShape'
 import EllipseShape from './shapes/EllipseShape'
 import ImageShape from './shapes/ImageShape'
 import LineShape from './shapes/LineShape'
+import OpeningShape from './shapes/OpeningShape'
 import RectShape from './shapes/RectShape'
 import RoomShape from './shapes/RoomShape'
 import type { ShapeInteraction } from './shapes/shapeTypes'
@@ -35,7 +36,6 @@ export default function ElementNode({ element, editing = false, ...interaction }
     case 'dimension':
       return <DimensionShape element={element} {...interaction} />
     case 'opening':
-      // Dessin des ouvertures : M5, tâche 3.
-      return null
+      return <OpeningShape element={element} {...interaction} />
   }
 }
