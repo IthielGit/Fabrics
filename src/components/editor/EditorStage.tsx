@@ -12,11 +12,12 @@ import {
   nextElementName,
 } from '../../features/documents/elements'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
-import { zoomAtPoint, type Point } from '../../features/geometry/viewport'
+import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import ElementNode from './ElementNode'
+import { importImageFiles } from './importImages'
 import { isTypingTarget } from './isTypingTarget'
 import SelectionTransformer from './SelectionTransformer'
 import TextEditorOverlay from './TextEditorOverlay'
@@ -259,6 +260,21 @@ export default function EditorStage() {
       ref={containerRef}
       className="absolute inset-0 overflow-hidden bg-slate-200"
       style={{ cursor }}
+      onDragOver={(event) => {
+        // Autorise le dépôt de fichiers (sans cela le navigateur ouvrirait l'image).
+        if (event.dataTransfer.types.includes('Files')) event.preventDefault()
+      }}
+      onDrop={(event) => {
+        if (event.dataTransfer.files.length === 0) return
+        event.preventDefault()
+        const bounds = event.currentTarget.getBoundingClientRect()
+        const dropPoint = screenToDocument(
+          { x: event.clientX - bounds.left, y: event.clientY - bounds.top },
+          { zoom, x: stagePosition.x, y: stagePosition.y },
+          unitScale,
+        )
+        void importImageFiles(Array.from(event.dataTransfer.files), dropPoint)
+      }}
     >
       {size.width > 0 && (
         <Stage

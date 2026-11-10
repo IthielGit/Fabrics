@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EditorStage from '../components/editor/EditorStage'
+import Notice from '../components/editor/Notice'
 import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
@@ -76,6 +77,7 @@ export default function EditorPage() {
         <EditorStage />
         <Toolbar />
         <ZoomControls />
+        <Notice />
       </div>
     </div>
   )

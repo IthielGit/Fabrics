@@ -1,5 +1,6 @@
 import type { CanvasElement } from '../../types/document'
 import EllipseShape from './shapes/EllipseShape'
+import ImageShape from './shapes/ImageShape'
 import LineShape from './shapes/LineShape'
 import RectShape from './shapes/RectShape'
 import type { ShapeInteraction } from './shapes/shapeTypes'
@@ -22,8 +23,10 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <LineShape element={element} {...interaction} />
     case 'text':
       return <TextShape element={element} editing={editing} {...interaction} />
+    case 'image':
+      return <ImageShape element={element} {...interaction} />
     default:
-      // Image (suite de M2) et éléments de plan (M3) : pas encore affichés.
+      // Éléments de plan (mur, pièce, cote) : jalon M3.
       return null
   }
 }

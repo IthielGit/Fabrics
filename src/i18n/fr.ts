@@ -69,6 +69,7 @@ export const fr = {
     ellipse: 'Ellipse',
     line: 'Ligne',
     text: 'Texte',
+    image: 'Importer une image',
   },
   elements: {
     rect: 'Rectangle',
@@ -76,6 +77,15 @@ export const fr = {
     line: 'Ligne',
     text: 'Texte',
     defaultText: 'Votre texte',
+    image: 'Image',
+  },
+  notices: {
+    dismiss: 'Fermer le message',
+    imageUnsupported: (fileName: string) =>
+      `« ${fileName} » n’est pas pris en charge : utilisez une image PNG, JPEG, WebP ou GIF.`,
+    imageTooLarge: (fileName: string, maxMegabytes: number) =>
+      `« ${fileName} » est trop lourd (maximum ${maxMegabytes} Mo).`,
+    imageUnreadable: (fileName: string) => `Impossible de lire ou d’enregistrer « ${fileName} ».`,
   },
   notFound: {
     title: 'Page introuvable',

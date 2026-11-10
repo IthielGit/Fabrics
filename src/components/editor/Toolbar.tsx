@@ -1,7 +1,18 @@
 import clsx from 'clsx'
-import { Circle, MousePointer2, Slash, Square, Type, type LucideIcon } from 'lucide-react'
+import {
+  Circle,
+  ImagePlus,
+  MousePointer2,
+  Slash,
+  Square,
+  Type,
+  type LucideIcon,
+} from 'lucide-react'
+import { useRef } from 'react'
+import { ACCEPTED_IMAGE_TYPES } from '../../features/documents/images'
 import { fr } from '../../i18n/fr'
 import { useEditorStore, type EditorTool } from '../../stores/editorStore'
+import { importImageFiles } from './importImages'
 
 interface ToolDefinition {
   tool: EditorTool
@@ -21,6 +32,7 @@ const TOOLS: ToolDefinition[] = [
 export default function Toolbar() {
   const activeTool = useEditorStore((state) => state.activeTool)
   const setTool = useEditorStore((state) => state.setTool)
+  const fileInput = useRef<HTMLInputElement>(null)
 
   return (
     <nav
@@ -45,6 +57,26 @@ export default function Toolbar() {
           <Icon size={20} />
         </button>
       ))}
+      <button
+        type="button"
+        title={fr.tools.image}
+        aria-label={fr.tools.image}
+        onClick={() => fileInput.current?.click()}
+        className="rounded-md p-2 text-slate-700 hover:bg-slate-100"
+      >
+        <ImagePlus size={20} />
+      </button>
+      <input
+        ref={fileInput}
+        type="file"
+        multiple
+        hidden
+        accept={ACCEPTED_IMAGE_TYPES.join(',')}
+        onChange={(event) => {
+          void importImageFiles(Array.from(event.target.files ?? []))
+          event.target.value = '' // permet de choisir deux fois le même fichier
+        }}
+      />
     </nav>
   )
 }

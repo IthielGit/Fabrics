@@ -2,6 +2,7 @@ import type {
   CanvasElement,
   EllipseElement,
   FabricsDocument,
+  ImageElement,
   LineElement,
   RectElement,
   TextElement,
@@ -82,6 +83,18 @@ export function createEllipseElement(
     stroke: '#78350f',
     strokeWidth: 0,
   }
+}
+
+/** Image déjà enregistrée dans le stockage (`assetId`), posée avec son coin haut-gauche en (x, y). */
+export function createImageElement(
+  name: string,
+  assetId: string,
+  x: number,
+  y: number,
+  width: number,
+  height: number,
+): ImageElement {
+  return { ...BASE, id: crypto.randomUUID(), type: 'image', name, assetId, x, y, width, height }
 }
 
 /** Taille de police par défaut (48 px, ou 300 mm sur un plan). */

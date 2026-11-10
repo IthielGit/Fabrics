@@ -20,6 +20,8 @@ interface EditorState {
   activeTool: EditorTool
   /** Texte en cours d'édition dans la zone de saisie superposée (état d'interface, pas du document). */
   editingTextId: string | null
+  /** Message affiché à l'utilisateur (par exemple un fichier refusé). */
+  notice: string | null
   zoom: number
   stagePosition: { x: number; y: number }
   /** Taille de la zone d'affichage du canevas (px), renseignée par le composant Stage. */
@@ -32,6 +34,7 @@ interface EditorState {
   loadProject: (project: Project) => void
   closeProject: () => void
   setTool: (tool: EditorTool) => void
+  setNotice: (notice: string | null) => void
   startEditingText: (id: string) => void
   stopEditingText: () => void
   /** Valide le texte saisi : un seul état d'historique ; un texte vidé supprime l'élément. */
@@ -95,6 +98,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     selectedIds: [],
     activeTool: 'select',
     editingTextId: null,
+    notice: null,
     zoom: 1,
     stagePosition: { x: 0, y: 0 },
     viewportSize: { width: 0, height: 0 },
@@ -108,6 +112,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         selectedIds: [],
         activeTool: 'select',
         editingTextId: null,
+        notice: null,
         zoom: 1,
         stagePosition: { x: 0, y: 0 },
         history: EMPTY_HISTORY,
@@ -125,6 +130,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       }),
 
     setTool: (activeTool) => set({ activeTool }),
+    setNotice: (notice) => set({ notice }),
     startEditingText: (id) => set({ editingTextId: id, selectedIds: [id], activeTool: 'select' }),
     stopEditingText: () => set({ editingTextId: null }),
 
