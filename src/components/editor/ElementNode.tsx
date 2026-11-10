@@ -3,6 +3,7 @@ import EllipseShape from './shapes/EllipseShape'
 import ImageShape from './shapes/ImageShape'
 import LineShape from './shapes/LineShape'
 import RectShape from './shapes/RectShape'
+import RoomShape from './shapes/RoomShape'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 import TextShape from './shapes/TextShape'
 import WallShape from './shapes/WallShape'
@@ -28,8 +29,10 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <ImageShape element={element} {...interaction} />
     case 'wall':
       return <WallShape element={element} {...interaction} />
+    case 'room':
+      return <RoomShape element={element} {...interaction} />
     default:
-      // Pièce et cote : tâches suivantes de M3.
+      // Cote : tâche suivante de M3.
       return null
   }
 }

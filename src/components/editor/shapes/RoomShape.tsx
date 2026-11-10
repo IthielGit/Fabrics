@@ -1,0 +1,77 @@
+import { Line, Text } from 'react-konva'
+import { polygonArea, polygonCentroid } from '../../../features/geometry/polygon'
+import { formatArea } from '../../../features/units/format'
+import { useEditorStore } from '../../../stores/editorStore'
+import type { RoomElement } from '../../../types/document'
+import type { ShapeInteraction } from './shapeTypes'
+
+interface RoomShapeProps extends ShapeInteraction {
+  element: RoomElement
+}
+
+/** Taille de police de l'étiquette : 25 cm sur le plan, jamais sous 10 px à l'écran. */
+const LABEL_FONT_MM = 250
+const LABEL_MIN_PX = 10
+const LABEL_BOX_WIDTH_MM = 6000
+
+export default function RoomShape({
+  element,
+  interactive,
+  viewScale,
+  onPointerDown,
+  onDragStart,
+  onDragMove,
+  onDragEnd,
+}: RoomShapeProps) {
+  const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
+  const centroid = polygonCentroid(element.points)
+
+  const fontSize = Math.max(LABEL_FONT_MM, LABEL_MIN_PX / viewScale)
+  const labelHeight = fontSize * 1.3 * 2 // deux lignes : nom, puis surface
+  const showLabel = element.showLabel && centroid !== null && element.points.length >= 6
+
+  return (
+    <>
+      <Line
+        id={element.id}
+        name="element"
+        x={element.x}
+        y={element.y}
+        points={element.points}
+        closed
+        fill={element.fill}
+        stroke={selected ? '#4f46e5' : '#6366f1'}
+        strokeWidth={(selected ? 3 : 1.5) / viewScale}
+        lineJoin="round"
+        opacity={element.opacity}
+        visible={!element.hidden}
+        listening={interactive && !element.locked}
+        draggable={interactive && !element.locked}
+        onMouseDown={onPointerDown}
+        onTouchStart={onPointerDown}
+        onDragStart={onDragStart}
+        onDragMove={onDragMove}
+        onDragEnd={onDragEnd}
+      />
+      {showLabel && centroid && (
+        <Text
+          // Le texte suit la pièce quand on la déplace, mais ne réagit pas à la souris.
+          x={centroid.x - LABEL_BOX_WIDTH_MM / 2}
+          y={centroid.y - labelHeight / 2}
+          width={LABEL_BOX_WIDTH_MM}
+          height={labelHeight}
+          align="center"
+          verticalAlign="middle"
+          text={`${element.name}\n${formatArea(polygonArea(element.points))}`}
+          fontSize={fontSize}
+          lineHeight={1.3}
+          fontStyle="bold"
+          fill="#312e81"
+          opacity={element.opacity}
+          visible={!element.hidden}
+          listening={false}
+        />
+      )}
+    </>
+  )
+}

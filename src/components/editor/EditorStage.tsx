@@ -77,8 +77,9 @@ export default function EditorStage() {
     activeTool === 'ellipse' ||
     activeTool === 'line' ||
     activeTool === 'text'
-  // Tracés point par point du plan : mur (pièce et cote : tâches suivantes).
-  const polylineTool: PolylineTool | null = activeTool === 'wall' ? activeTool : null
+  // Tracés point par point du plan : mur, pièce (cote : tâche suivante).
+  const polylineTool: PolylineTool | null =
+    activeTool === 'wall' || activeTool === 'room' ? activeTool : null
   const polylineDrawing = usePolylineDrawing(polylineTool, scale)
   const selecting = activeTool === 'select' && !spaceDown
 
