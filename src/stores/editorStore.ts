@@ -3,6 +3,7 @@ import { cloneElements, duplicateOffset } from '../features/documents/elements'
 import { copyToClipboard, takePasteCopies } from '../features/documents/clipboard'
 import { moveElementToSlot, sameOrder, stepElement } from '../features/documents/layers'
 import { fr } from '../i18n/fr'
+import type { Guide } from '../features/geometry/guides'
 import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, Project } from '../types/document'
@@ -27,6 +28,8 @@ interface EditorState {
   editingTextId: string | null
   /** Message affiché à l'utilisateur (par exemple un fichier refusé). */
   notice: string | null
+  /** Guides d'alignement affichés pendant un déplacement (état d'interface, pas du document). */
+  guides: Guide[]
   zoom: number
   stagePosition: { x: number; y: number }
   /** Taille de la zone d'affichage du canevas (px), renseignée par le composant Stage. */
@@ -40,6 +43,7 @@ interface EditorState {
   closeProject: () => void
   setTool: (tool: EditorTool) => void
   setNotice: (notice: string | null) => void
+  setGuides: (guides: Guide[]) => void
   startEditingText: (id: string) => void
   stopEditingText: () => void
   /** Valide le texte saisi : un seul état d'historique ; un texte vidé supprime l'élément. */
@@ -117,6 +121,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     activeTool: 'select',
     editingTextId: null,
     notice: null,
+    guides: [],
     zoom: 1,
     stagePosition: { x: 0, y: 0 },
     viewportSize: { width: 0, height: 0 },
@@ -151,6 +156,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
 
     setTool: (activeTool) => set({ activeTool }),
     setNotice: (notice) => set({ notice }),
+    setGuides: (guides) => set({ guides }),
     startEditingText: (id) => set({ editingTextId: id, selectedIds: [id], activeTool: 'select' }),
     stopEditingText: () => set({ editingTextId: null }),
 

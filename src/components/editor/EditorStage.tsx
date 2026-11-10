@@ -16,6 +16,7 @@ import { screenToDocument, zoomAtPoint, type Point } from '../../features/geomet
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
+import AlignmentGuides from './AlignmentGuides'
 import ElementNode from './ElementNode'
 import { importImageFiles } from './importImages'
 import { isTypingTarget } from './isTypingTarget'
@@ -348,6 +349,7 @@ export default function EditorStage() {
                 dash={[6 / scale, 4 / scale]}
               />
             )}
+            <AlignmentGuides pageWidth={page.width} pageHeight={page.height} scale={scale} />
             {bandBox && (
               <Rect
                 {...bandBox}

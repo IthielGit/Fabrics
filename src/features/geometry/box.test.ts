@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { boxesIntersect, distance, normalizeBox } from './box'
+import { boxesIntersect, distance, normalizeBox, translateBox, unionBoxes } from './box'
 
 describe('normalizeBox', () => {
   it('garde le même résultat quel que soit le sens du tracé', () => {
@@ -22,6 +22,30 @@ describe('normalizeBox', () => {
 describe('distance', () => {
   it('calcule la distance entre deux points (triangle 3-4-5)', () => {
     expect(distance({ x: 0, y: 0 }, { x: 3, y: 4 })).toBe(5)
+  })
+})
+
+describe('unionBoxes / translateBox', () => {
+  it('renvoie la boîte englobante', () => {
+    expect(
+      unionBoxes([
+        { x: 0, y: 0, width: 10, height: 10 },
+        { x: 20, y: 5, width: 10, height: 30 },
+      ]),
+    ).toEqual({ x: 0, y: 0, width: 30, height: 35 })
+  })
+
+  it('renvoie null pour une liste vide', () => {
+    expect(unionBoxes([])).toBeNull()
+  })
+
+  it('translate une boîte', () => {
+    expect(translateBox({ x: 1, y: 2, width: 3, height: 4 }, 10, 20)).toEqual({
+      x: 11,
+      y: 22,
+      width: 3,
+      height: 4,
+    })
   })
 })
 

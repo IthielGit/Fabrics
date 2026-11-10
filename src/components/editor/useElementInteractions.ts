@@ -1,6 +1,9 @@
 import type Konva from 'konva'
 import { useCallback, useMemo, useRef } from 'react'
+import { translateBox, unionBoxes, type Box } from '../../features/geometry/box'
+import { computeSnap } from '../../features/geometry/guides'
 import type { Point } from '../../features/geometry/viewport'
+import { pxPerUnit } from '../../features/units/scale'
 import { useEditorStore } from '../../stores/editorStore'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 
@@ -9,13 +12,28 @@ type Handlers = Pick<
   'onPointerDown' | 'onDragStart' | 'onDragMove' | 'onDragEnd' | 'onDoubleClick'
 >
 
+/** Distance d'accroche des guides d'alignement, en pixels écran. */
+const SNAP_THRESHOLD_PX = 8
+
+interface DragSession {
+  /** Position de départ de chaque élément déplacé. */
+  origins: Map<string, Point>
+  /** Boîte qui englobe tous les éléments déplacés, au départ du geste. */
+  groupBox: Box | null
+  /** Boîtes sur lesquelles on s'aimante : les autres éléments visibles et la page. */
+  targets: Box[]
+}
+
+const EMPTY_SESSION: DragSession = { origins: new Map(), groupBox: null, targets: [] }
+
 /**
  * Sélection par clic (Maj = ajouter / retirer) et déplacement des éléments.
- * Quand plusieurs éléments sont sélectionnés, ils se déplacent ensemble.
+ * Quand plusieurs éléments sont sélectionnés, ils se déplacent ensemble, aimantés sur les bords
+ * et les centres des autres éléments et de la page (Alt enfoncée : pas d'aimantation).
  * Les positions ne sont écrites dans le document qu'à la fin du geste : un seul état d'historique.
  */
 export function useElementInteractions(): Handlers {
-  const origins = useRef(new Map<string, Point>())
+  const session = useRef<DragSession>(EMPTY_SESSION)
 
   const onPointerDown = useCallback((event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
     event.cancelBubble = true // empêche le rectangle de sélection de démarrer
@@ -34,21 +52,54 @@ export function useElementInteractions(): Handlers {
     const { selectedIds, project } = useEditorStore.getState()
     const locked = new Set(project?.document.elements.filter((el) => el.locked).map((el) => el.id))
     const ids = new Set([...selectedIds, event.target.id()])
-    origins.current = new Map()
+
+    const origins = new Map<string, Point>()
+    const draggedNodes: Konva.Node[] = []
     for (const id of ids) {
       const node = stage.findOne(`#${id}`)
-      if (node && !locked.has(id)) origins.current.set(id, { x: node.x(), y: node.y() })
+      if (node && !locked.has(id)) {
+        origins.set(id, { x: node.x(), y: node.y() })
+        draggedNodes.push(node)
+      }
     }
+
+    // Boîtes en coordonnées du document (le calque n'a pas de transformation propre).
+    const layer = event.target.getLayer() ?? undefined
+    const boxOf = (node: Konva.Node): Box => node.getClientRect({ relativeTo: layer })
+    const targets = Array.from(stage.find('.element'))
+      .filter((node) => node.isVisible() && !origins.has(node.id()))
+      .map(boxOf)
+    if (project) {
+      const { width, height } = project.document.page
+      targets.push({ x: 0, y: 0, width, height })
+    }
+
+    session.current = { origins, groupBox: unionBoxes(draggedNodes.map(boxOf)), targets }
   }, [])
 
   const onDragMove = useCallback((event: Konva.KonvaEventObject<DragEvent>) => {
     const stage = event.target.getStage()
     const draggedId = event.target.id()
-    const origin = origins.current.get(draggedId)
+    const { origins, groupBox, targets } = session.current
+    const origin = origins.get(draggedId)
     if (!stage || !origin) return
-    const dx = event.target.x() - origin.x
-    const dy = event.target.y() - origin.y
-    for (const [id, start] of origins.current) {
+
+    const store = useEditorStore.getState()
+    let dx = event.target.x() - origin.x
+    let dy = event.target.y() - origin.y
+
+    if (groupBox && store.project && !event.evt.altKey) {
+      const scale = store.zoom * pxPerUnit(store.project.document.unit)
+      const snap = computeSnap(translateBox(groupBox, dx, dy), targets, SNAP_THRESHOLD_PX / scale)
+      dx += snap.dx
+      dy += snap.dy
+      store.setGuides(snap.guides)
+    } else if (store.guides.length > 0) {
+      store.setGuides([])
+    }
+
+    event.target.position({ x: origin.x + dx, y: origin.y + dy })
+    for (const [id, start] of origins) {
       if (id === draggedId) continue
       stage.findOne(`#${id}`)?.position({ x: start.x + dx, y: start.y + dy })
     }
@@ -56,15 +107,16 @@ export function useElementInteractions(): Handlers {
 
   const onDragEnd = useCallback((event: Konva.KonvaEventObject<DragEvent>) => {
     const stage = event.target.getStage()
-    const { project, replaceElements } = useEditorStore.getState()
+    const { project, replaceElements, setGuides } = useEditorStore.getState()
+    setGuides([])
     if (!stage || !project) return
     const byId = new Map(project.document.elements.map((el) => [el.id, el]))
-    const updated = [...origins.current.keys()].flatMap((id) => {
+    const updated = [...session.current.origins.keys()].flatMap((id) => {
       const node = stage.findOne(`#${id}`)
       const element = byId.get(id)
       return node && element ? [{ ...element, x: node.x(), y: node.y() }] : []
     })
-    origins.current = new Map()
+    session.current = EMPTY_SESSION
     replaceElements(updated)
   }, [])
 
