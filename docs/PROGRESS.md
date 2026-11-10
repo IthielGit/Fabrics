@@ -7,6 +7,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - **Jalon en cours :** M8 — Vue 3D (M7 validé par l'utilisateur)
 - **Dernière tâche terminée :** M8 · réglage du nord (`northAngle`, migration v4)
 - **Prochaine tâche :** M8 · panneau 3D (ouvrable, redimensionnable) qui dessine le modèle
+- **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons

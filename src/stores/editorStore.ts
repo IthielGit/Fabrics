@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
 import { copyToClipboard, takePasteCopies } from '../features/documents/clipboard'
+import { clampPageDimension } from '../features/documents/pageSize'
 import { moveElementToSlot, sameOrder, stepElement } from '../features/documents/layers'
 import {
   copyLevelWalls,

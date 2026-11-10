@@ -748,3 +748,15 @@ describe('objets de la bibliothèque', () => {
     expect(elements()[0]).toMatchObject({ x: 10, y: 0, width: 1600, depth: 2000 })
   })
 })
+
+describe('setPageSize', () => {
+  it("change la taille de la page, bornée, en un pas d'historique", () => {
+    store().loadProject(createPlanProject('Plan'))
+    store().setPageSize(30000, 5)
+    const page = store().project!.document.page
+    expect(page.width).toBe(30000)
+    expect(page.height).toBe(1000)
+    store().undo()
+    expect(store().project!.document.page.width).toBe(20000)
+  })
+})
