@@ -271,7 +271,9 @@ Fonctions pures dans `src/features/measurements/` et `src/features/geometry/`, t
 | Surface d'une pièce | formule du lacet (shoelace) : `|Σ (xᵢ·yᵢ₊₁ − xᵢ₊₁·yᵢ)| / 2`, mm² → m² (÷ 1 000 000) |
 | Périmètre d'une pièce | somme des longueurs des côtés, polygone fermé |
 | Longueur d'un mur | somme des segments de l'axe |
-| Surface murale | longueur du mur × `height` (une face, sans déduction d'ouvertures) |
+| Surface murale brute | longueur du mur × `height` (une face, sans déduction d'ouvertures) |
+| Surface murale nette | surface brute − surfaces des ouvertures du mur (jamais négative) |
+| Surface d'une ouverture | `width` × hauteur limitée à ce qui reste au-dessus de l'allège |
 | Longueur d'une cote | distance entre les deux extrémités |
 
 **Surface au tracé.** La surface et le périmètre d'une pièce sont ceux du **polygone tel
@@ -284,11 +286,15 @@ intérieure est une idée pour après le MVP.
 
 Le panneau **Métrés** affiche :
 - un tableau des pièces : nom, surface, périmètre ;
-- un tableau des murs : nom, longueur, épaisseur, surface murale ;
-- les totaux : surface totale des pièces, linéaire total de murs, surface murale totale.
+- un tableau des murs : nom, longueur, surface murale brute, surface murale nette ;
+- un tableau des ouvertures (si le plan en a) : nom, dimensions, surface, avec le nombre de
+  portes, de fenêtres et de baies ;
+- les totaux : surface totale des pièces, linéaire total de murs, surface murale brute et
+  nette, surface totale des ouvertures.
 
 Export **CSV** (séparateur `;`, décimales à virgule, encodage UTF-8 avec BOM pour Excel) avec
-les mêmes colonnes.
+les mêmes tableaux ; les murs y ont en plus l'épaisseur, la hauteur et la surface des
+ouvertures, et le tableau des ouvertures donne type, mur, largeur, hauteur, allège et surface.
 
 Tests minimum : carré 4 m × 3 m → 12,00 m² et 14,00 m ; polygone en L connu ; polygone
 parcouru dans les deux sens → même surface ; mur en 3 segments → somme exacte.

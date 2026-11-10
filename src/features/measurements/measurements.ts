@@ -1,4 +1,4 @@
-import type { CanvasElement } from '../../types/document'
+import type { CanvasElement, OpeningElement, WallElement } from '../../types/document'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
 
 export interface RoomMeasure {
@@ -17,17 +17,59 @@ export interface WallMeasure {
   length: number
   thickness: number // mm
   height: number // mm
-  /** Surface d'une face : longueur × hauteur, sans déduction d'ouvertures, en mm². */
+  /** Surface brute d'une face : longueur × hauteur, sans déduction d'ouvertures, en mm². */
   wallArea: number
+  /** Surface des ouvertures posées sur ce mur, en mm². */
+  openingsArea: number
+  /** Surface nette : surface brute moins les ouvertures, en mm² (jamais négative). */
+  netArea: number
+}
+
+export interface OpeningMeasure {
+  id: string
+  name: string
+  kind: OpeningElement['kind']
+  wallId: string
+  wallName: string
+  width: number // mm
+  height: number // mm
+  sillHeight: number // mm
+  /** Surface dans le mur : largeur × hauteur, limitée à la hauteur du mur, en mm². */
+  area: number
 }
 
 export interface Measurements {
   rooms: RoomMeasure[]
   walls: WallMeasure[]
+  /** Ouvertures posées sur un mur existant, dans l'ordre du document. */
+  openings: OpeningMeasure[]
   totals: {
     roomArea: number // mm²
     wallLength: number // mm
+    /** Surface murale brute. */
     wallArea: number // mm²
+    openingsArea: number // mm²
+    /** Surface murale nette : brute moins les ouvertures. */
+    wallNetArea: number // mm²
+    doors: number
+    windows: number
+    bays: number
+  }
+}
+
+/** Surface d'une ouverture dans son mur : sa hauteur est limitée à ce qui reste au-dessus de l'allège. */
+function openingMeasure(opening: OpeningElement, wall: WallElement): OpeningMeasure {
+  const visibleHeight = Math.max(0, Math.min(opening.height, wall.height - opening.sillHeight))
+  return {
+    id: opening.id,
+    name: opening.name,
+    kind: opening.kind,
+    wallId: wall.id,
+    wallName: wall.name,
+    width: opening.width,
+    height: opening.height,
+    sillHeight: opening.sillHeight,
+    area: opening.width * visibleHeight,
   }
 }
 
@@ -39,6 +81,21 @@ export interface Measurements {
 export function computeMeasurements(elements: readonly CanvasElement[]): Measurements {
   const rooms: RoomMeasure[] = []
   const walls: WallMeasure[] = []
+  const openings: OpeningMeasure[] = []
+
+  // Les ouvertures d'abord : un mur a besoin de la surface des siennes.
+  const wallById = new Map(
+    elements.filter((el): el is WallElement => el.type === 'wall').map((wall) => [wall.id, wall]),
+  )
+  const openingsArea = new Map<string, number>()
+  for (const element of elements) {
+    if (element.type !== 'opening') continue
+    const wall = wallById.get(element.wallId)
+    if (!wall) continue // ouverture orpheline : rien à mesurer
+    const measure = openingMeasure(element, wall)
+    openings.push(measure)
+    openingsArea.set(wall.id, (openingsArea.get(wall.id) ?? 0) + measure.area)
+  }
 
   for (const element of elements) {
     if (element.type === 'room') {
@@ -50,24 +107,36 @@ export function computeMeasurements(elements: readonly CanvasElement[]): Measure
       })
     } else if (element.type === 'wall') {
       const length = polylineLength(element.points)
+      const wallArea = length * element.height
+      const deducted = openingsArea.get(element.id) ?? 0
       walls.push({
         id: element.id,
         name: element.name,
         length,
         thickness: element.thickness,
         height: element.height,
-        wallArea: length * element.height,
+        wallArea,
+        openingsArea: deducted,
+        netArea: Math.max(0, wallArea - deducted),
       })
     }
   }
 
+  const count = (kind: OpeningElement['kind']) => openings.filter((o) => o.kind === kind).length
+
   return {
     rooms,
     walls,
+    openings,
     totals: {
       roomArea: rooms.reduce((sum, room) => sum + room.area, 0),
       wallLength: walls.reduce((sum, wall) => sum + wall.length, 0),
       wallArea: walls.reduce((sum, wall) => sum + wall.wallArea, 0),
+      openingsArea: walls.reduce((sum, wall) => sum + wall.openingsArea, 0),
+      wallNetArea: walls.reduce((sum, wall) => sum + wall.netArea, 0),
+      doors: count('door'),
+      windows: count('window'),
+      bays: count('bay'),
     },
   }
 }

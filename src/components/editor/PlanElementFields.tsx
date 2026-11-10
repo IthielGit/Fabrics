@@ -22,14 +22,16 @@ function Measure({ label, value }: { label: string; value: string }) {
 /** Réglages propres à un mur, une pièce ou une cote (nom, épaisseur, hauteur, décalage…) et leurs mesures. */
 export default function PlanElementFields({ element }: { element: PlanElement }) {
   const updateElements = useEditorStore((state) => state.updateElements)
+  const elements = useEditorStore((state) => state.project?.document.elements)
   const patch = (change: (el: PlanElement) => PlanElement) =>
     updateElements([element.id], (el) =>
       el.type === 'wall' || el.type === 'room' || el.type === 'dimension' ? change(el) : el,
     )
 
-  const measures = computeMeasurements([element])
-  const room = measures.rooms[0]
-  const wall = measures.walls[0]
+  // Tous les éléments : la surface nette d'un mur tient compte de ses ouvertures.
+  const measures = computeMeasurements(elements ?? [element])
+  const room = measures.rooms.find((r) => r.id === element.id)
+  const wall = measures.walls.find((w) => w.id === element.id)
 
   return (
     <>
@@ -102,6 +104,15 @@ export default function PlanElementFields({ element }: { element: PlanElement })
           <>
             <Measure label={fr.properties.length} value={formatLength(wall.length)} />
             <Measure label={fr.properties.wallArea} value={formatArea(wall.wallArea)} />
+            {wall.openingsArea > 0 && (
+              <>
+                <Measure
+                  label={fr.properties.openingsArea}
+                  value={formatArea(wall.openingsArea)}
+                />
+                <Measure label={fr.properties.wallNetArea} value={formatArea(wall.netArea)} />
+              </>
+            )}
           </>
         )}
         {element.type === 'dimension' && (

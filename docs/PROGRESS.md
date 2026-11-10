@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M5 — Ouvertures (feu vert donné le 2026-11-10 ; choix par défaut acceptés)
-- **Dernière tâche terminée :** M5 · tâche 7 — liens avec le mur
-- **Prochaine tâche :** M5 · tâche 8 — métrés et CSV (surface murale nette, tableau des ouvertures)
+- **Dernière tâche terminée :** M5 · tâche 8 — métrés et CSV
+- **Prochaine tâche :** M5 · tâche 9 — export et calques (emprise des ouvertures, liste dans les calques), puis validation de M5 par l'utilisateur
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -44,6 +44,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/units/format(.test).ts`, `src/features/measurements/{csv,measurements.test}.ts`, `src/components/editor/{MeasurementsPanel,PlanElementFields,PlanSettingsSection,CalibrateDialog}.tsx`, `src/i18n/fr.ts`, `src/features/export/pdf.test.ts`, `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md`
 - Vérification : build ✓ lint ✓ tests ✓ (422) — à contrôler dans le navigateur
 - Commit : feat: unités Métrique architectural (mm, m²)
+
+### 2026-11-10 — M5 · Métrés et CSV des ouvertures
+- Fait : les métrés calculent la **surface murale nette** (brute moins les ouvertures du mur, jamais négative) : un mur de 4,00 × 2,50 m avec une porte de 0,90 × 2,10 m donne 10,00 m² brut, 1,89 m² d'ouvertures, 8,11 m² net. Une ouverture plus haute que ce qui reste au-dessus de son allège est comptée à la hauteur du mur ; une ouverture sans mur est ignorée. Le panneau Métrés affiche pour les murs : longueur, surface brute et nette (l'épaisseur n'y est plus, elle reste dans Propriétés et dans le CSV), puis un tableau des ouvertures (nom, dimensions, surface ; cliquer une ligne sélectionne l'ouverture) avec le total et le nombre de portes, fenêtres et baies. Propriétés d'un mur : surface brute, ouvertures et surface nette. CSV : colonnes brute / ouvertures / nette pour les murs, et un tableau des ouvertures (type, mur, largeur, hauteur, allège, surface) suivi du nombre de portes, fenêtres et baies, présent seulement s'il y a des ouvertures.
+- Fichiers : `src/features/measurements/{measurements,csv}(.test).ts`, `src/components/editor/{MeasurementsPanel,PlanElementFields}.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (491 au total, dont 13 sur les ouvertures dans les métrés et le CSV) — ouverture du CSV dans Excel / LibreOffice à contrôler
+- Commit : feat: métrés et CSV des ouvertures
 
 ### 2026-11-10 — M5 · Liens entre murs et ouvertures
 - Fait : **supprimer un mur supprime ses ouvertures** (un seul état d'historique). **Dupliquer, copier ou coller un mur emmène ses ouvertures**, rattachées à la copie du mur ; une ouverture seule ne se duplique ni ne se colle (rien n'est ajouté à l'historique). **Déplacer un mur** : ses ouvertures le suivent, aussi en direct pendant le glissement. **Modifier la forme d'un mur** (glisser, ajouter ou retirer un sommet) : les ouvertures restent là où elles étaient (projetées sur le segment le plus proche, au bon segment si on ajoute un sommet), se décalent pour ne pas se chevaucher, et sont supprimées si elles ne tiennent plus ; pendant un glissement de sommet, le calcul repart du début du geste, donc une ouverture écartée un instant revient quand le mur se rallonge. Annuler restaure le mur et ses ouvertures d'un coup.

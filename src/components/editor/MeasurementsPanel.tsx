@@ -23,7 +23,7 @@ export default function MeasurementsPanel() {
   const measurements = useMemo(() => computeMeasurements(elements ?? []), [elements])
 
   if (!isPlan) return null
-  const { rooms, walls, totals } = measurements
+  const { rooms, walls, openings, totals } = measurements
   const isEmpty = rooms.length === 0 && walls.length === 0
 
   const handleExport = () => {
@@ -98,17 +98,17 @@ export default function MeasurementsPanel() {
             <tr>
               <th className={HEAD}>{fr.measurements.name}</th>
               <th className={`${HEAD} text-right`}>{fr.measurements.length}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.thickness}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.wallArea}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.wallGrossArea}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.wallNetArea}</th>
             </tr>
           </thead>
           <tbody>
             {walls.map((wall) => (
               <tr key={wall.id} onClick={() => setSelection([wall.id])} className={rowClass(wall.id)}>
-                <td className="max-w-20 truncate px-1 py-1">{wall.name}</td>
+                <td className="max-w-16 truncate px-1 py-1">{wall.name}</td>
                 <td className={NUMBER}>{formatLength(wall.length)}</td>
-                <td className={NUMBER}>{formatLength(wall.thickness)}</td>
                 <td className={NUMBER}>{formatArea(wall.wallArea)}</td>
+                <td className={NUMBER}>{formatArea(wall.netArea)}</td>
               </tr>
             ))}
           </tbody>
@@ -116,11 +116,57 @@ export default function MeasurementsPanel() {
             <tr className="border-t border-slate-300 font-semibold">
               <td className="px-1 py-1">{fr.measurements.total}</td>
               <td className={NUMBER}>{formatLength(totals.wallLength)}</td>
-              <td />
               <td className={NUMBER}>{formatArea(totals.wallArea)}</td>
+              <td className={NUMBER}>{formatArea(totals.wallNetArea)}</td>
             </tr>
           </tfoot>
         </table>
+      )}
+      {walls.length > 0 && openings.length > 0 && (
+        <p className="mt-1 text-xs text-slate-500">{fr.measurements.netAreaNote}</p>
+      )}
+
+      {openings.length > 0 && (
+        <table className="mt-4 w-full text-sm">
+          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {fr.measurements.openings}
+          </caption>
+          <thead>
+            <tr>
+              <th className={HEAD}>{fr.measurements.name}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.openingSize}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.area}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {openings.map((opening) => (
+              <tr
+                key={opening.id}
+                onClick={() => setSelection([opening.id])}
+                className={rowClass(opening.id)}
+                title={`${fr.elements[opening.kind]} · ${fr.measurements.openingWall} : ${opening.wallName}`}
+              >
+                <td className="max-w-20 truncate px-1 py-1">{opening.name}</td>
+                <td className={NUMBER}>
+                  {opening.width} × {opening.height}
+                </td>
+                <td className={NUMBER}>{formatArea(opening.area)}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="border-t border-slate-300 font-semibold">
+              <td className="px-1 py-1">{fr.measurements.total}</td>
+              <td />
+              <td className={NUMBER}>{formatArea(totals.openingsArea)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      )}
+      {openings.length > 0 && (
+        <p className="mt-1 text-xs text-slate-500">
+          {fr.measurements.openingCounts(totals.doors, totals.windows, totals.bays)}
+        </p>
       )}
     </section>
   )

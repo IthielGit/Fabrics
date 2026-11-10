@@ -158,7 +158,7 @@ Objectif : percer les murs et obtenir des métrés nets.
 - [x] Propriétés : largeur, hauteur, hauteur d'allège (fenêtre), sens
 - [x] Déplacer ou modifier le mur garde les ouvertures à leur place relative ; supprimer le mur
       supprime ses ouvertures
-- [ ] Métrés : surface murale **nette** (brute − ouvertures), nombre et liste des ouvertures ;
+- [x] Métrés : surface murale **nette** (brute − ouvertures), nombre et liste des ouvertures ;
       CSV mis à jour
 - [x] Migration du document (version 1 → 2) testée
 
