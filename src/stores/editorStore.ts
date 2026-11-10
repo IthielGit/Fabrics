@@ -37,6 +37,7 @@ export type EditorTool =
   | 'room'
   | 'dimension'
   | 'axis'
+  | 'furniture'
   | 'door'
   | 'window'
   | 'calibrate'
@@ -47,6 +48,7 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
   'room',
   'dimension',
   'axis',
+  'furniture',
   'door',
   'window',
   'calibrate',
@@ -70,6 +72,8 @@ interface EditorState {
   project: Project | null
   selectedIds: string[]
   activeTool: EditorTool
+  /** Objet de la bibliothèque en cours de pose (outil `furniture`) ; état d'interface, hors historique. */
+  furnitureSymbolId: string | null
   /** Texte en cours d'édition dans la zone de saisie superposée (état d'interface, pas du document). */
   editingTextId: string | null
   /** Niveau affiché et modifiable (plans uniquement) ; état d'interface, hors historique. */
@@ -92,6 +96,8 @@ interface EditorState {
   loadProject: (project: Project) => void
   closeProject: () => void
   setTool: (tool: EditorTool) => void
+  /** Choisit un objet de la bibliothèque et active l'outil de pose (sans effet dans un visuel). */
+  startPlacingFurniture: (symbolId: string) => void
   setNotice: (notice: string | null) => void
   setGuides: (guides: Guide[]) => void
   startEditingText: (id: string) => void
@@ -232,6 +238,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     project: null,
     selectedIds: [],
     activeTool: 'select',
+    furnitureSymbolId: null,
     editingTextId: null,
     activeLevelId: null,
     showLowerLevel: true,
@@ -251,6 +258,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         project,
         selectedIds: [],
         activeTool: 'select',
+        furnitureSymbolId: null,
         editingTextId: null,
         // On ouvre un plan sur son niveau le plus bas (le rez-de-chaussée).
         activeLevelId: validActiveLevelId(project.document.levels, null),
@@ -277,6 +285,10 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       // Mur, pièce, cote et calibrage n'existent pas dans un visuel.
       if (isPlanTool(activeTool) && get().project?.kind !== 'plan') return
       set({ activeTool })
+    },
+    startPlacingFurniture: (symbolId) => {
+      if (get().project?.kind !== 'plan') return
+      set({ activeTool: 'furniture', furnitureSymbolId: symbolId })
     },
     setNotice: (notice) => set({ notice }),
     setGuides: (guides) => set({ guides }),

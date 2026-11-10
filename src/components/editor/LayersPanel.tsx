@@ -1,5 +1,6 @@
 import clsx from 'clsx'
 import {
+  Armchair,
   ChevronDown,
   ChevronUp,
   Circle,
@@ -32,6 +33,7 @@ const TYPE_ICONS: Record<CanvasElement['type'], LucideIcon> = {
   dimension: Slash,
   opening: DoorOpen,
   axis: Hash,
+  furniture: Armchair,
 }
 
 const ROW_BUTTON = 'rounded p-1 text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-transparent'

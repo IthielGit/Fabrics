@@ -3,11 +3,13 @@ import { clearClipboard } from '../features/documents/clipboard'
 import { createDesignProject, createPlanProject } from '../features/documents/createProject'
 import {
   createAxisElement,
+  createFurnitureElement,
   createOpeningElement,
   createRectElement,
   createTextElement,
   createWallElement,
 } from '../features/documents/elements'
+import { getSymbol } from '../features/library/catalog'
 import type { OpeningElement, TextElement, WallElement } from '../types/document'
 import { HISTORY_LIMIT, selectActiveElements, useEditorStore } from './editorStore'
 
@@ -718,5 +720,31 @@ describe('axes de construction', () => {
     store().loadProject(createPlanProject('Plan'))
     store().setTool('axis')
     expect(store().activeTool).toBe('axis')
+  })
+})
+
+describe('objets de la bibliothèque', () => {
+  beforeEach(() => {
+    store().loadProject(createPlanProject('Maison'))
+  })
+
+  it('choisir un objet active l’outil de pose, dans un plan seulement', () => {
+    store().startPlacingFurniture('bed-queen')
+    expect(store().activeTool).toBe('furniture')
+    expect(store().furnitureSymbolId).toBe('bed-queen')
+
+    store().loadProject(createDesignProject('post-square', 'Visuel'))
+    store().startPlacingFurniture('bed-queen')
+    expect(store().activeTool).toBe('select')
+    expect(store().furnitureSymbolId).toBeNull()
+  })
+
+  it('un objet posé appartient au niveau actif et se déplace par x, y', () => {
+    const bed = getSymbol('bed-queen')!
+    store().addElement(createFurnitureElement('Lit 1', bed.id, 0, 0, bed.width, bed.depth))
+    const placed = elements()[0]
+    expect(placed.levelId).toBe(store().activeLevelId)
+    store().nudgeSelection(10, 0)
+    expect(elements()[0]).toMatchObject({ x: 10, y: 0, width: 1600, depth: 2000 })
   })
 })

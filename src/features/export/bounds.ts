@@ -45,6 +45,15 @@ export function elementBounds(element: CanvasElement): Box | null {
           { x: 0, y: element.height },
         ]),
       )
+    case 'furniture':
+      return pointsBox(
+        placed(element, [
+          { x: 0, y: 0 },
+          { x: element.width, y: 0 },
+          { x: element.width, y: element.depth },
+          { x: 0, y: element.depth },
+        ]),
+      )
     case 'ellipse': {
       // Demi-largeur et demi-hauteur d'une ellipse tournée.
       const angle = (element.rotation * Math.PI) / 180

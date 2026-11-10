@@ -2,6 +2,7 @@ import type Konva from 'konva'
 import { useEffect, useRef } from 'react'
 import { Transformer } from 'react-konva'
 import { applyNodeTransform, hasAbsolutePoints } from '../../features/geometry/transform'
+import { getSymbol } from '../../features/library/catalog'
 import { useEditorStore } from '../../stores/editorStore'
 
 const MIN_SIZE_PX = 5 // taille minimale à l'écran lors d'un redimensionnement
@@ -16,6 +17,7 @@ const ALL_ANCHORS = [
   'bottom-right',
 ]
 const TEXT_ANCHORS = ['middle-left', 'middle-right']
+const CORNER_ANCHORS = ['top-left', 'top-right', 'bottom-left', 'bottom-right']
 
 interface SelectionTransformerProps {
   /** Faux quand un outil de tracé est actif : les poignées ne doivent pas gêner. */
@@ -33,6 +35,23 @@ export default function SelectionTransformer({ enabled }: SelectionTransformerPr
   const onlyText =
     selectedIds.length > 0 &&
     selectedIds.every((id) => elements?.find((el) => el.id === id)?.type === 'text')
+
+  // Objets de la bibliothèque : les poignées suivent leur mode de redimensionnement (le modèle
+  // refuse de toute façon ce qu'il n'autorise pas, voir `resizeSymbol`).
+  const selected = selectedIds.flatMap((id) => elements?.find((el) => el.id === id) ?? [])
+  const onlyFurniture = selected.length > 0 && selected.every((el) => el.type === 'furniture')
+  const furnitureModes = onlyFurniture
+    ? selected.map((el) => (el.type === 'furniture' ? getSymbol(el.symbol)?.resize : undefined) ?? 'free')
+    : []
+  let anchors = onlyText ? TEXT_ANCHORS : ALL_ANCHORS
+  let keepRatio = false
+  if (onlyFurniture) {
+    if (furnitureModes.every((mode) => mode === 'fixed')) anchors = []
+    else if (furnitureModes.some((mode) => mode === 'ratio')) {
+      anchors = CORNER_ANCHORS
+      keepRatio = true
+    } else if (furnitureModes.every((mode) => mode === 'length')) anchors = TEXT_ANCHORS
+  }
 
   // Rattache le transformateur aux nœuds sélectionnés (à chaque changement de sélection
   // ou de document, par exemple après annuler / rétablir).
@@ -87,7 +106,8 @@ export default function SelectionTransformer({ enabled }: SelectionTransformerPr
       rotationSnaps={[0, 45, 90, 135, 180, 225, 270, 315]}
       rotationSnapTolerance={5}
       flipEnabled={false}
-      enabledAnchors={onlyText ? TEXT_ANCHORS : ALL_ANCHORS}
+      enabledAnchors={anchors}
+      keepRatio={keepRatio}
       borderStroke="#4f46e5"
       anchorStroke="#4f46e5"
       anchorFill="#ffffff"

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Ellipse, Group, Layer, Line, Rect, Stage } from 'react-konva'
 import {
   createEllipseElement,
+  createFurnitureElement,
   createLineElement,
   createRectElement,
   createTextElement,
@@ -15,6 +16,7 @@ import { drawOrder } from '../../features/documents/layers'
 import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
+import { getSymbol } from '../../features/library/catalog'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
@@ -177,6 +179,28 @@ export default function EditorStage() {
   const pointerInDocument = (event: PointerEvent) =>
     event.target.getStage()?.getRelativePointerPosition() ?? null
 
+  /** Pose l'objet choisi dans la bibliothèque, centré sur `point` (aimanté à la grille si elle est active). */
+  const placeFurniture = (point: Point) => {
+    const { furnitureSymbolId } = useEditorStore.getState()
+    const def = furnitureSymbolId ? getSymbol(furnitureSymbolId) : undefined
+    if (!def) return
+    const plan = project?.document.plan
+    const grid = plan?.snapToGrid ? plan.gridSize : null
+    const snap = (value: number) => (grid ? Math.round(value / grid) * grid : Math.round(value))
+    const name = fr.library.symbols[def.id]?.name ?? def.id
+    const count = elements.filter((el) => el.type === 'furniture' && el.symbol === def.id).length
+    addElement(
+      createFurnitureElement(
+        `${name} ${count + 1}`,
+        def.id,
+        snap(point.x) - def.width / 2,
+        snap(point.y) - def.depth / 2,
+        def.width,
+        def.depth,
+      ),
+    ) // l'objet posé devient la sélection ; l'outil reste actif pour en poser d'autres
+  }
+
   const handlePointerDown = (event: PointerEvent) => {
     if (spaceDown) return
     if (event.evt instanceof MouseEvent && event.evt.button !== 0) return
@@ -189,6 +213,8 @@ export default function EditorStage() {
       calibration.onPointerDown(event)
     } else if (openingKind) {
       openingTool.onPointerDown(event)
+    } else if (activeTool === 'furniture') {
+      placeFurniture(point)
     } else if (drawing) {
       setDraft({ start: point, current: point, additive: false })
     } else if (activeTool === 'select') {

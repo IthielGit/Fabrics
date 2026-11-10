@@ -16,6 +16,7 @@ import { useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement, TextElement } from '../../types/document'
 import ColorField from '../ui/ColorField'
 import NumberField from '../ui/NumberField'
+import FurnitureFields from './FurnitureFields'
 import OpeningFields from './OpeningFields'
 import PlanElementFields from './PlanElementFields'
 import PlanSettingsSection from './PlanSettingsSection'
@@ -128,6 +129,7 @@ export default function PropertiesPanel() {
           element.type === 'dimension' ||
           element.type === 'axis') && <PlanElementFields element={element} />}
         {element.type === 'opening' && <OpeningFields element={element} />}
+        {element.type === 'furniture' && <FurnitureFields element={element} />}
         {numericPropsFor(element).map((prop) => (
           <NumberField
             key={prop}

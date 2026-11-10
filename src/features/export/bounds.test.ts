@@ -3,6 +3,7 @@ import type { CanvasElement } from '../../types/document'
 import {
   createAxisElement,
   createEllipseElement,
+  createFurnitureElement,
   createLineElement,
   createOpeningElement,
   createRectElement,
@@ -161,5 +162,16 @@ describe('emprise d’un axe', () => {
     const without = planExportExtent([wall], 0)!
     expect(withAxis.height).toBeGreaterThan(without.height)
     expect(planExportExtent([wall, { ...axis, hidden: true }], 0)).toEqual(without)
+  })
+})
+
+describe('emprise d’un objet de la bibliothèque', () => {
+  it('suit sa position, sa taille et sa rotation', () => {
+    const bed = createFurnitureElement('Lit', 'bed-queen', 1000, 2000, 1600, 2000)
+    expect(elementBounds(bed)).toEqual({ x: 1000, y: 2000, width: 1600, height: 2000 })
+    const turned = elementBounds({ ...bed, rotation: 90 })!
+    expect(turned.width).toBeCloseTo(2000)
+    expect(turned.height).toBeCloseTo(1600)
+    expect(turned.x).toBeCloseTo(-1000)
   })
 })

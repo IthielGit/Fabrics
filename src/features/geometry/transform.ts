@@ -5,6 +5,8 @@ import type {
   RoomElement,
   WallElement,
 } from '../../types/document'
+import { getSymbol } from '../library/catalog'
+import { resizeSymbol } from '../library/resize'
 import { toPoints } from './polygon'
 import type { Point } from './viewport'
 
@@ -155,6 +157,15 @@ export function applyNodeTransform(element: CanvasElement, node: NodeTransform):
       }
     case 'text':
       return { ...element, ...base, width: element.width * scaleX }
+    case 'furniture': {
+      // La taille demandée est ramenée aux règles de l'objet (mode, limites, mm entiers).
+      const requested = { width: element.width * scaleX, depth: element.depth * scaleY }
+      const def = getSymbol(element.symbol)
+      const size = def
+        ? resizeSymbol(def, requested, { width: element.width, depth: element.depth })
+        : { width: Math.round(requested.width), depth: Math.round(requested.depth) }
+      return { ...element, ...base, ...size }
+    }
     case 'line':
       // Les points sont relatifs à (x, y) : on les étire dans les axes du nœud.
       return {

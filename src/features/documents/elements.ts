@@ -4,6 +4,7 @@ import type {
   DimensionElement,
   EllipseElement,
   FabricsDocument,
+  FurnitureElement,
   ImageElement,
   LineElement,
   OpeningElement,
@@ -179,6 +180,21 @@ export function createAxisElement(
   points: [number, number, number, number],
 ): AxisElement {
   return { ...BASE, id: crypto.randomUUID(), type: 'axis', name, x: 0, y: 0, points, label }
+}
+
+/**
+ * Objet de la bibliothèque posé avec son coin haut-gauche en (x, y), à sa taille par défaut
+ * (`width` et `depth` sont ceux de l'objet du catalogue, en mm).
+ */
+export function createFurnitureElement(
+  name: string,
+  symbol: string,
+  x: number,
+  y: number,
+  width: number,
+  depth: number,
+): FurnitureElement {
+  return { ...BASE, id: crypto.randomUUID(), type: 'furniture', name, symbol, x, y, width, depth }
 }
 
 /** Image déjà enregistrée dans le stockage (`assetId`), posée avec son coin haut-gauche en (x, y). */

@@ -30,6 +30,9 @@ export function numericPropsFor(element: CanvasElement): NumericProp[] {
       return ['x', 'y', 'width', 'rotation', 'opacity', 'fontSize']
     case 'image':
       return ['x', 'y', 'width', 'height', 'rotation', 'opacity']
+    case 'furniture':
+      // La taille d'un objet de la bibliothèque a ses propres champs (modes et limites du catalogue).
+      return ['x', 'y', 'rotation', 'opacity']
     default:
       // Mur, pièce, cote : position et rotation restent à 0 (leurs points sont absolus) ;
       // leurs réglages propres sont dans le panneau (épaisseur, hauteur, décalage…).

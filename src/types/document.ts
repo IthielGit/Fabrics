@@ -147,6 +147,18 @@ export interface AxisElement extends BaseElement {
   label: string;             // « A », « 1 »… affiché dans les bulles
 }
 
+// Objet de la bibliothèque (M7) : mobilier ou équipement. Seule exception à la règle D6 parmi les
+// éléments de plan : position, rotation et taille comme une forme du Visuel (x, y = coin haut-gauche
+// avant rotation). Le dessin vient du catalogue (`src/features/library/`).
+export interface FurnitureElement extends BaseElement {
+  type: 'furniture';
+  symbol: string;            // identifiant dans la bibliothèque intégrée (ex. 'bed-queen')
+  width: number;             // mm
+  depth: number;             // mm
+  mirrored?: boolean;        // objet retourné gauche / droite
+}
+
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
-  | WallElement | RoomElement | DimensionElement | OpeningElement | AxisElement;
+  | WallElement | RoomElement | DimensionElement | OpeningElement | AxisElement
+  | FurnitureElement;
