@@ -76,6 +76,16 @@ export default function FurnitureFields({ element }: { element: FurnitureElement
           </div>
         </div>
       )}
+      {def?.mirrorable && (
+        <button
+          type="button"
+          aria-pressed={element.mirrored === true}
+          onClick={() => patch((el) => ({ ...el, mirrored: el.mirrored !== true }))}
+          className="rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-700 hover:bg-slate-100 aria-pressed:border-indigo-500 aria-pressed:bg-indigo-50"
+        >
+          {fr.properties.furnitureFlip}
+        </button>
+      )}
       {!def && <p className="text-xs text-red-600">{fr.library.unknownSymbol}</p>}
     </>
   )

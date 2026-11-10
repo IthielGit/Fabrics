@@ -266,6 +266,10 @@ export const fr = {
   library: {
     title: 'Bibliothèque',
     unknownSymbol: 'Objet inconnu',
+    searchLabel: 'Rechercher un objet',
+    searchPlaceholder: 'Rechercher (lit, canapé, table…)',
+    allCategories: 'Tous',
+    noResult: 'Aucun objet ne correspond à cette recherche.',
     size: (width: number, depth: number) => `${width} × ${depth} mm`,
     categories: {
       living: 'Séjour et salon',
@@ -347,6 +351,7 @@ export const fr = {
     furnitureWidth: 'Largeur',
     furnitureDepth: 'Profondeur',
     furnitureSizes: 'Tailles courantes',
+    furnitureFlip: 'Retourner (gauche / droite)',
     furnitureFixedSize: 'La taille de cet objet est fixe.',
     furnitureLimits: (min: number, max: number) => `Entre ${min} et ${max} mm`,
     axisLabel: 'Repère',

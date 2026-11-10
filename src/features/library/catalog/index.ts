@@ -10,6 +10,28 @@ export const SYMBOLS: readonly SymbolDef[] = [
   ...BEDROOM_SYMBOLS,
 ]
 
+/** Catégories dans l'ordre d'affichage du panneau. */
+export const CATEGORIES: readonly SymbolCategory[] = [
+  'living',
+  'dining',
+  'bedroom',
+  'office',
+  'storage',
+  'kitchen',
+  'bathroom',
+  'laundry',
+  'stairs',
+  'electrical',
+  'hvac',
+  'safety',
+  'outdoor',
+  'vehicles',
+  'hospitality',
+  'health-education',
+  'leisure',
+  'sets',
+]
+
 const BY_ID = new Map(SYMBOLS.map((symbol) => [symbol.id, symbol]))
 
 /** Objet du catalogue par son identifiant, ou `undefined` (identifiant inconnu : projet plus récent). */

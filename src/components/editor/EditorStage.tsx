@@ -17,9 +17,12 @@ import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
 import { getSymbol } from '../../features/library/catalog'
+import { furniturePlacement } from '../../features/library/placement'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
+import { FURNITURE_DRAG_TYPE } from '../library/dragType'
+import { symbolName } from '../library/symbolText'
 import AlignmentGuides from './AlignmentGuides'
 import CalibrateDialog from './CalibrateDialog'
 import CalibrationDraftLayer from './CalibrationDraftLayer'
@@ -30,6 +33,7 @@ import OpeningPreviewLayer from './OpeningPreviewLayer'
 import PlanGrid from './PlanGrid'
 import PolylineDraftLayer from './PolylineDraftLayer'
 import SelectionTransformer from './SelectionTransformer'
+import FurnitureGhost from './FurnitureGhost'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
 import { useCalibrationTool } from './useCalibrationTool'
@@ -59,6 +63,7 @@ export default function EditorStage() {
   const zoom = useEditorStore((state) => state.zoom)
   const stagePosition = useEditorStore((state) => state.stagePosition)
   const activeTool = useEditorStore((state) => state.activeTool)
+  const furnitureSymbolId = useEditorStore((state) => state.furnitureSymbolId)
   const setView = useEditorStore((state) => state.setView)
   const setViewportSize = useEditorStore((state) => state.setViewportSize)
   const fitView = useEditorStore((state) => state.fitView)
@@ -89,6 +94,8 @@ export default function EditorStage() {
   const [draft, setDraft] = useState<Gesture | null>(null)
   // Rectangle de sélection (outil Sélection)
   const [band, setBand] = useState<Gesture | null>(null)
+  // Position du curseur sur le plan pendant la pose d'un objet (aperçu fantôme)
+  const [ghostPoint, setGhostPoint] = useState<Point | null>(null)
   const fittedProjectId = useRef<string | null>(null)
 
   const projectId = project?.id ?? null
@@ -155,6 +162,8 @@ export default function EditorStage() {
   if (!project) return null
   const { page, unit } = project.document
   const elements = activeElements
+  // Pas de la grille d'aimantation d'un plan (`null` si l'aimantation est désactivée).
+  const furnitureGrid = project.document.plan?.snapToGrid ? project.document.plan.gridSize : null
 
   const handleWheel = (event: Konva.KonvaEventObject<WheelEvent>) => {
     event.evt.preventDefault()
@@ -179,25 +188,18 @@ export default function EditorStage() {
   const pointerInDocument = (event: PointerEvent) =>
     event.target.getStage()?.getRelativePointerPosition() ?? null
 
-  /** Pose l'objet choisi dans la bibliothèque, centré sur `point` (aimanté à la grille si elle est active). */
-  const placeFurniture = (point: Point) => {
-    const { furnitureSymbolId } = useEditorStore.getState()
-    const def = furnitureSymbolId ? getSymbol(furnitureSymbolId) : undefined
+  /**
+   * Pose un objet de la bibliothèque, centré sur `point` (aimanté à la grille si elle est active) :
+   * celui qu'on a choisi dans le panneau, ou `symbolId` (objet déposé par glisser-déposer).
+   */
+  const placeFurniture = (point: Point, symbolId?: string) => {
+    const id = symbolId ?? useEditorStore.getState().furnitureSymbolId
+    const def = id ? getSymbol(id) : undefined
     if (!def) return
-    const plan = project?.document.plan
-    const grid = plan?.snapToGrid ? plan.gridSize : null
-    const snap = (value: number) => (grid ? Math.round(value / grid) * grid : Math.round(value))
-    const name = fr.library.symbols[def.id]?.name ?? def.id
+    const { x, y } = furniturePlacement(def, point, furnitureGrid)
     const count = elements.filter((el) => el.type === 'furniture' && el.symbol === def.id).length
     addElement(
-      createFurnitureElement(
-        `${name} ${count + 1}`,
-        def.id,
-        snap(point.x) - def.width / 2,
-        snap(point.y) - def.depth / 2,
-        def.width,
-        def.depth,
-      ),
+      createFurnitureElement(`${symbolName(def.id)} ${count + 1}`, def.id, x, y, def.width, def.depth),
     ) // l'objet posé devient la sélection ; l'outil reste actif pour en poser d'autres
   }
 
@@ -231,6 +233,7 @@ export default function EditorStage() {
     if (polylineTool) polylineDrawing.onPointerMove(event)
     if (activeTool === 'calibrate') calibration.onPointerMove(event)
     if (openingKind) openingTool.onPointerMove(event)
+    if (activeTool === 'furniture') setGhostPoint(pointerInDocument(event))
     if (!draft && !band) return
     const point = pointerInDocument(event)
     if (!point) return
@@ -344,11 +347,14 @@ export default function EditorStage() {
       className="absolute inset-0 overflow-hidden bg-slate-200"
       style={{ cursor }}
       onDragOver={(event) => {
-        // Autorise le dépôt de fichiers (sans cela le navigateur ouvrirait l'image).
-        if (event.dataTransfer.types.includes('Files')) event.preventDefault()
+        // Autorise le dépôt de fichiers (sans cela le navigateur ouvrirait l'image) et d'un objet
+        // de la bibliothèque.
+        const types = event.dataTransfer.types
+        if (types.includes('Files') || types.includes(FURNITURE_DRAG_TYPE)) event.preventDefault()
       }}
       onDrop={(event) => {
-        if (event.dataTransfer.files.length === 0) return
+        const symbolId = event.dataTransfer.getData(FURNITURE_DRAG_TYPE)
+        if (symbolId === '' && event.dataTransfer.files.length === 0) return
         event.preventDefault()
         const bounds = event.currentTarget.getBoundingClientRect()
         const dropPoint = screenToDocument(
@@ -356,6 +362,11 @@ export default function EditorStage() {
           { zoom, x: stagePosition.x, y: stagePosition.y },
           unitScale,
         )
+        if (symbolId !== '') {
+          // Un objet glissé depuis la bibliothèque : posé là où on le dépose (un plan seulement).
+          if (project.kind === 'plan') placeFurniture(dropPoint, symbolId)
+          return
+        }
         void importImageFiles(Array.from(event.dataTransfer.files), dropPoint)
       }}
     >
@@ -377,7 +388,10 @@ export default function EditorStage() {
           onTouchMove={handlePointerMove}
           onMouseUp={handlePointerUp}
           onTouchEnd={handlePointerUp}
-          onMouseLeave={handlePointerUp}
+          onMouseLeave={(event) => {
+            setGhostPoint(null)
+            handlePointerUp(event)
+          }}
         >
           <Layer>
             <Rect
@@ -458,6 +472,14 @@ export default function EditorStage() {
               <CalibrationDraftLayer state={calibration.state} scale={scale} />
             )}
             {openingKind && <OpeningPreviewLayer preview={openingTool.preview} scale={scale} />}
+            {activeTool === 'furniture' && ghostPoint && furnitureSymbolId && (
+              <FurnitureGhost
+                symbolId={furnitureSymbolId}
+                point={ghostPoint}
+                grid={furnitureGrid}
+                scale={scale}
+              />
+            )}
             {polylineTool && (
               <PolylineDraftLayer
                 tool={polylineTool}

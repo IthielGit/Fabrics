@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M7 — Axes de construction et mobilier (plan à présenter, en attente du feu vert ; catalogue prêt dans `docs/06-BIBLIOTHEQUE.md`)
-- **Dernière tâche terminée :** M7 · lot B (infrastructure de la bibliothèque) ; lot A (axes) validé le 2026-11-10
-- **Prochaine tâche :** M7 · lot C (panneau Bibliothèque : catégories, recherche, glisser-déposer, retourner), après validation du lot B
+- **Dernière tâche terminée :** M7 · lot C (panneau Bibliothèque) ; lots A et B validés le 2026-11-10
+- **Prochaine tâche :** M7 · lots D à J (catalogue), enchaînés à la demande de l'utilisateur
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -37,6 +37,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-10 — M7 · Lot C · Panneau Bibliothèque
+- Fait : panneau « Bibliothèque » complet : **recherche** sans accents ni casse (« lave vaisselle » trouve « Lave-vaisselle »), sur le nom, les mots-clés et la catégorie, tous les mots devant être trouvés, résultats classés (début du nom, nom, mot-clé, catégorie) ; **catégories** en pastilles avec le nombre d'objets (« Tous » + une par catégorie remplie) ; **vignettes** (aperçu SVG, nom, dimensions en mm). **Pose** : clic sur une vignette puis clic sur le plan (l'outil reste actif, Échap pour quitter) ou **glisser-déposer** de la vignette sur le plan ; **aperçu fantôme** translucide à taille réelle sous le curseur, aimanté à la grille. Bouton **« Retourner »** dans Propriétés pour les objets asymétriques (`mirrorable`), tailles courantes en puces (lot B). Aucun objet du catalogue de test n'est asymétrique : le bouton apparaîtra avec les premiers objets asymétriques (lot D).
+- Fichiers : `src/features/library/{placement,search}(.test).ts`, `catalog/index.ts`, `src/components/library/{LibraryPanel,symbolText,dragType}`, `src/components/editor/{FurnitureGhost,FurnitureFields,EditorStage}`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (613 au total) — glisser-déposer et aperçu fantôme à contrôler dans le navigateur
+- Commit : feat: panneau bibliothèque (recherche, catégories, glisser-déposer)
 
 ### 2026-11-10 — M7 · Lot B · Infrastructure de la bibliothèque
 - Fait : le **socle** de la bibliothèque d'objets (`docs/06-BIBLIOTHEQUE.md`). **Données** : chaque objet est décrit par un `SymbolDef` (id, catégorie, taille par défaut, tailles rapides, limites min / max, mode de redimensionnement `free` / `ratio` / `length` / `fixed`, hauteur 3D) et une fonction pure `draw(largeur, profondeur)` qui renvoie des **primitives** (rectangle, cercle, ellipse, ligne, polygone, arc) en mm. **Rendu** : le même dessin s'affiche sur le canevas (`FurnitureShape`, Konva) et en aperçu (`SymbolPreview`, SVG) ; une table de styles unique (contour, détail, pointillé « au-dessus », zone, aplat) donne les traits (épaisseur en mm sur le plan, 1 px minimum à l'écran). **Élément `furniture`** (`symbol`, `width`, `depth`, `mirrored?`) : se pose, se déplace, se pivote et se redimensionne comme un rectangle ; le redimensionnement est ramené aux règles de l'objet (`resizeSymbol` : mode, limites, mm entiers) — les poignées du transformateur suivent le mode (taille fixe : aucune ; proportions : coins ; longueur : côtés). Retournement gauche / droite prêt (`mirrorPrimitives`, deux retournements = l'original), sans bouton pour l'instant. Un objet inconnu (projet plus récent) s'affiche en cadre pointillé rouge. **Pose** : panneau « Bibliothèque » (liste simple) → clic sur un objet → clic sur le plan, centré sur le curseur et aimanté à la grille ; l'outil reste actif, `Échap` quitte. Propriétés : nom, largeur, profondeur (selon le mode), tailles courantes, X, Y, rotation, opacité. **3 objets de test** : Lit 160 × 200 (`bed-queen`), Canapé 3 places (`sofa-3`), Table ronde 4 personnes (`table-round-4`), avec leurs gabarits `bed`, `sofa` et `table`. Pas de changement de version du document (nouveau type d'élément, aucun ancien projet touché).
