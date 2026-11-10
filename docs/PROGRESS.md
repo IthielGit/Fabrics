@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M7 — Axes de construction et mobilier (plan à présenter, en attente du feu vert ; catalogue prêt dans `docs/06-BIBLIOTHEQUE.md`)
-- **Dernière tâche terminée :** M7 · lot F (escaliers, bureau)
-- **Prochaine tâche :** M7 · lot G (électricité, chauffage, sécurité et accessibilité)
+- **Dernière tâche terminée :** M7 · lot G (électricité, chauffage, sécurité et accessibilité)
+- **Prochaine tâche :** M7 · lot H (extérieur, véhicules)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -55,6 +55,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/library/templates/{stairs,office}.ts`, `catalog/{draws,index}.ts`, `library.test.ts`
 - Vérification : build ✓ lint ✓ tests ✓ (1252 au total, dont le nombre de marches d'un escalier de 2 800 mm = 11)
 - Commit : feat: catalogue escaliers et bureau
+
+### 2026-11-10 — M7 · Lot G · Électricité, chauffage-ventilation-plomberie, sécurité et accessibilité
+- Fait : trois catégories ouvertes : **électricité et éclairage** (24), **chauffage, ventilation, plomberie** (18), **sécurité et accessibilité** (14). **Symboles conventionnels** (non à l'échelle, taille de repérage fixe) : prises (simple, double, de sol, réseau, TV, USB), interrupteurs (simple, va-et-vient, variateur, poussoir), points lumineux, détecteur de fumée, thermostat, sonnette, interphone, borne de recharge, caméra ; sécurité : extincteur, dévidoir, déclencheur d'alarme, sortie de secours, éclairage de sécurité, défibrillateur, pharmacie, point de rassemblement, repère coupe-feu, pictogramme d'accessibilité, flèche d'évacuation. **Luminaires** à leur vraie taille (plafonnier, suspension, lustre, spot, applique, rail de spots). **Chauffage** : radiateurs (panneaux, colonne, convecteur, de sol), collecteur, climatisation (unité murale en pointillé, cassette, extérieure), pompe à chaleur, bouche de ventilation, conduit de cheminée, siphon, point d'eau, compteur, descente pluviale, panneau solaire, regard. **Zones de référence** en pointillé : cercle de manœuvre PMR (Ø 1 500), espace d'usage PMR, débattement de porte.
+- Fichiers : `src/features/library/templates/tech.ts`, `catalog/{draws,index}.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1423 au total)
+- Commit : feat: catalogue électricité, chauffage, sécurité
 
 ### 2026-11-10 — M7 · Lot C · Panneau Bibliothèque
 - Fait : panneau « Bibliothèque » complet : **recherche** sans accents ni casse (« lave vaisselle » trouve « Lave-vaisselle »), sur le nom, les mots-clés et la catégorie, tous les mots devant être trouvés, résultats classés (début du nom, nom, mot-clé, catégorie) ; **catégories** en pastilles avec le nombre d'objets (« Tous » + une par catégorie remplie) ; **vignettes** (aperçu SVG, nom, dimensions en mm). **Pose** : clic sur une vignette puis clic sur le plan (l'outil reste actif, Échap pour quitter) ou **glisser-déposer** de la vignette sur le plan ; **aperçu fantôme** translucide à taille réelle sous le curseur, aimanté à la grille. Bouton **« Retourner »** dans Propriétés pour les objets asymétriques (`mirrorable`), tailles courantes en puces (lot B). Aucun objet du catalogue de test n'est asymétrique : le bouton apparaîtra avec les premiers objets asymétriques (lot D).

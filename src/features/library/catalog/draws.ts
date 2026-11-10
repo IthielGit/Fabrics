@@ -30,6 +30,7 @@ import {
   drawStove,
   drawUprightPiano,
 } from '../templates/living'
+import { airConditioner, clearZone, doorSwing, evacuationArrow, exitSign, fitting, lamp, manifold, marker, meter, radiator, solarPanel, turningCircle } from '../templates/tech'
 import { desk, cornerDesk, lounge, phoneBooth, printer } from '../templates/office'
 import { ladderStair, lift, ramp, shaft, spiralStair, straightStair, turningStair, escalator } from '../templates/stairs'
 import { barTop, bin, cooker, cornerUnit, hob, kitchen, peninsula, sink, trolley } from '../templates/kitchen'
@@ -211,3 +212,65 @@ assign(['server-rack'], box('open'))
 assign(['phone-booth'], phoneBooth)
 assign(['lounge-office'], lounge)
 assign(['plant-office'], drawPlant)
+
+// --- Électricité et éclairage ---
+assign(['socket-single'], marker('socket'))
+assign(['socket-double'], marker('socket2'))
+assign(['socket-floor'], marker('floor'))
+assign(['socket-rj45'], marker('rj45'))
+assign(['socket-tv'], marker('tv'))
+assign(['socket-usb'], marker('usb'))
+assign(['switch-single'], marker('switch'))
+assign(['switch-two-way'], marker('switch2'))
+assign(['dimmer'], marker('dimmer'))
+assign(['push-button'], marker('push'))
+assign(['light-ceiling'], marker('light-c'))
+assign(['light-wall'], marker('light-w'))
+assign(['smoke-detector'], marker('smoke'))
+assign(['thermostat'], marker('thermo'))
+assign(['doorbell'], marker('bell'))
+assign(['intercom'], marker('intercom'))
+assign(['ev-charger'], marker('ev'))
+assign(['camera'], marker('camera'))
+assign(['lamp-ceiling'], lamp('ceiling'))
+assign(['lamp-pendant'], lamp('pendant'))
+assign(['lamp-chandelier'], lamp('chandelier'))
+assign(['lamp-spot'], lamp('spot'))
+assign(['lamp-wall'], lamp('wall'))
+assign(['lamp-rail'], lamp('rail'))
+
+// --- Chauffage, ventilation, plomberie ---
+assign(['radiator-panel'], radiator('panel'))
+assign(['radiator-column'], radiator('column'))
+assign(['convector'], radiator('convector'))
+assign(['radiator-floor'], radiator('floor'))
+assign(['manifold'], manifold)
+assign(['ac-split-indoor'], airConditioner('split'))
+assign(['ac-cassette'], airConditioner('cassette'))
+assign(['ac-outdoor'], airConditioner('outdoor'))
+assign(['heat-pump-outdoor'], airConditioner('heat-pump'))
+assign(['heat-pump-indoor'], appliance('boiler'))
+assign(['vent-grille'], fitting('vent'))
+assign(['chimney-flue'], fitting('flue'))
+assign(['floor-drain'], fitting('drain'))
+assign(['water-point'], fitting('water'))
+assign(['gas-meter'], meter)
+assign(['rainwater-downpipe'], fitting('downpipe'))
+assign(['solar-panel'], solarPanel)
+assign(['inspection-chamber'], fitting('chamber'))
+
+// --- Sécurité et accessibilité ---
+assign(['extinguisher'], marker('extinguisher'))
+assign(['hose-reel'], marker('hose'))
+assign(['fire-alarm-button'], marker('alarm'))
+assign(['exit-sign'], exitSign)
+assign(['emergency-light'], marker('emergency'))
+assign(['aed'], marker('aed'))
+assign(['first-aid'], marker('firstaid'))
+assign(['assembly-point'], marker('assembly'))
+assign(['evacuation-arrow'], evacuationArrow)
+assign(['pmr-turning-circle'], turningCircle)
+assign(['pmr-clear-zone'], clearZone)
+assign(['door-swing-zone'], doorSwing)
+assign(['fire-compartment-mark'], marker('firecomp'))
+assign(['wheelchair-symbol'], marker('wheelchair'))

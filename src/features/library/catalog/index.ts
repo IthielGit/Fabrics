@@ -39,6 +39,9 @@ const OPEN_CATEGORIES: ReadonlySet<SymbolCategory> = new Set<SymbolCategory>([
   'laundry',
   'stairs',
   'office',
+  'electrical',
+  'hvac',
+  'safety',
 ])
 
 /** Tous les objets proposés, dans l'ordre du catalogue. */
