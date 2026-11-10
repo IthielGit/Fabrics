@@ -16,6 +16,10 @@ export const fr = {
     projectLabel: 'Projet :',
     backToHome: 'Retour à l’accueil',
   },
+  elements: {
+    rect: 'Rectangle',
+    ellipse: 'Ellipse',
+  },
   notFound: {
     title: 'Page introuvable',
     backToHome: 'Retour à l’accueil',
