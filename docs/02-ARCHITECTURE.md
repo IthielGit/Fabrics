@@ -478,8 +478,11 @@ Règles :
   Transformer ne l'utilise pas : on la fait coulisser le long du segment, bornée par les
   extrémités du segment et les ouvertures voisines.
 - `furniture` : seule exception à la règle D6 parmi les éléments de plan : position, rotation
-  et taille (`x`, `y`, `rotation`, `width`, `depth`) comme une forme du Visuel. Les symboles
-  sont des dessins Konva **créés pour Fabrics** (`src/components/editor/symbols/`).
+  et taille (`x`, `y`, `rotation`, `width`, `depth`) comme une forme du Visuel, plus
+  `mirrored?: boolean` (objet retourné). Les symboles sont **créés pour Fabrics en « clean
+  room »** et décrits par des données (primitives de dessin générées par des gabarits) dans
+  `src/features/library/`, rendues par `FurnitureShape.tsx` (Konva) et `SymbolPreview.tsx`
+  (SVG). Catalogue, format et tests : `docs/06-BIBLIOTHEQUE.md`.
 - `axis` et `section` suivent la règle D6 (points absolus, déplacement seul).
 
 ### Niveaux (M6, réalisé)

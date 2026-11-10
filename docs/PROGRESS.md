@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M6 — Niveaux (terminé, à valider par l'utilisateur)
-- **Dernière tâche terminée :** M6 — Niveaux
-- **Prochaine tâche :** M7, après validation de M6 et feu vert sur son plan
+- **Jalon en cours :** M7 — Axes de construction et mobilier (plan à présenter, en attente du feu vert ; catalogue prêt dans `docs/06-BIBLIOTHEQUE.md`)
+- **Dernière tâche terminée :** M6 — Niveaux, validé par l'utilisateur le 2026-11-10
+- **Prochaine tâche :** M7, après feu vert sur la liste des tâches (lots A à J)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -19,7 +19,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M3 Mode plan et métrés | terminé | 2026-11-10 |
 | M4 Export | terminé | 2026-11-10 |
 | M5 Ouvertures | terminé | 2026-11-10 |
-| M6 Niveaux | terminé (à valider) | |
+| M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | à faire | |
 | M8 Vue 3D | à faire | |
 | M9 Façades, coupes et planche | à faire | |
@@ -350,6 +350,13 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D24 | Phase « Bâtiment » | Ouvertures (M5), niveaux (M6), axes et mobilier (M7), 3D (M8), façades / coupes / planche (M9), import-export DXF / glTF et partage (M10) ajoutés **après le MVP** ; collaboration renumérotée M13 ; IA reportée. Dépendances 3D et DXF à confirmer au début de leur jalon. | Demande de l'utilisateur (capture d'un outil de bâtiment, 2026-11-10) ; le MVP reste inchangé pour être mis en ligne d'abord. |
 | D25 | Ordre des jalons | La phase « Bâtiment » passe **avant** la mise en ligne et les comptes : M5 Ouvertures, M6 Niveaux, M7 Axes et mobilier, M8 3D, M9 Façades et coupes, M10 Import et export, M11 Mise en ligne, M12 Comptes, cloud et partage (fin du MVP), M13 Collaboration. Le partage par lien passe en M12 car il a besoin de Supabase. Remplace l'ordre de D24. | Demande de l'utilisateur (2026-11-10). |
 
+### 2026-11-10 — Bibliothèque d'objets
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D26 | Bibliothèque d'objets (M7) | Pas d'import des familles Revit (`.rfa`, format fermé, licences Autodesk et fabricants). Bibliothèque **propre à Fabrics**, dessinée en « clean room » (règle ajoutée dans `CLAUDE.md`) et **riche** (nombreuses catégories, voir M7). Un import de symboles SVG / DXF par l'utilisateur reste une idée pour plus tard. | Demande de l'utilisateur (2026-11-10) ; licences ; un plan 2D n'a besoin que d'un symbole et de dimensions. À réaliser en M7, après M6. |
+| D30 | Catalogue de M7 | Spécifié à l'avance dans `docs/06-BIBLIOTHEQUE.md` : 392 objets en 17 catégories + 24 ensembles (cuisines complètes américaine / en L / en U et bars ajoutés à la demande de l'utilisateur), gabarits de dessin, format de données, tests, 10 lots (A à J). Symboles décrits par des **données** (`features/library/`, fonctions pures) et non par des composants Konva écrits un à un ; `FurnitureElement` gagne `mirrored?`. `docs/02-ARCHITECTURE.md` mis à jour en conséquence (il remplace la mention `components/editor/symbols/`). | Demande de l'utilisateur (2026-11-10) : préparer M7 pour n'avoir plus qu'à exécuter ; un catalogue de cette taille n'est maintenable qu'avec des gabarits testables. |
+
 ### 2026-11-10 — Niveaux (M6)
 
 | # | Sujet | Décision | Raison |
@@ -368,3 +375,4 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
 - Aimantation des murs et des sommets sur ceux du niveau de référence (aligner un étage sur celui du dessous) : utile après M6, pas dans le jalon.
 - Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M13, à rediscuter).
+- Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : pose des objets contre un mur (aimantation), hauteurs 3D des objets (M8), import de symboles SVG / DXF par l'utilisateur, bibliothèque personnelle (ensembles enregistrés), niveau de détail « détaillé », étiquettes de cote automatiques, variantes de style, annotations de plan (flèche du nord, repère de niveau).

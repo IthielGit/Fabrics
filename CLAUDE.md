@@ -24,6 +24,7 @@ Hors périmètre : **aucun devis, aucun prix, aucune quotation**. Les métrés s
 | 5 | `docs/PROGRESS.md` | Journal : où en est le projet |
 | — | `docs/04-PROMPTS.md` | Messages que l'utilisateur t'enverra (pour info) |
 | — | `docs/05-INSTALLATION.md` | Guide d'installation pour l'utilisateur |
+| — | `docs/06-BIBLIOTHEQUE.md` | Catalogue détaillé de la bibliothèque d'objets (jalon M7 uniquement) |
 | — | `supabase/schema.sql` | Schéma de base de données (jalon M12 uniquement) |
 
 **En cas de contradiction**, l'ordre de priorité est :
@@ -67,6 +68,12 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
 - Aucune image, illustration ou modèle tiers sans licence vérifiée. Les exemples de démo sont
   créés pour Fabrics.
 - Les médias importés par l'utilisateur restent sa propriété : on ne les rend jamais publics.
+- **Bibliothèque d'objets (mobilier, équipements) : principe « clean room ».** Chaque symbole est
+  dessiné de zéro à partir de dimensions génériques (normes et usages courants, ex. lit
+  160 × 200 cm) et de formes géométriques simples. On n'ouvre, ne convertit, ne décalque et ne
+  s'inspire d'aucun fichier ou bibliothèque tiers (familles Revit `.rfa`, catalogues de
+  fabricants, bibliothèques CAO/BIM, packs de symboles). Pas de nom de marque ni de référence
+  commerciale dans les symboles.
 
 ## Sécurité
 
