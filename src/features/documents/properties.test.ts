@@ -4,8 +4,10 @@ import {
   colorPropsFor,
   getColorProp,
   getNumericProp,
+  hexToRgba,
   isNoColor,
   numericPropsFor,
+  rgbaToHex,
   setColorProp,
   setNumericProp,
 } from './properties'
@@ -14,7 +16,9 @@ import {
   createImageElement,
   createLineElement,
   createRectElement,
+  createRoomElement,
   createTextElement,
+  createWallElement,
 } from './elements'
 
 describe('propriétés proposées selon le type', () => {
@@ -101,6 +105,37 @@ describe('setNumericProp / getNumericProp', () => {
     const rect = createRectElement('R', 0, 0, 100, 50)
     setNumericProp(rect, 'width', 999)
     expect(rect.width).toBe(100)
+  })
+})
+
+describe('propriétés des éléments de plan', () => {
+  it('un mur n’a que l’opacité comme propriété numérique générique', () => {
+    expect(numericPropsFor(createWallElement('M', [0, 0, 1000, 0], 200, 2500))).toEqual(['opacity'])
+    expect(numericPropsFor(createRoomElement('P', [0, 0, 1, 0, 1, 1]))).toEqual(['opacity'])
+  })
+
+  it('mur et pièce ont une couleur de remplissage', () => {
+    expect(colorPropsFor(createWallElement('M', [0, 0, 1000, 0], 200, 2500))).toEqual(['fill'])
+    expect(colorPropsFor(createRoomElement('P', [0, 0, 1, 0, 1, 1]))).toEqual(['fill'])
+  })
+
+  it('une pièce garde un remplissage translucide quand on change sa couleur', () => {
+    const room = createRoomElement('P', [0, 0, 1, 0, 1, 1])
+    const red = setColorProp(room, 'fill', '#ff0000')
+    expect(red).toMatchObject({ fill: 'rgba(255, 0, 0, 0.18)' })
+    expect(getColorProp(red, 'fill')).toBe('#ff0000')
+  })
+
+  it('affiche la couleur d’une pièce en hexadécimal', () => {
+    expect(getColorProp(createRoomElement('P', [0, 0, 1, 0, 1, 1]), 'fill')).toBe('#6366f1')
+  })
+
+  it('convertit hexadécimal ↔ rgba', () => {
+    expect(hexToRgba('#6366f1', 0.5)).toBe('rgba(99, 102, 241, 0.5)')
+    expect(hexToRgba('rouge', 0.5)).toBeNull()
+    expect(rgbaToHex('rgba(99, 102, 241, 0.18)')).toBe('#6366f1')
+    expect(rgbaToHex('rgb(0,0,0)')).toBe('#000000')
+    expect(rgbaToHex('bleu')).toBeNull()
   })
 })
 

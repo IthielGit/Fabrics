@@ -7,7 +7,13 @@ import {
   createRoomElement,
   createWallElement,
 } from '../documents/elements'
-import { applyNodeTransform, hasAbsolutePoints, translateElement } from './transform'
+import {
+  applyNodeTransform,
+  getVertices,
+  hasAbsolutePoints,
+  moveVertex,
+  translateElement,
+} from './transform'
 
 const plan = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
 
@@ -41,6 +47,53 @@ describe('translateElement', () => {
     const wall = createWallElement('M', [0, 0, 4000, 0], 200, 2500)
     translateElement(wall, 100, 100)
     expect(wall.points).toEqual([0, 0, 4000, 0])
+  })
+})
+
+describe('getVertices / moveVertex', () => {
+  it('liste les sommets d’un mur, d’une pièce et d’une cote', () => {
+    expect(getVertices(createWallElement('M', [0, 0, 100, 0, 100, 50], 200, 2500))).toHaveLength(3)
+    expect(getVertices(createRoomElement('P', [0, 0, 1, 0, 1, 1, 0, 1]))).toHaveLength(4)
+    const dim: CanvasElement = { ...plan, id: 'd', name: 'd', type: 'dimension', points: [0, 0, 5, 5], offset: 1 }
+    expect(getVertices(dim)).toEqual([
+      { x: 0, y: 0 },
+      { x: 5, y: 5 },
+    ])
+  })
+
+  it('ne renvoie aucun sommet pour un rectangle', () => {
+    expect(getVertices(createRectElement('R', 0, 0, 1, 1))).toEqual([])
+  })
+
+  it('déplace un sommet de mur', () => {
+    const wall = createWallElement('M', [0, 0, 4000, 0, 4000, 3000], 200, 2500)
+    const moved = moveVertex(wall, 1, { x: 4500, y: -200 })
+    expect(moved).toMatchObject({ points: [0, 0, 4500, -200, 4000, 3000] })
+  })
+
+  it('déplace un sommet de pièce et modifie sa surface', () => {
+    const room = createRoomElement('P', [0, 0, 4000, 0, 4000, 3000, 0, 3000])
+    const moved = moveVertex(room, 2, { x: 5000, y: 3000 })
+    expect(moved).toMatchObject({ points: [0, 0, 4000, 0, 5000, 3000, 0, 3000] })
+  })
+
+  it('déplace une extrémité de cote', () => {
+    const dim: CanvasElement = { ...plan, id: 'd', name: 'd', type: 'dimension', points: [0, 0, 1000, 0], offset: 300 }
+    expect(moveVertex(dim, 1, { x: 2000, y: 0 })).toMatchObject({ points: [0, 0, 2000, 0] })
+  })
+
+  it('ignore un indice invalide et les éléments sans sommets', () => {
+    const wall = createWallElement('M', [0, 0, 100, 0], 200, 2500)
+    expect(moveVertex(wall, 5, { x: 1, y: 1 })).toBe(wall)
+    expect(moveVertex(wall, -1, { x: 1, y: 1 })).toBe(wall)
+    const rect = createRectElement('R', 0, 0, 1, 1)
+    expect(moveVertex(rect, 0, { x: 1, y: 1 })).toBe(rect)
+  })
+
+  it('ne modifie pas l’élément d’origine', () => {
+    const wall = createWallElement('M', [0, 0, 100, 0], 200, 2500)
+    moveVertex(wall, 0, { x: 9, y: 9 })
+    expect(wall.points).toEqual([0, 0, 100, 0])
   })
 })
 

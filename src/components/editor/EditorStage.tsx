@@ -28,6 +28,7 @@ import { setThumbnailStage } from './thumbnail'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
 import { usePolylineDrawing, type PolylineTool } from './usePolylineDrawing'
+import VertexHandles from './VertexHandles'
 
 const WHEEL_ZOOM_STEP = 1.1
 /** En dessous de cette taille (px écran), un tracé ou une sélection est un simple clic. */
@@ -346,6 +347,7 @@ export default function EditorStage() {
               />
             ))}
             <SelectionTransformer enabled={selecting && editingTextId === null} />
+            <VertexHandles enabled={selecting && editingTextId === null} scale={scale} />
           </Layer>
           <Layer listening={false}>
             {draftBox && activeTool === 'rect' && (

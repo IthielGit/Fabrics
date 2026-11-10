@@ -142,6 +142,43 @@ describe('outils réservés aux plans', () => {
   })
 })
 
+describe('geste en direct', () => {
+  it('un geste de plusieurs mouvements ne crée qu’un seul état d’historique', () => {
+    const a = rect('A')
+    store().addElement(a)
+    const before = store().history.past.length
+
+    store().beginLiveEdit()
+    for (let x = 1; x <= 20; x++) store().liveReplaceElements([{ ...a, x }])
+    store().endLiveEdit()
+
+    expect(elements()[0].x).toBe(20)
+    expect(store().history.past.length).toBe(before + 1)
+    store().undo()
+    expect(elements()[0].x).toBe(0) // revient à l'état d'avant le geste
+  })
+
+  it('un geste sans changement n’empile rien', () => {
+    store().addElement(rect('A'))
+    const before = store().history.past.length
+    store().beginLiveEdit()
+    store().endLiveEdit()
+    expect(store().history.past.length).toBe(before)
+  })
+
+  it('vide le futur à la fin du geste', () => {
+    const a = rect('A')
+    store().addElement(a)
+    store().addElement(rect('B'))
+    store().undo()
+    expect(store().history.future).toHaveLength(1)
+    store().beginLiveEdit()
+    store().liveReplaceElements([{ ...a, x: 5 }])
+    store().endLiveEdit()
+    expect(store().history.future).toHaveLength(0)
+  })
+})
+
 describe('réglages du plan', () => {
   it('modifie l’échelle et la grille, et l’annulation les restaure', () => {
     store().loadProject(createPlanProject('Plan'))

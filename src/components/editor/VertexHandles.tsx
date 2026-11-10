@@ -1,0 +1,108 @@
+import type Konva from 'konva'
+import { useRef } from 'react'
+import { Circle } from 'react-konva'
+import { collectSnapVertices, snapPoint } from '../../features/geometry/snapping'
+import { getVertices, moveVertex } from '../../features/geometry/transform'
+import type { Point } from '../../features/geometry/viewport'
+import { useEditorStore } from '../../stores/editorStore'
+
+interface VertexHandlesProps {
+  /** Faux quand un outil de tracé est actif ou pendant la saisie d'un texte. */
+  enabled: boolean
+  /** Pixels écran par unité du document. */
+  scale: number
+}
+
+/** Distance d'accroche, en pixels écran. */
+const SNAP_THRESHOLD_PX = 8
+
+/**
+ * Poignées sur les sommets d'un mur, d'une pièce ou d'une cote sélectionné : on les glisse pour
+ * modifier la forme. Elles s'aimantent aux autres sommets, aux angles de faces et à la grille ;
+ * `Maj` contraint la direction depuis le sommet voisin. Un geste = un seul état d'historique.
+ */
+export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
+  const element = useEditorStore((state) => {
+    if (state.selectedIds.length !== 1) return null
+    const selected = state.project?.document.elements.find((el) => el.id === state.selectedIds[0])
+    return selected && !selected.locked && !selected.hidden ? selected : null
+  })
+  const plan = useEditorStore((state) => state.project?.document.plan)
+  // Sommets sur lesquels s'aimanter, calculés une fois au début du geste.
+  const snapVertices = useRef<Point[]>([])
+
+  if (!enabled || !element) return null
+  const vertices = getVertices(element)
+  if (vertices.length === 0) return null
+
+  const handleDragStart = (event: Konva.KonvaEventObject<DragEvent>) => {
+    event.cancelBubble = true
+    const store = useEditorStore.getState()
+    store.beginLiveEdit()
+    snapVertices.current = collectSnapVertices(
+      store.project?.document.elements ?? [],
+      new Set([element.id]),
+    )
+  }
+
+  const handleDragMove = (index: number) => (event: Konva.KonvaEventObject<DragEvent>) => {
+    event.cancelBubble = true
+    const store = useEditorStore.getState()
+    const current = store.project?.document.elements.find((el) => el.id === element.id)
+    if (!current) return
+
+    const all = getVertices(current)
+    // Voisin pour la contrainte d'angle : le sommet précédent (le suivant pour le premier).
+    const neighbour =
+      current.type === 'room'
+        ? all[(index - 1 + all.length) % all.length]
+        : (all[index - 1] ?? all[index + 1] ?? null)
+
+    const node = event.target
+    const { point } = snapPoint(
+      { x: node.x(), y: node.y() },
+      {
+        vertices: snapVertices.current,
+        gridSize: plan?.snapToGrid ? plan.gridSize : null,
+        threshold: SNAP_THRESHOLD_PX / scale,
+        from: neighbour ?? null,
+        constrain: event.evt.shiftKey,
+      },
+    )
+    node.position(point)
+    store.liveReplaceElements([moveVertex(current, index, point)])
+  }
+
+  const handleDragEnd = (event: Konva.KonvaEventObject<DragEvent>) => {
+    event.cancelBubble = true
+    useEditorStore.getState().endLiveEdit()
+  }
+
+  const setCursor = (event: Konva.KonvaEventObject<MouseEvent>, cursor: string) => {
+    const container = event.target.getStage()?.container()
+    if (container) container.style.cursor = cursor
+  }
+
+  return (
+    <>
+      {vertices.map((vertex, index) => (
+        <Circle
+          key={`${element.id}-${index}`}
+          x={vertex.x}
+          y={vertex.y}
+          radius={6 / scale}
+          fill="#ffffff"
+          stroke="#4f46e5"
+          strokeWidth={2 / scale}
+          hitStrokeWidth={8 / scale}
+          draggable
+          onDragStart={handleDragStart}
+          onDragMove={handleDragMove(index)}
+          onDragEnd={handleDragEnd}
+          onMouseEnter={(event) => setCursor(event, 'move')}
+          onMouseLeave={(event) => setCursor(event, '')}
+        />
+      ))}
+    </>
+  )
+}

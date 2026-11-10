@@ -31,7 +31,9 @@ export function numericPropsFor(element: CanvasElement): NumericProp[] {
     case 'image':
       return ['x', 'y', 'width', 'height', 'rotation', 'opacity']
     default:
-      return ['rotation', 'opacity']
+      // Mur, pièce, cote : position et rotation restent à 0 (leurs points sont absolus) ;
+      // leurs réglages propres sont dans le panneau (épaisseur, hauteur, décalage…).
+      return ['opacity']
   }
 }
 
@@ -43,10 +45,33 @@ export function colorPropsFor(element: CanvasElement): ColorProp[] {
     case 'line':
       return ['stroke']
     case 'text':
+    case 'wall':
+    case 'room':
       return ['fill']
     default:
       return []
   }
+}
+
+/** Opacité du remplissage d'une pièce : elle reste translucide quand on change sa couleur. */
+export const ROOM_FILL_ALPHA = 0.18
+
+/** `#6366f1` → `rgba(99, 102, 241, 0.18)`. Renvoie `null` si ce n'est pas une couleur hexadécimale. */
+export function hexToRgba(hex: string, alpha: number): string | null {
+  const match = /^#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})$/i.exec(hex)
+  if (!match) return null
+  const [r, g, b] = [match[1], match[2], match[3]].map((part) => parseInt(part, 16))
+  return `rgba(${r}, ${g}, ${b}, ${alpha})`
+}
+
+/** `rgba(99, 102, 241, 0.18)` → `#6366f1` (l'opacité est ignorée). `null` si le format est inconnu. */
+export function rgbaToHex(color: string): string | null {
+  const match = /^rgba?\(\s*(\d{1,3})\s*,\s*(\d{1,3})\s*,\s*(\d{1,3})/i.exec(color)
+  if (!match) return null
+  const parts = [match[1], match[2], match[3]].map((part) =>
+    Math.min(255, Number(part)).toString(16).padStart(2, '0'),
+  )
+  return `#${parts.join('')}`
 }
 
 /**
@@ -127,13 +152,20 @@ export function setNumericProp(
   }
 }
 
+/** Couleur affichée dans le sélecteur (toujours un `#rrggbb` ou une valeur « aucune couleur »). */
 export function getColorProp(element: CanvasElement, prop: ColorProp): string | null {
   if (!colorPropsFor(element).includes(prop)) return null
-  return (element as unknown as Record<ColorProp, string>)[prop]
+  const color = (element as unknown as Record<ColorProp, string>)[prop]
+  return element.type === 'room' ? (rgbaToHex(color) ?? color) : color
 }
 
 export function setColorProp(element: CanvasElement, prop: ColorProp, color: string): CanvasElement {
-  return colorPropsFor(element).includes(prop) ? { ...element, [prop]: color } : element
+  if (!colorPropsFor(element).includes(prop)) return element
+  if (element.type === 'room') {
+    // La pièce garde un remplissage translucide pour laisser voir le plan dessous.
+    return { ...element, fill: hexToRgba(color, ROOM_FILL_ALPHA) ?? color }
+  }
+  return { ...element, [prop]: color }
 }
 
 /** Valeur « pas de couleur » pour un remplissage ou un contour. */

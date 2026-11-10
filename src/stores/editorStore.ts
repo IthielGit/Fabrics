@@ -79,6 +79,14 @@ interface EditorState {
   updateElements: (ids: string[], updater: (element: CanvasElement) => CanvasElement) => void
   removeElements: (ids: string[]) => void
   duplicateElements: (ids: string[]) => void
+  /**
+   * Geste en direct (par exemple glisser un sommet) : `beginLiveEdit` mémorise l'état de départ,
+   * `liveReplaceElements` met à jour le document à chaque mouvement sans toucher à l'historique,
+   * `endLiveEdit` empile l'état de départ une seule fois (annuler revient avant le geste).
+   */
+  beginLiveEdit: () => void
+  liveReplaceElements: (elements: CanvasElement[]) => void
+  endLiveEdit: () => void
   /** Modifie les réglages du plan (échelle, grille, murs par défaut) ; sans effet dans un visuel. */
   updatePlanSettings: (patch: Partial<PlanSettings>) => void
   /** Sélectionne tout ce qui est visible et déverrouillé. */
@@ -96,6 +104,9 @@ interface EditorState {
 }
 
 const EMPTY_HISTORY: History = { past: [], future: [] }
+
+// Document au début d'un geste en direct (voir `beginLiveEdit`).
+let liveBase: FabricsDocument | null = null
 
 // Dernier déplacement par les flèches (pour fusionner les appuis rapprochés).
 let lastNudge: { key: string; at: number; revision: number } | null = null
@@ -150,6 +161,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
 
     loadProject: (project) => {
       lastNudge = null
+      liveBase = null
       set({
         project,
         selectedIds: [],
@@ -259,6 +271,37 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         (doc) => ({ ...doc, elements: [...doc.elements, ...copies] }),
         copies.map((el) => el.id),
       )
+    },
+
+    beginLiveEdit: () => {
+      liveBase = get().project?.document ?? null
+    },
+
+    liveReplaceElements: (elements) => {
+      const { project, revision } = get()
+      if (!project) return
+      const byId = new Map(elements.map((el) => [el.id, el]))
+      set({
+        project: {
+          ...project,
+          document: {
+            ...project.document,
+            elements: project.document.elements.map((el) => byId.get(el.id) ?? el),
+          },
+        },
+        revision: revision + 1,
+      })
+    },
+
+    endLiveEdit: () => {
+      const base = liveBase
+      liveBase = null
+      const { project, history, revision } = get()
+      if (!base || !project || project.document === base) return
+      set({
+        history: { past: [...history.past, base].slice(-HISTORY_LIMIT), future: [] },
+        revision: revision + 1,
+      })
     },
 
     updatePlanSettings: (patch) =>

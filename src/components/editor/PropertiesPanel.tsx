@@ -16,6 +16,7 @@ import { useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement, TextElement } from '../../types/document'
 import ColorField from '../ui/ColorField'
 import NumberField from '../ui/NumberField'
+import PlanElementFields from './PlanElementFields'
 import PlanSettingsSection from './PlanSettingsSection'
 
 const ALIGNMENTS: { align: TextElement['align']; icon: LucideIcon; label: string }[] = [
@@ -121,6 +122,9 @@ export default function PropertiesPanel() {
   function renderSingleElementFields(element: CanvasElement) {
     return (
       <div className="mt-3 space-y-3">
+        {(element.type === 'wall' || element.type === 'room' || element.type === 'dimension') && (
+          <PlanElementFields element={element} />
+        )}
         {numericPropsFor(element).map((prop) => (
           <NumberField
             key={prop}
