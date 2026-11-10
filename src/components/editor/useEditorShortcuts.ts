@@ -28,6 +28,15 @@ export function useEditorShortcuts() {
         case 'tool-text':
           store.setTool('text')
           break
+        case 'tool-wall':
+          store.setTool('wall') // sans effet dans un visuel
+          break
+        case 'tool-room':
+          store.setTool('room')
+          break
+        case 'tool-dimension':
+          store.setTool('dimension')
+          break
         case 'escape':
           // Annule d'abord l'outil de tracé, puis désélectionne.
           if (store.activeTool !== 'select') store.setTool('select')

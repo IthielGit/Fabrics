@@ -1,11 +1,14 @@
 import type {
   CanvasElement,
+  DimensionElement,
   EllipseElement,
   FabricsDocument,
   ImageElement,
   LineElement,
   RectElement,
+  RoomElement,
   TextElement,
+  WallElement,
 } from '../../types/document'
 import { DEFAULT_FONT_FAMILY } from './fonts'
 
@@ -83,6 +86,54 @@ export function createEllipseElement(
     stroke: '#78350f',
     strokeWidth: 0,
   }
+}
+
+/** Décalage par défaut de la ligne d'une cote par rapport aux points mesurés (50 cm). */
+export const DEFAULT_DIMENSION_OFFSET = 500
+
+/** Mur dont l'axe passe par `points` (`[x1, y1, x2, y2, …]`, coordonnées absolues en mm). */
+export function createWallElement(
+  name: string,
+  points: number[],
+  thickness: number,
+  height: number,
+): WallElement {
+  return {
+    ...BASE,
+    id: crypto.randomUUID(),
+    type: 'wall',
+    name,
+    x: 0,
+    y: 0,
+    points,
+    thickness,
+    height,
+    fill: '#475569',
+  }
+}
+
+/** Pièce : polygone fermé (le dernier point rejoint le premier), coordonnées absolues en mm. */
+export function createRoomElement(name: string, points: number[]): RoomElement {
+  return {
+    ...BASE,
+    id: crypto.randomUUID(),
+    type: 'room',
+    name,
+    x: 0,
+    y: 0,
+    points,
+    fill: 'rgba(99, 102, 241, 0.18)',
+    showLabel: true,
+  }
+}
+
+/** Cote entre deux points (coordonnées absolues en mm). */
+export function createDimensionElement(
+  name: string,
+  points: [number, number, number, number],
+  offset: number = DEFAULT_DIMENSION_OFFSET,
+): DimensionElement {
+  return { ...BASE, id: crypto.randomUUID(), type: 'dimension', name, x: 0, y: 0, points, offset }
 }
 
 /** Image déjà enregistrée dans le stockage (`assetId`), posée avec son coin haut-gauche en (x, y). */

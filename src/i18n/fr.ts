@@ -70,6 +70,10 @@ export const fr = {
     line: 'Ligne',
     text: 'Texte',
     image: 'Importer une image',
+    wall: 'Mur',
+    room: 'Pièce',
+    dimension: 'Cote',
+    calibrate: 'Calibrer l’image',
   },
   elements: {
     rect: 'Rectangle',
@@ -78,6 +82,9 @@ export const fr = {
     text: 'Texte',
     defaultText: 'Votre texte',
     image: 'Image',
+    wall: 'Mur',
+    room: 'Pièce',
+    dimension: 'Cote',
   },
   layers: {
     title: 'Calques',

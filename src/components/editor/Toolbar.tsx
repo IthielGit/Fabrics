@@ -1,8 +1,12 @@
 import clsx from 'clsx'
 import {
+  BrickWall,
   Circle,
+  Crosshair,
   ImagePlus,
   MousePointer2,
+  Pentagon,
+  Ruler,
   Slash,
   Square,
   Type,
@@ -18,10 +22,11 @@ interface ToolDefinition {
   tool: EditorTool
   icon: LucideIcon
   label: string
-  shortcut: string
+  /** Touche de raccourci, si l'outil en a une. */
+  shortcut?: string
 }
 
-const TOOLS: ToolDefinition[] = [
+const COMMON_TOOLS: ToolDefinition[] = [
   { tool: 'select', icon: MousePointer2, label: fr.tools.select, shortcut: 'V' },
   { tool: 'rect', icon: Square, label: fr.tools.rect, shortcut: 'R' },
   { tool: 'ellipse', icon: Circle, label: fr.tools.ellipse, shortcut: 'O' },
@@ -29,34 +34,43 @@ const TOOLS: ToolDefinition[] = [
   { tool: 'text', icon: Type, label: fr.tools.text, shortcut: 'T' },
 ]
 
+// Réservés aux projets de type Plan.
+const PLAN_TOOLS: ToolDefinition[] = [
+  { tool: 'wall', icon: BrickWall, label: fr.tools.wall, shortcut: 'W' },
+  { tool: 'room', icon: Pentagon, label: fr.tools.room, shortcut: 'P' },
+  { tool: 'dimension', icon: Ruler, label: fr.tools.dimension, shortcut: 'D' },
+  { tool: 'calibrate', icon: Crosshair, label: fr.tools.calibrate },
+]
+
 export default function Toolbar() {
   const activeTool = useEditorStore((state) => state.activeTool)
   const setTool = useEditorStore((state) => state.setTool)
+  const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
   const fileInput = useRef<HTMLInputElement>(null)
+
+  const renderTool = ({ tool, icon: Icon, label, shortcut }: ToolDefinition) => (
+    <button
+      key={tool}
+      type="button"
+      title={shortcut ? `${label} (${shortcut})` : label}
+      aria-label={label}
+      aria-pressed={activeTool === tool}
+      onClick={() => setTool(tool)}
+      className={clsx(
+        'rounded-md p-2',
+        activeTool === tool ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100',
+      )}
+    >
+      <Icon size={20} />
+    </button>
+  )
 
   return (
     <nav
       aria-label={fr.tools.label}
       className="absolute left-3 top-3 z-10 flex flex-col gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
     >
-      {TOOLS.map(({ tool, icon: Icon, label, shortcut }) => (
-        <button
-          key={tool}
-          type="button"
-          title={`${label} (${shortcut})`}
-          aria-label={label}
-          aria-pressed={activeTool === tool}
-          onClick={() => setTool(tool)}
-          className={clsx(
-            'rounded-md p-2',
-            activeTool === tool
-              ? 'bg-indigo-600 text-white'
-              : 'text-slate-700 hover:bg-slate-100',
-          )}
-        >
-          <Icon size={20} />
-        </button>
-      ))}
+      {COMMON_TOOLS.map(renderTool)}
       <button
         type="button"
         title={fr.tools.image}
@@ -66,6 +80,12 @@ export default function Toolbar() {
       >
         <ImagePlus size={20} />
       </button>
+      {isPlan && (
+        <>
+          <hr className="my-0.5 border-slate-200" />
+          {PLAN_TOOLS.map(renderTool)}
+        </>
+      )}
       <input
         ref={fileInput}
         type="file"

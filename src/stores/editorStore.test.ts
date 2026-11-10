@@ -120,6 +120,28 @@ describe('duplication', () => {
   })
 })
 
+describe('outils réservés aux plans', () => {
+  it('refuse les outils de plan dans un visuel', () => {
+    for (const tool of ['wall', 'room', 'dimension', 'calibrate'] as const) {
+      store().setTool(tool)
+      expect(store().activeTool).toBe('select')
+    }
+  })
+
+  it('accepte les outils de plan dans un plan', () => {
+    store().loadProject(createPlanProject('Plan'))
+    for (const tool of ['wall', 'room', 'dimension', 'calibrate'] as const) {
+      store().setTool(tool)
+      expect(store().activeTool).toBe(tool)
+    }
+  })
+
+  it('les outils communs restent disponibles dans un visuel', () => {
+    store().setTool('rect')
+    expect(store().activeTool).toBe('rect')
+  })
+})
+
 describe('copier / coller', () => {
   it('copie dans un projet et colle dans un autre', () => {
     const a = rect('A')

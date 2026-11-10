@@ -8,7 +8,23 @@ import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, Project } from '../types/document'
 
-export type EditorTool = 'select' | 'rect' | 'ellipse' | 'line' | 'text'
+export type EditorTool =
+  | 'select'
+  | 'rect'
+  | 'ellipse'
+  | 'line'
+  | 'text'
+  | 'wall'
+  | 'room'
+  | 'dimension'
+  | 'calibrate'
+
+/** Outils qui n'existent que dans un projet de type Plan. */
+export const PLAN_TOOLS: readonly EditorTool[] = ['wall', 'room', 'dimension', 'calibrate']
+
+export function isPlanTool(tool: EditorTool): boolean {
+  return PLAN_TOOLS.includes(tool)
+}
 export type SaveStatus = 'saved' | 'saving' | 'error'
 
 export const HISTORY_LIMIT = 100
@@ -154,7 +170,11 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         revision: 0,
       }),
 
-    setTool: (activeTool) => set({ activeTool }),
+    setTool: (activeTool) => {
+      // Mur, pièce, cote et calibrage n'existent pas dans un visuel.
+      if (isPlanTool(activeTool) && get().project?.kind !== 'plan') return
+      set({ activeTool })
+    },
     setNotice: (notice) => set({ notice }),
     setGuides: (guides) => set({ guides }),
     startEditingText: (id) => set({ editingTextId: id, selectedIds: [id], activeTool: 'select' }),

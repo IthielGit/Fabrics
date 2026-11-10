@@ -19,6 +19,13 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut(key('l'))).toBe('tool-line')
   })
 
+  it('choisit les outils de plan avec W, P, D (D seul ≠ Ctrl+D)', () => {
+    expect(resolveShortcut(key('w'))).toBe('tool-wall')
+    expect(resolveShortcut(key('p'))).toBe('tool-room')
+    expect(resolveShortcut(key('d'))).toBe('tool-dimension')
+    expect(resolveShortcut(key('d', { ctrlKey: true }))).toBe('duplicate')
+  })
+
   it('ignore la casse (Verr. Maj. activé)', () => {
     expect(resolveShortcut(key('R'))).toBe('tool-rect')
   })
@@ -48,7 +55,8 @@ describe('resolveShortcut', () => {
 
   it('ne confond pas une lettre seule avec une commande Ctrl', () => {
     expect(resolveShortcut(key('z'))).toBeNull()
-    expect(resolveShortcut(key('d'))).toBeNull()
+    expect(resolveShortcut(key('a'))).toBeNull()
+    expect(resolveShortcut(key('c'))).toBeNull()
   })
 
   it('copie, colle et sélectionne tout', () => {
