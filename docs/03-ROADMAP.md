@@ -36,19 +36,19 @@ Objectif : un projet vide qui démarre, se construit et passe le lint.
 
 Objectif : créer un projet, dessiner des formes simples, tout retrouver après rechargement.
 
-- [ ] Installer `konva`, `react-konva`, `zustand`, `idb-keyval`, `lucide-react`, `clsx`,
+- [x] Installer `konva`, `react-konva`, `zustand`, `idb-keyval`, `lucide-react`, `clsx`,
       `vitest` ; ajouter le script `"test": "vitest run"`
-- [ ] `LocalRepository` (IndexedDB) conforme à l'interface `ProjectRepository`
-- [ ] Accueil : liste des projets (nom, type, date relative), créer un Visuel (choix du format)
+- [x] `LocalRepository` (IndexedDB) conforme à l'interface `ProjectRepository`
+- [x] Accueil : liste des projets (nom, type, date relative), créer un Visuel (choix du format)
       ou un Plan, renommer, dupliquer, supprimer avec confirmation, état vide utile
-- [ ] Éditeur : `Stage` plein écran, page affichée avec son fond, zoom molette vers le curseur,
+- [x] Éditeur : `Stage` plein écran, page affichée avec son fond, zoom molette vers le curseur,
       déplacement de la vue (Espace + glisser), « Ajuster à l'écran »
-- [ ] Barre d'outils : Sélection, Rectangle, Ellipse
-- [ ] Sélection (clic, Maj + clic, rectangle de sélection), `Transformer` Konva pour
+- [x] Barre d'outils : Sélection, Rectangle, Ellipse
+- [x] Sélection (clic, Maj + clic, rectangle de sélection), `Transformer` Konva pour
       déplacer / redimensionner / pivoter
-- [ ] Supprimer, dupliquer, annuler / rétablir (règles de `editorStore`)
-- [ ] Sauvegarde automatique + indicateur ; titre du projet éditable dans l'en-tête
-- [ ] Tests Vitest de l'historique (annuler / rétablir) et du dépôt local (`idb-keyval`
+- [x] Supprimer, dupliquer, annuler / rétablir (règles de `editorStore`)
+- [x] Sauvegarde automatique + indicateur ; titre du projet éditable dans l'en-tête
+- [x] Tests Vitest de l'historique (annuler / rétablir) et du dépôt local (`idb-keyval`
       simulé avec `vi.mock`), dont le nettoyage des images non référencées à la suppression
 
 **Critères d'acceptation**

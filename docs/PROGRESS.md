@@ -4,10 +4,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M1 — Socle de l'éditeur (plan présenté, en attente du feu vert)
-- **Dernière tâche terminée :** M0 — validé par l'utilisateur, commit `ceb3115`
-- **Prochaine tâche :** M1, après feu vert sur la liste des tâches
-- **Problèmes connus :** fichiers de démo Vite restants (`src/App.css`, `src/assets/vite.svg`, `public/icons.svg`) à supprimer (voir D16 et D17 : lint = oxlint, TypeScript 7)
+- **Jalon en cours :** M1 — Socle de l'éditeur : toutes les tâches de code sont faites, en attente de validation par l'utilisateur dans le navigateur
+- **Dernière tâche terminée :** M1 · sauvegarde automatique, indicateur et titre éditable
+- **Prochaine tâche :** l'utilisateur vérifie les 3 critères d'acceptation de M1 (voir ci-dessous), puis valide
+- **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
 
@@ -31,6 +31,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-10 — M1 · Sauvegarde automatique, indicateur et titre éditable
+- Fait : sauvegarde automatique 1 seconde après la dernière modification (regroupe les modifications rapprochées), immédiate à la fermeture de l'onglet / changement de page / sortie de l'éditeur ; indicateur « Enregistrement… / Enregistré / Erreur d'enregistrement » ; en-tête avec retour à l'accueil, titre éditable (Entrée valide, Échap annule, un nom vide est refusé), boutons Annuler / Rétablir. Pas de faux « Enregistré » si le projet change pendant l'écriture.
+- Fichiers : `src/features/persistence/autosave(.test).ts`, `src/components/editor/{useAutosave,SaveIndicator,EditorHeader}`, `src/pages/EditorPage.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (79 au total) — contrôle dans le navigateur à faire par l'utilisateur
+- Commit : feat: sauvegarde automatique, indicateur et titre éditable
 
 ### 2026-11-10 — M1 · Supprimer, dupliquer, annuler / rétablir
 - Fait : raccourcis `Suppr` / `Retour arrière` (supprime toute la sélection), `Ctrl+D` (duplique, copie décalée et sélectionnée), `Ctrl+Z` (annuler), `Ctrl+Maj+Z` (rétablir) ; `Cmd` accepté comme `Ctrl` sur Mac ; comportements par défaut du navigateur bloqués (favori, retour arrière). Correspondance touche → action en fonction pure testée.

@@ -55,6 +55,12 @@ export const fr = {
     zoomLabel: 'Niveau de zoom',
     zoomValue: (percent: number) => `Zoom ${percent} %`,
     fitToScreen: 'Ajuster à l’écran',
+    undo: 'Annuler',
+    redo: 'Rétablir',
+    saving: 'Enregistrement…',
+    saved: 'Enregistré',
+    saveError: 'Erreur d’enregistrement',
+    saveErrorHint: 'Les dernières modifications n’ont pas pu être enregistrées dans ce navigateur.',
   },
   tools: {
     label: 'Outils',
