@@ -68,3 +68,41 @@ export function planOpeningPlacement(
   if (offset === null) return { ...base, offset: drawn, problem: 'no-room' }
   return { ...base, offset, problem: null }
 }
+
+/**
+ * Distance, le long du segment, entre son début et la projection de `point` (mm, non bornée :
+ * négative avant le début, supérieure à la longueur après la fin). `null` si le segment n'existe pas.
+ */
+export function pointerOffset(
+  point: Point,
+  wall: Pick<WallElement, 'points'>,
+  segmentIndex: number,
+): number | null {
+  const segment = wallSegment(wall, segmentIndex)
+  if (!segment) return null
+  return (point.x - segment.a.x) * segment.direction.x + (point.y - segment.a.y) * segment.direction.y
+}
+
+/**
+ * Nouvelle position d'une ouverture que l'on glisse le long de son mur : le curseur est en `pointer`,
+ * `grab` = écart (mm) entre le curseur et le centre de l'ouverture au moment de la saisie.
+ * La position est arrondie à 1 cm, reste sur le segment et ne chevauche aucune autre ouverture ;
+ * si aucune place n'existe, l'ouverture garde sa position.
+ */
+export function slideOpening(
+  opening: OpeningElement,
+  wall: Pick<WallElement, 'points'>,
+  openings: readonly OpeningElement[],
+  pointer: Point,
+  grab: number,
+): OpeningElement {
+  const segment = wallSegment(wall, opening.segmentIndex)
+  const along = pointerOffset(pointer, wall, opening.segmentIndex)
+  if (!segment || along === null) return opening
+  const desired = Math.round((along - grab) / OPENING_OFFSET_STEP) * OPENING_OFFSET_STEP
+  const occupied = openingsOnSegment(openings, opening.wallId, opening.segmentIndex, opening.id).map(
+    openingInterval,
+  )
+  const offset = clampOpeningOffset(desired, opening.width, segment.length, occupied)
+  return offset === null || offset === opening.offset ? opening : { ...opening, offset }
+}

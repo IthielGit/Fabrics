@@ -152,7 +152,7 @@ Objectif : percer les murs et obtenir des métrés nets.
 
 - [ ] Type `opening` (porte, fenêtre, baie) accroché à un mur (`wallId` + position le long de l'axe)
 - [x] Outils Porte et Fenêtre : survol d'un mur = aperçu, clic = pose ; impossible hors d'un mur
-- [ ] Glisser une ouverture la fait coulisser le long de son mur, sans en sortir
+- [x] Glisser une ouverture la fait coulisser le long de son mur, sans en sortir
 - [ ] Symboles 2D originaux : battant et arc d'ouverture (porte), double trait (fenêtre) ;
       sens d'ouverture inversable (gauche / droite, intérieur / extérieur)
 - [ ] Propriétés : largeur, hauteur, hauteur d'allège (fenêtre), sens

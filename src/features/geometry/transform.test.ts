@@ -22,6 +22,23 @@ import {
 const plan = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
 
 describe('translateElement', () => {
+  it('ne déplace jamais une ouverture : sa place vient de son mur', () => {
+    const opening = {
+      ...createRectElement('R', 0, 0, 1, 1),
+      type: 'opening' as const,
+      kind: 'door' as const,
+      wallId: 'w1',
+      segmentIndex: 0,
+      offset: 1000,
+      width: 900,
+      height: 2100,
+      sillHeight: 0,
+      hinge: 'start' as const,
+      side: 'left' as const,
+    }
+    expect(translateElement(opening, 500, 500)).toBe(opening)
+  })
+
   it('déplace x et y d’un rectangle', () => {
     const rect = createRectElement('R', 10, 20, 100, 50)
     expect(translateElement(rect, 5, -3)).toMatchObject({ x: 15, y: 17, width: 100 })

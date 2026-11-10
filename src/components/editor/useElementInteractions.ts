@@ -53,7 +53,12 @@ export function useElementInteractions(): Handlers {
     const stage = event.target.getStage()
     if (!stage) return
     const { selectedIds, project } = useEditorStore.getState()
-    const locked = new Set(project?.document.elements.filter((el) => el.locked).map((el) => el.id))
+    // Verrouillés, et ouvertures (leur place vient de leur mur) : jamais déplacés ici.
+    const locked = new Set(
+      project?.document.elements
+        .filter((el) => el.locked || el.type === 'opening')
+        .map((el) => el.id),
+    )
     const ids = new Set([...selectedIds, event.target.id()])
 
     const origins = new Map<string, Point>()

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { OpeningElement, WallElement } from '../../types/document'
-import { planOpeningPlacement } from './openingPlacement'
+import { planOpeningPlacement, pointerOffset, slideOpening } from './openingPlacement'
 
 const DOOR = { width: 900, height: 2100, sillHeight: 0 }
 
@@ -117,5 +117,69 @@ describe('planOpeningPlacement', () => {
   it('utilise la tolérance pour viser un mur fin', () => {
     expect(planOpeningPlacement({ x: 2000, y: 180 }, [horizontal], [], DOOR)).toBeNull()
     expect(planOpeningPlacement({ x: 2000, y: 180 }, [horizontal], [], DOOR, 100)).not.toBeNull()
+  })
+})
+
+describe('pointerOffset', () => {
+  it('projette le curseur sur le segment, sans borner', () => {
+    expect(pointerOffset({ x: 1200, y: 300 }, horizontal, 0)).toBe(1200)
+    expect(pointerOffset({ x: -500, y: 0 }, horizontal, 0)).toBe(-500)
+    expect(pointerOffset({ x: 5000, y: 0 }, horizontal, 0)).toBe(5000)
+  })
+
+  it('renvoie null pour un segment inexistant', () => {
+    expect(pointerOffset({ x: 0, y: 0 }, horizontal, 3)).toBeNull()
+  })
+
+  it('suit la direction d’un segment vertical', () => {
+    const l = wall([0, 0, 4000, 0, 4000, 3000])
+    expect(pointerOffset({ x: 4100, y: 1000 }, l, 1)).toBe(1000)
+  })
+})
+
+describe('slideOpening', () => {
+  it('fait coulisser l’ouverture avec le curseur', () => {
+    const door = opening(1000)
+    expect(slideOpening(door, horizontal, [door], { x: 2000, y: 0 }, 0).offset).toBe(2000)
+  })
+
+  it('garde l’écart entre le curseur et le centre au moment de la saisie', () => {
+    const door = opening(1000)
+    // Saisie à 200 mm du centre : le centre suit le curseur avec ce décalage.
+    expect(slideOpening(door, horizontal, [door], { x: 2200, y: 0 }, 200).offset).toBe(2000)
+  })
+
+  it('s’arrête aux extrémités du mur', () => {
+    const door = opening(1000)
+    expect(slideOpening(door, horizontal, [door], { x: -3000, y: 0 }, 0).offset).toBe(450)
+    expect(slideOpening(door, horizontal, [door], { x: 9000, y: 0 }, 0).offset).toBe(3550)
+  })
+
+  it('ignore la distance du curseur au mur', () => {
+    const door = opening(1000)
+    expect(slideOpening(door, horizontal, [door], { x: 2000, y: 2500 }, 0).offset).toBe(2000)
+  })
+
+  it('arrondit à 10 mm', () => {
+    const door = opening(1000)
+    expect(slideOpening(door, horizontal, [door], { x: 2004, y: 0 }, 0).offset).toBe(2000)
+  })
+
+  it('s’arrête contre une voisine', () => {
+    const door = opening(1000)
+    const other = opening(3000) // occupe de 2550 à 3450
+    // La porte (900 de large) ne peut pas avoir son centre entre 2100 et 3900.
+    expect(slideOpening(door, horizontal, [door, other], { x: 2300, y: 0 }, 0).offset).toBe(2100)
+  })
+
+  it('renvoie la même ouverture quand rien ne change', () => {
+    const door = opening(1000)
+    expect(slideOpening(door, horizontal, [door], { x: 1000, y: 0 }, 0)).toBe(door)
+  })
+
+  it('ne touche pas aux autres champs', () => {
+    const door = { ...opening(1000), hinge: 'end' as const, side: 'right' as const }
+    const moved = slideOpening(door, horizontal, [door], { x: 2000, y: 0 }, 0)
+    expect(moved).toMatchObject({ id: door.id, hinge: 'end', side: 'right', width: 900 })
   })
 })

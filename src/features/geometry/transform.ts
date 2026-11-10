@@ -27,6 +27,9 @@ export function translateElement(element: CanvasElement, dx: number, dy: number)
       const [x1, y1, x2, y2] = element.points
       return { ...element, points: [x1 + dx, y1 + dy, x2 + dx, y2 + dy] }
     }
+    case 'opening':
+      // Sa place vient de son mur : elle ne se déplace jamais d'elle-même.
+      return element
     default:
       return { ...element, x: element.x + dx, y: element.y + dy }
   }
