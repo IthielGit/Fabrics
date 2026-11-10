@@ -7,22 +7,28 @@ import {
   defaultShapeSize,
   nextElementName,
 } from '../../features/documents/elements'
-import { distance, normalizeBox, type Box } from '../../features/geometry/box'
+import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
 import { zoomAtPoint, type Point } from '../../features/geometry/viewport'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import ElementNode from './ElementNode'
 import { isTypingTarget } from './isTypingTarget'
+import SelectionTransformer from './SelectionTransformer'
 import { useContainerSize } from './useContainerSize'
+import { useElementInteractions } from './useElementInteractions'
 
 const WHEEL_ZOOM_STEP = 1.1
-/** En dessous de cette taille (px écran), un tracé est considéré comme un simple clic. */
-const MIN_DRAW_SIDE_PX = 4
+/** En dessous de cette taille (px écran), un tracé ou une sélection est un simple clic. */
+const MIN_DRAG_PX = 4
 
-interface Draft {
+type PointerEvent = Konva.KonvaEventObject<MouseEvent | TouchEvent>
+
+interface Gesture {
   start: Point
   current: Point
+  /** Maj enfoncée au départ : le rectangle de sélection s'ajoute à la sélection existante. */
+  additive: boolean
 }
 
 export default function EditorStage() {
@@ -35,14 +41,20 @@ export default function EditorStage() {
   const fitView = useEditorStore((state) => state.fitView)
   const addElement = useEditorStore((state) => state.addElement)
   const setTool = useEditorStore((state) => state.setTool)
+  const setSelection = useEditorStore((state) => state.setSelection)
+  const elementHandlers = useElementInteractions()
 
   const { ref: containerRef, size } = useContainerSize<HTMLDivElement>()
   const [spaceDown, setSpaceDown] = useState(false)
-  const [draft, setDraft] = useState<Draft | null>(null)
+  // Tracé d'une forme (outils rectangle / ellipse)
+  const [draft, setDraft] = useState<Gesture | null>(null)
+  // Rectangle de sélection (outil Sélection)
+  const [band, setBand] = useState<Gesture | null>(null)
   const fittedProjectId = useRef<string | null>(null)
 
   const projectId = project?.id ?? null
   const drawing = activeTool === 'rect' || activeTool === 'ellipse'
+  const selecting = activeTool === 'select' && !spaceDown
 
   // Communique la taille de la zone au store, et ajuste la page à l'écran à l'ouverture.
   useEffect(() => {
@@ -62,6 +74,7 @@ export default function EditorStage() {
         setSpaceDown(true)
       } else if (event.key === 'Escape') {
         setDraft(null)
+        setBand(null)
       }
     }
     const onKeyUp = (event: KeyboardEvent) => {
@@ -103,36 +116,47 @@ export default function EditorStage() {
     setView({ zoom, stagePosition: { x: event.target.x(), y: event.target.y() } })
   }
 
-  // --- Tracé d'une forme (rectangle, ellipse) ---
-
-  const pointerInDocument = (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) =>
+  const pointerInDocument = (event: PointerEvent) =>
     event.target.getStage()?.getRelativePointerPosition() ?? null
 
-  const handlePointerDown = (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
-    if (!drawing || spaceDown) return
+  const handlePointerDown = (event: PointerEvent) => {
+    if (spaceDown) return
     if (event.evt instanceof MouseEvent && event.evt.button !== 0) return
     const point = pointerInDocument(event)
-    if (point) setDraft({ start: point, current: point })
-  }
+    if (!point) return
 
-  const handlePointerMove = (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
-    if (!draft) return
-    const point = pointerInDocument(event)
-    if (point) setDraft({ ...draft, current: point })
-  }
-
-  const finishDraft = () => {
-    if (!draft || (activeTool !== 'rect' && activeTool !== 'ellipse')) {
-      setDraft(null)
-      return
+    if (drawing) {
+      setDraft({ start: point, current: point, additive: false })
+    } else if (activeTool === 'select') {
+      // Un clic sur un élément est géré par l'élément lui-même ; un clic sur une poignée du
+      // transformateur ne doit pas non plus démarrer de sélection : seul le vide compte.
+      const onEmptyArea =
+        event.target === event.target.getStage() || event.target.name() === 'page'
+      if (!onEmptyArea) return
+      setBand({ start: point, current: point, additive: event.evt.shiftKey })
     }
-    const dragged = normalizeBox(draft.start, draft.current)
-    const isClick =
-      distance(draft.start, draft.current) * scale < MIN_DRAW_SIDE_PX ||
-      Math.min(dragged.width, dragged.height) * scale < MIN_DRAW_SIDE_PX
+  }
+
+  const handlePointerMove = (event: PointerEvent) => {
+    if (!draft && !band) return
+    const point = pointerInDocument(event)
+    if (!point) return
+    if (draft) setDraft({ ...draft, current: point })
+    if (band) setBand({ ...band, current: point })
+  }
+
+  const finishDraft = (gesture: Gesture) => {
+    if (activeTool !== 'rect' && activeTool !== 'ellipse') return
+    const dragged = normalizeBox(gesture.start, gesture.current)
+    const isClick = Math.min(dragged.width, dragged.height) * scale < MIN_DRAG_PX
     const side = defaultShapeSize(unit)
     const box: Box = isClick
-      ? { x: draft.start.x - side / 2, y: draft.start.y - side / 2, width: side, height: side }
+      ? {
+          x: gesture.start.x - side / 2,
+          y: gesture.start.y - side / 2,
+          width: side,
+          height: side,
+        }
       : dragged
 
     const element =
@@ -151,18 +175,48 @@ export default function EditorStage() {
             box.width,
             box.height,
           )
-    setDraft(null)
-    addElement(element)
+    addElement(element) // l'élément créé devient la sélection
     setTool('select')
   }
 
+  const finishBand = (gesture: Gesture, stage: Konva.Stage) => {
+    const { selectedIds } = useEditorStore.getState()
+    if (distance(gesture.start, gesture.current) * scale < MIN_DRAG_PX) {
+      // Simple clic dans le vide : on désélectionne (sauf avec Maj).
+      if (!gesture.additive) setSelection([])
+      return
+    }
+    const bandBox = normalizeBox(gesture.start, gesture.current)
+    const hitIds = Array.from(stage.find('.element'))
+      .filter((node) => node.isVisible() && node.listening())
+      .filter((node) =>
+        boxesIntersect(bandBox, node.getClientRect({ relativeTo: node.getLayer() ?? undefined })),
+      )
+      .map((node) => node.id())
+    setSelection(gesture.additive ? [...new Set([...selectedIds, ...hitIds])] : hitIds)
+  }
+
+  const handlePointerUp = (event: PointerEvent) => {
+    const stage = event.target.getStage()
+    if (draft) {
+      setDraft(null)
+      finishDraft(draft)
+    }
+    if (band) {
+      setBand(null)
+      if (stage) finishBand(band, stage)
+    }
+  }
+
   const draftBox = draft ? normalizeBox(draft.start, draft.current) : null
+  const bandBox = band ? normalizeBox(band.start, band.current) : null
+  const cursor = spaceDown ? 'grab' : drawing ? 'crosshair' : 'default'
 
   return (
     <div
       ref={containerRef}
       className="absolute inset-0 overflow-hidden bg-slate-200"
-      style={{ cursor: spaceDown ? 'grab' : drawing ? 'crosshair' : 'default' }}
+      style={{ cursor }}
     >
       {size.width > 0 && (
         <Stage
@@ -179,9 +233,9 @@ export default function EditorStage() {
           onTouchStart={handlePointerDown}
           onMouseMove={handlePointerMove}
           onTouchMove={handlePointerMove}
-          onMouseUp={finishDraft}
-          onTouchEnd={finishDraft}
-          onMouseLeave={finishDraft}
+          onMouseUp={handlePointerUp}
+          onTouchEnd={handlePointerUp}
+          onMouseLeave={handlePointerUp}
         >
           <Layer>
             <Rect
@@ -195,8 +249,14 @@ export default function EditorStage() {
               strokeWidth={1 / scale}
             />
             {elements.map((element) => (
-              <ElementNode key={element.id} element={element} interactive={false} />
+              <ElementNode
+                key={element.id}
+                element={element}
+                interactive={selecting}
+                {...elementHandlers}
+              />
             ))}
+            <SelectionTransformer enabled={selecting} />
           </Layer>
           <Layer listening={false}>
             {draftBox && activeTool === 'rect' && (
@@ -218,6 +278,14 @@ export default function EditorStage() {
                 stroke="#4f46e5"
                 strokeWidth={1 / scale}
                 dash={[6 / scale, 4 / scale]}
+              />
+            )}
+            {bandBox && (
+              <Rect
+                {...bandBox}
+                fill="rgba(79,70,229,0.08)"
+                stroke="#4f46e5"
+                strokeWidth={1 / scale}
               />
             )}
           </Layer>
