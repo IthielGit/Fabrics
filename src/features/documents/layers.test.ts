@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { createRectElement } from './elements'
-import { moveElementToSlot, sameOrder, stepElement } from './layers'
+import { createOpeningElement, createRectElement, createWallElement } from './elements'
+import { drawOrder, moveElementToSlot, sameOrder, stepElement } from './layers'
 
 // Ordre du tableau : A (fond) → B → C → D (dessus). Liste affichée : D, C, B, A.
 const [A, B, C, D] = ['A', 'B', 'C', 'D'].map((n) => createRectElement(n, 0, 0, 10, 10))
@@ -61,5 +61,40 @@ describe('sameOrder', () => {
     expect(sameOrder([A, B], [A, B])).toBe(true)
     expect(sameOrder([A, B], [B, A])).toBe(false)
     expect(sameOrder([A], [A, B])).toBe(false)
+  })
+})
+
+describe('drawOrder', () => {
+  const wall = createWallElement('Mur', [0, 0, 4000, 0], 200, 2500)
+  const door = createOpeningElement('door', 'Porte', {
+    wallId: wall.id,
+    segmentIndex: 0,
+    offset: 2000,
+    side: 'left',
+  })
+  const rect = createRectElement('R', 0, 0, 10, 10)
+
+  it('garde l’ordre quand l’ouverture est déjà au-dessus de son mur', () => {
+    const elements = [wall, door, rect]
+    expect(drawOrder(elements)).toEqual(elements)
+  })
+
+  it('dessine une ouverture placée sous son mur juste après lui', () => {
+    expect(drawOrder([door, rect, wall]).map((el) => el.name)).toEqual(['R', 'Mur', 'Porte'])
+  })
+
+  it('ne change pas la liste des calques', () => {
+    const elements = [door, wall]
+    drawOrder(elements)
+    expect(elements.map((el) => el.id)).toEqual([door.id, wall.id])
+  })
+
+  it('garde une ouverture sans mur à sa place', () => {
+    expect(drawOrder([door, rect]).map((el) => el.id)).toEqual([door.id, rect.id])
+  })
+
+  it('range plusieurs ouvertures après leur mur, dans leur ordre', () => {
+    const second = { ...door, id: 'second', name: 'Porte 2' }
+    expect(drawOrder([door, second, wall]).map((el) => el.name)).toEqual(['Mur', 'Porte', 'Porte 2'])
   })
 })

@@ -3,11 +3,12 @@ import type { CanvasElement } from '../../types/document'
 import {
   createEllipseElement,
   createLineElement,
+  createOpeningElement,
   createRectElement,
   createRoomElement,
   createWallElement,
 } from '../documents/elements'
-import { elementBounds, planExportExtent } from './bounds'
+import { elementBounds, openingBounds, planExportExtent } from './bounds'
 
 describe('elementBounds', () => {
   it('rectangle', () => {
@@ -86,5 +87,58 @@ describe('planExportExtent', () => {
       height: 2000,
     })
     expect(planExportExtent([hidden])).toBeNull()
+  })
+})
+
+describe('ouvertures dans la zone exportée', () => {
+  const wall = createWallElement('Mur', [0, 0, 4000, 0], 200, 2500)
+  const door = (kind: 'door' | 'window' = 'door') =>
+    createOpeningElement(kind, 'Porte', {
+      wallId: wall.id,
+      segmentIndex: 0,
+      offset: 2000,
+      side: 'left',
+    })
+
+  it('le battant d’une porte fait partie de l’emprise (il dépasse du mur)', () => {
+    const box = openingBounds(door(), wall)
+    // Porte de 900 mm, charnière au début, battant ouvert vers +y : il monte à 900 mm du mur.
+    expect(box?.x).toBeCloseTo(1550)
+    expect(box?.width).toBeCloseTo(900)
+    expect(box?.y).toBeCloseTo(-102)
+    expect(box!.y + box!.height).toBeCloseTo(900)
+  })
+
+  it('une fenêtre reste dans l’épaisseur du mur', () => {
+    const box = openingBounds(door('window'), wall)
+    expect(box!.height).toBeLessThan(210)
+  })
+
+  it('l’emprise d’un plan inclut le battant d’une porte', () => {
+    const extent = planExportExtent([wall, door()], 500)
+    // Découpe : y de −102 à 102 (2 mm de plus que le mur de chaque côté) ; battant jusqu'à
+    // y = 900 ; marge de 500.
+    expect(extent?.y).toBeCloseTo(-602)
+    expect(extent!.y + extent!.height).toBeCloseTo(1400)
+  })
+
+  it('une ouverture dont le mur est masqué ne compte pas', () => {
+    const hiddenWall = { ...wall, hidden: true }
+    expect(planExportExtent([hiddenWall, door()])).toBeNull()
+  })
+
+  it('une ouverture sans mur ne compte pas', () => {
+    expect(planExportExtent([door()])).toBeNull()
+  })
+
+  it('une ouverture masquée ne compte pas', () => {
+    const hidden = { ...door(), hidden: true }
+    const extent = planExportExtent([wall, hidden], 0)
+    expect(extent!.y + extent!.height).toBeCloseTo(100)
+  })
+
+  it('openingBounds renvoie null si le segment n’existe plus', () => {
+    const missing = { ...door(), segmentIndex: 5 }
+    expect(openingBounds(missing, wall)).toBeNull()
   })
 })

@@ -11,6 +11,7 @@ import {
   defaultStrokeWidth,
   nextElementName,
 } from '../../features/documents/elements'
+import { drawOrder } from '../../features/documents/layers'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
 import { pxPerUnit } from '../../features/units/scale'
@@ -352,7 +353,7 @@ export default function EditorStage() {
                 scale={scale}
               />
             )}
-            {elements.map((element) => (
+            {drawOrder(elements).map((element) => (
               <ElementNode
                 key={element.id}
                 element={element}

@@ -37,6 +37,26 @@ export function stepElement(
   return next
 }
 
+/**
+ * Ordre de dessin : identique à `elements`, sauf qu'une ouverture placée sous son mur dans les
+ * calques est dessinée juste au-dessus de lui (sinon la découpe du mur serait cachée).
+ */
+export function drawOrder(elements: readonly CanvasElement[]): CanvasElement[] {
+  const wallIndex = new Map(elements.map((el, index) => [el.id, index]))
+  const late = new Map<string, CanvasElement[]>() // ouvertures à dessiner après leur mur
+  const kept: CanvasElement[] = []
+  for (const [index, el] of elements.entries()) {
+    const wall = el.type === 'opening' ? wallIndex.get(el.wallId) : undefined
+    if (el.type === 'opening' && wall !== undefined && wall > index) {
+      late.set(el.wallId, [...(late.get(el.wallId) ?? []), el])
+    } else {
+      kept.push(el)
+    }
+  }
+  if (late.size === 0) return [...elements]
+  return kept.flatMap((el) => [el, ...(late.get(el.id) ?? [])])
+}
+
 /** Vrai si les deux listes contiennent les mêmes éléments dans le même ordre. */
 export function sameOrder(a: readonly CanvasElement[], b: readonly CanvasElement[]): boolean {
   return a.length === b.length && a.every((el, index) => el.id === b[index].id)

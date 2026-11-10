@@ -89,7 +89,7 @@ export default function OpeningShape({
       y={geometry.center.y}
       rotation={geometry.angle}
       opacity={element.opacity}
-      visible={!element.hidden}
+      visible={!element.hidden && !wall.hidden}
       listening={interactive && !element.locked}
       draggable={interactive && !element.locked}
       onMouseDown={onPointerDown}

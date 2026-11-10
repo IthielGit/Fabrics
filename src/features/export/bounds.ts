@@ -1,7 +1,9 @@
-import type { CanvasElement } from '../../types/document'
+import type { CanvasElement, OpeningElement, WallElement } from '../../types/document'
 import type { Box } from '../geometry/box'
 import { unionBoxes } from '../geometry/box'
 import { dimensionGeometry } from '../geometry/dimension'
+import { openingGeometry } from '../geometry/openings'
+import { openingSymbol } from '../geometry/openingSymbol'
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import { wallFaces } from '../geometry/walls'
@@ -89,10 +91,35 @@ export function elementBounds(element: CanvasElement): Box | null {
       return pointsBox(points)
     }
     case 'opening':
-      // Une ouverture est contenue dans l'épaisseur de son mur, sauf le battant d'une porte :
-      // son emprise réelle demande le mur porteur (voir M5, tâche 9).
+      // Son emprise dépend du mur porteur (le battant d'une porte dépasse de l'épaisseur du mur) :
+      // voir `openingBounds`, utilisé par `planExportExtent`.
       return null
   }
+}
+
+/**
+ * Boîte englobante d'une ouverture sur son mur : la découpe dans le mur et le dessin complet
+ * (battant et arc d'une porte compris). `null` si le segment du mur n'existe plus.
+ */
+export function openingBounds(opening: OpeningElement, wall: WallElement): Box | null {
+  const geometry = openingGeometry(opening, wall)
+  if (!geometry) return null
+  const { cut, lines } = openingSymbol(opening, wall.thickness)
+
+  const local: Point[] = [
+    { x: cut.x, y: cut.y },
+    { x: cut.x + cut.width, y: cut.y + cut.height },
+  ]
+  for (const line of lines) local.push(...toPoints(line))
+
+  // Repère local (x le long du mur, y vers la normale) → document.
+  const { center, direction, normal } = geometry
+  return pointsBox(
+    local.map((p) => ({
+      x: center.x + p.x * direction.x + p.y * normal.x,
+      y: center.y + p.x * direction.y + p.y * normal.y,
+    })),
+  )
 }
 
 /**
@@ -103,9 +130,19 @@ export function planExportExtent(
   elements: readonly CanvasElement[],
   margin: number = PLAN_EXPORT_MARGIN_MM,
 ): Box | null {
+  const walls = new Map(
+    elements
+      .filter((el): el is WallElement => el.type === 'wall' && !el.hidden)
+      .map((wall) => [wall.id, wall]),
+  )
   const boxes = elements
     .filter((element) => !element.hidden)
-    .map(elementBounds)
+    .map((element) => {
+      if (element.type !== 'opening') return elementBounds(element)
+      // Une ouverture suit son mur : masqué ou absent, elle ne compte pas.
+      const wall = walls.get(element.wallId)
+      return wall ? openingBounds(element, wall) : null
+    })
     .filter((box): box is Box => box !== null)
   const union = unionBoxes(boxes)
   if (!union) return null

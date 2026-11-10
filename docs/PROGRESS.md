@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M5 — Ouvertures (feu vert donné le 2026-11-10 ; choix par défaut acceptés)
-- **Dernière tâche terminée :** M5 · tâche 8 — métrés et CSV
-- **Prochaine tâche :** M5 · tâche 9 — export et calques (emprise des ouvertures, liste dans les calques), puis validation de M5 par l'utilisateur
+- **Jalon en cours :** M5 — Ouvertures : toutes les tâches de code sont faites, en attente de validation par l'utilisateur dans le navigateur
+- **Dernière tâche terminée :** M5 · tâche 9 — export et calques
+- **Prochaine tâche :** l'utilisateur vérifie les 3 critères d'acceptation de M5 (mur 4,00 × 2,50 m + porte : 10,00 m² brut / 8,11 m² net ; ouverture bornée par son mur et ses voisines ; ancien projet sans perte), puis valide
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -18,7 +18,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M2 Contenu et mise en forme | terminé | 2026-11-10 |
 | M3 Mode plan et métrés | terminé | 2026-11-10 |
 | M4 Export | terminé | 2026-11-10 |
-| M5 Ouvertures | à faire | |
+| M5 Ouvertures | à valider | |
 | M6 Niveaux | à faire | |
 | M7 Axes et mobilier | à faire | |
 | M8 Vue 3D | à faire | |
@@ -44,6 +44,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/units/format(.test).ts`, `src/features/measurements/{csv,measurements.test}.ts`, `src/components/editor/{MeasurementsPanel,PlanElementFields,PlanSettingsSection,CalibrateDialog}.tsx`, `src/i18n/fr.ts`, `src/features/export/pdf.test.ts`, `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md`
 - Vérification : build ✓ lint ✓ tests ✓ (422) — à contrôler dans le navigateur
 - Commit : feat: unités Métrique architectural (mm, m²)
+
+### 2026-11-10 — M5 · Export et calques
+- Fait : **zone exportée** : l'emprise d'un plan inclut le dessin complet des ouvertures, battant et arc d'une porte compris (ils dépassent de l'épaisseur du mur) ; une ouverture masquée, ou dont le mur est masqué ou absent, ne compte pas. **Calques** : les ouvertures sont listées avec leur icône, et se renomment, se masquent et se verrouillent comme les autres éléments. **Ordre d'affichage** : une ouverture est toujours dessinée juste au-dessus de son mur, même si on l'a descendue sous lui dans les calques (sinon la découpe du mur serait cachée) ; la liste des calques, elle, garde l'ordre choisi. **Masquer un mur masque ses ouvertures.**
+- Fichiers : `src/features/export/bounds(.test).ts` (`openingBounds`), `src/features/documents/layers(.test).ts` (`drawOrder`), `src/components/editor/{EditorStage,shapes/OpeningShape}.tsx`
+- Vérification : build ✓ lint ✓ tests ✓ (503 au total, dont 12 sur la zone exportée et l'ordre de dessin) — export PNG / PDF d'un plan avec porte à contrôler dans le navigateur
+- Commit : feat: ouvertures dans l'export et l'ordre d'affichage
 
 ### 2026-11-10 — M5 · Métrés et CSV des ouvertures
 - Fait : les métrés calculent la **surface murale nette** (brute moins les ouvertures du mur, jamais négative) : un mur de 4,00 × 2,50 m avec une porte de 0,90 × 2,10 m donne 10,00 m² brut, 1,89 m² d'ouvertures, 8,11 m² net. Une ouverture plus haute que ce qui reste au-dessus de son allège est comptée à la hauteur du mur ; une ouverture sans mur est ignorée. Le panneau Métrés affiche pour les murs : longueur, surface brute et nette (l'épaisseur n'y est plus, elle reste dans Propriétés et dans le CSV), puis un tableau des ouvertures (nom, dimensions, surface ; cliquer une ligne sélectionne l'ouverture) avec le total et le nombre de portes, fenêtres et baies. Propriétés d'un mur : surface brute, ouvertures et surface nette. CSV : colonnes brute / ouvertures / nette pour les murs, et un tableau des ouvertures (type, mur, largeur, hauteur, allège, surface) suivi du nombre de portes, fenêtres et baies, présent seulement s'il y a des ouvertures.
