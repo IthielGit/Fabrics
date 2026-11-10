@@ -38,11 +38,11 @@ const ceilTo10 = (value: number) => Math.ceil(value / 10) * 10
  * Les objets « au-dessus du plan de coupe » sont dessinés en pointillé, les zones en pointillé long.
  */
 export function defineSymbol(spec: SymbolSpec, drawBase: DrawFn): SymbolDef {
-  const sizes = (spec.sizes ?? []).map(([width, depth]) => ({
-    label: spec.resize === 'ratio' ? `${width}` : `${width} × ${depth}`,
-    width,
-    depth,
-  }))
+  // En mode `length`, la profondeur est fixe : une taille rapide ne la change jamais.
+  const sizes = (spec.sizes ?? []).map(([width, sizeDepth]) => {
+    const depth = spec.resize === 'length' ? spec.depth : sizeDepth
+    return { label: spec.resize === 'ratio' ? `${width}` : `${width} × ${depth}`, width, depth }
+  })
   const widths = [spec.width, ...sizes.map((s) => s.width)]
   const depths = [spec.depth, ...sizes.map((s) => s.depth)]
 

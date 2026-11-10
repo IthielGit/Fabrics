@@ -34,6 +34,9 @@ const OPEN_CATEGORIES: ReadonlySet<SymbolCategory> = new Set<SymbolCategory>([
   'dining',
   'bedroom',
   'storage',
+  'kitchen',
+  'bathroom',
+  'laundry',
 ])
 
 /** Tous les objets proposés, dans l'ordre du catalogue. */

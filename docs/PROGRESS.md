@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M7 — Axes de construction et mobilier (plan à présenter, en attente du feu vert ; catalogue prêt dans `docs/06-BIBLIOTHEQUE.md`)
-- **Dernière tâche terminée :** M7 · lot D (séjour, salle à manger, chambre, rangements)
-- **Prochaine tâche :** M7 · lot E (cuisine, salle de bain, buanderie)
+- **Dernière tâche terminée :** M7 · lot E (cuisine, salle de bain, buanderie)
+- **Prochaine tâche :** M7 · lot F (escaliers, bureau)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -43,6 +43,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/library/{primitives,catalog/{specs,define,draws,index},templates/*}.ts`, `src/i18n/{libraryTexts,fr}.ts`
 - Vérification : build ✓ lint ✓ tests ✓ (862 au total : contrôles sur chaque objet — dessin dans sa boîte à toutes les tailles, avec et sans retournement)
 - Commit : feat: catalogue séjour, salle à manger, chambre, rangements
+
+### 2026-11-10 — M7 · Lot E · Cuisine, salle de bain, buanderie
+- Fait : trois catégories ouvertes : **cuisine** (44 objets), **salle de bain et sanitaires** (34), **buanderie et technique domestique** (14). Gabarits : meubles de cuisine (bas, tiroirs, haut en pointillé, angle en L asymétrique, colonne), éviers (1 ou 2 bacs, égouttoir à gauche), plaques (gaz 4/5 feux, induction), cuisinière, appareils (réfrigérateurs, congélateur coffre, lave-vaisselle, cave à vin, micro-ondes, four, hotte en pointillé, lave-linge, sèche-linge, colonne, chaudière, adoucisseur, VMC), îlot, bar, péninsule, desserte ; **cuisines complètes d'un seul bloc** (kitchenette, linéaire, parallèle, en L, en L avec îlot, en U, américaine, américaine en L, américaine avec îlot-bar) : rangées de meubles le long des murs avec évier, plaque, réfrigérateur et lave-vaisselle placés proportionnellement (les cuisines en L et américaines se retournent) ; sanitaires (WC au sol / suspendu / enfant, urinoir, bidet, lavabos, meuble vasque, douches carrée / quart de rond / italienne / PMR, baignoires rectangulaire / d'angle / îlot / sabot, bain à remous, sauna, hammam, sèche-serviettes, WC PMR avec barres, barre d'appui, siège de douche, cabine de sanitaires avec débattement de porte). Correction : en mode « longueur », une taille rapide ne change plus la profondeur.
+- Fichiers : `src/features/library/templates/{appliance,kitchen,bathroom}.ts`, `catalog/{draws,index,define}.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1138 au total : mêmes contrôles sur chacun des 178 objets ouverts)
+- Commit : feat: catalogue cuisine, salle de bain, buanderie
 
 ### 2026-11-10 — M7 · Lot C · Panneau Bibliothèque
 - Fait : panneau « Bibliothèque » complet : **recherche** sans accents ni casse (« lave vaisselle » trouve « Lave-vaisselle »), sur le nom, les mots-clés et la catégorie, tous les mots devant être trouvés, résultats classés (début du nom, nom, mot-clé, catégorie) ; **catégories** en pastilles avec le nombre d'objets (« Tous » + une par catégorie remplie) ; **vignettes** (aperçu SVG, nom, dimensions en mm). **Pose** : clic sur une vignette puis clic sur le plan (l'outil reste actif, Échap pour quitter) ou **glisser-déposer** de la vignette sur le plan ; **aperçu fantôme** translucide à taille réelle sous le curseur, aimanté à la grille. Bouton **« Retourner »** dans Propriétés pour les objets asymétriques (`mirrorable`), tailles courantes en puces (lot B). Aucun objet du catalogue de test n'est asymétrique : le bouton apparaîtra avec les premiers objets asymétriques (lot D).

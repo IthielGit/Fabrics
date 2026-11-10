@@ -1,4 +1,22 @@
+import { appliance, dryingRack, ironingBoard } from '../templates/appliance'
 import { drawBed, drawBunkBed, drawCrib } from '../templates/bed'
+import {
+  basket,
+  bathtub,
+  bidet,
+  grabBar,
+  shower,
+  showerSeat,
+  toilet,
+  toiletCubicle,
+  toiletPmr,
+  towelRadiator,
+  urinal,
+  vanityUnit,
+  washbasin,
+  wellness,
+  whirlpool,
+} from '../templates/bathroom'
 import { box, wallStrip } from '../templates/box'
 import type { DrawFn } from '../templates/common'
 import {
@@ -12,6 +30,7 @@ import {
   drawStove,
   drawUprightPiano,
 } from '../templates/living'
+import { barTop, bin, cooker, cornerUnit, hob, kitchen, peninsula, sink, trolley } from '../templates/kitchen'
 import { drawBench, drawOfficeChair, seat } from '../templates/seat'
 import { drawSofa, sofaL } from '../templates/sofa'
 import { drawOvalTable, drawRectTable, drawRound, drawRoundTable } from '../templates/table'
@@ -76,3 +95,85 @@ assign(['mailbox-indoor'], box('shelves'))
 
 // --- Bureau (aperçu du lot F : sièges et tables déjà disponibles) ---
 assign(['office-chair'], drawOfficeChair)
+
+// --- Cuisine ---
+assign(['kitchen-base'], box('doors'))
+assign(['kitchen-base-drawers'], box('drawers'))
+assign(['kitchen-wall'], box('doors'))
+assign(['kitchen-corner', 'kitchen-corner-wall'], cornerUnit)
+assign(['kitchen-tall'], box('cross'))
+assign(['worktop', 'kitchen-island', 'coffee-station'], box('top'))
+assign(['sink-kitchen-1', 'sink-utility-kitchen', 'utility-sink'], sink(1))
+assign(['sink-kitchen-1d'], sink(1, true))
+assign(['sink-kitchen-2'], sink(2))
+assign(['hob-4'], hob(4))
+assign(['hob-5'], hob(5))
+assign(['hob-induction'], hob(4, true))
+assign(['cooker'], cooker)
+assign(['oven-built-in'], appliance('oven'))
+assign(['microwave'], appliance('microwave'))
+assign(['hood', 'hood-island'], appliance('hood'))
+assign(['fridge', 'fridge-freezer', 'freezer'], appliance('fridge'))
+assign(['fridge-side'], appliance('fridge-side'))
+assign(['freezer-chest'], appliance('chest'))
+assign(['dishwasher'], appliance('dishwasher'))
+assign(['wine-cooler'], appliance('wine'))
+assign(['breakfast-bar', 'kitchen-bar-counter'], barTop)
+assign(['kitchen-trolley'], trolley)
+assign(['pantry-walk-in'], box('open'))
+assign(['trash-bin-kitchen'], bin)
+assign(['table-kitchen'], drawRectTable)
+assign(['kitchen-peninsula'], peninsula)
+assign(['kitchenette'], kitchen('kitchenette'))
+assign(['kitchen-linear'], kitchen('linear'))
+assign(['kitchen-parallel'], kitchen('parallel'))
+assign(['kitchen-l'], kitchen('l'))
+assign(['kitchen-l-island'], kitchen('l-island'))
+assign(['kitchen-u'], kitchen('u'))
+assign(['kitchen-american'], kitchen('american'))
+assign(['kitchen-american-l'], kitchen('american-l'))
+assign(['kitchen-american-island'], kitchen('american-island'))
+
+// --- Salle de bain et sanitaires ---
+assign(['wc'], toilet('floor'))
+assign(['wc-wall'], toilet('wall'))
+assign(['wc-child'], toilet('child'))
+assign(['urinal'], urinal)
+assign(['bidet'], bidet)
+assign(['washbasin', 'washbasin-small', 'washbasin-pmr'], washbasin(1))
+assign(['washbasin-double'], washbasin(2))
+assign(['vanity-unit'], vanityUnit)
+assign(['basin-vessel'], drawRound)
+assign(['shower-square', 'shower-rect'], shower('square'))
+assign(['shower-corner'], shower('corner'))
+assign(['shower-walk-in'], shower('walk-in'))
+assign(['shower-pmr'], shower('pmr'))
+assign(['bathtub'], bathtub('rect'))
+assign(['bathtub-corner'], bathtub('corner'))
+assign(['bathtub-freestanding'], bathtub('free'))
+assign(['bathtub-small'], bathtub('small'))
+assign(['whirlpool'], whirlpool)
+assign(['sauna'], wellness('sauna'))
+assign(['hammam'], wellness('hammam'))
+assign(['towel-radiator'], towelRadiator)
+assign(['mirror-wall'], wallStrip(400))
+assign(['bathroom-cabinet'], box('doors'))
+assign(['bathroom-shelf', 'baby-changing-wall'], box('top'))
+assign(['laundry-basket', 'wc-brush-bin'], basket)
+assign(['wc-pmr'], toiletPmr)
+assign(['grab-bar'], grabBar)
+assign(['shower-seat'], showerSeat)
+assign(['toilet-cubicle'], toiletCubicle)
+
+// --- Buanderie et technique domestique ---
+assign(['washing-machine'], appliance('washer'))
+assign(['dryer'], appliance('dryer'))
+assign(['washer-dryer-column'], appliance('column'))
+assign(['ironing-board'], ironingBoard)
+assign(['drying-rack'], dryingRack)
+assign(['water-heater', 'buffer-tank'], drawRound)
+assign(['boiler-wall', 'boiler-floor'], appliance('boiler'))
+assign(['water-softener'], appliance('softener'))
+assign(['vmc-unit'], appliance('vmc'))
+assign(['electrical-panel'], box('shelves'))
+assign(['meter-cupboard'], box('doors'))
