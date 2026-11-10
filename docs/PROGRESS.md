@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M8 — Vue 3D (M7 validé par l'utilisateur)
-- **Dernière tâche terminée :** M8 · réglage du nord (`northAngle`, migration v4)
-- **Prochaine tâche :** M8 · panneau 3D (ouvrable, redimensionnable) qui dessine le modèle
+- **Jalon en cours :** M8 — Vue 3D (terminé, à valider par l'utilisateur ; M7 validé)
+- **Dernière tâche terminée :** M8 · panneau 3D, cube d'orientation, étage ouvert, sélection croisée, capture PNG
+- **Prochaine tâche :** valider M8 dans le navigateur (voir la liste de vérification), puis feu vert pour M9
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -22,7 +22,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M5 Ouvertures | terminé | 2026-11-10 |
 | M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | terminé | 2026-11-10 |
-| M8 Vue 3D | en cours (plan à valider) | |
+| M8 Vue 3D | terminé (à valider) | |
 | M9 Façades, coupes et planche | à faire | |
 | M10 Import et export | à faire | |
 | M11 Mise en ligne | à faire | |
@@ -38,6 +38,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M8 · Panneau 3D, caméra, cube d'orientation, étage ouvert, sélection, capture
+- Fait : bouton « cube » dans l'en-tête de l'éditeur (projets Plan seulement) qui ouvre / ferme le **panneau 3D** à droite du plan ; il se **redimensionne** en glissant son bord gauche (mini 280 px, il laisse toujours 640 px au plan et aux panneaux). **Scène** (`@react-three/fiber`) : murs découpés par leurs ouvertures (boîtes aux arêtes marquées), dalles sous les pièces, toit plat, sol quadrillé ; Three.js est **chargé à la première ouverture** seulement (fichier à part, l'éditeur démarre aussi vite). **Caméra orbitale** (clic gauche : tourner, molette : zoom, clic droit : déplacer), cadrage automatique sur le bâtiment à l'ouverture, bouton « Recentrer ». **Cube d'orientation** en haut à droite : faces N, E, S, O, Haut, Bas, tournées selon le **nord réglé** ; un clic sur une face recadre la vue de ce côté. **Étage ouvert** : case à cocher, affiche seulement jusqu'au niveau actif, sans toit. **Sélection** : un clic sur un mur en 3D le sélectionne sur le plan (et passe au niveau du mur) ; les murs sélectionnés sur le plan sont surlignés en 3D ; un glissement de caméra n'est pas pris pour un clic. **Capture PNG** (bouton appareil photo) : `<nom du projet> 3D.png`, sans le cube. **Fluidité** : le modèle est recalculé au plus une fois par image, la scène ne se redessine que quand quelque chose change (`frameloop="demand"`), une seule géométrie de boîte partagée par tous les murs, géométries de dalles gardées tant que le contour ne change pas. Si WebGL n'est pas disponible, un message remplace la vue sans bloquer l'éditeur.
+- Fichiers : `src/components/viewer3d/{Viewer3DPanel,Viewer3DScene,OrientationCube,Viewer3DErrorBoundary,useBuildingModel}`, `src/stores/viewer3dStore.ts`, `src/features/building/{panelWidth(.test),model.test}.ts`, `src/components/editor/EditorHeader.tsx`, `src/pages/EditorPage.tsx`, `src/i18n/fr.ts`, `docs/03-ROADMAP.md`
+- Vérification : build ✓ lint ✓ tests ✓ (1858 au total, dont un test « 3 niveaux, 600 murs et ouvertures calculés en moins de 200 ms ») — géométrie des dalles et orientation des murs contrôlées par calcul ; **rendu, caméra, cube, clic sur un mur, capture et fluidité à contrôler dans le navigateur** (aucun test automatisé du rendu 3D)
+- Commit : feat: vue 3D (panneau, caméra, cube, sélection, capture)
 
 ### 2026-11-10 — M8 · Réglage du nord et migration v4
 - Fait : champ **« Nord (sens horaire depuis le haut) »** en degrés dans « Réglages du plan » (visible quand rien n'est sélectionné, projets Plan uniquement ; modifiable avec ↑ ↓, pas de 15°, Maj = ×10 ; annulable). `plan.northAngle` : 0 = le nord est en haut du plan (comme à l'écran depuis toujours) ; la valeur saisie est ramenée à 0–359 (`-90` → 270, `370` → 10). **Document en version 4** : migration v3 → v4 qui donne `northAngle = 0` à un plan (une valeur déjà présente est gardée) ; un Visuel change seulement de version ; les projets enregistrés avant s'ouvrent sans perte. Helper `cardinalDirection` (direction du plan vers N / E / S / O selon le nord) prêt pour le cube d'orientation.

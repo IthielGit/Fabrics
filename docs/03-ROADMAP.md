@@ -212,12 +212,12 @@ Objectif : voir le bâtiment en volume, à côté du plan, mis à jour en direct
 - [x] Dépendances 3D installées (voir `docs/02-ARCHITECTURE.md`, accord de l'utilisateur)
 - [x] `src/features/building/` : fonctions pures qui transforment le document en modèle 3D
       (murs extrudés, ouvertures découpées, dalles sous les pièces, toit plat) + tests
-- [ ] Panneau 3D à droite de l'éditeur, ouvrable / fermable, redimensionnable
-- [ ] Caméra orbitale (tourner, zoomer, déplacer), cube d'orientation avec points cardinaux
+- [x] Panneau 3D à droite de l'éditeur, ouvrable / fermable, redimensionnable
+- [x] Caméra orbitale (tourner, zoomer, déplacer), cube d'orientation avec points cardinaux
       (nord réglable dans les réglages du plan)
-- [ ] Afficher tous les niveaux ou seulement jusqu'au niveau actif (vue « étage ouvert »)
-- [ ] Sélectionner un mur en 3D le sélectionne aussi sur le plan
-- [ ] Capture PNG de la vue 3D
+- [x] Afficher tous les niveaux ou seulement jusqu'au niveau actif (vue « étage ouvert »)
+- [x] Sélectionner un mur en 3D le sélectionne aussi sur le plan
+- [x] Capture PNG de la vue 3D
 
 **Critères d'acceptation**
 - Modifier un mur sur le plan met la 3D à jour en moins d'une seconde

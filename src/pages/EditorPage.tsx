@@ -14,6 +14,7 @@ import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import ZoomControls from '../components/editor/ZoomControls'
+import Viewer3DPanel from '../components/viewer3d/Viewer3DPanel'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
 import { useEditorStore } from '../stores/editorStore'
@@ -89,6 +90,7 @@ export default function EditorPage() {
           <Notice />
           <ToolHint />
         </div>
+        <Viewer3DPanel />
         <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white">
           <PropertiesPanel />
           <LevelsPanel />

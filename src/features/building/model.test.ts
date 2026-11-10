@@ -238,6 +238,24 @@ describe('buildBuildingModel', () => {
     expect(bounds?.max.z).toBeCloseTo(3000)
   })
 
+  it('un bâtiment de 3 niveaux et 600 murs avec ouvertures se calcule en moins de 200 ms', () => {
+    const l2 = createLevel('Étage 2', 5000, 2500, 200)
+    const levels = [ground, upper, l2]
+    const elements: CanvasElement[] = []
+    for (const level of levels) {
+      for (let i = 0; i < 200; i++) {
+        const wall = wallOn(level, [0, i * 100, 6000, i * 100, 6000, i * 100 + 3000])
+        elements.push(wall, openingOn(wall, 'window', 3000, { width: 1200, height: 1000, sillHeight: 900 }))
+      }
+      elements.push(roomOn(level, rect(0, 0, 6000, 4000)))
+    }
+    const start = performance.now()
+    const model = buildBuildingModel({ elements, levels })
+    const elapsed = performance.now() - start
+    expect(model.walls.length).toBeGreaterThan(2000)
+    expect(elapsed).toBeLessThan(200)
+  })
+
   it('3 niveaux : un mur par niveau, aux bonnes altitudes', () => {
     const l2 = createLevel('Étage 2', 5000, 2500, 200)
     const walls = [ground, upper, l2].map((l) => wallOn(l, [0, 0, 4000, 0]))
