@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { rotateQuarterTurn } from '../../features/geometry/transform'
 import { useEditorStore } from '../../stores/editorStore'
 import { isTypingTarget } from './isTypingTarget'
 import { resolveShortcut } from './shortcuts'
@@ -51,6 +52,16 @@ export function useEditorShortcuts() {
           if (store.activeTool !== 'select') store.setTool('select')
           else store.setSelection([])
           break
+        case 'rotate': {
+          // Maj + R : quart de tour des éléments sélectionnés (non verrouillés), en un seul pas d'historique.
+          const doc = store.project?.document
+          if (!doc) break
+          const ids = doc.elements
+            .filter((el) => store.selectedIds.includes(el.id) && !el.locked)
+            .map((el) => el.id)
+          if (ids.length > 0) store.updateElements(ids, rotateQuarterTurn)
+          break
+        }
         case 'fit-view':
           event.preventDefault()
           store.fitView()

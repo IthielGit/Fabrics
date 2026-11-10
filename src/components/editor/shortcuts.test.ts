@@ -41,6 +41,10 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut(key('R'))).toBe('tool-rect')
   })
 
+  it('pivote avec Maj + R', () => {
+    expect(resolveShortcut(key('R', { shiftKey: true }))).toBe('rotate')
+  })
+
   it('supprime avec Suppr et Retour arrière', () => {
     expect(resolveShortcut(key('Delete'))).toBe('delete')
     expect(resolveShortcut(key('Backspace'))).toBe('delete')

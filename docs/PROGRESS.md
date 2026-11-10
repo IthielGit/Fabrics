@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M7 — Axes de construction et mobilier (terminé, à valider par l'utilisateur)
 - **Dernière tâche terminée :** M7 · lot J (ensembles, récents et favoris, liste du mobilier, tests globaux) — M7 terminé, à valider
-- **Prochaine tâche :** valider M7 dans le navigateur ; idée à trancher : pivoter un objet de 90° au clavier (la touche R est déjà « Rectangle »)
+- **Prochaine tâche :** valider M7 dans le navigateur (dont `Maj + R` : quart de tour de la sélection)
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -436,6 +436,6 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
 - Aimantation des murs et des sommets sur ceux du niveau de référence (aligner un étage sur celui du dessous) : utile après M6, pas dans le jalon.
-- Pivoter un objet de la bibliothèque de 90° au clavier (prévu par `docs/06-BIBLIOTHEQUE.md`, section 6) : la touche `R` est déjà l'outil Rectangle ; proposition : `Maj + R`. Rotation libre par poignée et par le champ Rotation déjà disponibles.
+- ~~Pivoter un objet de 90° au clavier~~ : fait, `Maj + R` (décidé par l'utilisateur).
 - Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M13, à rediscuter).
 - Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : pose des objets contre un mur (aimantation), hauteurs 3D des objets (M8), import de symboles SVG / DXF par l'utilisateur, bibliothèque personnelle (ensembles enregistrés), niveau de détail « détaillé », étiquettes de cote automatiques, variantes de style, annotations de plan (flèche du nord, repère de niveau).

@@ -44,6 +44,40 @@ export function translateElement(element: CanvasElement, dx: number, dy: number)
   }
 }
 
+const toRadians = (degrees: number) => (degrees * Math.PI) / 180
+
+/**
+ * Pivote un élément d'un quart de tour (+90°, sens horaire) autour de son centre : il ne « saute »
+ * pas. Concerne les objets de bibliothèque, rectangles, images et ellipses ; les autres éléments
+ * (murs, pièces, cotes, axes, ouvertures, lignes, textes) sont rendus tels quels.
+ */
+export function rotateQuarterTurn(element: CanvasElement): CanvasElement {
+  const rotation = (((element.rotation + 90) % 360) + 360) % 360
+  switch (element.type) {
+    case 'ellipse':
+      return { ...element, rotation } // x, y = centre : rien d'autre à corriger
+    case 'furniture':
+    case 'rect':
+    case 'image': {
+      const w = element.width
+      const h = element.type === 'furniture' ? element.depth : element.height
+      const before = toRadians(element.rotation)
+      const after = toRadians(rotation)
+      // Centre actuel, puis coin haut-gauche qui le garde en place après rotation.
+      const cx = element.x + (w * Math.cos(before) - h * Math.sin(before)) / 2
+      const cy = element.y + (w * Math.sin(before) + h * Math.cos(before)) / 2
+      return {
+        ...element,
+        rotation,
+        x: Math.round(cx - (w * Math.cos(after) - h * Math.sin(after)) / 2),
+        y: Math.round(cy - (w * Math.sin(after) + h * Math.cos(after)) / 2),
+      }
+    }
+    default:
+      return element
+  }
+}
+
 /** Sommets modifiables d'un mur, d'une pièce, d'une cote ou d'un axe (liste vide pour les autres éléments). */
 export function getVertices(element: CanvasElement): Point[] {
   return hasAbsolutePoints(element) ? toPoints(element.points) : []

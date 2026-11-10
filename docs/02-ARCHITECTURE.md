@@ -422,6 +422,7 @@ pas sur une feuille, ce qui est normal puisque seule l'emprise du contenu est ex
 | `T` / `R` / `O` / `L` | Texte / Rectangle / Ellipse / Ligne |
 | `W` / `P` / `D` / `A` | Mur / Pièce / Cote / Axe de construction (plan) |
 | `B` / `F` | Porte / Fenêtre (plan) |
+| `Maj + R` | Pivoter la sélection de 90° (autour de son centre) |
 | `Échap` | Annuler le tracé en cours, puis désélectionner |
 | `Entrée` ou double-clic | Terminer un mur ou une pièce |
 | `Suppr` / `Retour arrière` | Supprimer la sélection |

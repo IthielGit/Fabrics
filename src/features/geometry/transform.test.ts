@@ -3,6 +3,7 @@ import type { CanvasElement } from '../../types/document'
 import {
   createAxisElement,
   createEllipseElement,
+  createFurnitureElement,
   createLineElement,
   createRectElement,
   createRoomElement,
@@ -10,6 +11,7 @@ import {
 } from '../documents/elements'
 import {
   applyNodeTransform,
+  rotateQuarterTurn,
   canRemoveVertex,
   getSegmentMidpoints,
   getVertices,
@@ -282,5 +284,40 @@ describe('axes de construction', () => {
 
   it('un axe n’a jamais de niveau', () => {
     expect(createAxisElement('Axe A', 'A', [0, 0, 1, 1]).levelId).toBeUndefined()
+  })
+})
+
+describe('rotateQuarterTurn', () => {
+  const center = (el: { x: number; y: number; width: number; depth: number; rotation: number }) => {
+    const r = (el.rotation * Math.PI) / 180
+    return {
+      x: el.x + (el.width * Math.cos(r) - el.depth * Math.sin(r)) / 2,
+      y: el.y + (el.width * Math.sin(r) + el.depth * Math.cos(r)) / 2,
+    }
+  }
+
+  it('pivote un objet de 90° en gardant son centre', () => {
+    const furniture = createFurnitureElement('Lit', 'bed-queen', 1000, 2000, 1600, 2000)
+    const turned = rotateQuarterTurn(furniture)
+    if (turned.type !== 'furniture' || furniture.type !== 'furniture') throw new Error('type')
+    expect(turned.rotation).toBe(90)
+    const a = center(furniture)
+    const b = center(turned)
+    expect(Math.abs(a.x - b.x)).toBeLessThanOrEqual(1)
+    expect(Math.abs(a.y - b.y)).toBeLessThanOrEqual(1)
+  })
+
+  it('revient au point de départ après quatre quarts de tour', () => {
+    const furniture = createFurnitureElement('Lit', 'bed-queen', 1000, 2000, 1600, 2000)
+    let el: CanvasElement = furniture
+    for (let i = 0; i < 4; i++) el = rotateQuarterTurn(el)
+    expect(el.rotation).toBe(0)
+    expect(el.x).toBe(furniture.x)
+    expect(el.y).toBe(furniture.y)
+  })
+
+  it('laisse les murs inchangés', () => {
+    const wall = createWallElement('Mur', [0, 0, 1000, 0], 200, 2500)
+    expect(rotateQuarterTurn(wall)).toBe(wall)
   })
 })
