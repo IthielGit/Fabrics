@@ -4,7 +4,7 @@ import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, Project } from '../types/document'
 
-export type EditorTool = 'select' | 'rect' | 'ellipse' | 'line'
+export type EditorTool = 'select' | 'rect' | 'ellipse' | 'line' | 'text'
 export type SaveStatus = 'saved' | 'saving' | 'error'
 
 export const HISTORY_LIMIT = 100
@@ -18,6 +18,8 @@ interface EditorState {
   project: Project | null
   selectedIds: string[]
   activeTool: EditorTool
+  /** Texte en cours d'édition dans la zone de saisie superposée (état d'interface, pas du document). */
+  editingTextId: string | null
   zoom: number
   stagePosition: { x: number; y: number }
   /** Taille de la zone d'affichage du canevas (px), renseignée par le composant Stage. */
@@ -30,6 +32,10 @@ interface EditorState {
   loadProject: (project: Project) => void
   closeProject: () => void
   setTool: (tool: EditorTool) => void
+  startEditingText: (id: string) => void
+  stopEditingText: () => void
+  /** Valide le texte saisi : un seul état d'historique ; un texte vidé supprime l'élément. */
+  commitTextEdit: (id: string, text: string) => void
   setSelection: (ids: string[]) => void
   setView: (view: { zoom: number; stagePosition: { x: number; y: number } }) => void
   setViewportSize: (size: Size) => void
@@ -88,6 +94,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     project: null,
     selectedIds: [],
     activeTool: 'select',
+    editingTextId: null,
     zoom: 1,
     stagePosition: { x: 0, y: 0 },
     viewportSize: { width: 0, height: 0 },
@@ -100,6 +107,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         project,
         selectedIds: [],
         activeTool: 'select',
+        editingTextId: null,
         zoom: 1,
         stagePosition: { x: 0, y: 0 },
         history: EMPTY_HISTORY,
@@ -108,9 +116,30 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       }),
 
     closeProject: () =>
-      set({ project: null, selectedIds: [], history: EMPTY_HISTORY, revision: 0 }),
+      set({
+        project: null,
+        selectedIds: [],
+        editingTextId: null,
+        history: EMPTY_HISTORY,
+        revision: 0,
+      }),
 
     setTool: (activeTool) => set({ activeTool }),
+    startEditingText: (id) => set({ editingTextId: id, selectedIds: [id], activeTool: 'select' }),
+    stopEditingText: () => set({ editingTextId: null }),
+
+    commitTextEdit: (id, text) => {
+      const { project } = get()
+      set({ editingTextId: null })
+      const element = project?.document.elements.find((el) => el.id === id)
+      if (!element || element.type !== 'text') return
+      if (text.trim() === '') {
+        get().removeElements([id])
+        return
+      }
+      if (text === element.text) return // rien n'a changé : pas d'état d'historique inutile
+      get().updateElements([id], (el) => (el.type === 'text' ? { ...el, text } : el))
+    },
     setSelection: (selectedIds) => set({ selectedIds }),
     setView: ({ zoom, stagePosition }) => set({ zoom, stagePosition }),
     setViewportSize: (viewportSize) => set({ viewportSize }),

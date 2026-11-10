@@ -5,6 +5,17 @@ import { applyNodeTransform } from '../../features/geometry/transform'
 import { useEditorStore } from '../../stores/editorStore'
 
 const MIN_SIZE_PX = 5 // taille minimale à l'écran lors d'un redimensionnement
+const ALL_ANCHORS = [
+  'top-left',
+  'top-center',
+  'top-right',
+  'middle-left',
+  'middle-right',
+  'bottom-left',
+  'bottom-center',
+  'bottom-right',
+]
+const TEXT_ANCHORS = ['middle-left', 'middle-right']
 
 interface SelectionTransformerProps {
   /** Faux quand un outil de tracé est actif : les poignées ne doivent pas gêner. */
@@ -17,6 +28,11 @@ export default function SelectionTransformer({ enabled }: SelectionTransformerPr
   const selectedIds = useEditorStore((state) => state.selectedIds)
   const elements = useEditorStore((state) => state.project?.document.elements)
   const replaceElements = useEditorStore((state) => state.replaceElements)
+
+  // Un texte ne se redimensionne que en largeur (la hauteur suit le contenu).
+  const onlyText =
+    selectedIds.length > 0 &&
+    selectedIds.every((id) => elements?.find((el) => el.id === id)?.type === 'text')
 
   // Rattache le transformateur aux nœuds sélectionnés (à chaque changement de sélection
   // ou de document, par exemple après annuler / rétablir).
@@ -64,6 +80,7 @@ export default function SelectionTransformer({ enabled }: SelectionTransformerPr
       rotationSnaps={[0, 45, 90, 135, 180, 225, 270, 315]}
       rotationSnapTolerance={5}
       flipEnabled={false}
+      enabledAnchors={onlyText ? TEXT_ANCHORS : ALL_ANCHORS}
       borderStroke="#4f46e5"
       anchorStroke="#4f46e5"
       anchorFill="#ffffff"

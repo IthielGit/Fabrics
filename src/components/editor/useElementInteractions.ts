@@ -4,7 +4,10 @@ import type { Point } from '../../features/geometry/viewport'
 import { useEditorStore } from '../../stores/editorStore'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 
-type Handlers = Pick<ShapeInteraction, 'onPointerDown' | 'onDragStart' | 'onDragMove' | 'onDragEnd'>
+type Handlers = Pick<
+  ShapeInteraction,
+  'onPointerDown' | 'onDragStart' | 'onDragMove' | 'onDragEnd' | 'onDoubleClick'
+>
 
 /**
  * Sélection par clic (Maj = ajouter / retirer) et déplacement des éléments.
@@ -65,8 +68,17 @@ export function useElementInteractions(): Handlers {
     replaceElements(updated)
   }, [])
 
+  // Double-clic sur un texte : on passe en édition.
+  const onDoubleClick = useCallback((event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
+    const { project, startEditingText } = useEditorStore.getState()
+    const id = event.target.id()
+    if (project?.document.elements.some((el) => el.id === id && el.type === 'text')) {
+      startEditingText(id)
+    }
+  }, [])
+
   return useMemo(
-    () => ({ onPointerDown, onDragStart, onDragMove, onDragEnd }),
-    [onPointerDown, onDragStart, onDragMove, onDragEnd],
+    () => ({ onPointerDown, onDragStart, onDragMove, onDragEnd, onDoubleClick }),
+    [onPointerDown, onDragStart, onDragMove, onDragEnd, onDoubleClick],
   )
 }

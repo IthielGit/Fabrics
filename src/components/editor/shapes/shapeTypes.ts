@@ -10,4 +10,5 @@ export interface ShapeInteraction {
   onDragStart?: (event: Konva.KonvaEventObject<DragEvent>) => void
   onDragMove?: (event: Konva.KonvaEventObject<DragEvent>) => void
   onDragEnd?: (event: Konva.KonvaEventObject<DragEvent>) => void
+  onDoubleClick?: (event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => void
 }

@@ -4,7 +4,9 @@ import type {
   FabricsDocument,
   LineElement,
   RectElement,
+  TextElement,
 } from '../../types/document'
+import { DEFAULT_FONT_FAMILY } from './fonts'
 
 type Unit = FabricsDocument['unit']
 
@@ -79,6 +81,36 @@ export function createEllipseElement(
     fill: '#f59e0b',
     stroke: '#78350f',
     strokeWidth: 0,
+  }
+}
+
+/** Taille de police par défaut (48 px, ou 300 mm sur un plan). */
+export function defaultFontSize(unit: Unit): number {
+  return unit === 'mm' ? 300 : 48
+}
+
+/** Texte posé au point (x, y) ; la largeur par défaut permet d'écrire environ 8 caractères par ligne. */
+export function createTextElement(
+  name: string,
+  x: number,
+  y: number,
+  text: string,
+  fontSize: number,
+): TextElement {
+  return {
+    ...BASE,
+    id: crypto.randomUUID(),
+    type: 'text',
+    name,
+    x,
+    y,
+    text,
+    width: fontSize * 8,
+    fontFamily: DEFAULT_FONT_FAMILY,
+    fontSize,
+    fontStyle: 'normal',
+    align: 'left',
+    fill: '#0f172a',
   }
 }
 

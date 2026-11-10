@@ -3,6 +3,7 @@ export type ShortcutAction =
   | 'tool-rect'
   | 'tool-ellipse'
   | 'tool-line'
+  | 'tool-text'
   | 'escape'
   | 'fit-view'
   | 'undo'
@@ -41,6 +42,8 @@ export function resolveShortcut(input: KeyInput): ShortcutAction | null {
       return 'tool-ellipse'
     case 'l':
       return 'tool-line'
+    case 't':
+      return 'tool-text'
     case 'escape':
       return 'escape'
     case 'delete':

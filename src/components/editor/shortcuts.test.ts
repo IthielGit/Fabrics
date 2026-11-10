@@ -11,7 +11,8 @@ const key = (k: string, mods: Partial<KeyInput> = {}): KeyInput => ({
 })
 
 describe('resolveShortcut', () => {
-  it('choisit les outils avec V, R, O, L', () => {
+  it('choisit les outils avec V, R, O, L, T', () => {
+    expect(resolveShortcut(key('t'))).toBe('tool-text')
     expect(resolveShortcut(key('v'))).toBe('tool-select')
     expect(resolveShortcut(key('r'))).toBe('tool-rect')
     expect(resolveShortcut(key('o'))).toBe('tool-ellipse')

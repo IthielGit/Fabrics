@@ -68,11 +68,14 @@ export const fr = {
     rect: 'Rectangle',
     ellipse: 'Ellipse',
     line: 'Ligne',
+    text: 'Texte',
   },
   elements: {
     rect: 'Rectangle',
     ellipse: 'Ellipse',
     line: 'Ligne',
+    text: 'Texte',
+    defaultText: 'Votre texte',
   },
   notFound: {
     title: 'Page introuvable',

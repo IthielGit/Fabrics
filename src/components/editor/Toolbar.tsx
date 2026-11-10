@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Circle, MousePointer2, Slash, Square, type LucideIcon } from 'lucide-react'
+import { Circle, MousePointer2, Slash, Square, Type, type LucideIcon } from 'lucide-react'
 import { fr } from '../../i18n/fr'
 import { useEditorStore, type EditorTool } from '../../stores/editorStore'
 
@@ -15,6 +15,7 @@ const TOOLS: ToolDefinition[] = [
   { tool: 'rect', icon: Square, label: fr.tools.rect, shortcut: 'R' },
   { tool: 'ellipse', icon: Circle, label: fr.tools.ellipse, shortcut: 'O' },
   { tool: 'line', icon: Slash, label: fr.tools.line, shortcut: 'L' },
+  { tool: 'text', icon: Type, label: fr.tools.text, shortcut: 'T' },
 ]
 
 export default function Toolbar() {

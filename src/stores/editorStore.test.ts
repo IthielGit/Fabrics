@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { createDesignProject } from '../features/documents/createProject'
-import { createRectElement } from '../features/documents/elements'
+import { createRectElement, createTextElement } from '../features/documents/elements'
+import type { TextElement } from '../types/document'
 import { HISTORY_LIMIT, useEditorStore } from './editorStore'
 
 const store = () => useEditorStore.getState()
@@ -114,6 +115,52 @@ describe('duplication', () => {
     expect(copy.x).toBe(20)
     expect(copy.y).toBe(20)
     expect(store().selectedIds).toEqual([copy.id])
+  })
+})
+
+describe('édition de texte', () => {
+  function textElement(text: string) {
+    return createTextElement('Texte 1', 0, 0, text, 48)
+  }
+
+  it('annuler une modification de texte restaure exactement le contenu précédent', () => {
+    const t = textElement('Bonjour\nle monde')
+    store().addElement(t)
+    store().startEditingText(t.id)
+    store().commitTextEdit(t.id, 'Salut')
+    expect((elements()[0] as TextElement).text).toBe('Salut')
+    store().undo()
+    expect((elements()[0] as TextElement).text).toBe('Bonjour\nle monde')
+    store().redo()
+    expect((elements()[0] as TextElement).text).toBe('Salut')
+  })
+
+  it('ne crée pas d’état d’historique si le texte est inchangé', () => {
+    const t = textElement('Identique')
+    store().addElement(t)
+    const before = store().history.past.length
+    store().commitTextEdit(t.id, 'Identique')
+    expect(store().history.past.length).toBe(before)
+    expect(store().editingTextId).toBeNull()
+  })
+
+  it('supprime un texte vidé (et l’annulation le ramène)', () => {
+    const t = textElement('À effacer')
+    store().addElement(t)
+    store().commitTextEdit(t.id, '   ')
+    expect(elements()).toHaveLength(0)
+    store().undo()
+    expect((elements()[0] as TextElement).text).toBe('À effacer')
+  })
+
+  it('startEditingText sélectionne le texte et repasse sur l’outil Sélection', () => {
+    const t = textElement('x')
+    store().addElement(t)
+    store().setTool('text')
+    store().startEditingText(t.id)
+    expect(store().editingTextId).toBe(t.id)
+    expect(store().selectedIds).toEqual([t.id])
+    expect(store().activeTool).toBe('select')
   })
 })
 

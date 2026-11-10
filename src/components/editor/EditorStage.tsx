@@ -5,6 +5,8 @@ import {
   createEllipseElement,
   createLineElement,
   createRectElement,
+  createTextElement,
+  defaultFontSize,
   defaultShapeSize,
   defaultStrokeWidth,
   nextElementName,
@@ -17,6 +19,7 @@ import { useEditorStore } from '../../stores/editorStore'
 import ElementNode from './ElementNode'
 import { isTypingTarget } from './isTypingTarget'
 import SelectionTransformer from './SelectionTransformer'
+import TextEditorOverlay from './TextEditorOverlay'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
 
@@ -44,6 +47,10 @@ export default function EditorStage() {
   const addElement = useEditorStore((state) => state.addElement)
   const setTool = useEditorStore((state) => state.setTool)
   const setSelection = useEditorStore((state) => state.setSelection)
+  const editingTextId = useEditorStore((state) => state.editingTextId)
+  const startEditingText = useEditorStore((state) => state.startEditingText)
+  const commitTextEdit = useEditorStore((state) => state.commitTextEdit)
+  const stopEditingText = useEditorStore((state) => state.stopEditingText)
   const elementHandlers = useElementInteractions()
 
   const { ref: containerRef, size } = useContainerSize<HTMLDivElement>()
@@ -55,7 +62,7 @@ export default function EditorStage() {
   const fittedProjectId = useRef<string | null>(null)
 
   const projectId = project?.id ?? null
-  const drawing = activeTool === 'rect' || activeTool === 'ellipse' || activeTool === 'line'
+  const drawing = activeTool !== 'select'
   const selecting = activeTool === 'select' && !spaceDown
 
   // Communique la taille de la zone au store, et ajuste la page à l'écran à l'ouverture.
@@ -148,6 +155,20 @@ export default function EditorStage() {
   }
 
   const finishDraft = (gesture: Gesture) => {
+    if (activeTool === 'text') {
+      // Un clic pose un texte à cet endroit et ouvre directement la saisie.
+      const fontSize = defaultFontSize(unit)
+      const text = createTextElement(
+        nextElementName(fr.elements.text, 'text', elements),
+        gesture.start.x,
+        gesture.start.y,
+        fr.elements.defaultText,
+        fontSize,
+      )
+      addElement(text)
+      startEditingText(text.id)
+      return
+    }
     if (activeTool === 'line') {
       const isClick = distance(gesture.start, gesture.current) * scale < MIN_DRAG_PX
       const side = defaultShapeSize(unit)
@@ -228,6 +249,7 @@ export default function EditorStage() {
     }
   }
 
+  const editingElement = elements.find((el) => el.id === editingTextId)
   const draftBox = draft ? normalizeBox(draft.start, draft.current) : null
   const bandBox = band ? normalizeBox(band.start, band.current) : null
   const cursor = spaceDown ? 'grab' : drawing ? 'crosshair' : 'default'
@@ -274,10 +296,11 @@ export default function EditorStage() {
                 element={element}
                 interactive={selecting}
                 viewScale={scale}
+                editing={element.id === editingTextId}
                 {...elementHandlers}
               />
             ))}
-            <SelectionTransformer enabled={selecting} />
+            <SelectionTransformer enabled={selecting && editingTextId === null} />
           </Layer>
           <Layer listening={false}>
             {draftBox && activeTool === 'rect' && (
@@ -319,6 +342,19 @@ export default function EditorStage() {
             )}
           </Layer>
         </Stage>
+      )}
+      {editingElement?.type === 'text' && (
+        <TextEditorOverlay
+          key={editingElement.id}
+          element={editingElement}
+          scale={scale}
+          stagePosition={stagePosition}
+          onCommit={(text) => commitTextEdit(editingElement.id, text)}
+          onCancel={() => {
+            // Échap : on abandonne la saisie ; un texte tout juste créé garde son texte par défaut.
+            stopEditingText()
+          }}
+        />
       )}
     </div>
   )
