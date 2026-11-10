@@ -32,6 +32,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-10 — M1 · Page d'accueil
+- Fait : liste des projets (nom, type, date relative en français), « Nouveau visuel » (fenêtre de choix du format avec aperçu des proportions), « Nouveau plan », menu ⋯ (renommer, dupliquer, supprimer avec confirmation), état vide utile, chargement et erreur. Composants `ui/` : Button, Modal, Menu. Textes dans `fr.ts`.
+- Fichiers : `src/pages/HomePage.tsx`, `src/components/home/*`, `src/components/ui/*`, `src/lib/relativeTime.ts` (+ test), `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (39 au total) — contrôle dans le navigateur à faire par l'utilisateur
+- Commit : feat: page d'accueil et gestion des projets
+
 ### 2026-11-10 — M1 · Store des projets
 - Fait : `createProjectsStore(repo)` (dépôt injecté, donc testable) et `useProjectsStore` ; actions rafraîchir, créer Visuel / Plan (renvoient l'identifiant), renommer, dupliquer (suffixe « (copie) »), supprimer. `repository.ts` : point unique de choix du dépôt (local ; Supabase en M6).
 - Fichiers : `src/stores/projectsStore.ts`, `projectsStore.test.ts`, `src/features/persistence/repository.ts`, `src/i18n/fr.ts`
@@ -110,5 +116,6 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
+- Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).

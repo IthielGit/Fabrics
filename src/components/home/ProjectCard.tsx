@@ -1,0 +1,56 @@
+import { Copy, Image, Pencil, Ruler, Trash2 } from 'lucide-react'
+import { Link } from 'react-router'
+import type { ProjectSummary } from '../../features/persistence/types'
+import { fr } from '../../i18n/fr'
+import { formatRelativeTime } from '../../lib/relativeTime'
+import Menu from '../ui/Menu'
+
+interface ProjectCardProps {
+  project: ProjectSummary
+  onRename: () => void
+  onDuplicate: () => void
+  onDelete: () => void
+}
+
+export default function ProjectCard({
+  project,
+  onRename,
+  onDuplicate,
+  onDelete,
+}: ProjectCardProps) {
+  const isPlan = project.kind === 'plan'
+  const KindIcon = isPlan ? Ruler : Image
+
+  return (
+    <li className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <Link
+        to={`/p/${project.id}`}
+        className="flex h-32 items-center justify-center bg-slate-100 text-slate-400 hover:bg-slate-200"
+      >
+        <KindIcon size={40} aria-hidden="true" />
+      </Link>
+      <div className="flex items-start justify-between gap-2 p-3">
+        <Link to={`/p/${project.id}`} className="min-w-0">
+          <p className="truncate font-medium text-slate-900">{project.name}</p>
+          <p className="text-sm text-slate-500">
+            {isPlan ? fr.projects.kindPlan : fr.projects.kindDesign} ·{' '}
+            {formatRelativeTime(project.updatedAt)}
+          </p>
+        </Link>
+        <Menu
+          label={fr.projects.menuLabel}
+          items={[
+            { label: fr.projects.rename, icon: <Pencil size={16} />, onSelect: onRename },
+            { label: fr.projects.duplicate, icon: <Copy size={16} />, onSelect: onDuplicate },
+            {
+              label: fr.projects.delete,
+              icon: <Trash2 size={16} />,
+              danger: true,
+              onSelect: onDelete,
+            },
+          ]}
+        />
+      </div>
+    </li>
+  )
+}
