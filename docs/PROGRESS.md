@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M7 — Axes de construction et mobilier (terminé, à valider par l'utilisateur)
-- **Dernière tâche terminée :** M7 · lot J (ensembles, récents et favoris, liste du mobilier, tests globaux) — M7 terminé, à valider
-- **Prochaine tâche :** valider M7 dans le navigateur (dont `Maj + R` : quart de tour de la sélection)
+- **Jalon en cours :** M8 — Vue 3D (M7 validé par l'utilisateur)
+- **Dernière tâche terminée :** M8 · réglage du nord (`northAngle`, migration v4)
+- **Prochaine tâche :** M8 · panneau 3D (ouvrable, redimensionnable) qui dessine le modèle
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
@@ -20,8 +20,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M4 Export | terminé | 2026-11-10 |
 | M5 Ouvertures | terminé | 2026-11-10 |
 | M6 Niveaux | terminé | 2026-11-10 |
-| M7 Axes et mobilier | terminé (à valider) | |
-| M8 Vue 3D | à faire | |
+| M7 Axes et mobilier | terminé | 2026-11-10 |
+| M8 Vue 3D | en cours (plan à valider) | |
 | M9 Façades, coupes et planche | à faire | |
 | M10 Import et export | à faire | |
 | M11 Mise en ligne | à faire | |
@@ -37,6 +37,19 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-10 — M8 · Réglage du nord et migration v4
+- Fait : champ **« Nord (sens horaire depuis le haut) »** en degrés dans « Réglages du plan » (visible quand rien n'est sélectionné, projets Plan uniquement ; modifiable avec ↑ ↓, pas de 15°, Maj = ×10 ; annulable). `plan.northAngle` : 0 = le nord est en haut du plan (comme à l'écran depuis toujours) ; la valeur saisie est ramenée à 0–359 (`-90` → 270, `370` → 10). **Document en version 4** : migration v3 → v4 qui donne `northAngle = 0` à un plan (une valeur déjà présente est gardée) ; un Visuel change seulement de version ; les projets enregistrés avant s'ouvrent sans perte. Helper `cardinalDirection` (direction du plan vers N / E / S / O selon le nord) prêt pour le cube d'orientation.
+- Fichiers : `src/types/document.ts`, `src/features/documents/{migrations,createProject}(.test).ts`, `src/features/building/north(.test).ts`, `src/features/persistence/LocalRepository.test.ts`, `src/components/editor/PlanSettingsSection.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (1848 au total, dont 14 nouveaux : migration v3 → v4, nord conservé, angles, directions cardinales) — champ à contrôler dans le navigateur
+- Commit : feat: réglage du nord et migration du document en version 4
+
+### 2026-11-10 — M8 · Dépendances 3D et modèle 3D (fonctions pures)
+- Fait : installation de `three` 0.187, `@react-three/fiber` 9.8 (compatible React 19.3) et `@react-three/drei` 10.7, plus `@types/three` (dev), avec l'accord de l'utilisateur. **Modèle 3D neutre, sans Three.js** : `buildBuildingModel(doc, { upToLevelId? })` renvoie les morceaux de mur, les dalles / toits et l'emprise. Repère : x = x du plan, y = hauteur, z = y du plan, en mm. **Murs** : une boîte par segment ; une ouverture coupe le segment en trumeaux (pleine hauteur), allège (sous la fenêtre) et linteau (au-dessus), sans calcul booléen ; les angles intérieurs et les tracés fermés sont prolongés d'une demi-épaisseur pour boucher les coins ; une ouverture plus haute que le mur est coupée à sa hauteur. **Dalles** : sous chaque pièce, dessus à l'altitude du niveau, épaisseur du niveau vers le bas. **Toit plat** : sur les pièces du dernier niveau, seulement quand tous les niveaux sont affichés (pas de toit en vue « étage ouvert »). Éléments masqués ignorés ; un élément sans niveau est rattaché au premier niveau ; un Visuel donne un modèle vide. Chaque mur se construit séparément (`buildWallPieces`) : le panneau 3D pourra ne recalculer que les murs modifiés.
+- Choix : les angles non droits sont bouchés par simple prolongement (léger dépassement possible à l'extérieur), pas par un onglet exact.
+- Fichiers : `src/features/building/{types,wallPieces,model,model.test}.ts`, `package.json`, `docs/{03-ROADMAP,PROGRESS}.md`
+- Vérification : build ✓ lint ✓ tests ✓ (1834 au total, dont 24 nouveaux : fenêtre de 1 200 × 1 000 mm à 900 mm d'allège = trou à la bonne hauteur, porte, angles, niveaux, étage ouvert, toit, emprise). Rien de visible à l'écran pour l'instant.
+- Commit : feat: modèle 3D du bâtiment (fonctions pures)
 
 ### 2026-11-10 — M7 · Lot D · Séjour, salle à manger, chambre, rangements
 - Fait : **fiches du catalogue complet générées** depuis `docs/06-BIBLIOTHEQUE.md` (392 objets : id, catégorie, taille, tailles rapides, mode de redimensionnement, miroir, pointillé, nominal, zone ; noms français et mots-clés dans `src/i18n/libraryTexts.ts`) ; limites min / max déduites (de la moitié au double, élargies aux tailles rapides ; `fixed` = une taille ; `length` = profondeur gardée) ; les éléments « au-dessus du plan de coupe » sont dessinés en pointillé, les zones en pointillé long. **Catégories ouvertes** dans le panneau : séjour et salon (29), salle à manger (18), chambre (23), rangements et entrée (16) = 86 objets. **Gabarits** : caissons (plein, plateau, tiroirs, portes, compartiments, ouvert, croix), bandeau mural, tables (rectangulaire, ronde, ovale), ronds, sièges (chaise, avec accoudoirs, fauteuil, à oreilles, fauteuil de bureau, banc), canapés droit et en L (angle ou méridienne, asymétriques : « Retourner » actif), lits (simple/double, superposé, bébé), piano droit et à queue, tapis, poêle, cheminée, plante, paravent.

@@ -1,9 +1,9 @@
 import { fr } from '../../i18n/fr'
-import type { FabricsDocument, Project } from '../../types/document'
+import type { FabricsDocument, PlanSettings, Project } from '../../types/document'
 import { createLevel, DEFAULT_LEVEL_HEIGHT } from './levels'
 
 /** Version actuelle du format de document (voir `FabricsDocument.version`). */
-export const CURRENT_DOCUMENT_VERSION: FabricsDocument['version'] = 3
+export const CURRENT_DOCUMENT_VERSION: FabricsDocument['version'] = 4
 
 /** Document tel qu'il peut être lu depuis le stockage : version quelconque. */
 export type StoredDocument = Omit<FabricsDocument, 'version'> & { version: number }
@@ -36,6 +36,8 @@ export function migrateDocument(document: StoredDocument): FabricsDocument {
   if (current.version === 1) current = { ...current, version: 2 }
   // v2 → v3 (M6) : un plan reçoit un niveau « Rez-de-chaussée » qui porte tous ses éléments.
   if (current.version === 2) current = migrateV2ToV3(current)
+  // v3 → v4 (M8) : un plan reçoit l'orientation du nord (0 = en haut du plan).
+  if (current.version === 3) current = migrateV3ToV4(current)
 
   return current as FabricsDocument
 }
@@ -58,6 +60,16 @@ function migrateV2ToV3(document: StoredDocument): StoredDocument {
     levels: [level],
     elements: document.elements.map((element) => ({ ...element, levelId: level.id })),
   }
+}
+
+/**
+ * v3 → v4 (M8). Un plan reçoit `plan.northAngle = 0` (le nord est en haut du plan, comme il
+ * l'a toujours été à l'écran) ; un angle déjà présent est gardé. Un visuel ne change que de version.
+ */
+function migrateV3ToV4(document: StoredDocument): StoredDocument {
+  if (!document.plan) return { ...document, version: 4 }
+  const { northAngle } = document.plan as Partial<PlanSettings>
+  return { ...document, version: 4, plan: { ...document.plan, northAngle: northAngle ?? 0 } }
 }
 
 /** Met le document d'un projet au format actuel (même objet si rien ne change). */

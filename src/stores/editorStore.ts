@@ -142,6 +142,8 @@ interface EditorState {
   endLiveEdit: () => void
   /** Modifie les réglages du plan (échelle, grille, murs par défaut) ; sans effet dans un visuel. */
   updatePlanSettings: (patch: Partial<PlanSettings>) => void
+  /** Change la taille de la page (dans les limites de l'unité) ; les éléments ne bougent pas. */
+  setPageSize: (width: number, height: number) => void
   /** Sélectionne tout ce qui est visible et déverrouillé. */
   selectAll: () => void
   copySelection: () => void
@@ -507,6 +509,18 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         history: { past: [...history.past, base].slice(-HISTORY_LIMIT), future: [] },
         revision: revision + 1,
       })
+    },
+
+    setPageSize: (width, height) => {
+      const unit = get().project?.document.unit
+      if (!unit) return
+      const next = { width: clampPageDimension(width, unit), height: clampPageDimension(height, unit) }
+      commit((doc) =>
+        doc.page.width === next.width && doc.page.height === next.height
+          ? doc
+          : { ...doc, page: { ...doc.page, ...next } },
+      )
+      get().fitView()
     },
 
     updatePlanSettings: (patch) =>

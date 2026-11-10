@@ -26,6 +26,7 @@ export const DEFAULT_PLAN_SETTINGS: PlanSettings = {
   snapToGrid: true,
   defaultWallThickness: 200,
   defaultWallHeight: 2500,
+  northAngle: 0,
 }
 
 export const PLAN_PAGE = { width: 20000, height: 15000 } as const // mm

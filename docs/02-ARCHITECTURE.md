@@ -457,7 +457,7 @@ export interface Level {
 }
 // FabricsDocument.levels?: Level[]   (projets Plan uniquement, au moins un niveau)
 // BaseElement.levelId?: string       (éléments de plan ; absent = commun à tous les niveaux)
-// PlanSettings.northAngle: number    (degrés, M8)
+// PlanSettings.northAngle: number    (M8, réalisé, version 4 : degrés 0–359, sens horaire depuis le haut du plan ; 0 = nord en haut)
 
 // M7
 export interface AxisElement extends BaseElement {

@@ -1,3 +1,4 @@
+import { normalizeNorthAngle } from '../../features/building/north'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import NumberField from '../ui/NumberField'
@@ -74,6 +75,14 @@ export default function PlanSettingsSection() {
         value={plan.defaultWallThickness}
         step={10}
         onCommit={(mm) => updatePlanSettings({ defaultWallThickness: Math.max(1, mm) })}
+      />
+
+      <NumberField
+        label={fr.planSettings.northAngle}
+        suffix={fr.planSettings.unitDegrees}
+        value={plan.northAngle}
+        step={15}
+        onCommit={(degrees) => updatePlanSettings({ northAngle: normalizeNorthAngle(degrees) })}
       />
     </div>
   )

@@ -51,6 +51,7 @@ describe('createPlanProject', () => {
       snapToGrid: true,
       defaultWallThickness: 200,
       defaultWallHeight: 2500,
+      northAngle: 0,
     })
   })
 

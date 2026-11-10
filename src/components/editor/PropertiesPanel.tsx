@@ -19,6 +19,7 @@ import NumberField from '../ui/NumberField'
 import FurnitureFields from './FurnitureFields'
 import OpeningFields from './OpeningFields'
 import PlanElementFields from './PlanElementFields'
+import PageSizeSection from './PageSizeSection'
 import PlanSettingsSection from './PlanSettingsSection'
 
 const ALIGNMENTS: { align: TextElement['align']; icon: LucideIcon; label: string }[] = [
@@ -98,6 +99,7 @@ export default function PropertiesPanel() {
       {selected.length === 0 && (
         <>
           <p className="mt-3 text-sm text-slate-500">{fr.properties.empty}</p>
+          <PageSizeSection />
           <PlanSettingsSection />
         </>
       )}
