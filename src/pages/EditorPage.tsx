@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EditorStage from '../components/editor/EditorStage'
+import LayersPanel from '../components/editor/LayersPanel'
 import Notice from '../components/editor/Notice'
 import PropertiesPanel from '../components/editor/PropertiesPanel'
 import Toolbar from '../components/editor/Toolbar'
@@ -83,6 +84,7 @@ export default function EditorPage() {
         </div>
         <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white">
           <PropertiesPanel />
+          <LayersPanel />
         </aside>
       </div>
     </div>

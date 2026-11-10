@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
+import { moveElementToSlot, sameOrder, stepElement } from '../features/documents/layers'
 import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, Project } from '../types/document'
@@ -53,6 +54,10 @@ interface EditorState {
   updateElements: (ids: string[], updater: (element: CanvasElement) => CanvasElement) => void
   removeElements: (ids: string[]) => void
   duplicateElements: (ids: string[]) => void
+  /** Déplace un élément à un emplacement de la liste des calques (voir `moveElementToSlot`). */
+  reorderElement: (id: string, slot: number) => void
+  /** Monte ou descend un élément d'un cran dans l'ordre d'affichage. */
+  stepElementOrder: (id: string, direction: 'up' | 'down') => void
   undo: () => void
   redo: () => void
 }
@@ -211,6 +216,18 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         copies.map((el) => el.id),
       )
     },
+
+    reorderElement: (id, slot) =>
+      commit((doc) => {
+        const elements = moveElementToSlot(doc.elements, id, slot)
+        return sameOrder(elements, doc.elements) ? doc : { ...doc, elements }
+      }),
+
+    stepElementOrder: (id, direction) =>
+      commit((doc) => {
+        const elements = stepElement(doc.elements, id, direction)
+        return sameOrder(elements, doc.elements) ? doc : { ...doc, elements }
+      }),
 
     undo: () => {
       const { project, history } = get()

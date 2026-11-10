@@ -118,6 +118,39 @@ describe('duplication', () => {
   })
 })
 
+describe('ordre des calques', () => {
+  it('monte un élément et annule', () => {
+    const a = rect('A')
+    const b = rect('B')
+    store().addElement(a)
+    store().addElement(b)
+    store().stepElementOrder(a.id, 'up')
+    expect(elements().map((el) => el.name)).toEqual(['B', 'A'])
+    store().undo()
+    expect(elements().map((el) => el.name)).toEqual(['A', 'B'])
+  })
+
+  it('n’ajoute pas d’historique quand l’ordre ne change pas', () => {
+    const a = rect('A')
+    store().addElement(a)
+    const before = store().history.past.length
+    store().stepElementOrder(a.id, 'up')
+    store().reorderElement(a.id, 0)
+    expect(store().history.past.length).toBe(before)
+  })
+
+  it('déplace un élément à un emplacement de la liste', () => {
+    const a = rect('A')
+    const b = rect('B')
+    const c = rect('C')
+    store().addElement(a)
+    store().addElement(b)
+    store().addElement(c)
+    store().reorderElement(a.id, 0) // tout en haut de la liste = devant tout
+    expect(elements().map((el) => el.name)).toEqual(['B', 'C', 'A'])
+  })
+})
+
 describe('édition de texte', () => {
   function textElement(text: string) {
     return createTextElement('Texte 1', 0, 0, text, 48)
