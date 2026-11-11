@@ -38,6 +38,7 @@ export type EditorTool =
   | 'room'
   | 'platform'
   | 'stair'
+  | 'chimney'
   | 'dimension'
   | 'axis'
   | 'furniture'
@@ -51,6 +52,7 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
   'room',
   'platform',
   'stair',
+  'chimney',
   'dimension',
   'axis',
   'furniture',

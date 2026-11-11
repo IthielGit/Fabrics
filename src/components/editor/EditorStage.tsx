@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Ellipse, Group, Layer, Line, Rect, Stage } from 'react-konva'
 import {
   createEllipseElement,
+  createChimneyElement,
   createFurnitureElement,
   createLineElement,
   createRectElement,
@@ -40,9 +41,14 @@ import PolylineDraftLayer from './PolylineDraftLayer'
 import SelectionTransformer from './SelectionTransformer'
 import { WallJoinsContext } from './shapes/WallJoinsContext'
 import FurnitureGhost from './FurnitureGhost'
+import ChimneyUpperGhosts from './ChimneyUpperGhosts'
 import StairGhost from './StairGhost'
 import StairUpperGhosts from './StairUpperGhosts'
 import { planStairPlacement } from '../../features/stairs/placement'
+import {
+  DEFAULT_CHIMNEY_HEIGHT_ABOVE_TOP,
+  DEFAULT_CHIMNEY_SIZE,
+} from '../../features/building/chimney'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
 import { useCalibrationTool } from './useCalibrationTool'
@@ -251,6 +257,25 @@ export default function EditorStage() {
     useLibraryPrefs.getState().addRecent(def.id)
   }
 
+  /** Pose une cheminée de taille par défaut, centrée sur `point` (aimantée à la grille). */
+  const placeChimney = (point: Point) => {
+    const snap = (value: number) =>
+      furnitureGrid !== null && furnitureGrid > 0
+        ? Math.round(value / furnitureGrid) * furnitureGrid
+        : Math.round(value)
+    const size = DEFAULT_CHIMNEY_SIZE
+    addElement(
+      createChimneyElement(
+        nextElementName(fr.elements.chimney, 'chimney', elements),
+        Math.round(snap(point.x) - size / 2),
+        Math.round(snap(point.y) - size / 2),
+        size,
+        size,
+        DEFAULT_CHIMNEY_HEIGHT_ABOVE_TOP,
+      ),
+    ) // la cheminée posée devient la sélection ; l'outil reste actif
+  }
+
   /** Pose un escalier centré sur `point` ; refusé s'il n'y a pas de niveau au-dessus du niveau actif. */
   const placeStair = (point: Point) => {
     const state = useEditorStore.getState()
@@ -290,6 +315,8 @@ export default function EditorStage() {
       placeFurniture(point)
     } else if (activeTool === 'stair') {
       placeStair(point)
+    } else if (activeTool === 'chimney') {
+      placeChimney(point)
     } else if (drawing) {
       setDraft({ start: point, current: point, additive: false })
     } else if (activeTool === 'select') {
@@ -506,6 +533,7 @@ export default function EditorStage() {
               </Group>
             )}
             <StairUpperGhosts scale={scale} />
+            <ChimneyUpperGhosts scale={scale} />
             <WallJoinsContext.Provider value={wallJoins}>
               {drawOrder(elements).map((element) => (
                 <ElementNode

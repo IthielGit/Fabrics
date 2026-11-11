@@ -23,6 +23,7 @@ const ROOF_MATERIAL = new THREE.MeshStandardMaterial({
 
 const PLATFORM_MATERIAL = new THREE.MeshStandardMaterial({ color: '#d6b98c', roughness: 0.85 })
 const STAIR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#cbb89d', roughness: 0.85 })
+const CHIMNEY_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a8a29e', roughness: 0.95 })
 const SELECTED_WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a5b4fc', roughness: 0.9 })
 
 /** Un déplacement de plus de ce nombre de pixels entre appui et relâchement est un geste de caméra, pas un clic. */
@@ -214,6 +215,15 @@ export default function Viewer3DScene({
             key={`step-${piece.sourceId}-${i}`}
             piece={piece}
             material={STAIR_MATERIAL}
+            selected={selectedIds.has(piece.sourceId)}
+            onSelectWall={onSelectWall}
+          />
+        ))}
+        {model.chimneys.map((piece, i) => (
+          <WallMesh
+            key={`chimney-${piece.sourceId}-${i}`}
+            piece={piece}
+            material={CHIMNEY_MATERIAL}
             selected={selectedIds.has(piece.sourceId)}
             onSelectWall={onSelectWall}
           />

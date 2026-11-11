@@ -30,6 +30,7 @@ export function numericPropsFor(element: CanvasElement): NumericProp[] {
       return ['x', 'y', 'width', 'rotation', 'opacity', 'fontSize']
     case 'image':
       return ['x', 'y', 'width', 'height', 'rotation', 'opacity']
+    case 'chimney':
     case 'stair':
       // Forme et dimensions : champs propres (StairFields).
       return ['x', 'y', 'rotation', 'opacity']

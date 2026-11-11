@@ -14,7 +14,8 @@ function ownCenter(element: CanvasElement): Point | null {
     case 'furniture':
     case 'rect':
     case 'image':
-    case 'stair': {
+    case 'stair':
+    case 'chimney': {
       const { width: w, height: h } = boxSize(element)
       const angle = toRadians(element.rotation)
       return {

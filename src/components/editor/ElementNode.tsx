@@ -1,5 +1,6 @@
 import type { CanvasElement } from '../../types/document'
 import AxisShape from './shapes/AxisShape'
+import ChimneyShape from './shapes/ChimneyShape'
 import DimensionShape from './shapes/DimensionShape'
 import EllipseShape from './shapes/EllipseShape'
 import FurnitureShape from './shapes/FurnitureShape'
@@ -49,5 +50,7 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <PlatformShape element={element} {...interaction} />
     case 'stair':
       return <StairShape element={element} {...interaction} />
+    case 'chimney':
+      return <ChimneyShape element={element} {...interaction} />
   }
 }

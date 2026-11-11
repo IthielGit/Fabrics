@@ -158,6 +158,7 @@ describe('buildBuildingModel', () => {
     expect(buildBuildingModel({ elements: [], levels: undefined })).toEqual({
       walls: [],
       steps: [],
+      chimneys: [],
       slabs: [],
       bounds: null,
     })

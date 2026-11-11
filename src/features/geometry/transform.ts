@@ -1,6 +1,7 @@
 import type {
   AxisElement,
   CanvasElement,
+  ChimneyElement,
   DimensionElement,
   FurnitureElement,
   ImageElement,
@@ -55,12 +56,15 @@ export function translateElement(element: CanvasElement, dx: number, dy: number)
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
 
 /** Largeur et hauteur de la boîte (avant rotation) d'un élément posé par son coin haut-gauche. */
-export function boxSize(element: FurnitureElement | RectElement | ImageElement | StairElement): {
+export function boxSize(
+  element: FurnitureElement | RectElement | ImageElement | StairElement | ChimneyElement,
+): {
   width: number
   height: number
 } {
   switch (element.type) {
     case 'furniture':
+    case 'chimney':
       return { width: element.width, height: element.depth }
     case 'stair':
       return stairSize(element)
@@ -82,7 +86,8 @@ export function rotateQuarterTurn(element: CanvasElement): CanvasElement {
     case 'furniture':
     case 'rect':
     case 'image':
-    case 'stair': {
+    case 'stair':
+    case 'chimney': {
       const { width: w, height: h } = boxSize(element)
       const before = toRadians(element.rotation)
       const after = toRadians(rotation)
@@ -225,6 +230,13 @@ export function applyNodeTransform(element: CanvasElement, node: NodeTransform):
         : { width: Math.round(requested.width), depth: Math.round(requested.depth) }
       return { ...element, ...base, ...size }
     }
+    case 'chimney':
+      return {
+        ...element,
+        ...base,
+        width: Math.max(100, Math.round(element.width * scaleX)),
+        depth: Math.max(100, Math.round(element.depth * scaleY)),
+      }
     case 'line':
       // Les points sont relatifs à (x, y) : on les étire dans les axes du nœud.
       return {

@@ -472,7 +472,7 @@ export interface FurnitureElement extends BaseElement {
   depth: number;             // mm
 }
 
-// M9 (à réaliser) : trois nouveaux types, **pas de changement de version** (même règle
+// M9 (réalisé) : trois nouveaux types, **pas de changement de version** (même règle
 // qu'en M7 : un nouveau type ne modifie aucun ancien projet).
 export interface PlatformElement extends BaseElement {
   type: 'platform';
@@ -534,6 +534,7 @@ Règles :
   ni dans les exports ni dans les miniatures.
 - Un élément créé ou collé reçoit le `levelId` du niveau actif. Dupliquer un niveau copie ses murs
   et leurs ouvertures (pas les pièces) juste au-dessus ; supprimer un niveau supprime ses éléments.
+- Changer la hauteur d'étage d'un niveau remonte ou descend d'autant les niveaux au-dessus s'ils étaient empilés dessus (le niveau du dessus démarrait à altitude + hauteur) : les escaliers se recalculent. Un niveau dont l'altitude a été réglée à la main n'est pas déplacé.
 - Les métrés d'un niveau ne comptent que ses propres éléments : les totaux du bâtiment sont la
   somme des niveaux. Le CSV a une colonne « Niveau » et un tableau de totaux par niveau.
 - Les exports PNG, JPG et PDF d'un plan portent sur le niveau affiché.

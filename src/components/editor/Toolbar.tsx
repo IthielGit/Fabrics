@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import {
   BrickWall,
+  BrickWallFire,
   Circle,
   Crosshair,
   DoorOpen,
@@ -45,6 +46,7 @@ const PLAN_TOOLS: ToolDefinition[] = [
   { tool: 'room', icon: Pentagon, label: fr.tools.room, shortcut: 'P' },
   { tool: 'platform', icon: Layers2, label: fr.tools.platform },
   { tool: 'stair', icon: Footprints, label: fr.tools.stair },
+  { tool: 'chimney', icon: BrickWallFire, label: fr.tools.chimney },
   { tool: 'dimension', icon: Ruler, label: fr.tools.dimension, shortcut: 'D' },
   { tool: 'axis', icon: Hash, label: fr.tools.axis, shortcut: 'A' },
   { tool: 'door', icon: DoorOpen, label: fr.tools.door, shortcut: 'B' },

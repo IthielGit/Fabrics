@@ -16,6 +16,7 @@ import { useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement, TextElement } from '../../types/document'
 import ColorField from '../ui/ColorField'
 import NumberField from '../ui/NumberField'
+import ChimneyFields from './ChimneyFields'
 import FurnitureFields from './FurnitureFields'
 import OpeningFields from './OpeningFields'
 import PlatformFields from './PlatformFields'
@@ -136,6 +137,7 @@ export default function PropertiesPanel() {
         {element.type === 'furniture' && <FurnitureFields element={element} />}
         {element.type === 'platform' && <PlatformFields element={element} />}
         {element.type === 'stair' && <StairFields element={element} />}
+        {element.type === 'chimney' && <ChimneyFields element={element} />}
         {numericPropsFor(element).map((prop) => (
           <NumberField
             key={prop}

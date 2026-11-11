@@ -1,6 +1,7 @@
 import type {
   AxisElement,
   CanvasElement,
+  ChimneyElement,
   DimensionElement,
   EllipseElement,
   FabricsDocument,
@@ -216,6 +217,18 @@ export function createStairElement(
     ...(lengths.gap !== undefined ? { gap: lengths.gap } : {}),
     voidMargin,
   }
+}
+
+/** Cheminée posée avec le coin haut-gauche de son conduit en (x, y). */
+export function createChimneyElement(
+  name: string,
+  x: number,
+  y: number,
+  width: number = 600,
+  depth: number = 600,
+  heightAboveTop: number = 800,
+): ChimneyElement {
+  return { ...BASE, id: crypto.randomUUID(), type: 'chimney', name, x, y, width, depth, heightAboveTop }
 }
 
 /** Cote entre deux points (coordonnées absolues en mm). */

@@ -16,6 +16,7 @@ export default function ToolHint() {
     tool === 'room' ||
     tool === 'platform' ||
     tool === 'stair' ||
+    tool === 'chimney' ||
     tool === 'dimension' ||
     tool === 'axis' ||
     tool === 'furniture' ||

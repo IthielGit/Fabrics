@@ -6,6 +6,7 @@ import { dimensionGeometry } from '../geometry/dimension'
 import { openingGeometry } from '../geometry/openings'
 import { openingSymbol } from '../geometry/openingSymbol'
 import { stairFootprint } from '../stairs/stairs'
+import { chimneyFootprint } from '../building/chimney'
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import { wallFaces } from '../geometry/walls'
@@ -92,6 +93,8 @@ export function elementBounds(element: CanvasElement): Box | null {
       return pointsBox(toPoints(element.points))
     case 'stair':
       return pointsBox(stairFootprint(element))
+    case 'chimney':
+      return pointsBox(chimneyFootprint(element))
     case 'dimension': {
       const geometry = dimensionGeometry(element.points, element.offset)
       const [ax, ay, bx, by] = element.points

@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M9 — Outils de construction (en cours ; M8 validé le 2026-11-11)
-- **Dernière tâche terminée :** lot D bis de M9 (trémies)
-- **Prochaine tâche :** lot E de M9 (cheminées)
+- **Dernière tâche terminée :** lot E de M9 (cheminées) : tous les lots de M9 sont codés
+- **Prochaine tâche :** validation de M9 par l'utilisateur (critères d'acceptation à contrôler dans le navigateur), puis M10
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -23,7 +23,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
-| M9 Outils de construction | en cours (lots A à D bis faits) | |
+| M9 Outils de construction | tous les lots faits, en attente de validation | |
 | M10 Façades, coupes et planche | à faire | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
@@ -39,6 +39,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M9 · Lot E · Cheminées
+- Fait : nouveau type **`chimney`** (conduit `width × depth`, `heightAboveTop`, `x, y, rotation` comme le mobilier ; pas de changement de version). **Outil Cheminée** (bouton `BrickWallFire`, sans raccourci) : un clic pose un conduit de 600 × 600 mm (dépassement 800 mm), centré et aimanté à la grille ; l'outil reste actif. **2D** : carré gris aux deux diagonales sur son niveau ; **contour fantôme** (pointillé, croix légère) sur tous les niveaux au-dessus du sien. **3D** : une boîte du plancher de son niveau jusqu'au dessus du dernier niveau affiché + le dépassement, cliquable, **sans trou dans les dalles**. **Propriétés** : nom, largeur, profondeur, dépassement, position et rotation ; redimensionnable à la poignée (mm entiers, minimum 100 mm) ; `Maj + R` la tourne sur place. Pas dans les métrés (aucune quantité prévue au jalon).
+- Fichiers : `src/features/building/{chimney,chimney.test,model,types}.ts`, `src/features/documents/elements.ts`, `src/features/geometry/{transform,rotateSelection}.ts`, `src/features/export/bounds.ts`, `src/components/editor/{shapes/ChimneyShape,ChimneyFields,ChimneyUpperGhosts,ElementNode,PropertiesPanel,Toolbar,ToolHint,EditorStage,LayersPanel}`, `src/components/viewer3d/Viewer3DScene.tsx`, `src/stores/editorStore.ts`, `src/i18n/fr.ts`, `src/types/document.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2042, dont 12 nouveaux) — pose, fantôme et volume 3D à contrôler dans le navigateur
+- Commit : feat: M9 lot E, cheminées
 
 ### 2026-11-11 — M9 · Lot D bis · Trémies
 - Fait : la **trémie** d'un escalier est calculée (emprise agrandie de la marge, 50 mm par défaut ; jamais stockée) : rectangle pour un escalier droit, **polygone en L** pour un L, rectangle englobant pour un U (volées, palier et jour central). **Dalle 3D** du niveau du dessus **trouée** : la dalle d'une pièce reçoit un trou par trémie qui tient entièrement dans la pièce (forme à trous Three.js, pas de calcul booléen) ; déplacer l'escalier déplace le trou. **Plan du niveau du dessus** : contour pointillé de la trémie avec une croix par rectangle, en plus du contour fantôme de l'escalier. **Métrés** : chaque pièce a sa surface au tracé, sa trémie et sa **surface nette** (panneau Métrés, propriétés de la pièce, totaux du bâtiment) ; le CSV du tableau des pièces gagne les colonnes **« Trémie (m²) »** et **« Surface nette (m²) »**. Une pièce de 5000 × 4000 mm (20,00 m²) au-dessus d'un escalier droit de 1000 × 3500 mm : trou de 1100 × 3600 mm (3,96 m²), 20,00 m² au tracé et 16,04 m² net. **Trémie qui déborde de la pièce** (première version, pas de découpe entre polygones) : avertissement rouge (propriétés de l'escalier, métrés, contour rouge sur le plan), dalle laissée pleine, aucune surface retirée. Niveau du dessus supprimé : plus de trémie. Une trémie est attribuée à la pièce du niveau du dessus qui contient son centre ; sans pièce, il n'y a rien à percer et pas d'avertissement.

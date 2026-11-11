@@ -10,6 +10,7 @@ import type {
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import type { BuildOptions, BuildingModel, Bounds3, SlabShape, WallPiece } from './types'
+import { buildChimney } from './chimney'
 import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
 import { buildStairSteps } from './stairSteps'
 import { buildWallPieces } from './wallPieces'
@@ -124,7 +125,7 @@ export function buildBuildingModel(
 ): BuildingModel {
   const allLevels = doc.levels ?? []
   const levels = visibleLevels(allLevels, options.upToLevelId)
-  if (levels.length === 0) return { walls: [], steps: [], slabs: [], bounds: null }
+  if (levels.length === 0) return { walls: [], steps: [], chimneys: [], slabs: [], bounds: null }
 
   const sortedAll = [...allLevels].sort((a, b) => a.elevation - b.elevation)
   const topLevel = sortedAll[sortedAll.length - 1]
@@ -141,6 +142,7 @@ export function buildBuildingModel(
   const stairVoids = collectStairVoids(doc.elements, allLevels)
   const walls: WallPiece[] = []
   const steps: WallPiece[] = []
+  const chimneys: WallPiece[] = []
   const slabs: SlabShape[] = []
 
   for (const el of doc.elements) {
@@ -149,6 +151,9 @@ export function buildBuildingModel(
     if (!level) continue
     if (el.type === 'wall') {
       walls.push(...buildWallPieces(el as WallElement, openings, level))
+    } else if (el.type === 'chimney') {
+      const piece = buildChimney(el, level, levels)
+      if (piece) chimneys.push(piece)
     } else if (el.type === 'stair') {
       steps.push(...buildStairSteps(el, level, allLevels))
     } else if (el.type === 'platform') {
@@ -167,5 +172,11 @@ export function buildBuildingModel(
       }
     }
   }
-  return { walls, steps, slabs, bounds: modelBounds([...walls, ...steps], slabs) }
+  return {
+    walls,
+    steps,
+    chimneys,
+    slabs,
+    bounds: modelBounds([...walls, ...steps, ...chimneys], slabs),
+  }
 }

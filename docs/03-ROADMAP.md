@@ -280,8 +280,8 @@ détaillées : `docs/02-ARCHITECTURE.md`, section « Outils de construction (M9)
 - [x] Trémie qui déborde de la pièce : avertissement, dalle laissée pleine (cas noté dans « Idées »)
 
 ### Lot E — Cheminées
-- [ ] Type `chimney` (emprise, rotation, dépassement en mm au-dessus du dernier niveau)
-- [ ] Symbole 2D sur son niveau, contour fantôme sur les niveaux du dessus ; volume en 3D
+- [x] Type `chimney` (emprise, rotation, dépassement en mm au-dessus du dernier niveau)
+- [x] Symbole 2D sur son niveau, contour fantôme sur les niveaux du dessus ; volume en 3D
       (sans trou dans les dalles) ; propriétés
 
 **Critères d'acceptation**

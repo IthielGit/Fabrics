@@ -173,6 +173,15 @@ export interface StairElement extends BaseElement {
   voidMargin: number;        // mm, marge de la trémie autour de l'emprise (défaut 50)
 }
 
+// Cheminée (M9) : conduit qui traverse les niveaux au-dessus du sien jusqu'au toit. x, y = coin
+// haut-gauche avant rotation (comme `furniture`).
+export interface ChimneyElement extends BaseElement {
+  type: 'chimney';
+  width: number;             // mm
+  depth: number;             // mm
+  heightAboveTop: number;    // mm, dépassement au-dessus du dernier niveau
+}
+
 // Plateforme (M9) : estrade ou podium. Polygone à points absolus (déplacement seul, règle D6).
 export interface PlatformElement extends BaseElement {
   type: 'platform';
@@ -185,4 +194,4 @@ export interface PlatformElement extends BaseElement {
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
   | WallElement | RoomElement | DimensionElement | OpeningElement | AxisElement
-  | FurnitureElement | PlatformElement | StairElement;
+  | FurnitureElement | PlatformElement | StairElement | ChimneyElement;
