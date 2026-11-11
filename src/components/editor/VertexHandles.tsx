@@ -4,6 +4,7 @@ import { Circle } from 'react-konva'
 import type { AxisSegment } from '../../features/geometry/axes'
 import {
   collectAlignTargets,
+  collectOpeningSnapPoints,
   collectSnapAxes,
   collectSnapVertices,
   collectSnapWallAxes,
@@ -48,6 +49,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
   const snapAxes = useRef<AxisSegment[]>([])
   const snapWallAxes = useRef<WallAxisSegment[]>([])
   const snapAlign = useRef<Point[]>([])
+  const snapOpenings = useRef<Point[]>([])
 
   if (!enabled || !element) return null
   const vertices = getVertices(element)
@@ -69,10 +71,15 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
         : []
     // Guides d'alignement : un mur s'aligne sur les points d'axe des autres éléments, une pièce ou
     // une cote aussi sur les angles des faces de murs.
+    // Une extrémité de cote s'aimante aussi aux bords et au milieu des ouvertures.
+    snapOpenings.current =
+      element.type === 'dimension'
+        ? collectOpeningSnapPoints(selectActiveElements(store))
+        : []
     snapAlign.current =
       element.type === 'wall'
         ? collectAlignTargets(selectActiveElements(store), new Set([element.id]))
-        : snapVertices.current
+        : [...snapVertices.current, ...snapOpenings.current]
   }
 
   const handleDragMove = (index: number) => (event: Konva.KonvaEventObject<DragEvent>) => {
@@ -95,6 +102,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
       { x: node.x(), y: node.y() },
       {
         vertices: snapVertices.current,
+        openingPoints: snapOpenings.current,
         axes: snapAxes.current,
         wallAxes: event.evt.altKey ? undefined : snapWallAxes.current,
         alignTargets: event.evt.altKey ? undefined : [...snapAlign.current, ...own],

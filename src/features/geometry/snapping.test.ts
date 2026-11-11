@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement, DimensionElement, RoomElement, WallElement } from '../../types/document'
-import { createAxisElement } from '../documents/elements'
+import { createAxisElement, createOpeningElement } from '../documents/elements'
 import {
   collectAlignTargets,
+  collectOpeningSnapPoints,
   collectSnapAxes,
   collectSnapVertices,
   collectSnapWallAxes,
@@ -450,5 +451,50 @@ describe('collectSnapVertices', () => {
       cornerRadius: 0,
     }
     expect(collectSnapVertices([rect])).toEqual([])
+  })
+})
+
+describe('aimantation sur les ouvertures (cotes)', () => {
+  // Mur de 0 à 4 000 mm sur l'axe y = 0, épaisseur 200 ; porte de 900 mm centrée à 1 000 mm.
+  const w = wall('w', [0, 0, 4000, 0])
+  const door = createOpeningElement('door', 'Porte', {
+    wallId: 'w',
+    segmentIndex: 0,
+    offset: 1000,
+    side: 'left',
+  })
+  const sized = { ...door, width: 900 }
+
+  it('donne les jambages et le milieu sur l’axe et sur les deux faces', () => {
+    const points = collectOpeningSnapPoints([w, sized])
+    expect(points).toHaveLength(9)
+    const has = (x: number, y: number) =>
+      points.some((p) => Math.abs(p.x - x) < 1e-6 && Math.abs(p.y - y) < 1e-6)
+    expect(has(550, 100)).toBe(true)
+    expect(has(550, -100)).toBe(true)
+    expect(has(1450, 0)).toBe(true)
+    expect(has(1000, 100)).toBe(true)
+  })
+
+  it('ignore une ouverture masquée, sans mur ou dont le mur est masqué', () => {
+    expect(collectOpeningSnapPoints([w, { ...sized, hidden: true }])).toEqual([])
+    expect(collectOpeningSnapPoints([sized])).toEqual([])
+    expect(collectOpeningSnapPoints([{ ...w, hidden: true }, sized])).toEqual([])
+  })
+
+  it('aimante le curseur sur un jambage, avant les sommets', () => {
+    const openingPoints = collectOpeningSnapPoints([w, sized])
+    const result = snapPoint(
+      { x: 560, y: 90 },
+      { ...NONE, threshold: 30, openingPoints, vertices: [{ x: 580, y: 100 }] },
+    )
+    expect(result.kind).toBe('opening')
+    expect(result.point).toEqual({ x: 550, y: 100 })
+  })
+
+  it('n’aimante pas hors de la distance d’accroche', () => {
+    const openingPoints = collectOpeningSnapPoints([w, sized])
+    const result = snapPoint({ x: 700, y: 400 }, { ...NONE, threshold: 30, openingPoints })
+    expect(result.kind).toBe('none')
   })
 })

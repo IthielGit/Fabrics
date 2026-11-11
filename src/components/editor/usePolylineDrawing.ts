@@ -12,6 +12,7 @@ import type { Guide } from '../../features/geometry/guides'
 import { flattenPoints, pointDistance } from '../../features/geometry/polygon'
 import {
   collectAlignTargets,
+  collectOpeningSnapPoints,
   collectSnapAxes,
   collectSnapVertices,
   collectSnapWallAxes,
@@ -164,6 +165,15 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     return wallAxesCache.current.axes
   }, [])
 
+  /** Jambages et milieux des ouvertures du niveau actif, pour coter (mis en cache). */
+  const openingCache = useRef<{ elements: readonly CanvasElement[]; points: Point[] } | null>(null)
+  const openingPoints = useCallback((elements: readonly CanvasElement[]): Point[] => {
+    if (openingCache.current?.elements !== elements) {
+      openingCache.current = { elements, points: collectOpeningSnapPoints(elements) }
+    }
+    return openingCache.current.points
+  }, [])
+
   const snap = useCallback(
     (raw: Point, shift: boolean, alt: boolean) => {
       const { project } = useEditorStore.getState()
@@ -171,9 +181,12 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       const current = readDraft().points
       const plan = project.document.plan
       const active = selectActiveElements(useEditorStore.getState())
+      const onOpenings = tool === 'dimension' ? openingPoints(active) : undefined
       return snapPoint(raw, {
         // On ne s'aimante qu'aux éléments du niveau actif (les axes valent pour tous les niveaux).
         vertices: [...planVertices(active), ...current],
+        // Une cote s'aimante aux bords et au milieu des portes, fenêtres et baies.
+        openingPoints: onOpenings,
         axes: collectSnapAxes(active),
         // Un mur se raccorde à l'axe d'un mur existant (pas les pièces ni les cotes, qui suivent
         // les faces) ; Alt coupe cette aimantation.
@@ -182,7 +195,11 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         // pièces et cotes aussi sur les angles des faces de murs. Alt coupe les guides.
         alignTargets: alt
           ? undefined
-          : [...(tool === 'room' || tool === 'dimension' ? planVertices(active) : alignTargets(active)), ...current],
+          : [
+              ...(tool === 'room' || tool === 'dimension' ? planVertices(active) : alignTargets(active)),
+              ...(onOpenings ?? []),
+              ...current,
+            ],
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
         from: current.length > 0 ? current[current.length - 1] : null,
@@ -190,7 +207,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         softAlign: !alt,
       })
     },
-    [tool, planVertices, wallAxes, alignTargets, readDraft, scale],
+    [tool, planVertices, wallAxes, alignTargets, openingPoints, readDraft, scale],
   )
 
   const finish = useCallback(() => {

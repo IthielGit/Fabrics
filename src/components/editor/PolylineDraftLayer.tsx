@@ -22,6 +22,7 @@ interface PolylineDraftLayerProps {
 const ACCENT = '#4f46e5'
 
 const SNAP_COLORS: Record<SnapKind, string> = {
+  opening: '#0891b2', // bord ou milieu d'une porte, fenêtre ou baie
   vertex: '#16a34a', // sommet existant
   align: '#ec4899', // alignement sur un autre point (guides roses)
   axis: '#be123c', // ligne d'un axe de construction

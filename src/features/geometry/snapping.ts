@@ -6,11 +6,12 @@ import {
   type AxisSegment,
 } from './axes'
 import type { Guide } from './guides'
+import { openingGeometry } from './openings'
 import { toPoints } from './polygon'
 import type { Point } from './viewport'
 import { wallFaceCorners, wallFaces } from './walls'
 
-export type SnapKind = 'vertex' | 'axis' | 'wall' | 'align' | 'grid' | 'angle' | 'none'
+export type SnapKind = 'opening' | 'vertex' | 'axis' | 'wall' | 'align' | 'grid' | 'angle' | 'none'
 
 /** Un segment de l'axe d'un mur, avec la distance d'accroche propre au mur (sa demi-épaisseur). */
 export interface WallAxisSegment extends AxisSegment {
@@ -27,6 +28,11 @@ export interface PointSnapResult {
 export interface PointSnapContext {
   /** Sommets existants sur lesquels on peut s'aimanter. */
   vertices: readonly Point[]
+  /**
+   * Points d'ouverture (jambages et milieu, voir `collectOpeningSnapPoints`) : prioritaires sur les
+   * sommets, car ils sont plus précis qu'un angle de mur voisin.
+   */
+  openingPoints?: readonly Point[]
   /** Pas de la grille en mm, ou `null` si l'aimantation sur la grille est désactivée. */
   gridSize: number | null
   /** Distance d'accroche aux sommets, dans l'unité du document (8 px écran ÷ échelle). */
@@ -154,6 +160,11 @@ export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResul
   const { vertices, gridSize, threshold, from, constrain, axes } = context
   const constrained = constrain && from !== null
   let candidate = constrained ? constrainAngle(from, raw) : raw
+
+  if (context.openingPoints && context.openingPoints.length > 0) {
+    const opening = nearestVertex(candidate, context.openingPoints, threshold)
+    if (opening) return { point: { ...opening }, kind: 'opening' }
+  }
 
   const vertex = nearestVertex(candidate, vertices, threshold)
   if (vertex) return { point: { ...vertex }, kind: 'vertex' }
@@ -332,6 +343,41 @@ export function collectSnapWallAxes(
     }
   }
   return segments
+}
+
+/**
+ * Points d'ouverture sur lesquels une cote s'aimante : pour chaque porte, fenêtre ou baie visible
+ * (dont le mur est visible), les deux jambages (bords de l'ouverture) et le milieu, sur l'axe du mur
+ * et sur ses deux faces. Cela permet de coter la largeur d'une ouverture, ou la distance d'un angle
+ * du mur au bord d'une ouverture (trumeau).
+ */
+export function collectOpeningSnapPoints(
+  elements: readonly CanvasElement[],
+  excludeIds: ReadonlySet<string> = new Set(),
+): Point[] {
+  const walls = new Map<string, Extract<CanvasElement, { type: 'wall' }>>()
+  for (const element of elements) {
+    if (element.type === 'wall' && !element.hidden) walls.set(element.id, element)
+  }
+
+  const points: Point[] = []
+  for (const element of elements) {
+    if (element.type !== 'opening' || element.hidden || excludeIds.has(element.id)) continue
+    const wall = walls.get(element.wallId)
+    if (!wall) continue
+    const geometry = openingGeometry(element, wall)
+    if (!geometry) continue
+    const half = geometry.thickness / 2
+    for (const base of [geometry.start, geometry.center, geometry.end]) {
+      for (const side of [-1, 0, 1]) {
+        points.push({
+          x: base.x + geometry.normal.x * half * side,
+          y: base.y + geometry.normal.y * half * side,
+        })
+      }
+    }
+  }
+  return points
 }
 
 export { wallFaces }
