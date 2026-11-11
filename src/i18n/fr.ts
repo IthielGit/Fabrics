@@ -311,7 +311,7 @@ export const fr = {
   },
   hints: {
     furniture: 'Cliquez sur le plan pour poser l’objet (autant de fois que voulu) · Échap : quitter',
-    wall: 'Clic : poser un point · Maj : angles de 45° · Alt : sans alignement · Double-clic ou Entrée : terminer · Échap : annuler',
+    wall: 'Clic : poser un point (sur un mur : raccord) · Maj : angles de 45° · Alt : sans alignement · Double-clic ou Entrée : terminer · Échap : annuler',
     room: 'Clic : poser un point · Maj : angles de 45° · Alt : sans alignement · Double-clic, Entrée ou clic sur le 1er point : fermer · Échap : annuler',
     dimension: 'Cliquez deux points pour mesurer · Maj : angles de 45° · Alt : sans alignement · Échap : annuler',
     axis: 'Cliquez deux points pour tracer un axe (il reçoit sa lettre ou son numéro) · Maj : angles de 45° · Alt : sans alignement · Échap : annuler',

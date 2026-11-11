@@ -2,7 +2,13 @@ import type Konva from 'konva'
 import { useRef } from 'react'
 import { Circle } from 'react-konva'
 import type { AxisSegment } from '../../features/geometry/axes'
-import { collectSnapAxes, collectSnapVertices, snapPoint } from '../../features/geometry/snapping'
+import {
+  collectSnapAxes,
+  collectSnapVertices,
+  collectSnapWallAxes,
+  snapPoint,
+  type WallAxisSegment,
+} from '../../features/geometry/snapping'
 import {
   canRemoveVertex,
   getSegmentMidpoints,
@@ -12,7 +18,7 @@ import {
   removeVertex,
 } from '../../features/geometry/transform'
 import type { Point } from '../../features/geometry/viewport'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 
 interface VertexHandlesProps {
   /** Faux quand un outil de tracé est actif ou pendant la saisie d'un texte. */
@@ -39,6 +45,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
   // Sommets sur lesquels s'aimanter, calculés une fois au début du geste.
   const snapVertices = useRef<Point[]>([])
   const snapAxes = useRef<AxisSegment[]>([])
+  const snapWallAxes = useRef<WallAxisSegment[]>([])
 
   if (!enabled || !element) return null
   const vertices = getVertices(element)
@@ -53,6 +60,11 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
       new Set([element.id]),
     )
     snapAxes.current = collectSnapAxes(store.project?.document.elements ?? [], new Set([element.id]))
+    // Le sommet d'un mur se raccorde à l'axe des autres murs du niveau actif.
+    snapWallAxes.current =
+      element.type === 'wall'
+        ? collectSnapWallAxes(selectActiveElements(store), new Set([element.id]))
+        : []
   }
 
   const handleDragMove = (index: number) => (event: Konva.KonvaEventObject<DragEvent>) => {
@@ -74,6 +86,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
       {
         vertices: snapVertices.current,
         axes: snapAxes.current,
+        wallAxes: event.evt.altKey ? undefined : snapWallAxes.current,
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
         from: neighbour ?? null,

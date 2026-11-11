@@ -4,6 +4,7 @@ import { createAxisElement } from '../documents/elements'
 import {
   collectSnapAxes,
   collectSnapVertices,
+  collectSnapWallAxes,
   constrainAngle,
   snapPoint,
   type PointSnapContext,
@@ -200,6 +201,64 @@ describe('alignement doux (sans Maj)', () => {
     const result = snapPoint({ x: 3000, y: 2000 }, { ...SOFT, constrain: true })
     expect(result.kind).toBe('angle')
     expect(result.point.x - from.x).toBeCloseTo(result.point.y - from.y)
+  })
+})
+
+describe('aimantation sur l’axe des murs', () => {
+  // mur horizontal de 200 mm d’épaisseur, de (0, 1000) à (4000, 1000)
+  const wallAxes = [{ a: { x: 0, y: 1000 }, b: { x: 4000, y: 1000 }, reach: 100 }]
+
+  it('ramène un point posé dans l’épaisseur du mur sur son axe', () => {
+    const result = snapPoint({ x: 2000, y: 1090 }, { ...NONE, wallAxes, threshold: 20 })
+    expect(result).toEqual({ point: { x: 2000, y: 1000 }, kind: 'wall' })
+  })
+
+  it('accroche aussi à moins de la distance d’accroche d’un mur très fin', () => {
+    const thin = [{ a: { x: 0, y: 1000 }, b: { x: 4000, y: 1000 }, reach: 10 }]
+    expect(snapPoint({ x: 2000, y: 1015 }, { ...NONE, wallAxes: thin, threshold: 20 }).kind).toBe(
+      'wall',
+    )
+    expect(snapPoint({ x: 2000, y: 1050 }, { ...NONE, wallAxes: thin, threshold: 20 }).kind).toBe(
+      'none',
+    )
+  })
+
+  it('ignore un point plus loin que le mur', () => {
+    expect(snapPoint({ x: 2000, y: 1300 }, { ...NONE, wallAxes, threshold: 20 }).kind).toBe('none')
+  })
+
+  it('reste borné au segment du mur', () => {
+    const result = snapPoint({ x: 4050, y: 1000 }, { ...NONE, wallAxes, threshold: 20 })
+    expect(result.point).toEqual({ x: 4000, y: 1000 })
+  })
+
+  it('le sommet est prioritaire, et l’axe de mur passe avant la grille', () => {
+    const vertex = snapPoint(
+      { x: 4010, y: 1050 },
+      { ...NONE, wallAxes, vertices: [{ x: 4000, y: 1000 }], threshold: 80 },
+    )
+    expect(vertex.kind).toBe('vertex')
+    const grid = snapPoint({ x: 2037, y: 1060 }, { ...NONE, wallAxes, gridSize: 100, threshold: 20 })
+    expect(grid).toEqual({ point: { x: 2037, y: 1000 }, kind: 'wall' })
+  })
+
+  it('Maj : la direction contrainte prime sur l’axe de mur', () => {
+    const result = snapPoint(
+      { x: 2000, y: 1090 },
+      { ...NONE, wallAxes, threshold: 20, from: { x: 0, y: 0 }, constrain: true },
+    )
+    expect(result.kind).toBe('angle')
+  })
+
+  it('collectSnapWallAxes : un segment par côté, murs masqués et exclus écartés', () => {
+    const elements: CanvasElement[] = [
+      wall('w1', [0, 0, 1000, 0, 1000, 500]),
+      { ...wall('hidden', [0, 0, 100, 0]), hidden: true },
+      wall('skipped', [0, 0, 100, 0], 300),
+    ]
+    const axes = collectSnapWallAxes(elements, new Set(['skipped']))
+    expect(axes).toHaveLength(2)
+    expect(axes[0]).toEqual({ a: { x: 0, y: 0 }, b: { x: 1000, y: 0 }, reach: 100 })
   })
 })
 

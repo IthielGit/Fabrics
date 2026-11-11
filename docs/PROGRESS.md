@@ -39,6 +39,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · D · Liaison des murs
+- Fait : demande de l'utilisateur (murs qui se superposent au lieu de se lier). **Aimantation sur l'axe d'un mur existant** (outil Mur et glissement d'un sommet de mur) : un point posé sur un mur, dans son épaisseur, ou près de lui est ramené sur son axe, ce qui donne des jonctions en T et des murs qui partagent le même axe ; repère orange ; priorité : sommet, axe de construction, **axe de mur**, alignement, grille ; Maj (45°) et Alt (désactive) inchangés. Pas pour la pièce ni la cote, qui suivent les faces. **Raccords d'angle** : des murs séparés qui se terminent au même point avaient un coin extérieur creux (bouts droits) ; un polygone de la couleur du mur comble désormais ce creux (angles droits, obliques, murs d'épaisseurs différentes ; angle très aigu coupé en biseau). Rien aux jonctions en T / X, aux prolongements, aux extrémités libres ni aux contours fermés (déjà en onglet). Affichage seulement : le document n'est pas modifié (pas de migration), la 3D garde son propre raccord.
+- Fichiers : `src/features/geometry/{snapping,wallJoins}(.test).ts`, `src/components/editor/shapes/{WallShape.tsx,WallJoinsContext.ts}`, `src/components/editor/{EditorStage,usePolylineDrawing,VertexHandles,PolylineDraftLayer}`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1890 au total, dont 16 nouveaux) — aimantation et raccords à contrôler à l'écran
+- Commit : feat: liaison des murs (aimantation sur l'axe, raccords d'angle)
+
 ### 2026-11-11 — Hors jalon · A · Alignement doux du tracé (murs, pièces, cotes, axes)
 - Fait : demande de l'utilisateur (tracés pas droits : chaque point s'aimantait seul sur la grille, donc un mur pouvait finir décalé d'un cran). **Sans Maj**, un point à moins de 12 px de l'horizontale ou de la verticale du point précédent, et à moins de 5° de cette direction, est ramené exactement dessus ; la grille ne s'applique alors que **le long** de la ligne. Priorité : sommet, axe, alignement, grille ; Maj (45°) reste prioritaire ; **Alt** désactive l'alignement. Actif aussi quand on glisse un sommet d'un mur, d'une pièce ou d'une cote (voisin = point précédent). Rappels en bas de l'écran mis à jour.
 - Reste de la demande (3 tâches) : B guides d'alignement dans les plans (lignes pointillées pendant le tracé), C navigation (clic molette, deux doigts, barres de défilement, mini-carte).

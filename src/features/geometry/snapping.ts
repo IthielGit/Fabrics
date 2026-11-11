@@ -9,7 +9,12 @@ import { toPoints } from './polygon'
 import type { Point } from './viewport'
 import { wallFaceCorners, wallFaces } from './walls'
 
-export type SnapKind = 'vertex' | 'axis' | 'grid' | 'angle' | 'none'
+export type SnapKind = 'vertex' | 'axis' | 'wall' | 'grid' | 'angle' | 'none'
+
+/** Un segment de l'axe d'un mur, avec la distance d'accroche propre au mur (sa demi-épaisseur). */
+export interface WallAxisSegment extends AxisSegment {
+  reach: number
+}
 
 export interface PointSnapResult {
   point: Point
@@ -29,6 +34,11 @@ export interface PointSnapContext {
   constrain: boolean
   /** Axes de construction : le point s'aimante sur leur ligne (voir `collectSnapAxes`). */
   axes?: readonly AxisSegment[]
+  /**
+   * Axes des murs existants : un point posé sur un mur (dans son épaisseur) ou près de lui est
+   * ramené sur son axe, ce qui raccorde les murs en T au lieu de les superposer.
+   */
+  wallAxes?: readonly WallAxisSegment[]
   /**
    * Alignement doux : sans Maj, un point proche de l'horizontale ou de la verticale du point
    * précédent (`from`) est ramené exactement dessus. Désactivé par défaut (Alt le coupe à l'écran).
@@ -83,6 +93,26 @@ export function softAlign(from: Point, to: Point, threshold: number): Point | nu
   return dx <= maxOffset && dx <= dy * SOFT_ALIGN_MAX_TAN ? { x: from.x, y: to.y } : null
 }
 
+/** Point de l'axe d'un mur le plus proche de `point`, à moins de max(`threshold`, demi-épaisseur). */
+function nearestPointOnWallAxes(
+  point: Point,
+  walls: readonly WallAxisSegment[],
+  threshold: number,
+): Point | null {
+  let best: Point | null = null
+  let bestDistance = Infinity
+  for (const wall of walls) {
+    const projected = nearestPointOnAxes(point, [wall], Math.max(threshold, wall.reach))
+    if (!projected) continue
+    const distance = Math.hypot(projected.x - point.x, projected.y - point.y)
+    if (distance < bestDistance) {
+      best = projected
+      bestDistance = distance
+    }
+  }
+  return best
+}
+
 function roundToGrid(value: number, grid: number): number {
   return Math.round(value / grid) * grid
 }
@@ -104,7 +134,7 @@ function nearestVertex(point: Point, vertices: readonly Point[], threshold: numb
  * Aimantation d'un point en cours de placement. Ordre de priorité (docs/02-ARCHITECTURE.md) :
  * 1. un sommet existant à moins de `threshold` (les croisements d'axes en font partie) ;
  * 2. la ligne d'un axe de construction à moins de `threshold` (sauf avec Maj : la direction
- *    contrainte prime) ;
+ *    contrainte prime), puis l'axe d'un mur existant (même exception) ;
  * 3. la grille, si elle est active ;
  * 4. avec Maj : la direction contrainte à un multiple de 45° depuis le point précédent ;
  *    sans Maj, avec `softAlign` : l'horizontale ou la verticale du point précédent si le curseur
@@ -121,6 +151,11 @@ export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResul
   if (!constrained && axes && axes.length > 0) {
     const onAxis = nearestPointOnAxes(candidate, axes, threshold)
     if (onAxis) return { point: onAxis, kind: 'axis' }
+  }
+
+  if (!constrained && context.wallAxes && context.wallAxes.length > 0) {
+    const onWall = nearestPointOnWallAxes(candidate, context.wallAxes, threshold)
+    if (onWall) return { point: onWall, kind: 'wall' }
   }
 
   // Alignement doux : une direction droite est préférée à la grille, qui ferait pencher le tracé.
@@ -196,6 +231,25 @@ export function collectSnapAxes(
   excludeIds: ReadonlySet<string> = new Set(),
 ): AxisSegment[] {
   return collectAxisSegments(elements, excludeIds)
+}
+
+/**
+ * Axes des murs visibles (un segment par côté de l'axe) sur lesquels s'aimanter. `excludeIds` écarte
+ * par exemple le mur dont on déplace un sommet.
+ */
+export function collectSnapWallAxes(
+  elements: readonly CanvasElement[],
+  excludeIds: ReadonlySet<string> = new Set(),
+): WallAxisSegment[] {
+  const segments: WallAxisSegment[] = []
+  for (const element of elements) {
+    if (element.type !== 'wall' || element.hidden || excludeIds.has(element.id)) continue
+    const points = toPoints(element.points)
+    for (let i = 1; i < points.length; i++) {
+      segments.push({ a: points[i - 1], b: points[i], reach: element.thickness / 2 })
+    }
+  }
+  return segments
 }
 
 export { wallFaces }

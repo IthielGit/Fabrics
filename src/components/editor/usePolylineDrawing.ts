@@ -12,8 +12,10 @@ import { flattenPoints, pointDistance } from '../../features/geometry/polygon'
 import {
   collectSnapAxes,
   collectSnapVertices,
+  collectSnapWallAxes,
   snapPoint,
   type SnapKind,
+  type WallAxisSegment,
 } from '../../features/geometry/snapping'
 import type { Point } from '../../features/geometry/viewport'
 import { fr } from '../../i18n/fr'
@@ -54,7 +56,8 @@ function samePoint(a: Point, b: Point): boolean {
  * Tracé « point par point » d'un mur, d'une pièce, d'une cote ou d'un axe :
  * clic = poser un point ; `Maj` = contraindre à 0/45/90° ; double-clic ou `Entrée` = terminer ;
  * `Échap` = annuler ; `Retour arrière` = retirer le dernier point. Les points s'aimantent aux
- * sommets existants, aux angles des faces de murs, aux axes de construction, à l'horizontale ou
+ * sommets existants, aux angles des faces de murs, aux axes de construction, à l'axe des murs
+ * existants (outil Mur), à l'horizontale ou
  * la verticale du point précédent (`Alt` désactive cet alignement), puis à la grille.
  *
  * `scale` = pixels écran par mm (pour garder une distance d'accroche constante à l'écran).
@@ -65,6 +68,9 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
   const [stored, setStored] = useState<StoredDraft>({ tool, draft: EMPTY })
   const storedRef = useRef<StoredDraft>(stored)
   const vertexCache = useRef<{ elements: readonly CanvasElement[]; vertices: Point[] } | null>(null)
+  const wallAxesCache = useRef<{ elements: readonly CanvasElement[]; axes: WallAxisSegment[] } | null>(
+    null,
+  )
 
   // Changer d'outil (y compris pour « sélection ») repart de zéro : un tracé abandonné ne doit pas
   // réapparaître au retour. Réglage d'état pendant le rendu, sans effet.
@@ -98,6 +104,14 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     return vertexCache.current.vertices
   }, [])
 
+  /** Axes des murs du niveau actif (mis en cache). */
+  const wallAxes = useCallback((elements: readonly CanvasElement[]): WallAxisSegment[] => {
+    if (wallAxesCache.current?.elements !== elements) {
+      wallAxesCache.current = { elements, axes: collectSnapWallAxes(elements) }
+    }
+    return wallAxesCache.current.axes
+  }, [])
+
   const snap = useCallback(
     (raw: Point, shift: boolean, alt: boolean) => {
       const { project } = useEditorStore.getState()
@@ -109,6 +123,9 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         // On ne s'aimante qu'aux éléments du niveau actif (les axes valent pour tous les niveaux).
         vertices: [...planVertices(active), ...current],
         axes: collectSnapAxes(active),
+        // Un mur se raccorde à l'axe d'un mur existant (pas les pièces ni les cotes, qui suivent
+        // les faces) ; Alt coupe cette aimantation.
+        wallAxes: tool === 'wall' && !alt ? wallAxes(active) : undefined,
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
         from: current.length > 0 ? current[current.length - 1] : null,
@@ -116,7 +133,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         softAlign: !alt,
       })
     },
-    [planVertices, readDraft, scale],
+    [tool, planVertices, wallAxes, readDraft, scale],
   )
 
   const finish = useCallback(() => {

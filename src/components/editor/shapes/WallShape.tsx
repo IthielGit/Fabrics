@@ -1,8 +1,11 @@
+import { useContext } from 'react'
 import { Group, Line } from 'react-konva'
+import { flattenPoints } from '../../../features/geometry/polygon'
 import { sameLocation } from '../../../features/geometry/walls'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { WallElement } from '../../../types/document'
 import type { ShapeInteraction } from './shapeTypes'
+import { WallJoinsContext } from './WallJoinsContext'
 
 interface WallShapeProps extends ShapeInteraction {
   element: WallElement
@@ -21,6 +24,7 @@ export default function WallShape({
   onDragEnd,
 }: WallShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
+  const joins = useContext(WallJoinsContext).get(element.id)
 
   // Un axe qui revient à son point de départ est dessiné fermé (angle raccordé en onglet).
   const pts = element.points
@@ -68,6 +72,16 @@ export default function WallShape({
         strokeWidth={element.thickness}
         hitStrokeWidth={Math.max(element.thickness, MIN_HIT_WIDTH_PX / viewScale)}
       />
+      {/* Raccords : comblent le coin extérieur là où ce mur rejoint un autre mur. */}
+      {joins?.map((polygon, index) => (
+        <Line
+          key={index}
+          points={flattenPoints(polygon)}
+          closed
+          fill={element.fill}
+          listening={false}
+        />
+      ))}
     </Group>
   )
 }

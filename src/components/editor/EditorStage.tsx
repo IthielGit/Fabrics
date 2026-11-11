@@ -16,6 +16,7 @@ import { drawOrder } from '../../features/documents/layers'
 import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
+import { computeWallJoinsOf } from '../../features/geometry/wallJoins'
 import { getSymbol } from '../../features/library/catalog'
 import { getSet } from '../../features/library/catalog/sets'
 import { elementsForSet } from '../../features/library/placeSet'
@@ -36,6 +37,7 @@ import OpeningPreviewLayer from './OpeningPreviewLayer'
 import PlanGrid from './PlanGrid'
 import PolylineDraftLayer from './PolylineDraftLayer'
 import SelectionTransformer from './SelectionTransformer'
+import { WallJoinsContext } from './shapes/WallJoinsContext'
 import FurnitureGhost from './FurnitureGhost'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
@@ -91,6 +93,9 @@ export default function EditorStage() {
     const below = levelBelow(levels, activeLevelId)
     return below ? elementsOfLevel(allElements, below.id) : []
   }, [showLowerLevel, levels, allElements, activeLevelId])
+  // Raccords d'angle des murs (niveau actif et niveau de référence séparément).
+  const wallJoins = useMemo(() => computeWallJoinsOf(activeElements), [activeElements])
+  const referenceWallJoins = useMemo(() => computeWallJoinsOf(referenceElements), [referenceElements])
 
   const { ref: containerRef, size } = useContainerSize<HTMLDivElement>()
   const [spaceDown, setSpaceDown] = useState(false)
@@ -431,26 +436,30 @@ export default function EditorStage() {
             )}
             {referenceElements.length > 0 && (
               <Group name="reference" listening={false} opacity={REFERENCE_OPACITY}>
-                {drawOrder(referenceElements).map((element) => (
-                  <ElementNode
-                    key={element.id}
-                    element={element}
-                    interactive={false}
-                    viewScale={scale}
-                  />
-                ))}
+                <WallJoinsContext.Provider value={referenceWallJoins}>
+                  {drawOrder(referenceElements).map((element) => (
+                    <ElementNode
+                      key={element.id}
+                      element={element}
+                      interactive={false}
+                      viewScale={scale}
+                    />
+                  ))}
+                </WallJoinsContext.Provider>
               </Group>
             )}
-            {drawOrder(elements).map((element) => (
-              <ElementNode
-                key={element.id}
-                element={element}
-                interactive={selecting}
-                viewScale={scale}
-                editing={element.id === editingTextId}
-                {...elementHandlers}
-              />
-            ))}
+            <WallJoinsContext.Provider value={wallJoins}>
+              {drawOrder(elements).map((element) => (
+                <ElementNode
+                  key={element.id}
+                  element={element}
+                  interactive={selecting}
+                  viewScale={scale}
+                  editing={element.id === editingTextId}
+                  {...elementHandlers}
+                />
+              ))}
+            </WallJoinsContext.Provider>
             <SelectionTransformer enabled={selecting && editingTextId === null} />
             <VertexHandles enabled={selecting && editingTextId === null} scale={scale} />
           </Layer>
