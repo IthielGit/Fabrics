@@ -22,10 +22,10 @@ export interface DrawLine {
   x2: number
   y2: number
   dashed?: boolean
-  /** Trait fin et gris (ligne de sol) plutôt que noir. */
+  /** Épaisseur : `heavy` (ligne de sol), `normal` (par défaut), `hair` (filet, ligne de niveau). */
+  weight?: 'heavy' | 'normal' | 'hair'
+  /** Trait gris (cotes de niveaux, filets) plutôt que noir. */
   muted?: boolean
-  /** Couleur des cotes de niveaux. */
-  accent?: boolean
 }
 
 export interface DrawText {
@@ -36,7 +36,8 @@ export interface DrawText {
   size: number
   anchor?: 'start' | 'middle'
   bold?: boolean
-  accent?: boolean
+  /** Texte secondaire en gris (cotes de niveaux) plutôt qu'en noir. */
+  muted?: boolean
 }
 
 export interface Drawing {
@@ -48,15 +49,23 @@ export interface Drawing {
   texts: DrawText[]
 }
 
-/** Couleurs de remplissage de l'écran et du PDF. */
+/**
+ * Palette neutre de l'écran et du PDF : encre presque noire, gris sans teinte, papier blanc. Aucune
+ * couleur d'accent : un dessin d'architecture se lit par ses épaisseurs de trait.
+ */
+export const INK = '#1a1a1a'
+export const MUTED_INK = '#666666'
 export const FILL_COLORS: Record<Exclude<DrawFill, 'none'>, string> = {
   white: '#ffffff',
-  black: '#0f172a',
-  light: '#e2e8f0',
-  wall: '#475569',
+  black: INK,
+  light: '#e6e6e6',
+  wall: '#4d4d4d',
 }
 
 const MIN_FONT_MM = 60
+
+/** Hauteur des textes sur le papier (mm), pour un PDF : environ 7 pt, lisible sans encombrer le dessin. */
+export const PAPER_TEXT_MM = 2.5
 
 /** Hauteur de texte lisible pour un dessin de cette taille (environ 1/55 de sa plus grande dimension). */
 export function autoFontMm(width: number, height: number): number {
@@ -96,19 +105,27 @@ export function drawingFromView(view: ViewLike, fontMm?: number): Drawing | null
   const lines: DrawLine[] = []
   const texts: DrawText[] = []
   if (bounds.minV - 1 <= 0 && bounds.maxV + 1 >= 0) {
-    lines.push({ x1: 0, y1: y(0), x2: width - marginR + font, y2: y(0), muted: true })
+    lines.push({ x1: 0, y1: y(0), x2: width - marginR + font, y2: y(0), weight: 'heavy' })
   }
   for (const mark of view.levels) {
     if (mark.elevation < bounds.minV - 1 || mark.elevation > bounds.maxV + 1) continue
     const ly = y(mark.elevation)
-    lines.push({ x1: marginL * 0.5, y1: ly, x2: width - marginR + font, y2: ly, dashed: true, accent: true })
-    texts.push({ x: width - marginR + font * 1.5, y: ly - font * 0.3, text: mark.name, size: font, accent: true })
+    lines.push({
+      x1: marginL * 0.5,
+      y1: ly,
+      x2: width - marginR + font,
+      y2: ly,
+      dashed: true,
+      weight: 'hair',
+      muted: true,
+    })
+    texts.push({ x: width - marginR + font * 1.5, y: ly - font * 0.3, text: mark.name, size: font, muted: true })
     texts.push({
       x: width - marginR + font * 1.5,
       y: ly + font * 1.05,
       text: formatElevation(mark.elevation),
       size: font,
-      accent: true,
+      muted: true,
     })
   }
   return { width, height, polygons, lines, texts }
@@ -210,6 +227,14 @@ export function composeSheet(entries: readonly SheetEntry[], fontMm: number): Sh
     const at = placements[index]
     const oy = at.y + titleBand
     drawing.texts.push({ x: at.x, y: at.y + fontMm * 1.6, text: entry.title, size: fontMm * 1.6, bold: true })
+    // Filet sous le titre, sur toute la largeur du dessin.
+    drawing.lines.push({
+      x1: at.x,
+      x2: at.x + entry.drawing.width,
+      y1: at.y + fontMm * 2.3,
+      y2: at.y + fontMm * 2.3,
+      weight: 'hair',
+    })
     for (const p of entry.drawing.polygons) {
       drawing.polygons.push({ fill: p.fill, points: p.points.map(([px, py]) => [px + at.x, py + oy] as [number, number]) })
     }

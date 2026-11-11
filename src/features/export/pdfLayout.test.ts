@@ -6,6 +6,7 @@ import {
   matchingSheetFormat,
   planPdfPlacement,
   printableArea,
+  scaleBarSpec,
   sheetSize,
 } from './pdfLayout'
 
@@ -95,5 +96,27 @@ describe('planPdfPlacement', () => {
     expect(placement.exact).toBe(false)
     expect(placement.fits).toBe(true)
     expect(placement.rect.width).toBeCloseTo(printableArea(sheet).width)
+  })
+})
+
+describe('barre d’échelle', () => {
+  it('1:50 donne deux segments de 1000 mm sur 40 mm de papier', () => {
+    expect(scaleBarSpec(50, 40)).toEqual({ segmentMm: 1000, paperLength: 40 })
+  })
+
+  it('1:100 donne deux segments de 2000 mm, 1:20 deux segments de 500 mm sur 50 mm si la place le permet', () => {
+    expect(scaleBarSpec(100, 40)).toEqual({ segmentMm: 2000, paperLength: 40 })
+    expect(scaleBarSpec(20, 50)).toEqual({ segmentMm: 500, paperLength: 50 })
+  })
+
+  it('ne dépasse jamais la place disponible (sauf si même le plus court est trop long)', () => {
+    expect(scaleBarSpec(20, 40).paperLength).toBeLessThanOrEqual(40)
+    expect(scaleBarSpec(1, 40).segmentMm).toBe(100)
+  })
+
+  it('une échelle ajustée (non standard) reste lisible', () => {
+    const spec = scaleBarSpec(87, 40)
+    expect(spec.paperLength).toBeLessThanOrEqual(40)
+    expect(spec.paperLength).toBeGreaterThan(10)
   })
 })

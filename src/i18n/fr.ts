@@ -309,11 +309,14 @@ export const fr = {
     planFallbackName: 'plan',
     // Cartouche du PDF d'un plan
     cartouche: {
-      scale: (scale: number) => `Échelle 1:${scale}`,
-      scaleFit: (scale: number) => `Ajusté à la page (environ 1:${scale}, échelle non garantie)`,
-      date: (date: string) => `Date : ${date}`,
+      scaleLabel: 'Échelle',
+      scaleLabelFit: 'Échelle indicative',
+      scale: (scale: number) => `1:${scale}`,
+      scaleFit: (scale: number) => `env. 1:${scale}`,
+      dateLabel: 'Date',
+      sheetLabel: 'Feuille',
       area: (area: string) => `Pièces : ${area}`,
-      scaleBar: '1000 mm',
+      scaleBarUnit: 'mm',
     },
   },
   calibrate: {

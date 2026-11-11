@@ -1,5 +1,11 @@
 import { FILL_COLORS, type Drawing } from '../building/views/drawing'
-import { cartoucheArea, type Rect, type SheetSize } from './pdfLayout'
+import {
+  cartoucheArea,
+  PDF_MARGIN_MM,
+  scaleBarSpec,
+  type Rect,
+  type SheetSize,
+} from './pdfLayout'
 
 /** Taille d'une feuille pour jsPDF : [largeur, hauteur] en mm. */
 async function createPdf(sheet: SheetSize) {
@@ -13,6 +19,8 @@ async function createPdf(sheet: SheetSize) {
   })
 }
 
+type Pdf = Awaited<ReturnType<typeof createPdf>>
+
 /** PDF d'un Visuel : l'image de la page à l'emplacement donné (mm). */
 export async function buildDesignPdf(
   imageDataUrl: string,
@@ -21,76 +29,198 @@ export async function buildDesignPdf(
   title: string,
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
-  pdf.setProperties({ title })
+  pdf.setProperties({ title, creator: 'Fabrics' })
   pdf.addImage(imageDataUrl, 'PNG', placement.x, placement.y, placement.width, placement.height)
   return pdf.output('blob')
 }
 
-export interface PlanPdfLabels {
-  /** Titre du plan (cartouche). */
-  projectName: string
-  /** Ex. « Échelle 1:50 » ou « Ajusté à la page (échelle non garantie) ». */
-  scaleText: string
-  /** Ex. « Date : 10/11/2026 ». */
-  dateText: string
-  /** Ex. « Pièces : 12,00 m² » ; absent s'il n'y a aucune pièce. */
-  areaText?: string
-  /** Ex. « 1 m » (légende de la barre d'échelle). */
-  scaleBarLabel: string
+// --- Palette neutre des PDF de plan : encre presque noire, gris sans teinte, papier blanc. ---
+type Rgb = [number, number, number]
+const INK: Rgb = [26, 26, 26]
+const MUTED: Rgb = [102, 102, 102]
+const HAIRLINE: Rgb = [166, 166, 166]
+
+/** Épaisseurs de trait en mm sur le papier : le dessin se lit par ses épaisseurs, pas par la couleur. */
+const LINE = { frame: 0.5, rule: 0.35, heavy: 0.5, normal: 0.2, hair: 0.12, cut: 0.35, divider: 0.2 }
+
+export interface CartoucheField {
+  /** Intitulé de la cellule (« Échelle »), affiché en petites capitales grises. */
+  label: string
+  /** Valeur (« 1:50 »). */
+  value: string
 }
 
-/** Longueur réelle de la barre d'échelle graphique, en mm. */
-const SCALE_BAR_REAL_MM = 1000
-const CARTOUCHE_WIDTH_MM = 90
+export interface PlanPdfLabels {
+  /** Nom du projet (cartouche). */
+  projectName: string
+  /** Ce que montre la feuille : « Façade Nord », « Rez-de-chaussée »… */
+  subtitle?: string
+  /** Cellules de droite du cartouche, de gauche à droite (échelle, date, feuille). */
+  fields: CartoucheField[]
+  /** Unité de la barre d'échelle graphique (« mm »). */
+  scaleBarUnit: string
+  /** Nord, en degrés dans le sens horaire depuis le haut de la feuille ; absent : pas de flèche. */
+  northAngle?: number
+  /** Lettre de la flèche du nord (« N »). */
+  northLabel?: string
+}
 
-type Pdf = Awaited<ReturnType<typeof createPdf>>
+/** Le jeu de caractères des polices standard de PDF n'a pas le vrai signe moins : on met un trait d'union. */
+const pdfText = (text: string) => text.replace(/−/g, '-')
 
-/** Bande du bas : barre d'échelle graphique de 1 m (à gauche) et cartouche (à droite). */
-function drawCartouche(pdf: Pdf, sheet: SheetSize, scale: number, labels: PlanPdfLabels): void {
-  const strip = cartoucheArea(sheet)
+function truncate(pdf: Pdf, text: string, maxWidth: number): string {
+  const full = pdfText(text)
+  if (pdf.getTextWidth(full) <= maxWidth) return full
+  let cut = full
+  while (cut.length > 1 && pdf.getTextWidth(`${cut}…`) > maxWidth) cut = cut.slice(0, -1)
+  return `${cut.trimEnd()}…`
+}
 
-  // --- Cartouche, en bas à droite
-  const boxWidth = Math.min(CARTOUCHE_WIDTH_MM, strip.width)
-  const boxX = strip.x + strip.width - boxWidth
-  pdf.setDrawColor(30, 41, 59)
-  pdf.setLineWidth(0.3)
-  pdf.rect(boxX, strip.y, boxWidth, strip.height)
-  pdf.setTextColor(15, 23, 42)
+const MAX_FIELD_WIDTH = 44
+const MIN_FIELD_WIDTH = 16
+const SCALE_ZONE_WIDTH = 60
 
-  const innerWidth = boxWidth - 6
-  const fit = (text: string) => {
-    const lines = pdf.splitTextToSize(text, innerWidth) as string[]
-    return lines[0] ?? ''
-  }
+/** Flèche du nord : un cercle fin et une pointe pleine orientée selon l'angle, avec la lettre au bout. */
+function drawNorthArrow(pdf: Pdf, cx: number, cy: number, angle: number, letter: string): void {
+  const radius = 5
+  const a = (angle * Math.PI) / 180
+  const dir = { x: Math.sin(a), y: -Math.cos(a) }
+  const perp = { x: Math.cos(a), y: Math.sin(a) }
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.divider)
+  pdf.circle(cx, cy, radius, 'S')
+  pdf.setFillColor(...INK)
+  pdf.triangle(
+    cx + dir.x * 4.2,
+    cy + dir.y * 4.2,
+    cx - dir.x * 1.8 + perp.x * 2.2,
+    cy - dir.y * 1.8 + perp.y * 2.2,
+    cx - dir.x * 1.8 - perp.x * 2.2,
+    cy - dir.y * 1.8 - perp.y * 2.2,
+    'F',
+  )
   pdf.setFont('helvetica', 'bold')
-  pdf.setFontSize(11)
-  pdf.text(fit(labels.projectName), boxX + 3, strip.y + 6)
-  pdf.setFont('helvetica', 'normal')
-  pdf.setFontSize(8)
-  pdf.text(fit(labels.scaleText), boxX + 3, strip.y + 10.5)
-  pdf.text(fit(labels.dateText), boxX + 3, strip.y + 14.5)
-  if (labels.areaText) pdf.text(fit(labels.areaText), boxX + 3, strip.y + 18)
+  pdf.setFontSize(7)
+  pdf.setTextColor(...INK)
+  pdf.text(letter, cx + dir.x * (radius + 2.6), cy + dir.y * (radius + 2.6) + 1, { align: 'center' })
+}
 
-  // --- Barre d'échelle graphique de 1 m, en bas à gauche
-  const barLength = SCALE_BAR_REAL_MM / scale
-  const barX = strip.x
-  const barY = strip.y + strip.height / 2
-  if (barX + barLength <= boxX - 4) {
-    pdf.setLineWidth(0.4)
-    pdf.line(barX, barY, barX + barLength, barY)
-    pdf.line(barX, barY - 1.5, barX, barY + 1.5)
-    pdf.line(barX + barLength, barY - 1.5, barX + barLength, barY + 1.5)
-    pdf.setFont('helvetica', 'normal')
-    pdf.setFontSize(8)
-    pdf.text('0', barX, barY - 2.5, { align: 'center' })
-    pdf.text(labels.scaleBarLabel, barX + barLength, barY - 2.5, { align: 'center' })
-  }
+/** Barre d'échelle graphique à deux segments, l'un plein, l'autre blanc, graduée en mm. */
+function drawScaleBar(pdf: Pdf, x: number, y: number, available: number, scale: number, unit: string): void {
+  const spec = scaleBarSpec(scale, available)
+  const segment = spec.paperLength / 2
+  const height = 1.6
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.divider)
+  pdf.setFillColor(...INK)
+  pdf.rect(x, y, segment, height, 'FD')
+  pdf.setFillColor(255, 255, 255)
+  pdf.rect(x + segment, y, segment, height, 'FD')
+  pdf.setFont('helvetica', 'normal')
+  pdf.setFontSize(6.5)
+  pdf.setTextColor(...INK)
+  const labelY = y + height + 3.2
+  pdf.text('0', x, labelY, { align: 'center' })
+  pdf.text(String(spec.segmentMm), x + segment, labelY, { align: 'center' })
+  pdf.text(`${spec.segmentMm * 2} ${unit}`, x + segment * 2, labelY, { align: 'center' })
 }
 
 /**
- * PDF d'un plan à l'échelle : l'image de l'emprise à l'emplacement donné, puis dans la bande du
- * bas une barre d'échelle graphique de 1 m (à gauche) et le cartouche (à droite).
- * `scale` est le dénominateur de l'échelle (1:`scale`).
+ * Cartouche de la feuille, collé au bas du cadre : à gauche la flèche du nord et la barre d'échelle,
+ * au milieu le projet et ce que montre la feuille, à droite des cellules intitulé / valeur (échelle,
+ * date, feuille). Un cadre fin entoure toute la feuille ; le cartouche est séparé du dessin par un
+ * filet un peu plus épais.
+ */
+function drawCartouche(pdf: Pdf, sheet: SheetSize, scale: number, labels: PlanPdfLabels): void {
+  const strip = cartoucheArea(sheet)
+
+  // Largeur des cellules de droite : celle de leur contenu, bornée.
+  const widths = labels.fields.map((field) => {
+    pdf.setFont('helvetica', 'normal')
+    pdf.setFontSize(6)
+    const labelWidth = pdf.getTextWidth(pdfText(field.label.toUpperCase()))
+    pdf.setFontSize(9)
+    const valueWidth = pdf.getTextWidth(pdfText(field.value))
+    return Math.min(MAX_FIELD_WIDTH, Math.max(MIN_FIELD_WIDTH, Math.max(labelWidth, valueWidth) + 6))
+  })
+  const fieldsWidth = widths.reduce((sum, w) => sum + w, 0)
+  const leftWidth = Math.min(SCALE_ZONE_WIDTH, Math.max(0, strip.width - fieldsWidth - 40))
+  const midX = strip.x + leftWidth
+  const fieldsX = strip.x + strip.width - fieldsWidth
+  const midWidth = fieldsX - midX
+
+  // Filet du haut du cartouche et séparations verticales.
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.rule)
+  pdf.line(strip.x, strip.y, strip.x + strip.width, strip.y)
+  pdf.setDrawColor(...HAIRLINE)
+  pdf.setLineWidth(LINE.divider)
+  const dividers = [midX, fieldsX]
+  let edge = fieldsX
+  for (const w of widths.slice(0, -1)) {
+    edge += w
+    dividers.push(edge)
+  }
+  for (const x of dividers) {
+    if (x > strip.x + 1 && x < strip.x + strip.width - 1) pdf.line(x, strip.y, x, strip.y + strip.height)
+  }
+
+  // Zone de gauche : nord et barre d'échelle.
+  if (leftWidth >= 36) {
+    const centerY = strip.y + strip.height / 2
+    let barX = strip.x + 6
+    if (labels.northAngle !== undefined) {
+      drawNorthArrow(pdf, strip.x + 11, centerY, labels.northAngle, labels.northLabel ?? 'N')
+      barX = strip.x + 24
+    }
+    const available = strip.x + leftWidth - barX - 8
+    if (available >= 12) drawScaleBar(pdf, barX, centerY - 1.2, available, scale, labels.scaleBarUnit)
+  }
+
+  // Milieu : projet (gras) et sujet de la feuille.
+  const textX = midX + 4
+  const textWidth = Math.max(10, midWidth - 8)
+  pdf.setTextColor(...INK)
+  pdf.setFont('helvetica', 'bold')
+  pdf.setFontSize(11)
+  pdf.text(truncate(pdf, labels.projectName, textWidth), textX, labels.subtitle ? strip.y + 8.5 : strip.y + 12)
+  if (labels.subtitle) {
+    pdf.setFont('helvetica', 'normal')
+    pdf.setFontSize(8.5)
+    pdf.setTextColor(...MUTED)
+    pdf.text(truncate(pdf, labels.subtitle, textWidth), textX, strip.y + 14.5)
+  }
+
+  // Droite : cellules intitulé (petit, gris) / valeur.
+  let x = fieldsX
+  labels.fields.forEach((field, index) => {
+    const width = widths[index]
+    pdf.setFont('helvetica', 'normal')
+    pdf.setFontSize(6)
+    pdf.setTextColor(...MUTED)
+    pdf.text(truncate(pdf, field.label.toUpperCase(), width - 5), x + 3, strip.y + 6.5)
+    pdf.setFontSize(9)
+    pdf.setTextColor(...INK)
+    pdf.text(truncate(pdf, field.value, width - 5), x + 3, strip.y + 14)
+    x += width
+  })
+
+  // Cadre de la feuille, par-dessus tout.
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.frame)
+  pdf.rect(
+    PDF_MARGIN_MM,
+    PDF_MARGIN_MM,
+    sheet.width - PDF_MARGIN_MM * 2,
+    sheet.height - PDF_MARGIN_MM * 2,
+    'S',
+  )
+}
+
+/**
+ * PDF d'un plan à l'échelle : l'image de l'emprise à l'emplacement donné, puis le cadre de la feuille
+ * et le cartouche (nord, barre d'échelle, projet, échelle, date). `scale` est le dénominateur de
+ * l'échelle (1:`scale`).
  */
 export async function buildPlanPdf(
   imageDataUrl: string,
@@ -100,17 +230,18 @@ export async function buildPlanPdf(
   labels: PlanPdfLabels,
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
-  pdf.setProperties({ title: labels.projectName })
+  pdf.setProperties({ title: labels.projectName, subject: labels.subtitle ?? '', creator: 'Fabrics' })
   pdf.addImage(imageDataUrl, 'PNG', placement.x, placement.y, placement.width, placement.height)
   drawCartouche(pdf, sheet, scale, labels)
   return pdf.output('blob')
 }
 
 const MM_TO_PT = 72 / 25.4
-/** Plus petit corps de texte imprimé (pt) : en dessous, les cotes de niveaux seraient illisibles. */
-const MIN_TEXT_PT = 6
+/** Plus petits corps de texte imprimés (pt) : cotes et légendes, puis titres des dessins. */
+const MIN_TEXT_PT = 7
+const MIN_TITLE_PT = 10
 
-function hexToRgb(hex: string): [number, number, number] {
+function hexToRgb(hex: string): Rgb {
   const value = hex.replace('#', '')
   return [
     parseInt(value.slice(0, 2), 16),
@@ -122,7 +253,7 @@ function hexToRgb(hex: string): [number, number, number] {
 /**
  * PDF vectoriel d'un dessin de vue (façade, coupe ou planche) : les mm réels du dessin sont divisés
  * par `scale` pour donner des mm de papier (2,50 m à 1:50 = 50 mm), à l'emplacement `placement`.
- * La bande du bas reçoit la barre d'échelle et le cartouche.
+ * Trois épaisseurs de trait (sol, contours, filets), matière coupée en noir, cadre et cartouche.
  */
 export async function buildDrawingPdf(
   drawing: Drawing,
@@ -132,8 +263,8 @@ export async function buildDrawingPdf(
   labels: PlanPdfLabels,
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
-  pdf.setProperties({ title: labels.projectName })
-  // Facteur de réduction effectivement appliqué (identique à `scale` sauf arrondi du placement).
+  pdf.setProperties({ title: labels.projectName, subject: labels.subtitle ?? '', creator: 'Fabrics' })
+  // Facteur de réduction effectivement appliqué (identique à 1/`scale` sauf « Ajuster à la page »).
   const k = placement.width / drawing.width
   const px = (x: number) => placement.x + x * k
   const py = (y: number) => placement.y + y * k
@@ -146,8 +277,8 @@ export async function buildDrawingPdf(
       const [prevX, prevY] = index === 0 ? first : rest[index - 1]
       return [(x - prevX) * k, (y - prevY) * k]
     })
-    pdf.setDrawColor(15, 23, 42)
-    pdf.setLineWidth(0.25)
+    pdf.setDrawColor(...INK)
+    pdf.setLineWidth(polygon.fill === 'black' ? LINE.cut : LINE.normal)
     if (polygon.fill === 'none') {
       pdf.lines(segments, px(first[0]), py(first[1]), [1, 1], 'S', true)
     } else {
@@ -157,21 +288,20 @@ export async function buildDrawingPdf(
   }
 
   for (const line of drawing.lines) {
-    if (line.accent) pdf.setDrawColor(99, 102, 241)
-    else if (line.muted) pdf.setDrawColor(100, 116, 139)
-    else pdf.setDrawColor(15, 23, 42)
-    pdf.setLineWidth(line.muted ? 0.35 : 0.2)
+    pdf.setDrawColor(...(line.muted ? MUTED : INK))
+    pdf.setLineWidth(LINE[line.weight ?? 'normal'])
     pdf.setLineDashPattern(line.dashed ? [2, 1.5] : [], 0)
     pdf.line(px(line.x1), py(line.y1), px(line.x2), py(line.y2))
   }
   pdf.setLineDashPattern([], 0)
 
   for (const text of drawing.texts) {
-    if (text.accent) pdf.setTextColor(67, 56, 202)
-    else pdf.setTextColor(15, 23, 42)
+    pdf.setTextColor(...(text.muted ? MUTED : INK))
     pdf.setFont('helvetica', text.bold ? 'bold' : 'normal')
-    pdf.setFontSize(Math.max(text.size * k * MM_TO_PT, MIN_TEXT_PT))
-    pdf.text(text.text, px(text.x), py(text.y), { align: text.anchor === 'middle' ? 'center' : 'left' })
+    pdf.setFontSize(Math.max(text.size * k * MM_TO_PT, text.bold ? MIN_TITLE_PT : MIN_TEXT_PT))
+    pdf.text(pdfText(text.text), px(text.x), py(text.y), {
+      align: text.anchor === 'middle' ? 'center' : 'left',
+    })
   }
 
   drawCartouche(pdf, sheet, scale, labels)

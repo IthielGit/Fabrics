@@ -27,6 +27,8 @@ export interface SheetInput {
   sections: readonly SectionSpec[]
   northAngle: number
   labels: SheetLabels
+  /** Hauteur des textes (mm réels) ; absent : choisie d'après la taille de la planche. */
+  fontMm?: number
 }
 
 function entriesFor(input: SheetInput, fontMm: number | undefined): SheetEntry[] {
@@ -57,8 +59,9 @@ function entriesFor(input: SheetInput, fontMm: number | undefined): SheetEntry[]
  * sans rien à montrer donne un dessin vide (largeur 0).
  */
 export function buildSheet(input: SheetInput): SheetResult {
-  const first = entriesFor(input, undefined)
+  const first = entriesFor(input, input.fontMm)
   if (first.length === 0) return composeSheet([], 100)
+  if (input.fontMm !== undefined) return composeSheet(first, input.fontMm)
   const biggest = Math.max(...first.flatMap((e) => [e.drawing.width, e.drawing.height]))
   const fontMm = autoFontMm(biggest, biggest)
   return composeSheet(entriesFor(input, fontMm), fontMm)

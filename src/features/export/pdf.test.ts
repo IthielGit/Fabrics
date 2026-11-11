@@ -35,10 +35,14 @@ describe('PDF', () => {
     const placement = planPdfPlacement({ width: 10000, height: 6000 }, sheet, 50)
     const blob = await buildPlanPdf(PIXEL, sheet, placement.rect, 50, {
       projectName: 'Maison',
-      scaleText: 'Échelle 1:50',
-      dateText: 'Date : 10/11/2026',
-      areaText: 'Pièces : 12,00 m²',
-      scaleBarLabel: '1000 mm',
+      subtitle: 'Rez-de-chaussée · Pièces : 12,00 m²',
+      fields: [
+        { label: 'Échelle', value: '1:50' },
+        { label: 'Date', value: '10/11/2026' },
+        { label: 'Feuille', value: 'A3' },
+      ],
+      scaleBarUnit: 'mm',
+      northAngle: 30,
     })
     const text = await textOf(blob)
     expect(text.startsWith('%PDF-')).toBe(true)
@@ -56,10 +60,10 @@ describe('PDF', () => {
         { points: [[1000, 900], [2000, 900], [2000, 1900], [1000, 1900]], fill: 'black' },
       ],
       lines: [
-        { x1: 0, y1: 2500, x2: 5000, y2: 2500, muted: true },
-        { x1: 0, y1: 0, x2: 5000, y2: 0, dashed: true, accent: true },
+        { x1: 0, y1: 2500, x2: 5000, y2: 2500, weight: 'heavy' },
+        { x1: 0, y1: 0, x2: 5000, y2: 0, dashed: true, weight: 'hair', muted: true },
       ],
-      texts: [{ x: 100, y: 200, text: 'Rez-de-chaussée', size: 150, accent: true }],
+      texts: [{ x: 100, y: 200, text: 'Rez-de-chaussée', size: 150, muted: true }],
     }
     const sheet = sheetSize('a4', 'landscape')
     const placement = planPdfPlacement({ width: drawing.width, height: drawing.height }, sheet, 50)
@@ -69,10 +73,13 @@ describe('PDF', () => {
 
     const blob = await buildDrawingPdf(drawing, sheet, placement.rect, 50, {
       projectName: 'Maison',
-      scaleText: 'Échelle 1:50',
-      dateText: 'Date : 10/11/2026',
-      areaText: 'Façade Nord',
-      scaleBarLabel: '1000 mm',
+      subtitle: 'Façade Nord',
+      fields: [
+        { label: 'Échelle', value: '1:50' },
+        { label: 'Date', value: '10/11/2026' },
+        { label: 'Feuille', value: 'A4' },
+      ],
+      scaleBarUnit: 'mm',
     })
     const text = await textOf(blob)
     expect(text.startsWith('%PDF-')).toBe(true)

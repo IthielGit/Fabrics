@@ -28,7 +28,8 @@ interface ActiveView {
   /** Titre de la vue (cartouche et nom du fichier). */
   title: string
   note: string
-  drawing: Drawing | null
+  /** Dessin construit avec cette hauteur de texte (mm réels) ; sans argument, hauteur automatique. */
+  build: (fontMm?: number) => Drawing | null
   /** Message quand il n'y a rien à dessiner. */
   emptyText: string
 }
@@ -43,17 +44,18 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
     const allLevels = levels ?? []
     if (tab.kind === 'elevation') {
       const title = fr.views.elevation[tab.cardinal]
+      const view = buildElevation(model, allLevels, tab.cardinal, northAngle)
       return {
         title,
         note: `${title} · ${fr.views.lookFrom(fr.views.sides[tab.cardinal])}`,
-        drawing: drawingFromView(buildElevation(model, allLevels, tab.cardinal, northAngle)),
+        build: (fontMm) => drawingFromView(view, fontMm),
         emptyText: fr.views.empty,
       }
     }
     if (tab.kind === 'section') {
       const section = sections.find((s) => s.id === tab.sectionId)
       if (!section) {
-        return { title: '', note: '', drawing: null, emptyText: fr.views.sectionMissing }
+        return { title: '', note: '', build: () => null, emptyText: fr.views.sectionMissing }
       }
       const view = buildSection(model, allLevels, {
         points: section.points,
@@ -64,21 +66,24 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
       return {
         title,
         note: `${title} · ${fr.views.sectionLook}`,
-        drawing: view ? drawingFromView(view) : null,
+        build: (fontMm) => (view ? drawingFromView(view, fontMm) : null),
         emptyText: fr.views.sectionEmpty,
       }
     }
-    const sheet = buildSheet({
-      model,
-      levels: allLevels,
-      sections: sections.map((s) => ({ points: s.points, lookLeft: s.lookLeft, label: s.label })),
-      northAngle,
-      labels: { elevation: fr.views.elevation, section: fr.views.section },
-    })
     return {
       title: fr.views.sheet,
       note: fr.views.sheetNote,
-      drawing: sheet.drawing.width > 0 ? sheet.drawing : null,
+      build: (fontMm) => {
+        const sheet = buildSheet({
+          model,
+          levels: allLevels,
+          sections: sections.map((s) => ({ points: s.points, lookLeft: s.lookLeft, label: s.label })),
+          northAngle,
+          labels: { elevation: fr.views.elevation, section: fr.views.section },
+          fontMm,
+        })
+        return sheet.drawing.width > 0 ? sheet.drawing : null
+      },
       emptyText: fr.views.empty,
     }
   }, [tab, sections, model, levels, northAngle])
@@ -98,7 +103,10 @@ function ScreenBody() {
         .sort((a, b) => a.label.localeCompare(b.label, 'fr', { numeric: true })),
     [elements],
   )
-  const view = useActiveView(tab, sections)
+  const active = useActiveView(tab, sections)
+  // Le dessin n'est calculé qu'une fois par changement de vue, pas à chaque rendu.
+  const drawing = useMemo(() => active.build(), [active])
+  const view = { ...active, drawing }
 
   const tabs: { key: string; label: string; value: ViewsTab }[] = [
     ...CARDINALS.map((cardinal) => ({
@@ -166,7 +174,12 @@ function ScreenBody() {
         {sections.length === 0 && <p className="px-4 pb-3 text-xs text-slate-500">{fr.views.noSections}</p>}
       </main>
       {pdfOpen && view.drawing && (
-        <ViewsPdfDialog drawing={view.drawing} viewTitle={view.title} onClose={() => setPdfOpen(false)} />
+        <ViewsPdfDialog
+          build={active.build}
+          viewTitle={view.title}
+          showNorth={tab.kind === 'sheet'}
+          onClose={() => setPdfOpen(false)}
+        />
       )}
     </div>
   )

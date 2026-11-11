@@ -1,7 +1,9 @@
 import { exportFileName, type ExportFileType } from '../../features/export/fileName'
 import { planExportExtent } from '../../features/export/bounds'
 import { imageExportSize, pdfRasterSize } from '../../features/export/limits'
+import { cartoucheFields } from '../../features/export/cartouche'
 import { buildDesignPdf, buildPlanPdf } from '../../features/export/pdf'
+import { formatDate } from '../../lib/date'
 import {
   designPdfPlacement,
   planPdfPlacement,
@@ -109,18 +111,26 @@ export async function exportProject(project: Project, options: ExportOptions): P
     true,
   )
   const measurements = computeMeasurements(shownElements)
-  const scaleDenominator = Math.round(placement.scale)
+  const levelName = doc.levels?.find((l) => l.id === useEditorStore.getState().activeLevelId)?.name
+  const areaText =
+    measurements.rooms.length > 0
+      ? fr.export.cartouche.area(formatArea(measurements.totals.roomArea))
+      : undefined
   const blob = await buildPlanPdf(dataUrl, sheet, placement.rect, placement.scale, {
     projectName: project.name,
-    scaleText: placement.exact
-      ? fr.export.cartouche.scale(scaleDenominator)
-      : fr.export.cartouche.scaleFit(scaleDenominator),
-    dateText: fr.export.cartouche.date(new Date().toLocaleDateString('fr-BE')),
-    areaText:
-      measurements.rooms.length > 0
-        ? fr.export.cartouche.area(formatArea(measurements.totals.roomArea))
-        : undefined,
-    scaleBarLabel: fr.export.cartouche.scaleBar,
+    subtitle: [levelName, areaText].filter(Boolean).join(' · ') || undefined,
+    fields: cartoucheFields(
+      {
+        exactScale: placement.exact,
+        denominator: Math.round(placement.scale),
+        date: formatDate(new Date()),
+        format: options.sheet,
+      },
+      fr.export.cartouche,
+    ),
+    scaleBarUnit: fr.export.cartouche.scaleBarUnit,
+    northAngle: doc.plan?.northAngle ?? 0,
+    northLabel: fr.viewer3d.cardinal.north,
   })
   downloadBlob(blob, fileName)
 }

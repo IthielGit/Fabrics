@@ -1,5 +1,6 @@
-import { useState } from 'react'
-import type { Drawing } from '../../features/building/views/drawing'
+import { useMemo, useState } from 'react'
+import { PAPER_TEXT_MM, type Drawing } from '../../features/building/views/drawing'
+import { cartoucheFields } from '../../features/export/cartouche'
 import { buildDrawingPdf } from '../../features/export/pdf'
 import { exportFileName } from '../../features/export/fileName'
 import {
@@ -12,6 +13,7 @@ import {
   type SheetFormat,
 } from '../../features/export/pdfLayout'
 import { fr } from '../../i18n/fr'
+import { formatDate } from '../../lib/date'
 import { downloadBlob } from '../../lib/download'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
@@ -20,49 +22,67 @@ import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
 
 interface ViewsPdfDialogProps {
-  drawing: Drawing
+  /** Construit le dessin avec une hauteur de texte donnée (mm réels) ; sans argument, hauteur automatique. */
+  build: (fontMm?: number) => Drawing | null
   /** Titre de la vue (« Façade Nord », « Coupe A–A », « Planche »). */
   viewTitle: string
+  /** Vrai pour la planche (qui contient des plans) : le cartouche montre la flèche du nord. */
+  showNorth?: boolean
   onClose: () => void
 }
 
-const todayText = () => new Date().toLocaleDateString('fr-BE')
+const todayText = () => formatDate(new Date())
+
+const EMPTY_DRAWING: Drawing = { width: 1, height: 1, polygons: [], lines: [], texts: [] }
 
 /** Fenêtre « Exporter en PDF » de l'écran Vues : feuille, orientation, échelle, nom du fichier. */
-export default function ViewsPdfDialog({ drawing, viewTitle, onClose }: ViewsPdfDialogProps) {
+export default function ViewsPdfDialog({ build, viewTitle, showNorth = false, onClose }: ViewsPdfDialogProps) {
   const projectName = useEditorStore((state) => state.project?.name ?? '')
-  const extent = { width: drawing.width, height: drawing.height }
+  const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
+  const base = useMemo(() => build() ?? EMPTY_DRAWING, [build])
 
   const [fileName, setFileName] = useState(`${projectName} ${viewTitle}`.trim())
   const [sheet, setSheet] = useState<SheetFormat>('a4')
   const [orientation, setOrientation] = useState<Orientation>(() =>
-    defaultOrientation(drawing.width, drawing.height),
+    defaultOrientation(base.width, base.height),
   )
   const [scale, setScale] = useState<ScaleChoice>(() => {
     // La plus grande échelle standard qui tient sur une feuille A4 ; sinon « Ajuster ».
-    const size = sheetSize('a4', defaultOrientation(drawing.width, drawing.height))
-    return planPdfPlacement(extent, size, 50).fittingScale ?? 'fit'
+    const size = sheetSize('a4', defaultOrientation(base.width, base.height))
+    return planPdfPlacement({ width: base.width, height: base.height }, size, 50).fittingScale ?? 'fit'
   })
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState(false)
 
   const size = sheetSize(sheet, orientation)
-  const placement = planPdfPlacement(extent, size, scale)
+  // Les textes ont la même hauteur sur le papier (environ 7 pt) quelle que soit l'échelle : on
+  // reconstruit le dessin avec la hauteur réelle qui donne cette hauteur à l'échelle choisie.
+  const nominalScale =
+    scale === 'fit' ? planPdfPlacement({ width: base.width, height: base.height }, size, 'fit').scale : scale
+  const fontMm = PAPER_TEXT_MM * nominalScale
+  const drawing = useMemo(() => build(fontMm) ?? EMPTY_DRAWING, [build, fontMm])
+  const placement = planPdfPlacement({ width: drawing.width, height: drawing.height }, size, scale)
   const doesNotFit = !placement.fits
 
   const submit = async () => {
     setBusy(true)
     setFailed(false)
     try {
-      const denominator = Math.round(placement.scale)
       const blob = await buildDrawingPdf(drawing, size, placement.rect, placement.scale, {
         projectName,
-        scaleText: placement.exact
-          ? fr.export.cartouche.scale(denominator)
-          : fr.export.cartouche.scaleFit(denominator),
-        dateText: fr.export.cartouche.date(todayText()),
-        areaText: viewTitle,
-        scaleBarLabel: fr.export.cartouche.scaleBar,
+        subtitle: viewTitle,
+        fields: cartoucheFields(
+          {
+            exactScale: placement.exact,
+            denominator: Math.round(placement.scale),
+            date: todayText(),
+            format: sheet,
+          },
+          fr.export.cartouche,
+        ),
+        scaleBarUnit: fr.export.cartouche.scaleBarUnit,
+        northAngle: showNorth ? northAngle : undefined,
+        northLabel: fr.viewer3d.cardinal.north,
       })
       downloadBlob(blob, exportFileName(fileName, 'pdf', fr.views.pdfFallbackName))
       onClose()

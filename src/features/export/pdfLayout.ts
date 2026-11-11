@@ -157,3 +157,27 @@ export function planPdfPlacement(
     fittingScale,
   }
 }
+
+export interface ScaleBarSpec {
+  /** Longueur réelle d'un des deux segments de la barre, en mm. */
+  segmentMm: number
+  /** Longueur de toute la barre sur le papier, en mm. */
+  paperLength: number
+}
+
+/** Longueurs réelles de segment proposées pour la barre d'échelle (mm), de la plus petite à la plus grande. */
+const SCALE_BAR_SEGMENTS_MM = [100, 200, 500, 1000, 2000, 5000, 10000, 20000]
+
+/**
+ * Barre d'échelle graphique à deux segments : la plus longue qui tient dans `maxPaperMm` de papier
+ * (1:50 donne 2 × 1000 mm sur 40 mm, 1:100 donne 2 × 2000 mm). Si même la plus courte est trop
+ * longue, on garde la plus courte.
+ */
+export function scaleBarSpec(scale: number, maxPaperMm: number): ScaleBarSpec {
+  const safeScale = scale > 0 ? scale : 1
+  let segmentMm = SCALE_BAR_SEGMENTS_MM[0]
+  for (const candidate of SCALE_BAR_SEGMENTS_MM) {
+    if ((candidate * 2) / safeScale <= maxPaperMm) segmentMm = candidate
+  }
+  return { segmentMm, paperLength: (segmentMm * 2) / safeScale }
+}
