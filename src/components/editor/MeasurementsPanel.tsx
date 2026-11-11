@@ -1,4 +1,4 @@
-import { Download } from 'lucide-react'
+import { Download, FileSpreadsheet } from 'lucide-react'
 import { Fragment, useMemo } from 'react'
 import { furnitureCsvRows } from '../library/furnitureRows'
 import { csvFileName, measurementsToCsv } from '../../features/measurements/csv'
@@ -12,11 +12,12 @@ import { formatDate } from '../../lib/date'
 import { downloadBlob } from '../../lib/download'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
+import { exportMetres } from './exportMetres'
 
 const HEAD = 'px-1 py-1 text-left text-xs font-medium text-slate-500'
 const NUMBER = 'px-1 py-1 text-right tabular-nums'
 
-/** Panneau « Métrés » d'un plan : tableau des pièces, tableau des murs, totaux, export CSV. */
+/** Panneau « Métrés » d'un plan : tableau des pièces, tableau des murs, totaux, export Excel et CSV. */
 export default function MeasurementsPanel() {
   const projectName = useEditorStore((state) => state.project?.name ?? '')
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
@@ -46,6 +47,25 @@ export default function MeasurementsPanel() {
     building.total.platforms.length === 0 &&
     building.total.stairs.length === 0
 
+  // Export principal : un vrai fichier Excel (onglets, nombres, totaux en formules), tout le bâtiment.
+  const handleExportExcel = async () => {
+    const project = useEditorStore.getState().project
+    if (!project) return
+    try {
+      await exportMetres(project, {
+        format: 'xlsx',
+        scope: 'building',
+        includeFurniture: true,
+        activeLevelId: null,
+        fileName: `${projectName} ${fr.measurements.csvFileSuffix}`,
+        sheet: 'a4',
+        orientation: 'landscape',
+      })
+    } catch {
+      useEditorStore.getState().setNotice(fr.export.failed)
+    }
+  }
+
   const handleExport = () => {
     const csv = measurementsToCsv(building, fr.measurements.csv, furnitureCsvRows(elements ?? []), {
       projectName,
@@ -67,6 +87,16 @@ export default function MeasurementsPanel() {
     <section aria-label={fr.measurements.title} className="p-4">
       <div className="flex items-center justify-end gap-2">
         <h2 className="sr-only">{fr.measurements.title}</h2>
+        <Button
+          variant="primary"
+          onClick={handleExportExcel}
+          disabled={buildingEmpty}
+          title={buildingEmpty ? fr.measurements.exportDisabled : fr.measurements.exportExcelHint}
+          className="px-2 py-1 text-xs"
+        >
+          <FileSpreadsheet size={14} aria-hidden="true" />
+          {fr.measurements.exportExcel}
+        </Button>
         <Button
           onClick={handleExport}
           disabled={buildingEmpty}

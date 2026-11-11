@@ -80,7 +80,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
     return PLAN_SCALES.find((s) => s === wanted) ?? 50
   })
   // Métrés : présentation, périmètre et mobilier.
-  const [metresFormat, setMetresFormat] = useState<MetresFormat>('tables')
+  const [metresFormat, setMetresFormat] = useState<MetresFormat>('xlsx')
   const [metresScope, setMetresScope] = useState<MetresScope>('building')
   const [includeFurniture, setIncludeFurniture] = useState(true)
   const [busy, setBusy] = useState(false)
@@ -193,7 +193,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         {type === 'csv' && (
           <>
             <Group label={fr.export.metres.format}>
-              {(['tables', 'flat', 'xlsx', 'pdf'] as const).map((value) => (
+              {(['xlsx', 'pdf', 'tables', 'flat'] as const).map((value) => (
                 <Choice
                   key={value}
                   name="export-metres-format"
