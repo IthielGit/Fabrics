@@ -38,17 +38,22 @@ export default function MeasurementsPanel() {
   if (!isPlan) return null
   const active = building.levels.find((entry) => entry.level.id === activeLevelId)
   const measurements = active?.measurements ?? computeMeasurements([])
-  const { rooms, walls, platforms, stairs, openings, totals } = measurements
+  const { rooms, walls, platforms, stairs, roofs, openings, totals } = measurements
   const overlapIds = overlappingRoomIdsCached(elements ?? [])
   const overlapCount = rooms.filter((room) => overlapIds.has(room.id)).length
   // Le niveau affiché est vide : on le dit ; le CSV, lui, couvre tout le bâtiment.
   const isEmpty =
-    rooms.length === 0 && walls.length === 0 && platforms.length === 0 && stairs.length === 0
+    rooms.length === 0 &&
+    walls.length === 0 &&
+    platforms.length === 0 &&
+    stairs.length === 0 &&
+    roofs.length === 0
   const buildingEmpty =
     building.total.rooms.length === 0 &&
     building.total.walls.length === 0 &&
     building.total.platforms.length === 0 &&
-    building.total.stairs.length === 0
+    building.total.stairs.length === 0 &&
+    building.total.roofs.length === 0
 
   // Export principal : un vrai fichier Excel (onglets, nombres, totaux en formules), tout le bâtiment.
   const handleExportExcel = async () => {
@@ -283,6 +288,51 @@ export default function MeasurementsPanel() {
               <td className="px-1 py-1">{fr.measurements.total}</td>
               <td className={NUMBER}>{formatArea(totals.platformArea)}</td>
               <td className={NUMBER}>{formatVolume(totals.platformVolume)}</td>
+            </tr>
+          </tfoot>
+        </table>
+      )}
+
+      {roofs.length > 0 && (
+        <table className="mt-4 w-full text-sm">
+          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {fr.measurements.roofs}
+          </caption>
+          <thead>
+            <tr>
+              <th className={HEAD}>{fr.measurements.name}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.roofRealArea}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.roofRidge}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {roofs.map((roof) => (
+              <tr
+                key={roof.id}
+                onClick={() => setSelection([roof.id])}
+                className={rowClass(roof.id)}
+                title={
+                  roof.problem
+                    ? fr.roof.problems[roof.problem]
+                    : fr.measurements.roofDetails(
+                        fr.roof.shapes[roof.shape],
+                        roof.pitch,
+                        formatLength(Math.round(roof.eaveLength)),
+                        roof.gableCount,
+                      )
+                }
+              >
+                <td className={`max-w-20 truncate px-1 py-1 ${roof.problem ? 'text-red-600' : ''}`}>{roof.name}</td>
+                <td className={NUMBER}>{formatArea(roof.realArea)}</td>
+                <td className={NUMBER}>{formatLength(Math.round(roof.ridgeLength))}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="border-t border-slate-300 font-semibold">
+              <td className="px-1 py-1">{fr.measurements.total}</td>
+              <td className={NUMBER}>{formatArea(totals.roofRealArea)}</td>
+              <td className={NUMBER}>{formatLength(Math.round(totals.roofRidgeLength))}</td>
             </tr>
           </tfoot>
         </table>

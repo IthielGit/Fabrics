@@ -50,6 +50,12 @@ const RECT_4X3 = [0, 0, 4000, 0, 4000, 3000, 0, 3000]
 const L_SHAPE = [0, 0, 4000, 0, 4000, 2000, 2000, 2000, 2000, 3000, 0, 3000]
 
 const EMPTY_TOTALS = {
+  roofProjectedArea: 0,
+  roofRealArea: 0,
+  roofRidgeLength: 0,
+  roofEaveLength: 0,
+  roofHipLength: 0,
+  roofGables: 0,
   roomArea: 0,
   voidArea: 0,
   roomNetArea: 0,

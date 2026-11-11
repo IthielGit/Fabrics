@@ -5,9 +5,12 @@ import type {
   Level,
   OpeningElement,
   OpeningStyle,
+  RoofElement,
+  RoofShape,
   StairElement,
   WallElement,
 } from '../../types/document'
+import { computeRoof, isPitched, type RoofProblem } from '../building/roof'
 import { elementsOfLevel } from '../documents/levels'
 import { openingStyle } from '../openings/styles'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
@@ -41,6 +44,28 @@ export interface PlatformMeasure {
   thickness: number
   /** Volume : surface × épaisseur, en mm³. */
   volume: number
+}
+
+/** Toiture (M10 bis) : quantités seulement, aucun prix (D33). */
+export interface RoofMeasure {
+  id: string
+  name: string
+  shape: RoofShape
+  /** Pente en degrés ; `null` pour un toit plat. */
+  pitch: number | null
+  /** Débord, en mm. */
+  overhang: number
+  /** Surface au sol, débord compris, en mm². */
+  projectedArea: number
+  /** Surface réelle des versants (projetée ÷ cos α), en mm². */
+  realArea: number
+  ridgeLength: number // mm
+  eaveLength: number // mm
+  /** Longueur réelle (en pente) des arêtiers, en mm. */
+  hipLength: number
+  gableCount: number
+  /** Toiture non valable (quantités à 0) : pourquoi. */
+  problem: RoofProblem | null
 }
 
 export interface StairMeasure {
@@ -120,9 +145,17 @@ export interface Measurements {
   platforms: PlatformMeasure[]
   stairs: StairMeasure[]
   chimneys: ChimneyMeasure[]
+  roofs: RoofMeasure[]
   /** Ouvertures posées sur un mur existant, dans l'ordre du document. */
   openings: OpeningMeasure[]
   totals: {
+    /** Toitures : surfaces (mm²), longueurs (mm), nombre de pignons. */
+    roofProjectedArea: number
+    roofRealArea: number
+    roofRidgeLength: number
+    roofEaveLength: number
+    roofHipLength: number
+    roofGables: number
     roomArea: number // mm²
     /** Surface des trémies (mm²) et surface nette des pièces (mm²). */
     voidArea: number
@@ -153,6 +186,41 @@ function pathLength(points: readonly { x: number; y: number }[]): number {
     total += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y)
   }
   return total
+}
+
+/** Quantités d'une toiture (la base n'influe pas sur les surfaces ni les longueurs). */
+function roofMeasure(roof: RoofElement): RoofMeasure {
+  const result = computeRoof(roof, 0)
+  const base = {
+    id: roof.id,
+    name: roof.name,
+    shape: roof.shape,
+    pitch: isPitched(roof.shape) ? roof.pitch : null,
+    overhang: roof.overhang,
+  }
+  if ('problem' in result) {
+    return {
+      ...base,
+      projectedArea: 0,
+      realArea: 0,
+      ridgeLength: 0,
+      eaveLength: 0,
+      hipLength: 0,
+      gableCount: 0,
+      problem: result.problem,
+    }
+  }
+  const g = result.geometry
+  return {
+    ...base,
+    projectedArea: g.projectedArea,
+    realArea: g.realArea,
+    ridgeLength: g.ridgeLength,
+    eaveLength: g.eaveLength,
+    hipLength: g.hipLength,
+    gableCount: g.gableCount,
+    problem: null,
+  }
 }
 
 function chimneyMeasure(chimney: ChimneyElement): ChimneyMeasure {
@@ -199,6 +267,7 @@ export function computeMeasurements(
   const platforms: PlatformMeasure[] = []
   const stairs: StairMeasure[] = []
   const chimneys: ChimneyMeasure[] = []
+  const roofs: RoofMeasure[] = []
   const openings: OpeningMeasure[] = []
 
   // Les ouvertures d'abord : un mur a besoin de la surface des siennes.
@@ -256,6 +325,8 @@ export function computeMeasurements(
       })
     } else if (element.type === 'chimney') {
       chimneys.push(chimneyMeasure(element))
+    } else if (element.type === 'roof') {
+      roofs.push(roofMeasure(element))
     } else if (element.type === 'wall') {
       const length = polylineLength(element.points)
       const wallArea = length * element.height
@@ -289,8 +360,15 @@ export function computeMeasurements(
     platforms,
     stairs,
     chimneys,
+    roofs,
     openings,
     totals: {
+      roofProjectedArea: roofs.reduce((sum, roof) => sum + roof.projectedArea, 0),
+      roofRealArea: roofs.reduce((sum, roof) => sum + roof.realArea, 0),
+      roofRidgeLength: roofs.reduce((sum, roof) => sum + roof.ridgeLength, 0),
+      roofEaveLength: roofs.reduce((sum, roof) => sum + roof.eaveLength, 0),
+      roofHipLength: roofs.reduce((sum, roof) => sum + roof.hipLength, 0),
+      roofGables: roofs.reduce((sum, roof) => sum + roof.gableCount, 0),
       roomArea: rooms.reduce((sum, room) => sum + room.area, 0),
       voidArea: rooms.reduce((sum, room) => sum + room.voidArea, 0),
       roomNetArea: rooms.reduce((sum, room) => sum + room.netArea, 0),
@@ -332,8 +410,15 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
     platforms: list.flatMap((m) => m.platforms),
     stairs: list.flatMap((m) => m.stairs),
     chimneys: list.flatMap((m) => m.chimneys),
+    roofs: list.flatMap((m) => m.roofs),
     openings: list.flatMap((m) => m.openings),
     totals: {
+      roofProjectedArea: sum((m) => m.totals.roofProjectedArea),
+      roofRealArea: sum((m) => m.totals.roofRealArea),
+      roofRidgeLength: sum((m) => m.totals.roofRidgeLength),
+      roofEaveLength: sum((m) => m.totals.roofEaveLength),
+      roofHipLength: sum((m) => m.totals.roofHipLength),
+      roofGables: sum((m) => m.totals.roofGables),
       roomArea: sum((m) => m.totals.roomArea),
       voidArea: sum((m) => m.totals.voidArea),
       roomNetArea: sum((m) => m.totals.roomNetArea),

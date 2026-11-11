@@ -9,7 +9,7 @@ export interface MetresColumn {
 }
 
 /** Unité d'une grandeur : sert au format de cellule (mm entiers, m² et m³ à 2 décimales) dans Excel. */
-export type MetresUnit = 'mm' | 'm2' | 'm3' | 'count'
+export type MetresUnit = 'mm' | 'm2' | 'm3' | 'count' | 'deg'
 
 /** Une grandeur : le texte affiché (virgule décimale, arrondi) et sa valeur exacte, avant arrondi. */
 export interface MetresNumber {
@@ -49,6 +49,8 @@ export const nm2 = (value: number): MetresNumber => ({ text: m2(value), value: m
 /** Volume : `value` est en m³ (le calcul est en mm³). */
 export const nm3 = (value: number): MetresNumber => ({ text: m3(value), value: mm3ToM3(value), unit: 'm3' })
 export const ncount = (value: number): MetresNumber => ({ text: String(value), value, unit: 'count' })
+/** Pente en degrés (au dixième). */
+export const ndeg = (value: number): MetresNumber => ({ text: formatDecimal(value, 1), value, unit: 'deg' })
 
 const left = (header: string): MetresColumn => ({ header, align: 'left' })
 const right = (header: string): MetresColumn => ({ header, align: 'right' })
@@ -260,6 +262,60 @@ export function buildMetresTables(
         ],
       ),
       total: totalRow('', nm2(total.totals.platformArea), '', '', nm3(total.totals.platformVolume)),
+    })
+  }
+
+  // --- Toitures : surfaces (m²), faîtage, égouts et arêtiers (mm), pignons. Aucun prix.
+  const roofLabels = labels.roofs
+  if (roofLabels && total.roofs.length > 0) {
+    const t = total.totals
+    tables.push({
+      id: 'roofs',
+      title: roofLabels.title,
+      note: roofLabels.note,
+      columns: [
+        left(labels.level),
+        left(labels.name),
+        left(roofLabels.shape),
+        right(roofLabels.pitch),
+        right(roofLabels.overhang),
+        right(roofLabels.projectedArea),
+        right(roofLabels.realArea),
+        right(roofLabels.ridge),
+        right(roofLabels.eaves),
+        right(roofLabels.hips),
+        right(roofLabels.gables),
+        left(roofLabels.remark),
+      ],
+      rows: perLevel(
+        (m) => m.roofs,
+        (roof) => [
+          roof.name,
+          roofLabels.shapes[roof.shape],
+          roof.pitch === null ? '' : ndeg(roof.pitch),
+          nmm(roof.overhang),
+          nm2(roof.projectedArea),
+          nm2(roof.realArea),
+          nmm(Math.round(roof.ridgeLength)),
+          nmm(Math.round(roof.eaveLength)),
+          nmm(Math.round(roof.hipLength)),
+          ncount(roof.gableCount),
+          roof.problem ? roofLabels.problems[roof.problem] : '',
+        ],
+      ),
+      total: totalRow(
+        '',
+        '',
+        '',
+        '',
+        nm2(t.roofProjectedArea),
+        nm2(t.roofRealArea),
+        nmm(Math.round(t.roofRidgeLength)),
+        nmm(Math.round(t.roofEaveLength)),
+        nmm(Math.round(t.roofHipLength)),
+        ncount(t.roofGables),
+        '',
+      ),
     })
   }
 

@@ -1,4 +1,5 @@
-import type { OpeningStyle } from '../../types/document'
+import type { OpeningStyle, RoofShape } from '../../types/document'
+import type { RoofProblem } from '../building/roof'
 import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
 import type { BuildingMeasurements } from './measurements'
@@ -79,6 +80,23 @@ export interface CsvLabels {
     totalArea: string
     totalVolume: string
   }
+  /** Intitulés du tableau des toitures (absent : pas de tableau). */
+  roofs?: {
+    title: string
+    note: string
+    shape: string
+    shapes: Record<RoofShape, string>
+    pitch: string
+    overhang: string
+    projectedArea: string
+    realArea: string
+    ridge: string
+    eaves: string
+    hips: string
+    gables: string
+    remark: string
+    problems: Record<RoofProblem, string>
+  }
   /** Intitulés du tableau des cheminées (absent : pas de tableau). */
   chimneys?: {
     title: string
@@ -114,7 +132,7 @@ export interface CsvLabels {
 export interface FlatLabels {
   columns: Record<'level' | 'category' | 'element' | 'ref' | 'quantity' | 'value' | 'unit', string>
   categories: Record<
-    'room' | 'wall' | 'opening' | 'stair' | 'platform' | 'chimney' | 'furniture',
+    'room' | 'wall' | 'opening' | 'stair' | 'platform' | 'chimney' | 'roof' | 'furniture',
     string
   >
   quantities: Record<
@@ -142,10 +160,18 @@ export interface FlatLabels {
     | 'treadDepth'
     | 'elevation'
     | 'overhang'
-    | 'count',
+    | 'count'
+    | 'pitch'
+    | 'roofOverhang'
+    | 'projectedArea'
+    | 'realArea'
+    | 'ridgeLength'
+    | 'eaveLength'
+    | 'hipLength'
+    | 'gables',
     string
   >
-  units: Record<'mm' | 'm2' | 'm3' | 'count', string>
+  units: Record<'mm' | 'm2' | 'm3' | 'count' | 'deg', string>
 }
 
 /** Projet et date inscrits en tête du fichier. */
@@ -326,6 +352,18 @@ export function measurementsToFlatCsv(
         [q.elevation, platform.elevation, unit.mm, 0],
         [q.thickness, platform.thickness, unit.mm, 0],
         [q.volume, volume(platform.volume), unit.m3, 4],
+      ])
+    }
+    for (const roof of m.roofs) {
+      add(level.name, flat.categories.roof, roof.name, '', [
+        [q.pitch, roof.pitch, unit.deg, 1], // toit plat : pas de pente (ligne omise)
+        [q.roofOverhang, roof.overhang, unit.mm, 0],
+        [q.projectedArea, area(roof.projectedArea), unit.m2, 4],
+        [q.realArea, area(roof.realArea), unit.m2, 4],
+        [q.ridgeLength, Math.round(roof.ridgeLength), unit.mm, 0],
+        [q.eaveLength, Math.round(roof.eaveLength), unit.mm, 0],
+        [q.hipLength, Math.round(roof.hipLength), unit.mm, 0],
+        [q.gables, roof.gableCount, unit.count, 0],
       ])
     }
     for (const chimney of m.chimneys) {
