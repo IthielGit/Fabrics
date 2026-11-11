@@ -127,9 +127,22 @@ export interface DimensionElement extends BaseElement {
 }
 
 // Ouverture (M5) : position relative à son mur, pas de points absolus.
+// Style d'une ouverture (M10 bis) : choisit le dessin (plan, façade, 3D). Les styles permis dépendent
+// du `kind` (voir `src/features/openings/styles.ts`). Sans style : battant / deux vantaux / coulissante.
+export type OpeningStyle =
+  // portes
+  | 'swing' | 'double' | 'slidingSurface' | 'slidingPocket' | 'folding' | 'swingBoth'
+  | 'garageSectional' | 'garageTilt'
+  // fenêtres
+  | 'casement2' | 'casement1' | 'fixed' | 'sliding' | 'tilt'
+  // baies
+  | 'bay-sliding' | 'bay-fixed' | 'free';
+
 export interface OpeningElement extends BaseElement {
   type: 'opening';
   kind: 'door' | 'window' | 'bay';   // porte, fenêtre, baie
+  style?: OpeningStyle;      // facultatif (M10 bis) : absent = style par défaut du `kind`
+  tiltTurn?: boolean;        // facultatif : oscillo-battant (fenêtres à vantaux), marque en façade seulement
   wallId: string;            // mur porteur ; supprimé avec lui
   segmentIndex: number;      // segment de la polyligne du mur
   offset: number;            // mm, du début du segment au centre de l'ouverture

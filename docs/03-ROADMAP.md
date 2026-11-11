@@ -338,7 +338,7 @@ Pas de doublon : une variante qui ne change que la taille est une **taille rapid
 « Oscillo-battant » est une option des fenêtres à vantaux (marque en façade seulement). La
 fenêtre fixe et la baie fixe partagent le même dessin.
 
-- [ ] Catalogue des styles (fonctions pures) : styles permis par type, tailles par défaut,
+- [x] Catalogue des styles (fonctions pures) : styles permis par type, tailles par défaut,
       tailles rapides ; changer de style suit la règle de M8 (une taille encore par défaut prend
       celle du nouveau style, une taille modifiée à la main est gardée) ; la galandage exige une
       longueur de mur libre égale à sa largeur à côté de l'ouverture (sinon : message, refus)

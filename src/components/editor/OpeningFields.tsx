@@ -39,7 +39,13 @@ export default function OpeningFields({ element }: { element: OpeningElement }) 
     const openings = elements.filter((el): el is OpeningElement => el.type === 'opening')
     const result = resizeOpening(element, change, wall, openings)
     if ('problem' in result) {
-      setNotice(result.problem === 'too-tall' ? fr.notices.openingTooTall : fr.notices.openingNoRoom)
+      setNotice(
+        result.problem === 'too-tall'
+          ? fr.notices.openingTooTall
+          : result.problem === 'no-pocket'
+            ? fr.notices.openingNoPocket
+            : fr.notices.openingNoRoom,
+      )
       return
     }
     setNotice(null)

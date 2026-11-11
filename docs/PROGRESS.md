@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 (toutes les tâches, validé par l'utilisateur)
-- **Prochaine tâche :** M10 bis, Lot A, tâche 1 (catalogue des styles d'ouvertures) après accord sur la liste des tâches ; puis **M10 ter** (métrés et cotes en version client / exécution ; plan écrit le 2026-11-11), puis M11
+- **Dernière tâche terminée :** M10 bis, Lot A, tâche 1 (catalogue des styles d'ouvertures)
+- **Prochaine tâche :** M10 bis, Lot A, tâche 2 (symboles 2D et choix du style) ; puis **M10 ter** (métrés et cotes en version client / exécution ; plan écrit le 2026-11-11), puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M10 bis · Lot A · Tâche 1 · Catalogue des styles d'ouvertures
+- Fait : champs facultatifs **`style`** et **`tiltTurn`** (oscillo-battant) sur `opening` ; pas de migration, une ouverture sans style garde son dessin d'avant (battant, deux vantaux, baie coulissante). **Catalogue** (`src/features/openings/styles.ts`) : 8 styles de porte, 5 de fenêtre, 3 de baie, avec leurs tailles par défaut (mm) ; **tailles rapides** (porte d'entrée 1000 × 2150, porte-fenêtre à un ou deux vantaux, vitrine 3000 × 2200, passe-plat 600 × 600 à 1000 d'allège). **Modifications** (`openingEdit.ts`) : `changeOpeningStyle` (une taille encore par défaut prend celle du nouveau style, une taille modifiée à la main est gardée, ainsi que l'ancienne si la nouvelle ne tient pas), `applyQuickSize`, `setTiltTurn`. **Galandage** : refusée (`no-pocket`, message dédié) s'il n'y a pas, d'un côté, une longueur de mur libre au moins égale à sa largeur ; la même règle vaut quand on la redimensionne. Changer le type d'une ouverture (porte → fenêtre…) retire son style.
+- Décisions : tailles des portes-fenêtres choisies par moi (un vantail 900 × 2150, deux vantaux 1400 × 2150) car la roadmap ne les chiffrait pas. Les styles s'afficheront aussi en 3D (demande de l'utilisateur, tâche 4 du lot A).
+- Pas encore visible : aucun écran ne choisit encore le style (tâche 2).
+- Fichiers : `src/features/openings/styles(.test).ts`, `src/features/geometry/openingEdit.ts`, `openingStyleEdit.test.ts`, `src/types/document.ts`, `src/components/editor/OpeningFields.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2226, dont 30 nouveaux) — rien à contrôler dans le navigateur à ce stade
+- Commit : feat: M10 bis lot A tâche 1, catalogue des styles d'ouvertures
 
 ### 2026-11-11 — Hors jalon · Sommets d'aimantation lisibles (nature et tri selon l'outil)
 - Fait : demande de l'utilisateur (outil Pièce en rectangle avec murs : trois points verts à 100 mm les uns des autres, on ne sait pas lequel choisir). Option 2 choisie. **Nature de chaque sommet** : axe du mur, face intérieure ou extérieure d'un mur fermé (la face intérieure entoure la plus petite surface), face d'un mur ouvert ou croisement de faces, angle de pièce, extrémité de cote, croisement d'axes, point du tracé. **Repère près du curseur** : couleur propre à chaque nature et étiquette (« Axe du mur », « Face intérieure »…). **Tri selon l'outil** : Mur, Axe et Ligne de coupe attrapent d'abord les axes des murs ; Pièce et Plateforme les faces intérieures, faces de murs ouverts et angles de pièces ; Cote les faces, angles de pièces et extrémités de cotes. Un autre sommet compte comme deux fois plus loin : il reste attrapable en s'en approchant. Les points du tracé en cours sont toujours préférés. Même tri quand on glisse le sommet d'un élément posé.

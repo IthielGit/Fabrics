@@ -718,6 +718,8 @@ export const fr = {
     openingNoWall: 'Cliquez sur un mur pour y poser l’ouverture.',
     openingNoRoom: 'Pas assez de place sur ce mur pour cette ouverture.',
     openingTooTall: 'Cette ouverture est plus haute que le mur.',
+    openingNoPocket:
+      'Une porte à galandage demande, à côté d\'elle, une longueur de mur libre égale à sa largeur.',
     pasteUnitMismatch:
       'Impossible de coller ici : un visuel (pixels) et un plan (millimètres) n’utilisent pas la même unité.',
   },
