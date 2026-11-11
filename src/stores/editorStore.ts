@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
 import { copyToClipboard, takePasteCopies } from '../features/documents/clipboard'
 import { clampPageDimension } from '../features/documents/pageSize'
+import { defaultPresets, type OpeningPreset } from '../features/openings/styles'
 import { moveElementToSlot, sameOrder, stepElement } from '../features/documents/layers'
 import {
   copyLevelWalls,
@@ -107,6 +108,9 @@ interface EditorState {
   platformMode: PlatformMode
   /** Mode Rectangle : crée aussi un mur fermé autour de la pièce. */
   roomWithWalls: boolean
+  /** Style et taille posés par les outils Porte et Fenêtre ; état d'interface, hors historique. */
+  openingPresets: Record<'door' | 'window', OpeningPreset>
+  setOpeningPreset: (kind: 'door' | 'window', preset: OpeningPreset) => void
   /** Texte en cours d'édition dans la zone de saisie superposée (état d'interface, pas du document). */
   editingTextId: string | null
   /** Niveau affiché et modifiable (plans uniquement) ; état d'interface, hors historique. */
@@ -340,6 +344,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     platformMode: 'polygon',
     stairShape: 'straight',
     roomWithWalls: false,
+    openingPresets: defaultPresets(),
     editingTextId: null,
     activeLevelId: null,
     showLowerLevel: true,
@@ -397,6 +402,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     setRoomMode: (roomMode) => set({ roomMode }),
     setPlatformMode: (platformMode) => set({ platformMode }),
     setStairShape: (stairShape) => set({ stairShape }),
+    setOpeningPreset: (kind, preset) =>
+      set((state) => ({ openingPresets: { ...state.openingPresets, [kind]: preset } })),
     setRoomWithWalls: (roomWithWalls) => set({ roomWithWalls }),
     setNotice: (notice) => set({ notice }),
     setGuides: (guides) => set({ guides }),

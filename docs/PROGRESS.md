@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot A, tâche 1 (catalogue des styles d'ouvertures)
-- **Prochaine tâche :** M10 bis, Lot A, tâche 2 (symboles 2D et choix du style) ; puis **M10 ter** (métrés et cotes en version client / exécution ; plan écrit le 2026-11-11), puis M11
+- **Dernière tâche terminée :** M10 bis, Lot A, tâche 2 (symboles 2D et choix du style)
+- **Prochaine tâche :** M10 bis, Lot A, tâche 3 (menuiseries en façade et colonne « Style » du CSV), puis tâche 4 (menuiseries en 3D) ; puis **M10 ter** (métrés et cotes en version client / exécution ; plan écrit le 2026-11-11), puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M10 bis · Lot A · Tâche 2 · Symboles 2D et choix du style
+- Fait : **un symbole 2D distinct par style** (16), dessiné pour Fabrics. Portes : battant (inchangé), double (deux battants et deux arcs), va-et-vient (battant des deux côtés), coulissante en applique (vantail contre la face du mur et flèche), à galandage (vantail fermé, place dans le mur en pointillé), pliante (zigzag), garage sectionnelle (rails en pointillé vers l'intérieur) et basculante (panneau qui sort, en pointillé). Fenêtres : deux vantaux (inchangé), un vantail (trait de dormant côté gonds), fixe (un trait de vitrage plein), coulissante (deux vitrages décalés), à soufflet (trait pointillé au milieu). Baies : coulissante (inchangée), fixe (un trait), ouverture libre (seuils en pointillé). Le symbole a un nouveau champ `dashed` (traits pointillés), pris en compte par le plan, l'aperçu de pose et l'emprise d'export. L'oscillo-battant ne change pas le plan. **Choix du style** : dans la barre contextuelle des outils Porte et Fenêtre (liste des styles, boutons de tailles rapides, case « Oscillo-battant » pour les fenêtres à vantaux ; le réglage est mémorisé par outil dans l'état d'interface) et dans Propriétés d'une ouverture posée (même liste, tailles rapides, oscillo-battant). Le style n'est écrit dans le document que s'il diffère du style par défaut. Une galandage sans place est refusée à la pose (aperçu rouge et message) comme à la modification.
+- Remarque : sur une coulissante en applique ou à galandage, le bouton « Charnière de l'autre côté » choisit le côté où le vantail se range (le champ `hinge` sert à cela).
+- Fichiers : `src/features/geometry/openingSymbol(.test).ts`, `openingSymbolStyles.test.ts`, `src/features/openings/styles.ts` (réglages `OpeningPreset`), `src/stores/editorStore.ts` (`openingPresets`), `src/components/editor/{ToolModeBar,OpeningFields,useOpeningTool,OpeningPreviewLayer,shapes/OpeningShape}.tsx`, `src/features/export/bounds.ts`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2240, dont 14 nouveaux) — à contrôler dans le navigateur : pose avec chaque style, aperçu, Propriétés, refus de la galandage
+- Commit : feat: M10 bis lot A tâche 2, symboles 2D et choix du style
 
 ### 2026-11-11 — M10 bis · Lot A · Tâche 1 · Catalogue des styles d'ouvertures
 - Fait : champs facultatifs **`style`** et **`tiltTurn`** (oscillo-battant) sur `opening` ; pas de migration, une ouverture sans style garde son dessin d'avant (battant, deux vantaux, baie coulissante). **Catalogue** (`src/features/openings/styles.ts`) : 8 styles de porte, 5 de fenêtre, 3 de baie, avec leurs tailles par défaut (mm) ; **tailles rapides** (porte d'entrée 1000 × 2150, porte-fenêtre à un ou deux vantaux, vitrine 3000 × 2200, passe-plat 600 × 600 à 1000 d'allège). **Modifications** (`openingEdit.ts`) : `changeOpeningStyle` (une taille encore par défaut prend celle du nouveau style, une taille modifiée à la main est gardée, ainsi que l'ancienne si la nouvelle ne tient pas), `applyQuickSize`, `setTiltTurn`. **Galandage** : refusée (`no-pocket`, message dédié) s'il n'y a pas, d'un côté, une longueur de mur libre au moins égale à sa largeur ; la même règle vaut quand on la redimensionne. Changer le type d'une ouverture (porte → fenêtre…) retire son style.

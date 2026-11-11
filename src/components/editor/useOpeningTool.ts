@@ -1,8 +1,15 @@
 import type Konva from 'konva'
 import { useCallback, useMemo, useState } from 'react'
-import { createOpeningElement, OPENING_DEFAULTS } from '../../features/documents/elements'
-import { planOpeningPlacement, type PlacementProblem } from '../../features/geometry/openingPlacement'
-import { openingClearances, wallSegment } from '../../features/geometry/openings'
+import { createOpeningElement } from '../../features/documents/elements'
+import type { EditProblem } from '../../features/geometry/openingEdit'
+import { planOpeningPlacement } from '../../features/geometry/openingPlacement'
+import {
+  openingClearances,
+  openingInterval,
+  openingsOnSegment,
+  wallSegment,
+} from '../../features/geometry/openings'
+import { defaultStyle, hasPocketRoom, supportsTiltTurn } from '../../features/openings/styles'
 import type { Point } from '../../features/geometry/viewport'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
@@ -20,14 +27,15 @@ export interface OpeningPreview {
   /** Ouverture telle qu'elle serait posée (identifiant provisoire). */
   opening: OpeningElement
   wall: WallElement
-  problem: PlacementProblem | null
+  problem: EditProblem | null
   /** Cotes jusqu'aux extrémités du segment, avec l'endroit où les écrire (absentes si 0). */
   clearances: { length: number; at: Point }[]
 }
 
-const NOTICES: Record<PlacementProblem, string> = {
+const NOTICES: Record<EditProblem, string> = {
   'no-room': fr.notices.openingNoRoom,
   'too-tall': fr.notices.openingTooTall,
+  'no-pocket': fr.notices.openingNoPocket,
 }
 
 /**
@@ -38,6 +46,7 @@ export function useOpeningTool(kind: OpeningToolKind | null, scale: number) {
   const elements = useEditorStore(selectActiveElements)
   const addElement = useEditorStore((state) => state.addElement)
   const setNotice = useEditorStore((state) => state.setNotice)
+  const preset = useEditorStore((state) => state.openingPresets[kind ?? 'door'])
 
   // Quitter ou changer d'outil efface le curseur (réglage d'état pendant le rendu, sans effet).
   const [stored, setStored] = useState<{ kind: OpeningToolKind | null; cursor: Point | null }>({
@@ -58,30 +67,44 @@ export function useOpeningTool(kind: OpeningToolKind | null, scale: number) {
         point,
         walls,
         openings,
-        OPENING_DEFAULTS[kind],
+        preset.size,
         HOVER_TOLERANCE_PX / scale,
       )
       if (!placement) return null
 
       const count = openings.filter((o) => o.kind === kind).length
-      const opening = createOpeningElement(kind, `${fr.elements[kind]} ${count + 1}`, {
+      const base = createOpeningElement(kind, `${fr.elements[kind]} ${count + 1}`, {
         wallId: placement.wall.id,
         segmentIndex: placement.segmentIndex,
         offset: placement.offset,
         side: placement.side,
       })
-      return { placement, opening }
+      // Le style n'est écrit que s'il diffère du dessin par défaut : un projet reste identique à avant.
+      const opening: OpeningElement = { ...base, ...preset.size }
+      if (preset.style !== defaultStyle(kind)) opening.style = preset.style
+      if (preset.tiltTurn && supportsTiltTurn(preset.style)) opening.tiltTurn = true
+
+      // Une porte à galandage a besoin de mur libre à côté d'elle.
+      let problem: EditProblem | null = placement.problem
+      const segment = wallSegment(placement.wall, placement.segmentIndex)
+      if (!problem && preset.style === 'slidingPocket' && segment) {
+        const occupied = openingsOnSegment(openings, placement.wall.id, placement.segmentIndex).map(
+          openingInterval,
+        )
+        if (!hasPocketRoom(opening.offset, opening.width, segment.length, occupied)) problem = 'no-pocket'
+      }
+      return { placement, opening, problem }
     },
-    [kind, elements, scale],
+    [kind, elements, scale, preset],
   )
 
   const preview = useMemo<OpeningPreview | null>(() => {
     const result = cursor ? compute(cursor) : null
     if (!result) return null
-    const { placement, opening } = result
+    const { placement, opening, problem } = result
     const segment = wallSegment(placement.wall, placement.segmentIndex)
     const clearances: OpeningPreview['clearances'] = []
-    if (segment && !placement.problem) {
+    if (segment && !problem) {
       const { before, after } = openingClearances(opening.offset, opening.width, segment.length)
       const at = (distance: number) => ({
         x: segment.a.x + segment.direction.x * distance,
@@ -92,7 +115,7 @@ export function useOpeningTool(kind: OpeningToolKind | null, scale: number) {
         clearances.push({ length: after, at: at(opening.offset + opening.width / 2 + after / 2) })
       }
     }
-    return { opening, wall: placement.wall, problem: placement.problem, clearances }
+    return { opening, wall: placement.wall, problem, clearances }
   }, [cursor, compute])
 
   const onPointerMove = useCallback(
@@ -114,8 +137,8 @@ export function useOpeningTool(kind: OpeningToolKind | null, scale: number) {
         setNotice(fr.notices.openingNoWall)
         return
       }
-      if (result.placement.problem) {
-        setNotice(NOTICES[result.placement.problem])
+      if (result.problem) {
+        setNotice(NOTICES[result.problem])
         return
       }
       setNotice(null)

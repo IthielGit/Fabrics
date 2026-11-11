@@ -1,16 +1,26 @@
 import { useId } from 'react'
 import {
+  applyQuickSize,
   changeOpeningKind,
   changeOpeningKindAndSize,
+  changeOpeningStyle,
   flipHinge,
   flipSide,
   resizeOpening,
+  setTiltTurn,
+  type OpeningEditResult,
 } from '../../features/geometry/openingEdit'
 import { openingArea } from '../../features/geometry/openings'
+import {
+  OPENING_STYLES,
+  openingStyle,
+  quickSizesFor,
+  supportsTiltTurn,
+} from '../../features/openings/styles'
 import { formatArea } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
-import type { OpeningElement } from '../../types/document'
+import type { OpeningElement, OpeningStyle } from '../../types/document'
 import NumberField from '../ui/NumberField'
 import TextField from '../ui/TextField'
 
@@ -22,6 +32,7 @@ const ACTION_BUTTON =
 /** Réglages d'une ouverture : nom, type, dimensions, allège, sens d'ouverture d'une porte. */
 export default function OpeningFields({ element }: { element: OpeningElement }) {
   const kindId = useId()
+  const styleId = useId()
   const updateElements = useEditorStore((state) => state.updateElements)
   const setNotice = useEditorStore((state) => state.setNotice)
   const wall = useEditorStore((state) => {
@@ -32,12 +43,8 @@ export default function OpeningFields({ element }: { element: OpeningElement }) 
   const patch = (change: (opening: OpeningElement) => OpeningElement) =>
     updateElements([element.id], (el) => (el.type === 'opening' ? change(el) : el))
 
-  /** Largeur, hauteur ou allège : refusé avec un message si l'ouverture ne tient plus. */
-  const resize = (change: Partial<Pick<OpeningElement, 'width' | 'height' | 'sillHeight'>>) => {
-    if (!wall) return
-    const elements = useEditorStore.getState().project?.document.elements ?? []
-    const openings = elements.filter((el): el is OpeningElement => el.type === 'opening')
-    const result = resizeOpening(element, change, wall, openings)
+  /** Applique le résultat d'une modification, ou affiche pourquoi elle est refusée. */
+  const apply = (result: OpeningEditResult) => {
     if ('problem' in result) {
       setNotice(
         result.problem === 'too-tall'
@@ -51,6 +58,20 @@ export default function OpeningFields({ element }: { element: OpeningElement }) 
     setNotice(null)
     patch(() => result.opening)
   }
+
+  /** Les ouvertures du document, pour vérifier la place restante sur le mur. */
+  const currentOpenings = () => {
+    const elements = useEditorStore.getState().project?.document.elements ?? []
+    return elements.filter((el): el is OpeningElement => el.type === 'opening')
+  }
+
+  /** Largeur, hauteur ou allège : refusé avec un message si l'ouverture ne tient plus. */
+  const resize = (change: Partial<Pick<OpeningElement, 'width' | 'height' | 'sillHeight'>>) => {
+    if (!wall) return
+    apply(resizeOpening(element, change, wall, currentOpenings()))
+  }
+
+  const style = openingStyle(element)
 
   return (
     <>
@@ -86,6 +107,63 @@ export default function OpeningFields({ element }: { element: OpeningElement }) 
           ))}
         </select>
       </div>
+
+      <div className="flex items-center justify-between gap-2">
+        <label htmlFor={styleId} className="text-sm text-slate-600">
+          {fr.openingStyles.label}
+        </label>
+        <select
+          id={styleId}
+          value={style}
+          onChange={(event) => {
+            if (!wall) return
+            apply(
+              changeOpeningStyle(element, event.target.value as OpeningStyle, wall, currentOpenings()),
+            )
+          }}
+          className="w-36 rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900"
+        >
+          {OPENING_STYLES[element.kind].map((def) => (
+            <option key={def.style} value={def.style}>
+              {fr.openingStyles.styles[def.style]}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      {quickSizesFor(element.kind).length > 0 && (
+        <div className="space-y-1">
+          <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {fr.openingStyles.quickLabel}
+          </p>
+          <div className="flex flex-wrap gap-1">
+            {quickSizesFor(element.kind).map((quick) => (
+              <button
+                key={quick.id}
+                type="button"
+                className="rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+                onClick={() => wall && apply(applyQuickSize(element, quick.id, wall, currentOpenings()))}
+              >
+                {fr.openingStyles.quick[quick.id]}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {supportsTiltTurn(style) && (
+        <label
+          title={fr.openingStyles.tiltTurnTitle}
+          className="flex cursor-pointer items-center gap-2 text-sm text-slate-700"
+        >
+          <input
+            type="checkbox"
+            checked={element.tiltTurn === true}
+            onChange={(event) => patch((el) => setTiltTurn(el, event.target.checked))}
+          />
+          {fr.openingStyles.tiltTurn}
+        </label>
+      )}
 
       <NumberField
         label={fr.properties.width}

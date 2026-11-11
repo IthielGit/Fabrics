@@ -55,6 +55,35 @@ export const QUICK_SIZES: readonly QuickSize[] = [
   { id: 'passThrough', kind: 'bay', style: 'free', width: 600, height: 600, sillHeight: 1000 },
 ]
 
+/** Réglage de l'outil Porte ou Fenêtre : ce qui sera posé au prochain clic. */
+export interface OpeningPreset {
+  style: OpeningStyle
+  size: OpeningSize
+  /** Taille rapide choisie, pour la mettre en évidence ; `null` = taille par défaut du style. */
+  quickId: QuickSize['id'] | null
+  tiltTurn: boolean
+}
+
+/** Réglage avec la taille par défaut d'un style. */
+export function presetForStyle(kind: Kind, style: OpeningStyle): OpeningPreset {
+  const size = styleSize(kind, style) ?? OPENING_DEFAULTS[kind]
+  return { style, size, quickId: null, tiltTurn: false }
+}
+
+/** Réglage d'une taille rapide (son style et sa taille). */
+export function presetForQuick(quick: QuickSize): OpeningPreset {
+  const { width, height, sillHeight } = quick
+  return { style: quick.style, size: { width, height, sillHeight }, quickId: quick.id, tiltTurn: false }
+}
+
+/** Réglages de départ des outils Porte et Fenêtre : le dessin d'avant M10 bis. */
+export function defaultPresets(): Record<'door' | 'window', OpeningPreset> {
+  return {
+    door: presetForStyle('door', defaultStyle('door')),
+    window: presetForStyle('window', defaultStyle('window')),
+  }
+}
+
 /** Tailles rapides proposées pour un type d'ouverture. */
 export function quickSizesFor(kind: Kind): QuickSize[] {
   return QUICK_SIZES.filter((quick) => quick.kind === kind)

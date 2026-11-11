@@ -23,7 +23,7 @@ export default function OpeningPreviewLayer({ preview, scale }: OpeningPreviewLa
   const geometry = openingGeometry(opening, wall)
   if (!geometry) return null
 
-  const { cut, lines } = openingSymbol(opening, wall.thickness)
+  const { cut, lines, dashed } = openingSymbol(opening, wall.thickness)
   const color = problem ? INVALID : ACCENT
 
   return (
@@ -32,6 +32,15 @@ export default function OpeningPreviewLayer({ preview, scale }: OpeningPreviewLa
         <Rect x={cut.x} y={cut.y} width={cut.width} height={cut.height} fill={background} />
         {lines.map((points, index) => (
           <Line key={index} points={points} stroke={color} strokeWidth={2 / scale} />
+        ))}
+        {dashed.map((points, index) => (
+          <Line
+            key={`dashed-${index}`}
+            points={points}
+            stroke={color}
+            strokeWidth={1.5 / scale}
+            dash={[60, 40]}
+          />
         ))}
         <Rect
           x={cut.x}

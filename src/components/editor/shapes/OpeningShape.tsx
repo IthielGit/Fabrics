@@ -122,6 +122,16 @@ export default function OpeningShape({
           listening={false}
         />
       ))}
+      {symbol.dashed.map((points, index) => (
+        <Line
+          key={`dashed-${index}`}
+          points={points}
+          stroke={COLOR}
+          strokeWidth={stroke * 0.8}
+          dash={[60, 40]}
+          listening={false}
+        />
+      ))}
     </Group>
   )
 }

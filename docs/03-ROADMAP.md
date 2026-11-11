@@ -342,7 +342,7 @@ fenêtre fixe et la baie fixe partagent le même dessin.
       tailles rapides ; changer de style suit la règle de M8 (une taille encore par défaut prend
       celle du nouveau style, une taille modifiée à la main est gardée) ; la galandage exige une
       longueur de mur libre égale à sa largeur à côté de l'ouverture (sinon : message, refus)
-- [ ] Symboles 2D originaux de chaque style ; choix du style dans la barre contextuelle des outils
+- [x] Symboles 2D originaux de chaque style ; choix du style dans la barre contextuelle des outils
       Porte et Fenêtre et dans Propriétés (avec les tailles rapides et l'option oscillo-battant)
 - [ ] Menuiseries dessinées en façade (vantaux, triangle d'ouverture vers les gonds, flèche du
       coulissant, panneaux du garage) ; colonne « Style » dans le tableau des ouvertures du CSV

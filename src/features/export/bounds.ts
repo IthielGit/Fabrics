@@ -129,13 +129,13 @@ export function elementBounds(element: CanvasElement): Box | null {
 export function openingBounds(opening: OpeningElement, wall: WallElement): Box | null {
   const geometry = openingGeometry(opening, wall)
   if (!geometry) return null
-  const { cut, lines } = openingSymbol(opening, wall.thickness)
+  const { cut, lines, dashed } = openingSymbol(opening, wall.thickness)
 
   const local: Point[] = [
     { x: cut.x, y: cut.y },
     { x: cut.x + cut.width, y: cut.y + cut.height },
   ]
-  for (const line of lines) local.push(...toPoints(line))
+  for (const line of [...lines, ...dashed]) local.push(...toPoints(line))
 
   // Repère local (x le long du mur, y vers la normale) → document.
   const { center, direction, normal } = geometry

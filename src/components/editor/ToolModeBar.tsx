@@ -1,6 +1,14 @@
 import clsx from 'clsx'
+import {
+  OPENING_STYLES,
+  presetForQuick,
+  presetForStyle,
+  quickSizesFor,
+  supportsTiltTurn,
+} from '../../features/openings/styles'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
+import type { OpeningStyle } from '../../types/document'
 
 interface ModeButtonProps {
   label: string
@@ -24,9 +32,65 @@ function ModeButton({ label, active, onClick }: ModeButtonProps) {
   )
 }
 
+/** Style, tailles rapides et oscillo-battant des outils Porte et Fenêtre (M10 bis). */
+function OpeningToolOptions({ kind }: { kind: 'door' | 'window' }) {
+  const preset = useEditorStore((state) => state.openingPresets[kind])
+  const setPreset = useEditorStore((state) => state.setOpeningPreset)
+  const labels = fr.openingStyles
+
+  return (
+    <>
+      <label className="flex items-center gap-1.5 pl-2 text-sm text-slate-700">
+        {labels.label}
+        <select
+          value={preset.style}
+          onChange={(event) => {
+            const next = presetForStyle(kind, event.target.value as OpeningStyle)
+            setPreset(kind, { ...next, tiltTurn: preset.tiltTurn && supportsTiltTurn(next.style) })
+          }}
+          className="rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900"
+        >
+          {OPENING_STYLES[kind].map(({ style }) => (
+            <option key={style} value={style}>
+              {labels.styles[style]}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div
+        role="group"
+        aria-label={labels.quickLabel}
+        className="ml-1 flex items-center gap-1 border-l border-slate-200 pl-2"
+      >
+        {quickSizesFor(kind).map((quick) => (
+          <ModeButton
+            key={quick.id}
+            label={labels.quick[quick.id]}
+            active={preset.quickId === quick.id}
+            onClick={() => setPreset(kind, presetForQuick(quick))}
+          />
+        ))}
+      </div>
+      {supportsTiltTurn(preset.style) && (
+        <label
+          title={labels.tiltTurnTitle}
+          className="ml-1 flex cursor-pointer items-center gap-1.5 border-l border-slate-200 pl-3 pr-2 text-sm text-slate-700"
+        >
+          <input
+            type="checkbox"
+            checked={preset.tiltTurn}
+            onChange={(event) => setPreset(kind, { ...preset, tiltTurn: event.target.checked })}
+          />
+          {labels.tiltTurn}
+        </label>
+      )}
+    </>
+  )
+}
+
 /**
  * Modes de l'outil Mur (polyligne / mur droit) et de l'outil Pièce (polygone / rectangle, avec ou
- * sans murs), sans bouton de plus dans la barre d'outils.
+ * sans murs), options des outils Porte et Fenêtre, sans bouton de plus dans la barre d'outils.
  */
 export default function ToolModeBar() {
   const tool = useEditorStore((state) => state.activeTool)
@@ -41,7 +105,10 @@ export default function ToolModeBar() {
   const setStairShape = useEditorStore((state) => state.setStairShape)
   const setRoomWithWalls = useEditorStore((state) => state.setRoomWithWalls)
 
-  if (tool !== 'wall' && tool !== 'room' && tool !== 'platform' && tool !== 'stair') return null
+  const isOpeningTool = tool === 'door' || tool === 'window'
+  if (!isOpeningTool && tool !== 'wall' && tool !== 'room' && tool !== 'platform' && tool !== 'stair') {
+    return null
+  }
 
   return (
     <div
@@ -49,7 +116,9 @@ export default function ToolModeBar() {
       aria-label={fr.toolModes.label}
       className="pointer-events-auto flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
     >
-      {tool === 'stair' ? (
+      {isOpeningTool ? (
+        <OpeningToolOptions kind={tool} />
+      ) : tool === 'stair' ? (
         <>
           {(['straight', 'l', 'u'] as const).map((shape) => (
             <ModeButton
