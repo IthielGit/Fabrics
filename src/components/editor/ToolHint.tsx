@@ -4,7 +4,12 @@ import { useEditorStore } from '../../stores/editorStore'
 /** Rappel des commandes de l'outil de plan en cours, en bas de l'écran. */
 export default function ToolHint() {
   const tool = useEditorStore((state) => state.activeTool)
-  const hint =
+  const wallMode = useEditorStore((state) => state.wallMode)
+  const roomMode = useEditorStore((state) => state.roomMode)
+  let hint: string | null = null
+  if (tool === 'wall' && wallMode === 'straight') hint = fr.hints.wallStraight
+  else if (tool === 'room' && roomMode === 'rectangle') hint = fr.hints.roomRectangle
+  else if (
     tool === 'wall' ||
     tool === 'room' ||
     tool === 'dimension' ||
@@ -13,8 +18,9 @@ export default function ToolHint() {
     tool === 'door' ||
     tool === 'window' ||
     tool === 'calibrate'
-      ? fr.hints[tool]
-      : null
+  ) {
+    hint = fr.hints[tool]
+  }
   if (!hint) return null
 
   return (

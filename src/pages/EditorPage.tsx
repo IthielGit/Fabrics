@@ -12,6 +12,7 @@ import MeasurementsPanel from '../components/editor/MeasurementsPanel'
 import Notice from '../components/editor/Notice'
 import PropertiesPanel from '../components/editor/PropertiesPanel'
 import ToolHint from '../components/editor/ToolHint'
+import ToolModeBar from '../components/editor/ToolModeBar'
 import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
@@ -92,6 +93,7 @@ export default function EditorPage() {
           <MiniMap />
           <ScrollBars />
           <Notice />
+          <ToolModeBar />
           <ToolHint />
         </div>
         <Viewer3DPanel />

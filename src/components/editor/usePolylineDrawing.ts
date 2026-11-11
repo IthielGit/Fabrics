@@ -7,6 +7,11 @@ import {
   createWallElement,
   nextElementName,
 } from '../../features/documents/elements'
+import {
+  createRectangleRoom,
+  createRoomWithWalls,
+  isRectangle,
+} from '../../features/documents/construction'
 import { nextAxisLabel } from '../../features/geometry/axes'
 import type { Guide } from '../../features/geometry/guides'
 import { flattenPoints, pointDistance } from '../../features/geometry/polygon'
@@ -60,7 +65,8 @@ const EMPTY: PolylineDraft = {
 }
 
 interface StoredDraft {
-  tool: PolylineTool | null
+  /** Outil et mode du tracé (`wall:straight`, `room:rectangle`…) : changer de mode repart de zéro. */
+  key: string | null
   draft: PolylineDraft
 }
 
@@ -89,7 +95,13 @@ function samePoint(a: Point, b: Point): boolean {
 export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
   // Le tracé est rattaché à son outil : changer d'outil abandonne le tracé en cours sans rien
   // remettre à zéro dans un effet (le tracé d'un autre outil est simplement ignoré).
-  const [stored, setStored] = useState<StoredDraft>({ tool, draft: EMPTY })
+  const wallMode = useEditorStore((state) => state.wallMode)
+  const roomMode = useEditorStore((state) => state.roomMode)
+  // Mur droit et pièce rectangle : deux clics suffisent (premier point, puis point opposé).
+  const rectMode = tool === 'room' && roomMode === 'rectangle'
+  const twoClicks = rectMode || (tool === 'wall' && wallMode === 'straight')
+  const key = tool === 'wall' ? `wall:${wallMode}` : tool === 'room' ? `room:${roomMode}` : tool
+  const [stored, setStored] = useState<StoredDraft>({ key, draft: EMPTY })
   const storedRef = useRef<StoredDraft>(stored)
   const vertexCache = useRef<{ elements: readonly CanvasElement[]; vertices: Point[] } | null>(null)
   const wallAxesCache = useRef<{ elements: readonly CanvasElement[]; axes: WallAxisSegment[] } | null>(
@@ -98,8 +110,8 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
 
   // Changer d'outil (y compris pour « sélection ») repart de zéro : un tracé abandonné ne doit pas
   // réapparaître au retour. Réglage d'état pendant le rendu, sans effet.
-  if (stored.tool !== tool) setStored({ tool, draft: EMPTY })
-  const draft = stored.tool === tool ? stored.draft : EMPTY
+  if (stored.key !== key) setStored({ key, draft: EMPTY })
+  const draft = stored.key === key ? stored.draft : EMPTY
 
   useEffect(() => {
     storedRef.current = stored
@@ -108,16 +120,16 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
   /** Tracé courant, lisible depuis les gestionnaires d'événements. */
   const readDraft = useCallback((): PolylineDraft => {
     const current = storedRef.current
-    return current.tool === tool ? current.draft : EMPTY
-  }, [tool])
+    return current.key === key ? current.draft : EMPTY
+  }, [key])
 
   const setDraft = useCallback(
     (next: PolylineDraft) => {
-      const value = { tool, draft: next }
+      const value = { key, draft: next }
       storedRef.current = value
       setStored(value)
     },
-    [tool],
+    [key],
   )
 
   /** Sommets du plan (mis en cache : le calcul des angles de faces est coûteux). */
@@ -202,23 +214,46 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
             ],
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
-        from: current.length > 0 ? current[current.length - 1] : null,
-        constrain: shift,
-        softAlign: !alt,
+        // Rectangle : les deux coins sont libres (pas de direction à contraindre, sinon on
+        // obtiendrait un rectangle aplati).
+        from: current.length > 0 && !rectMode ? current[current.length - 1] : null,
+        constrain: shift && !rectMode,
+        softAlign: !alt && !rectMode,
       })
     },
-    [tool, planVertices, wallAxes, alignTargets, openingPoints, readDraft, scale],
+    [tool, rectMode, planVertices, wallAxes, alignTargets, openingPoints, readDraft, scale],
   )
 
   const finish = useCallback(() => {
     const { points, cursor } = readDraft()
     const { project, addElement } = useEditorStore.getState()
     setDraft({ ...EMPTY, cursor })
-    if (!tool || !project || points.length < MIN_POINTS[tool]) return
+    if (!tool || !project || points.length < (rectMode ? 2 : MIN_POINTS[tool])) return
 
     const { plan, levels } = project.document
     const state = useEditorStore.getState()
     const flat = flattenPoints(points)
+    // Un nouveau mur prend la hauteur d'étage du niveau actif.
+    const levelHeight =
+      levels?.find((level) => level.id === state.activeLevelId)?.height ??
+      plan?.defaultWallHeight ??
+      2500
+
+    if (rectMode) {
+      const [a, b] = points
+      if (!isRectangle(a, b)) return
+      const active = selectActiveElements(state)
+      const roomName = nextElementName(fr.elements.room, 'room', active)
+      if (state.roomWithWalls) {
+        const thickness = plan?.defaultWallThickness ?? 200
+        const wallName = nextElementName(fr.elements.wall, 'wall', active)
+        // Pièce et mur fermé en un seul pas d'historique.
+        state.addElements(createRoomWithWalls(roomName, wallName, a, b, thickness, levelHeight))
+      } else {
+        state.addElement(createRectangleRoom(roomName, a, b))
+      }
+      return
+    }
 
     if (tool === 'axis') {
       // Les axes sont communs à tous les niveaux : le repère suit la suite de tous les axes du plan.
@@ -229,26 +264,14 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     }
 
     const name = nextElementName(fr.elements[tool], tool, selectActiveElements(state))
-    // Un nouveau mur prend la hauteur d'étage du niveau actif.
-    const wallHeight =
-      levels?.find((level) => level.id === state.activeLevelId)?.height ??
-      plan?.defaultWallHeight ??
-      2500
     if (tool === 'wall') {
-      addElement(
-        createWallElement(
-          name,
-          flat,
-          plan?.defaultWallThickness ?? 200,
-          wallHeight,
-        ),
-      )
+      addElement(createWallElement(name, flat, plan?.defaultWallThickness ?? 200, levelHeight))
     } else if (tool === 'room') {
       addElement(createRoomElement(name, flat))
     } else {
       addElement(createDimensionElement(name, [flat[0], flat[1], flat[2], flat[3]]))
     }
-  }, [tool, readDraft, setDraft])
+  }, [tool, rectMode, readDraft, setDraft])
 
   /** Crée une pièce sur le contour d'une zone fermée par des murs (Maj + clic). */
   const commitRegion = useCallback(
@@ -278,7 +301,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       }
 
       // Double-clic : le premier clic a déjà posé le dernier point, le second termine le tracé.
-      if (clicks >= 2 && current.points.length > 0) {
+      if (clicks >= 2 && current.points.length > 0 && !twoClicks) {
         finish()
         return
       }
@@ -292,6 +315,8 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         return
       }
       if (points.length > 0 && samePoint(point, points[points.length - 1])) return
+      // Rectangle : un coin opposé aligné sur le premier donnerait une pièce aplatie.
+      if (rectMode && points.length === 1 && !isRectangle(points[0], point)) return
 
       setDraft({
         points: [...points, point],
@@ -300,10 +325,10 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         fillMode: false,
         region: null,
       })
-      // Une cote et un axe n'ont que deux points.
-      if ((tool === 'dimension' || tool === 'axis') && points.length + 1 === 2) finish()
+      // Une cote, un axe, un mur droit et un rectangle n'ont que deux points.
+      if ((tool === 'dimension' || tool === 'axis' || twoClicks) && points.length + 1 === 2) finish()
     },
-    [tool, readDraft, snap, finish, setDraft, regionAt, commitRegion],
+    [tool, rectMode, twoClicks, readDraft, snap, finish, setDraft, regionAt, commitRegion],
   )
 
   const onPointerMove = useCallback(

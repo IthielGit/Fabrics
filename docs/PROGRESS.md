@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M9 — Outils de construction (planifié, rien de codé ; M8 validé le 2026-11-11)
-- **Dernière tâche terminée :** planification de M9 (roadmap, architecture et produit mis à jour ; jalons suivants renumérotés d'un cran : façades = M10)
-- **Prochaine tâche :** lot A de M9 (mur droit, pièce rectangulaire, pièce avec ses 4 murs) — en attente du feu vert sur le détail des tâches
+- **Jalon en cours :** M9 — Outils de construction (en cours ; M8 validé le 2026-11-11)
+- **Dernière tâche terminée :** lot A de M9 (mur droit, pièce rectangulaire, pièce avec murs)
+- **Prochaine tâche :** lot B de M9 (pièces préfabriquées, `Maj + R` étendu)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -23,7 +23,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
-| M9 Outils de construction | planifié | |
+| M9 Outils de construction | en cours (lot A fait) | |
 | M10 Façades, coupes et planche | à faire | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
@@ -39,6 +39,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M9 · Lot A · Murs et pièces
+- Fait : une **barre de modes** apparaît en bas du canevas (pas de bouton de plus dans la barre d'outils). **Outil Mur** : « Polyligne » (comme avant) ou « Mur droit » (clic de début, clic de fin : le mur est créé). **Outil Pièce** : « Polygone » ou « Rectangle » (clic sur un coin, clic sur le coin opposé), avec une case **« Avec murs »** : le rectangle tracé est la face intérieure, et la pièce plus **un seul mur fermé** (axe décalé d'une demi-épaisseur) sont créés en **un seul pas d'historique** (une pièce de 4000 × 3000 mm avec un mur de 200 mm donne 12,00 m² et un axe de 4200 × 3200 mm). Aperçu en direct du rectangle avec largeur, hauteur et surface ; le mur épais est prévisualisé avec l'option. Mêmes aimantations qu'avant, sauf pour le rectangle (pas de direction contrainte, pour ne pas obtenir un rectangle aplati : un clic qui donnerait une surface nulle est ignoré). Changer de mode abandonne le tracé en cours. Maj + survol (pièce automatique) reste disponible dans les deux modes de l'outil Pièce.
+- Fichiers : `src/features/documents/construction(.test).ts`, `src/components/editor/{ToolModeBar,usePolylineDrawing,PolylineDraftLayer,ToolHint}`, `src/stores/editorStore.ts`, `src/pages/EditorPage.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1942, dont 6 nouveaux) — tracé à la souris à contrôler dans le navigateur
+- Commit : feat: M9 lot A, mur droit, pièce rectangle et pièce avec murs
 
 ### 2026-11-11 — Hors jalon · G · Style des cotes
 - Fait : demande de l'utilisateur (image d'un plan coté). Les cotes se rapprochent de ce style : trait **noir**, **chiffres plus petits** posés juste au-dessus de la ligne, **lignes d'attache fines qui ne touchent pas l'objet** (un petit écart au départ, un dépassement au bout), traits obliques à 45° un peu plus longs. Le texte d'une cote **verticale se lit de bas en haut** (-90°), quel que soit le sens de la mesure. Les valeurs gardent leur unité (règle du projet) mais **l'unité « mm » est plus petite et grise** que le chiffre, et elle est **masquée quand la cote fait moins de 90 px à l'écran** (le chiffre reste) : moins d'encombrement. Largeur du texte estimée (≈ 0,56 × la taille de police par caractère), donc le centrage est approximatif.

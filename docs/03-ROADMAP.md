@@ -236,11 +236,11 @@ nouveaux types d'éléments, aucun ancien projet modifié (même règle qu'en M7
 détaillées : `docs/02-ARCHITECTURE.md`, section « Outils de construction (M9) ».
 
 ### Lot A — Murs et pièces
-- [ ] Outil Mur : mode « Mur droit » (2 clics, début et fin), en plus du tracé en polyligne ;
+- [x] Outil Mur : mode « Mur droit » (2 clics, début et fin), en plus du tracé en polyligne ;
       mêmes aimantations. Pas de nouveau bouton dans la barre d'outils
-- [ ] Outil Pièce : mode « Rectangle » (2 clics, coins opposés), en plus du polygone libre.
+- [x] Outil Pièce : mode « Rectangle » (2 clics, coins opposés), en plus du polygone libre.
       Pas de nouveau bouton
-- [ ] Option « avec murs » du mode Rectangle : la pièce + **un seul mur fermé** placé à
+- [x] Option « avec murs » du mode Rectangle : la pièce + **un seul mur fermé** placé à
       l'extérieur (le tracé = faces intérieures), créés en un seul pas d'historique
 
 ### Lot B — Pièces préfabriquées

@@ -58,6 +58,8 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
 export function isPlanTool(tool: EditorTool): boolean {
   return PLAN_TOOLS.includes(tool)
 }
+export type WallMode = 'polyline' | 'straight'
+export type RoomMode = 'polygon' | 'rectangle'
 export type SaveStatus = 'saved' | 'saving' | 'error'
 
 export const HISTORY_LIMIT = 100
@@ -75,6 +77,12 @@ interface EditorState {
   activeTool: EditorTool
   /** Objet de la bibliothèque en cours de pose (outil `furniture`) ; état d'interface, hors historique. */
   furnitureSymbolId: string | null
+  /** Mode de l'outil Mur : tracé en polyligne ou mur droit (2 clics) ; état d'interface. */
+  wallMode: WallMode
+  /** Mode de l'outil Pièce : polygone libre ou rectangle (2 clics) ; état d'interface. */
+  roomMode: RoomMode
+  /** Mode Rectangle : crée aussi un mur fermé autour de la pièce. */
+  roomWithWalls: boolean
   /** Texte en cours d'édition dans la zone de saisie superposée (état d'interface, pas du document). */
   editingTextId: string | null
   /** Niveau affiché et modifiable (plans uniquement) ; état d'interface, hors historique. */
@@ -99,6 +107,9 @@ interface EditorState {
   setTool: (tool: EditorTool) => void
   /** Choisit un objet de la bibliothèque et active l'outil de pose (sans effet dans un visuel). */
   startPlacingFurniture: (symbolId: string) => void
+  setWallMode: (mode: WallMode) => void
+  setRoomMode: (mode: RoomMode) => void
+  setRoomWithWalls: (withWalls: boolean) => void
   setNotice: (notice: string | null) => void
   setGuides: (guides: Guide[]) => void
   startEditingText: (id: string) => void
@@ -244,6 +255,9 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     selectedIds: [],
     activeTool: 'select',
     furnitureSymbolId: null,
+    wallMode: 'polyline',
+    roomMode: 'polygon',
+    roomWithWalls: false,
     editingTextId: null,
     activeLevelId: null,
     showLowerLevel: true,
@@ -295,6 +309,9 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       if (get().project?.kind !== 'plan') return
       set({ activeTool: 'furniture', furnitureSymbolId: symbolId })
     },
+    setWallMode: (wallMode) => set({ wallMode }),
+    setRoomMode: (roomMode) => set({ roomMode }),
+    setRoomWithWalls: (roomWithWalls) => set({ roomWithWalls }),
     setNotice: (notice) => set({ notice }),
     setGuides: (guides) => set({ guides }),
     startEditingText: (id) => set({ editingTextId: id, selectedIds: [id], activeTool: 'select' }),
