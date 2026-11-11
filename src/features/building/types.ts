@@ -35,6 +35,8 @@ export interface SlabShape {
   baseY: number
   /** Épaisseur, mm. */
   thickness: number
+  /** Trous (trémies d'escalier), dans le plan : chacun tient entièrement dans le contour. */
+  holes?: Point[][]
 }
 
 export interface Bounds3 {

@@ -54,6 +54,8 @@ const L_SHAPE = [0, 0, 4000, 0, 4000, 2000, 2000, 2000, 2000, 3000, 0, 3000]
 
 const EMPTY_TOTALS = {
   roomArea: 0,
+  voidArea: 0,
+  roomNetArea: 0,
   platformArea: 0,
   platformVolume: 0,
   wallLength: 0,
@@ -68,7 +70,17 @@ const EMPTY_TOTALS = {
 describe('computeMeasurements', () => {
   it('pièce de 4 m × 3 m : 12,00 m² et 14,00 m', () => {
     const { rooms } = computeMeasurements([room('Salon', RECT_4X3)])
-    expect(rooms).toEqual([{ id: 'Salon', name: 'Salon', area: 12_000_000, perimeter: 14_000 }])
+    expect(rooms).toEqual([
+      {
+        id: 'Salon',
+        name: 'Salon',
+        area: 12_000_000,
+        perimeter: 14_000,
+        voidArea: 0,
+        netArea: 12_000_000,
+        voidOverflow: false,
+      },
+    ])
   })
 
   it('pièce en L : 10 m² et 14 m', () => {
@@ -217,6 +229,8 @@ const LABELS: CsvLabels = {
   name: 'Nom',
   area: 'Surface (m²)',
   perimeter: 'Périmètre (mm)',
+  voidArea: 'Trémie (m²)',
+  roomNetArea: 'Surface nette (m²)',
   length: 'Longueur (mm)',
   thickness: 'Épaisseur (mm)',
   height: 'Hauteur (mm)',
@@ -305,8 +319,8 @@ describe('measurementsToCsv', () => {
   })
 
   it('sépare par des points-virgules, avec des décimales à virgule et des fins de ligne CRLF', () => {
-    expect(lines).toContain('Niveau;Nom;Surface (m²);Périmètre (mm)')
-    expect(lines).toContain('Rez;Cuisine;12,40;14200') // 4000 × 3100 mm ; 2 × (4000 + 3100)
+    expect(lines).toContain('Niveau;Nom;Surface (m²);Périmètre (mm);Trémie (m²);Surface nette (m²)')
+    expect(lines).toContain('Rez;Cuisine;12,40;14200;0,00;12,40') // 4000 × 3100 mm ; 2 × (4000 + 3100)
     expect(lines).toContain('Rez;Mur 1;4000;200;2500;10,00;0,00;10,00')
   })
 
@@ -412,8 +426,8 @@ describe('métrés par niveau et pour le bâtiment', () => {
 
   it('le CSV porte une colonne Niveau et une ligne par niveau', () => {
     const lines = measurementsToCsv(building, LABELS).slice(1).split('\r\n')
-    expect(lines).toContain('Rez;R0;12,00;14000')
-    expect(lines).toContain('Étage 1;R1;10,00;14000')
+    expect(lines).toContain('Rez;R0;12,00;14000;0,00;12,00')
+    expect(lines).toContain('Étage 1;R1;10,00;14000;0,00;10,00')
     expect(lines).toContain('Étage 1;2700;2700;10,00;2000;5,00;0,00;5,00;0;0;0')
     expect(lines).toContain('Bâtiment;;;22,00;6000;15,00;0,00;15,00;0;0;0')
   })

@@ -10,6 +10,7 @@ import type {
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import type { BuildOptions, BuildingModel, Bounds3, SlabShape, WallPiece } from './types'
+import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
 import { buildStairSteps } from './stairSteps'
 import { buildWallPieces } from './wallPieces'
 
@@ -22,9 +23,16 @@ export function visibleLevels(levels: readonly Level[], upToLevelId?: string): L
 }
 
 /** Dalle sous une pièce : dessus au niveau du sol, épaisseur du niveau vers le bas. */
-export function buildRoomSlab(room: RoomElement, level: Level): SlabShape | null {
+export function buildRoomSlab(
+  room: RoomElement,
+  level: Level,
+  voids: readonly StairVoid[] = [],
+): SlabShape | null {
   const outline = toPoints(room.points)
   if (outline.length < 3 || level.slabThickness < 1) return null
+  // Les trémies des escaliers qui arrivent sur ce niveau trouent la dalle (forme avec trous, pas de
+  // calcul booléen). Une trémie qui déborde de la pièce la laisse pleine (voir `voidsOfRoom`).
+  const holes = voidsOfRoom(room, voids).holes.map((hole) => hole.polygon)
   return {
     sourceId: room.id,
     levelId: level.id,
@@ -32,6 +40,7 @@ export function buildRoomSlab(room: RoomElement, level: Level): SlabShape | null
     outline,
     baseY: level.elevation - level.slabThickness,
     thickness: level.slabThickness,
+    ...(holes.length > 0 ? { holes } : {}),
   }
 }
 
@@ -129,6 +138,7 @@ export function buildBuildingModel(
   const openings = doc.elements.filter(
     (el): el is OpeningElement => el.type === 'opening' && !el.hidden,
   )
+  const stairVoids = collectStairVoids(doc.elements, allLevels)
   const walls: WallPiece[] = []
   const steps: WallPiece[] = []
   const slabs: SlabShape[] = []
@@ -145,7 +155,11 @@ export function buildBuildingModel(
       const shape = buildPlatform(el, level)
       if (shape) slabs.push(shape)
     } else if (el.type === 'room') {
-      const slab = buildRoomSlab(el, level)
+      const slab = buildRoomSlab(
+        el,
+        level,
+        stairVoids.filter((v) => v.levelId === level.id),
+      )
       if (slab) slabs.push(slab)
       if (showRoof && level.id === topLevel.id) {
         const roof = buildRoomRoof(el, level)

@@ -1,5 +1,5 @@
 import { Download } from 'lucide-react'
-import { useMemo } from 'react'
+import { Fragment, useMemo } from 'react'
 import { furnitureCsvRows } from '../library/furnitureRows'
 import { csvFileName, measurementsToCsv } from '../../features/measurements/csv'
 import {
@@ -96,11 +96,28 @@ export default function MeasurementsPanel() {
           </thead>
           <tbody>
             {rooms.map((room) => (
-              <tr key={room.id} onClick={() => setSelection([room.id])} className={rowClass(room.id)}>
-                <td className="max-w-24 truncate px-1 py-1">{room.name}</td>
-                <td className={NUMBER}>{formatArea(room.area)}</td>
-                <td className={NUMBER}>{formatLength(room.perimeter)}</td>
-              </tr>
+              <Fragment key={room.id}>
+                <tr onClick={() => setSelection([room.id])} className={rowClass(room.id)}>
+                  <td className="max-w-24 truncate px-1 py-1">{room.name}</td>
+                  <td className={NUMBER}>{formatArea(room.area)}</td>
+                  <td className={NUMBER}>{formatLength(room.perimeter)}</td>
+                </tr>
+                {room.voidArea > 0 && (
+                  <tr onClick={() => setSelection([room.id])} className="cursor-pointer text-xs text-slate-500">
+                    <td className="px-1 pb-1" colSpan={3}>
+                      {fr.stairs.voidArea} −{formatArea(room.voidArea)} · {fr.stairs.netArea}{' '}
+                      {formatArea(room.netArea)}
+                    </td>
+                  </tr>
+                )}
+                {room.voidOverflow && (
+                  <tr>
+                    <td className="px-1 pb-1 text-xs text-red-700" colSpan={3}>
+                      {fr.stairs.voidOverflow}
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             ))}
           </tbody>
           <tfoot>

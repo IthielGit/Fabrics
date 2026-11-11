@@ -17,6 +17,9 @@ export interface CsvLabels {
   name: string
   area: string
   perimeter: string
+  /** Colonnes « Trémie » et « Surface nette » du tableau des pièces. */
+  voidArea: string
+  roomNetArea: string
   length: string
   thickness: string
   height: string
@@ -136,10 +139,23 @@ export function measurementsToCsv(
 
   lines.push(
     row(text(labels.rooms)),
-    row(text(labels.level), text(labels.name), text(labels.area), text(labels.perimeter)),
+    row(
+      text(labels.level),
+      text(labels.name),
+      text(labels.area),
+      text(labels.perimeter),
+      text(labels.voidArea),
+      text(labels.roomNetArea),
+    ),
     ...perLevel(
       (m) => m.rooms,
-      (room) => [text(room.name), m2(room.area), mm(room.perimeter)],
+      (room) => [
+        text(room.name),
+        m2(room.area),
+        mm(room.perimeter),
+        m2(room.voidArea),
+        m2(room.netArea),
+      ],
     ),
     '',
     row(text(labels.walls)),

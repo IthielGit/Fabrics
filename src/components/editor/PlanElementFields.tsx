@@ -1,5 +1,5 @@
 import { pointDistance } from '../../features/geometry/polygon'
-import { computeMeasurements } from '../../features/measurements/measurements'
+import { computeBuildingMeasurements } from '../../features/measurements/measurements'
 import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
@@ -26,6 +26,7 @@ function Measure({ label, value }: { label: string; value: string }) {
 export default function PlanElementFields({ element }: { element: PlanElement }) {
   const updateElements = useEditorStore((state) => state.updateElements)
   const elements = useEditorStore((state) => state.project?.document.elements)
+  const levels = useEditorStore((state) => state.project?.document.levels)
   const patch = (change: (el: PlanElement) => PlanElement) =>
     updateElements([element.id], (el) =>
       el.type === 'wall' || el.type === 'room' || el.type === 'dimension' || el.type === 'axis'
@@ -34,7 +35,8 @@ export default function PlanElementFields({ element }: { element: PlanElement })
     )
 
   // Tous les éléments : la surface nette d'un mur tient compte de ses ouvertures.
-  const measures = computeMeasurements(elements ?? [element])
+  // (et celle d'une pièce, de la trémie d'un escalier qui arrive du niveau du dessous).
+  const measures = computeBuildingMeasurements({ elements: elements ?? [element], levels }).total
   const room = measures.rooms.find((r) => r.id === element.id)
   const wall = measures.walls.find((w) => w.id === element.id)
 
@@ -116,6 +118,13 @@ export default function PlanElementFields({ element }: { element: PlanElement })
           <>
             <Measure label={fr.properties.area} value={formatArea(room.area)} />
             <Measure label={fr.properties.perimeter} value={formatLength(room.perimeter)} />
+            {room.voidArea > 0 && (
+              <>
+                <Measure label={fr.stairs.voidArea} value={`−${formatArea(room.voidArea)}`} />
+                <Measure label={fr.stairs.netArea} value={formatArea(room.netArea)} />
+              </>
+            )}
+            {room.voidOverflow && <p className="text-xs text-red-700">{fr.stairs.voidOverflow}</p>}
             <p className="pt-1 text-xs text-slate-500">{fr.properties.areaOnTrace}</p>
           </>
         )}

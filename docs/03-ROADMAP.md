@@ -272,12 +272,12 @@ détaillées : `docs/02-ARCHITECTURE.md`, section « Outils de construction (M9)
       emmarchement (en mm)
 
 ### Lot D bis — Trémie
-- [ ] Trémie calculée depuis l'emprise de l'escalier + marge `voidMargin` (50 mm par défaut),
+- [x] Trémie calculée depuis l'emprise de l'escalier + marge `voidMargin` (50 mm par défaut),
       jamais stockée ; en L : polygone en L
-- [ ] Dalle 3D du niveau du dessus trouée (forme avec trou, sans calcul booléen)
-- [ ] Contour pointillé avec croix sur le plan du niveau du dessus
-- [ ] Métrés : surface de la pièce au tracé, trémie, surface nette ; colonne « Trémie » du CSV
-- [ ] Trémie qui déborde de la pièce : avertissement, dalle laissée pleine (cas noté dans « Idées »)
+- [x] Dalle 3D du niveau du dessus trouée (forme avec trou, sans calcul booléen)
+- [x] Contour pointillé avec croix sur le plan du niveau du dessus
+- [x] Métrés : surface de la pièce au tracé, trémie, surface nette ; colonne « Trémie » du CSV
+- [x] Trémie qui déborde de la pièce : avertissement, dalle laissée pleine (cas noté dans « Idées »)
 
 ### Lot E — Cheminées
 - [ ] Type `chimney` (emprise, rotation, dépassement en mm au-dessus du dernier niveau)

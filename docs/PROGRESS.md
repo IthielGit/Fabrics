@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M9 — Outils de construction (en cours ; M8 validé le 2026-11-11)
-- **Dernière tâche terminée :** lot D de M9 (escaliers entre niveaux)
-- **Prochaine tâche :** lot D bis de M9 (trémies)
+- **Dernière tâche terminée :** lot D bis de M9 (trémies)
+- **Prochaine tâche :** lot E de M9 (cheminées)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -23,7 +23,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
-| M9 Outils de construction | en cours (lots A à D faits) | |
+| M9 Outils de construction | en cours (lots A à D bis faits) | |
 | M10 Façades, coupes et planche | à faire | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
@@ -39,6 +39,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M9 · Lot D bis · Trémies
+- Fait : la **trémie** d'un escalier est calculée (emprise agrandie de la marge, 50 mm par défaut ; jamais stockée) : rectangle pour un escalier droit, **polygone en L** pour un L, rectangle englobant pour un U (volées, palier et jour central). **Dalle 3D** du niveau du dessus **trouée** : la dalle d'une pièce reçoit un trou par trémie qui tient entièrement dans la pièce (forme à trous Three.js, pas de calcul booléen) ; déplacer l'escalier déplace le trou. **Plan du niveau du dessus** : contour pointillé de la trémie avec une croix par rectangle, en plus du contour fantôme de l'escalier. **Métrés** : chaque pièce a sa surface au tracé, sa trémie et sa **surface nette** (panneau Métrés, propriétés de la pièce, totaux du bâtiment) ; le CSV du tableau des pièces gagne les colonnes **« Trémie (m²) »** et **« Surface nette (m²) »**. Une pièce de 5000 × 4000 mm (20,00 m²) au-dessus d'un escalier droit de 1000 × 3500 mm : trou de 1100 × 3600 mm (3,96 m²), 20,00 m² au tracé et 16,04 m² net. **Trémie qui déborde de la pièce** (première version, pas de découpe entre polygones) : avertissement rouge (propriétés de l'escalier, métrés, contour rouge sur le plan), dalle laissée pleine, aucune surface retirée. Niveau du dessus supprimé : plus de trémie. Une trémie est attribuée à la pièce du niveau du dessus qui contient son centre ; sans pièce, il n'y a rien à percer et pas d'avertissement.
+- Fichiers : `src/features/stairs/{voids,voids.test}.ts`, `src/features/building/{model,types}.ts`, `src/features/measurements/{measurements,csv}.ts`, `src/components/viewer3d/Viewer3DScene.tsx`, `src/components/editor/{StairUpperGhosts,StairFields,MeasurementsPanel,PlanElementFields}.tsx`, `src/i18n/fr.ts`, tests `measurements.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2030, dont 14 nouveaux) — trou de la dalle 3D et croix sur le plan à contrôler dans le navigateur
+- Commit : feat: M9 lot D bis, trémies
 
 ### 2026-11-11 — M9 · Lot D · Escaliers entre niveaux
 - Fait : nouveau type **`stair`** (droit, en L, en U ; `x, y, rotation` comme le mobilier ; marches, paliers et trémie calculés, jamais stockés ; pas de changement de version). **Calcul** (`src/features/stairs/`, fonctions pures) : hauteur à monter = altitude du niveau du dessus − altitude du niveau de départ ; contremarches n = plus petit entier avec hauteur ≤ 180 mm ; girons = n − 1 ; giron = longueur des volées ÷ girons (≥ 250 mm) ; longueur nécessaire = (n − 1) × 250 mm. 2 700 mm donnent 15 contremarches de 180 mm, 14 girons, 3500 mm ; 2 880 mm donnent 16 contremarches. **Outil Escalier** (bouton `Footprints`, sans raccourci) : choix Droit / En L / En U dans la barre de modes, aperçu fantôme, clic = pose centrée avec des longueurs qui suffisent ; **refusée sur le dernier niveau** (message). **Propriétés** : forme (les longueurs sont recalculées au changement), emmarchement, longueurs des volées, jour central (U), Retourner (L et U), marge de trémie, et les marches calculées. **2D** : volées avec lignes de marche, palier, flèche de montée ; **en rouge** avec « Trop court : 3500 mm nécessaires » ou « Aucun niveau au-dessus » (niveau du dessus supprimé : l'escalier reste, sans marches ni trémie). Contour en fantôme (pointillé) sur le niveau du dessus. **3D** : une marche pleine par giron (+ le palier, qui compte pour une marche), cliquable. **Métrés** : tableau « Escaliers » (contremarches, hauteur de contremarche, girons) dans le panneau, et dans le CSV (forme, emmarchement, contremarches, hauteur, girons, giron, remarque). Un escalier ne se redimensionne pas à la poignée (déplacement et rotation seulement ; `Maj + R` le tourne autour du centre de son emprise). Dupliquer un niveau ne copie pas ses escaliers (seuls les murs sont copiés, comme avant).

@@ -9,6 +9,7 @@ import type {
 import { elementsOfLevel } from '../documents/levels'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
 import { stairStatus } from '../stairs/stairs'
+import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
 
 export interface RoomMeasure {
   id: string
@@ -17,6 +18,12 @@ export interface RoomMeasure {
   area: number
   /** Périmètre du contour tracé, en mm. */
   perimeter: number
+  /** Surface de trémie dans la pièce (escalier qui arrive du niveau du dessous), en mm². */
+  voidArea: number
+  /** Surface nette : surface au tracé moins les trémies, en mm². */
+  netArea: number
+  /** Vrai si une trémie déborde de la pièce (dalle laissée pleine, aucune surface retirée). */
+  voidOverflow: boolean
 }
 
 export interface PlatformMeasure {
@@ -91,6 +98,9 @@ export interface Measurements {
   openings: OpeningMeasure[]
   totals: {
     roomArea: number // mm²
+    /** Surface des trémies (mm²) et surface nette des pièces (mm²). */
+    voidArea: number
+    roomNetArea: number
     /** Surface des plateformes (mm²) et volume (mm³ = surface × épaisseur). */
     platformArea: number
     platformVolume: number
@@ -130,6 +140,8 @@ function openingMeasure(opening: OpeningElement, wall: WallElement): OpeningMeas
 export function computeMeasurements(
   elements: readonly CanvasElement[],
   levels?: readonly Level[],
+  /** Trémies qui percent ce niveau (escaliers du niveau du dessous). */
+  voids: readonly StairVoid[] = [],
 ): Measurements {
   const rooms: RoomMeasure[] = []
   const walls: WallMeasure[] = []
@@ -153,11 +165,16 @@ export function computeMeasurements(
 
   for (const element of elements) {
     if (element.type === 'room') {
+      const area = polygonArea(element.points)
+      const roomVoids = voidsOfRoom(element, voids)
       rooms.push({
         id: element.id,
         name: element.name,
-        area: polygonArea(element.points),
+        area,
         perimeter: polygonPerimeter(element.points),
+        voidArea: roomVoids.area,
+        netArea: Math.max(0, area - roomVoids.area),
+        voidOverflow: roomVoids.overflowing.length > 0,
       })
     } else if (element.type === 'stair') {
       const status = stairStatus(element, levels)
@@ -212,6 +229,8 @@ export function computeMeasurements(
     openings,
     totals: {
       roomArea: rooms.reduce((sum, room) => sum + room.area, 0),
+      voidArea: rooms.reduce((sum, room) => sum + room.voidArea, 0),
+      roomNetArea: rooms.reduce((sum, room) => sum + room.netArea, 0),
       platformArea: platforms.reduce((sum, platform) => sum + platform.area, 0),
       platformVolume: platforms.reduce((sum, platform) => sum + platform.volume, 0),
       wallLength: walls.reduce((sum, wall) => sum + wall.length, 0),
@@ -248,6 +267,8 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
     openings: list.flatMap((m) => m.openings),
     totals: {
       roomArea: sum((m) => m.totals.roomArea),
+      voidArea: sum((m) => m.totals.voidArea),
+      roomNetArea: sum((m) => m.totals.roomNetArea),
       platformArea: sum((m) => m.totals.platformArea),
       platformVolume: sum((m) => m.totals.platformVolume),
       wallLength: sum((m) => m.totals.wallLength),
@@ -268,9 +289,14 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
 export function computeBuildingMeasurements(
   document: Pick<FabricsDocument, 'elements' | 'levels'>,
 ): BuildingMeasurements {
+  const voids = collectStairVoids(document.elements, document.levels)
   const levels = (document.levels ?? []).map((level) => ({
     level,
-    measurements: computeMeasurements(elementsOfLevel(document.elements, level.id), document.levels),
+    measurements: computeMeasurements(
+      elementsOfLevel(document.elements, level.id),
+      document.levels,
+      voids.filter((v) => v.levelId === level.id),
+    ),
   }))
   return { levels, total: sumMeasurements(levels.map((l) => l.measurements)) }
 }

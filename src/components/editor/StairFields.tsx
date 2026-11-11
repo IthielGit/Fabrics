@@ -1,6 +1,7 @@
 import clsx from 'clsx'
 import { formatLength } from '../../features/units/format'
 import { defaultStairLengths, stairStatus } from '../../features/stairs/stairs'
+import { overflowingStairIds } from '../../features/stairs/voids'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import type { StairElement } from '../../types/document'
@@ -22,11 +23,13 @@ function Measure({ label, value }: { label: string; value: string }) {
 export default function StairFields({ element }: { element: StairElement }) {
   const updateElements = useEditorStore((state) => state.updateElements)
   const levels = useEditorStore((state) => state.project?.document.levels)
+  const elements = useEditorStore((state) => state.project?.document.elements)
   const patch = (change: (el: StairElement) => StairElement) =>
     updateElements([element.id], (el) => (el.type === 'stair' ? change(el) : el))
 
   const status = stairStatus(element, levels)
   const twoFlights = element.shape !== 'straight'
+  const overflow = elements ? overflowingStairIds(elements, levels).has(element.id) : false
 
   /** Change de forme : les longueurs sont recalculées pour la hauteur à monter. */
   const changeShape = (shape: StairElement['shape']) => {
@@ -148,6 +151,7 @@ export default function StairFields({ element }: { element: StairElement }) {
           </>
         )}
       </div>
+      {overflow && <p className="text-sm font-medium text-red-700">{fr.stairs.voidOverflow}</p>}
       <p className="text-xs text-slate-500">{fr.stairs.hint}</p>
     </>
   )

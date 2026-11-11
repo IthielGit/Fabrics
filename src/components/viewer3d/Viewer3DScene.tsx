@@ -61,6 +61,9 @@ const WallMesh = memo(function WallMesh({
 
 function slabGeometry(slab: SlabShape): THREE.ExtrudeGeometry {
   const shape = new THREE.Shape(slab.outline.map((p) => new THREE.Vector2(p.x, p.y)))
+  for (const hole of slab.holes ?? []) {
+    shape.holes.push(new THREE.Path(hole.map((p) => new THREE.Vector2(p.x, p.y))))
+  }
   const extruded = new THREE.ExtrudeGeometry(shape, { depth: slab.thickness, bevelEnabled: false })
   // Plan (x, y) → 3D (x, z) ; l'extrusion part vers le bas depuis le dessus de la dalle.
   extruded.rotateX(Math.PI / 2)
@@ -76,7 +79,8 @@ const SLAB_CACHE_SIZE = 200
 const slabCache = new Map<string, THREE.ExtrudeGeometry>()
 
 function cachedSlabGeometry(slab: SlabShape): THREE.ExtrudeGeometry {
-  const key = `${slab.thickness}|${slab.outline.map((p) => `${p.x},${p.y}`).join(';')}`
+  const holes = (slab.holes ?? []).map((hole) => hole.map((p) => `${p.x},${p.y}`).join(';')).join('/')
+  const key = `${slab.thickness}|${slab.outline.map((p) => `${p.x},${p.y}`).join(';')}|${holes}`
   const hit = slabCache.get(key)
   if (hit) return hit
   const geometry = slabGeometry(slab)
