@@ -368,7 +368,7 @@ descend de d × tan α sous le dessus du mur. Toutes les formes à versants : **
 surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un rectangle (orientable,
 `Maj + R`) ; un bâtiment en L reçoit deux toits (les noues viendront plus tard).
 
-- [ ] Calcul pur (`src/features/building/roof.ts`) : versants, faîtage, égouts, pignons, surfaces,
+- [x] Calcul pur (`src/features/building/roof.ts`) : versants, faîtage, égouts, pignons, surfaces,
       avec tests
 - [ ] Outil Toiture : tracé rectangle (et polygone pour le toit plat), symbole 2D (contour du
       débord en pointillé, faîtage, arêtiers, sens de la pente) ; Propriétés : forme, pente,

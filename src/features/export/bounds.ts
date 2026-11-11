@@ -8,6 +8,7 @@ import { openingGeometry } from '../geometry/openings'
 import { openingSymbol } from '../geometry/openingSymbol'
 import { stairFootprint } from '../stairs/stairs'
 import { chimneyFootprint } from '../building/chimney'
+import { roofPlanOutline } from '../building/roof'
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import { wallFaces } from '../geometry/walls'
@@ -92,6 +93,9 @@ export function elementBounds(element: CanvasElement): Box | null {
     case 'room':
     case 'platform':
       return pointsBox(toPoints(element.points))
+    case 'roof':
+      // Le débord dépasse du contour.
+      return pointsBox(roofPlanOutline(element))
     case 'stair':
       return pointsBox(stairFootprint(element))
     case 'chimney':

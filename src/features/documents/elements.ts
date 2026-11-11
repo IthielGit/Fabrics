@@ -12,11 +12,14 @@ import type {
   OpeningElement,
   PlatformElement,
   RectElement,
+  RoofElement,
+  RoofShape,
   RoomElement,
   StairElement,
   TextElement,
   WallElement,
 } from '../../types/document'
+import { defaultRidgeEdge } from '../building/roof'
 import { translateElement } from '../geometry/transform'
 import { DEFAULT_FONT_FAMILY } from './fonts'
 
@@ -188,6 +191,29 @@ export function createPlatformElement(
     elevation,
     thickness: elevation,
     fill: '#d6b98c',
+  }
+}
+
+/** Valeurs par défaut d'une toiture (D41) : pente en degrés, débord en mm. */
+export const ROOF_DEFAULTS = { pitch: 35, overhang: 500, flatOverhang: 0 } as const
+
+/**
+ * Toiture : contour au nu extérieur des murs, coordonnées absolues en mm (D40). Toit en pente :
+ * deux pans par défaut, faîtage parallèle au grand côté ; toit plat : sans débord (D41).
+ */
+export function createRoofElement(name: string, points: number[], shape: RoofShape = 'gable'): RoofElement {
+  return {
+    ...BASE,
+    id: crypto.randomUUID(),
+    type: 'roof',
+    name,
+    x: 0,
+    y: 0,
+    points,
+    shape,
+    pitch: ROOF_DEFAULTS.pitch,
+    overhang: shape === 'flat' ? ROOF_DEFAULTS.flatOverhang : ROOF_DEFAULTS.overhang,
+    ridgeEdge: defaultRidgeEdge(points),
   }
 }
 

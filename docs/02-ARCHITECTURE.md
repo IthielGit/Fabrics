@@ -519,9 +519,24 @@ export interface SectionLineElement extends BaseElement {
   label: string;             // « A » → coupe A–A
   lookLeft: boolean;         // sens de vue
 }
+
+// M10 bis (lot B) : nouveau type, pas de changement de version.
+export type RoofShape = 'flat' | 'shed' | 'gable' | 'hip'; // plat, un pan, deux pans, croupe
+export interface RoofElement extends BaseElement {
+  type: 'roof';
+  points: number[];          // contour au nu extérieur des murs (D40), absolus (règle D6)
+  shape: RoofShape;
+  pitch: number;             // degrés (D33) ; ignorée pour un toit plat
+  overhang: number;          // mm, débord sur chaque côté (défaut 500, toit plat 0 : D41)
+  ridgeEdge: number;         // côté parallèle au faîtage (deux pans) ou côté haut (un pan), 0 à 3
+}
 ```
 
 Règles :
+- `roof` : versants, faîtage, égouts, arêtiers, pignons et quantités sont **calculés**
+  (`src/features/building/roof.ts`, `computeRoof`), jamais stockés. Base = dessus des murs du
+  niveau (D45). Toit en pente : rectangle obligatoire, pente de 1° à 75°. Croupe : faîtage
+  toujours le long du grand côté. Pignons : prolongent le mur dessous (D43).
 - `opening` : sa position est **relative au mur** ; elle n'a pas de points absolus. Le
   Transformer ne l'utilise pas : on la fait coulisser le long du segment, bornée par les
   extrémités du segment et les ouvertures voisines.

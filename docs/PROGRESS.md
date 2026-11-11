@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot A, tâches 3 et 4 (menuiseries en façade, en 3D, colonne « Style » du CSV) : le Lot A est codé
-- **Prochaine tâche :** essai du Lot A dans le navigateur (symboles, façades, 3D), puis M10 bis, Lot B (toitures) ; puis **M10 ter** (métrés et cotes en version client / exécution ; plan écrit le 2026-11-11), puis M11
+- **Dernière tâche terminée :** M10 bis, Lot B, tâche 1 (calcul pur des toitures)
+- **Prochaine tâche :** M10 bis, Lot B, tâche 2 (outil Toiture et symbole 2D), puis 3D, façades et coupes, métrés ; puis **M10 ter**, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -25,7 +25,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M8 Vue 3D | terminé | 2026-11-11 |
 | M9 Outils de construction | terminé | 2026-11-11 |
 | M10 Façades, coupes et planche | terminé | 2026-11-11 |
-| M10 bis Ouvertures détaillées, toitures, hachures et textures | en cours | |
+| M10 bis Ouvertures détaillées, toitures, hachures et textures | en cours (lot A fait, lot B commencé) | |
 | M10 ter Documents client / exécution (métrés et cotes) | à faire (plan écrit) | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
@@ -41,6 +41,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M10 bis · Lot B · Tâche 1 · Calcul pur des toitures
+- Fait : nouveau type **`roof`** (contour au nu extérieur des murs, forme, pente en degrés, débord en mm, côté du faîtage `ridgeEdge`) ; pas de changement de version du document. **Calcul pur** `computeRoof` (`src/features/building/roof.ts`) : pour un toit plat (polygone quelconque, contour agrandi du débord), un pan, deux pans et croupe (rectangle obligatoire, pente de 1° à 75°) : versants en 3D avec leur sens de pente, faîtage et arêtiers dans le plan, pignons triangulaires (un pan : deux triangles rectangles et le mur haut rehaussé), altitudes du faîtage et de l'égout, surfaces projetée et réelle, longueurs de faîtage, d'égout et d'arêtiers, nombre de pignons. Refus : contour qui n'est pas un rectangle, pente hors limites, moins de trois points. `createRoofElement` applique les valeurs par défaut (D41) et met le faîtage le long du grand côté ; `pivotRidge` fait le tour des quatre côtés. Décisions D40 à D45 (contour, valeurs par défaut, épaisseur, pignons, toit plat, niveau), corrigées selon les règles déjà en place à la demande de l'utilisateur.
+- Critères de la roadmap vérifiés par les tests : deux pans 8000 × 6000 mm, 35°, débord 500 mm → faîtage à + 2101 mm, 76,91 m², faîtage 9000 mm, égouts 2 × 9000 mm, 2 pignons ; croupe → 76,91 m², faîtage 2000 mm, égout 32000 mm, aucun pignon ; pavillon 6000 × 6000 → faîtage 0 mm ; un pan de 6000 mm de portée → + 4201 mm.
+- Pas encore visible : aucun outil ni dessin (tâche 2). Seuls l'emprise d'export et l'icône du panneau Calques connaissent déjà le type.
+- Fichiers : `src/features/building/roof(.test).ts`, `src/types/document.ts`, `src/features/documents/elements.ts`, `src/features/export/bounds.ts`, `src/components/editor/LayersPanel.tsx`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2291, dont 27 nouveaux) — rien à contrôler dans le navigateur à ce stade
+- Commit : feat: M10 bis lot B tâche 1, calcul pur des toitures
 
 ### 2026-11-11 — M10 bis · Lot A · Tâches 3 et 4 · Menuiseries en façade et en 3D, colonne « Style »
 - Fait : demande de l'utilisateur de voir les styles aussi en 3D ; les deux tâches partagent un seul calcul (`buildOpeningDetails`), donc la façade, la coupe et la 3D montrent les mêmes menuiseries. **Volumes** : deux vantaux = montant central et deux vitres ; un vantail, fixe, soufflet = une vitre ; coulissante (fenêtre ou baie) = deux vitres décalées qui se recouvrent ; double battant = deux vantaux avec un jour ; va-et-vient = vantail avec un petit vitrage ; pliante = 4 panneaux en zigzag ; coulissante en applique = vantail posé contre la face du mur ; garage sectionnelle = panneaux superposés (environ 500 mm), basculante = un panneau ; ouverture libre = ni cadre ni remplissage. **Traits de façade** (`marks`, nouveau dans le modèle, jamais en 3D) : triangle d'ouverture en pointillé dont la pointe est du côté des gonds (battants et vantaux de fenêtre), triangle pointe en bas pour le soufflet et l'oscillo-battant (en plus du triangle de côté), flèche pour les coulissantes. Ils sont peints juste devant la vitre ou le vantail qui les porte (ordre du peintre), vus en miroir selon la façade. Un mur vu par la tranche ne montre pas ses traits. L'écran Vues et le PDF savent dessiner une ligne brisée fine (`open` et `dashed` sur un polygone de dessin). **CSV, PDF et Excel** : colonne « Style » dans le tableau des ouvertures (le style par défaut est nommé : « Battant », « Deux vantaux », « Coulissante »).
@@ -727,6 +735,17 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D37 | Surface du client | Le client voit la **surface au sol** (trémie déduite), pas de « surface habitable ». | Recommandation de Claude acceptée : sans toits en pente ni hauteurs sous plafond variables, les deux sont égales ; une définition légale (hauteur minimale) ne s'appliquera qu'après les toitures (voir Idées). |
 | D38 | Point de départ des cotes exé | Au **nu brut** des murs (faces de la maçonnerie, enduits non compris). | L'utilisateur a demandé l'usage courant à Madagascar (héritage des usages français) ; à confirmer sur un premier PDF. |
 | D39 | Cote des baies (exé) | Dimensions **brutes de maçonnerie** (tableau à tableau), `largeur / hauteur`, allège à part, avec une note : les dimensions des menuiseries sont à confirmer par le menuisier. | Même usage ; le modèle connaît le trou dans le mur, pas le jeu de pose du châssis. |
+
+### 2026-11-11 — M10 bis, Lot B (toitures)
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D40 | Contour d'une toiture | Le contour tracé est le **nu extérieur brut** des murs (faces de la maçonnerie) ; le débord part de là. L'outil Toiture attrape d'abord les faces extérieures (tri des sommets par outil). Points absolus (règle D6), comme une pièce ou une plateforme ; `Maj + R` tourne les points. | Même référence que les cotes d'exécution (D38) ; même stockage que les autres polygones du plan. |
+| D41 | Valeurs par défaut | Toit en pente : deux pans, 35°, débord 500 mm. Toit plat : débord 0 mm. Pente en degrés (seule exception aux mm, D33), débord et hauteurs en mm entiers. | Usage courant ; le toit plat automatique n'a pas de débord. |
+| D42 | Épaisseur des versants | Épaisseur de dalle du niveau (`slabThickness`, 200 mm par défaut), comme les dalles et le toit plat automatique. Aspect seulement (3D, façades, coupes) : les métrés donnent la surface réelle du versant. | Pas de nouvelle constante ; un seul réglage d'épaisseur par niveau. |
+| D43 | Pignons | Un pignon **prolonge le mur qui est dessous** (même épaisseur, même plan) jusqu'au versant ; sans mur dessous, épaisseur des murs par défaut du plan, face extérieure sur le contour. Calculé, jamais stocké. | Le pignon est la suite du mur ; même règle « calculé, jamais stocké » que les marches et trémies. |
+| D44 | Toit plat dessiné | Même logique que le toit plat automatique : **dessus au haut des murs**, pris entre les murs ; avec un débord, la dalle dépasse des murs à la même hauteur. | Cohérence avec la 3D validée (« toit entre les murs »). |
+| D45 | Niveau d'une toiture | Une toiture appartient à un niveau (`levelId`) ; sa base est le haut des murs de ce niveau (altitude + hauteur d'étage). Elle remplace le toit plat automatique des pièces de ce niveau dont le centre est sous son emprise. Vue « étage ouvert » : pas de toiture (comme le toit automatique). Dupliquer un niveau ne copie pas ses toitures (comme plateformes et escaliers). Nouveau type sans changement de version du document. | Mêmes règles que les éléments déjà ajoutés en M9. |
 
 ## Idées (hors jalon en cours)
 

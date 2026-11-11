@@ -213,7 +213,22 @@ export interface PlatformElement extends BaseElement {
   fill: string;
 }
 
+// Toiture (M10 bis) : contour au nu extérieur des murs (D40), points absolus (règle D6). Les toits en
+// pente demandent un rectangle ; versants, faîtage, pignons et surfaces sont calculés, jamais stockés.
+export type RoofShape = 'flat' | 'shed' | 'gable' | 'hip'; // plat, un pan, deux pans, croupe
+export interface RoofElement extends BaseElement {
+  type: 'roof';
+  points: number[];          // contour fermé, absolus ; rectangle (4 points) pour un toit en pente
+  shape: RoofShape;
+  pitch: number;             // degrés (seule exception aux mm, D33) ; ignorée pour un toit plat
+  overhang: number;          // mm, débord au-delà du contour, sur chaque côté
+  // Côté n° i du contour (point i → point i+1) parallèle au faîtage (deux pans) ou côté haut (un
+  // pan). Croupe : le faîtage suit toujours le grand côté. « Pivoter le faîtage » fait +1 (modulo 4).
+  ridgeEdge: number;
+}
+
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
   | WallElement | RoomElement | DimensionElement | OpeningElement | AxisElement
-  | FurnitureElement | PlatformElement | StairElement | ChimneyElement | SectionLineElement;
+  | FurnitureElement | PlatformElement | StairElement | ChimneyElement | SectionLineElement
+  | RoofElement;
