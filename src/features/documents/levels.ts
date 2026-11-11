@@ -146,11 +146,11 @@ export function removeLevel(levels: readonly Level[], id: string): readonly Leve
 }
 
 /**
- * Vrai pour les éléments communs à tous les niveaux (les axes de construction) : ils ne reçoivent
+ * Vrai pour les éléments communs à tous les niveaux (axes de construction, lignes de coupe) : ils ne reçoivent
  * jamais de `levelId`, ni à la création ni au collage.
  */
 export function isLevelIndependent(element: CanvasElement): boolean {
-  return element.type === 'axis'
+  return element.type === 'axis' || element.type === 'section'
 }
 
 /** Éléments visibles sur un niveau : ceux de ce niveau et ceux communs à tous les niveaux. */

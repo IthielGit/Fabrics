@@ -148,6 +148,15 @@ export interface AxisElement extends BaseElement {
   label: string;             // « A », « 1 »… affiché dans les bulles
 }
 
+// Ligne de coupe (M10) : trace d'un plan de coupe vertical, commune à tous les niveaux (pas de
+// `levelId`). Points absolus, déplacement seul (règle D6). La coupe est calculée, jamais stockée.
+export interface SectionLineElement extends BaseElement {
+  type: 'section';
+  points: [number, number, number, number]; // deux extrémités, absolues
+  label: string;             // « A » → coupe A–A
+  lookLeft: boolean;         // sens de vue : à gauche du sens de tracé (premier → deuxième point)
+}
+
 // Objet de la bibliothèque (M7) : mobilier ou équipement. Seule exception à la règle D6 parmi les
 // éléments de plan : position, rotation et taille comme une forme du Visuel (x, y = coin haut-gauche
 // avant rotation). Le dessin vient du catalogue (`src/features/library/`).
@@ -194,4 +203,4 @@ export interface PlatformElement extends BaseElement {
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
   | WallElement | RoomElement | DimensionElement | OpeningElement | AxisElement
-  | FurnitureElement | PlatformElement | StairElement | ChimneyElement;
+  | FurnitureElement | PlatformElement | StairElement | ChimneyElement | SectionLineElement;

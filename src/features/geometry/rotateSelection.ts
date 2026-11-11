@@ -38,7 +38,12 @@ function turnPoint(x: number, y: number, center: Point): Point {
 
 /** Éléments qui tournent avec la sélection (les ouvertures suivent leur mur, les axes ne tournent pas). */
 function turns(element: CanvasElement): boolean {
-  return element.type !== 'opening' && element.type !== 'axis' && !element.locked
+  return (
+    element.type !== 'opening' &&
+    element.type !== 'axis' &&
+    element.type !== 'section' &&
+    !element.locked
+  )
 }
 
 /**

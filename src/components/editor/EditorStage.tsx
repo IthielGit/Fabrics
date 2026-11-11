@@ -139,7 +139,8 @@ export default function EditorStage() {
     activeTool === 'room' ||
     activeTool === 'platform' ||
     activeTool === 'dimension' ||
-    activeTool === 'axis'
+    activeTool === 'axis' ||
+    activeTool === 'section'
       ? activeTool
       : null
   const polylineDrawing = usePolylineDrawing(polylineTool, scale)

@@ -14,6 +14,7 @@ import {
   ImageIcon,
   Layers2,
   Lock,
+  Scissors,
   Slash,
   Square,
   Type,
@@ -40,6 +41,7 @@ const TYPE_ICONS: Record<CanvasElement['type'], LucideIcon> = {
   platform: Layers2,
   stair: Footprints,
   chimney: BrickWallFire,
+  section: Scissors,
 }
 
 const ROW_BUTTON = 'rounded p-1 text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-transparent'

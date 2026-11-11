@@ -40,6 +40,19 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — M10 · Tâche 3 · Ligne de coupe
+- Fait : nouveau type **`section`** (deux points absolus, repère, sens de vue `lookLeft` ; commun à tous les niveaux comme les axes ; pas de changement de version). **Outil « Ligne de coupe »** (bouton ciseaux, famille Cotation, sans raccourci) : deux clics, avec les mêmes aimantations et guides que l'axe ; le repère suit la suite A, B, C… **Dessin 2D** : trait mixte noir, une flèche à chaque bout vers le sens de vue, une bulle avec le repère au bout de chaque flèche. **Propriétés** : repère (le nom suit : « Coupe A–A »), bouton « Inverser le sens de vue », longueur en mm. Se déplace et se modifie aux sommets comme un axe ; ne tourne pas avec `Maj + R`. Le sens de vue : « à gauche » est celui de la personne qui marche du premier au deuxième point, vue de dessus. La coupe elle-même vient à la tâche 4.
+- Fichiers : `src/types/document.ts`, `src/features/geometry/{sections(.test),transform,rotateSelection}.ts`, `src/features/documents/{elements,levels}.ts`, `src/features/export/bounds.ts`, `src/components/editor/{shapes/SectionShape,SectionFields,ElementNode,Toolbar,ToolHint,EditorStage,usePolylineDrawing,PolylineDraftLayer,PropertiesPanel,LayersPanel}`, `src/stores/editorStore.ts`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2101) — tracé, flèches et inversion à contrôler dans le navigateur
+- Commit : feat: M10 tâche 3, ligne de coupe
+
+### 2026-11-11 — M10 · Tâche 2 · Écran « Vues » avec les façades
+- Fait : bouton **« Vues »** dans l'en-tête (projets Plan) qui ouvre un écran en lecture seule plein écran avec quatre onglets **Façade Nord / Est / Sud / Ouest** (vue de l'extérieur). Dessin en SVG : faces blanches à contour noir, ligne de sol, **cotes de niveaux** (nom et altitude du plancher en mm, `± 0 mm`, `+ 2500 mm`) en pointillé indigo. La vue suit le plan en direct (même modèle que la 3D, tous les niveaux, toit plat). Les onglets des coupes et de la planche arrivent aux tâches 4 et 5.
+- Choix : dessin en SVG et non en Konva (plus léger pour une vue en lecture seule ; le PDF de la tâche 6 redessinera les mêmes faces en vectoriel).
+- Fichiers : `src/stores/viewsStore.ts`, `src/components/views/{ViewsScreen,ViewDrawing}.tsx`, `src/features/building/views/labels(.test).ts`, `src/components/editor/EditorHeader.tsx`, `src/pages/EditorPage.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2091) — affichage à contrôler dans le navigateur
+- Commit : feat: M10 tâche 2, écran Vues avec les façades
+
 ### 2026-11-11 — M10 · Tâche 1 · Calcul des façades
 - Fait : choix validés avec l'utilisateur : écran « Vues » en lecture seule ouvert par un bouton de l'en-tête (la planche en dernier onglet) ; faces blanches à contour noir (hachures, textures et toitures dans un jalon ultérieur, notés dans « Idées » et dans la roadmap) ; escaliers, cheminées et plateformes inclus. **Calcul pur** : `projectModel` projette le modèle 3D sur un plan vertical (u = droite de la personne qui regarde, v = hauteur), ne garde que les faces verticales tournées vers elle, triées de la plus lointaine à la plus proche (algorithme du peintre) ; `buildElevation` donne la façade N, S, E ou O selon le nord réglé, avec son emprise et les cotes de niveaux (altitudes des planchers). Une face vue par la tranche (moins de 0,5 mm de large) n'est pas dessinée. Pas encore d'écran : suivent les tâches 2 à 7.
 - Limite connue : le tri se fait par face (milieu de la face), approximation classique du peintre ; sans conséquence pour des faces blanches à contour noir sur des murs droits.

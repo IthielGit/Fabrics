@@ -5,6 +5,7 @@ import {
   createDimensionElement,
   createPlatformElement,
   createRoomElement,
+  createSectionElement,
   createWallElement,
   nextElementName,
 } from '../../features/documents/elements'
@@ -17,6 +18,7 @@ import {
 import { nextAxisLabel } from '../../features/geometry/axes'
 import type { Guide } from '../../features/geometry/guides'
 import { flattenPoints, pointDistance } from '../../features/geometry/polygon'
+import { nextSectionLabel, sectionTitle } from '../../features/geometry/sections'
 import {
   collectAlignTargets,
   collectOpeningSnapPoints,
@@ -34,7 +36,7 @@ import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement } from '../../types/document'
 import { isTypingTarget } from './isTypingTarget'
 
-export type PolylineTool = 'wall' | 'room' | 'platform' | 'dimension' | 'axis'
+export type PolylineTool = 'wall' | 'room' | 'platform' | 'dimension' | 'axis' | 'section'
 
 export interface PolylineDraft {
   /** Points déjà posés (coordonnées du document, en mm). */
@@ -57,6 +59,7 @@ const MIN_POINTS: Record<PolylineTool, number> = {
   platform: 3,
   dimension: 2,
   axis: 2,
+  section: 2,
 }
 
 /** Distance d'accroche, en pixels écran. */
@@ -290,6 +293,14 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       return
     }
 
+    if (tool === 'section') {
+      // Les coupes sont communes à tous les niveaux : le repère suit la suite de toutes les coupes.
+      const sectionPoints: [number, number, number, number] = [flat[0], flat[1], flat[2], flat[3]]
+      const label = nextSectionLabel(project.document.elements)
+      addElement(createSectionElement(`${fr.elements.section} ${sectionTitle(label)}`, label, sectionPoints))
+      return
+    }
+
     const name = nextElementName(fr.elements[tool], tool, selectActiveElements(state))
     if (tool === 'wall') {
       addElement(createWallElement(name, flat, plan?.defaultWallThickness ?? 200, levelHeight))
@@ -355,7 +366,11 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         region: null,
       })
       // Une cote, un axe, un mur droit et un rectangle n'ont que deux points.
-      if ((tool === 'dimension' || tool === 'axis' || twoClicks) && points.length + 1 === 2) finish()
+      if (
+        (tool === 'dimension' || tool === 'axis' || tool === 'section' || twoClicks) &&
+        points.length + 1 === 2
+      )
+        finish()
     },
     [tool, rectMode, twoClicks, polygonTool, readDraft, snap, finish, setDraft, regionAt, commitRegion],
   )

@@ -14,6 +14,7 @@ import {
   MousePointer2,
   Pentagon,
   Ruler,
+  Scissors,
   Slash,
   Square,
   StretchHorizontal,
@@ -77,7 +78,11 @@ function toolGroups(isPlan: boolean): ToolGroup[] {
       id: 'annotate',
       label: fr.tools.groups.annotate,
       planOnly: true,
-      entries: [tool('dimension', Ruler, fr.tools.dimension, 'D'), tool('axis', Hash, fr.tools.axis, 'A')],
+      entries: [
+        tool('dimension', Ruler, fr.tools.dimension, 'D'),
+        tool('axis', Hash, fr.tools.axis, 'A'),
+        tool('section', Scissors, fr.tools.section),
+      ],
     },
     {
       id: 'draw',

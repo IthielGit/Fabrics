@@ -1,5 +1,6 @@
 import type {
   AxisElement,
+  SectionLineElement,
   CanvasElement,
   ChimneyElement,
   DimensionElement,
@@ -250,6 +251,19 @@ export function createAxisElement(
   points: [number, number, number, number],
 ): AxisElement {
   return { ...BASE, id: crypto.randomUUID(), type: 'axis', name, x: 0, y: 0, points, label }
+}
+
+/**
+ * Ligne de coupe entre deux points (coordonnées absolues en mm), commune à tous les niveaux : elle
+ * n'a jamais de `levelId`. Par défaut on regarde à gauche du sens de tracé.
+ */
+export function createSectionElement(
+  name: string,
+  label: string,
+  points: [number, number, number, number],
+  lookLeft: boolean = true,
+): SectionLineElement {
+  return { ...BASE, id: crypto.randomUUID(), type: 'section', name, x: 0, y: 0, points, label, lookLeft }
 }
 
 /**

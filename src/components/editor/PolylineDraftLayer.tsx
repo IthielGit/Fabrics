@@ -178,7 +178,7 @@ export default function PolylineDraftLayer({
           points={flattenPoints(path)}
           stroke={ACCENT}
           strokeWidth={1.5 / scale}
-          dash={tool === 'wall' || tool === 'axis' ? [6 / scale, 4 / scale] : undefined}
+          dash={tool === 'wall' || tool === 'axis' || tool === 'section' ?[6 / scale, 4 / scale] : undefined}
         />
       )}
 

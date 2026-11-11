@@ -8,6 +8,7 @@ import type {
   PlatformElement,
   RectElement,
   RoomElement,
+  SectionLineElement,
   StairElement,
   WallElement,
 } from '../../types/document'
@@ -20,13 +21,20 @@ import type { Point } from './viewport'
 /** Vrai pour les éléments de plan : leurs points sont absolus et leur position `x, y` reste à 0. */
 export function hasAbsolutePoints(
   element: CanvasElement,
-): element is WallElement | RoomElement | PlatformElement | DimensionElement | AxisElement {
+): element is
+  | WallElement
+  | RoomElement
+  | PlatformElement
+  | DimensionElement
+  | AxisElement
+  | SectionLineElement {
   return (
     element.type === 'wall' ||
     element.type === 'room' ||
     element.type === 'platform' ||
     element.type === 'dimension' ||
-    element.type === 'axis'
+    element.type === 'axis' ||
+    element.type === 'section'
   )
 }
 
@@ -41,7 +49,8 @@ export function translateElement(element: CanvasElement, dx: number, dy: number)
     case 'platform':
       return { ...element, points: element.points.map((v, i) => v + (i % 2 === 0 ? dx : dy)) }
     case 'dimension':
-    case 'axis': {
+    case 'axis':
+    case 'section': {
       const [x1, y1, x2, y2] = element.points
       return { ...element, points: [x1 + dx, y1 + dy, x2 + dx, y2 + dy] }
     }
@@ -117,7 +126,7 @@ export function moveVertex(element: CanvasElement, index: number, to: Point): Ca
   const count = element.points.length / 2
   if (!Number.isInteger(index) || index < 0 || index >= count) return element
 
-  if (element.type === 'dimension' || element.type === 'axis') {
+  if (element.type === 'dimension' || element.type === 'axis' || element.type === 'section') {
     const points: [number, number, number, number] = [...element.points]
     points[index * 2] = to.x
     points[index * 2 + 1] = to.y

@@ -19,6 +19,7 @@ export default function ToolHint() {
     tool === 'chimney' ||
     tool === 'dimension' ||
     tool === 'axis' ||
+    tool === 'section' ||
     tool === 'stretch' ||
     tool === 'furniture' ||
     tool === 'door' ||

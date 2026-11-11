@@ -44,6 +44,7 @@ export type EditorTool =
   | 'chimney'
   | 'dimension'
   | 'axis'
+  | 'section'
   | 'stretch'
   | 'furniture'
   | 'door'
@@ -59,6 +60,7 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
   'chimney',
   'dimension',
   'axis',
+  'section',
   'stretch',
   'furniture',
   'door',
