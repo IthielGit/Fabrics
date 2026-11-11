@@ -8,6 +8,7 @@ export type ShortcutAction =
   | 'tool-room'
   | 'tool-dimension'
   | 'tool-axis'
+  | 'tool-stretch'
   | 'tool-door'
   | 'tool-window'
   | 'escape'
@@ -69,6 +70,8 @@ export function resolveShortcut(input: KeyInput): ShortcutAction | null {
       return 'tool-dimension'
     case 'a':
       return 'tool-axis'
+    case 's':
+      return 'tool-stretch'
     case 'b':
       return 'tool-door'
     case 'f':

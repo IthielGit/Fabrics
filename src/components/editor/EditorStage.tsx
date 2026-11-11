@@ -57,6 +57,8 @@ import { useElementInteractions } from './useElementInteractions'
 import { useOpeningTool, type OpeningToolKind } from './useOpeningTool'
 import { usePanDrag } from './usePanDrag'
 import { usePolylineDrawing, type PolylineTool } from './usePolylineDrawing'
+import { useStretchTool } from './useStretchTool'
+import StretchDraftLayer from './StretchDraftLayer'
 import VertexHandles from './VertexHandles'
 
 // Seul le bouton gauche déplace un élément : le bouton du milieu sert à déplacer la vue.
@@ -142,6 +144,7 @@ export default function EditorStage() {
       : null
   const polylineDrawing = usePolylineDrawing(polylineTool, scale)
   const calibration = useCalibrationTool(activeTool === 'calibrate')
+  const stretch = useStretchTool(activeTool === 'stretch', scale)
   // Pose de portes et de fenêtres sur les murs.
   const openingKind: OpeningToolKind | null =
     activeTool === 'door' || activeTool === 'window' ? activeTool : null
@@ -309,6 +312,8 @@ export default function EditorStage() {
       polylineDrawing.onPointerDown(event)
     } else if (activeTool === 'calibrate') {
       calibration.onPointerDown(event)
+    } else if (activeTool === 'stretch') {
+      stretch.onPointerDown(event)
     } else if (openingKind) {
       openingTool.onPointerDown(event)
     } else if (activeTool === 'furniture') {
@@ -332,6 +337,7 @@ export default function EditorStage() {
   const handlePointerMove = (event: PointerEvent) => {
     if (polylineTool) polylineDrawing.onPointerMove(event)
     if (activeTool === 'calibrate') calibration.onPointerMove(event)
+    if (activeTool === 'stretch') stretch.onPointerMove(event)
     if (openingKind) openingTool.onPointerMove(event)
     if (activeTool === 'furniture' || activeTool === 'stair') setGhostPoint(pointerInDocument(event))
     if (!draft && !band) return
@@ -426,6 +432,7 @@ export default function EditorStage() {
 
   const handlePointerUp = (event: PointerEvent) => {
     const stage = event.target.getStage()
+    if (activeTool === 'stretch') stretch.onPointerUp()
     if (draft) {
       setDraft(null)
       finishDraft(draft)
@@ -582,6 +589,9 @@ export default function EditorStage() {
             <AlignmentGuides pageWidth={page.width} pageHeight={page.height} scale={scale} />
             {activeTool === 'calibrate' && (
               <CalibrationDraftLayer state={calibration.state} scale={scale} />
+            )}
+            {activeTool === 'stretch' && (
+              <StretchDraftLayer state={stretch.state} preview={stretch.preview} scale={scale} />
             )}
             {openingKind && <OpeningPreviewLayer preview={openingTool.preview} scale={scale} />}
             {activeTool === 'stair' && ghostPoint && (

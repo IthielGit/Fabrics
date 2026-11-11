@@ -16,6 +16,7 @@ import {
   Ruler,
   Slash,
   Square,
+  StretchHorizontal,
   Type,
   type LucideIcon,
 } from 'lucide-react'
@@ -63,6 +64,7 @@ function toolGroups(isPlan: boolean): ToolGroup[] {
         tool('platform', Layers2, fr.tools.platform),
         tool('stair', Footprints, fr.tools.stair),
         tool('chimney', BrickWallFire, fr.tools.chimney),
+        tool('stretch', StretchHorizontal, fr.tools.stretch, 'S'),
       ],
     },
     {

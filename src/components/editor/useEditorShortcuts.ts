@@ -41,6 +41,9 @@ export function useEditorShortcuts() {
         case 'tool-axis':
           store.setTool('axis')
           break
+        case 'tool-stretch':
+          store.setTool('stretch')
+          break
         case 'tool-door':
           store.setTool('door')
           break

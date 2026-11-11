@@ -99,6 +99,7 @@ export const fr = {
     door: 'Porte',
     window: 'Fenêtre',
     calibrate: 'Calibrer l’image',
+    stretch: 'Étirer une zone',
   },
   elements: {
     rect: 'Rectangle',
@@ -375,9 +376,17 @@ export const fr = {
     regionNotClosed: 'Zone non fermée par les murs',
     dimension: 'Cliquez deux points pour mesurer · Maj : angles de 45° · Alt : sans alignement · Échap : annuler',
     axis: 'Cliquez deux points pour tracer un axe (il reçoit sa lettre ou son numéro) · Maj : angles de 45° · Alt : sans alignement · Échap : annuler',
+    stretch: 'Glissez un rectangle autour de la partie à déplacer (le mur à étirer, avec sa marge) · clic : point de départ · second clic : point d’arrivée · Maj : horizontal ou vertical · Échap : annuler',
     calibrate: 'Cliquez deux points de l’image dont vous connaissez la distance réelle · Échap : annuler',
     door: 'Survolez un mur et cliquez pour poser une porte (elle s’ouvre du côté du curseur) · Échap : quitter',
     window: 'Survolez un mur et cliquez pour poser une fenêtre · Échap : quitter',
+  },
+  stretch: {
+    blockedDiagonal: 'Impossible : un mur en biais traverse la zone',
+    removed: (count: number) =>
+      count === 1
+        ? 'Une ouverture ne tenait plus sur son mur raccourci : elle a été retirée.'
+        : `${count} ouvertures ne tenaient plus sur leur mur raccourci : elles ont été retirées.`,
   },
   blockResize: {
     title: 'Redimensionner l’ensemble',

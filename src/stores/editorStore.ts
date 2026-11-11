@@ -23,7 +23,9 @@ import {
 } from '../features/documents/wallOpenings'
 import { fr } from '../i18n/fr'
 import type { Guide } from '../features/geometry/guides'
+import type { Box } from '../features/geometry/box'
 import { resizeBlock } from '../features/geometry/resizeBlock'
+import { stretchZone } from '../features/geometry/stretchZone'
 import { translateElement } from '../features/geometry/transform'
 import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
@@ -42,6 +44,7 @@ export type EditorTool =
   | 'chimney'
   | 'dimension'
   | 'axis'
+  | 'stretch'
   | 'furniture'
   | 'door'
   | 'window'
@@ -56,6 +59,7 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
   'chimney',
   'dimension',
   'axis',
+  'stretch',
   'furniture',
   'door',
   'window',
@@ -167,6 +171,12 @@ interface EditorState {
    * été fait (sélection sans mur ni pièce, taille invalide).
    */
   resizeSelectionBlock: (width: number, depth: number) => number | null
+  /**
+   * Étire la zone `zone` de `delta` mm (outil Étirer, voir `stretchZone`) sur le niveau actif, en un
+   * seul pas d'historique. Renvoie le nombre d'ouvertures retirées (elles ne tenaient plus sur leur
+   * mur raccourci), ou `null` si rien n'a changé.
+   */
+  stretchZoneBy: (zone: Box, delta: { x: number; y: number }) => number | null
   removeElements: (ids: string[]) => void
   duplicateElements: (ids: string[]) => void
   /**
@@ -503,6 +513,26 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const all = project.document.elements
       const selection = all.filter((el) => selectedIds.includes(el.id))
       const result = resizeBlock(selection, all, { width, depth })
+      if (!result) return null
+      const byId = new Map(result.elements.map((el) => [el.id, el]))
+      const removed = new Set(result.removedIds)
+      commit(
+        (doc) => ({
+          ...doc,
+          elements: doc.elements.flatMap((el) => (removed.has(el.id) ? [] : [byId.get(el.id) ?? el])),
+        }),
+        undefined,
+        undefined,
+        false,
+      )
+      return result.removedIds.length
+    },
+
+    stretchZoneBy: (zone, delta) => {
+      const { project } = get()
+      if (!project) return null
+      const level = selectActiveElements(get())
+      const result = stretchZone(level, zone, delta)
       if (!result) return null
       const byId = new Map(result.elements.map((el) => [el.id, el]))
       const removed = new Set(result.removedIds)

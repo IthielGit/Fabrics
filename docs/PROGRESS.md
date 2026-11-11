@@ -40,6 +40,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · I · Étirer par zone (tâche 2 sur 4 : outil et aperçu)
+- Fait : **outil Étirer** (`S`, famille Construction, projets Plan uniquement). On **glisse un rectangle** autour de la partie à déplacer, on **clique un point de départ**, puis on **clique le point d'arrivée** : l'aperçu montre en direct les murs, pièces, cotes et objets tels qu'ils seraient (en indigo), avec la distance en mm ; `Maj` garde l'horizontale ou la verticale ; le point suit la grille d'aimantation ; un côté en biais qui traverse la zone bloque le déplacement (message rouge). `Échap` quitte l'outil et abandonne le geste. La validation passe par `stretchZoneBy` (un seul pas d'historique, annulable ; un message si des ouvertures sont retirées). L'outil reste actif pour enchaîner.
+- Reste : tâche 3 (saisie de la distance en mm au clavier) et tâche 4 (contrôle final dans le navigateur).
+- Fichiers : `src/components/editor/{useStretchTool.ts,StretchDraftLayer.tsx,EditorStage.tsx,Toolbar.tsx,ToolHint.tsx,shortcuts.ts,useEditorShortcuts.ts}`, `src/stores/editorStore.ts` (`stretchZoneBy`, outil `stretch`), `src/i18n/fr.ts`, `src/features/geometry/stretchZone.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (17 pour l'étirement) — le geste à la souris est à contrôler à la main dans le navigateur
+
 ### 2026-11-11 — Hors jalon · I · Étirer par zone (tâche 1 sur 4 : calcul)
 - Fait : demande de l'utilisateur (option C : étirer une zone au rectangle, comme « stretch » en CAO ; l'option A, glisser un seul mur à la poignée, est gardée pour après). **Calcul pur** `stretchZone` : les sommets de murs, de pièces et de cotes dans le rectangle se déplacent, les autres restent (les murs qui traversent le bord s'allongent ou se raccourcissent) ; les objets posés dont le centre est dans la zone bougent entiers ; les ouvertures gardent leur taille et leur place réelle (elles suivent leur mur s'il est dans la zone), retirées si elles ne tiennent plus ; verrouillés ignorés. `constrainStretch` garde les angles droits (un mur horizontal qui traverse la zone interdit le déplacement vertical, et inversement ; un côté en biais qui traverse la zone bloque tout). Pas encore d'outil ni de bouton : suivent les tâches 2 (outil et aperçu), 3 (saisie en mm, bouton, raccourci `S`) et 4 (annulation en un pas).
 - Fichiers : `src/features/geometry/stretchZone(.test).ts`
