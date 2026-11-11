@@ -317,7 +317,7 @@ export const fr = {
       facesLength: 'Longueur des faces (mm)',
       facesArea: 'Surface 2 faces, brute (m²)',
       facesNetArea: 'Surface 2 faces, nette (m²)',
-      wallVolume: 'Volume (m³)',
+      wallVolume: 'Volume des murs (m³)',
       wallsNote:
         'Surface 1 face : longueur de l’axe × hauteur. Surface 2 faces : les deux faces mesurées sur les faces (onglets compris), ouvertures déduites sur chaque face. Volume : sur l’axe, ouvertures déduites.',
       level: 'Niveau',
