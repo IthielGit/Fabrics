@@ -159,7 +159,16 @@ export interface FurnitureElement extends BaseElement {
   mirrored?: boolean;        // objet retourné gauche / droite
 }
 
+// Plateforme (M9) : estrade ou podium. Polygone à points absolus (déplacement seul, règle D6).
+export interface PlatformElement extends BaseElement {
+  type: 'platform';
+  points: number[];          // polygone fermé, absolus
+  elevation: number;         // mm, hauteur du dessus par rapport au plancher du niveau
+  thickness: number;         // mm, épaisseur sous le dessus ; défaut = elevation, jamais plus
+  fill: string;
+}
+
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
   | WallElement | RoomElement | DimensionElement | OpeningElement | AxisElement
-  | FurnitureElement;
+  | FurnitureElement | PlatformElement;

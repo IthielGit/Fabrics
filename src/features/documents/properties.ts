@@ -50,6 +50,7 @@ export function colorPropsFor(element: CanvasElement): ColorProp[] {
     case 'text':
     case 'wall':
     case 'room':
+    case 'platform':
       return ['fill']
     default:
       return []

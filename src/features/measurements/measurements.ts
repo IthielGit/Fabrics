@@ -17,6 +17,19 @@ export interface RoomMeasure {
   perimeter: number
 }
 
+export interface PlatformMeasure {
+  id: string
+  name: string
+  /** Surface du contour, en mm². */
+  area: number
+  /** Hauteur du dessus par rapport au plancher du niveau, en mm. */
+  elevation: number
+  /** Épaisseur sous le dessus, en mm. */
+  thickness: number
+  /** Volume : surface × épaisseur, en mm³. */
+  volume: number
+}
+
 export interface WallMeasure {
   id: string
   name: string
@@ -48,10 +61,14 @@ export interface OpeningMeasure {
 export interface Measurements {
   rooms: RoomMeasure[]
   walls: WallMeasure[]
+  platforms: PlatformMeasure[]
   /** Ouvertures posées sur un mur existant, dans l'ordre du document. */
   openings: OpeningMeasure[]
   totals: {
     roomArea: number // mm²
+    /** Surface des plateformes (mm²) et volume (mm³ = surface × épaisseur). */
+    platformArea: number
+    platformVolume: number
     wallLength: number // mm
     /** Surface murale brute. */
     wallArea: number // mm²
@@ -88,6 +105,7 @@ function openingMeasure(opening: OpeningElement, wall: WallElement): OpeningMeas
 export function computeMeasurements(elements: readonly CanvasElement[]): Measurements {
   const rooms: RoomMeasure[] = []
   const walls: WallMeasure[] = []
+  const platforms: PlatformMeasure[] = []
   const openings: OpeningMeasure[] = []
 
   // Les ouvertures d'abord : un mur a besoin de la surface des siennes.
@@ -112,6 +130,16 @@ export function computeMeasurements(elements: readonly CanvasElement[]): Measure
         area: polygonArea(element.points),
         perimeter: polygonPerimeter(element.points),
       })
+    } else if (element.type === 'platform') {
+      const area = polygonArea(element.points)
+      platforms.push({
+        id: element.id,
+        name: element.name,
+        area,
+        elevation: element.elevation,
+        thickness: element.thickness,
+        volume: area * element.thickness,
+      })
     } else if (element.type === 'wall') {
       const length = polylineLength(element.points)
       const wallArea = length * element.height
@@ -134,9 +162,12 @@ export function computeMeasurements(elements: readonly CanvasElement[]): Measure
   return {
     rooms,
     walls,
+    platforms,
     openings,
     totals: {
       roomArea: rooms.reduce((sum, room) => sum + room.area, 0),
+      platformArea: platforms.reduce((sum, platform) => sum + platform.area, 0),
+      platformVolume: platforms.reduce((sum, platform) => sum + platform.volume, 0),
       wallLength: walls.reduce((sum, wall) => sum + wall.length, 0),
       wallArea: walls.reduce((sum, wall) => sum + wall.wallArea, 0),
       openingsArea: walls.reduce((sum, wall) => sum + wall.openingsArea, 0),
@@ -166,9 +197,12 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
   return {
     rooms: list.flatMap((m) => m.rooms),
     walls: list.flatMap((m) => m.walls),
+    platforms: list.flatMap((m) => m.platforms),
     openings: list.flatMap((m) => m.openings),
     totals: {
       roomArea: sum((m) => m.totals.roomArea),
+      platformArea: sum((m) => m.totals.platformArea),
+      platformVolume: sum((m) => m.totals.platformVolume),
       wallLength: sum((m) => m.totals.wallLength),
       wallArea: sum((m) => m.totals.wallArea),
       openingsArea: sum((m) => m.totals.openingsArea),

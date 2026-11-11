@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M9 — Outils de construction (en cours ; M8 validé le 2026-11-11)
-- **Dernière tâche terminée :** lot B de M9 (pièces préfabriquées, `Maj + R` étendu)
-- **Prochaine tâche :** lot C de M9 (plateformes)
+- **Dernière tâche terminée :** lot C de M9 (plateformes)
+- **Prochaine tâche :** lot D de M9 (escaliers entre niveaux)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -23,7 +23,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
-| M9 Outils de construction | en cours (lots A et B faits) | |
+| M9 Outils de construction | en cours (lots A, B et C faits) | |
 | M10 Façades, coupes et planche | à faire | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
@@ -39,6 +39,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M9 · Lot C · Plateformes
+- Fait : nouveau type d'élément **`platform`** (polygone à points absolus, `elevation` = hauteur du dessus par rapport au plancher du niveau, `thickness` = épaisseur sous le dessus ; **pas de changement de version** du document). **Outil Plateforme** (bouton `Layers2` dans la barre d'outils des plans, sans raccourci clavier) avec les modes « Polygone » et « Rectangle » (2 clics) de la barre de modes ; mêmes aimantations et guides que la pièce ; les sommets se déplacent comme ceux d'une pièce. Dessin 2D : aplat sable, contour brun et étiquette de hauteur **`+450 mm`** au centre. Propriétés : nom, **hauteur du dessus** (défaut 450 mm), **épaisseur** (défaut = hauteur du dessus, estrade pleine ; jamais plus grande : une saisie plus grande est ramenée à la hauteur, et une estrade pleine suit sa hauteur quand on la change), surface, périmètre et volume. **3D** : prisme extrudé du dessus (`niveau + hauteur`) vers le bas sur son épaisseur, matière sable ; jamais sous le plancher. **Métrés** : tableau « Plateformes » dans le panneau (surface m², volume m³ = surface × épaisseur), totaux par niveau et pour le bâtiment ; **CSV** : tableau « Plateformes » (niveau, nom, surface m², hauteur du dessus mm, épaisseur mm, volume m³) avec une ligne de totaux ; la plateforme n'entre pas dans la surface des pièces. Une plateforme de 4000 × 3000 mm à 450 mm donne 12,00 m² et 5,40 m³. Elle tourne avec `Maj + R`. Unités : mm, m², m³ (nouveaux helpers `formatVolume` et `mm3ToM3`).
+- Choix : dupliquer un niveau ne copie pas les plateformes (seuls les murs et leurs ouvertures sont copiés, comme avant) ; l'aimantation des autres tracés tient compte des sommets des plateformes.
+- Fichiers : `src/types/document.ts`, `src/features/documents/elements.ts`, `src/features/geometry/{transform,snapping,rotateSelection}.ts`, `src/features/export/bounds.ts`, `src/features/measurements/{measurements,csv}.ts`, `src/features/units/format.ts`, `src/features/building/{model,types}.ts`, `src/components/viewer3d/Viewer3DScene.tsx`, `src/components/editor/{shapes/PlatformShape,PlatformFields,ElementNode,PropertiesPanel,Toolbar,LayersPanel,ToolModeBar,ToolHint,EditorStage,usePolylineDrawing,PolylineDraftLayer,MeasurementsPanel,VertexHandles}`, `src/stores/editorStore.ts`, `src/i18n/fr.ts`, tests `src/features/measurements/platform.test.ts` et `src/features/building/platform.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1975, dont 16 nouveaux) — tracé, étiquette et 3D à contrôler dans le navigateur
+- Commit : feat: M9 lot C, plateformes
 
 ### 2026-11-11 — M9 · Lot B · Pièces préfabriquées et Maj + R étendu
 - Fait : catégorie **« Pièces préfabriquées »** dans la Bibliothèque (7 pièces : chambre 3500 × 3200 mm, salle de bain 2500 × 2200, WC 1500 × 1500, cuisine 3600 × 3000, séjour 5000 × 4000, bureau 3000 × 3000, garage 3200 × 6000 ; dimensions = face intérieure). Chacune est **dessinée de zéro** (clean room) à partir d'objets du catalogue et se pose comme un ensemble : une pièce étiquetée, **un seul mur fermé** de 200 mm, des portes et fenêtres rattachées à ce mur (portes ouvertes vers l'intérieur, baie pour le garage) et le mobilier, avec **aperçu fantôme** (mur compris) sous le curseur, vignette avec le mur, clic ou glisser-déposer. La pose se fait en **un seul pas d'historique** (un « annuler » retire tout) ; les éléments restent ensuite **indépendants** et gardent leurs ouvertures. Elles ne fusionnent pas avec les murs voisins. **`Maj + R`** : toute la sélection tourne de 90° autour du centre de son emprise commune (murs, pièces, cotes : leurs points ; mobilier, rectangles, images, ellipses : rotation et position) ; les ouvertures suivent leur mur (une rotation du mur ne les déplace plus ni ne les supprime : `reconcileOpenings` reconnaît un mouvement rigide) ; les axes, éléments verrouillés, textes et lignes ne tournent pas. Escaliers, cheminées et plateformes seront ajoutés au quart de tour avec leurs lots.

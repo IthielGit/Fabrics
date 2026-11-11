@@ -35,9 +35,11 @@ export default function ToolModeBar() {
   const withWalls = useEditorStore((state) => state.roomWithWalls)
   const setWallMode = useEditorStore((state) => state.setWallMode)
   const setRoomMode = useEditorStore((state) => state.setRoomMode)
+  const platformMode = useEditorStore((state) => state.platformMode)
+  const setPlatformMode = useEditorStore((state) => state.setPlatformMode)
   const setRoomWithWalls = useEditorStore((state) => state.setRoomWithWalls)
 
-  if (tool !== 'wall' && tool !== 'room') return null
+  if (tool !== 'wall' && tool !== 'room' && tool !== 'platform') return null
 
   return (
     <div
@@ -45,7 +47,20 @@ export default function ToolModeBar() {
       aria-label={fr.toolModes.label}
       className="absolute bottom-16 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
     >
-      {tool === 'wall' ? (
+      {tool === 'platform' ? (
+        <>
+          <ModeButton
+            label={fr.toolModes.platformPolygon}
+            active={platformMode === 'polygon'}
+            onClick={() => setPlatformMode('polygon')}
+          />
+          <ModeButton
+            label={fr.toolModes.platformRectangle}
+            active={platformMode === 'rectangle'}
+            onClick={() => setPlatformMode('rectangle')}
+          />
+        </>
+      ) : tool === 'wall' ? (
         <>
           <ModeButton
             label={fr.toolModes.wallPolyline}

@@ -6,7 +6,7 @@ import {
   computeBuildingMeasurements,
   computeMeasurements,
 } from '../../features/measurements/measurements'
-import { formatArea, formatLength } from '../../features/units/format'
+import { formatArea, formatLength, formatVolume } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { downloadBlob } from '../../lib/download'
 import { useEditorStore } from '../../stores/editorStore'
@@ -35,10 +35,13 @@ export default function MeasurementsPanel() {
   if (!isPlan) return null
   const active = building.levels.find((entry) => entry.level.id === activeLevelId)
   const measurements = active?.measurements ?? computeMeasurements([])
-  const { rooms, walls, openings, totals } = measurements
+  const { rooms, walls, platforms, openings, totals } = measurements
   // Le niveau affiché est vide : on le dit ; le CSV, lui, couvre tout le bâtiment.
-  const isEmpty = rooms.length === 0 && walls.length === 0
-  const buildingEmpty = building.total.rooms.length === 0 && building.total.walls.length === 0
+  const isEmpty = rooms.length === 0 && walls.length === 0 && platforms.length === 0
+  const buildingEmpty =
+    building.total.rooms.length === 0 &&
+    building.total.walls.length === 0 &&
+    building.total.platforms.length === 0
 
   const handleExport = () => {
     const csv = measurementsToCsv(building, fr.measurements.csv, furnitureCsvRows(elements ?? []))
@@ -144,6 +147,42 @@ export default function MeasurementsPanel() {
       )}
       {walls.length > 0 && openings.length > 0 && (
         <p className="mt-1 text-xs text-slate-500">{fr.measurements.netAreaNote}</p>
+      )}
+
+      {platforms.length > 0 && (
+        <table className="mt-4 w-full text-sm">
+          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {fr.measurements.platforms}
+          </caption>
+          <thead>
+            <tr>
+              <th className={HEAD}>{fr.measurements.name}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.area}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.platformVolume}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {platforms.map((platform) => (
+              <tr
+                key={platform.id}
+                onClick={() => setSelection([platform.id])}
+                className={rowClass(platform.id)}
+                title={`${fr.measurements.platformElevation} : +${platform.elevation} mm · ${fr.measurements.thickness} : ${platform.thickness} mm`}
+              >
+                <td className="max-w-20 truncate px-1 py-1">{platform.name}</td>
+                <td className={NUMBER}>{formatArea(platform.area)}</td>
+                <td className={NUMBER}>{formatVolume(platform.volume)}</td>
+              </tr>
+            ))}
+          </tbody>
+          <tfoot>
+            <tr className="border-t border-slate-300 font-semibold">
+              <td className="px-1 py-1">{fr.measurements.total}</td>
+              <td className={NUMBER}>{formatArea(totals.platformArea)}</td>
+              <td className={NUMBER}>{formatVolume(totals.platformVolume)}</td>
+            </tr>
+          </tfoot>
+        </table>
       )}
 
       {openings.length > 0 && (

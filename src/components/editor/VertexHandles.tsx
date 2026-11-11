@@ -91,7 +91,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
     const all = getVertices(current)
     // Voisin pour la contrainte d'angle : le sommet précédent (le suivant pour le premier).
     const neighbour =
-      current.type === 'room'
+      current.type === 'room' || current.type === 'platform'
         ? all[(index - 1 + all.length) % all.length]
         : (all[index - 1] ?? all[index + 1] ?? null)
 

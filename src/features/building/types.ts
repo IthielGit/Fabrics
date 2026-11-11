@@ -28,7 +28,7 @@ export interface SlabShape {
   /** Identifiant de la pièce du document. */
   sourceId: string
   levelId: string
-  kind: 'slab' | 'roof'
+  kind: 'slab' | 'roof' | 'platform'
   /** Contour dans le plan (x, y du document), sans point de fermeture. */
   outline: Point[]
   /** Altitude du dessous, mm. */

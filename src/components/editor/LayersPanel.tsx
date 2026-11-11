@@ -10,6 +10,7 @@ import {
   GripVertical,
   Hash,
   ImageIcon,
+  Layers2,
   Lock,
   Slash,
   Square,
@@ -34,6 +35,7 @@ const TYPE_ICONS: Record<CanvasElement['type'], LucideIcon> = {
   opening: DoorOpen,
   axis: Hash,
   furniture: Armchair,
+  platform: Layers2,
 }
 
 const ROW_BUTTON = 'rounded p-1 text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-transparent'

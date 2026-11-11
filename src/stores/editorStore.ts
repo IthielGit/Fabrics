@@ -36,6 +36,7 @@ export type EditorTool =
   | 'text'
   | 'wall'
   | 'room'
+  | 'platform'
   | 'dimension'
   | 'axis'
   | 'furniture'
@@ -47,6 +48,7 @@ export type EditorTool =
 export const PLAN_TOOLS: readonly EditorTool[] = [
   'wall',
   'room',
+  'platform',
   'dimension',
   'axis',
   'furniture',
@@ -60,6 +62,7 @@ export function isPlanTool(tool: EditorTool): boolean {
 }
 export type WallMode = 'polyline' | 'straight'
 export type RoomMode = 'polygon' | 'rectangle'
+export type PlatformMode = 'polygon' | 'rectangle'
 export type SaveStatus = 'saved' | 'saving' | 'error'
 
 export const HISTORY_LIMIT = 100
@@ -81,6 +84,8 @@ interface EditorState {
   wallMode: WallMode
   /** Mode de l'outil Pièce : polygone libre ou rectangle (2 clics) ; état d'interface. */
   roomMode: RoomMode
+  /** Mode de l'outil Plateforme : polygone libre ou rectangle (2 clics) ; état d'interface. */
+  platformMode: PlatformMode
   /** Mode Rectangle : crée aussi un mur fermé autour de la pièce. */
   roomWithWalls: boolean
   /** Texte en cours d'édition dans la zone de saisie superposée (état d'interface, pas du document). */
@@ -109,6 +114,7 @@ interface EditorState {
   startPlacingFurniture: (symbolId: string) => void
   setWallMode: (mode: WallMode) => void
   setRoomMode: (mode: RoomMode) => void
+  setPlatformMode: (mode: PlatformMode) => void
   setRoomWithWalls: (withWalls: boolean) => void
   setNotice: (notice: string | null) => void
   setGuides: (guides: Guide[]) => void
@@ -257,6 +263,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     furnitureSymbolId: null,
     wallMode: 'polyline',
     roomMode: 'polygon',
+    platformMode: 'polygon',
     roomWithWalls: false,
     editingTextId: null,
     activeLevelId: null,
@@ -311,6 +318,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     },
     setWallMode: (wallMode) => set({ wallMode }),
     setRoomMode: (roomMode) => set({ roomMode }),
+    setPlatformMode: (platformMode) => set({ platformMode }),
     setRoomWithWalls: (roomWithWalls) => set({ roomWithWalls }),
     setNotice: (notice) => set({ notice }),
     setGuides: (guides) => set({ guides }),

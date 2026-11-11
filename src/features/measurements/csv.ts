@@ -1,5 +1,5 @@
 import { sanitizeFileName } from '../export/fileName'
-import { formatDecimal, mm2ToM2 } from '../units/format'
+import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
 import type { BuildingMeasurements, Measurements } from './measurements'
 
 /** Intitulés du fichier (français, fournis par `src/i18n/fr.ts`). */
@@ -34,6 +34,15 @@ export interface CsvLabels {
   bays: string
   /** Nom de chaque type d'ouverture. */
   kinds: Record<'door' | 'window' | 'bay', string>
+  /** Intitulés du tableau des plateformes (absent : pas de tableau). */
+  platforms?: {
+    title: string
+    elevation: string
+    thickness: string
+    volume: string
+    totalArea: string
+    totalVolume: string
+  }
   /** Intitulés du tableau du mobilier (absent : pas de tableau). */
   furniture?: {
     title: string
@@ -86,6 +95,7 @@ function row(...fields: string[]): string {
 /** Longueurs en mm entiers (Métrique architectural), surfaces en m². */
 const mm = (value: number) => formatDecimal(value, 0)
 const m2 = (mm2: number) => formatDecimal(mm2ToM2(mm2))
+const m3 = (value: number) => formatDecimal(mm3ToM3(value))
 
 /**
  * Métrés au format CSV : séparateur `;`, décimales à virgule, UTF-8 avec BOM, fins de ligne CRLF.
@@ -168,6 +178,41 @@ export function measurementsToCsv(
           mm(opening.sillHeight),
           m2(opening.area),
         ],
+      ),
+    )
+  }
+
+  // Plateformes : surface (m²) et volume = surface × épaisseur (m³).
+  const platformLabels = labels.platforms
+  if (platformLabels && total.platforms.length > 0) {
+    lines.push(
+      '',
+      row(text(platformLabels.title)),
+      row(
+        text(labels.level),
+        text(labels.name),
+        text(labels.area),
+        text(platformLabels.elevation),
+        text(platformLabels.thickness),
+        text(platformLabels.volume),
+      ),
+      ...perLevel(
+        (m) => m.platforms,
+        (platform) => [
+          text(platform.name),
+          m2(platform.area),
+          mm(platform.elevation),
+          mm(platform.thickness),
+          m3(platform.volume),
+        ],
+      ),
+      row(
+        text(labels.building),
+        text(platformLabels.totalArea),
+        m2(total.totals.platformArea),
+        '',
+        text(platformLabels.totalVolume),
+        m3(total.totals.platformVolume),
       ),
     )
   }

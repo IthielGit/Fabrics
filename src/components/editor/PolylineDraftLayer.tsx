@@ -43,6 +43,8 @@ export default function PolylineDraftLayer({
 }: PolylineDraftLayerProps) {
   const roomMode = useEditorStore((state) => state.roomMode)
   const withWalls = useEditorStore((state) => state.roomWithWalls)
+  const platformMode = useEditorStore((state) => state.platformMode)
+  const polygonTool = tool === 'room' || tool === 'platform'
   const { points, cursor, snapKind, fillMode, region } = draft
   const path = cursor && points.length > 0 ? [...points, cursor] : points
   const last = points[points.length - 1]
@@ -94,7 +96,10 @@ export default function PolylineDraftLayer({
   }
 
   // Pièce en mode Rectangle : aperçu du rectangle entre le premier coin et le curseur.
-  if (tool === 'room' && roomMode === 'rectangle') {
+  if (
+    (tool === 'room' && roomMode === 'rectangle') ||
+    (tool === 'platform' && platformMode === 'rectangle')
+  ) {
     const first = points[0]
     const corners = first && cursor ? rectangleCorners(first, cursor) : null
     const width = first && cursor ? Math.abs(cursor.x - first.x) : 0
@@ -107,7 +112,7 @@ export default function PolylineDraftLayer({
     )
     return (
       <>
-        {corners && withWalls && first && cursor && (
+        {corners && tool === 'room' && withWalls && first && cursor && (
           <Line
             points={closedWallAxisAround(first, cursor, wallThickness)}
             stroke="#475569"
@@ -158,7 +163,7 @@ export default function PolylineDraftLayer({
           lineCap="butt"
         />
       )}
-      {tool === 'room' && path.length >= 2 && (
+      {polygonTool && path.length >= 2 && (
         <Line
           points={flattenPoints(path)}
           closed={path.length >= 3}
@@ -168,7 +173,7 @@ export default function PolylineDraftLayer({
           dash={[6 / scale, 4 / scale]}
         />
       )}
-      {tool !== 'room' && path.length >= 2 && (
+      {!polygonTool && path.length >= 2 && (
         <Line
           points={flattenPoints(path)}
           stroke={ACCENT}

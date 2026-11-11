@@ -126,6 +126,7 @@ export default function EditorStage() {
   const polylineTool: PolylineTool | null =
     activeTool === 'wall' ||
     activeTool === 'room' ||
+    activeTool === 'platform' ||
     activeTool === 'dimension' ||
     activeTool === 'axis'
       ? activeTool

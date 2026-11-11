@@ -6,12 +6,15 @@ export default function ToolHint() {
   const tool = useEditorStore((state) => state.activeTool)
   const wallMode = useEditorStore((state) => state.wallMode)
   const roomMode = useEditorStore((state) => state.roomMode)
+  const platformMode = useEditorStore((state) => state.platformMode)
   let hint: string | null = null
   if (tool === 'wall' && wallMode === 'straight') hint = fr.hints.wallStraight
   else if (tool === 'room' && roomMode === 'rectangle') hint = fr.hints.roomRectangle
+  else if (tool === 'platform' && platformMode === 'rectangle') hint = fr.hints.platformRectangle
   else if (
     tool === 'wall' ||
     tool === 'room' ||
+    tool === 'platform' ||
     tool === 'dimension' ||
     tool === 'axis' ||
     tool === 'furniture' ||

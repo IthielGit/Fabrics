@@ -18,6 +18,7 @@ import ColorField from '../ui/ColorField'
 import NumberField from '../ui/NumberField'
 import FurnitureFields from './FurnitureFields'
 import OpeningFields from './OpeningFields'
+import PlatformFields from './PlatformFields'
 import PlanElementFields from './PlanElementFields'
 import PageSizeSection from './PageSizeSection'
 import PlanSettingsSection from './PlanSettingsSection'
@@ -132,6 +133,7 @@ export default function PropertiesPanel() {
           element.type === 'axis') && <PlanElementFields element={element} />}
         {element.type === 'opening' && <OpeningFields element={element} />}
         {element.type === 'furniture' && <FurnitureFields element={element} />}
+        {element.type === 'platform' && <PlatformFields element={element} />}
         {numericPropsFor(element).map((prop) => (
           <NumberField
             key={prop}

@@ -278,7 +278,12 @@ export function collectAlignTargets(
   const targets: Point[] = []
   for (const element of elements) {
     if (element.hidden || excludeIds.has(element.id)) continue
-    if (element.type === 'wall' || element.type === 'room' || element.type === 'dimension') {
+    if (
+      element.type === 'wall' ||
+      element.type === 'room' ||
+      element.type === 'platform' ||
+      element.type === 'dimension'
+    ) {
       targets.push(...toPoints(element.points))
     }
   }
@@ -305,6 +310,7 @@ export function collectSnapVertices(
         walls.push({ points: element.points, thickness: element.thickness })
         break
       case 'room':
+      case 'platform':
         vertices.push(...toPoints(element.points))
         break
       case 'dimension':

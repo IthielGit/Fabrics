@@ -8,6 +8,7 @@ import type {
   ImageElement,
   LineElement,
   OpeningElement,
+  PlatformElement,
   RectElement,
   RoomElement,
   TextElement,
@@ -158,6 +159,32 @@ export function createRoomElement(name: string, points: number[]): RoomElement {
     points,
     fill: 'rgba(99, 102, 241, 0.18)',
     showLabel: true,
+  }
+}
+
+/** Hauteur par défaut du dessus d'une plateforme, en mm. */
+export const DEFAULT_PLATFORM_ELEVATION = 450
+
+/**
+ * Plateforme (estrade) : polygone fermé, coordonnées absolues en mm. L'épaisseur par défaut est la
+ * hauteur du dessus (estrade pleine).
+ */
+export function createPlatformElement(
+  name: string,
+  points: number[],
+  elevation: number = DEFAULT_PLATFORM_ELEVATION,
+): PlatformElement {
+  return {
+    ...BASE,
+    id: crypto.randomUUID(),
+    type: 'platform',
+    name,
+    x: 0,
+    y: 0,
+    points,
+    elevation,
+    thickness: elevation,
+    fill: '#d6b98c',
   }
 }
 

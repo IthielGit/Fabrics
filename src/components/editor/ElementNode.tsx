@@ -6,6 +6,7 @@ import FurnitureShape from './shapes/FurnitureShape'
 import ImageShape from './shapes/ImageShape'
 import LineShape from './shapes/LineShape'
 import OpeningShape from './shapes/OpeningShape'
+import PlatformShape from './shapes/PlatformShape'
 import RectShape from './shapes/RectShape'
 import RoomShape from './shapes/RoomShape'
 import type { ShapeInteraction } from './shapes/shapeTypes'
@@ -43,5 +44,7 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <AxisShape element={element} {...interaction} />
     case 'furniture':
       return <FurnitureShape element={element} {...interaction} />
+    case 'platform':
+      return <PlatformShape element={element} {...interaction} />
   }
 }

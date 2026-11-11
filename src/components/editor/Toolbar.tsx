@@ -9,6 +9,7 @@ import {
   ImagePlus,
   MousePointer2,
   Pentagon,
+  Layers2,
   Ruler,
   Slash,
   Square,
@@ -41,6 +42,7 @@ const COMMON_TOOLS: ToolDefinition[] = [
 const PLAN_TOOLS: ToolDefinition[] = [
   { tool: 'wall', icon: BrickWall, label: fr.tools.wall, shortcut: 'W' },
   { tool: 'room', icon: Pentagon, label: fr.tools.room, shortcut: 'P' },
+  { tool: 'platform', icon: Layers2, label: fr.tools.platform },
   { tool: 'dimension', icon: Ruler, label: fr.tools.dimension, shortcut: 'D' },
   { tool: 'axis', icon: Hash, label: fr.tools.axis, shortcut: 'A' },
   { tool: 'door', icon: DoorOpen, label: fr.tools.door, shortcut: 'B' },

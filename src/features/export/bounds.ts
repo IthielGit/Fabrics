@@ -87,6 +87,7 @@ export function elementBounds(element: CanvasElement): Box | null {
       return pointsBox(outline.length > 0 ? outline : toPoints(element.points))
     }
     case 'room':
+    case 'platform':
       return pointsBox(toPoints(element.points))
     case 'dimension': {
       const geometry = dimensionGeometry(element.points, element.offset)

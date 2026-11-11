@@ -252,10 +252,10 @@ détaillées : `docs/02-ARCHITECTURE.md`, section « Outils de construction (M9)
       tourne de 90° autour de son centre commun ; les ouvertures suivent leur mur
 
 ### Lot C — Plateformes
-- [ ] Type `platform` (polygone à points absolus, hauteur, épaisseur)
-- [ ] Outil Plateforme (polygone libre ou rectangle), dessin 2D avec étiquette (`+450 mm`),
+- [x] Type `platform` (polygone à points absolus, hauteur, épaisseur)
+- [x] Outil Plateforme (polygone libre ou rectangle), dessin 2D avec étiquette (`+450 mm`),
       propriétés ; épaisseur par défaut = hauteur (estrade pleine), jamais plus grande
-- [ ] Volume en 3D ; surface (m²) et volume = surface × épaisseur (m³) dans les métrés et le CSV
+- [x] Volume en 3D ; surface (m²) et volume = surface × épaisseur (m³) dans les métrés et le CSV
 
 ### Lot D — Escaliers entre niveaux
 - [ ] Type `stair` : droit (`length`), en L (`length` + `length2`), en U (`length` +

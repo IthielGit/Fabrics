@@ -2,6 +2,7 @@ import type {
   AxisElement,
   CanvasElement,
   DimensionElement,
+  PlatformElement,
   RoomElement,
   WallElement,
 } from '../../types/document'
@@ -13,10 +14,11 @@ import type { Point } from './viewport'
 /** Vrai pour les éléments de plan : leurs points sont absolus et leur position `x, y` reste à 0. */
 export function hasAbsolutePoints(
   element: CanvasElement,
-): element is WallElement | RoomElement | DimensionElement | AxisElement {
+): element is WallElement | RoomElement | PlatformElement | DimensionElement | AxisElement {
   return (
     element.type === 'wall' ||
     element.type === 'room' ||
+    element.type === 'platform' ||
     element.type === 'dimension' ||
     element.type === 'axis'
   )
@@ -30,6 +32,7 @@ export function translateElement(element: CanvasElement, dx: number, dy: number)
   switch (element.type) {
     case 'wall':
     case 'room':
+    case 'platform':
       return { ...element, points: element.points.map((v, i) => v + (i % 2 === 0 ? dx : dy)) }
     case 'dimension':
     case 'axis': {
@@ -95,7 +98,7 @@ export function moveVertex(element: CanvasElement, index: number, to: Point): Ca
     points[index * 2 + 1] = to.y
     return { ...element, points }
   }
-  if (element.type === 'wall' || element.type === 'room') {
+  if (element.type === 'wall' || element.type === 'room' || element.type === 'platform') {
     const points = [...element.points]
     points[index * 2] = to.x
     points[index * 2 + 1] = to.y
@@ -105,11 +108,13 @@ export function moveVertex(element: CanvasElement, index: number, to: Point): Ca
 }
 
 /** Nombre minimal de sommets : 2 pour un mur, 3 pour une pièce. Une cote est fixe (2 sommets). */
-const MIN_VERTICES = { wall: 2, room: 3 } as const
+const MIN_VERTICES = { wall: 2, room: 3, platform: 3 } as const
 
 /** Un mur, une pièce : leur nombre de sommets peut changer (pas une cote). */
-function hasEditableVertexCount(element: CanvasElement): element is WallElement | RoomElement {
-  return element.type === 'wall' || element.type === 'room'
+function hasEditableVertexCount(
+  element: CanvasElement,
+): element is WallElement | RoomElement | PlatformElement {
+  return element.type === 'wall' || element.type === 'room' || element.type === 'platform'
 }
 
 /**
@@ -119,7 +124,7 @@ function hasEditableVertexCount(element: CanvasElement): element is WallElement 
 export function getSegmentMidpoints(element: CanvasElement): Point[] {
   if (!hasEditableVertexCount(element)) return []
   const vertices = toPoints(element.points)
-  const count = element.type === 'room' ? vertices.length : vertices.length - 1
+  const count = element.type === 'wall' ? vertices.length - 1 : vertices.length
   const midpoints: Point[] = []
   for (let i = 0; i < count; i++) {
     const a = vertices[i]

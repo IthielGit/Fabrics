@@ -21,6 +21,7 @@ const ROOF_MATERIAL = new THREE.MeshStandardMaterial({
   side: THREE.DoubleSide,
 })
 
+const PLATFORM_MATERIAL = new THREE.MeshStandardMaterial({ color: '#d6b98c', roughness: 0.85 })
 const SELECTED_WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a5b4fc', roughness: 0.9 })
 
 /** Un déplacement de plus de ce nombre de pixels entre appui et relâchement est un geste de caméra, pas un clic. */
@@ -86,7 +87,13 @@ const SlabMesh = memo(function SlabMesh({ slab }: { slab: SlabShape }) {
   return (
     <mesh
       geometry={cachedSlabGeometry(slab)}
-      material={slab.kind === 'roof' ? ROOF_MATERIAL : SLAB_MATERIAL}
+      material={
+        slab.kind === 'roof'
+          ? ROOF_MATERIAL
+          : slab.kind === 'platform'
+            ? PLATFORM_MATERIAL
+            : SLAB_MATERIAL
+      }
       position={[0, slab.baseY + slab.thickness, 0]}
     />
   )

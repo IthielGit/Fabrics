@@ -54,6 +54,8 @@ const L_SHAPE = [0, 0, 4000, 0, 4000, 2000, 2000, 2000, 2000, 3000, 0, 3000]
 
 const EMPTY_TOTALS = {
   roomArea: 0,
+  platformArea: 0,
+  platformVolume: 0,
   wallLength: 0,
   wallArea: 0,
   openingsArea: 0,

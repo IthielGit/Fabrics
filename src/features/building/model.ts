@@ -3,6 +3,7 @@ import type {
   FabricsDocument,
   Level,
   OpeningElement,
+  PlatformElement,
   RoomElement,
   WallElement,
 } from '../../types/document'
@@ -44,6 +45,23 @@ export function buildRoomRoof(room: RoomElement, level: Level): SlabShape | null
     outline,
     baseY: level.elevation + level.height,
     thickness: level.slabThickness,
+  }
+}
+
+/** Plateforme : dessus à `elevation` au-dessus du plancher du niveau, volume de `thickness` sous le dessus. */
+export function buildPlatform(platform: PlatformElement, level: Level): SlabShape | null {
+  const outline = toPoints(platform.points)
+  const top = level.elevation + platform.elevation
+  // L'épaisseur ne dépasse jamais la hauteur du dessus : la plateforme ne passe pas sous le plancher.
+  const thickness = Math.min(platform.thickness, platform.elevation)
+  if (outline.length < 3 || thickness < 1) return null
+  return {
+    sourceId: platform.id,
+    levelId: level.id,
+    kind: 'platform',
+    outline,
+    baseY: top - thickness,
+    thickness,
   }
 }
 
@@ -119,6 +137,9 @@ export function buildBuildingModel(
     if (!level) continue
     if (el.type === 'wall') {
       walls.push(...buildWallPieces(el as WallElement, openings, level))
+    } else if (el.type === 'platform') {
+      const shape = buildPlatform(el, level)
+      if (shape) slabs.push(shape)
     } else if (el.type === 'room') {
       const slab = buildRoomSlab(el, level)
       if (slab) slabs.push(slab)

@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import {
   createAxisElement,
   createDimensionElement,
+  createPlatformElement,
   createRoomElement,
   createWallElement,
   nextElementName,
@@ -11,6 +12,7 @@ import {
   createRectangleRoom,
   createRoomWithWalls,
   isRectangle,
+  rectangleCorners,
 } from '../../features/documents/construction'
 import { nextAxisLabel } from '../../features/geometry/axes'
 import type { Guide } from '../../features/geometry/guides'
@@ -32,7 +34,7 @@ import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement } from '../../types/document'
 import { isTypingTarget } from './isTypingTarget'
 
-export type PolylineTool = 'wall' | 'room' | 'dimension' | 'axis'
+export type PolylineTool = 'wall' | 'room' | 'platform' | 'dimension' | 'axis'
 
 export interface PolylineDraft {
   /** Points déjà posés (coordonnées du document, en mm). */
@@ -49,7 +51,13 @@ export interface PolylineDraft {
 }
 
 /** Nombre minimal de points pour valider un tracé. */
-const MIN_POINTS: Record<PolylineTool, number> = { wall: 2, room: 3, dimension: 2, axis: 2 }
+const MIN_POINTS: Record<PolylineTool, number> = {
+  wall: 2,
+  room: 3,
+  platform: 3,
+  dimension: 2,
+  axis: 2,
+}
 
 /** Distance d'accroche, en pixels écran. */
 const SNAP_THRESHOLD_PX = 8
@@ -97,10 +105,22 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
   // remettre à zéro dans un effet (le tracé d'un autre outil est simplement ignoré).
   const wallMode = useEditorStore((state) => state.wallMode)
   const roomMode = useEditorStore((state) => state.roomMode)
+  const platformMode = useEditorStore((state) => state.platformMode)
   // Mur droit et pièce rectangle : deux clics suffisent (premier point, puis point opposé).
-  const rectMode = tool === 'room' && roomMode === 'rectangle'
+  const rectMode =
+    (tool === 'room' && roomMode === 'rectangle') ||
+    (tool === 'platform' && platformMode === 'rectangle')
+  // Pièce et plateforme sont des polygones fermés (même tracé).
+  const polygonTool = tool === 'room' || tool === 'platform'
   const twoClicks = rectMode || (tool === 'wall' && wallMode === 'straight')
-  const key = tool === 'wall' ? `wall:${wallMode}` : tool === 'room' ? `room:${roomMode}` : tool
+  const key =
+    tool === 'wall'
+      ? `wall:${wallMode}`
+      : tool === 'room'
+        ? `room:${roomMode}`
+        : tool === 'platform'
+          ? `platform:${platformMode}`
+          : tool
   const [stored, setStored] = useState<StoredDraft>({ key, draft: EMPTY })
   const storedRef = useRef<StoredDraft>(stored)
   const vertexCache = useRef<{ elements: readonly CanvasElement[]; vertices: Point[] } | null>(null)
@@ -208,7 +228,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         alignTargets: alt
           ? undefined
           : [
-              ...(tool === 'room' || tool === 'dimension' ? planVertices(active) : alignTargets(active)),
+              ...(polygonTool || tool === 'dimension' ? planVertices(active) : alignTargets(active)),
               ...(onOpenings ?? []),
               ...current,
             ],
@@ -221,7 +241,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         softAlign: !alt && !rectMode,
       })
     },
-    [tool, rectMode, planVertices, wallAxes, alignTargets, openingPoints, readDraft, scale],
+    [tool, rectMode, polygonTool, planVertices, wallAxes, alignTargets, openingPoints, readDraft, scale],
   )
 
   const finish = useCallback(() => {
@@ -239,6 +259,13 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       plan?.defaultWallHeight ??
       2500
 
+    if (rectMode && tool === 'platform') {
+      const [a, b] = points
+      if (!isRectangle(a, b)) return
+      const name = nextElementName(fr.elements.platform, 'platform', selectActiveElements(state))
+      state.addElement(createPlatformElement(name, flattenPoints(rectangleCorners(a, b))))
+      return
+    }
     if (rectMode) {
       const [a, b] = points
       if (!isRectangle(a, b)) return
@@ -266,6 +293,8 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     const name = nextElementName(fr.elements[tool], tool, selectActiveElements(state))
     if (tool === 'wall') {
       addElement(createWallElement(name, flat, plan?.defaultWallThickness ?? 200, levelHeight))
+    } else if (tool === 'platform') {
+      addElement(createPlatformElement(name, flat))
     } else if (tool === 'room') {
       addElement(createRoomElement(name, flat))
     } else {
@@ -309,8 +338,8 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       const { point, kind } = snap(raw, event.evt.shiftKey, event.evt.altKey)
       const points = current.points
 
-      // Pièce : un clic sur le premier point ferme le polygone.
-      if (tool === 'room' && points.length >= 3 && samePoint(point, points[0])) {
+      // Pièce, plateforme : un clic sur le premier point ferme le polygone.
+      if (polygonTool && points.length >= 3 && samePoint(point, points[0])) {
         finish()
         return
       }
@@ -328,7 +357,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       // Une cote, un axe, un mur droit et un rectangle n'ont que deux points.
       if ((tool === 'dimension' || tool === 'axis' || twoClicks) && points.length + 1 === 2) finish()
     },
-    [tool, rectMode, twoClicks, readDraft, snap, finish, setDraft, regionAt, commitRegion],
+    [tool, rectMode, twoClicks, polygonTool, readDraft, snap, finish, setDraft, regionAt, commitRegion],
   )
 
   const onPointerMove = useCallback(

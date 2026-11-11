@@ -8,6 +8,7 @@
 const MM_PER_M = 1000
 const MM_PER_CM = 10
 const MM2_PER_M2 = 1_000_000
+const MM3_PER_M3 = 1_000_000_000
 
 export function mToMm(m: number): number {
   return m * MM_PER_M
@@ -20,6 +21,11 @@ export function cmToMm(cm: number): number {
 /** Surface en mm² → m². */
 export function mm2ToM2(mm2: number): number {
   return mm2 / MM2_PER_M2
+}
+
+/** Volume en mm³ → m³. */
+export function mm3ToM3(mm3: number): number {
+  return mm3 / MM3_PER_M3
 }
 
 /** Nombre à la française : virgule décimale, nombre de décimales fixe. `-0,00` devient `0,00`. */
@@ -37,6 +43,11 @@ export function formatLength(mm: number): string {
 /** Surface en mm² affichée en mètres carrés : `12,40 m²`. */
 export function formatArea(mm2: number): string {
   return `${formatDecimal(mm2ToM2(mm2))} m²`
+}
+
+/** Volume en mm³ affiché en mètres cubes : `1,35 m³`. */
+export function formatVolume(mm3: number): string {
+  return `${formatDecimal(mm3ToM3(mm3))} m³`
 }
 
 /**
