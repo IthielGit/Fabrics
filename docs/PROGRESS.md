@@ -40,6 +40,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — M10 · Tâche 4 · Calcul et affichage de la coupe
+- Fait : **calcul pur** `buildSection` : tout solide (morceau de mur, marche, cheminée, dalle, plateforme) est un contour extrudé ; le plan de coupe le traverse sur des segments (règle pair-impair, donc les trémies sont des vides) qui deviennent des faces **coupées** (noires, au premier plan) ; ses côtés restent visibles **derrière** la ligne, dans le sens du regard, en blanc à contour noir ; tout est limité à la **longueur** de la ligne. Une fenêtre coupée montre l'allège et le linteau en noir et le vide entre les deux. **Écran Vues** : un onglet « Coupe A–A » par ligne de coupe du plan (dans l'ordre des repères), à jour en direct : déplacer ou inverser la ligne met la coupe à jour ; une ligne supprimée affiche un message ; une ligne qui ne rencontre rien aussi. Même dessin et mêmes cotes de niveaux que les façades.
+- Limites : les côtés intérieurs d'une trémie derrière la coupe ne sont pas dessinés ; hachures et textures plus tard (jalon ultérieur).
+- Fichiers : `src/features/building/views/{section(.test),projection}.ts`, `src/components/views/{ViewsScreen,ViewDrawing}.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2111, dont 10 nouveaux) — onglets et noir de la coupe à contrôler dans le navigateur
+- Commit : feat: M10 tâche 4, coupes
+
 ### 2026-11-11 — M10 · Tâche 3 · Ligne de coupe
 - Fait : nouveau type **`section`** (deux points absolus, repère, sens de vue `lookLeft` ; commun à tous les niveaux comme les axes ; pas de changement de version). **Outil « Ligne de coupe »** (bouton ciseaux, famille Cotation, sans raccourci) : deux clics, avec les mêmes aimantations et guides que l'axe ; le repère suit la suite A, B, C… **Dessin 2D** : trait mixte noir, une flèche à chaque bout vers le sens de vue, une bulle avec le repère au bout de chaque flèche. **Propriétés** : repère (le nom suit : « Coupe A–A »), bouton « Inverser le sens de vue », longueur en mm. Se déplace et se modifie aux sommets comme un axe ; ne tourne pas avec `Maj + R`. Le sens de vue : « à gauche » est celui de la personne qui marche du premier au deuxième point, vue de dessus. La coupe elle-même vient à la tâche 4.
 - Fichiers : `src/types/document.ts`, `src/features/geometry/{sections(.test),transform,rotateSelection}.ts`, `src/features/documents/{elements,levels}.ts`, `src/features/export/bounds.ts`, `src/components/editor/{shapes/SectionShape,SectionFields,ElementNode,Toolbar,ToolHint,EditorStage,usePolylineDrawing,PolylineDraftLayer,PropertiesPanel,LayersPanel}`, `src/stores/editorStore.ts`, `src/i18n/fr.ts`

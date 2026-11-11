@@ -44,7 +44,7 @@ export default function ViewDrawing({ faces, bounds, levels, showLevelMarks = tr
         <polygon
           key={index}
           points={face.polygon.map(([u, v]) => `${u},${-v}`).join(' ')}
-          fill="#ffffff"
+          fill={face.cut ? '#0f172a' : '#ffffff'}
           stroke="#0f172a"
           strokeWidth={1.2}
           strokeLinejoin="round"

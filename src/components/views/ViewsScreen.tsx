@@ -3,6 +3,8 @@ import { X } from 'lucide-react'
 import { useMemo } from 'react'
 import { useBuildingModel } from '../viewer3d/useBuildingModel'
 import { buildElevation } from '../../features/building/views/elevation'
+import { buildSection } from '../../features/building/views/section'
+import type { SectionLineElement } from '../../types/document'
 import type { Cardinal } from '../../features/building/north'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
@@ -42,17 +44,68 @@ function ElevationTab({ cardinal }: { cardinal: Cardinal }) {
   )
 }
 
-/** Écran « Vues » : façades (puis coupes et planche) calculées à partir du plan, en lecture seule. */
+function SectionTab({ sectionId }: { sectionId: string }) {
+  const model = useBuildingModel(undefined)
+  const levels = useEditorStore((state) => state.project?.document.levels)
+  const section = useEditorStore((state) =>
+    state.project?.document.elements.find(
+      (el): el is SectionLineElement => el.type === 'section' && el.id === sectionId,
+    ),
+  )
+  const view = useMemo(
+    () =>
+      section
+        ? buildSection(model, levels ?? [], {
+            points: section.points,
+            lookLeft: section.lookLeft,
+            label: section.label,
+          })
+        : null,
+    [model, levels, section],
+  )
+  if (!section) return <p className="p-4 text-sm text-slate-500">{fr.views.sectionMissing}</p>
+  return (
+    <>
+      <p className="px-4 pt-3 text-sm text-slate-600">
+        {fr.views.section(section.label)} · {fr.views.sectionLook}
+      </p>
+      <div className="min-h-0 flex-1 p-4">
+        {view?.bounds ? (
+          <ViewDrawing faces={view.faces} bounds={view.bounds} levels={view.levels} />
+        ) : (
+          <p className="text-sm text-slate-500">{fr.views.sectionEmpty}</p>
+        )}
+      </div>
+    </>
+  )
+}
+
+/** Écran « Vues » : façades, coupes (puis planche) calculées à partir du plan, en lecture seule. */
 function ScreenBody() {
   const tab = useViewsStore((state) => state.tab)
   const setTab = useViewsStore((state) => state.setTab)
   const closeViews = useViewsStore((state) => state.closeViews)
+  const elements = useEditorStore((state) => state.project?.document.elements)
+  const sections = useMemo(
+    () =>
+      (elements ?? [])
+        .filter((el): el is SectionLineElement => el.type === 'section')
+        .sort((a, b) => a.label.localeCompare(b.label, 'fr', { numeric: true })),
+    [elements],
+  )
 
-  const tabs: { key: string; label: string; value: ViewsTab }[] = CARDINALS.map((cardinal) => ({
-    key: `elevation-${cardinal}`,
-    label: fr.views.elevation[cardinal],
-    value: { kind: 'elevation', cardinal },
-  }))
+  const tabs: { key: string; label: string; value: ViewsTab }[] = [
+    ...CARDINALS.map((cardinal) => ({
+      key: `elevation-${cardinal}`,
+      label: fr.views.elevation[cardinal],
+      value: { kind: 'elevation', cardinal } as ViewsTab,
+    })),
+    ...sections.map((section) => ({
+      key: `section-${section.id}`,
+      label: fr.views.section(section.label),
+      value: { kind: 'section', sectionId: section.id } as ViewsTab,
+    })),
+  ]
 
   return (
     <div
@@ -95,6 +148,10 @@ function ScreenBody() {
       </header>
       <main className="flex min-h-0 flex-1 flex-col">
         {tab.kind === 'elevation' && <ElevationTab cardinal={tab.cardinal} />}
+        {tab.kind === 'section' && <SectionTab sectionId={tab.sectionId} />}
+        {sections.length === 0 && (
+          <p className="px-4 pb-3 text-xs text-slate-500">{fr.views.noSections}</p>
+        )}
       </main>
     </div>
   )

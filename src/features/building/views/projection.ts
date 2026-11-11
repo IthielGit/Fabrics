@@ -28,6 +28,8 @@ export interface ViewFace {
   kind: FaceKind
   sourceId: string
   levelId: string
+  /** Vrai pour une matière coupée par le plan de coupe (dessinée en noir). */
+  cut?: boolean
 }
 
 export interface ViewBounds {
@@ -60,7 +62,8 @@ export function lookTowards(facing: ViewDirection): ViewDirection {
   return { x: x === 0 ? 0 : x, y: y === 0 ? 0 : y }
 }
 
-function quad(
+/** Face verticale entre deux points du plan, de l'altitude `v0` à `v1` (`null` si elle est vue par la tranche). */
+export function quad(
   a: Point,
   b: Point,
   v0: number,
