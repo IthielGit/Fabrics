@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M10 — Façades, coupes et planche (M9 validé le 2026-11-11)
-- **Dernière tâche terminée :** tâche 6 de M10 (export PDF des vues) ; toutes les tâches de M10 sont codées
-- **Prochaine tâche :** essai de M10 par l'utilisateur dans le navigateur et retour de ses remarques, puis validation et **M10 bis** (ouvertures détaillées, toitures, hachures et textures ; plan écrit dans la roadmap le 2026-11-11), puis **M10 ter** (métrés et cotes en version client / exécution ; plan écrit le 2026-11-11), puis M11
+- **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
+- **Dernière tâche terminée :** M10 (toutes les tâches, validé par l'utilisateur)
+- **Prochaine tâche :** M10 bis, Lot A, tâche 1 (catalogue des styles d'ouvertures) après accord sur la liste des tâches ; puis **M10 ter** (métrés et cotes en version client / exécution ; plan écrit le 2026-11-11), puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -24,8 +24,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
 | M9 Outils de construction | terminé | 2026-11-11 |
-| M10 Façades, coupes et planche | tous les lots faits, en attente de validation | |
-| M10 bis Ouvertures détaillées, toitures, hachures et textures | à faire (plan écrit) | |
+| M10 Façades, coupes et planche | terminé | 2026-11-11 |
+| M10 bis Ouvertures détaillées, toitures, hachures et textures | en cours | |
 | M10 ter Documents client / exécution (métrés et cotes) | à faire (plan écrit) | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |

@@ -325,8 +325,8 @@ Unités : mm, m², m³ ; la pente d'un toit se saisit en degrés (comme la rotat
 
 ### Lot A — Styles de portes, fenêtres et baies
 
-Un champ `style` facultatif sur `opening` choisit le dessin. Le trou dans le mur, la 3D et les
-métrés ne changent pas. Sans `style`, l'ouverture garde son dessin actuel : pas de migration.
+Un champ `style` facultatif sur `opening` choisit le dessin (plan, façades **et 3D**, demande de
+l'utilisateur du 2026-11-11). Le trou dans le mur et les métrés ne changent pas. Sans `style`, l'ouverture garde son dessin actuel : pas de migration.
 Pas de doublon : une variante qui ne change que la taille est une **taille rapide**, pas un style.
 
 | Type | Styles (taille par défaut en mm) | Tailles rapides |
@@ -346,6 +346,9 @@ fenêtre fixe et la baie fixe partagent le même dessin.
       Porte et Fenêtre et dans Propriétés (avec les tailles rapides et l'option oscillo-battant)
 - [ ] Menuiseries dessinées en façade (vantaux, triangle d'ouverture vers les gonds, flèche du
       coulissant, panneaux du garage) ; colonne « Style » dans le tableau des ouvertures du CSV
+- [ ] Menuiseries en **3D** (`buildOpeningFills`) : vantaux, montants et traverses selon le style
+      (deux vantaux séparés, fixe sans battant, coulissante décalée, panneaux du garage, porte
+      pliante en lames, ouverture libre sans remplissage) ; mêmes formes que la façade
 
 ### Lot B — Toitures
 
