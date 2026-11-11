@@ -55,6 +55,10 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut(key('Z', { ctrlKey: true, shiftKey: true }))).toBe('redo')
   })
 
+  it('rétablit aussi avec Ctrl+Y', () => {
+    expect(resolveShortcut(key('y', { ctrlKey: true }))).toBe('redo')
+  })
+
   it('accepte Cmd (Mac) comme Ctrl', () => {
     expect(resolveShortcut(key('z', { metaKey: true }))).toBe('undo')
     expect(resolveShortcut(key('d', { metaKey: true }))).toBe('duplicate')

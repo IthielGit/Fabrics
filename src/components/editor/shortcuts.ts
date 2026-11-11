@@ -42,6 +42,7 @@ export function resolveShortcut(input: KeyInput): ShortcutAction | null {
   if (withModifier) {
     if (input.altKey) return null
     if (key === 'z') return input.shiftKey ? 'redo' : 'undo'
+    if (key === 'y' && !input.shiftKey) return 'redo'
     if (key === 'd' && !input.shiftKey) return 'duplicate'
     if (key === 'c' && !input.shiftKey) return 'copy'
     if (key === 'v' && !input.shiftKey) return 'paste'
