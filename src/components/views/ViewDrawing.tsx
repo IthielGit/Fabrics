@@ -1,80 +1,62 @@
-import { formatElevation } from '../../features/building/views/labels'
-import type { LevelMark, ViewBounds, ViewFace } from '../../features/building/views/projection'
+import { FILL_COLORS, type Drawing } from '../../features/building/views/drawing'
 
 interface ViewDrawingProps {
-  faces: readonly ViewFace[]
-  bounds: ViewBounds | null
-  levels: readonly LevelMark[]
-  /** Affiche les cotes de niveaux (altitudes des planchers) ; vrai par défaut. */
-  showLevelMarks?: boolean
+  drawing: Drawing
 }
 
-/**
- * Dessin d'une vue (façade ou coupe) en SVG : faces blanches à contour noir, dans l'ordre du
- * peintre, ligne de sol et cotes de niveaux. Le repère est en millimètres, `v` vers le haut.
- */
-export default function ViewDrawing({ faces, bounds, levels, showLevelMarks = true }: ViewDrawingProps) {
-  if (!bounds) return null
-  const extent = Math.max(bounds.maxU - bounds.minU, bounds.maxV - bounds.minV, 1000)
-  const margin = extent * 0.12
-  const font = extent / 55
-  const left = bounds.minU - margin
-  const right = bounds.maxU + margin * 2.2
-  const top = -(bounds.maxV + margin)
-  const bottom = -(bounds.minV - margin)
-  const marks = showLevelMarks ? levels.filter((l) => l.elevation >= bounds.minV - 1) : []
+const INK = '#0f172a'
+const MUTED = '#64748b'
+const ACCENT = '#4338ca'
 
+/**
+ * Affiche un dessin (façade, coupe ou planche) en SVG. Le repère est en millimètres réels ; les
+ * traits gardent une épaisseur constante à l'écran.
+ */
+export default function ViewDrawing({ drawing }: ViewDrawingProps) {
+  if (drawing.width <= 0 || drawing.height <= 0) return null
   return (
     <svg
-      viewBox={`${left} ${top} ${right - left} ${bottom - top}`}
+      viewBox={`0 0 ${drawing.width} ${drawing.height}`}
       className="h-full w-full"
       role="img"
       preserveAspectRatio="xMidYMid meet"
     >
-      <line
-        x1={left}
-        x2={right}
-        y1={0}
-        y2={0}
-        stroke="#64748b"
-        strokeWidth={1.5}
-        vectorEffect="non-scaling-stroke"
-      />
-      {faces.map((face, index) => (
+      {drawing.polygons.map((polygon, index) => (
         <polygon
           key={index}
-          points={face.polygon.map(([u, v]) => `${u},${-v}`).join(' ')}
-          fill={face.cut ? '#0f172a' : '#ffffff'}
-          stroke="#0f172a"
+          points={polygon.points.map(([x, y]) => `${x},${y}`).join(' ')}
+          fill={polygon.fill === 'none' ? 'none' : FILL_COLORS[polygon.fill]}
+          stroke={INK}
           strokeWidth={1.2}
           strokeLinejoin="round"
           vectorEffect="non-scaling-stroke"
         />
       ))}
-      {marks.map((mark) => (
-        <g key={mark.levelId}>
-          <line
-            x1={bounds.minU - margin * 0.6}
-            x2={bounds.maxU + margin * 0.6}
-            y1={-mark.elevation}
-            y2={-mark.elevation}
-            stroke="#6366f1"
-            strokeWidth={1}
-            strokeDasharray="6 4"
-            vectorEffect="non-scaling-stroke"
-          />
-          <text
-            x={bounds.maxU + margin * 0.7}
-            y={-mark.elevation - font * 0.3}
-            fontSize={font}
-            fill="#4338ca"
-          >
-            {mark.name}
-          </text>
-          <text x={bounds.maxU + margin * 0.7} y={-mark.elevation + font * 1.05} fontSize={font} fill="#4338ca">
-            {formatElevation(mark.elevation)}
-          </text>
-        </g>
+      {drawing.lines.map((line, index) => (
+        <line
+          key={index}
+          x1={line.x1}
+          y1={line.y1}
+          x2={line.x2}
+          y2={line.y2}
+          stroke={line.accent ? '#6366f1' : line.muted ? MUTED : INK}
+          strokeWidth={line.muted ? 1.5 : 1}
+          strokeDasharray={line.dashed ? '6 4' : undefined}
+          vectorEffect="non-scaling-stroke"
+        />
+      ))}
+      {drawing.texts.map((text, index) => (
+        <text
+          key={index}
+          x={text.x}
+          y={text.y}
+          fontSize={text.size}
+          fontWeight={text.bold ? 700 : 400}
+          textAnchor={text.anchor === 'middle' ? 'middle' : 'start'}
+          fill={text.accent ? ACCENT : INK}
+        >
+          {text.text}
+        </text>
       ))}
     </svg>
   )

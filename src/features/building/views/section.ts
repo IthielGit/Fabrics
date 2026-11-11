@@ -30,7 +30,7 @@ export interface SectionView {
 }
 
 /** Un solide vertical : un contour dans le plan, extrudé de `v0` à `v1`. */
-interface Prism {
+export interface Prism {
   /** Contour extérieur puis trous éventuels (trémies), sans point de fermeture. */
   rings: Point[][]
   v0: number
@@ -57,7 +57,8 @@ function boxRing(piece: WallPiece): Point[] {
   }))
 }
 
-function prismsOf(model: BuildingModel): Prism[] {
+/** Tous les solides du modèle (murs, marches, cheminées, dalles, plateformes) comme contours extrudés. */
+export function prismsOf(model: BuildingModel): Prism[] {
   const prisms: Prism[] = []
   const addBoxes = (pieces: readonly WallPiece[], kind: FaceKind) => {
     for (const piece of pieces) {

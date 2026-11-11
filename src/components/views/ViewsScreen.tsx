@@ -1,14 +1,16 @@
 import clsx from 'clsx'
 import { X } from 'lucide-react'
 import { useMemo } from 'react'
-import { useBuildingModel } from '../viewer3d/useBuildingModel'
+import { drawingFromView } from '../../features/building/views/drawing'
 import { buildElevation } from '../../features/building/views/elevation'
 import { buildSection } from '../../features/building/views/section'
-import type { SectionLineElement } from '../../types/document'
+import { buildSheet } from '../../features/building/views/sheet'
 import type { Cardinal } from '../../features/building/north'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import { useViewsStore, type ViewsTab } from '../../stores/viewsStore'
+import type { SectionLineElement } from '../../types/document'
+import { useBuildingModel } from '../viewer3d/useBuildingModel'
 import ViewDrawing from './ViewDrawing'
 
 const CARDINALS: Cardinal[] = ['N', 'E', 'S', 'O']
@@ -20,27 +22,27 @@ function isSameTab(a: ViewsTab, b: ViewsTab): boolean {
   return true
 }
 
+function ViewBody({ note, children }: { note: string; children: React.ReactNode }) {
+  return (
+    <>
+      <p className="px-4 pt-3 text-sm text-slate-600">{note}</p>
+      <div className="min-h-0 flex-1 p-4">{children}</div>
+    </>
+  )
+}
+
 function ElevationTab({ cardinal }: { cardinal: Cardinal }) {
   const model = useBuildingModel(undefined)
   const levels = useEditorStore((state) => state.project?.document.levels)
   const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
-  const view = useMemo(
-    () => buildElevation(model, levels ?? [], cardinal, northAngle),
+  const drawing = useMemo(
+    () => drawingFromView(buildElevation(model, levels ?? [], cardinal, northAngle)),
     [model, levels, cardinal, northAngle],
   )
   return (
-    <>
-      <p className="px-4 pt-3 text-sm text-slate-600">
-        {fr.views.elevation[cardinal]} · {fr.views.lookFrom(fr.views.sides[cardinal])}
-      </p>
-      <div className="min-h-0 flex-1 p-4">
-        {view.bounds ? (
-          <ViewDrawing faces={view.faces} bounds={view.bounds} levels={view.levels} />
-        ) : (
-          <p className="text-sm text-slate-500">{fr.views.empty}</p>
-        )}
-      </div>
-    </>
+    <ViewBody note={`${fr.views.elevation[cardinal]} · ${fr.views.lookFrom(fr.views.sides[cardinal])}`}>
+      {drawing ? <ViewDrawing drawing={drawing} /> : <p className="text-sm text-slate-500">{fr.views.empty}</p>}
+    </ViewBody>
   )
 }
 
@@ -52,35 +54,50 @@ function SectionTab({ sectionId }: { sectionId: string }) {
       (el): el is SectionLineElement => el.type === 'section' && el.id === sectionId,
     ),
   )
-  const view = useMemo(
-    () =>
-      section
-        ? buildSection(model, levels ?? [], {
-            points: section.points,
-            lookLeft: section.lookLeft,
-            label: section.label,
-          })
-        : null,
-    [model, levels, section],
-  )
+  const drawing = useMemo(() => {
+    if (!section) return null
+    const view = buildSection(model, levels ?? [], {
+      points: section.points,
+      lookLeft: section.lookLeft,
+      label: section.label,
+    })
+    return view ? drawingFromView(view) : null
+  }, [model, levels, section])
   if (!section) return <p className="p-4 text-sm text-slate-500">{fr.views.sectionMissing}</p>
   return (
-    <>
-      <p className="px-4 pt-3 text-sm text-slate-600">
-        {fr.views.section(section.label)} · {fr.views.sectionLook}
-      </p>
-      <div className="min-h-0 flex-1 p-4">
-        {view?.bounds ? (
-          <ViewDrawing faces={view.faces} bounds={view.bounds} levels={view.levels} />
-        ) : (
-          <p className="text-sm text-slate-500">{fr.views.sectionEmpty}</p>
-        )}
-      </div>
-    </>
+    <ViewBody note={`${fr.views.section(section.label)} · ${fr.views.sectionLook}`}>
+      {drawing ? <ViewDrawing drawing={drawing} /> : <p className="text-sm text-slate-500">{fr.views.sectionEmpty}</p>}
+    </ViewBody>
   )
 }
 
-/** Écran « Vues » : façades, coupes (puis planche) calculées à partir du plan, en lecture seule. */
+function SheetTab({ sections }: { sections: readonly SectionLineElement[] }) {
+  const model = useBuildingModel(undefined)
+  const levels = useEditorStore((state) => state.project?.document.levels)
+  const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
+  const sheet = useMemo(
+    () =>
+      buildSheet({
+        model,
+        levels: levels ?? [],
+        sections: sections.map((s) => ({ points: s.points, lookLeft: s.lookLeft, label: s.label })),
+        northAngle,
+        labels: { elevation: fr.views.elevation, section: fr.views.section },
+      }),
+    [model, levels, sections, northAngle],
+  )
+  return (
+    <ViewBody note={fr.views.sheetNote}>
+      {sheet.drawing.width > 0 ? (
+        <ViewDrawing drawing={sheet.drawing} />
+      ) : (
+        <p className="text-sm text-slate-500">{fr.views.empty}</p>
+      )}
+    </ViewBody>
+  )
+}
+
+/** Écran « Vues » : façades, coupes et planche calculées à partir du plan, en lecture seule. */
 function ScreenBody() {
   const tab = useViewsStore((state) => state.tab)
   const setTab = useViewsStore((state) => state.setTab)
@@ -105,17 +122,14 @@ function ScreenBody() {
       label: fr.views.section(section.label),
       value: { kind: 'section', sectionId: section.id } as ViewsTab,
     })),
+    { key: 'sheet', label: fr.views.sheet, value: { kind: 'sheet' } as ViewsTab },
   ]
 
   return (
-    <div
-      role="dialog"
-      aria-label={fr.views.title}
-      className="fixed inset-0 z-50 flex flex-col bg-slate-50"
-    >
+    <div role="dialog" aria-label={fr.views.title} className="fixed inset-0 z-50 flex flex-col bg-slate-50">
       <header className="flex h-12 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3">
         <h2 className="font-semibold text-slate-900">{fr.views.title}</h2>
-        <div role="tablist" aria-label={fr.views.tabs} className="flex items-center gap-1">
+        <div role="tablist" aria-label={fr.views.tabs} className="flex items-center gap-1 overflow-x-auto">
           {tabs.map((item) => {
             const active = isSameTab(tab, item.value)
             return (
@@ -126,7 +140,7 @@ function ScreenBody() {
                 aria-selected={active}
                 onClick={() => setTab(item.value)}
                 className={clsx(
-                  'rounded-md px-3 py-1.5 text-sm',
+                  'shrink-0 rounded-md px-3 py-1.5 text-sm',
                   active ? 'bg-indigo-50 font-medium text-indigo-700' : 'text-slate-700 hover:bg-slate-100',
                 )}
               >
@@ -135,7 +149,7 @@ function ScreenBody() {
             )
           })}
         </div>
-        <span className="ml-auto hidden text-xs text-slate-500 md:inline">{fr.views.readOnly}</span>
+        <span className="ml-auto hidden text-xs text-slate-500 lg:inline">{fr.views.readOnly}</span>
         <button
           type="button"
           onClick={closeViews}
@@ -149,9 +163,8 @@ function ScreenBody() {
       <main className="flex min-h-0 flex-1 flex-col">
         {tab.kind === 'elevation' && <ElevationTab cardinal={tab.cardinal} />}
         {tab.kind === 'section' && <SectionTab sectionId={tab.sectionId} />}
-        {sections.length === 0 && (
-          <p className="px-4 pb-3 text-xs text-slate-500">{fr.views.noSections}</p>
-        )}
+        {tab.kind === 'sheet' && <SheetTab sections={sections} />}
+        {sections.length === 0 && <p className="px-4 pb-3 text-xs text-slate-500">{fr.views.noSections}</p>}
       </main>
     </div>
   )

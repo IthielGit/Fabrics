@@ -40,6 +40,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — M10 · Tâche 5 · Planche
+- Fait : format de **dessin commun** (`Drawing` : polygones, lignes, textes, en mm réels) que l'écran et le PDF de la tâche 6 dessineront tous les deux ; les façades et coupes passent maintenant par lui (même rendu qu'avant). **Onglet « Planche »** (dernier onglet de l'écran Vues) : plans de chaque niveau (sols en gris clair, murs en gris foncé, vus de dessus), les quatre façades et les coupes, **côte à côte à la même échelle**, rangés en lignes dans cet ordre, chacun sous son titre (nom du niveau, « Façade Nord », « Coupe A–A »). Les textes ont une hauteur commune ; un niveau ou une vue vide n'a pas de case. Planche vide : message.
+- Limite : le plan d'un niveau montre les murs pleins (pas de symboles de portes ni de fenêtres) ; les symboles viendront avec les hachures et textures si tu le veux.
+- Fichiers : `src/features/building/views/{drawing,sheet,section}.ts`, `sheet.test.ts`, `src/components/views/{ViewsScreen,ViewDrawing}.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2121, dont 10 nouveaux) — rangement et lisibilité à contrôler dans le navigateur
+- Commit : feat: M10 tâche 5, planche
+
 ### 2026-11-11 — M10 · Tâche 4 · Calcul et affichage de la coupe
 - Fait : **calcul pur** `buildSection` : tout solide (morceau de mur, marche, cheminée, dalle, plateforme) est un contour extrudé ; le plan de coupe le traverse sur des segments (règle pair-impair, donc les trémies sont des vides) qui deviennent des faces **coupées** (noires, au premier plan) ; ses côtés restent visibles **derrière** la ligne, dans le sens du regard, en blanc à contour noir ; tout est limité à la **longueur** de la ligne. Une fenêtre coupée montre l'allège et le linteau en noir et le vide entre les deux. **Écran Vues** : un onglet « Coupe A–A » par ligne de coupe du plan (dans l'ordre des repères), à jour en direct : déplacer ou inverser la ligne met la coupe à jour ; une ligne supprimée affiche un message ; une ligne qui ne rencontre rien aussi. Même dessin et mêmes cotes de niveaux que les façades.
 - Limites : les côtés intérieurs d'une trémie derrière la coupe ne sont pas dessinés ; hachures et textures plus tard (jalon ultérieur).

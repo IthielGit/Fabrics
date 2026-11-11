@@ -517,6 +517,8 @@ export const fr = {
       S: 'Façade Sud',
       O: 'Façade Ouest',
     },
+    sheet: 'Planche',
+    sheetNote: 'Plans des niveaux, façades et coupes côte à côte, à la même échelle.',
     section: (label: string) => `Coupe ${label}–${label}`,
     sectionMissing: 'Cette ligne de coupe n’existe plus. Choisissez une autre vue.',
     sectionEmpty: 'Rien à montrer le long de cette ligne de coupe : déplacez-la sur le bâtiment.',
