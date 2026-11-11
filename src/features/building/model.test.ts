@@ -165,6 +165,7 @@ describe('buildBuildingModel', () => {
       slabs: [],
       fills: [],
       marks: [],
+      roofs: [],
       bounds: null,
     })
   })

@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot B, tâche 2 (outil Toiture et symbole 2D)
-- **Prochaine tâche :** M10 bis, Lot B, tâche 3 (toiture en 3D), puis façades et coupes, métrés ; puis **M10 ter**, puis M11
+- **Dernière tâche terminée :** M10 bis, Lot B, tâche 3 (toiture en 3D)
+- **Prochaine tâche :** M10 bis, Lot B, tâche 4 (toiture dans les façades et les coupes), puis tâche 5 (métrés) ; puis **M10 ter**, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M10 bis · Lot B · Tâche 3 · Toiture en 3D
+- Fait : le modèle 3D gagne `roofs` : un **prisme par versant** (dessus du versant, épaisseur de dalle du niveau vers le bas, D42) et **par pignon** (triangle au nu extérieur, poussé vers l'intérieur de l'épaisseur du mur dessous, ou de l'épaisseur par défaut du plan sans mur, D43) ; un toit à un pan a aussi son mur haut rehaussé. Les pignons montent jusqu'au **dessous** du versant (sinon leur haut affleurait le dessus du toit et dessinait des traits blancs). Un **toit plat dessiné** est une dalle dessus au haut des murs, débord compris (D44). Une toiture **remplace le toit plat automatique** des pièces de son niveau dont le centre est sous son contour ; aucune toiture en vue « étage ouvert » sous le dernier niveau ; une toiture masquée ou non valable ne donne rien (D45). L'emprise du modèle monte jusqu'au faîtage (cadrage de la caméra). **Vue 3D** : versants gris chaud, pignons dans l'enduit des murs, ombres ; un clic sélectionne la toiture. Le modèle reçoit les réglages du plan (épaisseur par défaut des pignons).
+- Vérifié dans un navigateur sans fenêtre : deux pans avec pignons, croupe, un pan et toit plat en L.
+- Limite (jusqu'à la tâche 4) : les façades et coupes ne dessinent pas encore les toitures ; comme le toit plat automatique est retiré sous une toiture, une façade y montre les murs sans toit.
+- Fichiers : `src/features/building/roofModel(.test).ts` (nouveaux), `src/features/building/{model,types}.ts`, `src/components/viewer3d/{Viewer3DScene.tsx,useBuildingModel.ts}`, tests `model.test.ts`, `views/elevation.test.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2315, dont 16 nouveaux)
+- Commit : feat: M10 bis lot B tâche 3, toiture en 3D
 
 ### 2026-11-11 — M10 bis · Lot B · Tâche 2 · Outil Toiture et symbole 2D
 - Fait : **outil Toiture** (bouton maison, famille Construction, sans raccourci). Barre d'options : Plat, Un pan, Deux pans (par défaut), Croupe ; pour un toit plat, tracé Rectangle ou Polygone ; un toit en pente se trace toujours en rectangle (deux clics). L'outil attrape d'abord les **faces extérieures** des murs (D40). Pendant le tracé : rectangle, cotes, surface, et en plus le débord en pointillé, le faîtage et les arêtiers avec les valeurs par défaut. **Dessin sur le plan** : contour au nu extérieur, débord en pointillé, faîtage et arêtiers en trait fort, une flèche par versant vers le bas avec la pente (« 35° ») ; contour rouge si la toiture n'est pas valable. Pas de remplissage : on la sélectionne par ses traits, et le plan reste lisible et cliquable dessous. **Propriétés** : nom, forme, pente (1° à 75°, au dixième), débord (mm), « Pivoter le faîtage » (deux pans) ou « Changer le côté haut » (un pan), et les mesures : hauteur et altitude du faîtage (ou du point haut), surface réelle, surface au sol avec débord, faîtage, égouts, arêtiers, pignons. Un message rouge explique un toit en pente sur un contour non rectangulaire ou une pente hors limites. Changer de forme : un débord encore à sa valeur par défaut prend celle de la nouvelle forme (500 / 0 mm). **Édition** : déplacement par les points (D6), `Maj + R`, Étirer une zone et Redimensionner l'ensemble ; un toit en pente reste un rectangle quand on glisse un coin (le coin opposé ne bouge pas, pas d'ajout ni de retrait de sommet) ; un toit plat a des sommets libres. Icône dans le panneau Calques, emprise d'export avec le débord.

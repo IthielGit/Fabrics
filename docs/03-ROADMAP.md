@@ -373,7 +373,7 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
 - [x] Outil Toiture : tracé rectangle (et polygone pour le toit plat), symbole 2D (contour du
       débord en pointillé, faîtage, arêtiers, sens de la pente) ; Propriétés : forme, pente,
       débord, bouton « Pivoter le faîtage », hauteur du faîtage affichée en mm
-- [ ] Toiture en 3D (versants, débords ; pignons fermés jusqu'au versant)
+- [x] Toiture en 3D (versants, débords ; pignons fermés jusqu'au versant)
 - [ ] Toiture dans les façades (versants inclinés, pignons en triangle) et dans les coupes
       (profil coupé en noir, altitude du faîtage cotée)
 - [ ] Métrés : surface réelle (m²), longueur de faîtage et d'égout (mm), nombre de pignons ;

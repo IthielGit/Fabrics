@@ -10,15 +10,21 @@ import { useEditorStore } from '../../stores/editorStore'
 export function useBuildingModel(upToLevelId: string | undefined): BuildingModel {
   const elements = useEditorStore((state) => state.project?.document.elements)
   const levels = useEditorStore((state) => state.project?.document.levels)
-  const [snapshot, setSnapshot] = useState({ elements, levels })
+  // Réglages du plan : épaisseur des murs par défaut (pignons sans mur dessous, D43).
+  const plan = useEditorStore((state) => state.project?.document.plan)
+  const [snapshot, setSnapshot] = useState({ elements, levels, plan })
 
   useEffect(() => {
-    const frame = requestAnimationFrame(() => setSnapshot({ elements, levels }))
+    const frame = requestAnimationFrame(() => setSnapshot({ elements, levels, plan }))
     return () => cancelAnimationFrame(frame)
-  }, [elements, levels])
+  }, [elements, levels, plan])
 
   return useMemo(
-    () => buildBuildingModel({ elements: snapshot.elements ?? [], levels: snapshot.levels }, { upToLevelId }),
+    () =>
+      buildBuildingModel(
+        { elements: snapshot.elements ?? [], levels: snapshot.levels, plan: snapshot.plan },
+        { upToLevelId },
+      ),
     [snapshot, upToLevelId],
   )
 }

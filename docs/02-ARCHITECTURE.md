@@ -630,6 +630,10 @@ Le document est d'abord traduit en un modèle neutre, **sans Three.js**, testabl
   (`src/features/building/openingFills.ts`) : les mêmes boîtes servent à la 3D, aux façades et aux
   coupes ; des traits sans volume (`marks` : triangle d'ouverture vers les gonds, flèche d'un
   coulissant, marque de l'oscillo-battant) ne sont dessinés qu'en façade ;
+- chaque toiture dessinée → `roofs` (`src/features/building/roofModel.ts`) : un prisme par versant
+  (dessus du versant poussé vers le bas de `slabThickness`) et par pignon (triangle au nu extérieur,
+  poussé vers l'intérieur de l'épaisseur du mur dessous, jusqu'au dessous du versant) ; un toit plat
+  dessiné est une dalle `roof`. Elle retire le toit plat automatique des pièces qu'elle couvre ;
 - chaque pièce → dalle (polygone extrudé de `slabThickness`) à l'altitude de son niveau ;
 - dernier niveau → toit plat sur l'emprise des pièces ;
 - coordonnées en mm, plan (x, y) → 3D (x, z), hauteur → y.

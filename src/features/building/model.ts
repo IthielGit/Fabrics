@@ -4,9 +4,11 @@ import type {
   Level,
   OpeningElement,
   PlatformElement,
+  RoofElement,
   RoomElement,
   WallElement,
 } from '../../types/document'
+import { buildRoofParts } from './roofModel'
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import type {
@@ -15,6 +17,7 @@ import type {
   Bounds3,
   OpeningFill,
   OpeningMark,
+  RoofPrism,
   SlabShape,
   WallMesh,
   WallPiece,
@@ -115,6 +118,25 @@ function extendPlanBounds(points: readonly Point[], y0: number, y1: number, into
 }
 
 /** Emprise d'un ensemble de morceaux de mur et de dalles. */
+/** Agrandit l'emprise des sommets des toitures en pente (faîtage compris). */
+function extendWithPrisms(bounds: Bounds3 | null, prisms: readonly RoofPrism[]): Bounds3 | null {
+  let result = bounds
+  for (const prism of prisms) {
+    for (const p of prism.polygon) {
+      const back = { x: p.x + prism.extrude.x, y: p.y + prism.extrude.y, z: p.z + prism.extrude.z }
+      for (const q of [p, back]) {
+        result = result
+          ? {
+              min: { x: Math.min(result.min.x, q.x), y: Math.min(result.min.y, q.y), z: Math.min(result.min.z, q.z) },
+              max: { x: Math.max(result.max.x, q.x), y: Math.max(result.max.y, q.y), z: Math.max(result.max.z, q.z) },
+            }
+          : { min: { ...q }, max: { ...q } }
+      }
+    }
+  }
+  return result
+}
+
 export function modelBounds(walls: readonly WallPiece[], slabs: readonly SlabShape[]): Bounds3 | null {
   let bounds: Bounds3 | null = null
   for (const w of walls) {
@@ -140,16 +162,29 @@ export function modelBounds(walls: readonly WallPiece[], slabs: readonly SlabSha
 /**
  * Traduit le document en modèle 3D : murs découpés par leurs ouvertures (avec cadres, vitres et
  * portes), dalle sous chaque pièce, toit plat sur chaque pièce sans pièce d'un niveau supérieur
- * au-dessus d'elle (un rez plus large que l'étage reçoit aussi son toit). Un document sans niveaux (Visuel) donne un modèle vide.
+ * au-dessus d'elle (un rez plus large que l'étage reçoit aussi son toit), toitures dessinées
+ * (versants, pignons, toit plat ; elles remplacent le toit plat automatique des pièces qu'elles
+ * couvrent, D45). Toits et toitures seulement quand le dernier niveau est affiché. Un document sans
+ * niveaux (Visuel) donne un modèle vide.
  */
 export function buildBuildingModel(
-  doc: Pick<FabricsDocument, 'elements' | 'levels'>,
+  doc: Pick<FabricsDocument, 'elements' | 'levels'> & Partial<Pick<FabricsDocument, 'plan'>>,
   options: BuildOptions = {},
 ): BuildingModel {
   const allLevels = doc.levels ?? []
   const levels = visibleLevels(allLevels, options.upToLevelId)
   if (levels.length === 0) {
-    return { walls: [], wallMeshes: [], steps: [], chimneys: [], slabs: [], fills: [], marks: [], bounds: null }
+    return {
+      walls: [],
+      wallMeshes: [],
+      steps: [],
+      chimneys: [],
+      slabs: [],
+      fills: [],
+      marks: [],
+      roofs: [],
+      bounds: null,
+    }
   }
 
   const sortedAll = [...allLevels].sort((a, b) => a.elevation - b.elevation)
@@ -180,7 +215,23 @@ export function buildBuildingModel(
   const slabs: SlabShape[] = []
   const fills: OpeningFill[] = []
   const marks: OpeningMark[] = []
+  const roofs: RoofPrism[] = []
   const rooms = doc.elements.filter((el): el is RoomElement => el.type === 'room' && !el.hidden)
+  // Toitures dessinées (visibles) et murs de chaque niveau, pour l'épaisseur des pignons.
+  const roofElements = doc.elements.filter((el): el is RoofElement => el.type === 'roof' && !el.hidden)
+  const wallsOfLevel = (levelId: string) =>
+    doc.elements.filter(
+      (el): el is WallElement =>
+        el.type === 'wall' && !el.hidden && (el.levelId ?? firstLevel.id) === levelId,
+    )
+  // Une pièce sous une toiture dessinée de son niveau n'a pas de toit plat automatique (D45).
+  const coveredByRoof = (room: RoomElement, level: Level): boolean => {
+    const center = boxCenter(toPoints(room.points))
+    return roofElements.some(
+      (roof) =>
+        (roof.levelId ?? firstLevel.id) === level.id && pointInPolygon(center, toPoints(roof.points)),
+    )
+  }
   // Une pièce est couverte si le centre de son contour tombe dans une pièce d'un niveau supérieur.
   const coveredByUpperRoom = (room: RoomElement, level: Level): boolean => {
     const rank = levelRank.get(level.id) ?? 0
@@ -218,10 +269,14 @@ export function buildBuildingModel(
         stairVoids.filter((v) => v.levelId === level.id),
       )
       if (slab) slabs.push(level.id === firstLevel.id ? { ...slab, onGround: true } : slab)
-      if (showRoof && !coveredByUpperRoom(el, level)) {
+      if (showRoof && !coveredByUpperRoom(el, level) && !coveredByRoof(el, level)) {
         const roof = buildRoomRoof(el, level)
         if (roof) slabs.push(roof)
       }
+    } else if (el.type === 'roof' && showRoof) {
+      const parts = buildRoofParts(el, level, wallsOfLevel(level.id), doc.plan?.defaultWallThickness ?? 200)
+      roofs.push(...parts.prisms)
+      slabs.push(...parts.slabs)
     }
   }
   return {
@@ -232,6 +287,7 @@ export function buildBuildingModel(
     slabs,
     fills,
     marks,
-    bounds: modelBounds([...walls, ...steps, ...chimneys], slabs),
+    roofs,
+    bounds: extendWithPrisms(modelBounds([...walls, ...steps, ...chimneys], slabs), roofs),
   }
 }

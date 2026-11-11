@@ -47,6 +47,22 @@ export interface OpeningFill extends WallPiece {
 }
 
 /**
+ * Morceau de toiture en pente (M10 bis) : un polygone plan (dessus d'un versant, ou pignon vertical
+ * au nu extérieur du mur) poussé de `extrude` (vers le bas pour un versant, vers l'intérieur pour un
+ * pignon). Prisme droit ou oblique : même forme pour la 3D, les façades et les coupes.
+ */
+export interface RoofPrism {
+  /** Identifiant de la toiture du document. */
+  sourceId: string
+  levelId: string
+  kind: 'roof' | 'gable'
+  /** Contour du polygone (3D, au moins 3 points, dans un même plan). */
+  polygon: Vec3[]
+  /** Décalage de la face opposée (mm). */
+  extrude: Vec3
+}
+
+/**
  * Trait de façade d'une ouverture (triangle d'ouverture vers les gonds, flèche d'un coulissant,
  * marque de l'oscillo-battant). Il n'a pas de volume : la 3D ne le dessine pas, les façades oui.
  * Les points sont dans le plan de la baie (milieu de l'épaisseur du mur).
@@ -107,6 +123,8 @@ export interface BuildingModel {
   fills: OpeningFill[]
   /** Traits de façade des ouvertures (triangles d'ouverture, flèches) ; absents de la 3D. */
   marks: OpeningMark[]
+  /** Versants et pignons des toitures en pente (un toit plat dessiné est une dalle `roof`). */
+  roofs: RoofPrism[]
   /** Emprise de tout le modèle, ou `null` s'il est vide. */
   bounds: Bounds3 | null
 }

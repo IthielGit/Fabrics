@@ -2,7 +2,15 @@ import { OrbitControls } from '@react-three/drei'
 import { Canvas, useStore, useThree, type ThreeEvent } from '@react-three/fiber'
 import { memo, useEffect, useLayoutEffect, useMemo, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
-import type { Bounds3, BuildingModel, OpeningFill, SlabShape, WallMesh, WallPiece } from '../../features/building/types'
+import type {
+  Bounds3,
+  BuildingModel,
+  OpeningFill,
+  RoofPrism,
+  SlabShape,
+  WallMesh,
+  WallPiece,
+} from '../../features/building/types'
 import OrientationCube from './OrientationCube'
 
 /** Le modèle est en mm ; la scène est en mètres. */
@@ -22,7 +30,19 @@ const ROOF_MATERIAL = new THREE.MeshStandardMaterial({
   side: THREE.DoubleSide,
 })
 
-const PLATFORM_MATERIAL = new THREE.MeshStandardMaterial({ color: '#cdb594', roughness: 0.85 })
+// Toitures dessinées : versants gris chaud (couverture neutre, en attendant les matériaux du lot C),
+// pignons dans l'enduit des murs. Deux faces : le sens des triangles n'a pas d'importance.
+const PITCHED_ROOF_MATERIAL = new THREE.MeshStandardMaterial({
+  color: '#7f746d',
+  roughness: 0.9,
+  side: THREE.DoubleSide,
+})
+const GABLE_MATERIAL = new THREE.MeshStandardMaterial({
+  color: '#f3f1ec',
+  roughness: 0.95,
+  side: THREE.DoubleSide,
+})
+const PLATFORM_MATERIAL =new THREE.MeshStandardMaterial({ color: '#cdb594', roughness: 0.85 })
 const STAIR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#c9b393', roughness: 0.85 })
 const CHIMNEY_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a39d97', roughness: 0.95 })
 const FRAME_MATERIAL = new THREE.MeshStandardMaterial({ color: '#3b4048', roughness: 0.6 })
@@ -169,6 +189,69 @@ const SlabMesh = memo(function SlabMesh({ slab }: { slab: SlabShape }) {
       receiveShadow
     />
   )
+})
+
+/**
+ * Géométrie d'un morceau de toiture : son polygone (dessus d'un versant ou face extérieure d'un
+ * pignon), la même face décalée de `extrude`, et les côtés qui les relient. Le polygone est plan :
+ * on le triangule dans son propre plan.
+ */
+function roofPrismGeometry(prism: RoofPrism): THREE.BufferGeometry {
+  const pts = prism.polygon.map((p) => new THREE.Vector3(p.x, p.y, p.z))
+  const shift = new THREE.Vector3(prism.extrude.x, prism.extrude.y, prism.extrude.z)
+  // Repère du plan du polygone (normale de Newell, puis deux axes dans le plan).
+  const normal = new THREE.Vector3()
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[i]
+    const b = pts[(i + 1) % pts.length]
+    normal.x += (a.y - b.y) * (a.z + b.z)
+    normal.y += (a.z - b.z) * (a.x + b.x)
+    normal.z += (a.x - b.x) * (a.y + b.y)
+  }
+  normal.normalize()
+  const u = pts[1].clone().sub(pts[0]).normalize()
+  const v = normal.clone().cross(u)
+  const flat = pts.map((p) => new THREE.Vector2(p.clone().sub(pts[0]).dot(u), p.clone().sub(pts[0]).dot(v)))
+  const triangles = THREE.ShapeUtils.triangulateShape(flat, [])
+
+  const positions: number[] = []
+  const push = (...vs: THREE.Vector3[]) => vs.forEach((p) => positions.push(p.x, p.y, p.z))
+  const back = pts.map((p) => p.clone().add(shift))
+  for (const [a, b, c] of triangles) {
+    push(pts[a], pts[b], pts[c])
+    push(back[a], back[c], back[b])
+  }
+  for (let i = 0; i < pts.length; i++) {
+    const j = (i + 1) % pts.length
+    push(pts[i], back[i], back[j], pts[i], back[j], pts[j])
+  }
+  const geometry = new THREE.BufferGeometry()
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+  geometry.computeVertexNormals()
+  return geometry
+}
+
+interface RoofPrismMeshProps {
+  prism: RoofPrism
+  selected: boolean
+  onSelectWall: (wallId: string, levelId: string) => void
+}
+
+/** Versant (matière du toit) ou pignon (matière des murs) d'une toiture ; un clic la sélectionne. */
+const RoofPrismMesh = memo(function RoofPrismMesh({ prism, selected, onSelectWall }: RoofPrismMeshProps) {
+  const geometry = useMemo(() => roofPrismGeometry(prism), [prism])
+  useEffect(() => () => geometry.dispose(), [geometry])
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    if (event.delta > CLICK_MAX_DRAG) return
+    event.stopPropagation()
+    onSelectWall(prism.sourceId, prism.levelId)
+  }
+  const material = selected
+    ? SELECTED_WALL_MATERIAL
+    : prism.kind === 'gable'
+      ? GABLE_MATERIAL
+      : PITCHED_ROOF_MATERIAL
+  return <mesh geometry={geometry} material={material} castShadow receiveShadow onClick={handleClick} />
 })
 
 interface OrbitLike {
@@ -365,6 +448,14 @@ export default function Viewer3DScene({
             piece={piece}
             material={CHIMNEY_MATERIAL}
             selected={selectedIds.has(piece.sourceId)}
+            onSelectWall={onSelectWall}
+          />
+        ))}
+        {model.roofs.map((prism, i) => (
+          <RoofPrismMesh
+            key={`roof-${prism.sourceId}-${i}`}
+            prism={prism}
+            selected={selectedIds.has(prism.sourceId)}
             onSelectWall={onSelectWall}
           />
         ))}
