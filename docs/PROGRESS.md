@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M10 — Façades, coupes et planche (M9 validé le 2026-11-11)
 - **Dernière tâche terminée :** tâche 6 de M10 (export PDF des vues) ; toutes les tâches de M10 sont codées
-- **Prochaine tâche :** essai de M10 par l'utilisateur dans le navigateur et retour de ses remarques, puis validation et M11
+- **Prochaine tâche :** essai de M10 par l'utilisateur dans le navigateur et retour de ses remarques, puis validation et **M10 bis** (ouvertures détaillées, toitures, hachures et textures ; plan écrit dans la roadmap le 2026-11-11), puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -25,6 +25,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M8 Vue 3D | terminé | 2026-11-11 |
 | M9 Outils de construction | terminé | 2026-11-11 |
 | M10 Façades, coupes et planche | tous les lots faits, en attente de validation | |
+| M10 bis Ouvertures détaillées, toitures, hachures et textures | à faire (plan écrit) | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
@@ -39,6 +40,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — Plan du jalon M10 bis
+- Fait : demande de l'utilisateur. Nouveau jalon **M10 bis** dans `docs/03-ROADMAP.md`, entre M10 et M11 (pas de renumérotation de M11 à M14). Lot A : styles de portes, fenêtres et baies (champ `style` facultatif, tailles rapides au lieu de styles en double). Lot B : toitures (plat, un pan, deux pans, croupe ; pavillon = croupe sur un carré) avec leurs calculs. Lot C : hachures et textures. Critères d'acceptation chiffrés. Les toitures avancées et la fenêtre ronde passent dans « Plus tard ». Décisions D32 à D34.
+- Fichiers : `docs/03-ROADMAP.md`, `docs/PROGRESS.md`
+- Vérification : documentation seulement (pas de code)
+- Commit : docs: plan du jalon M10 bis
 
 ### 2026-11-11 — Hors jalon · J · Mise en page professionnelle des PDF
 - Fait : demande de l'utilisateur (PDF « professionnels, design neutre », en s'aidant des skills `ui-ux-pro-max` et `impeccable`). Les recherches de `ui-ux-pro-max` proposaient une page web violette sans rapport : j'ai gardé seulement son principe « minimalisme / suisse » (neutre, fonctionnel, sans décor) et Helvetica, la police standard des PDF. **Cadre** fin autour de la feuille. **Cartouche** refait : à gauche la **flèche du nord** (plans et planche) et une **barre d'échelle graphique** à deux segments gradués en mm (1:50 : 2 × 1000 mm ; 1:100 : 2 × 2000 mm ; 1:20 : 2 × 500 mm), au milieu le **nom du projet** en gras et ce que montre la feuille (« Façade Nord », nom du niveau et surface des pièces pour un plan), à droite des cellules **Échelle / Date / Feuille** (intitulé en petites capitales grises, valeur dessous ; « Échelle indicative / env. 1:87 » quand le plan est ajusté à la page, car elle n'est pas garantie). **Palette neutre** : encre presque noire, gris sans teinte, plus aucun indigo. **Trois épaisseurs de trait** : sol en gras, contours normaux, cotes de niveaux en filet gris pointillé ; matière coupée en noir ; filet sous chaque titre de la planche. **Textes** : environ 7 pt sur le papier à toutes les échelles (le dessin est reconstruit à l'échelle choisie, donc les cotes de niveaux ne se chevauchent plus), titres de la planche en gras, propriétés du PDF (titre, sujet, créateur). L'écran Vues utilise la même palette et les mêmes épaisseurs.
@@ -622,11 +629,18 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D30 | Éléments sans niveau | Un élément sans `levelId` est commun à tous les niveaux (axes de M7) et n'entre dans les métrés d'aucun niveau. | Évite le double comptage ; totaux = somme des niveaux. |
 | D31 | Exports d'un plan | PNG, JPG et PDF portent sur le niveau affiché ; le CSV couvre tout le bâtiment. | La roadmap ne précise que le CSV ; une planche multi-niveaux arrive en M10. |
 
+### 2026-11-11 — Jalon M10 bis
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D32 | Numéro du jalon | « M10 bis » entre M10 et M11, sans renuméroter M11 à M14. | Choix de l'utilisateur ; les numéros M11 à M14 sont cités dans `CLAUDE.md` et les documents. |
+| D33 | Formes de toiture | Plat, un pan, deux pans, croupe (pavillon = croupe sur un carré). Toits en pente sur un rectangle seulement. Pente en degrés. | Choix laissé à Claude par l'utilisateur ; couvre les cas courants sans calcul de squelette de polygone. |
+| D34 | Styles d'ouvertures | Champ `style` facultatif, sans migration. Une variante qui ne change que la taille est une taille rapide (porte d'entrée, porte-fenêtre, vitrine, passe-plat), pas un style. Fenêtre ronde reportée. | Demande de l'utilisateur : éviter les doublons. La fenêtre ronde demande un trou rond en 3D et en coupe. |
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
-- Hachures et textures dans les façades et coupes : jalon à prévoir après M10 (demande de l'utilisateur le 2026-11-11 ; M10 = faces blanches, contour noir).
-- Toitures (versants, débords) en 3D, façades et coupes : jalon à prévoir après M10 (demande de l'utilisateur le 2026-11-11 ; M10 garde le toit plat).
+- ~~Hachures et textures dans les façades et coupes~~ et ~~toitures (versants, débords)~~ : planifiés dans le jalon M10 bis (2026-11-11).
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
 - Glisser un seul mur à la poignée (option A) : poignée au milieu d'un segment droit, le mur se déplace perpendiculairement, les voisins s'allongent et la pièce suit ; réutilise `stretchZone` (demande de l'utilisateur le 2026-11-11, après l'option C).
 - Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).

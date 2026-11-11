@@ -317,6 +317,88 @@ Objectif : obtenir sans dessiner les façades et les coupes, et les présenter e
 - Déplacer la ligne de coupe met la coupe à jour
 - Imprimée à 100 %, une hauteur d'étage de 2,50 m mesure 5,0 cm sur une façade à 1:50
 
+## M10 bis — Ouvertures détaillées, toitures, hachures et textures
+
+Objectif : des plans, façades et coupes qui ressemblent à de vrais dessins d'architecte.
+Ajouté le 2026-11-11 à la demande de l'utilisateur ; commence après la validation de M10.
+Unités : mm, m², m³ ; la pente d'un toit se saisit en degrés (comme la rotation et le nord).
+
+### Lot A — Styles de portes, fenêtres et baies
+
+Un champ `style` facultatif sur `opening` choisit le dessin. Le trou dans le mur, la 3D et les
+métrés ne changent pas. Sans `style`, l'ouverture garde son dessin actuel : pas de migration.
+Pas de doublon : une variante qui ne change que la taille est une **taille rapide**, pas un style.
+
+| Type | Styles (taille par défaut en mm) | Tailles rapides |
+|---|---|---|
+| Porte | battant (existe, 900 × 2100) · double battant (1400 × 2100) · coulissante en applique (900 × 2100) · coulissante à galandage (900 × 2100) · pliante (900 × 2100) · va-et-vient (900 × 2100) · garage sectionnelle (2400 × 2000) · garage basculante (2400 × 2000) | porte d'entrée 1000 × 2150 (battant) |
+| Fenêtre | deux vantaux (existe, 1200 × 1000, allège 900) · un vantail (700 × 1200, allège 900) · fixe (1200 × 1000, allège 900) · coulissante (1500 × 1200, allège 900) · à soufflet (600 × 400, allège 1600) | porte-fenêtre : allège 0, hauteur 2150 (un ou deux vantaux) |
+| Baie | coulissante (existe, 2400 × 2150) · fixe (2400 × 2150) · ouverture libre (1000 × 2100) | vitrine 3000 × 2200 (fixe) ; passe-plat 600 × 600, allège 1000 (ouverture libre) |
+
+« Oscillo-battant » est une option des fenêtres à vantaux (marque en façade seulement). La
+fenêtre fixe et la baie fixe partagent le même dessin.
+
+- [ ] Catalogue des styles (fonctions pures) : styles permis par type, tailles par défaut,
+      tailles rapides ; changer de style suit la règle de M8 (une taille encore par défaut prend
+      celle du nouveau style, une taille modifiée à la main est gardée) ; la galandage exige une
+      longueur de mur libre égale à sa largeur à côté de l'ouverture (sinon : message, refus)
+- [ ] Symboles 2D originaux de chaque style ; choix du style dans la barre contextuelle des outils
+      Porte et Fenêtre et dans Propriétés (avec les tailles rapides et l'option oscillo-battant)
+- [ ] Menuiseries dessinées en façade (vantaux, triangle d'ouverture vers les gonds, flèche du
+      coulissant, panneaux du garage) ; colonne « Style » dans le tableau des ouvertures du CSV
+
+### Lot B — Toitures
+
+Type `roof` : contour, forme, pente α (degrés), débord d (mm), sens du faîtage. Posé sur un
+niveau, sa base est le dessus des murs de ce niveau (altitude + hauteur d'étage). Le toit plat
+automatique actuel n'est plus dessiné sous l'emprise d'un toit. Formes :
+
+| Forme | Contour | Hauteur du faîtage h (L = portée, perpendiculaire au faîtage) |
+|---|---|---|
+| Plat | polygone ou rectangle | 0 |
+| Un pan | rectangle | h = L × tan α |
+| Deux pans | rectangle | h = (L ÷ 2) × tan α ; faîtage parallèle au grand côté par défaut |
+| Quatre pans (croupe) | rectangle | h = (L ÷ 2) × tan α ; longueur du faîtage = Lg − L ; sur un carré, le faîtage devient un point (pavillon) |
+
+Le débord agrandit l'emprise de d sur chaque côté ; le versant garde sa pente, donc l'égout
+descend de d × tan α sous le dessus du mur. Toutes les formes à versants : **surface réelle =
+surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un rectangle (orientable,
+`Maj + R`) ; un bâtiment en L reçoit deux toits (les noues viendront plus tard).
+
+- [ ] Calcul pur (`src/features/building/roof.ts`) : versants, faîtage, égouts, pignons, surfaces,
+      avec tests
+- [ ] Outil Toiture : tracé rectangle (et polygone pour le toit plat), symbole 2D (contour du
+      débord en pointillé, faîtage, arêtiers, sens de la pente) ; Propriétés : forme, pente,
+      débord, bouton « Pivoter le faîtage », hauteur du faîtage affichée en mm
+- [ ] Toiture en 3D (versants, débords ; pignons fermés jusqu'au versant)
+- [ ] Toiture dans les façades (versants inclinés, pignons en triangle) et dans les coupes
+      (profil coupé en noir, altitude du faîtage cotée)
+- [ ] Métrés : surface réelle (m²), longueur de faîtage et d'égout (mm), nombre de pignons ;
+      tableau « Toitures » dans le panneau et le CSV. Aucun prix.
+
+### Lot C — Hachures et textures
+
+- [ ] Matériau par mur (béton, maçonnerie, brique, bois, isolant, plaque de plâtre) et
+      couverture par toit (tuiles, ardoises, zinc, bac acier, toiture plate) ; sans matériau,
+      rendu actuel (blanc, ou noir en coupe)
+- [ ] Hachures des matières coupées dans les coupes, selon le matériau
+- [ ] Textures des façades (brique, enduit, bardage bois, couverture des versants), motifs
+      originaux dessinés pour Fabrics
+- [ ] Mêmes motifs, en vectoriel, dans le PDF des vues et de la planche
+
+**Critères d'acceptation**
+- Chaque style a un symbole 2D distinct ; un projet d'avant M10 bis s'ouvre sans changement
+- Une galandage sans place à côté dans le mur est refusée avec un message
+- Une fenêtre à deux vantaux montre ses deux vantaux en façade, à la bonne hauteur d'allège
+- Deux pans sur 8000 × 6000 mm, pente 35°, débord 500 mm : faîtage à + 2101 mm au-dessus des
+  murs, surface réelle 76,91 m², faîtage 9000 mm, égouts 2 × 9000 mm, 2 pignons
+- La même toiture en croupe : 76,91 m², faîtage 2000 mm, égout 32000 mm, aucun pignon ;
+  sur 6000 × 6000 mm, faîtage de 0 mm (pavillon)
+- Un pan de 6000 mm de portée à 35° : point haut à + 4201 mm
+- La façade pignon montre un triangle ; la coupe perpendiculaire au faîtage montre le profil
+  du toit en noir ; changer la pente met à jour la 3D, les façades et les coupes en direct
+- Changer le matériau d'un mur change sa hachure en coupe ; le PDF montre les mêmes motifs
+
 ## M11 — Import et export
 
 - [ ] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
@@ -395,7 +477,7 @@ Objectif : retrouver ses projets sur un autre appareil.
 - Espaces de travail, membres et rôles (propriétaire, admin, éditeur, commentateur, lecteur)
 - Traductions anglais et malgache, mode sombre, accessibilité avancée
 - Abonnements et paiements, statistiques d'usage, conformité RGPD complète
-- Toits en pente, export DWG
-- **Après M10 (décidé avec l'utilisateur le 2026-11-11)** : hachures et textures dans les
-  façades et coupes (M10 livre des faces blanches à contour noir) ; **toitures** (versants,
-  débords) dans le modèle 3D, les façades et les coupes (M10 garde le toit plat)
+- Export DWG
+- Toitures avancées, après M10 bis : demi-croupe, mansarde, sheds, toit courbe, noues (toits
+  en L ou en T d'un seul tenant), lucarnes, fenêtres de toit
+- Fenêtre ronde (œil-de-bœuf) : demande un trou rond dans le mur en 3D et en coupe
