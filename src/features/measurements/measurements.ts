@@ -1,5 +1,6 @@
 import type {
   CanvasElement,
+  ChimneyElement,
   FabricsDocument,
   Level,
   OpeningElement,
@@ -8,6 +9,7 @@ import type {
 } from '../../types/document'
 import { elementsOfLevel } from '../documents/levels'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
+import { wallFaces } from '../geometry/walls'
 import { stairStatus } from '../stairs/stairs'
 import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
 
@@ -74,6 +76,25 @@ export interface WallMeasure {
   openingsArea: number
   /** Surface nette : surface brute moins les ouvertures, en mm² (jamais négative). */
   netArea: number
+  /** Longueur des deux faces, mesurées sur les faces (onglets compris), en mm. */
+  facesLength: number
+  /** Surface brute des deux faces : longueur des faces × hauteur, en mm². */
+  facesArea: number
+  /** Surface nette des deux faces : brute moins les ouvertures, comptées sur chaque face, en mm². */
+  facesNetArea: number
+  /** Volume du mur sur l'axe, ouvertures déduites : longueur × épaisseur × hauteur, en mm³. */
+  volume: number
+}
+
+export interface ChimneyMeasure {
+  id: string
+  name: string
+  width: number // mm
+  depth: number // mm
+  /** Emprise : largeur × profondeur, en mm². */
+  area: number
+  /** Dépassement au-dessus du dernier niveau, en mm. */
+  heightAboveTop: number
 }
 
 export interface OpeningMeasure {
@@ -94,6 +115,7 @@ export interface Measurements {
   walls: WallMeasure[]
   platforms: PlatformMeasure[]
   stairs: StairMeasure[]
+  chimneys: ChimneyMeasure[]
   /** Ouvertures posées sur un mur existant, dans l'ordre du document. */
   openings: OpeningMeasure[]
   totals: {
@@ -110,9 +132,33 @@ export interface Measurements {
     openingsArea: number // mm²
     /** Surface murale nette : brute moins les ouvertures. */
     wallNetArea: number // mm²
+    /** Murs sur les deux faces : surface brute et nette (mm²), volume (mm³). */
+    wallFacesArea: number
+    wallFacesNetArea: number
+    wallVolume: number
+    chimneys: number
     doors: number
     windows: number
     bays: number
+  }
+}
+
+function pathLength(points: readonly { x: number; y: number }[]): number {
+  let total = 0
+  for (let i = 1; i < points.length; i++) {
+    total += Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y)
+  }
+  return total
+}
+
+function chimneyMeasure(chimney: ChimneyElement): ChimneyMeasure {
+  return {
+    id: chimney.id,
+    name: chimney.name,
+    width: chimney.width,
+    depth: chimney.depth,
+    area: chimney.width * chimney.depth,
+    heightAboveTop: chimney.heightAboveTop,
   }
 }
 
@@ -147,6 +193,7 @@ export function computeMeasurements(
   const walls: WallMeasure[] = []
   const platforms: PlatformMeasure[] = []
   const stairs: StairMeasure[] = []
+  const chimneys: ChimneyMeasure[] = []
   const openings: OpeningMeasure[] = []
 
   // Les ouvertures d'abord : un mur a besoin de la surface des siennes.
@@ -202,10 +249,15 @@ export function computeMeasurements(
         thickness: element.thickness,
         volume: area * element.thickness,
       })
+    } else if (element.type === 'chimney') {
+      chimneys.push(chimneyMeasure(element))
     } else if (element.type === 'wall') {
       const length = polylineLength(element.points)
       const wallArea = length * element.height
       const deducted = openingsArea.get(element.id) ?? 0
+      const faces = wallFaces(element.points, element.thickness)
+      const facesLength = pathLength(faces.left) + pathLength(faces.right)
+      const facesArea = facesLength * element.height
       walls.push({
         id: element.id,
         name: element.name,
@@ -215,6 +267,11 @@ export function computeMeasurements(
         wallArea,
         openingsArea: deducted,
         netArea: Math.max(0, wallArea - deducted),
+        facesLength,
+        facesArea,
+        // Une ouverture traverse le mur : elle est déduite sur chacune des deux faces.
+        facesNetArea: Math.max(0, facesArea - 2 * deducted),
+        volume: Math.max(0, length * element.thickness * element.height - deducted * element.thickness),
       })
     }
   }
@@ -226,6 +283,7 @@ export function computeMeasurements(
     walls,
     platforms,
     stairs,
+    chimneys,
     openings,
     totals: {
       roomArea: rooms.reduce((sum, room) => sum + room.area, 0),
@@ -237,6 +295,10 @@ export function computeMeasurements(
       wallArea: walls.reduce((sum, wall) => sum + wall.wallArea, 0),
       openingsArea: walls.reduce((sum, wall) => sum + wall.openingsArea, 0),
       wallNetArea: walls.reduce((sum, wall) => sum + wall.netArea, 0),
+      wallFacesArea: walls.reduce((sum, wall) => sum + wall.facesArea, 0),
+      wallFacesNetArea: walls.reduce((sum, wall) => sum + wall.facesNetArea, 0),
+      wallVolume: walls.reduce((sum, wall) => sum + wall.volume, 0),
+      chimneys: chimneys.length,
       doors: count('door'),
       windows: count('window'),
       bays: count('bay'),
@@ -264,6 +326,7 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
     walls: list.flatMap((m) => m.walls),
     platforms: list.flatMap((m) => m.platforms),
     stairs: list.flatMap((m) => m.stairs),
+    chimneys: list.flatMap((m) => m.chimneys),
     openings: list.flatMap((m) => m.openings),
     totals: {
       roomArea: sum((m) => m.totals.roomArea),
@@ -275,6 +338,10 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
       wallArea: sum((m) => m.totals.wallArea),
       openingsArea: sum((m) => m.totals.openingsArea),
       wallNetArea: sum((m) => m.totals.wallNetArea),
+      wallFacesArea: sum((m) => m.totals.wallFacesArea),
+      wallFacesNetArea: sum((m) => m.totals.wallFacesNetArea),
+      wallVolume: sum((m) => m.totals.wallVolume),
+      chimneys: sum((m) => m.totals.chimneys),
       doors: sum((m) => m.totals.doors),
       windows: sum((m) => m.totals.windows),
       bays: sum((m) => m.totals.bays),

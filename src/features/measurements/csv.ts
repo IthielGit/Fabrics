@@ -1,12 +1,18 @@
 import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
-import type { BuildingMeasurements, Measurements } from './measurements'
+import type { BuildingMeasurements } from './measurements'
+import { buildMetresTables, mm, wallRefs } from './tables'
 
 /** Intitulés du fichier (français, fournis par `src/i18n/fr.ts`). */
 export interface CsvLabels {
   level: string
   /** Libellé de la ligne qui totalise tous les niveaux. */
   building: string
+  /** Libellé des lignes de total d'un tableau. */
+  total: string
+  /** Colonne « Réf. » d'un mur (M1, M2…) et « Réf. du mur » d'une ouverture. */
+  ref: string
+  wallRef: string
   elevation: string
   levelHeight: string
   levelTotals: string
@@ -16,6 +22,8 @@ export interface CsvLabels {
   walls: string
   name: string
   area: string
+  /** Surface d'une pièce au tracé (avant déduction des trémies). */
+  roomTraceArea: string
   perimeter: string
   /** Colonnes « Trémie » et « Surface nette » du tableau des pièces. */
   voidArea: string
@@ -23,10 +31,17 @@ export interface CsvLabels {
   length: string
   thickness: string
   height: string
-  /** Surface murale brute. */
+  /** Surface murale brute d'une face, sur l'axe. */
   wallArea: string
   openingsArea: string
   wallNetArea: string
+  /** Murs sur les deux faces : longueur des faces, surfaces brute et nette, volume. */
+  facesLength: string
+  facesArea: string
+  facesNetArea: string
+  wallVolume: string
+  /** Explication des colonnes du tableau des murs. */
+  wallsNote: string
   openings: string
   kind: string
   wall: string
@@ -60,6 +75,26 @@ export interface CsvLabels {
     totalArea: string
     totalVolume: string
   }
+  /** Intitulés du tableau des cheminées (absent : pas de tableau). */
+  chimneys?: {
+    title: string
+    depth: string
+    overhang: string
+  }
+  /** En-tête du fichier : projet, date, unités (absent : pas d'en-tête). */
+  meta?: {
+    title: string
+    project: string
+    date: string
+    app: string
+    appName: string
+    units: string
+    unitsValue: string
+    note: string
+    noteValue: string
+  }
+  /** Intitulés du fichier « données à plat » (absent : pas de second format). */
+  flat?: FlatLabels
   /** Intitulés du tableau du mobilier (absent : pas de tableau). */
   furniture?: {
     title: string
@@ -69,6 +104,51 @@ export interface CsvLabels {
     depth: string
     count: string
   }
+}
+
+/** Intitulés du fichier « données à plat » (une ligne par grandeur, pour les tableaux croisés). */
+export interface FlatLabels {
+  columns: Record<'level' | 'category' | 'element' | 'ref' | 'quantity' | 'value' | 'unit', string>
+  categories: Record<
+    'room' | 'wall' | 'opening' | 'stair' | 'platform' | 'chimney' | 'furniture',
+    string
+  >
+  quantities: Record<
+    | 'traceArea'
+    | 'perimeter'
+    | 'voidArea'
+    | 'netArea'
+    | 'axisLength'
+    | 'thickness'
+    | 'height'
+    | 'axisArea'
+    | 'openingsArea'
+    | 'axisNetArea'
+    | 'facesLength'
+    | 'facesArea'
+    | 'facesNetArea'
+    | 'volume'
+    | 'width'
+    | 'depth'
+    | 'sillHeight'
+    | 'area'
+    | 'risers'
+    | 'riserHeight'
+    | 'treads'
+    | 'treadDepth'
+    | 'elevation'
+    | 'overhang'
+    | 'count',
+    string
+  >
+  units: Record<'mm' | 'm2' | 'm3' | 'count', string>
+}
+
+/** Projet et date inscrits en tête du fichier. */
+export interface CsvMeta {
+  projectName: string
+  /** Date déjà mise en forme (« 11/11/2026 »). */
+  date: string
 }
 
 /** Une ligne du tableau du mobilier : un objet de la bibliothèque, regroupé par taille. */
@@ -109,242 +189,155 @@ function row(...fields: string[]): string {
   return fields.join(SEPARATOR)
 }
 
-/** Longueurs en mm entiers (Métrique architectural), surfaces en m². */
-const mm = (value: number) => formatDecimal(value, 0)
-const m2 = (mm2: number) => formatDecimal(mm2ToM2(mm2))
-const m3 = (value: number) => formatDecimal(mm3ToM3(value))
-
 /**
- * Métrés au format CSV : séparateur `;`, décimales à virgule, UTF-8 avec BOM, fins de ligne CRLF.
- * Les tableaux des pièces, des murs (surfaces brute et nette) et des ouvertures ont une colonne
- * « Niveau » ; un dernier tableau donne les totaux de chaque niveau et ceux du bâtiment.
+ * Métrés au format CSV « lisible » : séparateur `;`, décimales à virgule, UTF-8 avec BOM, fins de
+ * ligne CRLF. Un en-tête (projet, date, unités), puis un bloc par tableau (pièces, murs, ouvertures,
+ * escaliers, plateformes, cheminées, mobilier, totaux par niveau), chacun avec sa ligne de total.
+ * Les totaux sont calculés sur les valeurs exactes, avant arrondi.
  */
 export function measurementsToCsv(
   building: BuildingMeasurements,
   labels: CsvLabels,
   furniture: readonly FurnitureCsvRow[] = [],
+  meta?: CsvMeta,
 ): string {
-  const { levels, total } = building
   const text = escapeCsvField
   const lines: string[] = []
 
-  /** Une ligne par élément, précédée du nom de son niveau. */
-  const perLevel = <T>(
-    pick: (m: Measurements) => T[],
-    format: (item: T) => string[],
-  ): string[] =>
-    levels.flatMap(({ level, measurements }) =>
-      pick(measurements).map((item) => row(text(level.name), ...format(item))),
+  if (meta && labels.meta) {
+    const m = labels.meta
+    lines.push(
+      row(text(m.title)),
+      row(text(m.project), text(meta.projectName)),
+      row(text(m.date), text(meta.date)),
+      row(text(m.app), text(m.appName)),
+      row(text(m.units), text(m.unitsValue)),
+      row(text(m.note), text(m.noteValue)),
     )
+  }
 
-  lines.push(
-    row(text(labels.rooms)),
+  for (const table of buildMetresTables(building, labels, furniture)) {
+    if (lines.length > 0) lines.push('')
+    lines.push(row(text(table.title)))
+    if (table.note) lines.push(row(text(table.note)))
+    lines.push(
+      row(...table.columns.map((column) => text(column.header))),
+      ...table.rows.map((cells) => row(...cells.map(text))),
+    )
+    if (table.total) lines.push(row(...table.total.map(text)))
+  }
+
+  return CSV_BOM + lines.join(LINE_BREAK) + LINE_BREAK
+}
+
+/** Une valeur numérique du fichier à plat : virgule décimale, sans séparateur de milliers. */
+const num = (value: number, decimals: number) => formatDecimal(value, decimals)
+
+/**
+ * Métrés au format CSV « données à plat » : une ligne par grandeur (Niveau ; Catégorie ; Élément ;
+ * Réf. ; Grandeur ; Valeur ; Unité), avec de vrais nombres dans la colonne Valeur. Fait pour les
+ * tableaux croisés, les filtres et les sommes d'Excel. Longueurs en mm entiers, surfaces et
+ * volumes avec 4 décimales (au cm² près). Pas de ligne de total : le tableur les calcule.
+ */
+export function measurementsToFlatCsv(
+  building: BuildingMeasurements,
+  labels: CsvLabels,
+  furniture: readonly FurnitureCsvRow[] = [],
+): string {
+  const flat = labels.flat
+  if (!flat) throw new Error('Intitulés du fichier à plat manquants')
+  const text = escapeCsvField
+  const refs = wallRefs(building)
+  const q = flat.quantities
+  const unit = flat.units
+  const lines: string[] = [
     row(
-      text(labels.level),
-      text(labels.name),
-      text(labels.area),
-      text(labels.perimeter),
-      text(labels.voidArea),
-      text(labels.roomNetArea),
+      ...[
+        flat.columns.level,
+        flat.columns.category,
+        flat.columns.element,
+        flat.columns.ref,
+        flat.columns.quantity,
+        flat.columns.value,
+        flat.columns.unit,
+      ].map(text),
     ),
-    ...perLevel(
-      (m) => m.rooms,
-      (room) => [
-        text(room.name),
-        m2(room.area),
-        mm(room.perimeter),
-        m2(room.voidArea),
-        m2(room.netArea),
-      ],
-    ),
-    '',
-    row(text(labels.walls)),
-    row(
-      text(labels.level),
-      text(labels.name),
-      text(labels.length),
-      text(labels.thickness),
-      text(labels.height),
-      text(labels.wallArea),
-      text(labels.openingsArea),
-      text(labels.wallNetArea),
-    ),
-    ...perLevel(
-      (m) => m.walls,
-      (wall) => [
-        text(wall.name),
-        mm(wall.length),
-        mm(wall.thickness),
-        mm(wall.height),
-        m2(wall.wallArea),
-        m2(wall.openingsArea),
-        m2(wall.netArea),
-      ],
-    ),
-  )
-
-  if (total.openings.length > 0) {
-    lines.push(
-      '',
-      row(text(labels.openings)),
-      row(
-        text(labels.level),
-        text(labels.name),
-        text(labels.kind),
-        text(labels.wall),
-        text(labels.width),
-        text(labels.height),
-        text(labels.sillHeight),
-        text(labels.area),
-      ),
-      ...perLevel(
-        (m) => m.openings,
-        (opening) => [
-          text(opening.name),
-          text(labels.kinds[opening.kind]),
-          text(opening.wallName),
-          mm(opening.width),
-          mm(opening.height),
-          mm(opening.sillHeight),
-          m2(opening.area),
-        ],
-      ),
-    )
-  }
-
-  // Escaliers : nombre de contremarches et de girons, hauteur de contremarche, giron, emmarchement.
-  const stairLabels = labels.stairs
-  if (stairLabels && total.stairs.length > 0) {
-    lines.push(
-      '',
-      row(text(stairLabels.title)),
-      row(
-        text(labels.level),
-        text(labels.name),
-        text(stairLabels.shape),
-        text(stairLabels.width),
-        text(stairLabels.risers),
-        text(stairLabels.riserHeight),
-        text(stairLabels.treads),
-        text(stairLabels.treadDepth),
-        text(stairLabels.remark),
-      ),
-      ...perLevel(
-        (m) => m.stairs,
-        (stair) => [
-          text(stair.name),
-          text(stairLabels.shapes[stair.shape]),
-          mm(stair.width),
-          stair.risers === null ? '' : String(stair.risers),
-          stair.riserHeight === null ? '' : mm(stair.riserHeight),
-          stair.treads === null ? '' : String(stair.treads),
-          stair.treadDepth === null ? '' : mm(stair.treadDepth),
-          text(
-            stair.status === 'too-short'
-              ? stairLabels.tooShort(Math.ceil(stair.requiredRun ?? 0))
-              : stair.status === 'no-level-above'
-                ? stairLabels.noLevelAbove
-                : '',
-          ),
-        ],
-      ),
-    )
-  }
-
-  // Plateformes : surface (m²) et volume = surface × épaisseur (m³).
-  const platformLabels = labels.platforms
-  if (platformLabels && total.platforms.length > 0) {
-    lines.push(
-      '',
-      row(text(platformLabels.title)),
-      row(
-        text(labels.level),
-        text(labels.name),
-        text(labels.area),
-        text(platformLabels.elevation),
-        text(platformLabels.thickness),
-        text(platformLabels.volume),
-      ),
-      ...perLevel(
-        (m) => m.platforms,
-        (platform) => [
-          text(platform.name),
-          m2(platform.area),
-          mm(platform.elevation),
-          mm(platform.thickness),
-          m3(platform.volume),
-        ],
-      ),
-      row(
-        text(labels.building),
-        text(platformLabels.totalArea),
-        m2(total.totals.platformArea),
-        '',
-        text(platformLabels.totalVolume),
-        m3(total.totals.platformVolume),
-      ),
-    )
-  }
-
-  // Mobilier : liste (catégorie, nom, taille, nombre), jamais ajoutée aux surfaces ni aux longueurs.
-  // Les symboles conventionnels et les zones de référence sont comptés à part.
-  const furnitureLabels = labels.furniture
-  if (furnitureLabels) {
-    const tables: [FurnitureCsvRow['kind'], string][] = [
-      ['furniture', furnitureLabels.title],
-      ['nominal', furnitureLabels.nominalTitle],
-      ['zone', furnitureLabels.zoneTitle],
-    ]
-    for (const [kind, title] of tables) {
-      const rows = furniture.filter((item) => item.kind === kind)
-      if (rows.length === 0) continue
+  ]
+  type Entry = [quantity: string, value: number | null, unit: string, decimals: number]
+  const add = (level: string, category: string, element: string, ref: string, entries: Entry[]) => {
+    for (const [quantity, value, entryUnit, decimals] of entries) {
+      if (value === null) continue
       lines.push(
-        '',
-        row(text(title)),
-        row(text(furnitureLabels.category), text(labels.name), text(labels.width), text(furnitureLabels.depth), text(furnitureLabels.count)),
-        ...rows.map((item) =>
-          row(text(item.category), text(item.name), mm(item.width), mm(item.depth), String(item.count)),
-        ),
+        row(text(level), text(category), text(element), text(ref), text(quantity), num(value, decimals), text(entryUnit)),
       )
     }
   }
+  const area = (mm2: number) => mm2ToM2(mm2)
+  const volume = (mm3: number) => mm3ToM3(mm3)
 
-  // Totaux : une ligne par niveau, puis le bâtiment (= la somme des niveaux).
-  const totalsRow = (title: string, altitude: string, floorHeight: string, m: Measurements) =>
-    row(
-      text(title),
-      altitude,
-      floorHeight,
-      m2(m.totals.roomArea),
-      mm(m.totals.wallLength),
-      m2(m.totals.wallArea),
-      m2(m.totals.openingsArea),
-      m2(m.totals.wallNetArea),
-      String(m.totals.doors),
-      String(m.totals.windows),
-      String(m.totals.bays),
-    )
-  lines.push(
-    '',
-    row(text(labels.levelTotals)),
-    row(
-      text(labels.level),
-      text(labels.elevation),
-      text(labels.levelHeight),
-      text(labels.roomsTotal),
-      text(labels.wallsTotal),
-      text(labels.wallArea),
-      text(labels.openingsArea),
-      text(labels.wallNetArea),
-      text(labels.doors),
-      text(labels.windows),
-      text(labels.bays),
-    ),
-    ...levels.map(({ level, measurements }) =>
-      totalsRow(level.name, mm(level.elevation), mm(level.height), measurements),
-    ),
-    totalsRow(labels.building, '', '', total),
-  )
-
+  for (const { level, measurements: m } of building.levels) {
+    for (const room of m.rooms) {
+      add(level.name, flat.categories.room, room.name, '', [
+        [q.traceArea, area(room.area), unit.m2, 4],
+        [q.perimeter, room.perimeter, unit.mm, 0],
+        [q.voidArea, area(room.voidArea), unit.m2, 4],
+        [q.netArea, area(room.netArea), unit.m2, 4],
+      ])
+    }
+    for (const wall of m.walls) {
+      add(level.name, flat.categories.wall, wall.name, refs.get(wall.id) ?? '', [
+        [q.axisLength, wall.length, unit.mm, 0],
+        [q.thickness, wall.thickness, unit.mm, 0],
+        [q.height, wall.height, unit.mm, 0],
+        [q.axisArea, area(wall.wallArea), unit.m2, 4],
+        [q.openingsArea, area(wall.openingsArea), unit.m2, 4],
+        [q.axisNetArea, area(wall.netArea), unit.m2, 4],
+        [q.facesLength, wall.facesLength, unit.mm, 0],
+        [q.facesArea, area(wall.facesArea), unit.m2, 4],
+        [q.facesNetArea, area(wall.facesNetArea), unit.m2, 4],
+        [q.volume, volume(wall.volume), unit.m3, 4],
+      ])
+    }
+    for (const opening of m.openings) {
+      add(level.name, flat.categories.opening, opening.name, refs.get(opening.wallId) ?? '', [
+        [q.width, opening.width, unit.mm, 0],
+        [q.height, opening.height, unit.mm, 0],
+        [q.sillHeight, opening.sillHeight, unit.mm, 0],
+        [q.area, area(opening.area), unit.m2, 4],
+      ])
+    }
+    for (const stair of m.stairs) {
+      add(level.name, flat.categories.stair, stair.name, '', [
+        [q.width, stair.width, unit.mm, 0],
+        [q.risers, stair.risers, unit.count, 0],
+        [q.riserHeight, stair.riserHeight, unit.mm, 0],
+        [q.treads, stair.treads, unit.count, 0],
+        [q.treadDepth, stair.treadDepth, unit.mm, 0],
+      ])
+    }
+    for (const platform of m.platforms) {
+      add(level.name, flat.categories.platform, platform.name, '', [
+        [q.area, area(platform.area), unit.m2, 4],
+        [q.elevation, platform.elevation, unit.mm, 0],
+        [q.thickness, platform.thickness, unit.mm, 0],
+        [q.volume, volume(platform.volume), unit.m3, 4],
+      ])
+    }
+    for (const chimney of m.chimneys) {
+      add(level.name, flat.categories.chimney, chimney.name, '', [
+        [q.width, chimney.width, unit.mm, 0],
+        [q.depth, chimney.depth, unit.mm, 0],
+        [q.area, area(chimney.area), unit.m2, 4],
+        [q.overhang, chimney.heightAboveTop, unit.mm, 0],
+      ])
+    }
+  }
+  // Le mobilier n'est pas rattaché à un niveau dans la liste : colonne Niveau vide ; la taille
+  // (largeur × profondeur) est dans la colonne Réf.
+  for (const item of furniture) {
+    add('', flat.categories.furniture, item.name, `${mm(item.width)} × ${mm(item.depth)} ${unit.mm}`, [
+      [q.count, item.count, unit.count, 0],
+    ])
+  }
   return CSV_BOM + lines.join(LINE_BREAK) + LINE_BREAK
 }

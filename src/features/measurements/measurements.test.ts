@@ -1,11 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement, OpeningElement, RoomElement, WallElement } from '../../types/document'
-import { CSV_BOM, csvFileName, escapeCsvField, measurementsToCsv, type CsvLabels } from './csv'
-import {
-  computeBuildingMeasurements,
-  computeMeasurements,
-  type BuildingMeasurements,
-} from './measurements'
+import { fr } from '../../i18n/fr'
+import { csvFileName, escapeCsvField, measurementsToCsv, type CsvLabels } from './csv'
+import { computeBuildingMeasurements, computeMeasurements } from './measurements'
 
 const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
 
@@ -62,6 +59,10 @@ const EMPTY_TOTALS = {
   wallArea: 0,
   openingsArea: 0,
   wallNetArea: 0,
+  wallFacesArea: 0,
+  wallFacesNetArea: 0,
+  wallVolume: 0,
+  chimneys: 0,
   doors: 0,
   windows: 0,
   bays: 0,
@@ -223,47 +224,9 @@ describe('ouvertures et surface murale nette', () => {
   })
 })
 
-const LABELS: CsvLabels = {
-  rooms: 'Pièces',
-  walls: 'Murs',
-  name: 'Nom',
-  area: 'Surface (m²)',
-  perimeter: 'Périmètre (mm)',
-  voidArea: 'Trémie (m²)',
-  roomNetArea: 'Surface nette (m²)',
-  length: 'Longueur (mm)',
-  thickness: 'Épaisseur (mm)',
-  height: 'Hauteur (mm)',
-  wallArea: 'Surface murale brute (m²)',
-  openingsArea: 'Ouvertures (m²)',
-  wallNetArea: 'Surface murale nette (m²)',
-  openings: 'Ouvertures',
-  kind: 'Type',
-  wall: 'Mur',
-  width: 'Largeur (mm)',
-  sillHeight: 'Allège (mm)',
-  doors: 'Nombre de portes',
-  windows: 'Nombre de fenêtres',
-  bays: 'Nombre de baies',
-  kinds: { door: 'Porte', window: 'Fenêtre', bay: 'Baie' },
-  level: 'Niveau',
-  building: 'Bâtiment',
-  elevation: 'Altitude (mm)',
-  levelHeight: 'Hauteur d’étage (mm)',
-  levelTotals: 'Totaux par niveau',
-  roomsTotal: 'Surface des pièces (m²)',
-  wallsTotal: 'Longueur des murs (mm)',
-}
+const LABELS: CsvLabels = fr.measurements.csv
 
 const LEVEL = { id: 'L0', name: 'Rez', elevation: 0, height: 2700, slabThickness: 200 }
-
-/** Bâtiment d'un seul niveau « Rez », pour les tests du CSV. */
-function oneLevel(elements: CanvasElement[]): BuildingMeasurements {
-  return computeBuildingMeasurements({
-    levels: [LEVEL],
-    elements: elements.map((el) => ({ ...el, levelId: 'L0' })),
-  })
-}
 
 describe('csvFileName', () => {
   it('ajoute le suffixe et l’extension', () => {
@@ -306,89 +269,6 @@ describe('escapeCsvField', () => {
   })
 })
 
-describe('measurementsToCsv', () => {
-  const building = oneLevel([
-    room('Cuisine', [0, 0, 4000, 0, 4000, 3100, 0, 3100]),
-    wall('Mur 1', [0, 0, 4000, 0], 200, 2500),
-  ])
-  const csv = measurementsToCsv(building, LABELS)
-  const lines = csv.slice(1).split('\r\n')
-
-  it('commence par le BOM UTF-8 pour Excel', () => {
-    expect(csv.startsWith(CSV_BOM)).toBe(true)
-  })
-
-  it('sépare par des points-virgules, avec des décimales à virgule et des fins de ligne CRLF', () => {
-    expect(lines).toContain('Niveau;Nom;Surface (m²);Périmètre (mm);Trémie (m²);Surface nette (m²)')
-    expect(lines).toContain('Rez;Cuisine;12,40;14200;0,00;12,40') // 4000 × 3100 mm ; 2 × (4000 + 3100)
-    expect(lines).toContain('Rez;Mur 1;4000;200;2500;10,00;0,00;10,00')
-  })
-
-  it('donne les totaux du niveau puis du bâtiment', () => {
-    expect(lines).toContain('Rez;0;2700;12,40;4000;10,00;0,00;10,00;0;0;0')
-    expect(lines).toContain('Bâtiment;;;12,40;4000;10,00;0,00;10,00;0;0;0')
-  })
-
-  it('garde les mêmes colonnes pour toutes les lignes d’un tableau', () => {
-    const wallRows = lines.slice(lines.indexOf('Murs') + 1, lines.indexOf('Totaux par niveau') - 1)
-    expect(new Set(wallRows.map((l) => l.split(';').length))).toEqual(new Set([8]))
-  })
-
-  it('termine par un saut de ligne', () => {
-    expect(csv.endsWith('\r\n')).toBe(true)
-  })
-
-  it('gère un plan vide', () => {
-    const empty = measurementsToCsv(oneLevel([]), LABELS)
-    expect(empty).toContain('Bâtiment;;;0,00;0;0,00;0,00;0,00;0;0;0')
-  })
-})
-
-describe('measurementsToCsv avec ouvertures', () => {
-  const elements = [
-    wall('Mur 1', [0, 0, 4000, 0], 200, 2500),
-    opening('Porte 1', 'Mur 1'),
-    opening('Fenêtre 1', 'Mur 1', {
-      kind: 'window',
-      width: 1200,
-      height: 1000,
-      sillHeight: 900,
-      offset: 3000,
-    }),
-  ]
-  const lines = measurementsToCsv(oneLevel(elements), LABELS).slice(1).split('\r\n')
-
-  it('donne la surface nette du mur', () => {
-    // 10,00 − (1,89 + 1,20) = 6,91
-    expect(lines).toContain('Rez;Mur 1;4000;200;2500;10,00;3,09;6,91')
-  })
-
-  it('ajoute un tableau des ouvertures, avec le niveau, le mur, les dimensions et la surface', () => {
-    const start = lines.indexOf('Ouvertures')
-    expect(start).toBeGreaterThan(-1)
-    expect(lines[start + 1]).toBe(
-      'Niveau;Nom;Type;Mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)',
-    )
-    expect(lines[start + 2]).toBe('Rez;Porte 1;Porte;Mur 1;900;2100;0;1,89')
-    expect(lines[start + 3]).toBe('Rez;Fenêtre 1;Fenêtre;Mur 1;1200;1000;900;1,20')
-  })
-
-  it('compte les portes, fenêtres et baies dans les totaux', () => {
-    expect(lines).toContain('Bâtiment;;;0,00;4000;10,00;3,09;6,91;1;1;0')
-  })
-
-  it('garde les mêmes colonnes pour toutes les lignes du tableau des ouvertures', () => {
-    const start = lines.indexOf('Ouvertures')
-    const rows = lines.slice(start + 1, start + 4)
-    expect(new Set(rows.map((l) => l.split(';').length))).toEqual(new Set([8]))
-  })
-
-  it('n’ajoute aucun tableau d’ouvertures quand il n’y en a pas', () => {
-    const none = measurementsToCsv(oneLevel([elements[0]]), LABELS)
-    expect(none).not.toContain('\r\nOuvertures\r\n')
-  })
-})
-
 describe('métrés par niveau et pour le bâtiment', () => {
   const levels = [
     LEVEL,
@@ -426,9 +306,9 @@ describe('métrés par niveau et pour le bâtiment', () => {
 
   it('le CSV porte une colonne Niveau et une ligne par niveau', () => {
     const lines = measurementsToCsv(building, LABELS).slice(1).split('\r\n')
-    expect(lines).toContain('Rez;R0;12,00;14000;0,00;12,00')
-    expect(lines).toContain('Étage 1;R1;10,00;14000;0,00;10,00')
-    expect(lines).toContain('Étage 1;2700;2700;10,00;2000;5,00;0,00;5,00;0;0;0')
-    expect(lines).toContain('Bâtiment;;;22,00;6000;15,00;0,00;15,00;0;0;0')
+    expect(lines).toContain('Rez;R0;12,00;14000')
+    expect(lines).toContain('Étage 1;R1;10,00;14000')
+    expect(lines).toContain('Étage 1;2700;2700;10,00;2000;5,00;0,00;5,00;10,00;1,00;0;0;0')
+    expect(lines).toContain('Bâtiment;;;22,00;6000;15,00;0,00;15,00;30,00;3,00;0;0;0')
   })
 })

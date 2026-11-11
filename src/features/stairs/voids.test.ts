@@ -159,7 +159,7 @@ describe('CSV : colonne « Trémie »', () => {
   it('donne la trémie et la surface nette de chaque pièce', () => {
     const building = computeBuildingMeasurements({ elements: [stair(), upperRoom()], levels: LEVELS })
     const csv = measurementsToCsv(building, fr.measurements.csv)
-    expect(csv).toContain('Niveau;Nom;Surface (m²);Périmètre (mm);Trémie (m²);Surface nette (m²)')
+    expect(csv).toContain('Niveau;Nom;Surface au tracé (m²);Périmètre (mm);Trémie (m²);Surface nette (m²)')
     expect(csv).toContain('Étage 1;Chambre;20,00;18000;3,96;16,04')
   })
 })
