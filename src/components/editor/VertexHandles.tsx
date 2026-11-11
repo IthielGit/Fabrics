@@ -3,6 +3,7 @@ import { useRef } from 'react'
 import { Circle } from 'react-konva'
 import type { AxisSegment } from '../../features/geometry/axes'
 import {
+  collectAlignTargets,
   collectSnapAxes,
   collectSnapVertices,
   collectSnapWallAxes,
@@ -46,6 +47,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
   const snapVertices = useRef<Point[]>([])
   const snapAxes = useRef<AxisSegment[]>([])
   const snapWallAxes = useRef<WallAxisSegment[]>([])
+  const snapAlign = useRef<Point[]>([])
 
   if (!enabled || !element) return null
   const vertices = getVertices(element)
@@ -65,6 +67,12 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
       element.type === 'wall'
         ? collectSnapWallAxes(selectActiveElements(store), new Set([element.id]))
         : []
+    // Guides d'alignement : un mur s'aligne sur les points d'axe des autres éléments, une pièce ou
+    // une cote aussi sur les angles des faces de murs.
+    snapAlign.current =
+      element.type === 'wall'
+        ? collectAlignTargets(selectActiveElements(store), new Set([element.id]))
+        : snapVertices.current
   }
 
   const handleDragMove = (index: number) => (event: Konva.KonvaEventObject<DragEvent>) => {
@@ -81,12 +89,15 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
         : (all[index - 1] ?? all[index + 1] ?? null)
 
     const node = event.target
-    const { point } = snapPoint(
+    // Les autres sommets du même élément servent aussi de repères d'alignement.
+    const own = all.filter((_, i) => i !== index)
+    const { point, guides } = snapPoint(
       { x: node.x(), y: node.y() },
       {
         vertices: snapVertices.current,
         axes: snapAxes.current,
         wallAxes: event.evt.altKey ? undefined : snapWallAxes.current,
+        alignTargets: event.evt.altKey ? undefined : [...snapAlign.current, ...own],
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
         from: neighbour ?? null,
@@ -95,12 +106,15 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
       },
     )
     node.position(point)
+    if (guides || store.guides.length > 0) store.setGuides(guides ?? [])
     store.liveReplaceElements([moveVertex(current, index, point)])
   }
 
   const handleDragEnd = (event: Konva.KonvaEventObject<DragEvent>) => {
     event.cancelBubble = true
-    useEditorStore.getState().endLiveEdit()
+    const store = useEditorStore.getState()
+    store.setGuides([])
+    store.endLiveEdit()
   }
 
   const setCursor = (event: Konva.KonvaEventObject<Event>, cursor: string) => {

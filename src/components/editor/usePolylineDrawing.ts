@@ -8,8 +8,10 @@ import {
   nextElementName,
 } from '../../features/documents/elements'
 import { nextAxisLabel } from '../../features/geometry/axes'
+import type { Guide } from '../../features/geometry/guides'
 import { flattenPoints, pointDistance } from '../../features/geometry/polygon'
 import {
+  collectAlignTargets,
   collectSnapAxes,
   collectSnapVertices,
   collectSnapWallAxes,
@@ -61,6 +63,13 @@ interface StoredDraft {
   draft: PolylineDraft
 }
 
+/** Affiche ces guides d'alignement (ou les efface) sans rien changer s'il n'y a rien de nouveau. */
+function setGuidesIfChanged(guides: Guide[]): void {
+  const store = useEditorStore.getState()
+  if (guides.length === 0 && store.guides.length === 0) return
+  store.setGuides(guides)
+}
+
 function samePoint(a: Point, b: Point): boolean {
   return pointDistance(a, b) < 1e-6
 }
@@ -71,7 +80,8 @@ function samePoint(a: Point, b: Point): boolean {
  * `Échap` = annuler ; `Retour arrière` = retirer le dernier point. Les points s'aimantent aux
  * sommets existants, aux angles des faces de murs, aux axes de construction, à l'axe des murs
  * existants (outil Mur), à l'horizontale ou
- * la verticale du point précédent (`Alt` désactive cet alignement), puis à la grille.
+ * la verticale du point précédent, puis à la grille ; des guides en pointillé s'affichent quand le
+ * point s'aligne sur un autre point du plan (`Alt` désactive alignement, guides et raccord aux murs).
  *
  * `scale` = pixels écran par mm (pour garder une distance d'accroche constante à l'écran).
  */
@@ -137,6 +147,15 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     return regionCache.current.finder.find(raw)
   }, [])
 
+  /** Sommets des murs, pièces et cotes du niveau actif pour les guides d'alignement (en cache). */
+  const alignCache = useRef<{ elements: readonly CanvasElement[]; targets: Point[] } | null>(null)
+  const alignTargets = useCallback((elements: readonly CanvasElement[]): Point[] => {
+    if (alignCache.current?.elements !== elements) {
+      alignCache.current = { elements, targets: collectAlignTargets(elements) }
+    }
+    return alignCache.current.targets
+  }, [])
+
   /** Axes des murs du niveau actif (mis en cache). */
   const wallAxes = useCallback((elements: readonly CanvasElement[]): WallAxisSegment[] => {
     if (wallAxesCache.current?.elements !== elements) {
@@ -159,6 +178,11 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         // Un mur se raccorde à l'axe d'un mur existant (pas les pièces ni les cotes, qui suivent
         // les faces) ; Alt coupe cette aimantation.
         wallAxes: tool === 'wall' && !alt ? wallAxes(active) : undefined,
+        // Guides d'alignement : murs et axes s'alignent sur les points d'axe des autres éléments ;
+        // pièces et cotes aussi sur les angles des faces de murs. Alt coupe les guides.
+        alignTargets: alt
+          ? undefined
+          : [...(tool === 'room' || tool === 'dimension' ? planVertices(active) : alignTargets(active)), ...current],
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
         threshold: SNAP_THRESHOLD_PX / scale,
         from: current.length > 0 ? current[current.length - 1] : null,
@@ -166,7 +190,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         softAlign: !alt,
       })
     },
-    [tool, planVertices, wallAxes, readDraft, scale],
+    [tool, planVertices, wallAxes, alignTargets, readDraft, scale],
   )
 
   const finish = useCallback(() => {
@@ -274,14 +298,21 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       const current = readDraft()
       // Pièce avec Maj et aucun point posé : on survole une zone à remplir.
       if (tool === 'room' && current.points.length === 0 && event.evt.shiftKey) {
+        setGuidesIfChanged([])
         setDraft({ ...current, cursor: raw, fillMode: true, region: regionAt(raw) })
         return
       }
-      const { point, kind } = snap(raw, event.evt.shiftKey, event.evt.altKey)
+      const { point, kind, guides } = snap(raw, event.evt.shiftKey, event.evt.altKey)
+      setGuidesIfChanged(guides ?? [])
       setDraft({ ...current, cursor: point, snapKind: kind, fillMode: false, region: null })
     },
     [tool, readDraft, snap, setDraft, regionAt],
   )
+
+  // Les guides d'alignement s'effacent quand on quitte l'outil.
+  useEffect(() => {
+    return () => setGuidesIfChanged([])
+  }, [tool])
 
   // Maj enfoncée ou relâchée sans bouger la souris : l'aperçu de la zone suit tout de suite.
   useEffect(() => {

@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { CanvasElement, DimensionElement, RoomElement, WallElement } from '../../types/document'
 import { createAxisElement } from '../documents/elements'
 import {
+  collectAlignTargets,
   collectSnapAxes,
   collectSnapVertices,
   collectSnapWallAxes,
@@ -201,6 +202,103 @@ describe('alignement doux (sans Maj)', () => {
     const result = snapPoint({ x: 3000, y: 2000 }, { ...SOFT, constrain: true })
     expect(result.kind).toBe('angle')
     expect(result.point.x - from.x).toBeCloseTo(result.point.y - from.y)
+  })
+})
+
+describe('guides d’alignement', () => {
+  const alignTargets = [
+    { x: 1000, y: 5000 },
+    { x: 4000, y: 2000 },
+  ]
+  const ALIGN: PointSnapContext = { ...NONE, alignTargets, threshold: 80 }
+
+  it('aligne x sur un point voisin et affiche un guide vertical', () => {
+    const result = snapPoint({ x: 1040, y: 3000 }, ALIGN)
+    expect(result).toEqual({
+      point: { x: 1000, y: 3000 },
+      kind: 'align',
+      guides: [{ orientation: 'vertical', position: 1000 }],
+    })
+  })
+
+  it('aligne y sur un point voisin et affiche un guide horizontal', () => {
+    const result = snapPoint({ x: 2500, y: 2050 }, ALIGN)
+    expect(result.point).toEqual({ x: 2500, y: 2000 })
+    expect(result.guides).toEqual([{ orientation: 'horizontal', position: 2000 }])
+  })
+
+  it('aligne x et y en même temps sur deux points différents', () => {
+    const result = snapPoint({ x: 1030, y: 2040 }, ALIGN)
+    expect(result.point).toEqual({ x: 1000, y: 2000 })
+    expect(result.guides).toHaveLength(2)
+  })
+
+  it('ne fait rien trop loin, sans cible, ou sans alignTargets', () => {
+    expect(snapPoint({ x: 1200, y: 3000 }, ALIGN)).toEqual({
+      point: { x: 1200, y: 3000 },
+      kind: 'none',
+    })
+    expect(snapPoint({ x: 1040, y: 3000 }, { ...ALIGN, alignTargets: [] }).kind).toBe('none')
+    expect(snapPoint({ x: 1040, y: 3000 }, NONE).guides).toBeUndefined()
+  })
+
+  it('la coordonnée alignée n’est pas arrondie à la grille, l’autre l’est', () => {
+    const result = snapPoint({ x: 1040, y: 3070 }, { ...ALIGN, gridSize: 100 })
+    expect(result.point).toEqual({ x: 1000, y: 3100 })
+    const offGrid = snapPoint(
+      { x: 1233, y: 3070 },
+      { ...ALIGN, gridSize: 100, alignTargets: [{ x: 1250, y: 9000 }] },
+    )
+    expect(offGrid.point).toEqual({ x: 1250, y: 3100 })
+    expect(offGrid.kind).toBe('align')
+  })
+
+  it('sur une direction horizontale, seule la coordonnée libre s’aligne', () => {
+    // alignement doux depuis (0, 2000) : le point reste à y = 2000 ; x s'aligne sur 4000
+    const result = snapPoint(
+      { x: 4030, y: 2040 },
+      { ...ALIGN, from: { x: 0, y: 2000 }, softAlign: true, alignTargets: [{ x: 4000, y: 7000 }] },
+    )
+    expect(result.point).toEqual({ x: 4000, y: 2000 })
+    expect(result.kind).toBe('angle')
+    expect(result.guides).toEqual([{ orientation: 'vertical', position: 4000 }])
+  })
+
+  it('sur une diagonale (Maj), aucun alignement', () => {
+    const result = snapPoint(
+      { x: 1000, y: 1010 },
+      { ...ALIGN, from: { x: 0, y: 0 }, constrain: true, alignTargets: [{ x: 1000, y: 5000 }] },
+    )
+    expect(result.guides).toBeUndefined()
+  })
+
+  it('le sommet reste prioritaire sur l’alignement', () => {
+    const result = snapPoint(
+      { x: 1010, y: 5010 },
+      { ...ALIGN, vertices: [{ x: 1000, y: 5000 }] },
+    )
+    expect(result.kind).toBe('vertex')
+    expect(result.guides).toBeUndefined()
+  })
+
+  it('choisit la cible la plus proche en cas d’égalité de coordonnée', () => {
+    const result = snapPoint(
+      { x: 1000, y: 3000 },
+      { ...ALIGN, alignTargets: [{ x: 1000, y: 9000 }, { x: 1000, y: 3500 }] },
+    )
+    expect(result.guides).toEqual([{ orientation: 'vertical', position: 1000 }])
+  })
+
+  it('collectAlignTargets : points des murs, pièces et cotes, sans masqués ni exclus', () => {
+    const elements: CanvasElement[] = [
+      wall('w', [0, 0, 1000, 0]),
+      room('r', [0, 0, 100, 0, 100, 100]),
+      dimension('d', [5, 5, 6, 6]),
+      { ...wall('hidden', [9, 9, 9, 10]), hidden: true },
+      wall('skipped', [7, 7, 8, 8]),
+    ]
+    const targets = collectAlignTargets(elements, new Set(['skipped']))
+    expect(targets).toHaveLength(2 + 3 + 2)
   })
 })
 

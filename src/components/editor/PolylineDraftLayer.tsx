@@ -23,6 +23,7 @@ const ACCENT = '#4f46e5'
 
 const SNAP_COLORS: Record<SnapKind, string> = {
   vertex: '#16a34a', // sommet existant
+  align: '#ec4899', // alignement sur un autre point (guides roses)
   axis: '#be123c', // ligne d'un axe de construction
   wall: '#d97706', // axe d'un mur existant (raccord en T)
   grid: '#64748b', // grille

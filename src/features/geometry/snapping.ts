@@ -5,11 +5,12 @@ import {
   nearestPointOnAxes,
   type AxisSegment,
 } from './axes'
+import type { Guide } from './guides'
 import { toPoints } from './polygon'
 import type { Point } from './viewport'
 import { wallFaceCorners, wallFaces } from './walls'
 
-export type SnapKind = 'vertex' | 'axis' | 'wall' | 'grid' | 'angle' | 'none'
+export type SnapKind = 'vertex' | 'axis' | 'wall' | 'align' | 'grid' | 'angle' | 'none'
 
 /** Un segment de l'axe d'un mur, avec la distance d'accroche propre au mur (sa demi-épaisseur). */
 export interface WallAxisSegment extends AxisSegment {
@@ -19,6 +20,8 @@ export interface WallAxisSegment extends AxisSegment {
 export interface PointSnapResult {
   point: Point
   kind: SnapKind
+  /** Guides d'alignement à afficher (absent quand le point ne s'aligne sur rien). */
+  guides?: Guide[]
 }
 
 export interface PointSnapContext {
@@ -44,6 +47,11 @@ export interface PointSnapContext {
    * précédent (`from`) est ramené exactement dessus. Désactivé par défaut (Alt le coupe à l'écran).
    */
   softAlign?: boolean
+  /**
+   * Points voisins (sommets de murs, de pièces…) : le curseur s'aligne en x et en y sur eux quand il
+   * en est proche (guides d'alignement). Voir `collectAlignTargets`.
+   */
+  alignTargets?: readonly Point[]
 }
 
 /** Écart perpendiculaire maximal de l'alignement doux, en multiples de `threshold` (soit 12 px). */
@@ -135,8 +143,10 @@ function nearestVertex(point: Point, vertices: readonly Point[], threshold: numb
  * 1. un sommet existant à moins de `threshold` (les croisements d'axes en font partie) ;
  * 2. la ligne d'un axe de construction à moins de `threshold` (sauf avec Maj : la direction
  *    contrainte prime), puis l'axe d'un mur existant (même exception) ;
- * 3. la grille, si elle est active ;
- * 4. avec Maj : la direction contrainte à un multiple de 45° depuis le point précédent ;
+ * 3. l'alignement en x et en y sur les points voisins (`alignTargets`), qui produit des guides ;
+ *    la coordonnée alignée n'est plus arrondie à la grille ;
+ * 4. la grille, si elle est active ;
+ * 5. avec Maj : la direction contrainte à un multiple de 45° depuis le point précédent ;
  *    sans Maj, avec `softAlign` : l'horizontale ou la verticale du point précédent si le curseur
  *    en est proche. Dans les deux cas la grille s'applique ensuite le long de cette direction.
  */
@@ -168,28 +178,100 @@ export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResul
     }
   }
 
+  // Alignement avec d'autres points : x et y se règlent chacun sur celui d'un point voisin. Sur une
+  // direction horizontale ou verticale, seule la coordonnée libre peut s'aligner ; sur une
+  // diagonale, aucune.
+  let alignedX: Point | null = null
+  let alignedY: Point | null = null
+  const targets = context.alignTargets
+  if (targets && targets.length > 0) {
+    const horizontal = direction && from !== null && Math.abs(candidate.y - from.y) < 1e-9
+    const vertical = direction && from !== null && Math.abs(candidate.x - from.x) < 1e-9
+    if (!direction || horizontal || vertical) {
+      if (!vertical) alignedX = nearestAlignment('x', candidate, targets, threshold)
+      if (!horizontal) alignedY = nearestAlignment('y', candidate, targets, threshold)
+      candidate = { x: alignedX ? alignedX.x : candidate.x, y: alignedY ? alignedY.y : candidate.y }
+    }
+  }
+  const aligned = alignedX !== null || alignedY !== null
+  const withGuides = (result: PointSnapResult): PointSnapResult => {
+    if (!aligned) return result
+    const guides: Guide[] = []
+    if (alignedX) guides.push({ orientation: 'vertical', position: result.point.x })
+    if (alignedY) guides.push({ orientation: 'horizontal', position: result.point.y })
+    return { ...result, guides }
+  }
+
   if (gridSize !== null && gridSize > 0) {
     if (direction && from !== null) {
       const dx = candidate.x - from.x
       const dy = candidate.y - from.y
       if (Math.abs(dy) < 1e-9) {
-        candidate = { x: roundToGrid(candidate.x, gridSize), y: candidate.y }
+        candidate = { x: alignedX ? candidate.x : roundToGrid(candidate.x, gridSize), y: candidate.y }
       } else if (Math.abs(dx) < 1e-9) {
-        candidate = { x: candidate.x, y: roundToGrid(candidate.y, gridSize) }
+        candidate = { x: candidate.x, y: alignedY ? candidate.y : roundToGrid(candidate.y, gridSize) }
       } else {
         // Diagonale à 45° : on arrondit x, y suit pour rester à 45°.
         const x = roundToGrid(candidate.x, gridSize)
         candidate = { x, y: from.y + Math.sign(dy) * Math.abs(x - from.x) }
       }
-      return { point: candidate, kind: 'angle' }
+      return withGuides({ point: candidate, kind: 'angle' })
     }
-    return {
-      point: { x: roundToGrid(candidate.x, gridSize), y: roundToGrid(candidate.y, gridSize) },
-      kind: 'grid',
-    }
+    return withGuides({
+      point: {
+        x: alignedX ? candidate.x : roundToGrid(candidate.x, gridSize),
+        y: alignedY ? candidate.y : roundToGrid(candidate.y, gridSize),
+      },
+      kind: aligned ? 'align' : 'grid',
+    })
   }
 
-  return { point: candidate, kind: direction ? 'angle' : 'none' }
+  return withGuides({ point: candidate, kind: direction ? 'angle' : aligned ? 'align' : 'none' })
+}
+
+/**
+ * Point voisin dont l'abscisse (`axis` = 'x') ou l'ordonnée (`axis` = 'y') est la plus proche de
+ * celle de `point`, à moins de `threshold` ; à égalité, le plus proche sur l'autre coordonnée.
+ */
+function nearestAlignment(
+  axis: 'x' | 'y',
+  point: Point,
+  targets: readonly Point[],
+  threshold: number,
+): Point | null {
+  const other = axis === 'x' ? 'y' : 'x'
+  let best: Point | null = null
+  let bestGap = threshold
+  let bestAlong = Infinity
+  for (const target of targets) {
+    const gap = Math.abs(target[axis] - point[axis])
+    if (gap > bestGap) continue
+    const along = Math.abs(target[other] - point[other])
+    if (gap < bestGap || along < bestAlong) {
+      best = target
+      bestGap = gap
+      bestAlong = along
+    }
+  }
+  return best
+}
+
+/**
+ * Points sur lesquels aligner le curseur (guides d'alignement) : sommets des murs, des pièces et
+ * des cotes. `excludeIds` écarte par exemple l'élément dont on déplace un sommet.
+ */
+export function collectAlignTargets(
+  elements: readonly CanvasElement[],
+  excludeIds: ReadonlySet<string> = new Set(),
+): Point[] {
+  const targets: Point[] = []
+  for (const element of elements) {
+    if (element.hidden || excludeIds.has(element.id)) continue
+    if (element.type === 'wall' || element.type === 'room' || element.type === 'dimension') {
+      targets.push(...toPoints(element.points))
+    }
+  }
+  return targets
 }
 
 /**
