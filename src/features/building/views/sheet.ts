@@ -19,6 +19,8 @@ const CARDINALS: Cardinal[] = ['N', 'E', 'S', 'O']
 export interface SheetLabels {
   elevation: Record<Cardinal, string>
   section: (label: string) => string
+  /** Nom de la cote d'altitude du faîtage dans les coupes ; absent : pas de cote. */
+  ridge?: string
 }
 
 export interface SheetInput {
@@ -47,7 +49,7 @@ function entriesFor(input: SheetInput, fontMm: number | undefined): SheetEntry[]
   }
   const ordered = [...sections].sort((a, b) => a.label.localeCompare(b.label, 'fr', { numeric: true }))
   for (const section of ordered) {
-    const view = buildSection(model, levels, section)
+    const view = buildSection(model, levels, labels.ridge ? { ...section, ridgeLabel: labels.ridge } : section)
     if (view) add(`section-${section.label}`, labels.section(section.label), drawingFromView(view, fontMm))
   }
   return entries

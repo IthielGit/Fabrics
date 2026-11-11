@@ -652,6 +652,11 @@ les éléments modifiés.
 - Coupe = même principe, limité à ce qui est derrière la ligne de coupe ; les sections
   coupées (intersection des boîtes avec le plan de coupe) sont remplies en noir.
 - Les vues sont **calculées**, jamais stockées dans le document.
+- Toitures (M10 bis) : chaque prisme de toiture (versant, pignon) donne ses faces planes, inclinées
+  ou non ; une face est dessinée si elle est tournée vers la personne qui regarde et n'est pas vue
+  par la tranche. En coupe, la section d'un prisme (convexe) est l'enveloppe des points où ses
+  arêtes traversent le plan, en noir ; ses faces derrière le plan sont découpées par le plan. Une
+  toiture coupée reçoit la cote d'altitude de son faîtage.
 
 ### Écran de l'éditeur (mode bâtiment)
 

@@ -699,6 +699,8 @@ export const fr = {
     title: 'Vues',
     close: 'Fermer les vues',
     readOnly: 'Vues calculées à partir du plan, en lecture seule.',
+    /** Cote d'altitude du faîtage d'une toiture coupée. */
+    ridge: 'Faîtage',
     empty: 'Dessinez des murs ou des pièces pour voir les façades.',
     tabs: 'Choix de la vue',
     elevation: {

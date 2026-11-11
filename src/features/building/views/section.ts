@@ -1,12 +1,14 @@
 import type { Level } from '../../../types/document'
 import { sectionLook } from '../../geometry/sections'
 import type { Point } from '../../geometry/viewport'
-import type { BuildingModel, WallPiece } from '../types'
+import type { BuildingModel, RoofPrism, Vec3, WallPiece } from '../types'
 import {
   facesBounds,
   levelMarks,
   mergeStackedEdges,
   paintOrder,
+  prismPolygons,
+  projectPolygon,
   quad,
   rightOf,
   type FaceKind,
@@ -21,6 +23,8 @@ export interface SectionSpec {
   points: readonly number[]
   lookLeft: boolean
   label: string
+  /** Nom de la cote d'altitude du faîtage (« Faîtage ») ; absent : pas de cote de faîtage. */
+  ridgeLabel?: string
 }
 
 export interface SectionView {
@@ -199,9 +203,111 @@ function prismFaces(
   return faces
 }
 
+/** Enveloppe convexe de points de la vue (chaîne monotone), sans doublons. */
+function convexHull(points: readonly [number, number][]): [number, number][] {
+  const sorted = [...points].sort((p, q) => p[0] - q[0] || p[1] - q[1])
+  const unique = sorted.filter((p, i) => i === 0 || Math.hypot(p[0] - sorted[i - 1][0], p[1] - sorted[i - 1][1]) > 0.01)
+  if (unique.length < 3) return unique
+  const cross = (o: [number, number], a: [number, number], b: [number, number]) =>
+    (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
+  const lower: [number, number][] = []
+  for (const p of unique) {
+    while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop()
+    lower.push(p)
+  }
+  const upper: [number, number][] = []
+  for (const p of [...unique].reverse()) {
+    while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop()
+    upper.push(p)
+  }
+  return [...lower.slice(0, -1), ...upper.slice(0, -1)]
+}
+
+const depth3 = (p: Vec3, look: ViewDirection) => p.x * look.x + p.z * look.y
+
+/** Garde la partie d'un polygone plan située derrière le plan de coupe (Sutherland–Hodgman). */
+function clipPolygonBehind(points: readonly Vec3[], look: ViewDirection, cutDepth: number): Vec3[] {
+  const out: Vec3[] = []
+  for (let i = 0; i < points.length; i++) {
+    const a = points[i]
+    const b = points[(i + 1) % points.length]
+    const da = depth3(a, look) - cutDepth
+    const db = depth3(b, look) - cutDepth
+    if (da >= 0) out.push(a)
+    if (da >= 0 !== db >= 0) {
+      const t = da / (da - db)
+      out.push({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t })
+    }
+  }
+  return out
+}
+
+/**
+ * Coupe d'un prisme de toiture (versant ou pignon) : la section par le plan (enveloppe des points
+ * où ses arêtes traversent le plan), noire ; puis ses faces derrière le plan, vers la personne qui
+ * regarde. Le prisme est convexe, donc sa section l'est aussi.
+ */
+function roofPrismSectionFaces(
+  prism: RoofPrism,
+  look: ViewDirection,
+  cutDepth: number,
+  uLo: number,
+  uHi: number,
+): { faces: ViewFace[]; cut: boolean } {
+  const right = rightOf(look)
+  const toView = (p: Vec3): [number, number] => [p.x * right.x + p.z * right.y, p.y]
+  const kind: FaceKind = prism.kind === 'gable' ? 'wall' : 'roof'
+  const faces: ViewFace[] = []
+  const polygons = prismPolygons(prism)
+
+  const crossings: [number, number][] = []
+  for (const face of polygons) {
+    const pts = face.points
+    for (let i = 0; i < pts.length; i++) {
+      const a = pts[i]
+      const b = pts[(i + 1) % pts.length]
+      const da = depth3(a, look) - cutDepth
+      const db = depth3(b, look) - cutDepth
+      if (Math.abs(da) < 1e-6) crossings.push(toView(a))
+      else if (da > 0 !== db > 0 && Math.abs(db) >= 1e-6) {
+        const t = da / (da - db)
+        crossings.push(toView({ x: a.x + (b.x - a.x) * t, y: a.y + (b.y - a.y) * t, z: a.z + (b.z - a.z) * t }))
+      }
+    }
+  }
+  const hull = convexHull(crossings)
+  let cut = false
+  if (hull.length >= 3) {
+    const face: ViewFace = {
+      polygon: hull,
+      depth: cutDepth - 1,
+      kind,
+      sourceId: prism.sourceId,
+      levelId: prism.levelId,
+      cut: true,
+    }
+    const clamped = clampToWidth(face, uLo, uHi)
+    if (clamped) {
+      faces.push(clamped)
+      cut = true
+    }
+  }
+
+  for (const face of polygons) {
+    const behind = clipPolygonBehind(face.points, look, cutDepth)
+    if (behind.length < 3) continue
+    const projected = projectPolygon({ points: behind, normal: face.normal }, look, kind, prism.sourceId, prism.levelId)
+    if (!projected) continue
+    const clamped = clampToWidth(projected, uLo, uHi)
+    if (clamped) faces.push(clamped)
+  }
+  return { faces, cut }
+}
+
 /**
  * Coupe d'un bâtiment le long d'une ligne de coupe : on garde ce qui est derrière la ligne (dans le
  * sens du regard) et dans sa longueur ; la matière traversée par le plan est coupée (`cut`, noire).
+ * Une toiture coupée par le plan reçoit la cote d'altitude de son faîtage (avec `ridgeLabel`).
  * `null` si la ligne n'a pas de longueur.
  */
 export function buildSection(
@@ -244,6 +350,27 @@ export function buildSection(
       if (clamped) faces.push(clamped)
     }
   }
+  // Toitures : profil coupé en noir ; altitude du faîtage de chaque toiture coupée.
+  const cutRoofs = new Set<string>()
+  for (const prism of model.roofs) {
+    const { faces: roofFaces, cut } = roofPrismSectionFaces(prism, look, cutDepth, uLo, uHi)
+    faces.push(...roofFaces)
+    if (cut && prism.kind === 'roof') cutRoofs.add(prism.sourceId)
+  }
+  const marks = levelMarks(levels)
+  if (section.ridgeLabel) {
+    const seen = new Set(marks.map((m) => Math.round(m.elevation)))
+    for (const roofId of cutRoofs) {
+      const top = Math.max(
+        ...model.roofs.filter((p) => p.sourceId === roofId && p.kind === 'roof').flatMap((p) => p.polygon.map((q) => q.y)),
+      )
+      const elevation = Math.round(top)
+      if (seen.has(elevation)) continue
+      seen.add(elevation)
+      marks.push({ levelId: `ridge-${roofId}`, name: section.ridgeLabel, elevation })
+    }
+    marks.sort((a, b) => a.elevation - b.elevation)
+  }
   const ordered = paintOrder(mergeStackedEdges(faces))
-  return { label: section.label, faces: ordered, bounds: facesBounds(ordered), levels: levelMarks(levels) }
+  return { label: section.label, faces: ordered, bounds: facesBounds(ordered), levels: marks }
 }

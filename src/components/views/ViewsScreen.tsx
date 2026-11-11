@@ -61,6 +61,7 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
         points: section.points,
         lookLeft: section.lookLeft,
         label: section.label,
+        ridgeLabel: fr.views.ridge,
       })
       const title = fr.views.section(section.label)
       return {
@@ -79,7 +80,7 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
           levels: allLevels,
           sections: sections.map((s) => ({ points: s.points, lookLeft: s.lookLeft, label: s.label })),
           northAngle,
-          labels: { elevation: fr.views.elevation, section: fr.views.section },
+          labels: { elevation: fr.views.elevation, section: fr.views.section, ridge: fr.views.ridge },
           fontMm,
         })
         return sheet.drawing.width > 0 ? sheet.drawing : null

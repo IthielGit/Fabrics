@@ -1,6 +1,6 @@
 import type { Level } from '../../../types/document'
 import type { Point } from '../../geometry/viewport'
-import type { BuildingModel, OpeningMark, SlabShape, WallMesh, WallPiece } from '../types'
+import type { BuildingModel, OpeningMark, RoofPrism, SlabShape, Vec3, WallMesh, WallPiece } from '../types'
 
 /**
  * Projection orthographique du modèle 3D neutre sur un plan vertical (façades, coupes).
@@ -164,6 +164,100 @@ export function markFace(mark: OpeningMark, look: ViewDirection): ViewFace | nul
   }
 }
 
+/** Une face plane d'un prisme de toiture, avec sa normale sortante (non unitaire). */
+export interface PrismPolygon {
+  points: Vec3[]
+  normal: Vec3
+}
+
+const sub = (a: Vec3, b: Vec3): Vec3 => ({ x: a.x - b.x, y: a.y - b.y, z: a.z - b.z })
+const add3 = (a: Vec3, b: Vec3): Vec3 => ({ x: a.x + b.x, y: a.y + b.y, z: a.z + b.z })
+const dot3 = (a: Vec3, b: Vec3) => a.x * b.x + a.y * b.y + a.z * b.z
+const average = (pts: readonly Vec3[]): Vec3 => {
+  const n = pts.length || 1
+  return {
+    x: pts.reduce((s, p) => s + p.x, 0) / n,
+    y: pts.reduce((s, p) => s + p.y, 0) / n,
+    z: pts.reduce((s, p) => s + p.z, 0) / n,
+  }
+}
+
+/** Normale de Newell d'un polygone plan (non unitaire, nulle s'il est dégénéré). */
+function newell(pts: readonly Vec3[]): Vec3 {
+  const n = { x: 0, y: 0, z: 0 }
+  for (let i = 0; i < pts.length; i++) {
+    const a = pts[i]
+    const b = pts[(i + 1) % pts.length]
+    n.x += (a.y - b.y) * (a.z + b.z)
+    n.y += (a.z - b.z) * (a.x + b.x)
+    n.z += (a.x - b.x) * (a.y + b.y)
+  }
+  return n
+}
+
+/**
+ * Les faces d'un prisme de toiture (versant ou pignon) : le polygone, sa copie décalée de
+ * `extrude`, et les côtés qui les relient ; chacune avec sa normale tournée vers l'extérieur
+ * (le prisme est convexe : l'extérieur est à l'opposé de son centre).
+ */
+export function prismPolygons(prism: RoofPrism): PrismPolygon[] {
+  const front = prism.polygon
+  const back = front.map((p) => add3(p, prism.extrude))
+  const centre = average([...front, ...back])
+  const faces: Vec3[][] = [front, back]
+  for (let i = 0; i < front.length; i++) {
+    const j = (i + 1) % front.length
+    faces.push([front[i], front[j], back[j], back[i]])
+  }
+  const result: PrismPolygon[] = []
+  for (const points of faces) {
+    let normal = newell(points)
+    if (Math.hypot(normal.x, normal.y, normal.z) < 1e-6) continue
+    if (dot3(sub(average(points), centre), normal) < 0) normal = { x: -normal.x, y: -normal.y, z: -normal.z }
+    result.push({ points, normal })
+  }
+  return result
+}
+
+/** Aire signée × 2 d'un polygone de la vue. */
+function viewArea2(polygon: readonly [number, number][]): number {
+  let sum = 0
+  for (let i = 0; i < polygon.length; i++) {
+    const [u0, v0] = polygon[i]
+    const [u1, v1] = polygon[(i + 1) % polygon.length]
+    sum += u0 * v1 - u1 * v0
+  }
+  return sum
+}
+
+/**
+ * Projette une face plane (versant incliné, pignon, rive) si elle est tournée vers la personne qui
+ * regarde et n'est pas vue par la tranche. `null` sinon.
+ */
+export function projectPolygon(
+  face: PrismPolygon,
+  look: ViewDirection,
+  kind: FaceKind,
+  sourceId: string,
+  levelId: string,
+): ViewFace | null {
+  if (face.normal.x * look.x + face.normal.z * look.y >= -1e-9) return null
+  const right = rightOf(look)
+  const polygon = face.points.map((p): [number, number] => [p.x * right.x + p.z * right.y, p.y])
+  if (Math.abs(viewArea2(polygon)) < 1) return null
+  const centre = average(face.points)
+  return { polygon, depth: centre.x * look.x + centre.z * look.y, kind, sourceId, levelId }
+}
+
+/** Faces visibles d'un versant (`roof`) ou d'un pignon (`wall`) de toiture. */
+export function roofPrismFaces(prism: RoofPrism, look: ViewDirection): ViewFace[] {
+  const kind: FaceKind = prism.kind === 'gable' ? 'wall' : 'roof'
+  return prismPolygons(prism).flatMap((face) => {
+    const projected = projectPolygon(face, look, kind, prism.sourceId, prism.levelId)
+    return projected ? [projected] : []
+  })
+}
+
 /** Faces verticales (côtés) d'une dalle, d'un toit ou d'une plateforme tournées vers la personne qui regarde. */
 export function slabFaces(slab: SlabShape, look: ViewDirection): ViewFace[] {
   const pts = slab.outline
@@ -309,6 +403,8 @@ export function projectModel(model: BuildingModel, look: ViewDirection): ViewFac
   for (const s of model.steps) faces.push(...boxFaces(s, look, 'step'))
   for (const c of model.chimneys) faces.push(...boxFaces(c, look, 'chimney'))
   for (const f of model.fills) faces.push(...boxFaces(f, look, f.kind))
+  // Toitures : versants inclinés, rives (épaisseur du versant) et pignons en triangle.
+  for (const prism of model.roofs) faces.push(...roofPrismFaces(prism, look))
   for (const m of model.marks) {
     const face = markFace(m, look)
     if (face) faces.push(face)

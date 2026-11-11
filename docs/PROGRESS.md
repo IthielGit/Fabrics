@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot B, tâche 3 (toiture en 3D)
-- **Prochaine tâche :** M10 bis, Lot B, tâche 4 (toiture dans les façades et les coupes), puis tâche 5 (métrés) ; puis **M10 ter**, puis M11
+- **Dernière tâche terminée :** M10 bis, Lot B, tâche 4 (toiture dans les façades et les coupes)
+- **Prochaine tâche :** M10 bis, Lot B, tâche 5 (métrés des toitures), puis Lot C (hachures et textures) ; puis **M10 ter**, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M10 bis · Lot B · Tâche 4 · Toiture dans les façades et les coupes
+- Fait : les façades et coupes savent dessiner des **faces inclinées**. Chaque prisme de toiture donne ses faces (dessus et dessous du versant, rives, pignon) avec leur normale sortante ; une face tournée vers la personne qui regarde et non vue par la tranche est projetée (polygone quelconque) et passe par l'algorithme du peintre comme les autres. **Façades** : versant vu de face au-dessus de la tranche de l'égout, débord compris ; façade pignon : le **triangle** du pignon sous les deux rives. **Coupes** : la section d'un versant ou d'un pignon par le plan de coupe est l'enveloppe des points où ses arêtes traversent le plan, en **noir** ; ses faces derrière le plan sont découpées par le plan ; une toiture coupée reçoit la cote **« Faîtage »** avec son altitude (en plus des cotes de niveaux), aussi dans la planche. Changer la pente, la forme ou le débord met la 3D, les façades et les coupes à jour en direct (même modèle).
+- Critères de la roadmap vérifiés par les tests : la façade pignon montre un triangle ; la coupe perpendiculaire au faîtage montre le profil du toit en noir et cote le faîtage (+ 4601 mm sur un niveau de 2500 mm) ; changer la pente change la façade et la coupe. Vérifié aussi dans un navigateur sans fenêtre (façades Est et Sud, coupe A–A).
+- Fichiers : `src/features/building/views/{projection,section,sheet}.ts`, `roofViews.test.ts` (nouveau), `src/components/views/ViewsScreen.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2326, dont 11 nouveaux)
+- Commit : feat: M10 bis lot B tâche 4, toiture dans les façades et les coupes
 
 ### 2026-11-11 — M10 bis · Lot B · Tâche 3 · Toiture en 3D
 - Fait : le modèle 3D gagne `roofs` : un **prisme par versant** (dessus du versant, épaisseur de dalle du niveau vers le bas, D42) et **par pignon** (triangle au nu extérieur, poussé vers l'intérieur de l'épaisseur du mur dessous, ou de l'épaisseur par défaut du plan sans mur, D43) ; un toit à un pan a aussi son mur haut rehaussé. Les pignons montent jusqu'au **dessous** du versant (sinon leur haut affleurait le dessus du toit et dessinait des traits blancs). Un **toit plat dessiné** est une dalle dessus au haut des murs, débord compris (D44). Une toiture **remplace le toit plat automatique** des pièces de son niveau dont le centre est sous son contour ; aucune toiture en vue « étage ouvert » sous le dernier niveau ; une toiture masquée ou non valable ne donne rien (D45). L'emprise du modèle monte jusqu'au faîtage (cadrage de la caméra). **Vue 3D** : versants gris chaud, pignons dans l'enduit des murs, ombres ; un clic sélectionne la toiture. Le modèle reçoit les réglages du plan (épaisseur par défaut des pignons).
