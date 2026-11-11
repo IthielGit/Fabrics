@@ -96,7 +96,9 @@ export default function StretchDraftLayer({ state, preview, scale }: StretchDraf
             text={
               preview.blockedByDiagonal
                 ? fr.stretch.blockedDiagonal
-                : `${formatLength(preview.delta.x)} · ${formatLength(preview.delta.y)}`
+                : preview.typed !== ''
+                  ? `${preview.typed} mm ↵`
+                  : `${formatLength(preview.delta.x)} · ${formatLength(preview.delta.y)}`
             }
             fontSize={13 / scale}
             fontStyle="bold"

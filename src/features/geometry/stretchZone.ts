@@ -58,6 +58,21 @@ function edges(element: CanvasElement): [Point, Point][] {
   return pairs
 }
 
+/**
+ * Déplacement donné au clavier (en mm entiers, sans unité = mm) : la distance tapée s'applique
+ * dans la direction dominante du déplacement à la souris (`wanted`), vers le côté où pointe la
+ * souris ; un « - » devant inverse le sens. `null` si le texte n'est pas un nombre entier.
+ */
+export function typedStretchDelta(typed: string, wanted: Point): Point | null {
+  if (!/^-?\d+$/.test(typed.trim())) return null
+  const value = Number(typed.trim())
+  const horizontal = Math.abs(wanted.x) >= Math.abs(wanted.y)
+  const along = horizontal ? wanted.x : wanted.y
+  const sign = typed.trim().startsWith('-') ? -1 : along < 0 ? -1 : 1
+  const distance = Math.abs(value) * sign
+  return horizontal ? { x: distance, y: 0 } : { x: 0, y: distance }
+}
+
 export interface StretchDelta {
   /** Déplacement autorisé, en mm (entiers). */
   delta: Point

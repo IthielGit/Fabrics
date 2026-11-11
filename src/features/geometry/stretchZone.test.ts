@@ -6,7 +6,7 @@ import { createFurnitureElement, createOpeningElement, createRoomElement, create
 import { elementBounds } from '../export/bounds'
 import { openingGeometry } from './openings'
 import { polygonArea } from './polygon'
-import { constrainStretch, pointInZone, stretchZone } from './stretchZone'
+import { constrainStretch, pointInZone, stretchZone, typedStretchDelta } from './stretchZone'
 
 // Pièce de 4000 × 3000 mm (face intérieure) ; l'axe des murs est 100 mm plus loin (murs de 200).
 const wall = createWallElement('Mur', [-100, -100, 4100, -100, 4100, 3100, -100, 3100, -100, -100], 200, 2700)
@@ -47,6 +47,24 @@ describe('constrainStretch', () => {
   it('ignore les éléments verrouillés', () => {
     const locked = plan.map((el) => ({ ...el, locked: true }))
     expect(constrainStretch(locked, eastZone, { x: 1000, y: 700 }).delta).toEqual({ x: 1000, y: 700 })
+  })
+})
+
+describe('typedStretchDelta', () => {
+  it('la distance tapée suit la direction de la souris', () => {
+    expect(typedStretchDelta('1000', { x: 300, y: 20 })).toEqual({ x: 1000, y: 0 })
+    expect(typedStretchDelta('1000', { x: -300, y: 20 })).toEqual({ x: -1000, y: 0 })
+    expect(typedStretchDelta('800', { x: 10, y: -400 })).toEqual({ x: 0, y: -800 })
+  })
+
+  it('un moins inverse le sens', () => {
+    expect(typedStretchDelta('-500', { x: 300, y: 0 })).toEqual({ x: -500, y: 0 })
+  })
+
+  it('refuse ce qui n’est pas un nombre entier', () => {
+    expect(typedStretchDelta('', { x: 1, y: 0 })).toBeNull()
+    expect(typedStretchDelta('12,5', { x: 1, y: 0 })).toBeNull()
+    expect(typedStretchDelta('-', { x: 1, y: 0 })).toBeNull()
   })
 })
 

@@ -40,6 +40,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · I · Étirer par zone (tâche 3 sur 4 : distance au clavier)
+- Fait : pendant le déplacement de l'outil Étirer, on peut **taper la distance en mm** (chiffres, `-` en premier pour inverser, Retour arrière pour corriger) puis `Entrée` : elle s'applique dans la direction où pointe la souris (horizontale ou verticale), arrondie au mm, avec les mêmes garde-fous (angles droits, ouvertures retirées si elles ne tiennent plus). L'aperçu affiche `1000 mm ↵`. La saisie est interceptée avant les raccourcis (Retour arrière ne supprime donc pas la sélection). Le bouton et le raccourci `S` étaient déjà faits à la tâche 2.
+- Reste : tâche 4 (contrôle final dans le navigateur).
+- Fichiers : `src/features/geometry/stretchZone(.test).ts` (`typedStretchDelta`), `src/components/editor/{useStretchTool.ts,StretchDraftLayer.tsx}`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2078)
+
 ### 2026-11-11 — Hors jalon · I · Étirer par zone (tâche 2 sur 4 : outil et aperçu)
 - Fait : **outil Étirer** (`S`, famille Construction, projets Plan uniquement). On **glisse un rectangle** autour de la partie à déplacer, on **clique un point de départ**, puis on **clique le point d'arrivée** : l'aperçu montre en direct les murs, pièces, cotes et objets tels qu'ils seraient (en indigo), avec la distance en mm ; `Maj` garde l'horizontale ou la verticale ; le point suit la grille d'aimantation ; un côté en biais qui traverse la zone bloque le déplacement (message rouge). `Échap` quitte l'outil et abandonne le geste. La validation passe par `stretchZoneBy` (un seul pas d'historique, annulable ; un message si des ouvertures sont retirées). L'outil reste actif pour enchaîner.
 - Reste : tâche 3 (saisie de la distance en mm au clavier) et tâche 4 (contrôle final dans le navigateur).

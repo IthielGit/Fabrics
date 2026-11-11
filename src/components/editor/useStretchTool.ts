@@ -1,9 +1,10 @@
 import type Konva from 'konva'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { distance, normalizeBox, type Box } from '../../features/geometry/box'
 import {
   constrainStretch,
   stretchZone,
+  typedStretchDelta,
   type StretchResult,
 } from '../../features/geometry/stretchZone'
 import type { Point } from '../../features/geometry/viewport'
@@ -26,7 +27,7 @@ export type StretchState =
   | { phase: 'idle' }
   | { phase: 'zone'; start: Point; current: Point }
   | { phase: 'base'; zone: Box }
-  | { phase: 'move'; zone: Box; base: Point; cursor: Point }
+  | { phase: 'move'; zone: Box; base: Point; cursor: Point; typed: string }
 
 const IDLE: StretchState = { phase: 'idle' }
 
@@ -36,6 +37,8 @@ export interface StretchPreview {
   delta: Point
   /** Un côté en biais traverse la zone : aucun déplacement n'est possible. */
   blockedByDiagonal: boolean
+  /** Distance tapée au clavier (vide si on vise à la souris). */
+  typed: string
   /** Ce qui changerait ; `null` si rien ne change. */
   result: StretchResult | null
 }
@@ -66,8 +69,7 @@ export function useStretchTool(enabled: boolean, scale: number) {
 
   const preview = useMemo<StretchPreview | null>(() => {
     if (state.phase !== 'move') return null
-    const { zone, base, cursor } = state
-    return computePreview(elements, zone, { x: cursor.x - base.x, y: cursor.y - base.y })
+    return computePreview(elements, state)
   }, [state, elements])
 
   const pointerIn = (event: PointerEvent) => event.target.getStage()?.getRelativePointerPosition() ?? null
@@ -88,19 +90,50 @@ export function useStretchTool(enabled: boolean, scale: number) {
       setState({ phase: 'zone', start: point, current: point })
     } else if (state.phase === 'base') {
       const base = snapPoint(point)
-      setState({ phase: 'move', zone: state.zone, base, cursor: base })
+      setState({ phase: 'move', zone: state.zone, base, cursor: base, typed: '' })
     } else if (state.phase === 'move') {
       const shift = event.evt.shiftKey
       const cursor = movePoint(point, state.base, shift)
-      const wanted = { x: cursor.x - state.base.x, y: cursor.y - state.base.y }
-      const { delta } = constrainStretch(elements, state.zone, wanted)
-      setState(IDLE)
-      if (delta.x === 0 && delta.y === 0) return
-      const store = useEditorStore.getState()
-      const removed = store.stretchZoneBy(state.zone, delta)
-      if (removed !== null && removed > 0) store.setNotice(fr.stretch.removed(removed))
+      applyStretch({ ...state, cursor, typed: '' })
     }
   }
+
+  /** Valide le déplacement (souris ou distance tapée) : un seul pas d'historique. */
+  const applyStretch = (move: Extract<StretchState, { phase: 'move' }>) => {
+    const { delta } = computePreview(elements, move)
+    setState(IDLE)
+    if (delta.x === 0 && delta.y === 0) return
+    const store = useEditorStore.getState()
+    const removed = store.stretchZoneBy(move.zone, delta)
+    if (removed !== null && removed > 0) store.setNotice(fr.stretch.removed(removed))
+  }
+
+  // Saisie au clavier pendant le déplacement : chiffres (et « - »), Retour arrière, Entrée.
+  // Écoute en capture pour passer avant les raccourcis (Retour arrière supprimerait la sélection).
+  useEffect(() => {
+    if (state.phase !== 'move') return
+    const move = state
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey || event.altKey) return
+      const key = event.key
+      let typed: string | null = null
+      if (/^\d$/.test(key)) typed = move.typed + key
+      else if (key === '-' && move.typed === '') typed = '-'
+      else if (key === 'Backspace') typed = move.typed.slice(0, -1)
+      else if (key === 'Enter' && move.typed !== '') {
+        event.preventDefault()
+        event.stopPropagation()
+        applyStretch(move)
+        return
+      }
+      if (typed === null) return
+      event.preventDefault()
+      event.stopPropagation()
+      setState({ ...move, typed })
+    }
+    window.addEventListener('keydown', onKeyDown, true)
+    return () => window.removeEventListener('keydown', onKeyDown, true)
+  })
 
   const onPointerMove = (event: PointerEvent) => {
     const point = pointerIn(event)
@@ -127,9 +160,14 @@ export function useStretchTool(enabled: boolean, scale: number) {
 
 function computePreview(
   elements: Parameters<typeof constrainStretch>[0],
-  zone: Box,
-  wanted: Point,
+  move: Extract<StretchState, { phase: 'move' }>,
 ): StretchPreview {
-  const { delta, blockedByDiagonal } = constrainStretch(elements, zone, wanted)
-  return { zone, delta, blockedByDiagonal, result: stretchZone(elements, zone, delta) }
+  const { zone, base, cursor, typed } = move
+  const wanted = { x: cursor.x - base.x, y: cursor.y - base.y }
+  const { delta, blockedByDiagonal } = constrainStretch(
+    elements,
+    zone,
+    typedStretchDelta(typed, wanted) ?? wanted,
+  )
+  return { zone, delta, blockedByDiagonal, typed, result: stretchZone(elements, zone, delta) }
 }
