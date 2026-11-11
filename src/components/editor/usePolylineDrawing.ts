@@ -54,7 +54,8 @@ function samePoint(a: Point, b: Point): boolean {
  * Tracé « point par point » d'un mur, d'une pièce, d'une cote ou d'un axe :
  * clic = poser un point ; `Maj` = contraindre à 0/45/90° ; double-clic ou `Entrée` = terminer ;
  * `Échap` = annuler ; `Retour arrière` = retirer le dernier point. Les points s'aimantent aux
- * sommets existants, aux angles des faces de murs, aux axes de construction, puis à la grille.
+ * sommets existants, aux angles des faces de murs, aux axes de construction, à l'horizontale ou
+ * la verticale du point précédent (`Alt` désactive cet alignement), puis à la grille.
  *
  * `scale` = pixels écran par mm (pour garder une distance d'accroche constante à l'écran).
  */
@@ -98,7 +99,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
   }, [])
 
   const snap = useCallback(
-    (raw: Point, shift: boolean) => {
+    (raw: Point, shift: boolean, alt: boolean) => {
       const { project } = useEditorStore.getState()
       if (!project) return { point: raw, kind: 'none' as SnapKind }
       const current = readDraft().points
@@ -112,6 +113,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         threshold: SNAP_THRESHOLD_PX / scale,
         from: current.length > 0 ? current[current.length - 1] : null,
         constrain: shift,
+        softAlign: !alt,
       })
     },
     [planVertices, readDraft, scale],
@@ -171,7 +173,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         return
       }
 
-      const { point, kind } = snap(raw, event.evt.shiftKey)
+      const { point, kind } = snap(raw, event.evt.shiftKey, event.evt.altKey)
       const points = current.points
 
       // Pièce : un clic sur le premier point ferme le polygone.
@@ -193,7 +195,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       if (!tool) return
       const raw = event.target.getStage()?.getRelativePointerPosition()
       if (!raw) return
-      const { point, kind } = snap(raw, event.evt.shiftKey)
+      const { point, kind } = snap(raw, event.evt.shiftKey, event.evt.altKey)
       setDraft({ ...readDraft(), cursor: point, snapKind: kind })
     },
     [tool, readDraft, snap, setDraft],

@@ -39,6 +39,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · A · Alignement doux du tracé (murs, pièces, cotes, axes)
+- Fait : demande de l'utilisateur (tracés pas droits : chaque point s'aimantait seul sur la grille, donc un mur pouvait finir décalé d'un cran). **Sans Maj**, un point à moins de 12 px de l'horizontale ou de la verticale du point précédent, et à moins de 5° de cette direction, est ramené exactement dessus ; la grille ne s'applique alors que **le long** de la ligne. Priorité : sommet, axe, alignement, grille ; Maj (45°) reste prioritaire ; **Alt** désactive l'alignement. Actif aussi quand on glisse un sommet d'un mur, d'une pièce ou d'une cote (voisin = point précédent). Rappels en bas de l'écran mis à jour.
+- Reste de la demande (3 tâches) : B guides d'alignement dans les plans (lignes pointillées pendant le tracé), C navigation (clic molette, deux doigts, barres de défilement, mini-carte).
+- Fichiers : `src/features/geometry/snapping(.test).ts` (`softAlign`), `src/components/editor/{usePolylineDrawing.ts,VertexHandles.tsx}`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1874 au total, dont 9 nouveaux) — tracé à la souris à contrôler dans le navigateur
+- Commit : feat: alignement doux horizontal et vertical du tracé
+
 ### 2026-11-11 — M8 · Correctifs après essai dans le navigateur
 - Fait : essai réel dans Edge (même moteur que Chrome) avec un plan de test. **Cadrage de la 3D** : la caméra tient compte de la largeur du panneau (étroit et haut), le bâtiment n'est plus coupé à l'ouverture. **Traits en pointillé** retirés : les arêtes dessinées sur chaque morceau de mur se superposaient aux jonctions et aux coins ; l'allège et le linteau pénètrent de 1 mm dans les trumeaux voisins (invisible) pour supprimer les coutures. **Changer le type d'une ouverture** (Propriétés > Type) : une ouverture qui a encore la taille par défaut de son type prend celle du nouveau (fenêtre 1200 × 1000 devenue porte → 900 × 2100, au sol ; porte → fenêtre 1200 × 1000, allège 900 ; baie 2400 × 2150) ; une taille modifiée à la main est gardée, et l'ancienne taille aussi si la nouvelle ne tient pas (mur trop bas, pas de place à côté d'une voisine). Vérifié en réel : la fenêtre à 900 mm d'allège est un trou à la bonne hauteur, la porte descend au sol, un clic sur un mur en 3D le sélectionne sur le plan.
 - Fichiers : `src/components/viewer3d/Viewer3DScene.tsx`, `src/features/building/wallPieces.ts`, `src/features/geometry/openingEdit(.test).ts`, `src/components/editor/OpeningFields.tsx`

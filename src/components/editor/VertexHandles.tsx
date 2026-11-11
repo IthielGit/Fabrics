@@ -78,6 +78,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
         threshold: SNAP_THRESHOLD_PX / scale,
         from: neighbour ?? null,
         constrain: event.evt.shiftKey,
+        softAlign: !event.evt.altKey,
       },
     )
     node.position(point)

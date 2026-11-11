@@ -143,6 +143,66 @@ describe('snapPoint', () => {
   })
 })
 
+describe('alignement doux (sans Maj)', () => {
+  const from = { x: 1000, y: 1000 }
+  const SOFT: PointSnapContext = { ...NONE, from, softAlign: true, threshold: 80 }
+
+  it('ramène un point presque horizontal sur l’horizontale du point précédent', () => {
+    expect(snapPoint({ x: 3000, y: 1090 }, SOFT)).toEqual({
+      point: { x: 3000, y: 1000 },
+      kind: 'angle',
+    })
+  })
+
+  it('ramène un point presque vertical sur la verticale', () => {
+    expect(snapPoint({ x: 940, y: -2000 }, SOFT)).toEqual({
+      point: { x: 1000, y: -2000 },
+      kind: 'angle',
+    })
+  })
+
+  it('laisse un point franchement oblique tel quel (45° compris)', () => {
+    expect(snapPoint({ x: 3000, y: 1300 }, SOFT).kind).toBe('none')
+    expect(snapPoint({ x: 3000, y: 3000 }, SOFT).kind).toBe('none')
+  })
+
+  it('ne ramène pas un segment court dont l’angle est trop grand', () => {
+    // 90 mm d’écart sur 100 mm de long : ce n’est pas une ligne « presque droite »
+    expect(snapPoint({ x: 1100, y: 1090 }, SOFT).kind).toBe('none')
+  })
+
+  it('désactivé par défaut et sans point précédent', () => {
+    expect(snapPoint({ x: 3000, y: 1090 }, { ...NONE, from }).kind).toBe('none')
+    expect(snapPoint({ x: 3000, y: 1090 }, { ...SOFT, from: null }).kind).toBe('none')
+  })
+
+  it('reste droit malgré la grille : la grille ne s’applique que le long de la ligne', () => {
+    const result = snapPoint({ x: 3127, y: 1090 }, { ...SOFT, gridSize: 100 })
+    expect(result.point).toEqual({ x: 3100, y: 1000 })
+    expect(result.kind).toBe('angle')
+  })
+
+  it('un tracé de 3 points sur la grille donne des angles droits', () => {
+    // Sans alignement, la grille seule donnerait y = 1100 (pente) ; avec, y reste 1000.
+    expect(snapPoint({ x: 3127, y: 1060 }, { ...SOFT, gridSize: 100 }).point.y).toBe(1000)
+    expect(snapPoint({ x: 3127, y: 1060 }, { ...NONE, from, gridSize: 100 }).point.y).toBe(1100)
+  })
+
+  it('le sommet reste prioritaire', () => {
+    const result = snapPoint(
+      { x: 3000, y: 1090 },
+      { ...SOFT, vertices: [{ x: 3000, y: 1130 }], threshold: 80 },
+    )
+    expect(result).toEqual({ point: { x: 3000, y: 1130 }, kind: 'vertex' })
+  })
+
+  it('Maj reste prioritaire sur l’alignement doux', () => {
+    const result = snapPoint({ x: 3000, y: 2000 }, { ...SOFT, constrain: true })
+    expect(result.kind).toBe('angle')
+    expect(result.point.x - from.x).toBeCloseTo(result.point.y - from.y)
+  })
+})
+
 describe('aimantation sur les axes', () => {
   const axes = [
     { a: { x: 0, y: 3000 }, b: { x: 10000, y: 3000 } }, // horizontal

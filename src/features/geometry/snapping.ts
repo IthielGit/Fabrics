@@ -29,7 +29,17 @@ export interface PointSnapContext {
   constrain: boolean
   /** Axes de construction : le point s'aimante sur leur ligne (voir `collectSnapAxes`). */
   axes?: readonly AxisSegment[]
+  /**
+   * Alignement doux : sans Maj, un point proche de l'horizontale ou de la verticale du point
+   * précédent (`from`) est ramené exactement dessus. Désactivé par défaut (Alt le coupe à l'écran).
+   */
+  softAlign?: boolean
 }
+
+/** Écart perpendiculaire maximal de l'alignement doux, en multiples de `threshold` (soit 12 px). */
+const SOFT_ALIGN_DISTANCE_FACTOR = 1.5
+/** Écart angulaire maximal de l'alignement doux : tangente de 5°. */
+const SOFT_ALIGN_MAX_TAN = Math.tan((5 * Math.PI) / 180)
 
 const SQRT_HALF = Math.SQRT1_2
 
@@ -59,6 +69,20 @@ export function constrainAngle(from: Point, to: Point): Point {
   return { x: from.x + direction.x * length, y: from.y + direction.y * length }
 }
 
+/**
+ * Ramène `to` exactement à l'horizontale ou à la verticale de `from` quand il en est assez proche
+ * (écart perpendiculaire ≤ 1,5 × `threshold` et angle ≤ 5°), sinon `null`.
+ */
+export function softAlign(from: Point, to: Point, threshold: number): Point | null {
+  const dx = Math.abs(to.x - from.x)
+  const dy = Math.abs(to.y - from.y)
+  const maxOffset = threshold * SOFT_ALIGN_DISTANCE_FACTOR
+  if (dx >= dy) {
+    return dy <= maxOffset && dy <= dx * SOFT_ALIGN_MAX_TAN ? { x: to.x, y: from.y } : null
+  }
+  return dx <= maxOffset && dx <= dy * SOFT_ALIGN_MAX_TAN ? { x: from.x, y: to.y } : null
+}
+
 function roundToGrid(value: number, grid: number): number {
   return Math.round(value / grid) * grid
 }
@@ -82,8 +106,9 @@ function nearestVertex(point: Point, vertices: readonly Point[], threshold: numb
  * 2. la ligne d'un axe de construction à moins de `threshold` (sauf avec Maj : la direction
  *    contrainte prime) ;
  * 3. la grille, si elle est active ;
- * 4. avec Maj : la direction contrainte à un multiple de 45° depuis le point précédent
- *    (la grille s'applique alors le long de cette direction).
+ * 4. avec Maj : la direction contrainte à un multiple de 45° depuis le point précédent ;
+ *    sans Maj, avec `softAlign` : l'horizontale ou la verticale du point précédent si le curseur
+ *    en est proche. Dans les deux cas la grille s'applique ensuite le long de cette direction.
  */
 export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResult {
   const { vertices, gridSize, threshold, from, constrain, axes } = context
@@ -98,8 +123,18 @@ export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResul
     if (onAxis) return { point: onAxis, kind: 'axis' }
   }
 
+  // Alignement doux : une direction droite est préférée à la grille, qui ferait pencher le tracé.
+  let direction = constrained
+  if (!constrained && context.softAlign && from !== null) {
+    const aligned = softAlign(from, candidate, threshold)
+    if (aligned) {
+      candidate = aligned
+      direction = true
+    }
+  }
+
   if (gridSize !== null && gridSize > 0) {
-    if (constrained) {
+    if (direction && from !== null) {
       const dx = candidate.x - from.x
       const dy = candidate.y - from.y
       if (Math.abs(dy) < 1e-9) {
@@ -119,7 +154,7 @@ export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResul
     }
   }
 
-  return { point: candidate, kind: constrained ? 'angle' : 'none' }
+  return { point: candidate, kind: direction ? 'angle' : 'none' }
 }
 
 /**
