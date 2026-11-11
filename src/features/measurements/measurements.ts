@@ -367,3 +367,10 @@ export function computeBuildingMeasurements(
   }))
   return { levels, total: sumMeasurements(levels.map((l) => l.measurements)) }
 }
+
+/** Le même bâtiment réduit à un seul niveau (ses métrés et ses totaux) ; inchangé si le niveau n'existe pas. */
+export function restrictToLevel(building: BuildingMeasurements, levelId: string): BuildingMeasurements {
+  const kept = building.levels.filter((entry) => entry.level.id === levelId)
+  if (kept.length === 0) return building
+  return { levels: kept, total: sumMeasurements(kept.map((entry) => entry.measurements)) }
+}

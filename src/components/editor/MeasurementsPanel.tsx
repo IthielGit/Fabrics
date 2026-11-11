@@ -8,6 +8,7 @@ import {
 } from '../../features/measurements/measurements'
 import { formatArea, formatLength, formatVolume } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
+import { formatDate } from '../../lib/date'
 import { downloadBlob } from '../../lib/download'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
@@ -46,7 +47,10 @@ export default function MeasurementsPanel() {
     building.total.stairs.length === 0
 
   const handleExport = () => {
-    const csv = measurementsToCsv(building, fr.measurements.csv, furnitureCsvRows(elements ?? []))
+    const csv = measurementsToCsv(building, fr.measurements.csv, furnitureCsvRows(elements ?? []), {
+      projectName,
+      date: formatDate(new Date()),
+    })
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
     downloadBlob(
       blob,

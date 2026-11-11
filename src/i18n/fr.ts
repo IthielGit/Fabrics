@@ -202,7 +202,16 @@ export const fr = {
     exportCsv: 'Exporter en CSV',
     exportDisabled: 'Rien à exporter : dessinez d’abord une pièce ou un mur.',
     csvFileSuffix: 'metres',
+    flatFileSuffix: 'metres-donnees',
     csvFallbackName: 'plan',
+    // Document PDF des métrés
+    pdf: {
+      title: 'Métrés',
+      continued: 'suite',
+      dateLabel: 'Date',
+      sheetLabel: 'Feuille',
+      pageLabel: 'Page',
+    },
     // Intitulés du fichier CSV
     csv: {
       stairs: {
@@ -347,12 +356,27 @@ export const fr = {
     formatPng: 'PNG',
     formatJpg: 'JPG',
     formatPdf: 'PDF',
-    formatCsv: 'CSV (métrés)',
+    formatCsv: 'Métrés',
     formatHint: {
       png: 'Image avec la qualité maximale (fond conservé).',
       jpg: 'Image plus légère, sans transparence.',
       pdf: 'Document prêt à imprimer.',
-      csv: 'Tableau des surfaces et longueurs, lisible dans Excel.',
+      csv: 'Surfaces, longueurs et volumes du bâtiment, à lire dans Excel ou à imprimer.',
+    },
+    metres: {
+      format: 'Présentation',
+      tables: 'Tableaux (CSV)',
+      flat: 'Données à plat (CSV)',
+      pdf: 'Document imprimable (PDF)',
+      hint: {
+        tables: 'Un bloc par tableau, avec ses totaux : pour lire et imprimer.',
+        flat: 'Une ligne par grandeur : pour les tableaux croisés et les filtres d’Excel.',
+        pdf: 'Un bordereau avec cadre et cartouche, prêt à imprimer.',
+      },
+      scope: 'Périmètre',
+      building: 'Tout le bâtiment',
+      level: 'Niveau affiché',
+      furniture: 'Inclure le mobilier et les équipements',
     },
     fileName: 'Nom du fichier',
     resolution: 'Résolution',

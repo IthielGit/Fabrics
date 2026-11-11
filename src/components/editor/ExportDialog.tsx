@@ -20,6 +20,7 @@ import Choice from '../ui/Choice'
 import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
 import { exportProject } from './exportProject'
+import type { MetresFormat, MetresScope } from './exportMetres'
 
 /** Fenêtre « Exporter » : PNG, JPG, PDF et, pour un plan, CSV des métrés. */
 export default function ExportDialog({ onClose }: { onClose: () => void }) {
@@ -78,6 +79,10 @@ function ExportForm({ onClose }: { onClose: () => void }) {
     const wanted = project?.document.plan?.scale
     return PLAN_SCALES.find((s) => s === wanted) ?? 50
   })
+  // Métrés : présentation, périmètre et mobilier.
+  const [metresFormat, setMetresFormat] = useState<MetresFormat>('tables')
+  const [metresScope, setMetresScope] = useState<MetresScope>('building')
+  const [includeFurniture, setIncludeFurniture] = useState(true)
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState(false)
 
@@ -94,6 +99,9 @@ function ExportForm({ onClose }: { onClose: () => void }) {
       : isPlan && !extent
         ? fr.export.planEmpty
         : null
+  // Les métrés en PDF ont leur propre mise en page : ni échelle ni emprise.
+  const metresPdf = type === 'csv' && metresFormat === 'pdf'
+  const fileExtension = type === 'csv' ? (metresFormat === 'pdf' ? 'pdf' : 'csv') : type
   const planDoesNotFit = type === 'pdf' && planPlacement !== null && !planPlacement.fits
   const selectedOption = options.find((o) => o.multiplier === multiplier)
   const tooBig = (type === 'png' || type === 'jpg') && selectedOption?.allowed === false
@@ -103,7 +111,15 @@ function ExportForm({ onClose }: { onClose: () => void }) {
     setBusy(true)
     setFailed(false)
     try {
-      await exportProject(project, { type, fileName, multiplier, sheet, orientation, scale })
+      await exportProject(project, {
+        type,
+        fileName,
+        multiplier,
+        sheet,
+        orientation,
+        scale,
+        metres: { format: metresFormat, scope: metresScope, includeFurniture },
+      })
       onClose()
     } catch {
       setFailed(true)
@@ -149,7 +165,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
               onChange={(event) => setFileName(event.target.value)}
               className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             />
-            <span className="text-sm text-slate-500">.{type}</span>
+            <span className="text-sm text-slate-500">.{fileExtension}</span>
           </div>
         </div>
 
@@ -173,7 +189,52 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         )}
         {tooBig && <p className="text-sm text-red-600">{fr.export.tooBig}</p>}
 
-        {type === 'pdf' && (
+        {type === 'csv' && (
+          <>
+            <Group label={fr.export.metres.format}>
+              {(['tables', 'flat', 'pdf'] as const).map((value) => (
+                <Choice
+                  key={value}
+                  name="export-metres-format"
+                  checked={metresFormat === value}
+                  onSelect={() => {
+                    setMetresFormat(value)
+                    if (value === 'pdf') setOrientation('landscape')
+                  }}
+                >
+                  {fr.export.metres[value]}
+                </Choice>
+              ))}
+            </Group>
+            <p className="-mt-2 text-xs text-slate-500">{fr.export.metres.hint[metresFormat]}</p>
+            <Group label={fr.export.metres.scope}>
+              <Choice
+                name="export-metres-scope"
+                checked={metresScope === 'building'}
+                onSelect={() => setMetresScope('building')}
+              >
+                {fr.export.metres.building}
+              </Choice>
+              <Choice
+                name="export-metres-scope"
+                checked={metresScope === 'level'}
+                onSelect={() => setMetresScope('level')}
+              >
+                {fr.export.metres.level}
+              </Choice>
+            </Group>
+            <label className="flex items-center gap-2 text-sm text-slate-700">
+              <input
+                type="checkbox"
+                checked={includeFurniture}
+                onChange={(event) => setIncludeFurniture(event.target.checked)}
+              />
+              {fr.export.metres.furniture}
+            </label>
+          </>
+        )}
+
+        {(type === 'pdf' || metresPdf) && (
           <>
             <Group label={fr.export.sheet}>
               <Choice name="export-sheet" checked={sheet === 'a4'} onSelect={() => setSheet('a4')}>

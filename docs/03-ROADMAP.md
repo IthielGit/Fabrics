@@ -99,7 +99,7 @@ Objectif : réaliser les parcours B et C (hors export PDF).
       leurs faces ; étiquette au centre (nom + surface au tracé)
 - [x] Murs, pièces et cotes : points absolus, déplacement seul avec le Transformer (règles de
       `docs/02-ARCHITECTURE.md`)
-- [x] Outil Cote : deux points, valeur affichée en mètres, décalage réglable
+- [x] Outil Cote : deux points, valeur affichée en mm, décalage réglable
 - [x] Outil Calibrer pour une image importée (procédure de `docs/02-ARCHITECTURE.md`)
 - [x] Édition des sommets : glisser un sommet d'un mur ou d'une pièce après création
 - [x] Panneau Métrés (pièces, murs, totaux), mis à jour en temps réel
@@ -107,10 +107,10 @@ Objectif : réaliser les parcours B et C (hors export PDF).
 - [x] Ces outils n'apparaissent que dans les projets de type Plan
 
 **Critères d'acceptation**
-- Un rectangle de pièce de 4,00 × 3,00 m affiche 12,00 m² et 14,00 m
-- Une pièce tracée sur les faces intérieures de 4 murs (axes 4,00 × 3,00 m, épaisseur 20 cm)
+- Un rectangle de pièce de 4000 × 3000 mm affiche 12,00 m² et 14000 mm
+- Une pièce tracée sur les faces intérieures de 4 murs (axes 4000 × 3000 mm, épaisseur 200 mm)
   affiche 10,64 m²
-- Une image calibrée sur une distance connue de 3,50 m donne une cote de 3,50 m ± 1 cm entre
+- Une image calibrée sur une distance connue de 3500 mm donne une cote de 3500 mm ± 10 mm entre
   les deux mêmes points
 - Le CSV s'ouvre dans Excel ou LibreOffice avec les accents et les décimales corrects
 - Tous les tests de `features/` passent
@@ -202,7 +202,7 @@ Objectif : un projet Plan contient plusieurs étages.
       (nom, nombre)
 
 **Critères d'acceptation**
-- Un lit 160 × 200 cm posé sur le plan mesure 1,60 × 2,00 m avec l'outil Cote
+- Un lit 1600 × 2000 mm posé sur le plan mesure 1600 × 2000 mm avec l'outil Cote
 - Un nouvel axe parallèle aux axes « A, B » reçoit « C »
 
 ## M8 — Vue 3D
@@ -315,7 +315,7 @@ Objectif : obtenir sans dessiner les façades et les coupes, et les présenter e
 **Critères d'acceptation**
 - Une façade montre chaque fenêtre du mur correspondant, à la bonne hauteur
 - Déplacer la ligne de coupe met la coupe à jour
-- Imprimée à 100 %, une hauteur d'étage de 2,50 m mesure 5,0 cm sur une façade à 1:50
+- Imprimée à 100 %, une hauteur d'étage de 2500 mm mesure 50 mm sur une façade à 1:50
 
 ## M10 bis — Ouvertures détaillées, toitures, hachures et textures
 
@@ -399,6 +399,81 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
   du toit en noir ; changer la pente met à jour la 3D, les façades et les coupes en direct
 - Changer le matériau d'un mur change sa hachure en coupe ; le PDF montre les mêmes motifs
 
+## M10 ter — Documents client / exécution (métrés et cotes)
+
+Objectif : de chaque plan, tirer deux documents : une version **Client** simple, sans
+vocabulaire technique, et une version **Exécution** complète pour le chantier.
+Ajouté le 2026-11-11 à la demande de l'utilisateur ; commence après la validation de M10 bis.
+
+**Principe : un seul calcul, deux présentations.** Les quantités et la géométrie viennent des
+calculs existants (`src/features/measurements/`, `src/features/geometry/`). Les deux versions
+ne diffèrent que par ce qu'elles montrent et par leurs libellés ; elles ne peuvent donc pas se
+contredire. Toute la logique est en fonctions pures testées. Unités : mm entiers, m², m³, dans
+les deux versions. Aucun prix.
+
+**Repères** (partagés par les métrés et les cotes) : murs `M01…`, portes `P01…`, fenêtres et
+baies `F01…`. Calcul pur, numérotation par niveau puis de haut en bas et de gauche à droite.
+
+**Usages de cotation retenus (Madagascar, héritage des usages français)** — à confirmer par
+l'utilisateur sur un premier PDF :
+- cotes d'exécution **au nu brut** des murs (faces de la maçonnerie, enduits non compris) ;
+- baies cotées en **dimensions brutes de maçonnerie** (de tableau à tableau), notées
+  `largeur / hauteur` (`1200 / 1350`), allège à part (`All. 900`) ;
+- une note sur chaque document d'exécution : « Baies cotées en dimensions brutes de maçonnerie
+  (tableau à tableau). Dimensions des menuiseries : à confirmer par le menuisier après prise de
+  cotes sur place. »
+
+### Lot A — Métrés client / exécution
+
+- [ ] Repères automatiques `M01`, `P01`, `F01` (calcul pur, avec tests), affichés dans les
+      métrés d'exécution
+- [ ] Présentation **Client** (fonction pure) : pour chaque pièce, son nom, ses dimensions
+      intérieures et sa **surface au sol** (trémie déduite) ; total par niveau et pour le
+      bâtiment ; nombre de portes et de fenêtres. Libellés simples, sans épaisseur ni surface
+      de mur
+- [ ] PDF Client d'une page : vignette du plan, tableau des pièces, totaux, cartouche de M10
+- [ ] Présentation **Exécution** (fonction pure) : murs (repère, longueur à l'axe et par face,
+      épaisseur, hauteur, surface brute et nette par face, volume), ouvertures (repère, style,
+      baie brute largeur × hauteur, allège, mur porteur), escaliers, dalles, trémies,
+      cheminées, toitures ; par niveau et pour le bâtiment. **Toutes les ouvertures sont
+      déduites**, sans seuil. Rappel des règles de calcul imprimé en fin de document
+- [ ] CSV et PDF de plusieurs pages pour la version Exécution (repart de l'export actuel des
+      métrés : tableaux, données à plat, PDF)
+- [ ] Panneau Métrés : bascule « Client / Exécution » ; la fenêtre Exporter demande la version
+
+### Lot B — Cotes client / exécution
+
+Les cotes automatiques sont **calculées**, pas enregistrées dans le document : elles suivent
+toujours le plan. Les cotes tracées à la main restent des éléments du document.
+
+- [ ] Calcul pur des cotes **Client** : dimensions extérieures totales du bâtiment (une cote
+      par côté) ; dans chaque pièce, son nom, ses dimensions intérieures (pièce rectangulaire :
+      `4000 × 3000` ; autre forme : la longueur de chaque côté intérieur) et sa surface
+- [ ] Calcul pur des cotes **Exécution** : trois chaînes par façade (1. baies et trumeaux ;
+      2. murs de refend et axes ; 3. longueur totale), chaînes intérieures avec l'épaisseur de
+      chaque mur, baies `largeur / hauteur` + allège + repère, altitudes des sols et des dalles
+      (`±0`, `+2850`), trémies, escaliers (nombre de contremarches, hauteur, giron)
+- [ ] Réglage « Cotation : Client / Exécution » dans la barre d'outils du plan ; texte plus grand
+      et cotes moins nombreuses en Client
+- [ ] Cotes tracées à la main : champ facultatif « Visible en : Client / Exécution / Les deux »
+      (sans champ : les deux, donc pas de migration)
+- [ ] Planche : réglage de cotation par vue ; export PDF : choix de la version ; note sur les
+      baies imprimée sur les documents d'exécution
+
+**Critères d'acceptation**
+- Une pièce « Chambre » de 4000 × 3000 mm intérieurs affiche en Client « Chambre »,
+  `4000 × 3000` et `12,00 m²`, sans aucune autre cote à l'intérieur
+- Un bâtiment de 8000 × 6000 mm aux axes, murs de 200 mm : cotes extérieures totales
+  `8200` et `6200` dans les deux versions
+- Façade de 6000 mm au nu avec une fenêtre de 1200 mm centrée : 1re chaîne `2400 · 1200 · 2400`,
+  dernière chaîne `6000` ; la fenêtre porte `F01`, `1200 / 1350`, `All. 900`
+- Le même repère (`F01`, `M03`…) apparaît sur le plan d'exécution et dans les métrés
+  d'exécution ; une ouverture de 400 × 400 mm est déduite de la surface du mur
+- Passer de Client à Exécution ne modifie pas le document (pas d'entrée dans l'historique) ;
+  une cote manuelle « Exécution » n'apparaît pas en Client
+- Un projet d'avant M10 ter s'ouvre sans changement
+- Aucun montant, prix ni devis dans aucune des deux versions
+
 ## M11 — Import et export
 
 - [ ] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
@@ -407,7 +482,7 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
 
 **Critères d'acceptation**
 - Le DXF exporté s'ouvre dans LibreCAD avec des longueurs exactes en mm
-- Un DXF importé garde ses dimensions (une ligne de 5 000 mm mesure 5,00 m)
+- Un DXF importé garde ses dimensions (une ligne de 5000 mm mesure 5000 mm)
 
 ---
 

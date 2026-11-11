@@ -8,7 +8,7 @@ import {
 } from './pdfLayout'
 
 /** Taille d'une feuille pour jsPDF : [largeur, hauteur] en mm. */
-async function createPdf(sheet: SheetSize) {
+export async function createPdf(sheet: SheetSize) {
   // Chargé à la demande : la bibliothèque ne pèse que lorsqu'on exporte un PDF.
   const { jsPDF } = await import('jspdf')
   return new jsPDF({
@@ -19,7 +19,7 @@ async function createPdf(sheet: SheetSize) {
   })
 }
 
-type Pdf = Awaited<ReturnType<typeof createPdf>>
+export type Pdf = Awaited<ReturnType<typeof createPdf>>
 
 /** PDF d'un Visuel : l'image de la page à l'emplacement donné (mm). */
 export async function buildDesignPdf(
@@ -131,7 +131,13 @@ function drawScaleBar(pdf: Pdf, x: number, y: number, available: number, scale: 
  * date, feuille). Un cadre fin entoure toute la feuille ; le cartouche est séparé du dessin par un
  * filet un peu plus épais.
  */
-function drawCartouche(pdf: Pdf, sheet: SheetSize, scale: number, labels: PlanPdfLabels): void {
+export function drawCartouche(
+  pdf: Pdf,
+  sheet: SheetSize,
+  /** Dénominateur de l'échelle ; `null` : pas de barre d'échelle (un tableau n'a pas d'échelle). */
+  scale: number | null,
+  labels: PlanPdfLabels,
+): void {
   const strip = cartoucheArea(sheet)
 
   // Largeur des cellules de droite : celle de leur contenu, bornée.
@@ -144,7 +150,10 @@ function drawCartouche(pdf: Pdf, sheet: SheetSize, scale: number, labels: PlanPd
     return Math.min(MAX_FIELD_WIDTH, Math.max(MIN_FIELD_WIDTH, Math.max(labelWidth, valueWidth) + 6))
   })
   const fieldsWidth = widths.reduce((sum, w) => sum + w, 0)
-  const leftWidth = Math.min(SCALE_ZONE_WIDTH, Math.max(0, strip.width - fieldsWidth - 40))
+  const hasLeftZone = scale !== null || labels.northAngle !== undefined
+  const leftWidth = hasLeftZone
+    ? Math.min(SCALE_ZONE_WIDTH, Math.max(0, strip.width - fieldsWidth - 40))
+    : 0
   const midX = strip.x + leftWidth
   const fieldsX = strip.x + strip.width - fieldsWidth
   const midWidth = fieldsX - midX
@@ -155,7 +164,7 @@ function drawCartouche(pdf: Pdf, sheet: SheetSize, scale: number, labels: PlanPd
   pdf.line(strip.x, strip.y, strip.x + strip.width, strip.y)
   pdf.setDrawColor(...HAIRLINE)
   pdf.setLineWidth(LINE.divider)
-  const dividers = [midX, fieldsX]
+  const dividers = leftWidth > 0 ? [midX, fieldsX] : [fieldsX]
   let edge = fieldsX
   for (const w of widths.slice(0, -1)) {
     edge += w
@@ -174,7 +183,9 @@ function drawCartouche(pdf: Pdf, sheet: SheetSize, scale: number, labels: PlanPd
       barX = strip.x + 24
     }
     const available = strip.x + leftWidth - barX - 8
-    if (available >= 12) drawScaleBar(pdf, barX, centerY - 1.2, available, scale, labels.scaleBarUnit)
+    if (scale !== null && available >= 12) {
+      drawScaleBar(pdf, barX, centerY - 1.2, available, scale, labels.scaleBarUnit)
+    }
   }
 
   // Milieu : projet (gras) et sujet de la feuille.

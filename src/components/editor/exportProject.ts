@@ -12,12 +12,7 @@ import {
   type ScaleChoice,
   type SheetFormat,
 } from '../../features/export/pdfLayout'
-import { furnitureCsvRows } from '../library/furnitureRows'
-import { measurementsToCsv } from '../../features/measurements/csv'
-import {
-  computeBuildingMeasurements,
-  computeMeasurements,
-} from '../../features/measurements/measurements'
+import { computeMeasurements } from '../../features/measurements/measurements'
 import { formatArea } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { dataUrlToBlob } from '../../lib/dataUrl'
@@ -25,6 +20,7 @@ import { downloadBlob } from '../../lib/download'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { Project } from '../../types/document'
 import { captureRegion } from './exportStage'
+import { exportMetres, type MetresExportOptions } from './exportMetres'
 
 export interface ExportOptions {
   type: ExportFileType
@@ -36,6 +32,8 @@ export interface ExportOptions {
   sheet: SheetFormat
   orientation: Orientation
   scale: ScaleChoice
+  /** Réglages de l'export des métrés (type `csv`). */
+  metres: Pick<MetresExportOptions, 'format' | 'scope' | 'includeFurniture'>
 }
 
 /**
@@ -52,12 +50,13 @@ export async function exportProject(project: Project, options: ExportOptions): P
   const shownElements = isPlan ? selectActiveElements(useEditorStore.getState()) : doc.elements
 
   if (options.type === 'csv') {
-    const csv = measurementsToCsv(
-      computeBuildingMeasurements(doc),
-      fr.measurements.csv,
-      furnitureCsvRows(doc.elements),
-    )
-    downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), fileName)
+    await exportMetres(project, {
+      ...options.metres,
+      activeLevelId: useEditorStore.getState().activeLevelId,
+      fileName: options.fileName,
+      sheet: options.sheet,
+      orientation: options.orientation,
+    })
     return
   }
 
