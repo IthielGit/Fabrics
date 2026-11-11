@@ -30,7 +30,7 @@ même export). Seuls les outils disponibles et l'unité changent.
 | Panneau spécifique | — | **Métrés** (surfaces, périmètres, longueurs) |
 | Grille | optionnelle, en px | toujours disponible, en mm |
 
-## Périmètre du MVP (jalons M0 à M12)
+## Périmètre du MVP (jalons M0 à M13)
 
 **Inclus**
 - Page d'accueil : liste des projets, créer (Visuel ou Plan + format), renommer, dupliquer,
@@ -43,22 +43,22 @@ même export). Seuls les outils disponibles et l'unité changent.
 - Mode Plan : murs avec épaisseur, pièces (polygones fermés) avec nom, cotes, calibrage
   d'une image de plan importée, panneau Métrés, export CSV des métrés.
 - Export : PNG, JPG, PDF (format A4/A3, échelle choisie pour les plans).
-- Phase « Bâtiment » (jalons M5 à M10, voir ci-dessous).
-- Sauvegarde automatique (locale d'abord, puis cloud au jalon M12).
+- Phase « Bâtiment » (jalons M5 à M11, voir ci-dessous).
+- Sauvegarde automatique (locale d'abord, puis cloud au jalon M13).
 - Comptes utilisateurs (e-mail + mot de passe ; Google en option) et synchronisation cloud.
-- Mise en ligne publique sur Cloudflare Pages (jalon M11), après la phase « Bâtiment ».
-- Partage d'un projet par lien en lecture seule (jalon M12).
+- Mise en ligne publique sur Cloudflare Pages (jalon M12), après la phase « Bâtiment ».
+- Partage d'un projet par lien en lecture seule (jalon M13).
 
 **Exclus du MVP**
 - Devis, prix, quotations : **jamais** dans ce produit tant que l'utilisateur ne le demande pas.
-- Collaboration temps réel (jalon M13).
+- Collaboration temps réel (jalon M14).
 - Espaces de travail multi-membres, rôles, commentaires.
 - Modèles, identité de marque, historique de versions.
 - Abonnements, paiements, statistiques d'administration.
 - Traduction anglais / malgache, mode sombre (préparés mais non livrés).
 - Assistant IA : reporté, à décider plus tard avec l'utilisateur.
 
-## Phase « Bâtiment » (jalons M5 à M10)
+## Phase « Bâtiment » (jalons M5 à M11)
 
 Un projet Plan devient un **bâtiment** : on dessine chaque niveau, l'application en déduit
 le reste.
@@ -69,8 +69,9 @@ le reste.
 | M6 Niveaux | Rez-de-chaussée, étages ; niveau du dessous en transparence ; métrés par niveau |
 | M7 Axes et mobilier | Axes repérés A, B / 1, 2 ; bibliothèque de mobilier dessinée pour Fabrics |
 | M8 Vue 3D | Le bâtiment en volume à côté du plan, mis à jour en direct |
-| M9 Façades et coupes | Façades N/S/E/O et coupes générées ; planche qui les présente côte à côte ; PDF |
-| M10 Import et export | DXF (import et export), glTF |
+| M9 Outils de construction | Murs droits, pièces rectangulaires, pièces préfabriquées, plateformes, escaliers entre niveaux (avec trémie dans la dalle), cheminées |
+| M10 Façades et coupes | Façades N/S/E/O et coupes générées ; planche qui les présente côte à côte ; PDF |
+| M11 Import et export | DXF (import et export), glTF |
 
 **Parcours D. Du plan au bâtiment**
 Nouveau plan → dessiner les murs du rez-de-chaussée → poser porte et fenêtres → dupliquer le

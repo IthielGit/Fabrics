@@ -1,6 +1,6 @@
 # 03 — Roadmap
 
-Jalons dans l'ordre. Le **MVP = M0 à M12**. Pas de durée : on passe au jalon suivant quand tous
+Jalons dans l'ordre. Le **MVP = M0 à M13**. Pas de durée : on passe au jalon suivant quand tous
 les critères d'acceptation du jalon en cours sont cochés et validés par l'utilisateur.
 
 Légende : `[ ]` à faire · `[x]` terminé (Claude coche au fur et à mesure).
@@ -23,7 +23,7 @@ Objectif : un projet vide qui démarre, se construit et passe le lint.
 - [x] Créer l'arborescence de `docs/02-ARCHITECTURE.md` (dossiers vides acceptés)
 - [x] Créer `src/i18n/fr.ts` et `src/types/document.ts` (copie exacte du modèle de données)
 - [x] Vérifier que `.gitignore` contient `node_modules`, `dist`, `.env.local`
-- [x] `git init -b main` + premier commit (branche `main`, nécessaire au déploiement de M11)
+- [x] `git init -b main` + premier commit (branche `main`, nécessaire au déploiement de M12)
 
 **Critères d'acceptation**
 - `npm run dev` affiche « Fabrics » sur http://localhost:5173, stylé avec Tailwind
@@ -139,7 +139,7 @@ Objectif : sortir un fichier utilisable de n'importe quel projet.
 
 ---
 
-## Phase « Bâtiment » (M5 → M10)
+## Phase « Bâtiment » (M5 → M11)
 
 Objectif d'ensemble : dessiner un bâtiment niveau par niveau, puis obtenir automatiquement la
 vue 3D, les façades et les coupes. Les règles techniques sont dans `docs/02-ARCHITECTURE.md`,
@@ -224,7 +224,83 @@ Objectif : voir le bâtiment en volume, à côté du plan, mis à jour en direct
 - Une fenêtre de 1,20 × 1,00 m à 0,90 m d'allège apparaît comme un trou à la bonne hauteur
 - Un bâtiment de 3 niveaux reste fluide (pas de saccade en tournant la caméra)
 
-## M9 — Façades, coupes et planche
+## M9 — Outils de construction
+
+Objectif : construire plus vite (pièces en un geste, pièces toutes faites) et ajouter les
+éléments de bâtiment qui manquent : plateformes, escaliers entre niveaux, cheminées. Ce jalon
+vient **avant** les façades et coupes pour que ces éléments y apparaissent dès le départ.
+Pas de nouveau raccourci clavier : `Maj + R` existe déjà (son champ d'action est étendu au
+lot B) ; pas de toit en pente. Unités : mm, m², m³ partout. Les pièces préfabriquées sont
+dessinées de zéro (« clean room »). **Pas de changement de version du document** : trois
+nouveaux types d'éléments, aucun ancien projet modifié (même règle qu'en M7). Règles
+détaillées : `docs/02-ARCHITECTURE.md`, section « Outils de construction (M9) ».
+
+### Lot A — Murs et pièces
+- [ ] Outil Mur : mode « Mur droit » (2 clics, début et fin), en plus du tracé en polyligne ;
+      mêmes aimantations. Pas de nouveau bouton dans la barre d'outils
+- [ ] Outil Pièce : mode « Rectangle » (2 clics, coins opposés), en plus du polygone libre.
+      Pas de nouveau bouton
+- [ ] Option « avec murs » du mode Rectangle : la pièce + **un seul mur fermé** placé à
+      l'extérieur (le tracé = faces intérieures), créés en un seul pas d'historique
+
+### Lot B — Pièces préfabriquées
+- [ ] Catégorie « Pièces préfabriquées » dans la Bibliothèque : chambre, salle de bain, WC,
+      cuisine, séjour, bureau, garage (mur fermé, ouvertures, mobilier, pièce étiquetée)
+- [ ] Aperçu fantôme sous le curseur ; pose en un seul pas d'historique, annulable ; les
+      éléments posés restent indépendants et gardent leurs ouvertures
+- [ ] `Maj + R` pivote aussi les murs, pièces, cotes et plateformes : la sélection entière
+      tourne de 90° autour de son centre commun ; les ouvertures suivent leur mur
+
+### Lot C — Plateformes
+- [ ] Type `platform` (polygone à points absolus, hauteur, épaisseur)
+- [ ] Outil Plateforme (polygone libre ou rectangle), dessin 2D avec étiquette (`+450 mm`),
+      propriétés ; épaisseur par défaut = hauteur (estrade pleine), jamais plus grande
+- [ ] Volume en 3D ; surface (m²) et volume = surface × épaisseur (m³) dans les métrés et le CSV
+
+### Lot D — Escaliers entre niveaux
+- [ ] Type `stair` : droit (`length`), en L (`length` + `length2`), en U (`length` +
+      `length2` + jour central `gap`), retournable ; posé sur un niveau, relié au niveau du dessus
+- [ ] Nombre de contremarches calculé depuis la hauteur à monter (≤ 180 mm chacune), giron
+      = longueur des volées ÷ nombre de girons, au moins 250 mm ; recalculé quand une altitude
+      change ; pose refusée sur le dernier niveau ; escalier trop court en rouge avec la
+      longueur nécessaire
+- [ ] Niveau du dessus supprimé plus tard : l'escalier reste, en rouge, avec le message
+      « aucun niveau au-dessus », sans trémie. Dupliquer un niveau ne copie pas ses escaliers
+- [ ] Symbole 2D (marches, flèche de montée), marches en 3D, escalier visible en fantôme sur
+      le niveau du dessus
+- [ ] Métrés : nombre de contremarches et de girons, hauteur de contremarche, giron,
+      emmarchement (en mm)
+
+### Lot D bis — Trémie
+- [ ] Trémie calculée depuis l'emprise de l'escalier + marge `voidMargin` (50 mm par défaut),
+      jamais stockée ; en L : polygone en L
+- [ ] Dalle 3D du niveau du dessus trouée (forme avec trou, sans calcul booléen)
+- [ ] Contour pointillé avec croix sur le plan du niveau du dessus
+- [ ] Métrés : surface de la pièce au tracé, trémie, surface nette ; colonne « Trémie » du CSV
+- [ ] Trémie qui déborde de la pièce : avertissement, dalle laissée pleine (cas noté dans « Idées »)
+
+### Lot E — Cheminées
+- [ ] Type `chimney` (emprise, rotation, dépassement en mm au-dessus du dernier niveau)
+- [ ] Symbole 2D sur son niveau, contour fantôme sur les niveaux du dessus ; volume en 3D
+      (sans trou dans les dalles) ; propriétés
+
+**Critères d'acceptation**
+- Une pièce rectangulaire de 4000 × 3000 mm tracée en 2 clics affiche 12,00 m² et 14 000 mm ;
+  avec l'option « avec murs » (épaisseur 200 mm), elle garde 12,00 m² et le mur fermé a un
+  axe de 4200 × 3200 mm
+- Une pièce préfabriquée posée puis annulée disparaît entièrement en un seul « annuler » ;
+  `Maj + R` la fait tourner d'un quart de tour avec ses ouvertures et son mobilier
+- Un escalier entre deux niveaux distants de 2 700 mm a 15 contremarches de 180 mm et
+  14 girons ; passer la hauteur d'étage à 2 880 mm donne 16 contremarches
+- Un escalier droit de 1000 × 3500 mm sous une pièce de 5000 × 4000 mm (20,00 m²) perce un
+  trou de 1100 × 3600 mm (3,96 m²) : la pièce affiche 20,00 m² au tracé et 16,04 m² net ;
+  déplacer l'escalier déplace le trou ; un escalier de 3000 mm de long est signalé trop court
+  (3500 mm nécessaires)
+- Un projet créé avant M9 s'ouvre sans perte
+
+---
+
+## M10 — Façades, coupes et planche
 
 Objectif : obtenir sans dessiner les façades et les coupes, et les présenter ensemble.
 
@@ -241,7 +317,7 @@ Objectif : obtenir sans dessiner les façades et les coupes, et les présenter e
 - Déplacer la ligne de coupe met la coupe à jour
 - Imprimée à 100 %, une hauteur d'étage de 2,50 m mesure 5,0 cm sur une façade à 1:50
 
-## M10 — Import et export
+## M11 — Import et export
 
 - [ ] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
 - [ ] Import DXF comme calque de fond verrouillé, sur un niveau, à l'échelle
@@ -253,7 +329,7 @@ Objectif : obtenir sans dessiner les façades et les coupes, et les présenter e
 
 ---
 
-## M11 — Mise en ligne
+## M12 — Mise en ligne
 
 Objectif : l'application est accessible publiquement (en mode local, sans compte).
 
@@ -269,7 +345,7 @@ Objectif : l'application est accessible publiquement (en mode local, sans compte
 
 ---
 
-## M12 — Comptes, sauvegarde cloud et partage
+## M13 — Comptes, sauvegarde cloud et partage
 
 Objectif : retrouver ses projets sur un autre appareil.
 
@@ -297,7 +373,7 @@ Objectif : retrouver ses projets sur un autre appareil.
 
 ---
 
-## M13 — Collaboration temps réel
+## M14 — Collaboration temps réel
 
 - [ ] Choisir et documenter l'hébergement du serveur Yjs (option gratuite)
 - [ ] Représenter `elements` dans un `Y.Array` / `Y.Map` ; synchroniser avec `editorStore`
@@ -310,7 +386,7 @@ Objectif : retrouver ses projets sur un autre appareil.
 ## Plus tard (non planifié, à prioriser avec l'utilisateur)
 
 - **Assistant IA « Demander quelque chose »** (plan, mise en page, couleurs, textes) — à
-  étudier après M13, à la demande de l'utilisateur
+  étudier après M14, à la demande de l'utilisateur
 - Modèles de visuels originaux, bibliothèque de composants, identité de marque
 - QR code pour les liens de partage
 - Commentaires ancrés sur le canevas, mentions, notifications
@@ -319,4 +395,4 @@ Objectif : retrouver ses projets sur un autre appareil.
 - Espaces de travail, membres et rôles (propriétaire, admin, éditeur, commentateur, lecteur)
 - Traductions anglais et malgache, mode sombre, accessibilité avancée
 - Abonnements et paiements, statistiques d'usage, conformité RGPD complète
-- Toits en pente, escaliers paramétriques, export DWG
+- Toits en pente, export DWG

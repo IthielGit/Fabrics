@@ -19,7 +19,7 @@ Ne code rien pour l'instant.
 
 ## P1 — Lancer un jalon
 
-Remplace `M0` par le jalon voulu (M0, M1, M2… M12).
+Remplace `M0` par le jalon voulu (M0, M1, M2… M13).
 
 ```
 On attaque le jalon M0 de docs/03-ROADMAP.md.

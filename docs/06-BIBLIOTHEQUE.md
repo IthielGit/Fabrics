@@ -758,4 +758,4 @@ conservées ici et dans la section « Idées » de `docs/PROGRESS.md`.
 - **Étiquettes de cote automatiques** sur un objet (largeur × profondeur au survol).
 - **Variantes de style** (contour seul, plein, hachuré).
 - **Annotations de plan** (flèche du nord, repère de niveau, étiquette de pièce) : à rattacher
-  aux jalons M8 et M9.
+  aux jalons M8 et M10.

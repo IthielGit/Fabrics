@@ -2,7 +2,7 @@
 
 Tout est open source et utilisable gratuitement. Pas de serveur à écrire pour le MVP :
 le navigateur fait le rendu, les calculs et les exports ; Supabase stocke les comptes et les
-projets à partir du jalon M12.
+projets à partir du jalon M13.
 
 ## Stack et dépendances autorisées
 
@@ -20,10 +20,10 @@ Installe toujours la **dernière version stable** au moment de l'installation, s
 | Utilitaire | `clsx` | M1 | classes conditionnelles |
 | Tests | `vitest` | M1 | fonctions pures (géométrie, métrés, unités) |
 | PDF | `jspdf` | M4 | PNG/JPG viennent de Konva, sans bibliothèque |
-| Backend | `@supabase/supabase-js` | M12 | Auth + Postgres + Storage |
+| Backend | `@supabase/supabase-js` | M13 | Auth + Postgres + Storage |
 | 3D | `three`, `@react-three/fiber`, `@react-three/drei` | M8 | **à confirmer par l'utilisateur au début de M8** ; version majeure de `@react-three/fiber` compatible avec `react` |
-| DXF (import) | `dxf-parser` | M10 | **à confirmer au début de M10** ; l'export DXF est écrit à la main (format texte), sans bibliothèque |
-| Temps réel | `yjs`, `y-websocket` | M13 | hébergement à décider |
+| DXF (import) | `dxf-parser` | M11 | **à confirmer au début de M11** ; l'export DXF est écrit à la main (format texte), sans bibliothèque |
+| Temps réel | `yjs`, `y-websocket` | M14 | hébergement à décider |
 
 Interdits sans accord : `html2canvas` (inutile, Konva exporte lui-même), `fabric`, bibliothèques
 d'UI complètes (MUI, Ant…), `uuid` (on utilise `crypto.randomUUID()`), `moment`,
@@ -38,7 +38,7 @@ Tests : `idb-keyval` est simulé avec `vi.mock` (pas de `fake-indexeddb`).
 fabrics/
 ├── CLAUDE.md
 ├── docs/                      # ces documents
-├── supabase/schema.sql        # appliqué au jalon M12
+├── supabase/schema.sql        # appliqué au jalon M13
 ├── .env.example               # versionné
 ├── .env.local                 # NON versionné (clés Supabase)
 ├── index.html
@@ -62,11 +62,11 @@ fabrics/
     │   ├── editorStore.ts     # document ouvert, sélection, outil, historique
     │   └── projectsStore.ts   # liste des projets
     ├── lib/
-    │   └── supabase.ts        # client (M12)
+    │   └── supabase.ts        # client (M13)
     ├── pages/
     │   ├── HomePage.tsx
     │   ├── EditorPage.tsx
-    │   └── LoginPage.tsx      # M12
+    │   └── LoginPage.tsx      # M13
     └── components/
         ├── editor/            # Stage, Toolbar, PropertiesPanel, LayersPanel, MeasurementsPanel…
         │   └── shapes/        # un composant Konva par type d'élément
@@ -96,7 +96,7 @@ export interface Project {
 }
 
 export interface FabricsDocument {
-  version: 3;                // incrémenté si le format change (migration : features/documents/migrations.ts)
+  version: 4;                // incrémenté si le format change (migration : features/documents/migrations.ts)
   unit: 'px' | 'mm';         // 'px' pour design, 'mm' pour plan
   page: Page;
   elements: CanvasElement[]; // ordre du tableau = ordre d'affichage (dernier = au-dessus)
@@ -356,12 +356,12 @@ export interface ProjectRepository {
 ```
 
 - `LocalRepository` (M1) : IndexedDB via `idb-keyval`. Projets et images.
-- `SupabaseRepository` (M12) : table `projects` + bucket Storage `assets`, voir
+- `SupabaseRepository` (M13) : table `projects` + bucket Storage `assets`, voir
   `supabase/schema.sql`. Chemin des images : `<user_id>/<assetId>`.
 - Sauvegarde automatique : 1 seconde après la dernière modification (debounce), indicateur
   « Enregistrement… / Enregistré ✓ / Erreur » dans l'en-tête. Sauvegarde aussi à la fermeture
   de l'onglet (`visibilitychange`).
-- Au jalon M12 : un utilisateur connecté utilise `SupabaseRepository` ; à la première connexion,
+- Au jalon M13 : un utilisateur connecté utilise `SupabaseRepository` ; à la première connexion,
   on propose d'importer les projets locaux dans le cloud.
 
 ### Images partagées entre projets
@@ -370,7 +370,7 @@ Dupliquer un projet ou coller une image dans un autre projet **réutilise le mê
 (pas de copie du fichier). Conséquence :
 - `remove(projectId)` supprime le projet, puis supprime **uniquement** les images que plus
   aucun projet restant ne référence (parcours des `elements` de type `image`).
-- Cette règle vaut pour `LocalRepository` (M1) et `SupabaseRepository` (M12, par utilisateur).
+- Cette règle vaut pour `LocalRepository` (M1) et `SupabaseRepository` (M13, par utilisateur).
 - Supprimer une image du canevas ne supprime pas le fichier (l'annulation doit pouvoir la
   restaurer) ; le nettoyage se fait à la suppression du projet.
 
@@ -435,7 +435,7 @@ pas sur une feuille, ce qui est normal puisque seule l'emprise du contenu est ex
 
 Les raccourcis sont ignorés quand le focus est dans un champ de saisie.
 
-## Mode bâtiment (jalons M5 à M10)
+## Mode bâtiment (jalons M5 à M11)
 
 Cette section **prévoit** les règles ; le modèle de données ci-dessus reste la source de vérité
 tant que le jalon correspondant n'a pas commencé. Chaque jalon qui change le format du document
@@ -472,7 +472,36 @@ export interface FurnitureElement extends BaseElement {
   depth: number;             // mm
 }
 
-// M9
+// M9 (à réaliser) : trois nouveaux types, **pas de changement de version** (même règle
+// qu'en M7 : un nouveau type ne modifie aucun ancien projet).
+export interface PlatformElement extends BaseElement {
+  type: 'platform';
+  points: number[];          // polygone fermé, absolus (règle D6 : déplacement seul)
+  elevation: number;         // mm, hauteur du dessus par rapport au plancher du niveau
+  thickness: number;         // mm, épaisseur sous le dessus ; défaut = elevation, jamais plus
+  fill: string;
+}
+export interface StairElement extends BaseElement {
+  type: 'stair';
+  shape: 'straight' | 'l' | 'u';
+  width: number;             // mm, emmarchement (largeur d'une volée)
+  length: number;            // mm, longueur de la 1re volée (seule volée pour 'straight')
+  length2?: number;          // mm, longueur de la 2e volée ('l', 'u')
+  gap?: number;              // mm, jour central entre les deux volées ('u')
+  mirrored?: boolean;        // tourne à gauche / à droite ('l', 'u')
+  voidMargin: number;        // mm, marge de la trémie autour de l'emprise (défaut 50)
+  // x, y, rotation : comme `furniture`. Paliers calculés (carré de côté `width`), jamais stockés.
+  // levelId = niveau de départ ; niveau d'arrivée = niveau juste au-dessus (jamais stocké).
+}
+export interface ChimneyElement extends BaseElement {
+  type: 'chimney';
+  width: number;             // mm
+  depth: number;             // mm
+  heightAboveTop: number;    // mm, dépassement au-dessus du dernier niveau
+  // x, y, rotation : comme `furniture`.
+}
+
+// M10
 export interface SectionLineElement extends BaseElement {
   type: 'section';
   points: [number, number, number, number];
@@ -485,8 +514,10 @@ Règles :
 - `opening` : sa position est **relative au mur** ; elle n'a pas de points absolus. Le
   Transformer ne l'utilise pas : on la fait coulisser le long du segment, bornée par les
   extrémités du segment et les ouvertures voisines.
-- `furniture` : seule exception à la règle D6 parmi les éléments de plan : position, rotation
-  et taille (`x`, `y`, `rotation`, `width`, `depth`) comme une forme du Visuel, plus
+- `furniture`, `stair` et `chimney` : exceptions à la règle D6 parmi les éléments de plan :
+  position, rotation et taille (`x`, `y`, `rotation` et leurs dimensions) comme une forme du
+  Visuel. `platform` suit la règle D6 (points absolus, déplacement seul), comme une pièce.
+- `furniture` a en plus
   `mirrored?: boolean` (objet retourné). Les symboles sont **créés pour Fabrics en « clean
   room »** et décrits par des données (primitives de dessin générées par des gabarits) dans
   `src/features/library/`, rendues par `FurnitureShape.tsx` (Konva) et `SymbolPreview.tsx`
@@ -506,6 +537,53 @@ Règles :
 - Les métrés d'un niveau ne comptent que ses propres éléments : les totaux du bâtiment sont la
   somme des niveaux. Le CSV a une colonne « Niveau » et un tableau de totaux par niveau.
 - Les exports PNG, JPG et PDF d'un plan portent sur le niveau affiché.
+
+### Outils de construction (M9)
+
+- **Modes plutôt que nouveaux outils** : l'outil Mur a un mode « Mur droit » (2 clics) et
+  l'outil Pièce un mode « Rectangle » (2 clics, coins opposés). Seuls Plateforme, Escalier et
+  Cheminée ajoutent un bouton. Aucun nouveau raccourci clavier.
+- **Pièce « avec murs »** : le rectangle tracé est la face **intérieure** ; on crée la pièce
+  et **un seul mur fermé** dont l'axe est décalé vers l'extérieur d'une demi-épaisseur (pièce
+  4000 × 3000 mm, mur de 200 mm → axe 4200 × 3200 mm). Un seul pas d'historique.
+- **Pièces préfabriquées** : chaque modèle est une liste d'éléments (mur fermé, ouvertures,
+  pièce, mobilier) en coordonnées relatives ; à la pose, nouveaux identifiants (les
+  ouvertures pointent vers la copie du mur), translation au curseur, `levelId` du niveau actif.
+  Elles ne fusionnent pas avec les murs voisins (deux murs accolés restent deux murs).
+- **`Maj + R` étendu** : tourne toute la sélection de 90° autour du centre de son emprise
+  commune. Murs, pièces, cotes et plateformes : rotation de leurs points ; ouvertures :
+  inchangées (position relative à leur mur) ; mobilier, escaliers, cheminées : rotation et
+  position. Les axes ne tournent pas (ils sont communs à tous les niveaux).
+- **Plateforme** : dessus à `elevation` au-dessus du plancher du niveau ; volume de
+  `thickness` sous le dessus. Métrés : surface (m²), volume = surface × épaisseur (m³).
+- **Cheminée** : du plancher de son niveau jusqu'au dessus du dernier niveau +
+  `heightAboveTop`. Affichée normalement sur son niveau, en contour fantôme sur les niveaux du
+  dessus ; elle ne perce pas les dalles en 3D.
+
+### Escaliers et trémies (M9)
+
+- **Hauteur à monter** H = altitude du niveau du dessus − altitude du niveau de départ (dans
+  le code, le niveau du dessus démarre à altitude + hauteur d'étage du niveau de départ).
+- **Marches** : contremarches n = plus petit entier tel que H ÷ n ≤ 180 mm ; girons = n − 1 ;
+  giron = longueur totale des volées ÷ (n − 1), au moins 250 mm. Longueur nécessaire =
+  (n − 1) × 250 mm, répartie sur les volées (les paliers ne comptent pas). Exemple : H =
+  2 700 mm → 15 contremarches de 180 mm, 14 girons, 3500 mm de volée au minimum. Escalier trop
+  court : affiché en rouge avec la longueur nécessaire.
+- **Paliers** : en L, un palier carré de côté `width` au coude ; en U, un palier de
+  (2 × `width` + `gap`) × `width`. Calculés, jamais stockés.
+- **Niveaux** : pose refusée sur le dernier niveau. Si le niveau du dessus est supprimé plus
+  tard, l'escalier reste, affiché en rouge (« aucun niveau au-dessus »), sans trémie.
+  Dupliquer un niveau ne copie pas ses escaliers. Les marches se recalculent quand une
+  altitude ou une hauteur d'étage change.
+- **Trémie** : calculée à partir de l'emprise de l'escalier (volées et paliers ; en L, un
+  polygone en L) agrandie de `voidMargin` de chaque côté, **jamais stockée**.
+  Elle perce les dalles des pièces du niveau du dessus : le modèle 3D donne à la dalle un
+  polygone avec **trou intérieur** (extrusion d'une forme à trous, pas de calcul booléen).
+- **Limite de la première version** : la trémie doit tenir entièrement dans une pièce ; sinon
+  avertissement et dalle pleine (découpe entre polygones : idée pour plus tard).
+- **Plan du niveau du dessus** : la trémie s'affiche en contour pointillé avec une croix.
+- **Métrés** : surface de la pièce au tracé, trémie (m²), surface nette ; l'escalier donne
+  nombre de marches, hauteur, giron et emmarchement en mm. Aucun prix.
 
 ### Métrés ajoutés
 
@@ -547,7 +625,7 @@ les éléments modifiés.
 - Bouton « Planche » : vue d'ensemble en lecture seule (niveaux, façades, coupes côte à côte),
   exportable en PDF.
 
-### Import et export (M10), partage (M12)
+### Import et export (M11), partage (M13)
 
 - DXF exporté : unités mm (`$INSUNITS = 4`), calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`,
   `AXES`, `MOBILIER` ; un fichier par niveau ou un seul fichier avec un calque par niveau.
@@ -556,22 +634,22 @@ les éléments modifiés.
 - glTF : `GLTFExporter` fourni par `three`.
 - Partage : table Supabase `shares` (jeton aléatoire, projet, actif, mot de passe haché
   optionnel, expiration), RLS activé ; la lecture publique passe par une fonction Postgres
-  qui vérifie le jeton. Ajout à `supabase/schema.sql` au jalon M12.
+  qui vérifie le jeton. Ajout à `supabase/schema.sql` au jalon M13.
 
 ## Variables d'environnement
 
 ```
-VITE_SUPABASE_URL=        # M12
-VITE_SUPABASE_ANON_KEY=   # M12, clé anon uniquement
+VITE_SUPABASE_URL=        # M13
+VITE_SUPABASE_ANON_KEY=   # M13, clé anon uniquement
 ```
 
 Sans ces variables, l'application fonctionne en mode local (pas de bouton de connexion).
 
 ## Hébergement
 
-- **Cloudflare Pages** (M11) : build `npm run build`, dossier `dist`. Ajouter une règle de
+- **Cloudflare Pages** (M12) : build `npm run build`, dossier `dist`. Ajouter une règle de
   redirection SPA : fichier `public/_redirects` contenant `/* /index.html 200`.
-- **Supabase** (M12) : offre gratuite. Attention : un projet gratuit inactif peut être mis en
+- **Supabase** (M13) : offre gratuite. Attention : un projet gratuit inactif peut être mis en
   pause ; vérifier les limites actuelles sur le site de Supabase.
-- **Temps réel** (M13) : Cloudflare Pages ne garde pas de connexion WebSocket ouverte ; il faudra
-  choisir un hébergeur pour le serveur Yjs. Décision à prendre au début de M13.
+- **Temps réel** (M14) : Cloudflare Pages ne garde pas de connexion WebSocket ouverte ; il faudra
+  choisir un hébergeur pour le serveur Yjs. Décision à prendre au début de M14.
