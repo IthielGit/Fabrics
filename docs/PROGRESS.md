@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Correctif · Pièces qui se superposent sur un même niveau
+- Fait : le dessin n'est pas bloqué, mais deux pièces d'un même niveau qui se recouvrent sur une surface réelle (recouvrement partiel, pièce incluse, doublon) passent en **rouge** sur le plan, et le panneau Métrés affiche un **avertissement** (« n pièces se superposent… surface comptée en double »). Les pièces mitoyennes ou qui se touchent par un coin ne comptent pas ; les niveaux sont comparés séparément ; une pièce sans niveau est comparée à toutes. Calcul pur dans `roomOverlap.ts` (pièces concaves et déplacées comprises).
+- Fichiers : `src/features/geometry/roomOverlap.ts`, `roomOverlap.test.ts` (nouveaux), `src/components/editor/shapes/RoomShape.tsx`, `src/components/editor/MeasurementsPanel.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2347, dont 13 nouveaux) — à tester dans le navigateur (voir ci-dessous)
+- Commit : fix: avertissement pour les pièces superposées
+
 ### 2026-11-11 — M10 bis · Lot B · Tâche 4 · Toiture dans les façades et les coupes
 - Fait : les façades et coupes savent dessiner des **faces inclinées**. Chaque prisme de toiture donne ses faces (dessus et dessous du versant, rives, pignon) avec leur normale sortante ; une face tournée vers la personne qui regarde et non vue par la tranche est projetée (polygone quelconque) et passe par l'algorithme du peintre comme les autres. **Façades** : versant vu de face au-dessus de la tranche de l'égout, débord compris ; façade pignon : le **triangle** du pignon sous les deux rives. **Coupes** : la section d'un versant ou d'un pignon par le plan de coupe est l'enveloppe des points où ses arêtes traversent le plan, en **noir** ; ses faces derrière le plan sont découpées par le plan ; une toiture coupée reçoit la cote **« Faîtage »** avec son altitude (en plus des cotes de niveaux), aussi dans la planche. Changer la pente, la forme ou le débord met la 3D, les façades et les coupes à jour en direct (même modèle).
 - Critères de la roadmap vérifiés par les tests : la façade pignon montre un triangle ; la coupe perpendiculaire au faîtage montre le profil du toit en noir et cote le faîtage (+ 4601 mm sur un niveau de 2500 mm) ; changer la pente change la façade et la coupe. Vérifié aussi dans un navigateur sans fenêtre (façades Est et Sud, coupe A–A).

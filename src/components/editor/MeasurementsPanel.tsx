@@ -1,6 +1,7 @@
 import { Download, FileSpreadsheet } from 'lucide-react'
 import { Fragment, useMemo } from 'react'
 import { furnitureCsvRows } from '../library/furnitureRows'
+import { overlappingRoomIdsCached } from '../../features/geometry/roomOverlap'
 import { csvFileName, measurementsToCsv } from '../../features/measurements/csv'
 import {
   computeBuildingMeasurements,
@@ -38,6 +39,8 @@ export default function MeasurementsPanel() {
   const active = building.levels.find((entry) => entry.level.id === activeLevelId)
   const measurements = active?.measurements ?? computeMeasurements([])
   const { rooms, walls, platforms, stairs, openings, totals } = measurements
+  const overlapIds = overlappingRoomIdsCached(elements ?? [])
+  const overlapCount = rooms.filter((room) => overlapIds.has(room.id)).length
   // Le niveau affiché est vide : on le dit ; le CSV, lui, couvre tout le bâtiment.
   const isEmpty =
     rooms.length === 0 && walls.length === 0 && platforms.length === 0 && stairs.length === 0
@@ -115,6 +118,12 @@ export default function MeasurementsPanel() {
       )}
 
       {isEmpty && <p className="mt-3 text-sm text-slate-500">{fr.measurements.empty}</p>}
+
+      {overlapCount > 0 && (
+        <p role="alert" className="mt-3 rounded border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-700">
+          {fr.measurements.roomOverlap(overlapCount)}
+        </p>
+      )}
 
       {rooms.length > 0 && (
         <table className="mt-3 w-full text-sm">

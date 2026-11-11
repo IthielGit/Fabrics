@@ -222,6 +222,8 @@ export const fr = {
     levelWallNetArea: 'Murs (nette)',
     empty: 'Dessinez des pièces et des murs : leurs surfaces et longueurs s’affichent ici.',
     areaNote: 'Surfaces mesurées sur le contour tracé.',
+    roomOverlap: (count: number) =>
+      `${count} pièces se superposent sur ce niveau : leur surface est comptée en double. Déplacez ou redessinez l’une d’elles.`,
     exportExcel: 'Exporter en Excel',
     exportExcelHint: 'Fichier Excel : un onglet par tableau, de vrais nombres, des totaux en formules.',
     exportCsv: 'CSV',

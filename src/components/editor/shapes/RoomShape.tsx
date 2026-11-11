@@ -1,5 +1,6 @@
 import { Group, Line, Text } from 'react-konva'
 import { polygonArea, polygonCentroid } from '../../../features/geometry/polygon'
+import { overlappingRoomIdsCached } from '../../../features/geometry/roomOverlap'
 import { formatArea } from '../../../features/units/format'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { RoomElement } from '../../../types/document'
@@ -24,6 +25,10 @@ export default function RoomShape({
   onDragEnd,
 }: RoomShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
+  // Pièce qui en recouvre une autre du même niveau : contour rouge (surface comptée en double).
+  const overlapping = useEditorStore((state) =>
+    state.project ? overlappingRoomIdsCached(state.project.document.elements).has(element.id) : false,
+  )
   const centroid = polygonCentroid(element.points)
 
   const fontSize = Math.max(LABEL_FONT_MM, LABEL_MIN_PX / viewScale)
@@ -50,9 +55,9 @@ export default function RoomShape({
       <Line
         points={element.points}
         closed
-        fill={element.fill}
-        stroke={selected ? '#4f46e5' : '#6366f1'}
-        strokeWidth={(selected ? 3 : 1.5) / viewScale}
+        fill={overlapping ? 'rgba(220, 38, 38, 0.2)' : element.fill}
+        stroke={overlapping ? '#dc2626' : selected ? '#4f46e5' : '#6366f1'}
+        strokeWidth={(selected || overlapping ? 3 : 1.5) / viewScale}
         lineJoin="round"
       />
       {showLabel && centroid && (
