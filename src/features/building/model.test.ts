@@ -164,6 +164,7 @@ describe('buildBuildingModel', () => {
       chimneys: [],
       slabs: [],
       fills: [],
+      marks: [],
       bounds: null,
     })
   })
@@ -296,15 +297,33 @@ describe('buildBuildingModel', () => {
 })
 
 describe('buildOpeningFills', () => {
-  it('une fenêtre reçoit un cadre complet et une vitre au milieu du mur', () => {
+  it('une fenêtre à deux vantaux (style par défaut) a un cadre, un montant central et deux vitres', () => {
     const wall = wallOn(ground, [0, 0, 4000, 0])
     const window = openingOn(wall, 'window', 2000, { width: 1200, height: 1000, sillHeight: 900 })
     const fills = buildOpeningFills(wall, [window], ground)
-    expect(fills.filter((f) => f.kind === 'frame')).toHaveLength(4)
-    const glass = fills.find((f) => f.kind === 'glass')!
-    expect(glass.center).toMatchObject({ x: 2000, y: 900 + 500, z: 0 })
-    expect(glass.size).toMatchObject({ x: 1200 - 120, y: 1000 - 120 })
-    expect(glass.sourceId).toBe(wall.id)
+    expect(fills.filter((f) => f.kind === 'frame')).toHaveLength(5) // 4 côtés + montant central
+    const glass = fills.filter((f) => f.kind === 'glass').sort((a, b) => a.center.x - b.center.x)
+    expect(glass).toHaveLength(2)
+    // Largeur libre 1080, montant central de 60 : deux vitres de 510, de part et d'autre du centre.
+    expect(glass[0].center).toMatchObject({ x: 1715, y: 900 + 500, z: 0 })
+    expect(glass[1].center).toMatchObject({ x: 2285, y: 900 + 500, z: 0 })
+    expect(glass[0].size).toMatchObject({ x: 510, y: 1000 - 120 })
+    expect(glass[0].sourceId).toBe(wall.id)
+  })
+
+  it('une fenêtre fixe ou à un vantail n\'a qu\'une vitre, sans montant', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0])
+    for (const style of ['fixed', 'casement1', 'tilt'] as const) {
+      const window = {
+        ...openingOn(wall, 'window', 2000, { width: 1200, height: 1000, sillHeight: 900 }),
+        style,
+      }
+      const fills = buildOpeningFills(wall, [window], ground)
+      expect(fills.filter((f) => f.kind === 'frame')).toHaveLength(4)
+      const glass = fills.filter((f) => f.kind === 'glass')
+      expect(glass).toHaveLength(1)
+      expect(glass[0].size).toMatchObject({ x: 1080, y: 880 })
+    }
   })
 
   it('une porte a un vantail jusqu’au sol et pas de traverse basse', () => {

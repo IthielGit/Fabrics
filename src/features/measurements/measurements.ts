@@ -4,10 +4,12 @@ import type {
   FabricsDocument,
   Level,
   OpeningElement,
+  OpeningStyle,
   StairElement,
   WallElement,
 } from '../../types/document'
 import { elementsOfLevel } from '../documents/levels'
+import { openingStyle } from '../openings/styles'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
 import { wallFaces } from '../geometry/walls'
 import { stairStatus } from '../stairs/stairs'
@@ -101,6 +103,8 @@ export interface OpeningMeasure {
   id: string
   name: string
   kind: OpeningElement['kind']
+  /** Style effectif (le style par défaut du type si l'ouverture n'en a pas). */
+  style: OpeningStyle
   wallId: string
   wallName: string
   width: number // mm
@@ -169,6 +173,7 @@ function openingMeasure(opening: OpeningElement, wall: WallElement): OpeningMeas
     id: opening.id,
     name: opening.name,
     kind: opening.kind,
+    style: openingStyle(opening),
     wallId: wall.id,
     wallName: wall.name,
     width: opening.width,

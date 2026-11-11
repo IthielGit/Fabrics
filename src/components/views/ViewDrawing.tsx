@@ -42,6 +42,21 @@ export default function ViewDrawing({ drawing }: ViewDrawingProps) {
         const strokeWidth = polygon.fill === 'black' ? 1.4 : 1
         const pointsOf = (p: DrawPolygon) => p.points.map(([x, y]) => `${x},${y}`).join(' ')
         const fillOf = (p: DrawPolygon) => (p.fill === 'none' ? 'none' : FILL_COLORS[p.fill])
+        if (polygon.open) {
+          // Trait de façade d'une ouverture (triangle d'ouverture, flèche) : ligne brisée fine.
+          return (
+            <polyline
+              key={index}
+              points={pointsOf(polygon)}
+              fill="none"
+              stroke={INK}
+              strokeWidth={STROKE_PX.hair}
+              strokeDasharray={polygon.dashed ? '4 3' : undefined}
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          )
+        }
         if (!polygon.edges) {
           return (
             <polygon

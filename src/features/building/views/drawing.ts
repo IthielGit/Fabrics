@@ -24,6 +24,10 @@ export interface DrawPolygon {
    * d'abord tous leurs fonds, puis tous leurs traits (une face voisine ne recouvre pas un trait).
    */
   layer?: number
+  /** Ligne brisée fine, non fermée et non remplie (traits de façade des ouvertures). */
+  open?: boolean
+  /** Ligne brisée en pointillé (avec `open`). */
+  dashed?: boolean
 }
 
 /**
@@ -111,6 +115,7 @@ export function autoFontMm(width: number, height: number): number {
  * trait), vitre vue de face en gris clair, tout le reste en blanc.
  */
 function faceFill(face: ViewFace): DrawFill {
+  if (face.kind === 'mark') return 'none'
   if (face.kind === 'glass') return face.cut ? 'white' : 'light'
   return face.cut ? 'black' : 'white'
 }
@@ -143,6 +148,7 @@ export function drawingFromView(view: ViewLike, fontMm?: number): Drawing | null
   const polygons: DrawPolygon[] = view.faces.map((face) => ({
     points: face.polygon.map(([u, v]) => [x(u), y(v)] as [number, number]),
     fill: faceFill(face),
+    ...(face.kind === 'mark' ? { open: true, ...(face.dashed ? { dashed: true } : {}) } : {}),
     ...(face.edges ? { edges: face.edges, layer: face.depth } : {}),
   }))
 

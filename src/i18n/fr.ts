@@ -1,7 +1,28 @@
 // Tous les textes d'interface de Fabrics (français).
 // Aucun texte affiché à l'utilisateur ne doit être écrit directement dans un composant.
 
+import type { OpeningStyle } from '../types/document'
 import { LIBRARY_PREFAB_TEXTS, LIBRARY_SET_TEXTS, LIBRARY_SYMBOL_TEXTS } from './libraryTexts'
+
+/** Nom de chaque style d'ouverture (interface et tableau des ouvertures du CSV). */
+const OPENING_STYLE_LABELS: Record<OpeningStyle, string> = {
+  swing: 'Battant',
+  double: 'Double battant',
+  slidingSurface: 'Coulissante en applique',
+  slidingPocket: 'Coulissante à galandage',
+  folding: 'Pliante',
+  swingBoth: 'Va-et-vient',
+  garageSectional: 'Garage sectionnelle',
+  garageTilt: 'Garage basculante',
+  casement2: 'Deux vantaux',
+  casement1: 'Un vantail',
+  fixed: 'Fixe',
+  sliding: 'Coulissante',
+  tilt: 'À soufflet',
+  'bay-sliding': 'Coulissante',
+  'bay-fixed': 'Fixe',
+  free: 'Ouverture libre',
+}
 
 export const fr = {
   app: {
@@ -349,6 +370,8 @@ export const fr = {
       windows: 'Nombre de fenêtres',
       bays: 'Nombre de baies',
       kinds: { door: 'Porte', window: 'Fenêtre', bay: 'Baie' },
+      style: 'Style',
+      styles: OPENING_STYLE_LABELS,
     },
   },
   export: {
@@ -543,24 +566,7 @@ export const fr = {
     quickLabel: 'Tailles rapides',
     tiltTurn: 'Oscillo-battant',
     tiltTurnTitle: 'Marque d’ouverture en façade et en 3D (le plan ne change pas)',
-    styles: {
-      swing: 'Battant',
-      double: 'Double battant',
-      slidingSurface: 'Coulissante en applique',
-      slidingPocket: 'Coulissante à galandage',
-      folding: 'Pliante',
-      swingBoth: 'Va-et-vient',
-      garageSectional: 'Garage sectionnelle',
-      garageTilt: 'Garage basculante',
-      casement2: 'Deux vantaux',
-      casement1: 'Un vantail',
-      fixed: 'Fixe',
-      sliding: 'Coulissante',
-      tilt: 'À soufflet',
-      'bay-sliding': 'Coulissante',
-      'bay-fixed': 'Fixe',
-      free: 'Ouverture libre',
-    },
+    styles: OPENING_STYLE_LABELS,
     quick: {
       entryDoor: 'Porte d’entrée',
       frenchWindow1: 'Porte-fenêtre, un vantail',

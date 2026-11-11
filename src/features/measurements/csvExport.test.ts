@@ -153,7 +153,7 @@ describe('références des murs', () => {
     const lines = linesOf(measurementsToCsv(oneLevel(elements), LABELS))
     expect(lines.filter((l) => /^Rez;M\d;Mur;/.test(l))).toHaveLength(2)
     // Deux murs au même nom : la porte indique de quel mur il s'agit (M2).
-    expect(lines).toContain('Rez;Porte 1;Porte;Mur;M2;900;2100;0;1,89')
+    expect(lines).toContain('Rez;Porte 1;Porte;Battant;Mur;M2;900;2100;0;1,89')
   })
 })
 
@@ -191,11 +191,11 @@ describe('ouvertures', () => {
     const start = lines.indexOf('Ouvertures')
     expect(start).toBeGreaterThan(-1)
     expect(lines[start + 1]).toBe(
-      'Niveau;Nom;Type;Mur;Réf. du mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)',
+      'Niveau;Nom;Type;Style;Mur;Réf. du mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)',
     )
-    expect(lines[start + 2]).toBe('Rez;Porte 1;Porte;Mur 1;M1;900;2100;0;1,89')
-    expect(lines[start + 3]).toBe('Rez;Fenêtre 1;Fenêtre;Mur 1;M1;1200;1000;900;1,20')
-    expect(lines[start + 4]).toBe('Total;;;;;;;;3,09')
+    expect(lines[start + 2]).toBe('Rez;Porte 1;Porte;Battant;Mur 1;M1;900;2100;0;1,89')
+    expect(lines[start + 3]).toBe('Rez;Fenêtre 1;Fenêtre;Deux vantaux;Mur 1;M1;1200;1000;900;1,20')
+    expect(lines[start + 4]).toBe('Total;;;;;;;;;3,09')
   })
 
   it('compte les portes, fenêtres et baies dans les totaux', () => {

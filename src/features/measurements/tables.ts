@@ -172,6 +172,7 @@ export function buildMetresTables(
         left(labels.level),
         left(labels.name),
         left(labels.kind),
+        left(labels.style),
         left(labels.wall),
         left(labels.wallRef),
         right(labels.width),
@@ -184,6 +185,7 @@ export function buildMetresTables(
         (opening) => [
           opening.name,
           labels.kinds[opening.kind],
+          labels.styles[opening.style],
           opening.wallName,
           refs.get(opening.wallId) ?? '',
           nmm(opening.width),
@@ -192,7 +194,7 @@ export function buildMetresTables(
           nm2(opening.area),
         ],
       ),
-      total: totalRow('', '', '', '', '', '', '', nm2(total.totals.openingsArea)),
+      total: totalRow('', '', '', '', '', '', '', '', nm2(total.totals.openingsArea)),
     })
   }
 

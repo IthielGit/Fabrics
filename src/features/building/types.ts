@@ -47,6 +47,20 @@ export interface OpeningFill extends WallPiece {
 }
 
 /**
+ * Trait de façade d'une ouverture (triangle d'ouverture vers les gonds, flèche d'un coulissant,
+ * marque de l'oscillo-battant). Il n'a pas de volume : la 3D ne le dessine pas, les façades oui.
+ * Les points sont dans le plan de la baie (milieu de l'épaisseur du mur).
+ */
+export interface OpeningMark {
+  /** Mur porteur. */
+  sourceId: string
+  levelId: string
+  /** Au moins deux points : une ligne brisée. */
+  points: Vec3[]
+  dashed: boolean
+}
+
+/**
  * Une face rectangulaire d'un mur : coins dans l'ordre (bas début, bas fin, haut fin, haut début)
  * pour une face verticale. `edges[i]` dit si le côté coin i → coin i+1 est un vrai bord à tracer
  * (contour du mur, bord d'une ouverture, angle) ou une simple jonction avec la face voisine du
@@ -91,6 +105,8 @@ export interface BuildingModel {
   slabs: SlabShape[]
   /** Cadres, vitres et portes dans les ouvertures (vue 3D seulement ; `sourceId` = mur porteur). */
   fills: OpeningFill[]
+  /** Traits de façade des ouvertures (triangles d'ouverture, flèches) ; absents de la 3D. */
+  marks: OpeningMark[]
   /** Emprise de tout le modèle, ou `null` s'il est vide. */
   bounds: Bounds3 | null
 }

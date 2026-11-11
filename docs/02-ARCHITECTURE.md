@@ -611,6 +611,10 @@ Règles :
 Le document est d'abord traduit en un modèle neutre, **sans Three.js**, testable avec Vitest :
 - chaque segment de mur → boîtes ; une ouverture coupe le segment en morceaux (trumeaux,
   allège sous la fenêtre, linteau au-dessus) : **pas de calcul booléen** ;
+- chaque ouverture → cadre, vitres, vantaux ou panneaux (boîtes `fills`) **selon son style**
+  (`src/features/building/openingFills.ts`) : les mêmes boîtes servent à la 3D, aux façades et aux
+  coupes ; des traits sans volume (`marks` : triangle d'ouverture vers les gonds, flèche d'un
+  coulissant, marque de l'oscillo-battant) ne sont dessinés qu'en façade ;
 - chaque pièce → dalle (polygone extrudé de `slabThickness`) à l'altitude de son niveau ;
 - dernier niveau → toit plat sur l'emprise des pièces ;
 - coordonnées en mm, plan (x, y) → 3D (x, z), hauteur → y.

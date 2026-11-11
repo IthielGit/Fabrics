@@ -1,3 +1,4 @@
+import type { OpeningStyle } from '../../types/document'
 import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
 import type { BuildingMeasurements } from './measurements'
@@ -52,6 +53,9 @@ export interface CsvLabels {
   bays: string
   /** Nom de chaque type d'ouverture. */
   kinds: Record<'door' | 'window' | 'bay', string>
+  /** Colonne « Style » du tableau des ouvertures et nom de chaque style. */
+  style: string
+  styles: Record<OpeningStyle, string>
   /** Intitulés du tableau des escaliers (absent : pas de tableau). */
   stairs?: {
     title: string

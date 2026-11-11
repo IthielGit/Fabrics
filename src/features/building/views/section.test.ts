@@ -48,8 +48,8 @@ describe('buildSection', () => {
     expect(covered(faces, 0, 450, true)).toBe(true) // allège coupée
     expect(covered(faces, 0, 2200, true)).toBe(true) // linteau coupé
     expect(covered(faces, 0, 1400, true)).toBe(false) // vide de la fenêtre
-    expect(covered(faces, 0, 1400, true, 'frame')).toBe(false) // le cadre est au bord de la baie
-    expect(covered(faces, 0, 1400, undefined, 'glass')).toBe(true) // la vitre, coupée
+    expect(covered(faces, 0, 1400, true, 'wall')).toBe(false) // aucun mur coupé dans la baie
+    expect(covered(faces, 0, 1400, true, 'frame')).toBe(true) // le montant central est coupé (noir)
   })
 
   it('montre derrière la fenêtre le côté du trumeau, en blanc', () => {

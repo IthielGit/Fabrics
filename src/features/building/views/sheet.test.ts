@@ -83,7 +83,7 @@ describe('levelPlanDrawing', () => {
     expect(walls.length).toBe(2) // les deux trumeaux, le linteau est au-dessus de la coupe
     expect(walls.every((p) => p.edges?.every((e) => !e))).toBe(true)
     const whites = plan?.polygons.filter((p) => p.fill === 'white') ?? []
-    expect(whites.length).toBe(2) // l'allège (sous la coupe) et la vitre
+    expect(whites.length).toBe(3) // l'allège (sous la coupe) et les deux vitres des deux vantaux
   })
 
   it('un niveau vide ne donne pas de plan', () => {

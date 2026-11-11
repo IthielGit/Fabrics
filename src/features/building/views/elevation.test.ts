@@ -102,7 +102,9 @@ describe('buildElevation', () => {
     const view = buildElevation(model, doc.levels, 'N', 0)
     // Vue du nord : l'est est à gauche, donc u = −x ; la fenêtre est entre x = 1 400 et 2 600.
     expect(covered(view.faces, -2000, 1400, 'wall')).toBe(false) // le mur est percé…
-    expect(covered(view.faces, -2000, 1400, 'glass')).toBe(true) // … et la fenêtre a sa vitre
+    expect(covered(view.faces, -1700, 1400, 'glass')).toBe(true) // … et la fenêtre a ses vitres
+    expect(covered(view.faces, -2300, 1400, 'glass')).toBe(true) // deux vantaux, de part et d'autre…
+    expect(covered(view.faces, -2000, 1400, 'frame')).toBe(true) // … du montant central
     expect(covered(view.faces, -1430, 1400, 'frame')).toBe(true) // et son cadre
     expect(covered(view.faces, -2000, 450)).toBe(true) // allège
     expect(covered(view.faces, -2000, 2200)).toBe(true) // linteau
@@ -137,7 +139,7 @@ describe('buildElevation', () => {
   })
 
   it('donne les cotes de niveaux et reste vide sans modèle', () => {
-    const empty: BuildingModel = { walls: [], wallMeshes: [], steps: [], chimneys: [], slabs: [], fills: [], bounds: null }
+    const empty: BuildingModel = { walls: [], wallMeshes: [], steps: [], chimneys: [], slabs: [], fills: [], marks: [], bounds: null }
     const view = buildElevation(empty, [ground, upper], 'N', 0)
     expect(view.faces).toEqual([])
     expect(view.bounds).toBeNull()

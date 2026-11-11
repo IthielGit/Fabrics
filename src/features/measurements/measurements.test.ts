@@ -171,6 +171,7 @@ describe('ouvertures et surface murale nette', () => {
         id: 'P',
         name: 'P',
         kind: 'door',
+        style: 'swing',
         wallId: 'M',
         wallName: 'M',
         width: 900,

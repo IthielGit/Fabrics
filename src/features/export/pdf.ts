@@ -293,6 +293,18 @@ export async function buildDrawingPdf(
     const [head] = batch
     pdf.setDrawColor(...INK)
     pdf.setLineWidth(head.fill === 'black' ? LINE.cut : LINE.normal)
+    if (head.open) {
+      // Trait de façade d'une ouverture (triangle d'ouverture, flèche) : ligne brisée fine.
+      pdf.setLineWidth(LINE.hair)
+      pdf.setLineDashPattern(head.dashed ? [1.5, 1] : [], 0)
+      for (let i = 0; i + 1 < head.points.length; i++) {
+        const [x, y] = head.points[i]
+        const [nx, ny] = head.points[i + 1]
+        pdf.line(px(x), py(y), px(nx), py(ny))
+      }
+      pdf.setLineDashPattern([], 0)
+      continue
+    }
     if (head.edges) {
       // Faces d'un même plan : tous les fonds, puis seulement les vrais bords (pas les jonctions).
       for (const polygon of batch) {

@@ -1,6 +1,6 @@
 import type { Level } from '../../../types/document'
 import type { Point } from '../../geometry/viewport'
-import type { BuildingModel, SlabShape, WallMesh, WallPiece } from '../types'
+import type { BuildingModel, OpeningMark, SlabShape, WallMesh, WallPiece } from '../types'
 
 /**
  * Projection orthographique du modèle 3D neutre sur un plan vertical (façades, coupes).
@@ -28,6 +28,8 @@ export type FaceKind =
   | 'frame'
   | 'glass'
   | 'door'
+  /** Trait de façade d'une ouverture (triangle d'ouverture, flèche) : ligne brisée, pas une surface. */
+  | 'mark'
 
 /** Une face verticale vue de face, prête à être dessinée en 2D. */
 export interface ViewFace {
@@ -45,6 +47,8 @@ export interface ViewFace {
    * même mur ne sont pas tracées, pour que le mur se lise d'un seul tenant.
    */
   edges?: boolean[]
+  /** Pour un `mark` : trait en pointillé. */
+  dashed?: boolean
 }
 
 export interface ViewBounds {
@@ -64,6 +68,8 @@ export interface LevelMark {
 
 /** Seules les faces plus larges que cela (mm) sont gardées : les autres sont vues par la tranche. */
 const MIN_FACE_WIDTH = 0.5
+/** Un trait d'ouverture se peint à 13 mm devant le milieu de l'ouverture (devant une vitre de 24 mm). */
+const MARK_DEPTH_OFFSET = 13
 
 /** Direction « droite » de la personne qui regarde dans la direction `look` (plan, y vers le bas). */
 export function rightOf(look: ViewDirection): ViewDirection {
@@ -134,6 +140,28 @@ export function boxFaces(piece: WallPiece, look: ViewDirection, kind: FaceKind):
     if (face) faces.push(face)
   }
   return faces
+}
+
+/**
+ * Trait de façade d'une ouverture, projeté. Il se peint juste devant la vitre ou le vantail qui le
+ * porte (la moitié de la plus grande épaisseur de remplissage, plus 1 mm), donc par-dessus eux mais
+ * sous tout ce qui est plus près de la personne qui regarde. `null` s'il est vu par la tranche.
+ */
+export function markFace(mark: OpeningMark, look: ViewDirection): ViewFace | null {
+  const right = rightOf(look)
+  const polygon = mark.points.map((p): [number, number] => [p.x * right.x + p.z * right.y, p.y])
+  const us = polygon.map((p) => p[0])
+  if (Math.max(...us) - Math.min(...us) < MIN_FACE_WIDTH) return null
+  const cx = mark.points.reduce((sum, p) => sum + p.x, 0) / mark.points.length
+  const cz = mark.points.reduce((sum, p) => sum + p.z, 0) / mark.points.length
+  return {
+    polygon,
+    depth: cx * look.x + cz * look.y - MARK_DEPTH_OFFSET,
+    kind: 'mark',
+    sourceId: mark.sourceId,
+    levelId: mark.levelId,
+    dashed: mark.dashed,
+  }
 }
 
 /** Faces verticales (côtés) d'une dalle, d'un toit ou d'une plateforme tournées vers la personne qui regarde. */
@@ -281,6 +309,10 @@ export function projectModel(model: BuildingModel, look: ViewDirection): ViewFac
   for (const s of model.steps) faces.push(...boxFaces(s, look, 'step'))
   for (const c of model.chimneys) faces.push(...boxFaces(c, look, 'chimney'))
   for (const f of model.fills) faces.push(...boxFaces(f, look, f.kind))
+  for (const m of model.marks) {
+    const face = markFace(m, look)
+    if (face) faces.push(face)
+  }
   // La dalle du niveau le plus bas est sous le terrain : invisible en façade.
   for (const slab of model.slabs) if (!slab.onGround) faces.push(...slabFaces(slab, look))
   return paintOrder(mergeStackedEdges(faces))

@@ -9,11 +9,20 @@ import type {
 } from '../../types/document'
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
-import type { BuildOptions, BuildingModel, Bounds3, OpeningFill, SlabShape, WallMesh, WallPiece } from './types'
+import type {
+  BuildOptions,
+  BuildingModel,
+  Bounds3,
+  OpeningFill,
+  OpeningMark,
+  SlabShape,
+  WallMesh,
+  WallPiece,
+} from './types'
 import { buildChimney } from './chimney'
 import { collectStairVoids, pointInPolygon, voidsOfRoom, type StairVoid } from '../stairs/voids'
 import { buildStairSteps } from './stairSteps'
-import { buildOpeningFills } from './openingFills'
+import { buildOpeningDetails } from './openingFills'
 import { buildWallMesh } from './wallMesh'
 import { buildWallPieces } from './wallPieces'
 
@@ -139,7 +148,9 @@ export function buildBuildingModel(
 ): BuildingModel {
   const allLevels = doc.levels ?? []
   const levels = visibleLevels(allLevels, options.upToLevelId)
-  if (levels.length === 0) return { walls: [], wallMeshes: [], steps: [], chimneys: [], slabs: [], fills: [], bounds: null }
+  if (levels.length === 0) {
+    return { walls: [], wallMeshes: [], steps: [], chimneys: [], slabs: [], fills: [], marks: [], bounds: null }
+  }
 
   const sortedAll = [...allLevels].sort((a, b) => a.elevation - b.elevation)
   const topLevel = sortedAll[sortedAll.length - 1]
@@ -168,6 +179,7 @@ export function buildBuildingModel(
   const chimneys: WallPiece[] = []
   const slabs: SlabShape[] = []
   const fills: OpeningFill[] = []
+  const marks: OpeningMark[] = []
   const rooms = doc.elements.filter((el): el is RoomElement => el.type === 'room' && !el.hidden)
   // Une pièce est couverte si le centre de son contour tombe dans une pièce d'un niveau supérieur.
   const coveredByUpperRoom = (room: RoomElement, level: Level): boolean => {
@@ -186,7 +198,9 @@ export function buildBuildingModel(
     if (el.type === 'wall') {
       const own = openingsByWall.get(el.id) ?? []
       walls.push(...buildWallPieces(el as WallElement, own, level))
-      fills.push(...buildOpeningFills(el as WallElement, own, level))
+      const details = buildOpeningDetails(el as WallElement, own, level)
+      fills.push(...details.fills)
+      marks.push(...details.marks)
       const mesh = buildWallMesh(el as WallElement, own, level)
       if (mesh) wallMeshes.push(mesh)
     } else if (el.type === 'chimney') {
@@ -217,6 +231,7 @@ export function buildBuildingModel(
     chimneys,
     slabs,
     fills,
+    marks,
     bounds: modelBounds([...walls, ...steps, ...chimneys], slabs),
   }
 }
