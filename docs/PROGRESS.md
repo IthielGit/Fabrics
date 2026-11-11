@@ -40,6 +40,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — M10 · Tâche 6 · Export PDF des vues
+- Fait : bouton **« PDF »** dans l'écran Vues, pour la vue affichée (façade, coupe ou planche). Fenêtre : nom du fichier, feuille A4 / A3, orientation (paysage si le dessin est plus large), **échelle** 1:20, 1:50, 1:100, 1:200 ou « Ajuster à la page » (l'échelle la plus grande qui tient est proposée d'emblée ; message et suggestion si elle ne tient pas, comme pour les plans). PDF **vectoriel** (pas une image) : les mm réels du dessin divisés par l'échelle donnent des mm de papier (2,50 m à 1:50 = 50 mm), faces blanches ou noires (coupes), cotes de niveaux, titres de la planche ; textes jamais plus petits que 6 pt. Même **cartouche** et même barre d'échelle de 1 m que le PDF d'un plan (nom du projet, date, échelle, et le titre de la vue). `Choice` et `ChoiceGroup` (pastilles de la fenêtre Exporter) sont devenus des composants communs.
+- Fichiers : `src/features/export/pdf.ts` (`buildDrawingPdf`, `drawCartouche`), `pdf.test.ts`, `src/components/views/{ViewsPdfDialog,ViewsScreen}.tsx`, `src/components/ui/{Choice,ChoiceGroup}.tsx`, `src/components/editor/ExportDialog.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2122) — PDF à ouvrir et mesurer à la règle (hauteur d'étage de 2,50 m = 50 mm à 1:50, impression à 100 %)
+- Commit : feat: M10 tâche 6, export PDF des vues
+
 ### 2026-11-11 — M10 · Tâche 5 · Planche
 - Fait : format de **dessin commun** (`Drawing` : polygones, lignes, textes, en mm réels) que l'écran et le PDF de la tâche 6 dessineront tous les deux ; les façades et coupes passent maintenant par lui (même rendu qu'avant). **Onglet « Planche »** (dernier onglet de l'écran Vues) : plans de chaque niveau (sols en gris clair, murs en gris foncé, vus de dessus), les quatre façades et les coupes, **côte à côte à la même échelle**, rangés en lignes dans cet ordre, chacun sous son titre (nom du niveau, « Façade Nord », « Coupe A–A »). Les textes ont une hauteur commune ; un niveau ou une vue vide n'a pas de case. Planche vide : message.
 - Limite : le plan d'un niveau montre les murs pleins (pas de symboles de portes ni de fenêtres) ; les symboles viendront avec les hachures et textures si tu le veux.

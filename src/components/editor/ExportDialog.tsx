@@ -1,4 +1,3 @@
-import clsx from 'clsx'
 import { useMemo, useState } from 'react'
 import { planExportExtent } from '../../features/export/bounds'
 import type { ExportFileType } from '../../features/export/fileName'
@@ -17,50 +16,10 @@ import { computeBuildingMeasurements } from '../../features/measurements/measure
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
+import Choice from '../ui/Choice'
+import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
 import { exportProject } from './exportProject'
-
-const OPTION =
-  'flex cursor-pointer items-center gap-2 rounded-md border px-3 py-2 text-sm has-[:disabled]:cursor-not-allowed has-[:disabled]:opacity-50'
-
-interface ChoiceProps {
-  name: string
-  checked: boolean
-  disabled?: boolean
-  onSelect: () => void
-  children: React.ReactNode
-}
-
-/** Une option d'un groupe de boutons radio, présentée comme une pastille. */
-function Choice({ name, checked, disabled, onSelect, children }: ChoiceProps) {
-  return (
-    <label
-      className={clsx(
-        OPTION,
-        checked ? 'border-indigo-600 bg-indigo-50 text-indigo-900' : 'border-slate-300 text-slate-700',
-      )}
-    >
-      <input
-        type="radio"
-        name={name}
-        checked={checked}
-        disabled={disabled}
-        onChange={onSelect}
-        className="accent-indigo-600"
-      />
-      {children}
-    </label>
-  )
-}
-
-function Group({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <fieldset className="space-y-2">
-      <legend className="text-sm font-medium text-slate-900">{label}</legend>
-      <div className="flex flex-wrap gap-2">{children}</div>
-    </fieldset>
-  )
-}
 
 /** Fenêtre « Exporter » : PNG, JPG, PDF et, pour un plan, CSV des métrés. */
 export default function ExportDialog({ onClose }: { onClose: () => void }) {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { buildDesignPdf, buildPlanPdf } from './pdf'
+import type { Drawing } from '../building/views/drawing'
+import { buildDesignPdf, buildDrawingPdf, buildPlanPdf } from './pdf'
 import { planPdfPlacement, sheetSize } from './pdfLayout'
 
 // PNG de 1 × 1 pixel.
@@ -44,5 +45,39 @@ describe('PDF', () => {
     const [width, height] = mediaBox(text)
     expect(width).toBeCloseTo(1190.55, 1)
     expect(height).toBeCloseTo(841.89, 1)
+  })
+
+  it('produit un PDF vectoriel d’une façade, à l’échelle : 2,50 m à 1:50 font 50 mm sur le papier', async () => {
+    const drawing: Drawing = {
+      width: 5000,
+      height: 2500,
+      polygons: [
+        { points: [[0, 0], [5000, 0], [5000, 2500], [0, 2500]], fill: 'white' },
+        { points: [[1000, 900], [2000, 900], [2000, 1900], [1000, 1900]], fill: 'black' },
+      ],
+      lines: [
+        { x1: 0, y1: 2500, x2: 5000, y2: 2500, muted: true },
+        { x1: 0, y1: 0, x2: 5000, y2: 0, dashed: true, accent: true },
+      ],
+      texts: [{ x: 100, y: 200, text: 'Rez-de-chaussée', size: 150, accent: true }],
+    }
+    const sheet = sheetSize('a4', 'landscape')
+    const placement = planPdfPlacement({ width: drawing.width, height: drawing.height }, sheet, 50)
+    expect(placement.fits).toBe(true)
+    expect(placement.rect.height).toBeCloseTo(50) // 2 500 mm ÷ 50
+    expect(placement.rect.width).toBeCloseTo(100) // 5 000 mm ÷ 50
+
+    const blob = await buildDrawingPdf(drawing, sheet, placement.rect, 50, {
+      projectName: 'Maison',
+      scaleText: 'Échelle 1:50',
+      dateText: 'Date : 10/11/2026',
+      areaText: 'Façade Nord',
+      scaleBarLabel: '1000 mm',
+    })
+    const text = await textOf(blob)
+    expect(text.startsWith('%PDF-')).toBe(true)
+    const [width, height] = mediaBox(text)
+    expect(width).toBeCloseTo(841.89, 1)
+    expect(height).toBeCloseTo(595.28, 1)
   })
 })

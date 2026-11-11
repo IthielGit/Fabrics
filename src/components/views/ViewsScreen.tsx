@@ -1,7 +1,7 @@
 import clsx from 'clsx'
-import { X } from 'lucide-react'
-import { useMemo } from 'react'
-import { drawingFromView } from '../../features/building/views/drawing'
+import { FileDown, X } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { drawingFromView, type Drawing } from '../../features/building/views/drawing'
 import { buildElevation } from '../../features/building/views/elevation'
 import { buildSection } from '../../features/building/views/section'
 import { buildSheet } from '../../features/building/views/sheet'
@@ -10,8 +10,10 @@ import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import { useViewsStore, type ViewsTab } from '../../stores/viewsStore'
 import type { SectionLineElement } from '../../types/document'
+import Button from '../ui/Button'
 import { useBuildingModel } from '../viewer3d/useBuildingModel'
 import ViewDrawing from './ViewDrawing'
+import ViewsPdfDialog from './ViewsPdfDialog'
 
 const CARDINALS: Cardinal[] = ['N', 'E', 'S', 'O']
 
@@ -22,79 +24,64 @@ function isSameTab(a: ViewsTab, b: ViewsTab): boolean {
   return true
 }
 
-function ViewBody({ note, children }: { note: string; children: React.ReactNode }) {
-  return (
-    <>
-      <p className="px-4 pt-3 text-sm text-slate-600">{note}</p>
-      <div className="min-h-0 flex-1 p-4">{children}</div>
-    </>
-  )
+interface ActiveView {
+  /** Titre de la vue (cartouche et nom du fichier). */
+  title: string
+  note: string
+  drawing: Drawing | null
+  /** Message quand il n'y a rien à dessiner. */
+  emptyText: string
 }
 
-function ElevationTab({ cardinal }: { cardinal: Cardinal }) {
+/** Dessin de l'onglet affiché : une façade, une coupe ou la planche. */
+function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): ActiveView {
   const model = useBuildingModel(undefined)
   const levels = useEditorStore((state) => state.project?.document.levels)
   const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
-  const drawing = useMemo(
-    () => drawingFromView(buildElevation(model, levels ?? [], cardinal, northAngle)),
-    [model, levels, cardinal, northAngle],
-  )
-  return (
-    <ViewBody note={`${fr.views.elevation[cardinal]} · ${fr.views.lookFrom(fr.views.sides[cardinal])}`}>
-      {drawing ? <ViewDrawing drawing={drawing} /> : <p className="text-sm text-slate-500">{fr.views.empty}</p>}
-    </ViewBody>
-  )
-}
 
-function SectionTab({ sectionId }: { sectionId: string }) {
-  const model = useBuildingModel(undefined)
-  const levels = useEditorStore((state) => state.project?.document.levels)
-  const section = useEditorStore((state) =>
-    state.project?.document.elements.find(
-      (el): el is SectionLineElement => el.type === 'section' && el.id === sectionId,
-    ),
-  )
-  const drawing = useMemo(() => {
-    if (!section) return null
-    const view = buildSection(model, levels ?? [], {
-      points: section.points,
-      lookLeft: section.lookLeft,
-      label: section.label,
+  return useMemo(() => {
+    const allLevels = levels ?? []
+    if (tab.kind === 'elevation') {
+      const title = fr.views.elevation[tab.cardinal]
+      return {
+        title,
+        note: `${title} · ${fr.views.lookFrom(fr.views.sides[tab.cardinal])}`,
+        drawing: drawingFromView(buildElevation(model, allLevels, tab.cardinal, northAngle)),
+        emptyText: fr.views.empty,
+      }
+    }
+    if (tab.kind === 'section') {
+      const section = sections.find((s) => s.id === tab.sectionId)
+      if (!section) {
+        return { title: '', note: '', drawing: null, emptyText: fr.views.sectionMissing }
+      }
+      const view = buildSection(model, allLevels, {
+        points: section.points,
+        lookLeft: section.lookLeft,
+        label: section.label,
+      })
+      const title = fr.views.section(section.label)
+      return {
+        title,
+        note: `${title} · ${fr.views.sectionLook}`,
+        drawing: view ? drawingFromView(view) : null,
+        emptyText: fr.views.sectionEmpty,
+      }
+    }
+    const sheet = buildSheet({
+      model,
+      levels: allLevels,
+      sections: sections.map((s) => ({ points: s.points, lookLeft: s.lookLeft, label: s.label })),
+      northAngle,
+      labels: { elevation: fr.views.elevation, section: fr.views.section },
     })
-    return view ? drawingFromView(view) : null
-  }, [model, levels, section])
-  if (!section) return <p className="p-4 text-sm text-slate-500">{fr.views.sectionMissing}</p>
-  return (
-    <ViewBody note={`${fr.views.section(section.label)} · ${fr.views.sectionLook}`}>
-      {drawing ? <ViewDrawing drawing={drawing} /> : <p className="text-sm text-slate-500">{fr.views.sectionEmpty}</p>}
-    </ViewBody>
-  )
-}
-
-function SheetTab({ sections }: { sections: readonly SectionLineElement[] }) {
-  const model = useBuildingModel(undefined)
-  const levels = useEditorStore((state) => state.project?.document.levels)
-  const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
-  const sheet = useMemo(
-    () =>
-      buildSheet({
-        model,
-        levels: levels ?? [],
-        sections: sections.map((s) => ({ points: s.points, lookLeft: s.lookLeft, label: s.label })),
-        northAngle,
-        labels: { elevation: fr.views.elevation, section: fr.views.section },
-      }),
-    [model, levels, sections, northAngle],
-  )
-  return (
-    <ViewBody note={fr.views.sheetNote}>
-      {sheet.drawing.width > 0 ? (
-        <ViewDrawing drawing={sheet.drawing} />
-      ) : (
-        <p className="text-sm text-slate-500">{fr.views.empty}</p>
-      )}
-    </ViewBody>
-  )
+    return {
+      title: fr.views.sheet,
+      note: fr.views.sheetNote,
+      drawing: sheet.drawing.width > 0 ? sheet.drawing : null,
+      emptyText: fr.views.empty,
+    }
+  }, [tab, sections, model, levels, northAngle])
 }
 
 /** Écran « Vues » : façades, coupes et planche calculées à partir du plan, en lecture seule. */
@@ -103,6 +90,7 @@ function ScreenBody() {
   const setTab = useViewsStore((state) => state.setTab)
   const closeViews = useViewsStore((state) => state.closeViews)
   const elements = useEditorStore((state) => state.project?.document.elements)
+  const [pdfOpen, setPdfOpen] = useState(false)
   const sections = useMemo(
     () =>
       (elements ?? [])
@@ -110,6 +98,7 @@ function ScreenBody() {
         .sort((a, b) => a.label.localeCompare(b.label, 'fr', { numeric: true })),
     [elements],
   )
+  const view = useActiveView(tab, sections)
 
   const tabs: { key: string; label: string; value: ViewsTab }[] = [
     ...CARDINALS.map((cardinal) => ({
@@ -129,7 +118,7 @@ function ScreenBody() {
     <div role="dialog" aria-label={fr.views.title} className="fixed inset-0 z-50 flex flex-col bg-slate-50">
       <header className="flex h-12 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3">
         <h2 className="font-semibold text-slate-900">{fr.views.title}</h2>
-        <div role="tablist" aria-label={fr.views.tabs} className="flex items-center gap-1 overflow-x-auto">
+        <div role="tablist" aria-label={fr.views.tabs} className="flex min-w-0 items-center gap-1 overflow-x-auto">
           {tabs.map((item) => {
             const active = isSameTab(tab, item.value)
             return (
@@ -149,23 +138,36 @@ function ScreenBody() {
             )
           })}
         </div>
-        <span className="ml-auto hidden text-xs text-slate-500 lg:inline">{fr.views.readOnly}</span>
-        <button
-          type="button"
-          onClick={closeViews}
-          title={fr.views.close}
-          aria-label={fr.views.close}
-          className="rounded-md p-2 text-slate-700 hover:bg-slate-100"
-        >
-          <X size={18} />
-        </button>
+        <div className="ml-auto flex shrink-0 items-center gap-2">
+          <Button onClick={() => setPdfOpen(true)} disabled={!view.drawing} className="px-3 py-1.5">
+            <FileDown size={16} aria-hidden="true" />
+            {fr.views.exportPdf}
+          </Button>
+          <button
+            type="button"
+            onClick={closeViews}
+            title={fr.views.close}
+            aria-label={fr.views.close}
+            className="rounded-md p-2 text-slate-700 hover:bg-slate-100"
+          >
+            <X size={18} />
+          </button>
+        </div>
       </header>
       <main className="flex min-h-0 flex-1 flex-col">
-        {tab.kind === 'elevation' && <ElevationTab cardinal={tab.cardinal} />}
-        {tab.kind === 'section' && <SectionTab sectionId={tab.sectionId} />}
-        {tab.kind === 'sheet' && <SheetTab sections={sections} />}
+        {view.note && <p className="px-4 pt-3 text-sm text-slate-600">{view.note}</p>}
+        <div className="min-h-0 flex-1 p-4">
+          {view.drawing ? (
+            <ViewDrawing drawing={view.drawing} />
+          ) : (
+            <p className="text-sm text-slate-500">{view.emptyText}</p>
+          )}
+        </div>
         {sections.length === 0 && <p className="px-4 pb-3 text-xs text-slate-500">{fr.views.noSections}</p>}
       </main>
+      {pdfOpen && view.drawing && (
+        <ViewsPdfDialog drawing={view.drawing} viewTitle={view.title} onClose={() => setPdfOpen(false)} />
+      )}
     </div>
   )
 }
