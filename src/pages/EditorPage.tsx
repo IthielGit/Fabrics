@@ -13,6 +13,7 @@ import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import ZoomControls from '../components/editor/ZoomControls'
+import ViewsScreen from '../components/views/ViewsScreen'
 import Viewer3DPanel from '../components/viewer3d/Viewer3DPanel'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
@@ -98,6 +99,7 @@ export default function EditorPage() {
         <Viewer3DPanel />
         <SidePanel />
       </div>
+      <ViewsScreen />
     </div>
   )
 }

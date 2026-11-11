@@ -500,6 +500,23 @@ export const fr = {
     loading: 'Chargement de la 3D…',
     error: 'La vue 3D n’a pas pu démarrer sur cet appareil.',
   },
+  views: {
+    open: 'Vues : façades, coupes et planche',
+    openLabel: 'Vues',
+    title: 'Vues',
+    close: 'Fermer les vues',
+    readOnly: 'Vues calculées à partir du plan, en lecture seule.',
+    empty: 'Dessinez des murs ou des pièces pour voir les façades.',
+    tabs: 'Choix de la vue',
+    elevation: {
+      N: 'Façade Nord',
+      E: 'Façade Est',
+      S: 'Façade Sud',
+      O: 'Façade Ouest',
+    },
+    lookFrom: (side: string) => `Vue de l’extérieur, côté ${side}`,
+    sides: { N: 'nord', E: 'est', S: 'sud', O: 'ouest' },
+  },
   properties: {
     title: 'Propriétés',
     empty: 'Sélectionnez un élément pour modifier ses propriétés.',

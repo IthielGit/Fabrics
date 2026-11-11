@@ -1,10 +1,11 @@
 import clsx from 'clsx'
-import { ArrowLeft, Box, Download, Redo2, Undo2 } from 'lucide-react'
+import { ArrowLeft, Box, Download, PanelsTopLeft, Redo2, Undo2 } from 'lucide-react'
 import { useState, type KeyboardEvent } from 'react'
 import { Link } from 'react-router'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import { useViewer3DStore } from '../../stores/viewer3dStore'
+import { useViewsStore } from '../../stores/viewsStore'
 import Button from '../ui/Button'
 import ExportDialog from './ExportDialog'
 import SaveIndicator from './SaveIndicator'
@@ -22,6 +23,7 @@ export default function EditorHeader() {
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
   const viewer3DOpen = useViewer3DStore((state) => state.open)
   const toggleViewer3D = useViewer3DStore((state) => state.toggleOpen)
+  const openViews = useViewsStore((state) => state.openViews)
 
   // Pendant la saisie on garde un brouillon ; le nom n'est validé qu'à la sortie du champ.
   const [draftName, setDraftName] = useState<string | null>(null)
@@ -73,6 +75,18 @@ export default function EditorHeader() {
             className={clsx(ICON_BUTTON, viewer3DOpen && 'bg-indigo-50 text-indigo-700')}
           >
             <Box size={18} />
+          </button>
+        )}
+        {isPlan && (
+          <button
+            type="button"
+            onClick={openViews}
+            title={fr.views.open}
+            aria-label={fr.views.open}
+            className="mr-1 flex items-center gap-1.5 rounded-md px-2 py-2 text-sm text-slate-700 hover:bg-slate-100"
+          >
+            <PanelsTopLeft size={18} aria-hidden="true" />
+            {fr.views.openLabel}
           </button>
         )}
         <Button onClick={() => setExportOpen(true)} className="mr-2 px-3 py-1.5">
