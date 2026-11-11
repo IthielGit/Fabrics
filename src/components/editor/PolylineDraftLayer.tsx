@@ -1,7 +1,13 @@
 import { Circle, Label, Line, Tag, Text } from 'react-konva'
-import { flattenPoints, pointDistance } from '../../features/geometry/polygon'
+import {
+  flattenPoints,
+  pointDistance,
+  polygonArea,
+  polygonCentroid,
+} from '../../features/geometry/polygon'
 import type { SnapKind } from '../../features/geometry/snapping'
-import { formatLength } from '../../features/units/format'
+import { formatArea, formatLength } from '../../features/units/format'
+import { fr } from '../../i18n/fr'
 import type { PolylineDraft, PolylineTool } from './usePolylineDrawing'
 
 interface PolylineDraftLayerProps {
@@ -31,13 +37,55 @@ export default function PolylineDraftLayer({
   scale,
   wallThickness,
 }: PolylineDraftLayerProps) {
-  const { points, cursor, snapKind } = draft
+  const { points, cursor, snapKind, fillMode, region } = draft
   const path = cursor && points.length > 0 ? [...points, cursor] : points
   const last = points[points.length - 1]
   const showLength = cursor !== null && last !== undefined
   const lengthMm = showLength ? pointDistance(last, cursor) : 0
   const middle =
     showLength ? { x: (last.x + cursor.x) / 2, y: (last.y + cursor.y) / 2 } : { x: 0, y: 0 }
+
+  // Maj + survol (outil Pièce) : aperçu de la zone fermée par les murs, ou message si elle n'existe pas.
+  if (fillMode && tool === 'room') {
+    const regionArea = region ? polygonArea(flattenPoints(region)) : 0
+    const centre = region ? polygonCentroid(flattenPoints(region)) : null
+    return (
+      <>
+        {region && (
+          <Line
+            points={flattenPoints(region)}
+            closed
+            fill="rgba(22, 163, 74, 0.25)"
+            stroke="#16a34a"
+            strokeWidth={2 / scale}
+            listening={false}
+          />
+        )}
+        {region && centre && (
+          <Label x={centre.x} y={centre.y} listening={false}>
+            <Tag fill="#166534" cornerRadius={3 / scale} />
+            <Text
+              text={formatArea(regionArea)}
+              fontSize={13 / scale}
+              fill="#ffffff"
+              padding={4 / scale}
+            />
+          </Label>
+        )}
+        {!region && cursor && (
+          <Label x={cursor.x + 12 / scale} y={cursor.y + 12 / scale} listening={false}>
+            <Tag fill="#b91c1c" cornerRadius={3 / scale} />
+            <Text
+              text={fr.hints.regionNotClosed}
+              fontSize={12 / scale}
+              fill="#ffffff"
+              padding={4 / scale}
+            />
+          </Label>
+        )}
+      </>
+    )
+  }
 
   return (
     <>

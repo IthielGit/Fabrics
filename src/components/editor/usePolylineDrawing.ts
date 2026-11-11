@@ -17,6 +17,7 @@ import {
   type SnapKind,
   type WallAxisSegment,
 } from '../../features/geometry/snapping'
+import { createRegionFinder, type RegionFinder } from '../../features/geometry/regions'
 import type { Point } from '../../features/geometry/viewport'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
@@ -31,6 +32,12 @@ export interface PolylineDraft {
   /** Position aimantée du curseur (point en cours de placement). */
   cursor: Point | null
   snapKind: SnapKind
+  /**
+   * Outil Pièce avec Maj et aucun point posé : on survole une zone à remplir. `region` est le
+   * contour de la zone fermée par les murs sous le curseur, ou `null` s'il n'y en a pas.
+   */
+  fillMode: boolean
+  region: Point[] | null
 }
 
 /** Nombre minimal de points pour valider un tracé. */
@@ -41,7 +48,13 @@ const SNAP_THRESHOLD_PX = 8
 
 type PointerEvent = Konva.KonvaEventObject<MouseEvent | TouchEvent>
 
-const EMPTY: PolylineDraft = { points: [], cursor: null, snapKind: 'none' }
+const EMPTY: PolylineDraft = {
+  points: [],
+  cursor: null,
+  snapKind: 'none',
+  fillMode: false,
+  region: null,
+}
 
 interface StoredDraft {
   tool: PolylineTool | null
@@ -102,6 +115,26 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       vertexCache.current = { elements, vertices: collectSnapVertices(elements) }
     }
     return vertexCache.current.vertices
+  }, [])
+
+  // Zones fermées par les murs : le graphe est préparé une fois par état des éléments.
+  const regionCache = useRef<{ elements: readonly CanvasElement[]; finder: RegionFinder } | null>(
+    null,
+  )
+  const lastRaw = useRef<Point | null>(null)
+
+  /** Contour de la zone fermée par les murs du niveau actif autour de `raw`, ou `null`. */
+  const regionAt = useCallback((raw: Point): Point[] | null => {
+    const active = selectActiveElements(useEditorStore.getState())
+    if (regionCache.current?.elements !== active) {
+      const walls = active.flatMap((element) =>
+        element.type === 'wall' && !element.hidden
+          ? [{ points: element.points, thickness: element.thickness }]
+          : [],
+      )
+      regionCache.current = { elements: active, finder: createRegionFinder(walls) }
+    }
+    return regionCache.current.finder.find(raw)
   }, [])
 
   /** Axes des murs du niveau actif (mis en cache). */
@@ -176,6 +209,17 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     }
   }, [tool, readDraft, setDraft])
 
+  /** Crée une pièce sur le contour d'une zone fermée par des murs (Maj + clic). */
+  const commitRegion = useCallback(
+    (region: Point[]) => {
+      const { addElement } = useEditorStore.getState()
+      const state = useEditorStore.getState()
+      const name = nextElementName(fr.elements.room, 'room', selectActiveElements(state))
+      addElement(createRoomElement(name, flattenPoints(region)))
+    },
+    [],
+  )
+
   const onPointerDown = useCallback(
     (event: PointerEvent) => {
       if (!tool) return
@@ -183,6 +227,14 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       if (!raw) return
       const current = readDraft()
       const clicks = event.evt instanceof MouseEvent ? event.evt.detail : 1
+
+      // Pièce, Maj et aucun point posé : un clic remplit la zone fermée sous le curseur.
+      if (tool === 'room' && current.points.length === 0 && event.evt.shiftKey) {
+        const region = regionAt(raw)
+        if (region) commitRegion(region)
+        setDraft({ ...EMPTY, cursor: raw, fillMode: true, region: null })
+        return
+      }
 
       // Double-clic : le premier clic a déjà posé le dernier point, le second termine le tracé.
       if (clicks >= 2 && current.points.length > 0) {
@@ -200,11 +252,17 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       }
       if (points.length > 0 && samePoint(point, points[points.length - 1])) return
 
-      setDraft({ points: [...points, point], cursor: point, snapKind: kind })
+      setDraft({
+        points: [...points, point],
+        cursor: point,
+        snapKind: kind,
+        fillMode: false,
+        region: null,
+      })
       // Une cote et un axe n'ont que deux points.
       if ((tool === 'dimension' || tool === 'axis') && points.length + 1 === 2) finish()
     },
-    [tool, readDraft, snap, finish, setDraft],
+    [tool, readDraft, snap, finish, setDraft, regionAt, commitRegion],
   )
 
   const onPointerMove = useCallback(
@@ -212,11 +270,40 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       if (!tool) return
       const raw = event.target.getStage()?.getRelativePointerPosition()
       if (!raw) return
+      lastRaw.current = raw
+      const current = readDraft()
+      // Pièce avec Maj et aucun point posé : on survole une zone à remplir.
+      if (tool === 'room' && current.points.length === 0 && event.evt.shiftKey) {
+        setDraft({ ...current, cursor: raw, fillMode: true, region: regionAt(raw) })
+        return
+      }
       const { point, kind } = snap(raw, event.evt.shiftKey, event.evt.altKey)
-      setDraft({ ...readDraft(), cursor: point, snapKind: kind })
+      setDraft({ ...current, cursor: point, snapKind: kind, fillMode: false, region: null })
     },
-    [tool, readDraft, snap, setDraft],
+    [tool, readDraft, snap, setDraft, regionAt],
   )
+
+  // Maj enfoncée ou relâchée sans bouger la souris : l'aperçu de la zone suit tout de suite.
+  useEffect(() => {
+    if (tool !== 'room') return
+    const onShift = (event: KeyboardEvent) => {
+      if (event.key !== 'Shift' || isTypingTarget(event.target)) return
+      const current = readDraft()
+      const raw = lastRaw.current
+      if (current.points.length > 0 || !raw) return
+      if (event.type === 'keydown') {
+        setDraft({ ...current, cursor: raw, fillMode: true, region: regionAt(raw) })
+      } else {
+        setDraft({ ...current, fillMode: false, region: null })
+      }
+    }
+    window.addEventListener('keydown', onShift)
+    window.addEventListener('keyup', onShift)
+    return () => {
+      window.removeEventListener('keydown', onShift)
+      window.removeEventListener('keyup', onShift)
+    }
+  }, [tool, readDraft, setDraft, regionAt])
 
   // Clavier : écouté en phase de capture pour passer avant les raccourcis généraux
   // (un premier Échap annule le tracé, un second quitte l'outil).
