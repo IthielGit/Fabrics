@@ -68,6 +68,7 @@ export type WallMode = 'polyline' | 'straight'
 export type RoomMode = 'polygon' | 'rectangle'
 export type PlatformMode = 'polygon' | 'rectangle'
 export type StairShapeChoice = 'straight' | 'l' | 'u'
+export type SidePanelTab = 'properties' | 'library' | 'layers' | 'measurements'
 export type SaveStatus = 'saved' | 'saving' | 'error'
 
 export const HISTORY_LIMIT = 100
@@ -85,6 +86,8 @@ interface EditorState {
   activeTool: EditorTool
   /** Objet de la bibliothèque en cours de pose (outil `furniture`) ; état d'interface, hors historique. */
   furnitureSymbolId: string | null
+  /** Onglet ouvert du panneau de droite ; état d'interface. */
+  sidePanelTab: SidePanelTab
   /** Mode de l'outil Mur : tracé en polyligne ou mur droit (2 clics) ; état d'interface. */
   wallMode: WallMode
   /** Mode de l'outil Pièce : polygone libre ou rectangle (2 clics) ; état d'interface. */
@@ -119,6 +122,7 @@ interface EditorState {
   setTool: (tool: EditorTool) => void
   /** Choisit un objet de la bibliothèque et active l'outil de pose (sans effet dans un visuel). */
   startPlacingFurniture: (symbolId: string) => void
+  setSidePanelTab: (tab: SidePanelTab) => void
   setWallMode: (mode: WallMode) => void
   setRoomMode: (mode: RoomMode) => void
   setPlatformMode: (mode: PlatformMode) => void
@@ -269,6 +273,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     selectedIds: [],
     activeTool: 'select',
     furnitureSymbolId: null,
+    sidePanelTab: 'properties',
     wallMode: 'polyline',
     roomMode: 'polygon',
     platformMode: 'polygon',
@@ -325,6 +330,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       if (get().project?.kind !== 'plan') return
       set({ activeTool: 'furniture', furnitureSymbolId: symbolId })
     },
+    setSidePanelTab: (sidePanelTab) => set({ sidePanelTab }),
     setWallMode: (wallMode) => set({ wallMode }),
     setRoomMode: (roomMode) => set({ roomMode }),
     setPlatformMode: (platformMode) => set({ platformMode }),

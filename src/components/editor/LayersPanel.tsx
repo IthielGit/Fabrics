@@ -106,7 +106,7 @@ export default function LayersPanel() {
   }
 
   return (
-    <section aria-label={fr.layers.title} className="p-4">
+    <section aria-label={fr.layers.title} className="border-t border-slate-200 p-4">
       <h2 className="text-sm font-semibold text-slate-900">{fr.layers.title}</h2>
 
       {rows.length === 0 && <p className="mt-3 text-sm text-slate-500">{fr.layers.empty}</p>}

@@ -82,10 +82,10 @@ export default function LibraryPanel() {
   )
 
   return (
-    <section aria-label={fr.library.title} className="border-t border-slate-200 p-4">
-      <h2 className="text-sm font-semibold text-slate-900">{fr.library.title}</h2>
+    <section aria-label={fr.library.title} className="p-4">
+      <h2 className="sr-only">{fr.library.title}</h2>
 
-      <div className="relative mt-3">
+      <div className="relative">
         <Search
           size={14}
           aria-hidden="true"

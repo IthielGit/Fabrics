@@ -60,9 +60,9 @@ export default function MeasurementsPanel() {
     }`
 
   return (
-    <section aria-label={fr.measurements.title} className="border-t border-slate-200 p-4">
-      <div className="flex items-center justify-between gap-2">
-        <h2 className="text-sm font-semibold text-slate-900">{fr.measurements.title}</h2>
+    <section aria-label={fr.measurements.title} className="p-4">
+      <div className="flex items-center justify-end gap-2">
+        <h2 className="sr-only">{fr.measurements.title}</h2>
         <Button
           onClick={handleExport}
           disabled={buildingEmpty}

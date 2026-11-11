@@ -96,8 +96,8 @@ export default function PropertiesPanel() {
     updateElements(ids, (el) => (el.type === 'text' ? { ...el, ...patch } : el))
 
   return (
-    <section aria-label={fr.properties.title} className="border-b border-slate-200 p-4">
-      <h2 className="text-sm font-semibold text-slate-900">{fr.properties.title}</h2>
+    <section aria-label={fr.properties.title} className="p-4">
+      <h2 className="sr-only">{fr.properties.title}</h2>
 
       {selected.length === 0 && (
         <>

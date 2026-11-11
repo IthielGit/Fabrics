@@ -22,7 +22,7 @@ export default function LevelSelector() {
   return (
     <nav
       aria-label={fr.levels.selectorLabel}
-      className="absolute left-16 top-3 z-10 flex max-w-[60%] items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
+      className="pointer-events-auto flex min-w-0 max-w-[60%] items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
     >
       <div className="flex min-w-0 items-center gap-1 overflow-x-auto">
         {levels.map((level) => (

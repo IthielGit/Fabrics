@@ -47,7 +47,7 @@ export default function ToolModeBar() {
     <div
       role="group"
       aria-label={fr.toolModes.label}
-      className="absolute bottom-16 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
+      className="pointer-events-auto flex items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
     >
       {tool === 'stair' ? (
         <>

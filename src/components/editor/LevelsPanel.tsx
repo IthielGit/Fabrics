@@ -47,7 +47,7 @@ export default function LevelsPanel() {
   const rows = [...levels].reverse()
 
   return (
-    <section aria-label={fr.levels.title} className="border-t border-slate-200 p-4">
+    <section aria-label={fr.levels.title} className="p-4">
       <div className="flex items-center justify-between gap-2">
         <h2 className="text-sm font-semibold text-slate-900">{fr.levels.title}</h2>
         <Button onClick={addLevel} className="px-2 py-1 text-xs">

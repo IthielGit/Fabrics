@@ -74,6 +74,15 @@ export const fr = {
   },
   tools: {
     label: 'Outils',
+    groups: {
+      select: 'Sélection',
+      build: 'Construction',
+      openings: 'Ouvertures',
+      annotate: 'Cotation',
+      draw: 'Dessin et texte',
+      image: 'Image',
+    },
+    moreInGroup: (group: string) => `Autres outils : ${group}`,
     select: 'Sélection',
     rect: 'Rectangle',
     ellipse: 'Ellipse',
@@ -369,6 +378,13 @@ export const fr = {
     calibrate: 'Cliquez deux points de l’image dont vous connaissez la distance réelle · Échap : annuler',
     door: 'Survolez un mur et cliquez pour poser une porte (elle s’ouvre du côté du curseur) · Échap : quitter',
     window: 'Survolez un mur et cliquez pour poser une fenêtre · Échap : quitter',
+  },
+  sidePanel: {
+    label: 'Panneaux',
+    properties: 'Propriétés',
+    library: 'Bibliothèque',
+    layers: 'Calques',
+    measurements: 'Métrés',
   },
   toolModes: {
     label: 'Mode de tracé',

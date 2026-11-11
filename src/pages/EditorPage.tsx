@@ -2,15 +2,11 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EditorStage from '../components/editor/EditorStage'
-import LayersPanel from '../components/editor/LayersPanel'
 import LevelSelector from '../components/editor/LevelSelector'
-import LevelsPanel from '../components/editor/LevelsPanel'
 import MiniMap from '../components/editor/MiniMap'
 import ScrollBars from '../components/editor/ScrollBars'
-import LibraryPanel from '../components/library/LibraryPanel'
-import MeasurementsPanel from '../components/editor/MeasurementsPanel'
 import Notice from '../components/editor/Notice'
-import PropertiesPanel from '../components/editor/PropertiesPanel'
+import SidePanel from '../components/editor/SidePanel'
 import ToolHint from '../components/editor/ToolHint'
 import ToolModeBar from '../components/editor/ToolModeBar'
 import Toolbar from '../components/editor/Toolbar'
@@ -88,22 +84,19 @@ export default function EditorPage() {
         <div className="relative min-w-0 flex-1">
           <EditorStage />
           <Toolbar />
-          <LevelSelector />
+          {/* Barre contextuelle en haut du plan : niveau affiché, puis options de l'outil en cours. */}
+          <div className="pointer-events-none absolute left-20 right-3 top-3 z-10 flex items-start gap-2">
+            <LevelSelector />
+            <ToolModeBar />
+          </div>
           <ZoomControls />
           <MiniMap />
           <ScrollBars />
           <Notice />
-          <ToolModeBar />
           <ToolHint />
         </div>
         <Viewer3DPanel />
-        <aside className="w-72 shrink-0 overflow-y-auto border-l border-slate-200 bg-white">
-          <PropertiesPanel />
-          <LevelsPanel />
-          <LibraryPanel />
-          <LayersPanel />
-          <MeasurementsPanel />
-        </aside>
+        <SidePanel />
       </div>
     </div>
   )
