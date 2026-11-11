@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M10 — Façades, coupes et planche (M9 validé le 2026-11-11)
 - **Dernière tâche terminée :** tâche 6 de M10 (export PDF des vues) ; toutes les tâches de M10 sont codées
-- **Prochaine tâche :** essai de M10 par l'utilisateur dans le navigateur et retour de ses remarques, puis validation et **M10 bis** (ouvertures détaillées, toitures, hachures et textures ; plan écrit dans la roadmap le 2026-11-11), puis M11
+- **Prochaine tâche :** essai de M10 par l'utilisateur dans le navigateur et retour de ses remarques, puis validation et **M10 bis** (ouvertures détaillées, toitures, hachures et textures ; plan écrit dans la roadmap le 2026-11-11), puis **M10 ter** (métrés et cotes en version client / exécution ; plan écrit le 2026-11-11), puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -26,6 +26,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M9 Outils de construction | terminé | 2026-11-11 |
 | M10 Façades, coupes et planche | tous les lots faits, en attente de validation | |
 | M10 bis Ouvertures détaillées, toitures, hachures et textures | à faire (plan écrit) | |
+| M10 ter Documents client / exécution (métrés et cotes) | à faire (plan écrit) | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
@@ -41,11 +42,23 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Plan du jalon M10 ter
+- Fait : demande de l'utilisateur. Nouveau jalon **M10 ter — Documents client / exécution** dans `docs/03-ROADMAP.md`, après M10 bis. Un seul calcul, deux présentations. Lot A : métrés Client (pièces, dimensions intérieures, surface au sol, nombre d'ouvertures ; PDF d'une page) et Exécution (tout, avec repères `M01`/`P01`/`F01`, toutes les ouvertures déduites ; CSV + PDF). Lot B : cotes Client (cotes extérieures totales, nom et dimensions intérieures des pièces) et Exécution (trois chaînes de façade, chaînes intérieures, baies `largeur / hauteur` + allège, altitudes, escaliers), réglage « Cotation » dans la barre du plan et par vue de la planche. Décisions D35 à D39. Au passage, les critères de M3, M7, M10 et M11 encore écrits en m ou en cm sont réécrits en mm (règle de `CLAUDE.md`).
+- Fichiers : `docs/03-ROADMAP.md`, `docs/PROGRESS.md`
+- Vérification : documentation seulement (pas de code)
+- Commit : docs: plan du jalon M10 ter
+
 ### 2026-11-11 — Plan du jalon M10 bis
 - Fait : demande de l'utilisateur. Nouveau jalon **M10 bis** dans `docs/03-ROADMAP.md`, entre M10 et M11 (pas de renumérotation de M11 à M14). Lot A : styles de portes, fenêtres et baies (champ `style` facultatif, tailles rapides au lieu de styles en double). Lot B : toitures (plat, un pan, deux pans, croupe ; pavillon = croupe sur un carré) avec leurs calculs. Lot C : hachures et textures. Critères d'acceptation chiffrés. Les toitures avancées et la fenêtre ronde passent dans « Plus tard ». Décisions D32 à D34.
 - Fichiers : `docs/03-ROADMAP.md`, `docs/PROGRESS.md`
 - Vérification : documentation seulement (pas de code)
 - Commit : docs: plan du jalon M10 bis
+
+### 2026-11-11 — Hors jalon · K bis · Fichier Excel des métrés et apostrophe
+- Fait : demande de l'utilisateur (« fix this » : le lot 4 laissé en suspens et l'apostrophe visible). **Fichier Excel (.xlsx)** : présentation « Excel (.xlsx) » dans la fenêtre Exporter (même périmètre et même option mobilier). Un **onglet d'information** (projet, date, unités, remarque) puis **un onglet par tableau** ; de **vrais nombres** (valeurs exactes, affichées en mm entiers ou en m² et m³ à 2 décimales) ; **totaux en formules `SOMME`** ; en-têtes figés et filtre ; mise en page paysage sur une page de large ; texte stocké comme texte (un nom qui commence par `=` n'est jamais une formule) ; Excel recalcule à l'ouverture. Vérifié en relisant le fichier avec une bibliothèque Excel indépendante (`openpyxl`, installée seulement dans le dossier temporaire) : onglets, nombres, formules, volets figés et filtres lus correctement. **Dépendance** : `fflate` ajouté à `package.json` (accord de l'utilisateur) ; il ne sert qu'à zipper le fichier, dont le XML est écrit à la main, et il est chargé à la première exportation seulement. **Apostrophe** : un nom qui commence par `= + - @` reçoit maintenant une **espace** en tête dans le CSV (plus d'apostrophe visible : `-Salon` ne devient plus `'-Salon`) ; le fichier Excel n'en a pas besoin. Les cellules des tableaux portent leur valeur exacte (`MetresNumber`) en plus de leur texte.
+- Fichiers : `src/features/export/metresXlsx(.test).ts`, `src/features/measurements/{tables,csv}.ts` + tests, `src/components/editor/{exportMetres,ExportDialog}`, `src/features/export/fileName.ts`, `src/i18n/fr.ts`, `package.json`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2161) — à ouvrir dans Excel : onglets, filtres, formules de total
+- Commit : feat: export Excel des métrés (xlsx) et apostrophe CSV remplacée par une espace
 
 ### 2026-11-11 — Hors jalon · K · Export des métrés plus professionnel
 - Fait : demande de l'utilisateur, après une critique de l'export CSV (huit tableaux empilés, totaux qui ne collent pas, aucun contexte, surfaces ambiguës). Choix de l'utilisateur : **totaux sur les valeurs exactes** (écrit dans le fichier) ; **surface sur l'axe gardée, deux faces ajoutées en colonnes séparées**. **Lot 1, CSV « tableaux »** : en-tête (projet, date, application, unités, remarque sur les totaux) ; une **ligne de total par tableau** ; **références des murs** (M1, M2…) reprises par les ouvertures, pour ne plus confondre deux murs au même nom ; murs avec longueur de l'axe, **surface une face sur l'axe** (brute, ouvertures, nette), **longueur des faces**, **surface deux faces** (brute et nette, ouvertures déduites sur chaque face, mesurée sur les faces onglets compris) et **volume** (m³) ; tableau des **cheminées** ; colonnes Trémie et Surface nette masquées s'il n'y a aucune trémie ; « Surface au tracé » nommée comme telle ; une phrase sous « Murs » explique chaque surface ; totaux par niveau complétés (surface deux faces nette, volume). **Lot 2, CSV « données à plat »** : une ligne par grandeur (Niveau ; Catégorie ; Élément ; Réf. ; Grandeur ; Valeur ; Unité), vrais nombres (mm entiers, m² et m³ à 4 décimales), sans total, pour les tableaux croisés d'Excel. **Lot 3, PDF des métrés** : bordereau avec le cadre et le cartouche des autres PDF (projet, date, feuille, page n/N), tableaux à colonnes ajustées, nombres alignés à droite, totaux en gras, en-tête répété et « (suite) » quand un tableau passe à la page suivante. **Lot 5, fenêtre Exporter** : le bouton « Métrés » propose la présentation (tableaux, données à plat, PDF), le périmètre (tout le bâtiment ou le niveau affiché), le mobilier inclus ou non ; feuille et orientation pour le PDF (paysage proposé). Le bouton « Exporter en CSV » du panneau Métrés garde le CSV tableaux du bâtiment, avec l'en-tête.
@@ -645,13 +658,24 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D33 | Formes de toiture | Plat, un pan, deux pans, croupe (pavillon = croupe sur un carré). Toits en pente sur un rectangle seulement. Pente en degrés. | Choix laissé à Claude par l'utilisateur ; couvre les cas courants sans calcul de squelette de polygone. |
 | D34 | Styles d'ouvertures | Champ `style` facultatif, sans migration. Une variante qui ne change que la taille est une taille rapide (porte d'entrée, porte-fenêtre, vitrine, passe-plat), pas un style. Fenêtre ronde reportée. | Demande de l'utilisateur : éviter les doublons. La fenêtre ronde demande un trou rond en 3D et en coupe. |
 
+### 2026-11-11 — Jalon M10 ter
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D35 | Place et contenu | Un seul jalon « M10 ter » après M10 bis pour les métrés **et** les cotes client / exécution. | Choix de l'utilisateur ; les deux partagent les repères `M01`, `P01`, `F01`. |
+| D36 | Déduction des ouvertures | Toutes les ouvertures sont déduites des surfaces de murs, sans seuil. | Choix de l'utilisateur ; c'est déjà le calcul actuel. |
+| D37 | Surface du client | Le client voit la **surface au sol** (trémie déduite), pas de « surface habitable ». | Recommandation de Claude acceptée : sans toits en pente ni hauteurs sous plafond variables, les deux sont égales ; une définition légale (hauteur minimale) ne s'appliquera qu'après les toitures (voir Idées). |
+| D38 | Point de départ des cotes exé | Au **nu brut** des murs (faces de la maçonnerie, enduits non compris). | L'utilisateur a demandé l'usage courant à Madagascar (héritage des usages français) ; à confirmer sur un premier PDF. |
+| D39 | Cote des baies (exé) | Dimensions **brutes de maçonnerie** (tableau à tableau), `largeur / hauteur`, allège à part, avec une note : les dimensions des menuiseries sont à confirmer par le menuisier. | Même usage ; le modèle connaît le trou dans le mur, pas le jeu de pose du châssis. |
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
-- Export des métrés en vrai fichier Excel (.xlsx : un onglet par tableau, nombres réels, en-têtes figés, formules de total) : demande une bibliothèque (par exemple `fflate`, déjà présent via jsPDF, ou `exceljs`), à valider avant (proposé le 2026-11-11, lot 4).
+- ~~Export des métrés en vrai fichier Excel~~ : fait (hors jalon K bis, avec `fflate`).
 - ~~Hachures et textures dans les façades et coupes~~ et ~~toitures (versants, débords)~~ : planifiés dans le jalon M10 bis (2026-11-11).
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
 - Glisser un seul mur à la poignée (option A) : poignée au milieu d'un segment droit, le mur se déplace perpendiculairement, les voisins s'allongent et la pièce suit ; réutilise `stretchZone` (demande de l'utilisateur le 2026-11-11, après l'option C).
+- Surface habitable dans les métrés client (partie des pièces sous une hauteur minimale, par exemple 1800 mm, retirée) : utile seulement après les toitures en pente de M10 bis ; la définition est à fixer avec l'utilisateur (D37).
 - Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).

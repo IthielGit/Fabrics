@@ -20,6 +20,7 @@ Installe toujours la **dernière version stable** au moment de l'installation, s
 | Utilitaire | `clsx` | M1 | classes conditionnelles |
 | Tests | `vitest` | M1 | fonctions pures (géométrie, métrés, unités) |
 | PDF | `jspdf` | M4 | PNG/JPG viennent de Konva, sans bibliothèque |
+| Excel (métrés) | `fflate` | hors jalon K | accord de l'utilisateur le 2026-11-11 ; sert seulement à zipper le `.xlsx`, dont le XML est écrit à la main (`src/features/export/metresXlsx.ts`), chargé à la demande |
 | Backend | `@supabase/supabase-js` | M13 | Auth + Postgres + Storage |
 | 3D | `three`, `@react-three/fiber`, `@react-three/drei` | M8 | **à confirmer par l'utilisateur au début de M8** ; version majeure de `@react-three/fiber` compatible avec `react` |
 | DXF (import) | `dxf-parser` | M11 | **à confirmer au début de M11** ; l'export DXF est écrit à la main (format texte), sans bibliothèque |

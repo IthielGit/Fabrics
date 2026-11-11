@@ -1,7 +1,7 @@
 import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
 import type { BuildingMeasurements } from './measurements'
-import { buildMetresTables, mm, wallRefs } from './tables'
+import { buildMetresTables, cellText, mm, wallRefs } from './tables'
 
 /** Intitulés du fichier (français, fournis par `src/i18n/fr.ts`). */
 export interface CsvLabels {
@@ -177,11 +177,12 @@ const LINE_BREAK = '\r\n'
 export const CSV_BOM = '﻿'
 
 /**
- * Protège un champ texte : guillemets si nécessaire, et apostrophe devant `= + - @` pour qu'un
- * tableur n'exécute pas un nom de calque comme une formule.
+ * Protège un champ texte : guillemets si nécessaire, et une espace devant un texte qui commence par
+ * `= + - @` pour qu'un tableur ne le lise pas comme une formule. Une espace passe presque inaperçue,
+ * alors qu'une apostrophe s'afficherait telle quelle dans la cellule (`'-Salon`).
  */
 export function escapeCsvField(value: string): string {
-  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value
+  const safe = /^[=+\-@\t\r]/.test(value) ? ` ${value}` : value
   return /[;"\r\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe
 }
 
@@ -222,9 +223,9 @@ export function measurementsToCsv(
     if (table.note) lines.push(row(text(table.note)))
     lines.push(
       row(...table.columns.map((column) => text(column.header))),
-      ...table.rows.map((cells) => row(...cells.map(text))),
+      ...table.rows.map((cells) => row(...cells.map((cell) => text(cellText(cell))))),
     )
-    if (table.total) lines.push(row(...table.total.map(text)))
+    if (table.total) lines.push(row(...table.total.map((cell) => text(cellText(cell)))))
   }
 
   return CSV_BOM + lines.join(LINE_BREAK) + LINE_BREAK

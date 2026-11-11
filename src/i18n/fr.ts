@@ -362,15 +362,18 @@ export const fr = {
       jpg: 'Image plus légère, sans transparence.',
       pdf: 'Document prêt à imprimer.',
       csv: 'Surfaces, longueurs et volumes du bâtiment, à lire dans Excel ou à imprimer.',
+      xlsx: 'Classeur Excel des métrés.',
     },
     metres: {
       format: 'Présentation',
       tables: 'Tableaux (CSV)',
       flat: 'Données à plat (CSV)',
+      xlsx: 'Excel (.xlsx)',
       pdf: 'Document imprimable (PDF)',
       hint: {
         tables: 'Un bloc par tableau, avec ses totaux : pour lire et imprimer.',
         flat: 'Une ligne par grandeur : pour les tableaux croisés et les filtres d’Excel.',
+        xlsx: 'Un onglet par tableau, de vrais nombres, des totaux en formules et des en-têtes figés.',
         pdf: 'Un bordereau avec cadre et cartouche, prêt à imprimer.',
       },
       scope: 'Périmètre',

@@ -101,7 +101,8 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         : null
   // Les métrés en PDF ont leur propre mise en page : ni échelle ni emprise.
   const metresPdf = type === 'csv' && metresFormat === 'pdf'
-  const fileExtension = type === 'csv' ? (metresFormat === 'pdf' ? 'pdf' : 'csv') : type
+  const fileExtension =
+    type === 'csv' ? (metresFormat === 'pdf' ? 'pdf' : metresFormat === 'xlsx' ? 'xlsx' : 'csv') : type
   const planDoesNotFit = type === 'pdf' && planPlacement !== null && !planPlacement.fits
   const selectedOption = options.find((o) => o.multiplier === multiplier)
   const tooBig = (type === 'png' || type === 'jpg') && selectedOption?.allowed === false
@@ -192,7 +193,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         {type === 'csv' && (
           <>
             <Group label={fr.export.metres.format}>
-              {(['tables', 'flat', 'pdf'] as const).map((value) => (
+              {(['tables', 'flat', 'xlsx', 'pdf'] as const).map((value) => (
                 <Choice
                   key={value}
                   name="export-metres-format"

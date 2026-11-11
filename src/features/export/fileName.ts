@@ -12,7 +12,7 @@ export function sanitizeFileName(name: string, fallback: string): string {
   return cleaned || fallback
 }
 
-export type ExportFileType = 'png' | 'jpg' | 'pdf' | 'csv'
+export type ExportFileType = 'png' | 'jpg' | 'pdf' | 'csv' | 'xlsx'
 
 /** Nom complet : ajoute l'extension si l'utilisateur ne l'a pas déjà saisie. */
 export function exportFileName(name: string, type: ExportFileType, fallback: string): string {

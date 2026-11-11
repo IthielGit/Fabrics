@@ -8,6 +8,7 @@ import type {
   WallElement,
 } from '../../types/document'
 import { fr } from '../../i18n/fr'
+import { buildMetresTables } from './tables'
 import { CSV_BOM, measurementsToCsv, measurementsToFlatCsv, type CsvLabels } from './csv'
 import {
   computeBuildingMeasurements,
@@ -280,5 +281,25 @@ describe('measurementsToFlatCsv', () => {
     const out = measurementsToFlatCsv(oneLevel([stair]), LABELS)
     expect(out).toContain('Rez;Escalier;Escalier 1;;Largeur;1000;mm')
     expect(out).not.toContain('Contremarches')
+  })
+})
+
+describe('valeurs chiffrées des tableaux (Excel)', () => {
+  const building = oneLevel([
+    room('A', [0, 0, 2002, 0, 2002, 2000, 0, 2000]),
+    wall('Mur 1', [0, 0, 4000, 0]),
+  ])
+  const tables = buildMetresTables(building, LABELS)
+  const rooms = tables.find((t) => t.id === 'rooms')!
+  const walls = tables.find((t) => t.id === 'walls')!
+
+  it('donne les surfaces en m² et les volumes en m³, à leur valeur exacte', () => {
+    expect(rooms.rows[0][2]).toEqual({ text: '4,00', value: 4.004, unit: 'm2' })
+    expect(rooms.total?.[2]).toEqual({ text: '4,00', value: 4.004, unit: 'm2' })
+    expect(walls.rows[0][12]).toEqual({ text: '2,00', value: 2, unit: 'm3' })
+  })
+
+  it('donne les longueurs en mm', () => {
+    expect(walls.rows[0][3]).toEqual({ text: '4000', value: 4000, unit: 'mm' })
   })
 })

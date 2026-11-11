@@ -1,4 +1,4 @@
-import type { MetresTable } from '../measurements/tables'
+import { cellText, type MetresCell, type MetresTable } from '../measurements/tables'
 import { createPdf, drawCartouche, type Pdf, type PlanPdfLabels } from './pdf'
 import { cartoucheArea, PDF_MARGIN_MM, type SheetSize } from './pdfLayout'
 
@@ -61,7 +61,10 @@ function layoutTable(pdf: Pdf, table: MetresTable, available: number): Layout {
   const widths = table.columns.map((column, index) => {
     pdf.setFont('helvetica', 'normal')
     pdf.setFontSize(TEXT_PT)
-    const cells = [...table.rows.map((row) => row[index] ?? ''), table.total?.[index] ?? '']
+    const cells = [
+      ...table.rows.map((row) => cellText(row[index] ?? '')),
+      cellText(table.total?.[index] ?? ''),
+    ]
     const content = Math.max(0, ...cells.map((cell) => pdf.getTextWidth(pdfText(cell))))
     contentWidths.push(content)
     pdf.setFont('helvetica', 'bold')
@@ -203,13 +206,13 @@ export async function buildMetresPdf(
       first = false
     }
 
-    const drawRow = (cells: string[], bold: boolean, height: number) => {
+    const drawRow = (cells: MetresCell[], bold: boolean, height: number) => {
       pdf.setFont('helvetica', bold ? 'bold' : 'normal')
       pdf.setFontSize(TEXT_PT)
       pdf.setTextColor(...INK)
       let x = left
       table.columns.forEach((column, i) => {
-        const cell = cells[i] ?? ''
+        const cell = cellText(cells[i] ?? '')
         const room = layout.widths[i] - CELL_PAD * 2
         if (column.align === 'right') {
           pdf.text(truncate(pdf, cell, room), x + layout.widths[i] - CELL_PAD, y + height - 1.7, { align: 'right' })

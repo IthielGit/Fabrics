@@ -438,7 +438,8 @@ l'utilisateur sur un premier PDF :
       cheminées, toitures ; par niveau et pour le bâtiment. **Toutes les ouvertures sont
       déduites**, sans seuil. Rappel des règles de calcul imprimé en fin de document
 - [ ] CSV et PDF de plusieurs pages pour la version Exécution (repart de l'export actuel des
-      métrés : tableaux, données à plat, PDF)
+      métrés et de son modèle de tableaux commun `buildMetresTables` : tableaux, données à
+      plat, PDF) ; la version Client passe par le même modèle
 - [ ] Panneau Métrés : bascule « Client / Exécution » ; la fenêtre Exporter demande la version
 
 ### Lot B — Cotes client / exécution

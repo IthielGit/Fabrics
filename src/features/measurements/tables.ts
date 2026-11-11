@@ -8,6 +8,21 @@ export interface MetresColumn {
   align: 'left' | 'right'
 }
 
+/** Unité d'une grandeur : sert au format de cellule (mm entiers, m² et m³ à 2 décimales) dans Excel. */
+export type MetresUnit = 'mm' | 'm2' | 'm3' | 'count'
+
+/** Une grandeur : le texte affiché (virgule décimale, arrondi) et sa valeur exacte, avant arrondi. */
+export interface MetresNumber {
+  text: string
+  value: number
+  unit: MetresUnit
+}
+
+/** Une cellule : du texte, ou une grandeur chiffrée. */
+export type MetresCell = string | MetresNumber
+
+export const cellText = (cell: MetresCell): string => (typeof cell === 'string' ? cell : cell.text)
+
 /**
  * Un tableau de métrés, indépendant du format : le CSV et le PDF le mettent chacun en forme. Toutes
  * les cellules sont déjà du texte (virgule décimale, mm entiers, m² à 2 décimales).
@@ -16,9 +31,9 @@ export interface MetresTable {
   id: string
   title: string
   columns: MetresColumn[]
-  rows: string[][]
+  rows: MetresCell[][]
   /** Ligne de total, calculée sur les valeurs exactes (avant arrondi). */
-  total?: string[]
+  total?: MetresCell[]
   /** Explication des colonnes, affichée sous le titre. */
   note?: string
 }
@@ -27,6 +42,13 @@ export interface MetresTable {
 export const mm = (value: number) => formatDecimal(value, 0)
 export const m2 = (value: number) => formatDecimal(mm2ToM2(value))
 export const m3 = (value: number) => formatDecimal(mm3ToM3(value))
+
+export const nmm = (value: number): MetresNumber => ({ text: mm(value), value, unit: 'mm' })
+/** Surface : `value` est en m² (le calcul est en mm²), exact, avant arrondi. */
+export const nm2 = (value: number): MetresNumber => ({ text: m2(value), value: mm2ToM2(value), unit: 'm2' })
+/** Volume : `value` est en m³ (le calcul est en mm³). */
+export const nm3 = (value: number): MetresNumber => ({ text: m3(value), value: mm3ToM3(value), unit: 'm3' })
+export const ncount = (value: number): MetresNumber => ({ text: String(value), value, unit: 'count' })
 
 const left = (header: string): MetresColumn => ({ header, align: 'left' })
 const right = (header: string): MetresColumn => ({ header, align: 'right' })
@@ -53,11 +75,11 @@ export function buildMetresTables(
   const tables: MetresTable[] = []
 
   /** Une ligne par élément, précédée du nom de son niveau. */
-  const perLevel = <T>(pick: (m: Measurements) => T[], format: (item: T) => string[]): string[][] =>
+  const perLevel = <T>(pick: (m: Measurements) => T[], format: (item: T) => MetresCell[]): MetresCell[][] =>
     levels.flatMap(({ level, measurements }) =>
       pick(measurements).map((item) => [level.name, ...format(item)]),
     )
-  const totalRow = (...cells: string[]) => [labels.total, ...cells]
+  const totalRow = (...cells: MetresCell[]): MetresCell[] => [labels.total, ...cells]
 
   // --- Pièces : surface au tracé ; trémie et surface nette seulement s'il y a une trémie.
   const hasVoids = total.rooms.some((room) => room.voidArea > 0)
@@ -75,16 +97,16 @@ export function buildMetresTables(
       (m) => m.rooms,
       (room) => [
         room.name,
-        m2(room.area),
-        mm(room.perimeter),
-        ...(hasVoids ? [m2(room.voidArea), m2(room.netArea)] : []),
+        nm2(room.area),
+        nmm(room.perimeter),
+        ...(hasVoids ? [nm2(room.voidArea), nm2(room.netArea)] : []),
       ],
     ),
     total: totalRow(
       '',
-      m2(total.totals.roomArea),
-      mm(total.rooms.reduce((sum, room) => sum + room.perimeter, 0)),
-      ...(hasVoids ? [m2(total.totals.voidArea), m2(total.totals.roomNetArea)] : []),
+      nm2(total.totals.roomArea),
+      nmm(total.rooms.reduce((sum, room) => sum + room.perimeter, 0)),
+      ...(hasVoids ? [nm2(total.totals.voidArea), nm2(total.totals.roomNetArea)] : []),
     ),
   })
 
@@ -113,31 +135,31 @@ export function buildMetresTables(
       (wall) => [
         refs.get(wall.id) ?? '',
         wall.name,
-        mm(wall.length),
-        mm(wall.thickness),
-        mm(wall.height),
-        m2(wall.wallArea),
-        m2(wall.openingsArea),
-        m2(wall.netArea),
-        mm(wall.facesLength),
-        m2(wall.facesArea),
-        m2(wall.facesNetArea),
-        m3(wall.volume),
+        nmm(wall.length),
+        nmm(wall.thickness),
+        nmm(wall.height),
+        nm2(wall.wallArea),
+        nm2(wall.openingsArea),
+        nm2(wall.netArea),
+        nmm(wall.facesLength),
+        nm2(wall.facesArea),
+        nm2(wall.facesNetArea),
+        nm3(wall.volume),
       ],
     ),
     total: totalRow(
       '',
       '',
-      mm(total.totals.wallLength),
+      nmm(total.totals.wallLength),
       '',
       '',
-      m2(total.totals.wallArea),
-      m2(total.totals.openingsArea),
-      m2(total.totals.wallNetArea),
-      mm(total.walls.reduce((sum, wall) => sum + wall.facesLength, 0)),
-      m2(total.totals.wallFacesArea),
-      m2(total.totals.wallFacesNetArea),
-      m3(total.totals.wallVolume),
+      nm2(total.totals.wallArea),
+      nm2(total.totals.openingsArea),
+      nm2(total.totals.wallNetArea),
+      nmm(total.walls.reduce((sum, wall) => sum + wall.facesLength, 0)),
+      nm2(total.totals.wallFacesArea),
+      nm2(total.totals.wallFacesNetArea),
+      nm3(total.totals.wallVolume),
     ),
   })
 
@@ -164,13 +186,13 @@ export function buildMetresTables(
           labels.kinds[opening.kind],
           opening.wallName,
           refs.get(opening.wallId) ?? '',
-          mm(opening.width),
-          mm(opening.height),
-          mm(opening.sillHeight),
-          m2(opening.area),
+          nmm(opening.width),
+          nmm(opening.height),
+          nmm(opening.sillHeight),
+          nm2(opening.area),
         ],
       ),
-      total: totalRow('', '', '', '', '', '', '', m2(total.totals.openingsArea)),
+      total: totalRow('', '', '', '', '', '', '', nm2(total.totals.openingsArea)),
     })
   }
 
@@ -196,11 +218,11 @@ export function buildMetresTables(
         (stair) => [
           stair.name,
           stairLabels.shapes[stair.shape],
-          mm(stair.width),
-          stair.risers === null ? '' : String(stair.risers),
-          stair.riserHeight === null ? '' : mm(stair.riserHeight),
-          stair.treads === null ? '' : String(stair.treads),
-          stair.treadDepth === null ? '' : mm(stair.treadDepth),
+          nmm(stair.width),
+          stair.risers === null ? '' : ncount(stair.risers),
+          stair.riserHeight === null ? '' : nmm(stair.riserHeight),
+          stair.treads === null ? '' : ncount(stair.treads),
+          stair.treadDepth === null ? '' : nmm(stair.treadDepth),
           stair.status === 'too-short'
             ? stairLabels.tooShort(Math.ceil(stair.requiredRun ?? 0))
             : stair.status === 'no-level-above'
@@ -229,13 +251,13 @@ export function buildMetresTables(
         (m) => m.platforms,
         (platform) => [
           platform.name,
-          m2(platform.area),
-          mm(platform.elevation),
-          mm(platform.thickness),
-          m3(platform.volume),
+          nm2(platform.area),
+          nmm(platform.elevation),
+          nmm(platform.thickness),
+          nm3(platform.volume),
         ],
       ),
-      total: totalRow('', m2(total.totals.platformArea), '', '', m3(total.totals.platformVolume)),
+      total: totalRow('', nm2(total.totals.platformArea), '', '', nm3(total.totals.platformVolume)),
     })
   }
 
@@ -257,13 +279,13 @@ export function buildMetresTables(
         (m) => m.chimneys,
         (chimney) => [
           chimney.name,
-          mm(chimney.width),
-          mm(chimney.depth),
-          m2(chimney.area),
-          mm(chimney.heightAboveTop),
+          nmm(chimney.width),
+          nmm(chimney.depth),
+          nm2(chimney.area),
+          nmm(chimney.heightAboveTop),
         ],
       ),
-      total: totalRow('', '', '', m2(total.chimneys.reduce((sum, c) => sum + c.area, 0)), ''),
+      total: totalRow('', '', '', nm2(total.chimneys.reduce((sum, c) => sum + c.area, 0)), ''),
     })
   }
 
@@ -292,29 +314,34 @@ export function buildMetresTables(
         rows: rows.map((item) => [
           item.category,
           item.name,
-          mm(item.width),
-          mm(item.depth),
-          String(item.count),
+          nmm(item.width),
+          nmm(item.depth),
+          ncount(item.count),
         ]),
       })
     }
   }
 
   // --- Totaux par niveau, puis le bâtiment (= la somme des niveaux).
-  const levelRow = (title: string, altitude: string, floorHeight: string, m: Measurements) => [
+  const levelRow = (
+    title: string,
+    altitude: MetresCell,
+    floorHeight: MetresCell,
+    m: Measurements,
+  ): MetresCell[] => [
     title,
     altitude,
     floorHeight,
-    m2(m.totals.roomArea),
-    mm(m.totals.wallLength),
-    m2(m.totals.wallArea),
-    m2(m.totals.openingsArea),
-    m2(m.totals.wallNetArea),
-    m2(m.totals.wallFacesNetArea),
-    m3(m.totals.wallVolume),
-    String(m.totals.doors),
-    String(m.totals.windows),
-    String(m.totals.bays),
+    nm2(m.totals.roomArea),
+    nmm(m.totals.wallLength),
+    nm2(m.totals.wallArea),
+    nm2(m.totals.openingsArea),
+    nm2(m.totals.wallNetArea),
+    nm2(m.totals.wallFacesNetArea),
+    nm3(m.totals.wallVolume),
+    ncount(m.totals.doors),
+    ncount(m.totals.windows),
+    ncount(m.totals.bays),
   ]
   tables.push({
     id: 'levels',
@@ -335,7 +362,7 @@ export function buildMetresTables(
       right(labels.bays),
     ],
     rows: levels.map(({ level, measurements }) =>
-      levelRow(level.name, mm(level.elevation), mm(level.height), measurements),
+      levelRow(level.name, nmm(level.elevation), nmm(level.height), measurements),
     ),
     total: levelRow(labels.building, '', '', total),
   })

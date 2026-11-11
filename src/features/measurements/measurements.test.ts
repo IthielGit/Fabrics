@@ -263,9 +263,15 @@ describe('escapeCsvField', () => {
   })
 
   it('neutralise une formule de tableur', () => {
-    expect(escapeCsvField('=SOMME(A1:A9)')).toBe("'=SOMME(A1:A9)")
-    expect(escapeCsvField('+1')).toBe("'+1")
-    expect(escapeCsvField('@cmd')).toBe("'@cmd")
+    expect(escapeCsvField('=SOMME(A1:A9)')).toBe(' =SOMME(A1:A9)')
+    expect(escapeCsvField('+1')).toBe(' +1')
+    expect(escapeCsvField('@cmd')).toBe(' @cmd')
+  })
+
+  it('n’ajoute jamais d’apostrophe visible : un nom comme -Salon garde ses caractères', () => {
+    expect(escapeCsvField('-Salon')).toBe(' -Salon')
+    expect(escapeCsvField('-Salon')).not.toContain("'")
+    expect(escapeCsvField('Salon -1')).toBe('Salon -1')
   })
 })
 

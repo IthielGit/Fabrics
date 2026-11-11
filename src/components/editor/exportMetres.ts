@@ -19,7 +19,7 @@ import { downloadBlob } from '../../lib/download'
 import type { Project } from '../../types/document'
 import { furnitureCsvRows } from '../library/furnitureRows'
 
-export type MetresFormat = 'tables' | 'flat' | 'pdf'
+export type MetresFormat = 'tables' | 'flat' | 'xlsx' | 'pdf'
 export type MetresScope = 'building' | 'level'
 
 export interface MetresExportOptions {
@@ -49,7 +49,7 @@ export function prepareMetres(project: Project, options: Pick<MetresExportOption
   return { building, furniture }
 }
 
-/** Exporte les métrés du projet (CSV en tableaux, CSV à plat ou PDF) et fait télécharger le fichier. */
+/** Exporte les métrés du projet (CSV en tableaux, CSV à plat, Excel ou PDF) et fait télécharger le fichier. */
 export async function exportMetres(project: Project, options: MetresExportOptions): Promise<void> {
   const { building, furniture } = prepareMetres(project, options)
   const labels = fr.measurements.csv
@@ -74,6 +74,33 @@ export async function exportMetres(project: Project, options: MetresExportOption
       },
     })
     downloadBlob(blob, exportFileName(options.fileName, 'pdf', fr.measurements.csvFallbackName))
+    return
+  }
+
+  if (options.format === 'xlsx') {
+    // Chargé à la demande : le code du fichier Excel ne pèse que lorsqu'on l'exporte.
+    const { buildMetresXlsx } = await import('../../features/export/metresXlsx')
+    const m = labels.meta
+    const bytes = buildMetresXlsx(
+      buildMetresTables(building, labels, furniture),
+      m && {
+        title: m.title,
+        rows: [
+          [m.project, project.name],
+          [m.date, date],
+          [m.app, m.appName],
+          [m.units, m.unitsValue],
+          [m.note, m.noteValue],
+        ],
+      },
+      new Date().toISOString().replace(/\.\d+Z$/, 'Z'),
+    )
+    downloadBlob(
+      new Blob([bytes as BlobPart], {
+        type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+      }),
+      exportFileName(options.fileName, 'xlsx', fr.measurements.csvFallbackName),
+    )
     return
   }
 
