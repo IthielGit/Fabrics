@@ -1,10 +1,28 @@
-import { FILL_COLORS, INK, MUTED_INK, type Drawing } from '../../features/building/views/drawing'
+import {
+  FILL_COLORS,
+  INK,
+  MUTED_INK,
+  paintBatches,
+  type Drawing,
+  type DrawPolygon,
+} from '../../features/building/views/drawing'
 
 interface ViewDrawingProps {
   drawing: Drawing
 }
 
 const STROKE_PX = { heavy: 2, normal: 1, hair: 0.75 } as const
+
+/** Chemin SVG des côtés marqués d'un polygone (côté i = point i → point i+1). */
+function edgesPath(points: readonly [number, number][], edges: readonly boolean[]): string {
+  const parts: string[] = []
+  points.forEach(([x, y], i) => {
+    if (!edges[i]) return
+    const [nx, ny] = points[(i + 1) % points.length]
+    parts.push(`M${x},${y}L${nx},${ny}`)
+  })
+  return parts.join('')
+}
 
 /**
  * Affiche un dessin (façade, coupe ou planche) en SVG, dans la même palette neutre que le PDF. Le
@@ -19,17 +37,42 @@ export default function ViewDrawing({ drawing }: ViewDrawingProps) {
       role="img"
       preserveAspectRatio="xMidYMid meet"
     >
-      {drawing.polygons.map((polygon, index) => (
-        <polygon
-          key={index}
-          points={polygon.points.map(([x, y]) => `${x},${y}`).join(' ')}
-          fill={polygon.fill === 'none' ? 'none' : FILL_COLORS[polygon.fill]}
-          stroke={INK}
-          strokeWidth={polygon.fill === 'black' ? 1.4 : 1}
-          strokeLinejoin="round"
-          vectorEffect="non-scaling-stroke"
-        />
-      ))}
+      {paintBatches(drawing.polygons).map((batch, index) => {
+        const [polygon] = batch
+        const strokeWidth = polygon.fill === 'black' ? 1.4 : 1
+        const pointsOf = (p: DrawPolygon) => p.points.map(([x, y]) => `${x},${y}`).join(' ')
+        const fillOf = (p: DrawPolygon) => (p.fill === 'none' ? 'none' : FILL_COLORS[p.fill])
+        if (!polygon.edges) {
+          return (
+            <polygon
+              key={index}
+              points={pointsOf(polygon)}
+              fill={fillOf(polygon)}
+              stroke={INK}
+              strokeWidth={strokeWidth}
+              strokeLinejoin="round"
+              vectorEffect="non-scaling-stroke"
+            />
+          )
+        }
+        // Faces d'un même plan : tous les fonds (rendu net, sans interstice qui laisserait voir les
+        // faces du fond), puis seulement les vrais bords, d'un seul tracé.
+        return (
+          <g key={index}>
+            {batch.map((p, i) => (
+              <polygon key={i} points={pointsOf(p)} fill={fillOf(p)} stroke="none" shapeRendering="crispEdges" />
+            ))}
+            <path
+              d={batch.map((p) => edgesPath(p.points, p.edges ?? [])).join('')}
+              fill="none"
+              stroke={INK}
+              strokeWidth={strokeWidth}
+              strokeLinecap="square"
+              vectorEffect="non-scaling-stroke"
+            />
+          </g>
+        )
+      })}
       {drawing.lines.map((line, index) => (
         <line
           key={index}

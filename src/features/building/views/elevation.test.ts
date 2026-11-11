@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Level, OpeningElement, WallElement } from '../../../types/document'
-import { createOpeningElement, createWallElement } from '../../documents/elements'
+import { createOpeningElement, createRoomElement, createWallElement } from '../../documents/elements'
 import { createLevel } from '../../documents/levels'
 import { buildBuildingModel } from '../model'
 import type { BuildingModel } from '../types'
@@ -25,8 +25,14 @@ function windowOn(wall: WallElement, offset: number): OpeningElement {
 }
 
 /** Vrai si le point (u, v) de la vue est couvert par au moins une face (toutes sont des rectangles). */
-function covered(faces: readonly { polygon: [number, number][] }[], u: number, v: number): boolean {
+function covered(
+  faces: readonly { polygon: [number, number][]; kind?: string }[],
+  u: number,
+  v: number,
+  kind?: string,
+): boolean {
   return faces.some((f) => {
+    if (kind !== undefined && f.kind !== kind) return false
     const us = f.polygon.map((p) => p[0])
     const vs = f.polygon.map((p) => p[1])
     return u > Math.min(...us) && u < Math.max(...us) && v > Math.min(...vs) && v < Math.max(...vs)
@@ -95,7 +101,9 @@ describe('buildElevation', () => {
   it('la façade Nord montre la fenêtre du mur, de 900 à 1 900 mm', () => {
     const view = buildElevation(model, doc.levels, 'N', 0)
     // Vue du nord : l'est est à gauche, donc u = −x ; la fenêtre est entre x = 1 400 et 2 600.
-    expect(covered(view.faces, -2000, 1400)).toBe(false)
+    expect(covered(view.faces, -2000, 1400, 'wall')).toBe(false) // le mur est percé…
+    expect(covered(view.faces, -2000, 1400, 'glass')).toBe(true) // … et la fenêtre a sa vitre
+    expect(covered(view.faces, -1430, 1400, 'frame')).toBe(true) // et son cadre
     expect(covered(view.faces, -2000, 450)).toBe(true) // allège
     expect(covered(view.faces, -2000, 2200)).toBe(true) // linteau
     expect(covered(view.faces, -700, 1400)).toBe(true) // trumeau
@@ -105,7 +113,7 @@ describe('buildElevation', () => {
 
   it('la façade Sud voit aussi le mur, de l’autre côté (u = x)', () => {
     const view = buildElevation(model, doc.levels, 'S', 0)
-    expect(covered(view.faces, 2000, 1400)).toBe(false)
+    expect(covered(view.faces, 2000, 1400, 'wall')).toBe(false)
     expect(covered(view.faces, 700, 1400)).toBe(true)
   })
 
@@ -134,5 +142,43 @@ describe('buildElevation', () => {
     expect(view.faces).toEqual([])
     expect(view.bounds).toBeNull()
     expect(view.levels.map((l) => l.elevation)).toEqual([0, 2500])
+  })
+})
+
+describe('façade sans couture', () => {
+  it('les jonctions entre allège, linteau et trumeaux ne sont pas tracées', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0])
+    const model = buildBuildingModel({ elements: [wall, windowOn(wall, 2000)], levels: [ground] })
+    const faces = buildElevation(model, [ground], 'S', 0).faces.filter((f) => f.kind === 'wall')
+    // Tous les côtés tracés sont sur le contour du mur (u = 0, 4000 ; v = 0, 2500) ou autour de la
+    // fenêtre (u = 1400, 2600 ; v = 900, 1900).
+    const onOutline = (a: [number, number], b: [number, number]) => {
+      const vertical = Math.abs(a[0] - b[0]) < 1e-6
+      const value = vertical ? a[0] : a[1]
+      const allowed = vertical ? [0, 4000, 1400, 2600] : [0, 2500, 900, 1900]
+      return allowed.some((x) => Math.abs(x - value) < 1e-6)
+    }
+    for (const face of faces) {
+      face.polygon.forEach((p, i) => {
+        if (face.edges?.[i]) expect(onOutline(p, face.polygon[(i + 1) % 4])).toBe(true)
+      })
+    }
+  })
+
+  it('le rez et l’étage d’un même plan se lisent d’un seul tenant', () => {
+    const w0 = wallOn(ground, [0, 0, 4000, 0])
+    const w1 = wallOn(upper, [0, 0, 4000, 0])
+    const model = buildBuildingModel({ elements: [w0, w1], levels: [ground, upper] })
+    const faces = buildElevation(model, [ground, upper], 'S', 0).faces.filter((f) => f.kind === 'wall')
+    const drawnAt2500 = faces.some((f) =>
+      f.polygon.some((p, i) => f.edges?.[i] && p[1] === 2500 && f.polygon[(i + 1) % 4][1] === 2500),
+    )
+    expect(drawnAt2500).toBe(false)
+  })
+
+  it('la dalle du niveau le plus bas (sous le terrain) n’apparaît pas', () => {
+    const r = { ...createRoomElement('Pièce', [0, 0, 4000, 0, 4000, 3000, 0, 3000]), levelId: ground.id }
+    const model = buildBuildingModel({ elements: [r], levels: [ground] })
+    expect(buildElevation(model, [ground], 'S', 0).faces.some((f) => f.kind === 'slab')).toBe(false)
   })
 })

@@ -2,7 +2,7 @@ import type { Level } from '../../../types/document'
 import type { BuildingModel } from '../types'
 import type { LevelMark, ViewBounds, ViewFace } from './projection'
 import { formatElevation } from './labels'
-import { prismsOf } from './section'
+import { prismsOf, type Prism } from './section'
 
 /**
  * Un dessin prêt à afficher ou à imprimer : polygones, lignes et textes en millimètres réels, dans
@@ -14,6 +14,40 @@ export type DrawFill = 'white' | 'black' | 'light' | 'wall' | 'none'
 export interface DrawPolygon {
   points: [number, number][]
   fill: DrawFill
+  /**
+   * Côtés tracés (côté i = point i → point i+1). Absent : tout le contour. Les jonctions entre
+   * faces d'un même mur restent sans trait.
+   */
+  edges?: boolean[]
+  /**
+   * Plan de la face (profondeur, mm). Des polygones consécutifs du même plan sont peints ensemble :
+   * d'abord tous leurs fonds, puis tous leurs traits (une face voisine ne recouvre pas un trait).
+   */
+  layer?: number
+}
+
+/**
+ * Paquets de polygones à peindre ensemble : les polygones consécutifs qui ont des côtés choisis
+ * (`edges`) et le même plan (`layer`) forment un paquet ; les autres sont seuls.
+ */
+export function paintBatches(polygons: readonly DrawPolygon[]): DrawPolygon[][] {
+  const batches: DrawPolygon[][] = []
+  for (const polygon of polygons) {
+    const last = batches[batches.length - 1]
+    const head = last?.[0]
+    if (
+      head?.edges &&
+      polygon.edges &&
+      head.layer !== undefined &&
+      polygon.layer !== undefined &&
+      Math.abs(head.layer - polygon.layer) < 0.5
+    ) {
+      last.push(polygon)
+    } else {
+      batches.push([polygon])
+    }
+  }
+  return batches
 }
 
 export interface DrawLine {
@@ -72,6 +106,15 @@ export function autoFontMm(width: number, height: number): number {
   return Math.max(MIN_FONT_MM, Math.max(width, height) / 55)
 }
 
+/**
+ * Remplissage d'une face : matière coupée en noir (une vitre coupée reste blanche, cernée d'un
+ * trait), vitre vue de face en gris clair, tout le reste en blanc.
+ */
+function faceFill(face: ViewFace): DrawFill {
+  if (face.kind === 'glass') return face.cut ? 'white' : 'light'
+  return face.cut ? 'black' : 'white'
+}
+
 interface ViewLike {
   faces: readonly ViewFace[]
   bounds: ViewBounds | null
@@ -99,7 +142,8 @@ export function drawingFromView(view: ViewLike, fontMm?: number): Drawing | null
 
   const polygons: DrawPolygon[] = view.faces.map((face) => ({
     points: face.polygon.map(([u, v]) => [x(u), y(v)] as [number, number]),
-    fill: face.cut ? 'black' : 'white',
+    fill: faceFill(face),
+    ...(face.edges ? { edges: face.edges, layer: face.depth } : {}),
   }))
 
   const lines: DrawLine[] = []
@@ -110,8 +154,9 @@ export function drawingFromView(view: ViewLike, fontMm?: number): Drawing | null
   for (const mark of view.levels) {
     if (mark.elevation < bounds.minV - 1 || mark.elevation > bounds.maxV + 1) continue
     const ly = y(mark.elevation)
+    // Le trait de niveau part du bord droit du bâtiment (il ne traverse pas le dessin).
     lines.push({
-      x1: marginL * 0.5,
+      x1: x(bounds.maxU) + font * 0.4,
       y1: ly,
       x2: width - marginR + font,
       y2: ly,
@@ -131,38 +176,76 @@ export function drawingFromView(view: ViewLike, fontMm?: number): Drawing | null
   return { width, height, polygons, lines, texts }
 }
 
+/** Hauteur du plan de coupe d'un plan de niveau, au-dessus du plancher (mm) : usage courant. */
+export const PLAN_CUT_HEIGHT = 1000
+
+type PlanRole = 'floor' | 'below' | 'cut' | 'glass'
+
 /**
- * Plan d'un niveau vu de dessus : sols en gris clair, murs en gris foncé (les morceaux d'un même
- * mur se touchent, donc le mur paraît plein ; les ouvertures n'y sont pas dessinées). `null` si le
- * niveau est vide.
+ * Rôle d'un solide sur le plan d'un niveau, coupé à `PLAN_CUT_HEIGHT` : sols, plateformes et marches
+ * vus de dessus ; murs et cheminées coupés (noir plein, d'un seul tenant) ou vus sous la coupe
+ * (allèges, en blanc) ; cadres coupés en noir et vitres en filet. Le toit, les linteaux (au-dessus
+ * de la coupe) et les vantaux de porte ne sont pas dessinés.
+ */
+function planRole(prism: Prism, cutV: number): PlanRole | null {
+  switch (prism.kind) {
+    case 'slab':
+    case 'platform':
+    case 'step':
+      return 'floor'
+    case 'wall':
+    case 'chimney':
+    case 'frame':
+      if (prism.v0 <= cutV && prism.v1 > cutV) return 'cut'
+      return prism.kind === 'wall' && prism.v1 <= cutV ? 'below' : null
+    case 'glass':
+      return prism.v0 <= cutV && prism.v1 > cutV ? 'glass' : null
+    default:
+      return null
+  }
+}
+
+const PLAN_ORDER: Record<PlanRole, number> = { floor: 0, below: 1, glass: 2, cut: 3 }
+
+/**
+ * Plan d'un niveau vu de dessus, coupé à 1 m du plancher comme un plan d'architecte : sols en gris
+ * clair, murs coupés en noir plein (sans couture entre leurs morceaux), allèges des fenêtres vues
+ * sous la coupe, cadres et vitres dans les ouvertures. `null` si le niveau est vide.
  */
 export function levelPlanDrawing(model: BuildingModel, level: Level, fontMm?: number): Drawing | null {
-  const prisms = prismsOf(model).filter((p) => p.levelId === level.id && p.kind !== 'roof')
-  if (prisms.length === 0) return null
-  const order: Record<string, number> = { slab: 0, platform: 1, step: 2, wall: 3, chimney: 4 }
-  prisms.sort((a, b) => (order[a.kind] ?? 5) - (order[b.kind] ?? 5))
+  const cutV = level.elevation + PLAN_CUT_HEIGHT
+  const items = prismsOf(model)
+    .filter((p) => p.levelId === level.id && (p.rings[0]?.length ?? 0) >= 3)
+    .map((prism) => ({ prism, role: planRole(prism, cutV) }))
+    .filter((item): item is { prism: Prism; role: PlanRole } => item.role !== null)
+  if (items.length === 0) return null
+  // Tri stable : sols, allèges, vitres, puis matière coupée par-dessus.
+  items.sort((a, b) => PLAN_ORDER[a.role] - PLAN_ORDER[b.role])
 
   let minX = Infinity
   let minY = Infinity
   let maxX = -Infinity
   let maxY = -Infinity
-  for (const prism of prisms) {
-    for (const p of prism.rings[0] ?? []) {
+  for (const { prism } of items) {
+    for (const p of prism.rings[0]) {
       minX = Math.min(minX, p.x)
       maxX = Math.max(maxX, p.x)
       minY = Math.min(minY, p.y)
       maxY = Math.max(maxY, p.y)
     }
   }
-  if (!Number.isFinite(minX)) return null
   const font = fontMm ?? autoFontMm(maxX - minX, maxY - minY)
   const margin = font * 2
-  const polygons: DrawPolygon[] = prisms
-    .filter((p) => (p.rings[0]?.length ?? 0) >= 3)
-    .map((p) => ({
-      points: p.rings[0].map((pt) => [pt.x - minX + margin, pt.y - minY + margin] as [number, number]),
-      fill: p.kind === 'wall' || p.kind === 'chimney' ? 'wall' : 'light',
-    }))
+  const polygons: DrawPolygon[] = items.map(({ prism, role }) => {
+    const points = prism.rings[0].map((pt) => [pt.x - minX + margin, pt.y - minY + margin] as [number, number])
+    if (role === 'cut' && prism.kind !== 'frame') {
+      // Murs et cheminées coupés : noir plein, sans trait, pour que les morceaux se fondent.
+      return { points, fill: 'black', edges: points.map(() => false), layer: 0 }
+    }
+    if (role === 'cut') return { points, fill: 'black' }
+    if (role === 'floor') return { points, fill: 'light' }
+    return { points, fill: 'white' }
+  })
   return {
     width: maxX - minX + margin * 2,
     height: maxY - minY + margin * 2,
@@ -236,7 +319,7 @@ export function composeSheet(entries: readonly SheetEntry[], fontMm: number): Sh
       weight: 'hair',
     })
     for (const p of entry.drawing.polygons) {
-      drawing.polygons.push({ fill: p.fill, points: p.points.map(([px, py]) => [px + at.x, py + oy] as [number, number]) })
+      drawing.polygons.push({ ...p, points: p.points.map(([px, py]) => [px + at.x, py + oy] as [number, number]) })
     }
     for (const l of entry.drawing.lines) {
       drawing.lines.push({ ...l, x1: l.x1 + at.x, x2: l.x2 + at.x, y1: l.y1 + oy, y2: l.y2 + oy })

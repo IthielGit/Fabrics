@@ -1,6 +1,6 @@
 import type { Level } from '../../../types/document'
 import type { Point } from '../../geometry/viewport'
-import type { BuildingModel, SlabShape, WallPiece } from '../types'
+import type { BuildingModel, SlabShape, WallMesh, WallPiece } from '../types'
 
 /**
  * Projection orthographique du modèle 3D neutre sur un plan vertical (façades, coupes).
@@ -17,7 +17,17 @@ export interface ViewDirection {
   y: number
 }
 
-export type FaceKind = 'wall' | 'step' | 'chimney' | 'slab' | 'roof' | 'platform'
+export type FaceKind =
+  | 'wall'
+  | 'step'
+  | 'chimney'
+  | 'slab'
+  | 'roof'
+  | 'platform'
+  /** Garniture des ouvertures : cadre, vitre, vantail de porte. */
+  | 'frame'
+  | 'glass'
+  | 'door'
 
 /** Une face verticale vue de face, prête à être dessinée en 2D. */
 export interface ViewFace {
@@ -30,6 +40,11 @@ export interface ViewFace {
   levelId: string
   /** Vrai pour une matière coupée par le plan de coupe (dessinée en noir). */
   cut?: boolean
+  /**
+   * Côtés à tracer (côté i = coin i → coin i+1). Absent : tous. Les jonctions entre faces d'un
+   * même mur ne sont pas tracées, pour que le mur se lise d'un seul tenant.
+   */
+  edges?: boolean[]
 }
 
 export interface ViewBounds {
@@ -156,6 +171,74 @@ export function slabFaces(slab: SlabShape, look: ViewDirection): ViewFace[] {
   return faces
 }
 
+/**
+ * Faces verticales d'un mur (maillage sans couture) tournées vers la personne qui regarde, avec
+ * leurs bords à tracer. Les faces horizontales sont vues par la tranche.
+ */
+export function wallMeshFaces(mesh: WallMesh, look: ViewDirection): ViewFace[] {
+  const faces: ViewFace[] = []
+  for (const q of mesh.quads) {
+    if (Math.abs(q.normal.y) > 1e-9) continue
+    if (q.normal.x * look.x + q.normal.z * look.y >= -1e-9) continue
+    const [p0, p1, p2] = q.corners
+    const face = quad(
+      { x: p0.x, y: p0.z },
+      { x: p1.x, y: p1.z },
+      p0.y,
+      p2.y,
+      look,
+      'wall',
+      mesh.sourceId,
+      mesh.levelId,
+    )
+    if (face) faces.push({ ...face, edges: [...q.edges] })
+  }
+  return faces
+}
+
+/** Vrai si les intervalles `parts` couvrent entièrement `[from, to]` (à 0,5 mm près). */
+function covered(from: number, to: number, parts: readonly [number, number][]): boolean {
+  let reach = from
+  for (const [a, b] of [...parts].sort((x, y) => x[0] - y[0])) {
+    if (a > reach + 0.5) break
+    reach = Math.max(reach, b)
+    if (reach >= to - 0.5) return true
+  }
+  return reach >= to - 0.5
+}
+
+/**
+ * Murs empilés dans le même plan (rez et étage d'une même façade) : le dessus de l'un et le dessous
+ * de l'autre ne sont plus tracés là où ils se recouvrent exactement — la façade se lit d'un seul
+ * tenant. Un décrochement (plans différents ou largeurs différentes) garde son trait.
+ */
+export function mergeStackedEdges(faces: ViewFace[]): ViewFace[] {
+  const key = (v: number, depth: number) => `${Math.round(v)}|${Math.round(depth * 2)}`
+  const spanOf = (face: ViewFace): [number, number] => {
+    const us = face.polygon.map((p) => p[0])
+    return [Math.min(...us), Math.max(...us)]
+  }
+  const bottoms = new Map<string, [number, number][]>()
+  const tops = new Map<string, [number, number][]>()
+  for (const face of faces) {
+    if (face.kind !== 'wall' || !face.edges || face.cut) continue
+    const v0 = face.polygon[0][1]
+    const v1 = face.polygon[2][1]
+    if (face.edges[0]) bottoms.set(key(v0, face.depth), [...(bottoms.get(key(v0, face.depth)) ?? []), spanOf(face)])
+    if (face.edges[2]) tops.set(key(v1, face.depth), [...(tops.get(key(v1, face.depth)) ?? []), spanOf(face)])
+  }
+  return faces.map((face) => {
+    if (face.kind !== 'wall' || !face.edges || face.cut) return face
+    const [from, to] = spanOf(face)
+    const v0 = face.polygon[0][1]
+    const v1 = face.polygon[2][1]
+    const edges = [...face.edges]
+    if (edges[2] && covered(from, to, bottoms.get(key(v1, face.depth)) ?? [])) edges[2] = false
+    if (edges[0] && covered(from, to, tops.get(key(v0, face.depth)) ?? [])) edges[0] = false
+    return edges.every((e, i) => e === face.edges?.[i]) ? face : { ...face, edges }
+  })
+}
+
 /** Tri de l'algorithme du peintre : de la face la plus lointaine à la plus proche (ordre stable). */
 export function paintOrder(faces: readonly ViewFace[]): ViewFace[] {
   return faces
@@ -188,14 +271,17 @@ export function levelMarks(levels: readonly Level[]): LevelMark[] {
 }
 
 /**
- * Toutes les faces du modèle vues depuis la direction `look`, de la plus lointaine à la plus proche.
- * Les faces horizontales (dessus, dessous) sont vues par la tranche et ne sont pas dessinées.
+ * Toutes les faces du modèle vues depuis la direction `look`, de la plus lointaine à la plus proche :
+ * murs (sans couture entre leurs morceaux), cadres, vitres et portes des ouvertures, escaliers,
+ * cheminées, dalles hors sol. Les faces horizontales (dessus, dessous) sont vues par la tranche.
  */
 export function projectModel(model: BuildingModel, look: ViewDirection): ViewFace[] {
   const faces: ViewFace[] = []
-  for (const w of model.walls) faces.push(...boxFaces(w, look, 'wall'))
+  for (const mesh of model.wallMeshes) faces.push(...wallMeshFaces(mesh, look))
   for (const s of model.steps) faces.push(...boxFaces(s, look, 'step'))
   for (const c of model.chimneys) faces.push(...boxFaces(c, look, 'chimney'))
-  for (const slab of model.slabs) faces.push(...slabFaces(slab, look))
-  return paintOrder(faces)
+  for (const f of model.fills) faces.push(...boxFaces(f, look, f.kind))
+  // La dalle du niveau le plus bas est sous le terrain : invisible en façade.
+  for (const slab of model.slabs) if (!slab.onGround) faces.push(...slabFaces(slab, look))
+  return paintOrder(mergeStackedEdges(faces))
 }

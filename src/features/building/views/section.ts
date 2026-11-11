@@ -5,6 +5,7 @@ import type { BuildingModel, WallPiece } from '../types'
 import {
   facesBounds,
   levelMarks,
+  mergeStackedEdges,
   paintOrder,
   quad,
   rightOf,
@@ -57,7 +58,10 @@ function boxRing(piece: WallPiece): Point[] {
   }))
 }
 
-/** Tous les solides du modèle (murs, marches, cheminées, dalles, plateformes) comme contours extrudés. */
+/**
+ * Tous les solides du modèle (murs, marches, cheminées, garnitures des ouvertures, dalles,
+ * plateformes) comme contours extrudés.
+ */
 export function prismsOf(model: BuildingModel): Prism[] {
   const prisms: Prism[] = []
   const addBoxes = (pieces: readonly WallPiece[], kind: FaceKind) => {
@@ -75,6 +79,7 @@ export function prismsOf(model: BuildingModel): Prism[] {
   addBoxes(model.walls, 'wall')
   addBoxes(model.steps, 'step')
   addBoxes(model.chimneys, 'chimney')
+  for (const fill of model.fills) addBoxes([fill], fill.kind)
   for (const slab of model.slabs) {
     prisms.push({
       rings: [slab.outline, ...(slab.holes ?? [])],
@@ -144,7 +149,14 @@ function clampToWidth(face: ViewFace, uLo: number, uHi: number): ViewFace | null
   return { ...face, polygon }
 }
 
-function prismFaces(prism: Prism, look: ViewDirection, cutDepth: number, uLo: number, uHi: number): ViewFace[] {
+function prismFaces(
+  prism: Prism,
+  look: ViewDirection,
+  cutDepth: number,
+  uLo: number,
+  uHi: number,
+  withSides = true,
+): ViewFace[] {
   const faces: ViewFace[] = []
 
   // Matière coupée : noire, au premier plan.
@@ -167,6 +179,7 @@ function prismFaces(prism: Prism, look: ViewDirection, cutDepth: number, uLo: nu
   }
 
   // Côtés du solide qui restent visibles derrière le plan de coupe.
+  if (!withSides) return faces
   const outer = prism.rings[0]
   if (!outer || outer.length < 3) return faces
   const sign = area2(outer) > 0 ? 1 : -1
@@ -207,7 +220,30 @@ export function buildSection(
   const uHi = Math.max(u1, u2)
 
   const faces: ViewFace[] = []
-  for (const prism of prismsOf(model)) faces.push(...prismFaces(prism, look, cutDepth, uLo, uHi))
-  const ordered = paintOrder(faces)
+  // Les murs : matière coupée d'après leurs morceaux ; faces vues derrière le plan d'après leur
+  // maillage sans couture (pas de trait entre trumeau, allège et linteau).
+  for (const prism of prismsOf(model)) {
+    faces.push(...prismFaces(prism, look, cutDepth, uLo, uHi, prism.kind !== 'wall'))
+  }
+  for (const mesh of model.wallMeshes) {
+    for (const q of mesh.quads) {
+      if (Math.abs(q.normal.y) > 1e-9) continue
+      if (q.normal.x * look.x + q.normal.z * look.y >= -1e-9) continue
+      const [p0, p1, p2] = q.corners
+      const a = { x: p0.x, y: p0.z }
+      const b = { x: p1.x, y: p1.z }
+      const piece = clipBehind(a, b, look, cutDepth)
+      if (!piece) continue
+      const face = quad(piece[0], piece[1], p0.y, p2.y, look, 'wall', mesh.sourceId, mesh.levelId)
+      if (!face) continue
+      // Un côté raccourci par le plan de coupe touche la matière coupée : il est tracé.
+      const edges = [...q.edges]
+      if (piece[1] !== b) edges[1] = true
+      if (piece[0] !== a) edges[3] = true
+      const clamped = clampToWidth({ ...face, edges }, uLo, uHi)
+      if (clamped) faces.push(clamped)
+    }
+  }
+  const ordered = paintOrder(mergeStackedEdges(faces))
   return { label: section.label, faces: ordered, bounds: facesBounds(ordered), levels: levelMarks(levels) }
 }

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { Level, WallElement } from '../../../types/document'
-import { createRoomElement, createWallElement } from '../../documents/elements'
+import { createOpeningElement, createRoomElement, createWallElement } from '../../documents/elements'
 import { createLevel } from '../../documents/levels'
 import { buildBuildingModel } from '../model'
 import { composeSheet, drawingFromView, levelPlanDrawing, type Drawing } from './drawing'
@@ -63,10 +63,27 @@ describe('levelPlanDrawing', () => {
   it('dessine les murs et le sol du niveau seulement', () => {
     const plan = levelPlanDrawing(model, ground, 100)
     expect(plan).not.toBeNull()
-    expect(plan?.polygons.some((p) => p.fill === 'wall')).toBe(true)
+    expect(plan?.polygons.some((p) => p.fill === 'black')).toBe(true) // murs coupés
     expect(plan?.polygons.some((p) => p.fill === 'light')).toBe(true)
     // 4200 × 3200 mm d'axes à axes + épaisseur : 4200 de large avec 200 de marge de chaque côté.
     expect(plan?.width).toBeCloseTo(4200 + 400)
+  })
+
+  it('coupé à 1 m : murs noirs sans trait, allège en blanc, vitre en filet', () => {
+    const w = wall(ground, [0, 0, 4000, 0])
+    const window = {
+      ...createOpeningElement('window', 'Fenêtre', { wallId: w.id, segmentIndex: 0, offset: 2000, side: 'left' }),
+      levelId: ground.id,
+      width: 1200,
+      height: 1000,
+      sillHeight: 900,
+    }
+    const plan = levelPlanDrawing(buildBuildingModel({ elements: [w, window], levels: [ground] }), ground, 100)
+    const walls = plan?.polygons.filter((p) => p.fill === 'black' && p.edges) ?? []
+    expect(walls.length).toBe(2) // les deux trumeaux, le linteau est au-dessus de la coupe
+    expect(walls.every((p) => p.edges?.every((e) => !e))).toBe(true)
+    const whites = plan?.polygons.filter((p) => p.fill === 'white') ?? []
+    expect(whites.length).toBe(2) // l'allège (sous la coupe) et la vitre
   })
 
   it('un niveau vide ne donne pas de plan', () => {

@@ -23,8 +23,9 @@ function windowOn(wall: WallElement, offset: number): OpeningElement {
   }
 }
 
-function covered(faces: readonly ViewFace[], u: number, v: number, cut?: boolean): boolean {
+function covered(faces: readonly ViewFace[], u: number, v: number, cut?: boolean, kind = 'wall'): boolean {
   return faces.some((f) => {
+    if (f.kind !== kind) return false
     if (cut !== undefined && Boolean(f.cut) !== cut) return false
     const us = f.polygon.map((p) => p[0])
     const vs = f.polygon.map((p) => p[1])
@@ -47,6 +48,8 @@ describe('buildSection', () => {
     expect(covered(faces, 0, 450, true)).toBe(true) // allège coupée
     expect(covered(faces, 0, 2200, true)).toBe(true) // linteau coupé
     expect(covered(faces, 0, 1400, true)).toBe(false) // vide de la fenêtre
+    expect(covered(faces, 0, 1400, true, 'frame')).toBe(false) // le cadre est au bord de la baie
+    expect(covered(faces, 0, 1400, undefined, 'glass')).toBe(true) // la vitre, coupée
   })
 
   it('montre derrière la fenêtre le côté du trumeau, en blanc', () => {
@@ -56,7 +59,7 @@ describe('buildSection', () => {
 
   it('la matière coupée mesure l’épaisseur du mur et sa hauteur', () => {
     const faces = buildSection(model, doc.levels, line)?.faces ?? []
-    const cuts = faces.filter((f) => f.cut)
+    const cuts = faces.filter((f) => f.cut && f.kind === 'wall')
     expect(cuts.length).toBe(2)
     const us = cuts.flatMap((f) => f.polygon.map((p) => p[0]))
     expect(Math.max(...us) - Math.min(...us)).toBeCloseTo(200)

@@ -1,4 +1,4 @@
-import { FILL_COLORS, type Drawing } from '../building/views/drawing'
+import { FILL_COLORS, paintBatches, type Drawing, type DrawPolygon } from '../building/views/drawing'
 import {
   cartoucheArea,
   PDF_MARGIN_MM,
@@ -281,19 +281,41 @@ export async function buildDrawingPdf(
   const py = (y: number) => placement.y + y * k
 
   pdf.setLineJoin('round')
-  for (const polygon of drawing.polygons) {
-    if (polygon.points.length < 3) continue
+  const outline = (polygon: DrawPolygon) => {
     const [first, ...rest] = polygon.points
     const segments = rest.map(([x, y], index) => {
       const [prevX, prevY] = index === 0 ? first : rest[index - 1]
       return [(x - prevX) * k, (y - prevY) * k]
     })
+    return { first, segments }
+  }
+  for (const batch of paintBatches(drawing.polygons)) {
+    const [head] = batch
     pdf.setDrawColor(...INK)
-    pdf.setLineWidth(polygon.fill === 'black' ? LINE.cut : LINE.normal)
-    if (polygon.fill === 'none') {
+    pdf.setLineWidth(head.fill === 'black' ? LINE.cut : LINE.normal)
+    if (head.edges) {
+      // Faces d'un même plan : tous les fonds, puis seulement les vrais bords (pas les jonctions).
+      for (const polygon of batch) {
+        if (polygon.points.length < 3 || polygon.fill === 'none') continue
+        const { first, segments } = outline(polygon)
+        pdf.setFillColor(...hexToRgb(FILL_COLORS[polygon.fill]))
+        pdf.lines(segments, px(first[0]), py(first[1]), [1, 1], 'F', true)
+      }
+      for (const polygon of batch) {
+        polygon.points.forEach(([x, y], i) => {
+          if (!polygon.edges?.[i]) return
+          const [nx, ny] = polygon.points[(i + 1) % polygon.points.length]
+          pdf.line(px(x), py(y), px(nx), py(ny))
+        })
+      }
+      continue
+    }
+    if (head.points.length < 3) continue
+    const { first, segments } = outline(head)
+    if (head.fill === 'none') {
       pdf.lines(segments, px(first[0]), py(first[1]), [1, 1], 'S', true)
     } else {
-      pdf.setFillColor(...hexToRgb(FILL_COLORS[polygon.fill]))
+      pdf.setFillColor(...hexToRgb(FILL_COLORS[head.fill]))
       pdf.lines(segments, px(first[0]), py(first[1]), [1, 1], 'FD', true)
     }
   }

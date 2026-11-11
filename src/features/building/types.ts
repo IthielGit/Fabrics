@@ -47,12 +47,27 @@ export interface OpeningFill extends WallPiece {
 }
 
 /**
+ * Une face rectangulaire d'un mur : coins dans l'ordre (bas début, bas fin, haut fin, haut début)
+ * pour une face verticale. `edges[i]` dit si le côté coin i → coin i+1 est un vrai bord à tracer
+ * (contour du mur, bord d'une ouverture, angle) ou une simple jonction avec la face voisine du
+ * même plan (pas de trait : le mur se lit d'un seul tenant).
+ */
+export interface WallQuad {
+  corners: [Vec3, Vec3, Vec3, Vec3]
+  /** Normale sortante (unitaire). */
+  normal: Vec3
+  edges: [boolean, boolean, boolean, boolean]
+}
+
+/**
  * Un mur entier en un seul maillage de triangles (vue 3D) : mêmes volumes que ses `WallPiece`,
  * mais sans faces superposées ni coutures entre morceaux. Coordonnées en mm, repère 3D.
  */
 export interface WallMesh {
   sourceId: string
   levelId: string
+  /** Les faces du mur (rectangles de la grille), pour les façades et les coupes. */
+  quads: WallQuad[]
   /** Sommets des triangles, x y z à la suite (3 sommets par triangle, sens trigonométrique vu de l'extérieur). */
   positions: number[]
   /** Normale de chaque sommet, x y z à la suite. */
