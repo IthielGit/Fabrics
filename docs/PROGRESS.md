@@ -40,6 +40,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · I · Étirer par zone (tâche 1 sur 4 : calcul)
+- Fait : demande de l'utilisateur (option C : étirer une zone au rectangle, comme « stretch » en CAO ; l'option A, glisser un seul mur à la poignée, est gardée pour après). **Calcul pur** `stretchZone` : les sommets de murs, de pièces et de cotes dans le rectangle se déplacent, les autres restent (les murs qui traversent le bord s'allongent ou se raccourcissent) ; les objets posés dont le centre est dans la zone bougent entiers ; les ouvertures gardent leur taille et leur place réelle (elles suivent leur mur s'il est dans la zone), retirées si elles ne tiennent plus ; verrouillés ignorés. `constrainStretch` garde les angles droits (un mur horizontal qui traverse la zone interdit le déplacement vertical, et inversement ; un côté en biais qui traverse la zone bloque tout). Pas encore d'outil ni de bouton : suivent les tâches 2 (outil et aperçu), 3 (saisie en mm, bouton, raccourci `S`) et 4 (annulation en un pas).
+- Fichiers : `src/features/geometry/stretchZone(.test).ts`
+- Vérification : build ✓ lint ✓ tests ✓ (15 nouveaux)
+
 ### 2026-11-11 — Hors jalon · I · Redimensionner une pièce en bloc
 - Fait : demande de l'utilisateur (option A choisie : par la sélection, sans nouveau type dans le document). Quand la sélection contient un mur ou une pièce (par exemple une pièce préfabriquée qui vient d'être posée, ou un rectangle dessiné « Avec murs » sélectionné d'un cadre), Propriétés affiche **« Redimensionner l'ensemble »** : largeur et profondeur en mm, mesurées sur la **pièce** (face intérieure) ou, sans pièce, sur l'axe des murs. À la validation : les **murs, le sol (pièces) et les cotes s'étirent** (les murs gardent leur épaisseur) ; les **ouvertures gardent leur taille** et leur place en proportion le long de leur mur (même celles non sélectionnées, du moment que leur mur l'est) ; les **meubles, escaliers, cheminées et plateformes gardent leur taille** : un élément à moins de 250 mm d'un mur reste contre ce mur (sur chaque axe indépendamment : collé en haut mais au milieu en largeur, il glisse en proportion le long du mur ; dans un angle, il reste dans l'angle), sinon son centre garde sa place en proportion ; toujours dans la pièce (trop grand : poussé contre le début). Une ouverture qui ne tient plus sur son mur raccourci est retirée (message). Un seul pas d'historique ; minimum 500 mm ; éléments verrouillés ignorés. Les ouvertures sont placées par la fonction elle-même : `commit` accepte maintenant de sauter `reconcileOpenings` pour cette action.
 - Limites : plans axés sur les axes (murs horizontaux et verticaux ; une pièce tournée par `Maj + R` convient) ; les textes, lignes et images de la sélection ne bougent pas ; la hauteur de plan, les trémies et les niveaux au-dessus se recalculent d'eux-mêmes (rien n'est stocké).
@@ -559,6 +564,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
+- Glisser un seul mur à la poignée (option A) : poignée au milieu d'un segment droit, le mur se déplace perpendiculairement, les voisins s'allongent et la pièce suit ; réutilise `stretchZone` (demande de l'utilisateur le 2026-11-11, après l'option C).
 - Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
