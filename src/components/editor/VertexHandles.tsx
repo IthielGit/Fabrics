@@ -8,7 +8,9 @@ import {
   collectSnapAxes,
   collectSnapVertices,
   collectSnapWallAxes,
+  preferredVertexKinds,
   snapPoint,
+  type SnapVertex,
   type WallAxisSegment,
 } from '../../features/geometry/snapping'
 import {
@@ -45,7 +47,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
   })
   const plan = useEditorStore((state) => state.project?.document.plan)
   // Sommets sur lesquels s'aimanter, calculés une fois au début du geste.
-  const snapVertices = useRef<Point[]>([])
+  const snapVertices = useRef<SnapVertex[]>([])
   const snapAxes = useRef<AxisSegment[]>([])
   const snapWallAxes = useRef<WallAxisSegment[]>([])
   const snapAlign = useRef<Point[]>([])
@@ -99,6 +101,17 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
       { x: node.x(), y: node.y() },
       {
         vertices: snapVertices.current,
+        // Comme pendant le tracé : un sommet de mur attrape d'abord les axes, un sommet de pièce
+        // les faces intérieures, une extrémité de cote les faces.
+        preferredVertices:
+          current.type === 'wall' ||
+          current.type === 'room' ||
+          current.type === 'platform' ||
+          current.type === 'dimension' ||
+          current.type === 'axis' ||
+          current.type === 'section'
+            ? preferredVertexKinds(current.type)
+            : undefined,
         openingPoints: snapOpenings.current,
         axes: snapAxes.current,
         wallAxes: event.evt.altKey ? undefined : snapWallAxes.current,

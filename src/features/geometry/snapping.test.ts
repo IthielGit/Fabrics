@@ -8,6 +8,7 @@ import {
   collectSnapVertices,
   collectSnapWallAxes,
   constrainAngle,
+  preferredVertexKinds,
   snapPoint,
   type PointSnapContext,
 } from './snapping'
@@ -75,7 +76,7 @@ describe('snapPoint', () => {
       { x: 1030, y: 20 },
       { ...NONE, vertices: [{ x: 1000, y: 0 }], threshold: 50 },
     )
-    expect(result).toEqual({ point: { x: 1000, y: 0 }, kind: 'vertex' })
+    expect(result).toEqual({ point: { x: 1000, y: 0 }, kind: 'vertex', vertexKind: 'draft' })
   })
 
   it('ignore un sommet trop éloigné', () => {
@@ -111,7 +112,7 @@ describe('snapPoint', () => {
       { x: 1013, y: 7 },
       { ...NONE, gridSize: 100, vertices: [{ x: 1020, y: 0 }], threshold: 30 },
     )
-    expect(result).toEqual({ point: { x: 1020, y: 0 }, kind: 'vertex' })
+    expect(result).toEqual({ point: { x: 1020, y: 0 }, kind: 'vertex', vertexKind: 'draft' })
   })
 
   it('avec Maj : contrainte horizontale, puis grille le long de l’axe', () => {
@@ -196,7 +197,7 @@ describe('alignement doux (sans Maj)', () => {
       { x: 3000, y: 1090 },
       { ...SOFT, vertices: [{ x: 3000, y: 1130 }], threshold: 80 },
     )
-    expect(result).toEqual({ point: { x: 3000, y: 1130 }, kind: 'vertex' })
+    expect(result).toEqual({ point: { x: 3000, y: 1130 }, kind: 'vertex', vertexKind: 'draft' })
   })
 
   it('Maj reste prioritaire sur l’alignement doux', () => {
@@ -381,7 +382,7 @@ describe('aimantation sur les axes', () => {
   it('un sommet prime sur la ligne d’un axe (croisement des axes compris)', () => {
     const crossing = { x: 4000, y: 3000 }
     const result = snapPoint({ x: 4030, y: 3030 }, { ...NONE, axes, vertices: [crossing] })
-    expect(result).toEqual({ point: crossing, kind: 'vertex' })
+    expect(result).toEqual({ point: crossing, kind: 'vertex', vertexKind: 'draft' })
   })
 
   it('l’axe prime sur la grille', () => {
@@ -402,7 +403,7 @@ describe('aimantation sur les axes', () => {
     const verticalAxis = createAxisElement('Axe 1', '1', [4000, 0, 4000, 8000])
     const hiddenAxis = { ...createAxisElement('Axe B', 'B', [0, 100, 10000, 100]), hidden: true }
     const elements: CanvasElement[] = [horizontalAxis, verticalAxis, hiddenAxis]
-    expect(collectSnapVertices(elements)).toEqual([{ x: 4000, y: 3000 }])
+    expect(collectSnapVertices(elements)).toEqual([{ x: 4000, y: 3000, vertexKind: 'axis-crossing' }])
     expect(collectSnapAxes(elements)).toHaveLength(2)
     expect(collectSnapAxes(elements, new Set([verticalAxis.id]))).toHaveLength(1)
   })
@@ -416,9 +417,9 @@ describe('collectSnapVertices', () => {
       dimension('d', [10, 10, 20, 20]),
     ]
     const vertices = collectSnapVertices(elements)
-    expect(vertices).toContainEqual({ x: 1000, y: 0 }) // sommet de mur
-    expect(vertices).toContainEqual({ x: 100, y: 100 }) // sommet de pièce
-    expect(vertices).toContainEqual({ x: 20, y: 20 }) // extrémité de cote
+    expect(vertices).toContainEqual({ x: 1000, y: 0, vertexKind: 'wall-axis' }) // sommet de mur
+    expect(vertices).toContainEqual({ x: 100, y: 100, vertexKind: 'room' }) // sommet de pièce
+    expect(vertices).toContainEqual({ x: 20, y: 20, vertexKind: 'dimension' }) // extrémité de cote
     expect(vertices.some((v) => Math.abs(v.y - 100) < 1e-6 && Math.abs(v.x - 1000) < 1e-6)).toBe(true) // angle de face
   })
 
@@ -496,5 +497,56 @@ describe('aimantation sur les ouvertures (cotes)', () => {
     const openingPoints = collectOpeningSnapPoints([w, sized])
     const result = snapPoint({ x: 700, y: 400 }, { ...NONE, threshold: 30, openingPoints })
     expect(result.kind).toBe('none')
+  })
+})
+
+describe('nature des sommets et tri selon l’outil', () => {
+  // Mur fermé de 200 mm autour d'une pièce de 3000 × 2000 mm (face intérieure de 0 à 3000).
+  const closed = wall('c', [-100, -100, 3100, -100, 3100, 2100, -100, 2100, -100, -100])
+
+  it('un mur fermé distingue son axe, sa face intérieure et sa face extérieure', () => {
+    const vertices = collectSnapVertices([closed])
+    const at = (x: number, y: number) =>
+      vertices.find((v) => Math.abs(v.x - x) < 1e-6 && Math.abs(v.y - y) < 1e-6)?.vertexKind
+    expect(at(-100, -100)).toBe('wall-axis')
+    expect(at(0, 0)).toBe('wall-face-inner')
+    expect(at(-200, -200)).toBe('wall-face-outer')
+  })
+
+  it('un mur ouvert a des faces sans intérieur ni extérieur', () => {
+    const vertices = collectSnapVertices([wall('o', [0, 0, 1000, 0])])
+    expect(vertices.filter((v) => v.vertexKind === 'wall-face')).toHaveLength(4)
+  })
+
+  it('outil Pièce : la face intérieure gagne sur l’axe voisin, même un peu plus loin', () => {
+    const vertices = collectSnapVertices([closed])
+    // Curseur entre l'axe (-100, -100) et la face intérieure (0, 0), plus près de l'axe.
+    const raw = { x: -60, y: -60 } // 57 mm de l'axe, 85 mm de la face
+    const context = { ...NONE, vertices, threshold: 120 }
+    expect(snapPoint(raw, context).vertexKind).toBe('wall-axis') // sans tri : le plus proche
+    const sorted = snapPoint(raw, { ...context, preferredVertices: preferredVertexKinds('room') })
+    expect(sorted.point).toEqual({ x: 0, y: 0 })
+    expect(sorted.vertexKind).toBe('wall-face-inner')
+  })
+
+  it('outil Mur : l’axe gagne sur les faces ; une face reste attrapable tout près', () => {
+    const vertices = collectSnapVertices([closed])
+    const context = {
+      ...NONE,
+      vertices,
+      threshold: 120,
+      preferredVertices: preferredVertexKinds('wall'),
+    }
+    expect(snapPoint({ x: -60, y: -60 }, context).vertexKind).toBe('wall-axis')
+    // À 5 mm de la face intérieure et à 136 mm de l'axe : la face est attrapée.
+    expect(snapPoint({ x: 3, y: 4 }, context).vertexKind).toBe('wall-face-inner')
+  })
+
+  it('les points du tracé en cours sont toujours préférés', () => {
+    const result = snapPoint(
+      { x: 10, y: 0 },
+      { ...NONE, vertices: [{ x: 0, y: 0 }], preferredVertices: preferredVertexKinds('room') },
+    )
+    expect(result.vertexKind).toBe('draft')
   })
 })

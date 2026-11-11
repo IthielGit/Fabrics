@@ -483,6 +483,17 @@ export const fr = {
     wallStraight: 'Clic : début du mur · second clic : fin (le mur est créé) · Alt : sans alignement · Échap : annuler',
     roomRectangle: 'Clic : premier coin · second clic : coin opposé (la pièce est créée) · Maj + survol : remplir une zone fermée par des murs · Alt : sans alignement · Échap : annuler',
     regionNotClosed: 'Zone non fermée par les murs',
+    /** Étiquette près du curseur : quel sommet est attrapé. */
+    snapVertex: {
+      'wall-axis': 'Axe du mur',
+      'wall-face-inner': 'Face intérieure',
+      'wall-face-outer': 'Face extérieure',
+      'wall-face': 'Face du mur',
+      room: 'Angle de pièce',
+      dimension: 'Extrémité de cote',
+      'axis-crossing': 'Croisement d’axes',
+      draft: 'Point du tracé',
+    },
     dimension: 'Cliquez deux points pour mesurer · Maj : angles de 45° · Alt : sans alignement · Échap : annuler',
     axis: 'Cliquez deux points pour tracer un axe (il reçoit sa lettre ou son numéro) · Maj : angles de 45° · Alt : sans alignement · Échap : annuler',
     section: 'Cliquez deux points pour tracer une ligne de coupe (elle reçoit sa lettre) · Maj : angles de 45° · Alt : sans alignement · Échap : annuler',

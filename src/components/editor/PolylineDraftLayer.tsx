@@ -7,7 +7,7 @@ import {
   polygonArea,
   polygonCentroid,
 } from '../../features/geometry/polygon'
-import type { SnapKind } from '../../features/geometry/snapping'
+import type { SnapKind, VertexKind } from '../../features/geometry/snapping'
 import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import type { PolylineDraft, PolylineTool } from './usePolylineDrawing'
@@ -34,6 +34,50 @@ const SNAP_COLORS: Record<SnapKind, string> = {
   none: '#4f46e5',
 }
 
+/** Couleur du repère selon le sommet attrapé (le vert reste celui des angles de faces). */
+const VERTEX_COLORS: Record<VertexKind, string> = {
+  'wall-axis': '#d97706', // axe du mur : orange, comme le raccord sur l'axe d'un mur
+  'wall-face-inner': '#16a34a',
+  'wall-face-outer': '#0f766e',
+  'wall-face': '#16a34a',
+  room: '#7c3aed',
+  dimension: '#334155',
+  'axis-crossing': '#be123c',
+  draft: '#4f46e5',
+}
+
+/** Repère d'aimantation du curseur et, sur un sommet, l'étiquette qui dit lequel est attrapé. */
+function SnapMarker({ draft, scale }: { draft: PolylineDraft; scale: number }) {
+  const { cursor, snapKind, vertexKind } = draft
+  if (!cursor) return null
+  const onVertex = snapKind === 'vertex' && vertexKind !== null
+  const color = onVertex ? VERTEX_COLORS[vertexKind] : SNAP_COLORS[snapKind]
+  return (
+    <>
+      <Circle
+        x={cursor.x}
+        y={cursor.y}
+        radius={6 / scale}
+        stroke={color}
+        strokeWidth={2 / scale}
+        fill="rgba(255,255,255,0.6)"
+        listening={false}
+      />
+      {onVertex && (
+        <Label x={cursor.x + 10 / scale} y={cursor.y + 10 / scale} listening={false}>
+          <Tag fill={color} cornerRadius={3 / scale} />
+          <Text
+            text={fr.hints.snapVertex[vertexKind]}
+            fontSize={11 / scale}
+            fill="#ffffff"
+            padding={3 / scale}
+          />
+        </Label>
+      )}
+    </>
+  )
+}
+
 /** Aperçu du tracé en cours : segments, points, repère d'aimantation et longueur du segment. */
 export default function PolylineDraftLayer({
   tool,
@@ -45,7 +89,7 @@ export default function PolylineDraftLayer({
   const withWalls = useEditorStore((state) => state.roomWithWalls)
   const platformMode = useEditorStore((state) => state.platformMode)
   const polygonTool = tool === 'room' || tool === 'platform'
-  const { points, cursor, snapKind, fillMode, region } = draft
+  const { points, cursor, fillMode, region } = draft
   const path = cursor && points.length > 0 ? [...points, cursor] : points
   const last = points[points.length - 1]
   const showLength = cursor !== null && last !== undefined
@@ -134,16 +178,7 @@ export default function PolylineDraftLayer({
           />
         )}
         {first && <Circle x={first.x} y={first.y} radius={4 / scale} fill={ACCENT} />}
-        {cursor && (
-          <Circle
-            x={cursor.x}
-            y={cursor.y}
-            radius={6 / scale}
-            stroke={SNAP_COLORS[snapKind]}
-            strokeWidth={2 / scale}
-            fill="rgba(255,255,255,0.6)"
-          />
-        )}
+        <SnapMarker draft={draft} scale={scale} />
         {first && cursor && width > 0 && tag((first.x + cursor.x) / 2, Math.min(first.y, cursor.y) - 20 / scale, formatLength(width))}
         {first && cursor && height > 0 && tag(Math.max(first.x, cursor.x) + 8 / scale, (first.y + cursor.y) / 2, formatLength(height))}
         {first && cursor && width > 0 && height > 0 && tag((first.x + cursor.x) / 2, (first.y + cursor.y) / 2, formatArea(width * height))}
@@ -186,16 +221,7 @@ export default function PolylineDraftLayer({
         <Circle key={i} x={p.x} y={p.y} radius={4 / scale} fill={ACCENT} />
       ))}
 
-      {cursor && (
-        <Circle
-          x={cursor.x}
-          y={cursor.y}
-          radius={6 / scale}
-          stroke={SNAP_COLORS[snapKind]}
-          strokeWidth={2 / scale}
-          fill="rgba(255,255,255,0.6)"
-        />
-      )}
+      <SnapMarker draft={draft} scale={scale} />
 
       {showLength && lengthMm > 0 && (
         <Label x={middle.x} y={middle.y - 18 / scale} listening={false}>

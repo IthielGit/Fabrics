@@ -25,8 +25,10 @@ import {
   collectSnapAxes,
   collectSnapVertices,
   collectSnapWallAxes,
+  preferredVertexKinds,
   snapPoint,
   type SnapKind,
+  type VertexKind,
   type WallAxisSegment,
 } from '../../features/geometry/snapping'
 import { createRegionFinder, type RegionFinder } from '../../features/geometry/regions'
@@ -44,6 +46,8 @@ export interface PolylineDraft {
   /** Position aimantée du curseur (point en cours de placement). */
   cursor: Point | null
   snapKind: SnapKind
+  /** Nature du sommet attrapé (axe, face intérieure…), affichée près du curseur ; sinon `null`. */
+  vertexKind: VertexKind | null
   /**
    * Outil Pièce avec Maj et aucun point posé : on survole une zone à remplir. `region` est le
    * contour de la zone fermée par les murs sous le curseur, ou `null` s'il n'y en a pas.
@@ -71,6 +75,7 @@ const EMPTY: PolylineDraft = {
   points: [],
   cursor: null,
   snapKind: 'none',
+  vertexKind: null,
   fillMode: false,
   region: null,
 }
@@ -221,6 +226,9 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       const onOpenings = tool === 'dimension' ? openingPoints(active) : undefined
       return snapPoint(raw, {
         vertices: [...planVertices(active), ...current],
+        // Chaque outil attrape d'abord les sommets qui lui servent (axes pour un mur, faces
+        // intérieures pour une pièce…), pour que le curseur ne saute pas entre l'axe et les faces.
+        preferredVertices: tool ? preferredVertexKinds(tool) : undefined,
         // Une cote s'aimante aux bords et au milieu des portes, fenêtres et baies.
         openingPoints: onOpenings,
         axes: collectSnapAxes(active),
@@ -347,7 +355,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         return
       }
 
-      const { point, kind } = snap(raw, event.evt.shiftKey, event.evt.altKey)
+      const { point, kind, vertexKind } = snap(raw, event.evt.shiftKey, event.evt.altKey)
       const points = current.points
 
       // Pièce, plateforme : un clic sur le premier point ferme le polygone.
@@ -363,6 +371,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         points: [...points, point],
         cursor: point,
         snapKind: kind,
+        vertexKind: vertexKind ?? null,
         fillMode: false,
         region: null,
       })
@@ -389,9 +398,16 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         setDraft({ ...current, cursor: raw, fillMode: true, region: regionAt(raw) })
         return
       }
-      const { point, kind, guides } = snap(raw, event.evt.shiftKey, event.evt.altKey)
+      const { point, kind, vertexKind, guides } = snap(raw, event.evt.shiftKey, event.evt.altKey)
       setGuidesIfChanged(guides ?? [])
-      setDraft({ ...current, cursor: point, snapKind: kind, fillMode: false, region: null })
+      setDraft({
+        ...current,
+        cursor: point,
+        snapKind: kind,
+        vertexKind: vertexKind ?? null,
+        fillMode: false,
+        region: null,
+      })
     },
     [tool, readDraft, snap, setDraft, regionAt],
   )

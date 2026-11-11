@@ -7,11 +7,59 @@ import {
 } from './axes'
 import type { Guide } from './guides'
 import { openingGeometry } from './openings'
-import { toPoints } from './polygon'
+import { flattenPoints, polygonArea, toPoints } from './polygon'
 import type { Point } from './viewport'
 import { wallFaceCorners, wallFaces } from './walls'
 
 export type SnapKind = 'opening' | 'vertex' | 'axis' | 'wall' | 'align' | 'grid' | 'angle' | 'none'
+
+/**
+ * Nature d'un sommet sur lequel on s'aimante, pour dire à l'écran lequel est attrapé et pour que
+ * chaque outil attrape d'abord ceux qui lui servent :
+ * - `wall-axis` : point de l'axe d'un mur (milieu de son épaisseur) ;
+ * - `wall-face-inner` / `wall-face-outer` : angle de la face intérieure ou extérieure d'un mur
+ *   fermé (une pièce entourée de son mur) ;
+ * - `wall-face` : angle de la face d'un mur ouvert, ou croisement des faces de deux murs ;
+ * - `room` : sommet d'une pièce ou d'une plateforme ; `dimension` : extrémité d'une cote ;
+ * - `axis-crossing` : croisement de deux axes de construction ; `draft` : point déjà posé du tracé.
+ */
+export type VertexKind =
+  | 'wall-axis'
+  | 'wall-face-inner'
+  | 'wall-face-outer'
+  | 'wall-face'
+  | 'room'
+  | 'dimension'
+  | 'axis-crossing'
+  | 'draft'
+
+/** Sommet d'aimantation ; sans `vertexKind`, c'est un point du tracé en cours (`draft`). */
+export interface SnapVertex extends Point {
+  vertexKind?: VertexKind
+}
+
+/**
+ * Sommets que chaque outil attrape d'abord ; les autres restent attrapables, mais il faut en être
+ * deux fois plus près (voir `PointSnapContext.preferredVertices`).
+ * - Mur, axe et ligne de coupe : les axes des murs (un mur se trace sur son axe) ;
+ * - Pièce et plateforme : les faces intérieures des murs et les sommets des pièces ;
+ * - Cote : les faces des murs, les sommets des pièces et les extrémités des cotes.
+ */
+export function preferredVertexKinds(
+  tool: 'wall' | 'room' | 'platform' | 'dimension' | 'axis' | 'section',
+): ReadonlySet<VertexKind> {
+  switch (tool) {
+    case 'wall':
+    case 'axis':
+    case 'section':
+      return new Set(['wall-axis', 'axis-crossing', 'draft'])
+    case 'room':
+    case 'platform':
+      return new Set(['wall-face-inner', 'wall-face', 'room', 'draft'])
+    case 'dimension':
+      return new Set(['wall-face-inner', 'wall-face-outer', 'wall-face', 'room', 'dimension', 'draft'])
+  }
+}
 
 /** Un segment de l'axe d'un mur, avec la distance d'accroche propre au mur (sa demi-épaisseur). */
 export interface WallAxisSegment extends AxisSegment {
@@ -21,13 +69,21 @@ export interface WallAxisSegment extends AxisSegment {
 export interface PointSnapResult {
   point: Point
   kind: SnapKind
+  /** Nature du sommet attrapé, quand `kind` vaut `vertex`. */
+  vertexKind?: VertexKind
   /** Guides d'alignement à afficher (absent quand le point ne s'aligne sur rien). */
   guides?: Guide[]
 }
 
 export interface PointSnapContext {
-  /** Sommets existants sur lesquels on peut s'aimanter. */
-  vertices: readonly Point[]
+  /** Sommets existants sur lesquels on peut s'aimanter (voir `collectSnapVertices`). */
+  vertices: readonly SnapVertex[]
+  /**
+   * Sommets que l'outil attrape d'abord (voir `preferredVertexKinds`). Un autre sommet compte
+   * comme deux fois plus loin : il faut s'en approcher davantage pour l'attraper, ce qui évite que
+   * le curseur saute entre l'axe et les faces d'un même mur. Absent : tous les sommets se valent.
+   */
+  preferredVertices?: ReadonlySet<VertexKind>
   /**
    * Points d'ouverture (jambages et milieu, voir `collectOpeningSnapPoints`) : prioritaires sur les
    * sommets, car ils sont plus précis qu'un angle de mur voisin.
@@ -144,6 +200,33 @@ function nearestVertex(point: Point, vertices: readonly Point[], threshold: numb
   return best
 }
 
+/** Écart compté pour un sommet que l'outil n'attrape pas en priorité (deux fois sa distance). */
+const SECONDARY_VERTEX_FACTOR = 2
+
+/**
+ * Sommet le plus proche à moins de `threshold`. Un sommet hors de `preferred` compte comme deux
+ * fois plus loin : un sommet préféré à 7 px gagne sur un autre à 4 px, mais pas sur un autre à 3 px.
+ */
+function nearestSnapVertex(
+  point: Point,
+  vertices: readonly SnapVertex[],
+  threshold: number,
+  preferred: ReadonlySet<VertexKind> | undefined,
+): SnapVertex | null {
+  let best: SnapVertex | null = null
+  let bestScore = threshold
+  for (const vertex of vertices) {
+    const distance = Math.hypot(vertex.x - point.x, vertex.y - point.y)
+    const kind = vertex.vertexKind ?? 'draft'
+    const score = !preferred || preferred.has(kind) ? distance : distance * SECONDARY_VERTEX_FACTOR
+    if (score <= bestScore) {
+      best = vertex
+      bestScore = score
+    }
+  }
+  return best
+}
+
 /**
  * Aimantation d'un point en cours de placement. Ordre de priorité (docs/02-ARCHITECTURE.md) :
  * 1. un sommet existant à moins de `threshold` (les croisements d'axes en font partie) ;
@@ -166,8 +249,14 @@ export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResul
     if (opening) return { point: { ...opening }, kind: 'opening' }
   }
 
-  const vertex = nearestVertex(candidate, vertices, threshold)
-  if (vertex) return { point: { ...vertex }, kind: 'vertex' }
+  const vertex = nearestSnapVertex(candidate, vertices, threshold, context.preferredVertices)
+  if (vertex) {
+    return {
+      point: { x: vertex.x, y: vertex.y },
+      kind: 'vertex',
+      vertexKind: vertex.vertexKind ?? 'draft',
+    }
+  }
 
   if (!constrained && axes && axes.length > 0) {
     const onAxis = nearestPointOnAxes(candidate, axes, threshold)
@@ -298,29 +387,51 @@ export function collectAlignTargets(
 export function collectSnapVertices(
   elements: readonly CanvasElement[],
   excludeIds: ReadonlySet<string> = new Set(),
-): Point[] {
-  const vertices: Point[] = []
+): SnapVertex[] {
+  const vertices: SnapVertex[] = []
   const walls: { points: readonly number[]; thickness: number }[] = []
+  const tag = (points: readonly Point[], vertexKind: VertexKind): SnapVertex[] =>
+    points.map((p) => ({ x: p.x, y: p.y, vertexKind }))
 
   for (const element of elements) {
     if (element.hidden || excludeIds.has(element.id)) continue
     switch (element.type) {
       case 'wall':
-        vertices.push(...toPoints(element.points))
+        vertices.push(...tag(toPoints(element.points), 'wall-axis'))
         walls.push({ points: element.points, thickness: element.thickness })
         break
       case 'room':
       case 'platform':
-        vertices.push(...toPoints(element.points))
+        vertices.push(...tag(toPoints(element.points), 'room'))
         break
       case 'dimension':
-        vertices.push(...toPoints(element.points))
+        vertices.push(...tag(toPoints(element.points), 'dimension'))
         break
     }
   }
 
-  vertices.push(...wallFaceCorners(walls))
-  vertices.push(...axisIntersections(collectAxisSegments(elements, excludeIds)))
+  // Angles des faces : intérieure / extérieure pour un mur fermé (la face intérieure est celle qui
+  // entoure la plus petite surface), sans distinction pour un mur ouvert.
+  let faceCount = 0
+  for (const wall of walls) {
+    const { left, right } = wallFaces(wall.points, wall.thickness)
+    faceCount += left.length + right.length
+    const flat = toPoints(wall.points)
+    const closed =
+      flat.length >= 4 &&
+      Math.abs(flat[0].x - flat[flat.length - 1].x) < 1e-6 &&
+      Math.abs(flat[0].y - flat[flat.length - 1].y) < 1e-6
+    if (!closed) {
+      vertices.push(...tag([...left, ...right], 'wall-face'))
+      continue
+    }
+    const leftInner = polygonArea(flattenPoints(left)) < polygonArea(flattenPoints(right))
+    vertices.push(...tag(left, leftInner ? 'wall-face-inner' : 'wall-face-outer'))
+    vertices.push(...tag(right, leftInner ? 'wall-face-outer' : 'wall-face-inner'))
+  }
+  // Croisements des faces de murs différents (après les angles, dans `wallFaceCorners`).
+  vertices.push(...tag(wallFaceCorners(walls).slice(faceCount), 'wall-face'))
+  vertices.push(...tag(axisIntersections(collectAxisSegments(elements, excludeIds)), 'axis-crossing'))
   return vertices
 }
 
