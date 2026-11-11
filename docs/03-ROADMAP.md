@@ -381,13 +381,18 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
 
 ### Lot C — Hachures et textures
 
-- [ ] Matériau par mur (béton, maçonnerie, brique, bois, isolant, plaque de plâtre) et
+- [x] Matériau par mur (béton, maçonnerie, brique, bois, isolant, plaque de plâtre) et
       couverture par toit (tuiles, ardoises, zinc, bac acier, toiture plate) ; sans matériau,
-      rendu actuel (blanc, ou noir en coupe)
-- [ ] Hachures des matières coupées dans les coupes, selon le matériau
+      rendu actuel (blanc, ou noir en coupe). Catalogue et générateur de motifs vectoriels purs
+      (`materials.ts`, `views/patterns.ts`), avec tests
+- [ ] Choix du matériau et de la couverture dans Propriétés (aussi pour plusieurs murs)
+- [ ] Hachures des matières coupées dans les coupes (et les plans de niveau de la planche),
+      selon le matériau
 - [ ] Textures des façades (brique, enduit, bardage bois, couverture des versants), motifs
-      originaux dessinés pour Fabrics
-- [ ] Mêmes motifs, en vectoriel, dans le PDF des vues et de la planche
+      originaux dessinés pour Fabrics ; mêmes motifs, en vectoriel, dans le PDF des vues et de
+      la planche
+- [ ] Couleur par matériau et par couverture en 3D (demande de l'utilisateur ; sans matériau,
+      3D inchangée)
 
 **Critères d'acceptation**
 - Chaque style a un symbole 2D distinct ; un projet d'avant M10 bis s'ouvre sans changement

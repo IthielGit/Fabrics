@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot B, tâche 5 (métrés des toitures) : le Lot B est codé
-- **Prochaine tâche :** essai du Lot B dans le navigateur par l'utilisateur, puis M10 bis, Lot C (hachures et textures) ; puis **M10 ter**, puis M11
+- **Dernière tâche terminée :** M10 bis, Lot C, tâche 1 (matériaux et motifs : calcul pur)
+- **Prochaine tâche :** M10 bis, Lot C, tâche 2 (choix du matériau et de la couverture dans Propriétés) ; puis **M10 ter**, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -25,7 +25,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M8 Vue 3D | terminé | 2026-11-11 |
 | M9 Outils de construction | terminé | 2026-11-11 |
 | M10 Façades, coupes et planche | terminé | 2026-11-11 |
-| M10 bis Ouvertures détaillées, toitures, hachures et textures | en cours (lots A et B faits) | |
+| M10 bis Ouvertures détaillées, toitures, hachures et textures | en cours (lots A et B faits, lot C en cours) | |
 | M10 ter Documents client / exécution (métrés et cotes) | à faire (plan écrit) | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
@@ -41,6 +41,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M10 bis · Lot C · Tâche 1 · Matériaux et motifs (calcul pur)
+- Fait : champs facultatifs `material` sur un mur et `covering` sur une toiture (D46). Catalogue (`materials.ts`) : six matériaux, cinq couvertures, texture de façade déduite. Générateur de motifs (`views/patterns.ts`) : traits découpés dans n'importe quel polygone (convexe ou non), sur une grille commune, écartement proportionnel à la hauteur des textes (D47). **Hachures** : béton (45° serré), maçonnerie (45° espacé), brique (45° doublé), bois (fil le long du plus long côté), isolant (zigzag d'une face à l'autre), plaque de plâtre (pointillé). **Textures** : enduit (points épars), brique (rangs et joints en quinconce), bardage (lames horizontales), tuiles, ardoises (rangs et joints), zinc (joints debout), bac acier (nervures doublées). Motifs dessinés pour Fabrics. Rien n'est encore affiché (tâches 2 à 5).
+- Fichiers : `src/features/building/materials(.test).ts`, `src/features/building/views/patterns.ts` (nouveaux), `src/types/document.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2366, dont 19 nouveaux)
+- Commit : feat: M10 bis lot C tâche 1, matériaux et motifs
 
 ### 2026-11-11 — Correctif · Pièces qui se superposent sur un même niveau
 - Fait : le dessin n'est pas bloqué, mais deux pièces d'un même niveau qui se recouvrent sur une surface réelle (recouvrement partiel, pièce incluse, doublon) passent en **rouge** sur le plan, et le panneau Métrés affiche un **avertissement** (« n pièces se superposent… surface comptée en double »). Les pièces mitoyennes ou qui se touchent par un coin ne comptent pas ; les niveaux sont comparés séparément ; une pièce sans niveau est comparée à toutes. Calcul pur dans `roomOverlap.ts` (pièces concaves et déplacées comprises).
@@ -780,6 +786,14 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D43 | Pignons | Un pignon **prolonge le mur qui est dessous** (même épaisseur, même plan) jusqu'au versant ; sans mur dessous, épaisseur des murs par défaut du plan, face extérieure sur le contour. Calculé, jamais stocké. | Le pignon est la suite du mur ; même règle « calculé, jamais stocké » que les marches et trémies. |
 | D44 | Toit plat dessiné | Même logique que le toit plat automatique : **dessus au haut des murs**, pris entre les murs ; avec un débord, la dalle dépasse des murs à la même hauteur. | Cohérence avec la 3D validée (« toit entre les murs »). |
 | D45 | Niveau d'une toiture | Une toiture appartient à un niveau (`levelId`) ; sa base est le haut des murs de ce niveau (altitude + hauteur d'étage). Elle remplace le toit plat automatique des pièces de ce niveau dont le centre est sous son emprise. Vue « étage ouvert » : pas de toiture (comme le toit automatique). Dupliquer un niveau ne copie pas ses toitures (comme plateformes et escaliers). Nouveau type sans changement de version du document. | Mêmes règles que les éléments déjà ajoutés en M9. |
+
+### 2026-11-11 — M10 bis, Lot C (hachures et textures)
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D46 | Un seul champ matériau | Un mur a un `material` facultatif (béton, maçonnerie, brique, bois, isolant, plaque de plâtre) ; une toiture une `covering` facultative (tuiles, ardoises, zinc, bac acier, toiture plate). La **texture de façade se déduit** du matériau : brique → brique apparente, bois → bardage, béton et maçonnerie → enduit, isolant et plâtre → aucune. Sans valeur : rendu d'avant (pas de migration, pas de changement de version). | Choix de l'utilisateur (option A1) : simple, suffit pour la roadmap ; un parement séparé pourra venir plus tard. |
+| D47 | Écartement des motifs | Les hachures et textures sont des **traits vectoriels** découpés dans chaque face, écartés en multiples de la hauteur des textes du dessin : constants sur le papier (≈ 2 mm à l'impression) quelle que soit l'échelle. Ils partent d'une grille commune, donc deux morceaux d'un même mur se raccordent. | Lisible à 1:50 comme à 1:200 ; l'écran et le PDF dessinent les mêmes traits. |
+| D48 | 3D | Une couleur unie par matériau et par couverture en 3D, sans texture image ; sans matériau, 3D inchangée. | Choix de l'utilisateur (option B oui) ; léger, sans asset tiers. |
 
 ## Idées (hors jalon en cours)
 

@@ -111,7 +111,12 @@ export interface WallElement extends BaseElement {
   thickness: number;         // mm
   height: number;            // mm, sert à la surface murale
   fill: string;
+  // Matériau (M10 bis lot C) : hachure en coupe, texture de façade, couleur 3D. Absent : rendu neutre.
+  material?: WallMaterial;
 }
+
+// Matériau d'un mur (M10 bis lot C). Voir `src/features/building/materials.ts`.
+export type WallMaterial = 'concrete' | 'masonry' | 'brick' | 'wood' | 'insulation' | 'plasterboard';
 
 export interface RoomElement extends BaseElement {
   type: 'room';
@@ -225,7 +230,12 @@ export interface RoofElement extends BaseElement {
   // Côté n° i du contour (point i → point i+1) parallèle au faîtage (deux pans) ou côté haut (un
   // pan). Croupe : le faîtage suit toujours le grand côté. « Pivoter le faîtage » fait +1 (modulo 4).
   ridgeEdge: number;
+  // Couverture (M10 bis lot C) : texture des versants en façade, couleur 3D. Absent : rendu neutre.
+  covering?: RoofCovering;
 }
+
+// Couverture d'une toiture (M10 bis lot C). « flat » : étanchéité de toiture plate, sans motif.
+export type RoofCovering = 'tiles' | 'slates' | 'zinc' | 'steel' | 'flat';
 
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
