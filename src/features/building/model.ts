@@ -9,10 +9,12 @@ import type {
 } from '../../types/document'
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
-import type { BuildOptions, BuildingModel, Bounds3, SlabShape, WallPiece } from './types'
+import type { BuildOptions, BuildingModel, Bounds3, OpeningFill, SlabShape, WallMesh, WallPiece } from './types'
 import { buildChimney } from './chimney'
-import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
+import { collectStairVoids, pointInPolygon, voidsOfRoom, type StairVoid } from '../stairs/voids'
 import { buildStairSteps } from './stairSteps'
+import { buildOpeningFills } from './openingFills'
+import { buildWallMesh } from './wallMesh'
 import { buildWallPieces } from './wallPieces'
 
 /** Niveaux à afficher : tous, ou jusqu'à `upToLevelId` compris (triés par altitude). */
@@ -45,18 +47,29 @@ export function buildRoomSlab(
   }
 }
 
-/** Toit plat au-dessus d'une pièce du dernier niveau. */
+/**
+ * Toit plat au-dessus d'une pièce sans pièce au-dessus. Il est pris entre les murs : son dessus
+ * est au niveau du haut des murs (altitude + hauteur d'étage), comme un toit plat avec acrotère.
+ */
 export function buildRoomRoof(room: RoomElement, level: Level): SlabShape | null {
   const outline = toPoints(room.points)
   if (outline.length < 3 || level.slabThickness < 1) return null
+  const thickness = Math.min(level.slabThickness, level.height)
   return {
     sourceId: room.id,
     levelId: level.id,
     kind: 'roof',
     outline,
-    baseY: level.elevation + level.height,
-    thickness: level.slabThickness,
+    baseY: level.elevation + level.height - thickness,
+    thickness,
   }
+}
+
+/** Centre de la boîte d'un contour. */
+function boxCenter(points: readonly Point[]): Point {
+  const xs = points.map((p) => p.x)
+  const ys = points.map((p) => p.y)
+  return { x: (Math.min(...xs) + Math.max(...xs)) / 2, y: (Math.min(...ys) + Math.max(...ys)) / 2 }
 }
 
 /** Plateforme : dessus à `elevation` au-dessus du plancher du niveau, volume de `thickness` sous le dessus. */
@@ -116,8 +129,9 @@ export function modelBounds(walls: readonly WallPiece[], slabs: readonly SlabSha
 }
 
 /**
- * Traduit le document en modèle 3D : murs découpés par leurs ouvertures, dalle sous chaque pièce,
- * toit plat sur les pièces du dernier niveau. Un document sans niveaux (Visuel) donne un modèle vide.
+ * Traduit le document en modèle 3D : murs découpés par leurs ouvertures (avec cadres, vitres et
+ * portes), dalle sous chaque pièce, toit plat sur chaque pièce sans pièce d'un niveau supérieur
+ * au-dessus d'elle (un rez plus large que l'étage reçoit aussi son toit). Un document sans niveaux (Visuel) donne un modèle vide.
  */
 export function buildBuildingModel(
   doc: Pick<FabricsDocument, 'elements' | 'levels'>,
@@ -125,11 +139,12 @@ export function buildBuildingModel(
 ): BuildingModel {
   const allLevels = doc.levels ?? []
   const levels = visibleLevels(allLevels, options.upToLevelId)
-  if (levels.length === 0) return { walls: [], steps: [], chimneys: [], slabs: [], bounds: null }
+  if (levels.length === 0) return { walls: [], wallMeshes: [], steps: [], chimneys: [], slabs: [], fills: [], bounds: null }
 
   const sortedAll = [...allLevels].sort((a, b) => a.elevation - b.elevation)
   const topLevel = sortedAll[sortedAll.length - 1]
   const showRoof = levels[levels.length - 1].id === topLevel.id
+  const levelRank = new Map(sortedAll.map((l, i) => [l.id, i]))
 
   const byId = new Map(levels.map((l) => [l.id, l]))
   const firstLevel = sortedAll[0]
@@ -139,18 +154,41 @@ export function buildBuildingModel(
   const openings = doc.elements.filter(
     (el): el is OpeningElement => el.type === 'opening' && !el.hidden,
   )
+  // Ouvertures rangées par mur porteur : chaque mur ne parcourt que les siennes.
+  const openingsByWall = new Map<string, OpeningElement[]>()
+  for (const o of openings) {
+    const list = openingsByWall.get(o.wallId)
+    if (list) list.push(o)
+    else openingsByWall.set(o.wallId, [o])
+  }
   const stairVoids = collectStairVoids(doc.elements, allLevels)
   const walls: WallPiece[] = []
+  const wallMeshes: WallMesh[] = []
   const steps: WallPiece[] = []
   const chimneys: WallPiece[] = []
   const slabs: SlabShape[] = []
+  const fills: OpeningFill[] = []
+  const rooms = doc.elements.filter((el): el is RoomElement => el.type === 'room' && !el.hidden)
+  // Une pièce est couverte si le centre de son contour tombe dans une pièce d'un niveau supérieur.
+  const coveredByUpperRoom = (room: RoomElement, level: Level): boolean => {
+    const rank = levelRank.get(level.id) ?? 0
+    const center = boxCenter(toPoints(room.points))
+    return rooms.some((other) => {
+      const otherRank = levelRank.get(other.levelId ?? firstLevel.id) ?? 0
+      return otherRank > rank && pointInPolygon(center, toPoints(other.points))
+    })
+  }
 
   for (const el of doc.elements) {
     if (el.hidden) continue
     const level = levelOf(el)
     if (!level) continue
     if (el.type === 'wall') {
-      walls.push(...buildWallPieces(el as WallElement, openings, level))
+      const own = openingsByWall.get(el.id) ?? []
+      walls.push(...buildWallPieces(el as WallElement, own, level))
+      fills.push(...buildOpeningFills(el as WallElement, own, level))
+      const mesh = buildWallMesh(el as WallElement, own, level)
+      if (mesh) wallMeshes.push(mesh)
     } else if (el.type === 'chimney') {
       const piece = buildChimney(el, level, levels)
       if (piece) chimneys.push(piece)
@@ -165,8 +203,8 @@ export function buildBuildingModel(
         level,
         stairVoids.filter((v) => v.levelId === level.id),
       )
-      if (slab) slabs.push(slab)
-      if (showRoof && level.id === topLevel.id) {
+      if (slab) slabs.push(level.id === firstLevel.id ? { ...slab, onGround: true } : slab)
+      if (showRoof && !coveredByUpperRoom(el, level)) {
         const roof = buildRoomRoof(el, level)
         if (roof) slabs.push(roof)
       }
@@ -174,9 +212,11 @@ export function buildBuildingModel(
   }
   return {
     walls,
+    wallMeshes,
     steps,
     chimneys,
     slabs,
+    fills,
     bounds: modelBounds([...walls, ...steps, ...chimneys], slabs),
   }
 }

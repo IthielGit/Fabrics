@@ -4,6 +4,8 @@ import { createOpeningElement, createRoomElement, createWallElement } from '../d
 import { createLevel } from '../documents/levels'
 import { buildBuildingModel } from './model'
 import type { WallPiece } from './types'
+import { buildOpeningFills } from './openingFills'
+import { buildWallMesh } from './wallMesh'
 import { buildWallPieces } from './wallPieces'
 
 const ground = createLevel('Rez-de-chaussée', 0, 2500, 200)
@@ -157,9 +159,11 @@ describe('buildBuildingModel', () => {
   it('un document sans niveaux (Visuel) donne un modèle vide', () => {
     expect(buildBuildingModel({ elements: [], levels: undefined })).toEqual({
       walls: [],
+      wallMeshes: [],
       steps: [],
       chimneys: [],
       slabs: [],
+      fills: [],
       bounds: null,
     })
   })
@@ -168,8 +172,33 @@ describe('buildBuildingModel', () => {
     const room = roomOn(ground, rect(0, 0, 4000, 3000))
     const model = buildBuildingModel({ elements: [room], levels: [ground] })
     const slab = model.slabs.find((s) => s.kind === 'slab')
-    expect(slab).toMatchObject({ sourceId: room.id, baseY: -200, thickness: 200 })
+    expect(slab).toMatchObject({ sourceId: room.id, baseY: -200, thickness: 200, onGround: true })
     expect(slab?.outline).toHaveLength(4)
+  })
+
+  it('seule la dalle du niveau le plus bas est marquée « sous le terrain »', () => {
+    const r0 = roomOn(ground, rect(0, 0, 4000, 3000))
+    const r1 = roomOn(upper, rect(0, 0, 4000, 3000))
+    const model = buildBuildingModel({ elements: [r0, r1], levels: [ground, upper] })
+    const slabs = model.slabs.filter((s) => s.kind === 'slab')
+    expect(slabs.find((s) => s.sourceId === r0.id)?.onGround).toBe(true)
+    expect(slabs.find((s) => s.sourceId === r1.id)?.onGround).toBeUndefined()
+  })
+
+  it('le toit est pris entre les murs : son dessus est au haut des murs', () => {
+    const r0 = roomOn(ground, rect(0, 0, 4000, 3000))
+    const roof = buildBuildingModel({ elements: [r0], levels: [ground] }).slabs.find((s) => s.kind === 'roof')
+    expect(roof).toMatchObject({ baseY: 2500 - 200, thickness: 200 })
+  })
+
+  it('une pièce du rez sans étage au-dessus reçoit aussi un toit', () => {
+    const house = roomOn(ground, rect(0, 0, 4000, 3000))
+    const annex = roomOn(ground, rect(4200, 0, 7000, 3000))
+    const upstairs = roomOn(upper, rect(0, 0, 4000, 3000))
+    const model = buildBuildingModel({ elements: [house, annex, upstairs], levels: [ground, upper] })
+    const roofs = model.slabs.filter((s) => s.kind === 'roof')
+    expect(roofs.map((r) => r.sourceId).sort()).toEqual([annex.id, upstairs.id].sort())
+    expect(roofs.find((r) => r.sourceId === annex.id)?.baseY).toBe(2500 - 200)
   })
 
   it('le toit plat couvre les pièces du dernier niveau seulement', () => {
@@ -178,7 +207,7 @@ describe('buildBuildingModel', () => {
     const model = buildBuildingModel({ elements: [r0, r1], levels: [ground, upper] })
     const roofs = model.slabs.filter((s) => s.kind === 'roof')
     expect(roofs).toHaveLength(1)
-    expect(roofs[0]).toMatchObject({ sourceId: r1.id, baseY: 2500 + 2500 })
+    expect(roofs[0]).toMatchObject({ sourceId: r1.id, baseY: 2500 + 2500 - 200 })
     expect(model.slabs.filter((s) => s.kind === 'slab')).toHaveLength(2)
   })
 
@@ -229,7 +258,7 @@ describe('buildBuildingModel', () => {
     expect(bounds?.min.z).toBeCloseTo(-100) // le mur d'axe y = 0 déborde d'une demi-épaisseur
     expect(bounds?.max.z).toBeCloseTo(3000)
     expect(bounds?.min.y).toBeCloseTo(-200)
-    expect(bounds?.max.y).toBeCloseTo(2700)
+    expect(bounds?.max.y).toBeCloseTo(2500) // le toit est pris entre les murs
   })
 
   it("l'emprise d'un mur oblique tient compte de l'épaisseur", () => {
@@ -263,5 +292,105 @@ describe('buildBuildingModel', () => {
     const walls = [ground, upper, l2].map((l) => wallOn(l, [0, 0, 4000, 0]))
     const model = buildBuildingModel({ elements: walls, levels: [ground, upper, l2] })
     expect(model.walls.map((w) => w.center.y)).toEqual([1250, 3750, 6250])
+  })
+})
+
+describe('buildOpeningFills', () => {
+  it('une fenêtre reçoit un cadre complet et une vitre au milieu du mur', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0])
+    const window = openingOn(wall, 'window', 2000, { width: 1200, height: 1000, sillHeight: 900 })
+    const fills = buildOpeningFills(wall, [window], ground)
+    expect(fills.filter((f) => f.kind === 'frame')).toHaveLength(4)
+    const glass = fills.find((f) => f.kind === 'glass')!
+    expect(glass.center).toMatchObject({ x: 2000, y: 900 + 500, z: 0 })
+    expect(glass.size).toMatchObject({ x: 1200 - 120, y: 1000 - 120 })
+    expect(glass.sourceId).toBe(wall.id)
+  })
+
+  it('une porte a un vantail jusqu’au sol et pas de traverse basse', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0])
+    const door = openingOn(wall, 'door', 1000, { width: 900, height: 2100, sillHeight: 0 })
+    const fills = buildOpeningFills(wall, [door], ground)
+    expect(fills.filter((f) => f.kind === 'frame')).toHaveLength(3)
+    const leaf = fills.find((f) => f.kind === 'door')!
+    expect(leaf.center.y - leaf.size.y / 2).toBe(0)
+    expect(leaf.center.y + leaf.size.y / 2).toBe(2100 - 60)
+  })
+
+  it('ignore les ouvertures des autres murs', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0])
+    const other = wallOn(ground, [0, 1000, 4000, 1000])
+    const window = openingOn(other, 'window', 2000)
+    expect(buildOpeningFills(wall, [window], ground)).toEqual([])
+  })
+})
+
+/** Surface (mm²) des triangles du maillage tournés vers `normal`. */
+function areaFacing(positions: readonly number[], normal: { x: number; y: number; z: number }): number {
+  let area = 0
+  for (let i = 0; i < positions.length; i += 9) {
+    const [ax, ay, az, bx, by, bz, cx, cy, cz] = positions.slice(i, i + 9)
+    const e1 = { x: bx - ax, y: by - ay, z: bz - az }
+    const e2 = { x: cx - ax, y: cy - ay, z: cz - az }
+    const cross = { x: e1.y * e2.z - e1.z * e2.y, y: e1.z * e2.x - e1.x * e2.z, z: e1.x * e2.y - e1.y * e2.x }
+    const length = Math.hypot(cross.x, cross.y, cross.z)
+    if (length === 0) continue
+    const dot = (cross.x * normal.x + cross.y * normal.y + cross.z * normal.z) / length
+    if (dot > 0.999) area += length / 2
+  }
+  return area
+}
+
+describe('buildWallMesh', () => {
+  it('un mur droit sans ouverture : 6 faces, toutes tournées vers l’extérieur', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0])
+    const mesh = buildWallMesh(wall, [], ground)!
+    expect(mesh.positions).toHaveLength(6 * 6 * 3)
+    expect(areaFacing(mesh.positions, { x: 0, y: 0, z: 1 })).toBeCloseTo(4000 * 2500)
+    expect(areaFacing(mesh.positions, { x: 0, y: 0, z: -1 })).toBeCloseTo(4000 * 2500)
+    expect(areaFacing(mesh.positions, { x: 0, y: 1, z: 0 })).toBeCloseTo(4000 * 200)
+    expect(areaFacing(mesh.positions, { x: -1, y: 0, z: 0 })).toBeCloseTo(200 * 2500)
+    // Chaque normale stockée est celle du triangle (sens trigonométrique vu de l'extérieur).
+    for (let i = 0; i < mesh.positions.length; i += 9) {
+      const n = { x: mesh.normals[i], y: mesh.normals[i + 1], z: mesh.normals[i + 2] }
+      const triangle = mesh.positions.slice(i, i + 9)
+      expect(areaFacing(triangle, n)).toBeGreaterThan(0)
+    }
+  })
+
+  it('une fenêtre est découpée : façade moins l’ouverture, appui et sous-face du linteau', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0])
+    const window = openingOn(wall, 'window', 2000, { width: 1200, height: 1000, sillHeight: 900 })
+    const mesh = buildWallMesh(wall, [window], ground)!
+    expect(areaFacing(mesh.positions, { x: 0, y: 0, z: 1 })).toBeCloseTo(4000 * 2500 - 1200 * 1000)
+    // Dessus du mur + appui de la fenêtre.
+    expect(areaFacing(mesh.positions, { x: 0, y: 1, z: 0 })).toBeCloseTo(4000 * 200 + 1200 * 200)
+    // Dessous du mur + sous-face du linteau.
+    expect(areaFacing(mesh.positions, { x: 0, y: -1, z: 0 })).toBeCloseTo(4000 * 200 + 1200 * 200)
+    // Bout libre du mur + tableau gauche de la fenêtre (vers -x), et pareil vers +x.
+    expect(areaFacing(mesh.positions, { x: -1, y: 0, z: 0 })).toBeCloseTo(200 * 2500 + 200 * 1000)
+    expect(areaFacing(mesh.positions, { x: 1, y: 0, z: 0 })).toBeCloseTo(200 * 2500 + 200 * 1000)
+  })
+
+  it('une porte touche le sol : pas de dessous dans l’ouverture', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0])
+    const door = openingOn(wall, 'door', 2000, { width: 900, height: 2100, sillHeight: 0 })
+    const mesh = buildWallMesh(wall, [door], ground)!
+    expect(areaFacing(mesh.positions, { x: 0, y: -1, z: 0 })).toBeCloseTo((4000 - 900) * 200 + 900 * 200)
+    expect(areaFacing(mesh.positions, { x: 0, y: 0, z: 1 })).toBeCloseTo(4000 * 2500 - 900 * 2100)
+  })
+
+  it('aux angles d’un mur fermé, aucun chant n’est dessiné', () => {
+    const wall = wallOn(ground, [0, 0, 4000, 0, 4000, 3000, 0, 3000, 0, 0])
+    const mesh = buildWallMesh(wall, [], ground)!
+    // 4 segments × (devant, derrière, dessus, dessous) = 16 faces, sans chant.
+    expect(mesh.positions).toHaveLength(16 * 6 * 3)
+  })
+
+  it('suit l’altitude du niveau', () => {
+    const wall = wallOn(upper, [0, 0, 4000, 0])
+    const ys = buildWallMesh(wall, [], upper)!.positions.filter((_, i) => i % 3 === 1)
+    expect(Math.min(...ys)).toBe(2500)
+    expect(Math.max(...ys)).toBe(5000)
   })
 })

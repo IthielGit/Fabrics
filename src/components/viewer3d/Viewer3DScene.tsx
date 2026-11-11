@@ -1,48 +1,71 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas, useStore, useThree, type ThreeEvent } from '@react-three/fiber'
-import { memo, useEffect, useRef, type RefObject } from 'react'
+import { memo, useEffect, useLayoutEffect, useMemo, useRef, type RefObject } from 'react'
 import * as THREE from 'three'
-import type { Bounds3, BuildingModel, SlabShape, WallPiece } from '../../features/building/types'
+import type { Bounds3, BuildingModel, OpeningFill, SlabShape, WallMesh, WallPiece } from '../../features/building/types'
 import OrientationCube from './OrientationCube'
 
 /** Le modèle est en mm ; la scène est en mètres. */
 const MM = 0.001
 
 const BOX = new THREE.BoxGeometry(1, 1, 1)
-const WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#e2e8f0', roughness: 0.9 })
+// Palette neutre et chaude : enduit blanc cassé, toit gris gravier, menuiseries anthracite.
+const WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#f3f1ec', roughness: 0.95 })
 const SLAB_MATERIAL = new THREE.MeshStandardMaterial({
-  color: '#cbd5e1',
+  color: '#d9d5cd',
   roughness: 1,
   side: THREE.DoubleSide,
 })
 const ROOF_MATERIAL = new THREE.MeshStandardMaterial({
-  color: '#94a3b8',
+  color: '#8d9198',
   roughness: 1,
   side: THREE.DoubleSide,
 })
 
-const PLATFORM_MATERIAL = new THREE.MeshStandardMaterial({ color: '#d6b98c', roughness: 0.85 })
-const STAIR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#cbb89d', roughness: 0.85 })
-const CHIMNEY_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a8a29e', roughness: 0.95 })
+const PLATFORM_MATERIAL = new THREE.MeshStandardMaterial({ color: '#cdb594', roughness: 0.85 })
+const STAIR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#c9b393', roughness: 0.85 })
+const CHIMNEY_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a39d97', roughness: 0.95 })
+const FRAME_MATERIAL = new THREE.MeshStandardMaterial({ color: '#3b4048', roughness: 0.6 })
+const DOOR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#8f6d4c', roughness: 0.7 })
+const GLASS_MATERIAL = new THREE.MeshStandardMaterial({
+  color: '#9db7c7',
+  roughness: 0.05,
+  metalness: 0.2,
+  transparent: true,
+  opacity: 0.45,
+  depthWrite: false,
+})
+const FILL_MATERIALS: Record<OpeningFill['kind'], THREE.Material> = {
+  frame: FRAME_MATERIAL,
+  door: DOOR_MATERIAL,
+  glass: GLASS_MATERIAL,
+}
 const SELECTED_WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a5b4fc', roughness: 0.9 })
+const GROUND_MATERIAL = new THREE.MeshStandardMaterial({ color: '#e7e5df', roughness: 1 })
+
+/** Couleur du ciel, reprise par le brouillard pour fondre l'horizon. */
+const SKY = '#eef1f4'
 
 /** Un déplacement de plus de ce nombre de pixels entre appui et relâchement est un geste de caméra, pas un clic. */
 const CLICK_MAX_DRAG = 4
 
-interface WallMeshProps {
+interface PieceMeshProps {
   piece: WallPiece
   /** Matière hors sélection (murs par défaut). */
   material?: THREE.Material
   selected: boolean
+  /** Faux pour le verre : il ne porte pas d'ombre. */
+  castShadow?: boolean
   onSelectWall: (wallId: string, levelId: string) => void
 }
 
-const WallMesh = memo(function WallMesh({
+const PieceMesh = memo(function PieceMesh({
   piece,
   material = WALL_MATERIAL,
   selected,
+  castShadow = true,
   onSelectWall,
-}: WallMeshProps) {
+}: PieceMeshProps) {
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
     if (event.delta > CLICK_MAX_DRAG) return
     event.stopPropagation() // le morceau le plus proche de la caméra gagne
@@ -55,6 +78,40 @@ const WallMesh = memo(function WallMesh({
       position={[piece.center.x, piece.center.y, piece.center.z]}
       scale={[piece.size.x, piece.size.y, piece.size.z]}
       rotation={[0, piece.rotationY, 0]}
+      castShadow={castShadow}
+      receiveShadow
+      onClick={handleClick}
+    />
+  )
+})
+
+interface WallBodyProps {
+  mesh: WallMesh
+  selected: boolean
+  onSelectWall: (wallId: string, levelId: string) => void
+}
+
+/** Un mur entier, d'un seul maillage (voir `buildWallMesh`) : pas de couture entre ses morceaux. */
+const WallBody = memo(function WallBody({ mesh, selected, onSelectWall }: WallBodyProps) {
+  const geometry = useMemo(() => {
+    const g = new THREE.BufferGeometry()
+    g.setAttribute('position', new THREE.Float32BufferAttribute(mesh.positions, 3))
+    g.setAttribute('normal', new THREE.Float32BufferAttribute(mesh.normals, 3))
+    g.computeBoundingSphere()
+    return g
+  }, [mesh.positions, mesh.normals])
+  useEffect(() => () => geometry.dispose(), [geometry])
+  const handleClick = (event: ThreeEvent<MouseEvent>) => {
+    if (event.delta > CLICK_MAX_DRAG) return
+    event.stopPropagation()
+    onSelectWall(mesh.sourceId, mesh.levelId)
+  }
+  return (
+    <mesh
+      geometry={geometry}
+      material={selected ? SELECTED_WALL_MATERIAL : WALL_MATERIAL}
+      castShadow
+      receiveShadow
       onClick={handleClick}
     />
   )
@@ -108,6 +165,8 @@ const SlabMesh = memo(function SlabMesh({ slab }: { slab: SlabShape }) {
             : SLAB_MATERIAL
       }
       position={[0, slab.baseY + slab.thickness, 0]}
+      castShadow
+      receiveShadow
     />
   )
 })
@@ -152,6 +211,73 @@ function CameraRig({ bounds, fitToken }: { bounds: Bounds3 | null; fitToken: num
   return null
 }
 
+/** Centre et rayon (m) de l'emprise ; une petite scène par défaut si le modèle est vide. */
+function sceneSphere(bounds: Bounds3 | null): { center: THREE.Vector3; radius: number } {
+  if (!bounds) return { center: new THREE.Vector3(0, 0, 0), radius: 10 }
+  const min = new THREE.Vector3(bounds.min.x, bounds.min.y, bounds.min.z).multiplyScalar(MM)
+  const max = new THREE.Vector3(bounds.max.x, bounds.max.y, bounds.max.z).multiplyScalar(MM)
+  return {
+    center: min.clone().add(max).multiplyScalar(0.5),
+    radius: Math.max(max.clone().sub(min).length() / 2, 2),
+  }
+}
+
+/** Soleil : lumière directionnelle chaude, ombres cadrées sur le bâtiment. */
+function Sun({ bounds }: { bounds: Bounds3 | null }) {
+  const light = useRef<THREE.DirectionalLight>(null)
+  const target = useMemo(() => new THREE.Object3D(), [])
+  const invalidate = useThree((state) => state.invalidate)
+  const { center, radius } = sceneSphere(bounds)
+  const cx = center.x
+  const cy = center.y
+  const cz = center.z
+
+  useLayoutEffect(() => {
+    const sun = light.current
+    if (!sun) return
+    const direction = new THREE.Vector3(-0.55, 1, 0.75).normalize()
+    target.position.set(cx, cy, cz)
+    target.updateMatrixWorld()
+    sun.position.set(cx, cy, cz).addScaledVector(direction, radius * 3)
+    const camera = sun.shadow.camera
+    const extent = radius * 1.3
+    camera.left = -extent
+    camera.right = extent
+    camera.top = extent
+    camera.bottom = -extent
+    camera.near = 0.1
+    camera.far = radius * 6
+    camera.updateProjectionMatrix()
+    sun.shadow.needsUpdate = true
+    invalidate()
+  }, [cx, cy, cz, radius, target, invalidate])
+
+  return (
+    <>
+      <primitive object={target} />
+      <directionalLight
+        ref={light}
+        target={target}
+        color="#fff6e8"
+        intensity={2.2}
+        castShadow
+        shadow-mapSize={[2048, 2048]}
+        shadow-bias={-0.0004}
+        shadow-normalBias={0.02}
+      />
+    </>
+  )
+}
+
+/** Altitude du terrain (m) : le bas des murs les plus bas (± 0 par défaut). */
+function groundLevel(model: BuildingModel): number {
+  let lowest = Infinity
+  for (const piece of [...model.walls, ...model.chimneys]) {
+    lowest = Math.min(lowest, piece.center.y - piece.size.y / 2)
+  }
+  return (Number.isFinite(lowest) ? lowest : 0) * MM
+}
+
 /** Prend l'image de la vue : la scène est redessinée juste avant la lecture (le tampon n'est pas conservé). */
 function CaptureBridge({ captureRef }: { captureRef: RefObject<(() => string | null) | null> }) {
   const gl = useThree((state) => state.gl)
@@ -189,29 +315,43 @@ export default function Viewer3DScene({
   onSelectWall,
   captureRef,
 }: SceneProps) {
+  const ground = groundLevel(model)
+  // La dalle du niveau le plus bas est sous le terrain : invisible en vrai, donc pas dessinée.
+  const slabs = model.slabs.filter((slab) => !slab.onGround)
   return (
     <Canvas
       frameloop="demand"
       dpr={[1, 2]}
+      shadows="soft"
       camera={{ fov: 40, near: 0.1, far: 2000, position: [12, 10, 14] }}
       gl={{ antialias: true }}
       className="h-full w-full"
     >
-      <color attach="background" args={['#f1f5f9']} />
-      <hemisphereLight args={['#ffffff', '#94a3b8', 1.1]} />
-      <directionalLight position={[10, 20, 8]} intensity={1.6} />
-      <gridHelper args={[100, 100, '#cbd5e1', '#e2e8f0']} position={[0, -0.25, 0]} />
+      <color attach="background" args={[SKY]} />
+      <fog attach="fog" args={[SKY, 80, 260]} />
+      <hemisphereLight args={['#ffffff', '#b8b2a7', 0.9]} />
+      <Sun bounds={model.bounds} />
+      {/* Terrain : un grand sol qui reçoit les ombres, la grille de 1 m juste au-dessus. */}
+      <mesh
+        material={GROUND_MATERIAL}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, ground - 0.002, 0]}
+        receiveShadow
+      >
+        <planeGeometry args={[600, 600]} />
+      </mesh>
+      <gridHelper args={[100, 100, '#d4d1ca', '#dedbd4']} position={[0, ground - 0.001, 0]} />
       <group scale={MM}>
-        {model.walls.map((piece, i) => (
-          <WallMesh
-            key={`${piece.sourceId}-${i}`}
-            piece={piece}
-            selected={selectedIds.has(piece.sourceId)}
+        {model.wallMeshes.map((mesh) => (
+          <WallBody
+            key={mesh.sourceId}
+            mesh={mesh}
+            selected={selectedIds.has(mesh.sourceId)}
             onSelectWall={onSelectWall}
           />
         ))}
         {model.steps.map((piece, i) => (
-          <WallMesh
+          <PieceMesh
             key={`step-${piece.sourceId}-${i}`}
             piece={piece}
             material={STAIR_MATERIAL}
@@ -220,7 +360,7 @@ export default function Viewer3DScene({
           />
         ))}
         {model.chimneys.map((piece, i) => (
-          <WallMesh
+          <PieceMesh
             key={`chimney-${piece.sourceId}-${i}`}
             piece={piece}
             material={CHIMNEY_MATERIAL}
@@ -228,7 +368,17 @@ export default function Viewer3DScene({
             onSelectWall={onSelectWall}
           />
         ))}
-        {model.slabs.map((slab) => (
+        {model.fills.map((piece, i) => (
+          <PieceMesh
+            key={`fill-${piece.sourceId}-${i}`}
+            piece={piece}
+            material={FILL_MATERIALS[piece.kind]}
+            castShadow={piece.kind !== 'glass'}
+            selected={false}
+            onSelectWall={onSelectWall}
+          />
+        ))}
+        {slabs.map((slab) => (
           <SlabMesh key={`${slab.kind}-${slab.sourceId}`} slab={slab} />
         ))}
       </group>

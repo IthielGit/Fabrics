@@ -10,7 +10,7 @@ const CLOSE = 1e-6
 const OVERLAP = 1
 
 /** Un tracé fermé : au moins 4 points, le dernier au même endroit que le premier. */
-function isClosedAxis(wall: Pick<WallElement, 'points'>): boolean {
+export function isClosedAxis(wall: Pick<WallElement, 'points'>): boolean {
   const points = toPoints(wall.points)
   if (points.length < 4) return false
   const first = points[0]

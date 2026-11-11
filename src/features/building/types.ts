@@ -37,6 +37,26 @@ export interface SlabShape {
   thickness: number
   /** Trous (trémies d'escalier), dans le plan : chacun tient entièrement dans le contour. */
   holes?: Point[][]
+  /** Dalle du niveau le plus bas : sous le terrain, la vue 3D ne la dessine pas (les coupes, si). */
+  onGround?: boolean
+}
+
+/** Remplissage d'une ouverture en 3D : cadre, vitre ou vantail de porte (boîte orientée). */
+export interface OpeningFill extends WallPiece {
+  kind: 'frame' | 'glass' | 'door'
+}
+
+/**
+ * Un mur entier en un seul maillage de triangles (vue 3D) : mêmes volumes que ses `WallPiece`,
+ * mais sans faces superposées ni coutures entre morceaux. Coordonnées en mm, repère 3D.
+ */
+export interface WallMesh {
+  sourceId: string
+  levelId: string
+  /** Sommets des triangles, x y z à la suite (3 sommets par triangle, sens trigonométrique vu de l'extérieur). */
+  positions: number[]
+  /** Normale de chaque sommet, x y z à la suite. */
+  normals: number[]
 }
 
 export interface Bounds3 {
@@ -45,12 +65,17 @@ export interface Bounds3 {
 }
 
 export interface BuildingModel {
+  /** Morceaux de mur (boîtes) : façades, coupes, emprise. */
   walls: WallPiece[]
+  /** Les mêmes murs en maillages sans couture, pour la vue 3D. */
+  wallMeshes: WallMesh[]
   /** Marches et paliers des escaliers (mêmes boîtes orientées que les murs). */
   steps: WallPiece[]
   /** Cheminées : une boîte du plancher de leur niveau jusqu'au-dessus du dernier niveau. */
   chimneys: WallPiece[]
   slabs: SlabShape[]
+  /** Cadres, vitres et portes dans les ouvertures (vue 3D seulement ; `sourceId` = mur porteur). */
+  fills: OpeningFill[]
   /** Emprise de tout le modèle, ou `null` s'il est vide. */
   bounds: Bounds3 | null
 }
@@ -58,7 +83,7 @@ export interface BuildingModel {
 export interface BuildOptions {
   /**
    * Dernier niveau affiché (vue « étage ouvert ») : les niveaux au-dessus sont ignorés et il n'y a
-   * pas de toit. Absent : tous les niveaux, avec un toit plat sur le dernier.
+   * pas de toit. Absent : tous les niveaux, avec un toit plat sur chaque pièce sans pièce au-dessus.
    */
   upToLevelId?: string
 }
