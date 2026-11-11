@@ -22,7 +22,14 @@ import { computeWallJoinsOf } from '../../features/geometry/wallJoins'
 import { getSymbol } from '../../features/library/catalog'
 import { getPlaceable } from '../../features/library/catalog/prefabs'
 import { elementsForPrefab } from '../../features/library/placeSet'
-import { furniturePlacement } from '../../features/library/placement'
+import type { Guide } from '../../features/geometry/guides'
+import {
+  collectSnapLines,
+  mergeSnapLines,
+  snapBox,
+  type PlacementSnap,
+} from '../../features/geometry/snapLines'
+import { furniturePlacement, setPlacement } from '../../features/library/placement'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
@@ -44,7 +51,7 @@ import FurnitureGhost from './FurnitureGhost'
 import ChimneyUpperGhosts from './ChimneyUpperGhosts'
 import StairGhost from './StairGhost'
 import StairUpperGhosts from './StairUpperGhosts'
-import { planStairPlacement } from '../../features/stairs/placement'
+import { planStairPlacement, planStairPlacementWithGuides } from '../../features/stairs/placement'
 import {
   DEFAULT_CHIMNEY_HEIGHT_ABOVE_TOP,
   DEFAULT_CHIMNEY_SIZE,
@@ -68,6 +75,8 @@ Konva.dragButtons = [0]
 const REFERENCE_OPACITY = 0.3
 /** En dessous de cette taille (px écran), un tracé ou une sélection est un simple clic. */
 const MIN_DRAG_PX = 4
+/** Distance d'accroche d'un objet posé sur les murs et éléments voisins, en pixels écran. */
+const PLACEMENT_SNAP_PX = 8
 
 type PointerEvent = Konva.KonvaEventObject<MouseEvent | TouchEvent>
 
@@ -91,6 +100,7 @@ export default function EditorStage() {
   const addElements = useEditorStore((state) => state.addElements)
   const setTool = useEditorStore((state) => state.setTool)
   const setSelection = useEditorStore((state) => state.setSelection)
+  const setGuides = useEditorStore((state) => state.setGuides)
   const editingTextId = useEditorStore((state) => state.editingTextId)
   const startEditingText = useEditorStore((state) => state.startEditingText)
   const commitTextEdit = useEditorStore((state) => state.commitTextEdit)
@@ -111,6 +121,12 @@ export default function EditorStage() {
   // Raccords d'angle des murs (niveau actif et niveau de référence séparément).
   const wallJoins = useMemo(() => computeWallJoinsOf(activeElements), [activeElements])
   const referenceWallJoins = useMemo(() => computeWallJoinsOf(referenceElements), [referenceElements])
+  // Lignes d'aimantation des poses : faces et axes des murs, contours et emprises du niveau actif,
+  // et du niveau du dessous quand il est affiché en transparence.
+  const planSnapTargets = useMemo(
+    () => mergeSnapLines(collectSnapLines(activeElements), collectSnapLines(referenceElements)),
+    [activeElements, referenceElements],
+  )
 
   const { ref: containerRef, size } = useContainerSize<HTMLDivElement>()
   const [spaceDown, setSpaceDown] = useState(false)
@@ -192,6 +208,44 @@ export default function EditorStage() {
   const elements = activeElements
   // Pas de la grille d'aimantation d'un plan (`null` si l'aimantation est désactivée).
   const furnitureGrid = project.document.plan?.snapToGrid ? project.document.plan.gridSize : null
+  const placementSnap: PlacementSnap = {
+    targets: planSnapTargets,
+    threshold: PLACEMENT_SNAP_PX / scale,
+    grid: furnitureGrid,
+  }
+
+  /** Guides d'alignement de l'aperçu de pose (objet, ensemble ou escalier) sous le curseur. */
+  const placementGuides = (point: Point | null): Guide[] => {
+    if (!point) return []
+    const state = useEditorStore.getState()
+    if (activeTool === 'stair') {
+      return (
+        planStairPlacementWithGuides(
+          project.document.levels,
+          state.activeLevelId,
+          state.stairShape,
+          point,
+          placementSnap,
+          '',
+        )?.guides ?? []
+      )
+    }
+    if (activeTool === 'chimney') {
+      return chimneyPlacement(point).guides
+    }
+    const id = state.furnitureSymbolId
+    if (activeTool !== 'furniture' || !id) return []
+    const set = getPlaceable(id)
+    if (set) return setPlacement(set, point, placementSnap).guides
+    const def = getSymbol(id)
+    return def ? furniturePlacement(def, point, placementSnap).guides : []
+  }
+
+  /** Coin haut-gauche d'une cheminée de taille par défaut posée sous `point`. */
+  const chimneyPlacement = (point: Point) => {
+    const size = DEFAULT_CHIMNEY_SIZE
+    return snapBox({ x: point.x - size / 2, y: point.y - size / 2, width: size, height: size }, placementSnap)
+  }
 
   const handleWheel = (event: Konva.KonvaEventObject<WheelEvent>) => {
     event.evt.preventDefault()
@@ -233,7 +287,7 @@ export default function EditorStage() {
       for (const el of elements) {
         if (el.type === 'furniture') existing.set(el.symbol, (existing.get(el.symbol) ?? 0) + 1)
       }
-      const origin = furniturePlacement(set, point, furnitureGrid)
+      const origin = setPlacement(set, point, placementSnap)
       const state = useEditorStore.getState()
       const wallHeight =
         project.document.levels?.find((level) => level.id === state.activeLevelId)?.height ??
@@ -253,7 +307,7 @@ export default function EditorStage() {
     }
     const def = getSymbol(id)
     if (!def) return
-    const { x, y } = furniturePlacement(def, point, furnitureGrid)
+    const { x, y } = furniturePlacement(def, point, placementSnap)
     const count = elements.filter((el) => el.type === 'furniture' && el.symbol === def.id).length
     addElement(
       createFurnitureElement(`${symbolName(def.id)} ${count + 1}`, def.id, x, y, def.width, def.depth),
@@ -261,18 +315,15 @@ export default function EditorStage() {
     useLibraryPrefs.getState().addRecent(def.id)
   }
 
-  /** Pose une cheminée de taille par défaut, centrée sur `point` (aimantée à la grille). */
+  /** Pose une cheminée de taille par défaut sous `point` (aimantée aux murs voisins, sinon à la grille). */
   const placeChimney = (point: Point) => {
-    const snap = (value: number) =>
-      furnitureGrid !== null && furnitureGrid > 0
-        ? Math.round(value / furnitureGrid) * furnitureGrid
-        : Math.round(value)
     const size = DEFAULT_CHIMNEY_SIZE
+    const { x, y } = chimneyPlacement(point)
     addElement(
       createChimneyElement(
         nextElementName(fr.elements.chimney, 'chimney', elements),
-        Math.round(snap(point.x) - size / 2),
-        Math.round(snap(point.y) - size / 2),
+        x,
+        y,
         size,
         size,
         DEFAULT_CHIMNEY_HEIGHT_ABOVE_TOP,
@@ -288,7 +339,7 @@ export default function EditorStage() {
       state.activeLevelId,
       state.stairShape,
       point,
-      furnitureGrid,
+      placementSnap,
       nextElementName(fr.elements.stair, 'stair', elements),
     )
     if (!stair) {
@@ -340,7 +391,11 @@ export default function EditorStage() {
     if (activeTool === 'calibrate') calibration.onPointerMove(event)
     if (activeTool === 'stretch') stretch.onPointerMove(event)
     if (openingKind) openingTool.onPointerMove(event)
-    if (activeTool === 'furniture' || activeTool === 'stair') setGhostPoint(pointerInDocument(event))
+    if (activeTool === 'furniture' || activeTool === 'stair' || activeTool === 'chimney') {
+      const ghost = pointerInDocument(event)
+      if (activeTool !== 'chimney') setGhostPoint(ghost)
+      setGuides(placementGuides(ghost))
+    }
     if (!draft && !band) return
     const point = pointerInDocument(event)
     if (!point) return
@@ -504,6 +559,9 @@ export default function EditorStage() {
           onTouchEnd={handlePointerUp}
           onMouseLeave={(event) => {
             setGhostPoint(null)
+            if (activeTool === 'furniture' || activeTool === 'stair' || activeTool === 'chimney') {
+              setGuides([])
+            }
             handlePointerUp(event)
           }}
         >
@@ -596,13 +654,13 @@ export default function EditorStage() {
             )}
             {openingKind && <OpeningPreviewLayer preview={openingTool.preview} scale={scale} />}
             {activeTool === 'stair' && ghostPoint && (
-              <StairGhost point={ghostPoint} grid={furnitureGrid} scale={scale} />
+              <StairGhost point={ghostPoint} snap={placementSnap} scale={scale} />
             )}
             {activeTool === 'furniture' && ghostPoint && furnitureSymbolId && (
               <FurnitureGhost
                 symbolId={furnitureSymbolId}
                 point={ghostPoint}
-                grid={furnitureGrid}
+                snap={placementSnap}
                 scale={scale}
               />
             )}

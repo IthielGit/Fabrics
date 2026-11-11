@@ -35,10 +35,11 @@ describe('pose d’un escalier', () => {
     expect(stair.y).toBe(4000 - 1750)
   })
 
-  it('aimanté à la grille', () => {
+  it('aimanté à la grille par son coin (ses bords tombent sur la grille)', () => {
     const stair = planStairPlacement([GROUND, UPPER], 'n0', 'straight', { x: 5030, y: 4020 }, 100, 'E')!
-    expect((stair.x + 500) % 100).toBe(0)
-    expect((stair.y + 1750) % 100).toBe(0)
+    expect(stair.x % 100).toBe(0)
+    expect(stair.y % 100).toBe(0)
+    expect(stair.y).toBe(2300) // 4020 − 1750 = 2270, arrondi à 2300
   })
 
   it('refusée sur le dernier niveau', () => {

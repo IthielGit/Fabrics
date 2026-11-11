@@ -4,7 +4,8 @@ import { createFurnitureElement } from '../../features/documents/elements'
 import type { Point } from '../../features/geometry/viewport'
 import { getSymbol } from '../../features/library/catalog'
 import { getPlaceable } from '../../features/library/catalog/prefabs'
-import { furniturePlacement } from '../../features/library/placement'
+import type { PlacementSnap } from '../../features/geometry/snapLines'
+import { furniturePlacement, setPlacement } from '../../features/library/placement'
 import FurnitureShape from './shapes/FurnitureShape'
 
 interface FurnitureGhostProps {
@@ -12,17 +13,17 @@ interface FurnitureGhostProps {
   symbolId: string
   /** Position du curseur sur le plan (mm). */
   point: Point
-  /** Pas de la grille d'aimantation (mm), ou `null`. */
-  grid: number | null
+  /** Aimantation (murs et éléments voisins, grille). */
+  snap: PlacementSnap
   /** Pixels écran par mm. */
   scale: number
 }
 
 /** Aperçu translucide, à taille réelle, de l'objet (ou de tous les objets de l'ensemble) qu'on est en train de poser. */
-export default function FurnitureGhost({ symbolId, point, grid, scale }: FurnitureGhostProps) {
+export default function FurnitureGhost({ symbolId, point, snap, scale }: FurnitureGhostProps) {
   const set = getPlaceable(symbolId)
   if (set) {
-    const origin = furniturePlacement(set, point, grid)
+    const origin = setPlacement(set, point, snap)
     const shell = set.shell
     return (
       <Group name="ghost" listening={false}>
@@ -59,7 +60,7 @@ export default function FurnitureGhost({ symbolId, point, grid, scale }: Furnitu
   }
   const def = getSymbol(symbolId)
   if (!def) return null
-  const { x, y } = furniturePlacement(def, point, grid)
+  const { x, y } = furniturePlacement(def, point, snap)
   const element = {
     ...createFurnitureElement('', def.id, x, y, def.width, def.depth),
     id: 'furniture-ghost',

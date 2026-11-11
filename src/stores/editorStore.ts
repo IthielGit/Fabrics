@@ -5,8 +5,10 @@ import { clampPageDimension } from '../features/documents/pageSize'
 import { moveElementToSlot, sameOrder, stepElement } from '../features/documents/layers'
 import {
   copyLevelWalls,
+  elementsOfLevel,
   elementsOnLevel,
   insertLevelAbove,
+  levelBelow,
   isLevelIndependent,
   moveLevel as moveLevelInList,
   newTopLevel,
@@ -238,6 +240,42 @@ export function selectActiveElements(state: {
   return result
 }
 
+let snapCache: {
+  active: readonly CanvasElement[]
+  elements: readonly CanvasElement[]
+  belowId: string | null
+  result: readonly CanvasElement[]
+} | null = null
+
+/**
+ * Éléments qui attirent le tracé et les déplacements : ceux du niveau actif, plus ceux du niveau
+ * du dessous quand il est affiché en transparence (pour aligner un étage sur celui d'en dessous).
+ * Même référence tant que rien ne change (les calculs d'aimantation sont mis en cache dessus).
+ */
+export function selectSnapElements(state: {
+  project: Project | null
+  activeLevelId: string | null
+  showLowerLevel: boolean
+}): readonly CanvasElement[] {
+  const active = selectActiveElements(state)
+  const document = state.project?.document
+  const below =
+    state.showLowerLevel && document?.levels && state.activeLevelId !== null
+      ? levelBelow(document.levels, state.activeLevelId)
+      : undefined
+  if (!below || !document) return active
+  if (
+    snapCache?.active === active &&
+    snapCache.elements === document.elements &&
+    snapCache.belowId === below.id
+  ) {
+    return snapCache.result
+  }
+  const result = [...active, ...elementsOfLevel(document.elements, below.id)]
+  snapCache = { active, elements: document.elements, belowId: below.id, result }
+  return result
+}
+
 // Document au début d'un geste en direct (voir `beginLiveEdit`).
 let liveBase: FabricsDocument | null = null
 
@@ -347,7 +385,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     setTool: (activeTool) => {
       // Mur, pièce, cote et calibrage n'existent pas dans un visuel.
       if (isPlanTool(activeTool) && get().project?.kind !== 'plan') return
-      set({ activeTool })
+      // Les guides d'un outil (aperçu de pose, tracé) ne restent pas à l'écran après lui.
+      set({ activeTool, guides: [] })
     },
     startPlacingFurniture: (symbolId) => {
       if (get().project?.kind !== 'plan') return

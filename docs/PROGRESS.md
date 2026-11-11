@@ -42,6 +42,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · Aimantation précise (pose, déplacement, niveaux)
+- Fait : demande de l'utilisateur (murs de deux pièces préfabriquées voisines décalés de quelques cm ; étages difficiles à aligner ; objets et escaliers mal aimantés). **Causes** : à la pose, le **centre** suivait la grille, donc les bords d'une emprise de 3900 mm tombaient à 50 mm de la grille ; au déplacement, l'aimantation utilisait le cadre dessiné à l'écran (traits, étiquettes, textes compris) et aucune grille ; le niveau du dessous n'attirait rien. **A. Pose** (objets, ensembles, pièces préfabriquées, escaliers, cheminées) : les bords et le centre de l'emprise s'aimantent aux **faces et axes des murs** et aux bords des éléments proches (8 px à l'écran), avec les guides roses dans l'aperçu ; à défaut, c'est le **coin** qui suit la grille. Une pièce préfabriquée s'aligne par son mur (faces extérieures, axe, faces intérieures). **B. Déplacement** dans un plan : même calcul sur la vraie géométrie (faces et axes des murs, sommets des pièces et plateformes, emprises), puis grille si aucun guide ; positions en mm entiers ; Alt coupe l'aimantation. Un groupe s'aimante par son emprise et ses murs, pas par son mobilier. Les visuels gardent l'aimantation d'avant. **C. Niveaux** : le niveau du dessous, **quand il est affiché en transparence**, attire le tracé, le glissement des sommets, la pose et le déplacement (choix de l'utilisateur). Les guides s'effacent quand on change d'outil.
+- Changement : le glissement d'un sommet ne s'aimante plus aux sommets de **tous** les niveaux, seulement au niveau actif et au niveau du dessous affiché (même règle partout).
+- Fichiers : `src/features/geometry/snapLines(.test).ts` (nouveau), `src/features/library/placement.ts`, `src/features/stairs/placement.ts`, `src/stores/editorStore(.test).ts` (`selectSnapElements`), `src/components/editor/{EditorStage,useElementInteractions,usePolylineDrawing,VertexHandles,FurnitureGhost,StairGhost}`, tests `search.test.ts`, `stairIntegration.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2175, dont 15 nouveaux) — pose, déplacement et alignement entre niveaux à contrôler dans le navigateur
+- Commit : fix: aimantation précise à la pose, au déplacement et entre niveaux
+
 ### 2026-11-11 — Hors jalon · Feuille A2 pour les PDF
 - Fait : demande de l'utilisateur (les plans sont souvent imprimés en A2). Le format **A2** (420 × 594 mm) s'ajoute à A4 et A3 dans la fenêtre Exporter (plans, visuels, métrés en PDF) et dans la fenêtre PDF des vues (façades, coupes, planche). Le cartouche affiche « A2 ». Liste des formats commune : `SHEET_FORMATS`.
 - Fichiers : `src/features/export/pdfLayout(.test).ts`, `src/components/editor/ExportDialog.tsx`, `src/components/views/ViewsPdfDialog.tsx`
@@ -683,6 +690,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
+- Afficher aussi le **niveau du dessus** en transparence (désactivé par défaut), et qu'il attire comme celui du dessous : pour aligner le RDC sur le R+1 (proposé le 2026-11-11, à confirmer).
 - ~~Export des métrés en vrai fichier Excel~~ : fait (hors jalon K bis, avec `fflate`).
 - ~~Hachures et textures dans les façades et coupes~~ et ~~toitures (versants, débords)~~ : planifiés dans le jalon M10 bis (2026-11-11).
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).

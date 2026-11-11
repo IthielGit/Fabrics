@@ -1,11 +1,21 @@
 import type Konva from 'konva'
 import { useCallback, useMemo, useRef } from 'react'
 import { translateBox, unionBoxes, type Box } from '../../features/geometry/box'
+import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
+import { elementBounds } from '../../features/export/bounds'
 import { computeSnap } from '../../features/geometry/guides'
+import {
+  collectSnapLines,
+  EMPTY_SNAP_LINES,
+  mergeSnapLines,
+  movingSnapLines,
+  snapLinesTo,
+  type SnapLines,
+} from '../../features/geometry/snapLines'
 import { hasAbsolutePoints, translateElement } from '../../features/geometry/transform'
 import type { Point } from '../../features/geometry/viewport'
 import { pxPerUnit } from '../../features/units/scale'
-import { useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 
 type Handlers = Pick<
@@ -25,6 +35,12 @@ interface DragSession {
   targets: Box[]
   /** Ouvertures des murs déplacés : elles suivent leur mur à l'écran, sans être modifiées. */
   followers: Map<string, Point>
+  /**
+   * Plans : aimantation sur la vraie géométrie (faces et axes des murs, contours, emprises) du
+   * niveau actif et du niveau du dessous affiché, puis sur la grille. `null` dans un visuel, qui
+   * garde l'aimantation sur les boîtes dessinées (`groupBox`, `targets`).
+   */
+  plan: { moving: SnapLines; anchor: Point; targets: SnapLines; grid: number | null } | null
 }
 
 const EMPTY_SESSION: DragSession = {
@@ -32,6 +48,42 @@ const EMPTY_SESSION: DragSession = {
   groupBox: null,
   targets: [],
   followers: new Map(),
+  plan: null,
+}
+
+/** Aimantation géométrique d'un déplacement dans un plan (voir `DragSession.plan`). */
+function planDragSnap(
+  ids: ReadonlySet<string>,
+  followers: ReadonlySet<string>,
+): DragSession['plan'] {
+  const store = useEditorStore.getState()
+  const project = store.project
+  if (!project || project.kind !== 'plan') return null
+  const dragged = project.document.elements.filter((element) => ids.has(element.id))
+  const box = unionBoxes(
+    dragged.flatMap((element) => {
+      const bounds = elementBounds(element)
+      return bounds ? [bounds] : []
+    }),
+  )
+  if (!box) return null
+  const levels = project.document.levels
+  const below =
+    store.showLowerLevel && levels && store.activeLevelId !== null
+      ? levelBelow(levels, store.activeLevelId)
+      : undefined
+  const exclude = new Set([...ids, ...followers])
+  const targets = mergeSnapLines(
+    collectSnapLines(selectActiveElements(store), exclude),
+    below ? collectSnapLines(elementsOfLevel(project.document.elements, below.id)) : EMPTY_SNAP_LINES,
+  )
+  const plan = project.document.plan
+  return {
+    moving: movingSnapLines(dragged),
+    anchor: { x: box.x, y: box.y },
+    targets,
+    grid: plan?.snapToGrid ? plan.gridSize : null,
+  }
 }
 
 /**
@@ -111,13 +163,14 @@ export function useElementInteractions(): Handlers {
       groupBox: unionBoxes(draggedNodes.map(boxOf)),
       targets,
       followers,
+      plan: planDragSnap(new Set(origins.keys()), new Set(followers.keys())),
     }
   }, [])
 
   const onDragMove = useCallback((event: Konva.KonvaEventObject<DragEvent>) => {
     const stage = event.target.getStage()
     const draggedId = event.target.id()
-    const { origins, groupBox, targets, followers } = session.current
+    const { origins, groupBox, targets, followers, plan } = session.current
     const origin = origins.get(draggedId)
     if (!stage || !origin) return
 
@@ -125,7 +178,20 @@ export function useElementInteractions(): Handlers {
     let dx = event.target.x() - origin.x
     let dy = event.target.y() - origin.y
 
-    if (groupBox && store.project && !event.evt.altKey) {
+    if (plan && store.project && !event.evt.altKey) {
+      const scale = store.zoom * pxPerUnit(store.project.document.unit)
+      const snap = snapLinesTo(
+        {
+          xs: plan.moving.xs.map((x) => x + dx),
+          ys: plan.moving.ys.map((y) => y + dy),
+        },
+        { x: plan.anchor.x + dx, y: plan.anchor.y + dy },
+        { targets: plan.targets, threshold: SNAP_THRESHOLD_PX / scale, grid: plan.grid },
+      )
+      dx += snap.dx
+      dy += snap.dy
+      store.setGuides(snap.guides)
+    } else if (groupBox && store.project && !event.evt.altKey) {
       const scale = store.zoom * pxPerUnit(store.project.document.unit)
       const snap = computeSnap(translateBox(groupBox, dx, dy), targets, SNAP_THRESHOLD_PX / scale)
       dx += snap.dx

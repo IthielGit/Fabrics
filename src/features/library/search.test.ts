@@ -77,16 +77,21 @@ describe('furniturePlacement', () => {
   const bed = { width: 1600, depth: 2000 }
 
   it('centre l’objet sur le point', () => {
-    expect(furniturePlacement(bed, { x: 5000, y: 4000 }, null)).toEqual({ x: 4200, y: 3000 })
+    expect(furniturePlacement(bed, { x: 5000, y: 4000 }, null)).toMatchObject({ x: 4200, y: 3000 })
   })
 
-  it('aimante le centre à la grille', () => {
-    expect(furniturePlacement(bed, { x: 5040, y: 3960 }, 100)).toEqual({ x: 4200, y: 3000 })
-    expect(furniturePlacement(bed, { x: 5060, y: 3960 }, 100)).toEqual({ x: 4300, y: 3000 })
+  it('aimante le coin à la grille', () => {
+    expect(furniturePlacement(bed, { x: 5040, y: 3960 }, 100)).toMatchObject({ x: 4200, y: 3000 })
+    expect(furniturePlacement(bed, { x: 5060, y: 3960 }, 100)).toMatchObject({ x: 4300, y: 3000 })
+    // 450 × 450 : le coin tombe sur la grille (le centre, lui, est à 225 mm du coin).
+    expect(furniturePlacement({ width: 450, depth: 450 }, { x: 1000, y: 1000 }, 100)).toMatchObject({
+      x: 800,
+      y: 800,
+    })
   })
 
   it('donne des mm entiers', () => {
-    expect(furniturePlacement({ width: 451, depth: 451 }, { x: 1000.4, y: 1000.4 }, null)).toEqual({
+    expect(furniturePlacement({ width: 451, depth: 451 }, { x: 1000.4, y: 1000.4 }, null)).toMatchObject({
       x: 775,
       y: 775,
     })

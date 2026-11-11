@@ -32,7 +32,7 @@ import {
 import { createRegionFinder, type RegionFinder } from '../../features/geometry/regions'
 import type { Point } from '../../features/geometry/viewport'
 import { fr } from '../../i18n/fr'
-import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, selectSnapElements, useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement } from '../../types/document'
 import { isTypingTarget } from './isTypingTarget'
 
@@ -215,10 +215,11 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       if (!project) return { point: raw, kind: 'none' as SnapKind }
       const current = readDraft().points
       const plan = project.document.plan
-      const active = selectActiveElements(useEditorStore.getState())
+      // Éléments du niveau actif, plus ceux du niveau du dessous s'il est affiché en transparence
+      // (les axes valent pour tous les niveaux).
+      const active = selectSnapElements(useEditorStore.getState())
       const onOpenings = tool === 'dimension' ? openingPoints(active) : undefined
       return snapPoint(raw, {
-        // On ne s'aimante qu'aux éléments du niveau actif (les axes valent pour tous les niveaux).
         vertices: [...planVertices(active), ...current],
         // Une cote s'aimante aux bords et au milieu des portes, fenêtres et baies.
         openingPoints: onOpenings,

@@ -11,7 +11,7 @@ import {
 } from '../features/documents/elements'
 import { getSymbol } from '../features/library/catalog'
 import type { OpeningElement, TextElement, WallElement } from '../types/document'
-import { HISTORY_LIMIT, selectActiveElements, useEditorStore } from './editorStore'
+import { HISTORY_LIMIT, selectActiveElements, selectSnapElements, useEditorStore } from './editorStore'
 
 const store = () => useEditorStore.getState()
 const elements = () => store().project!.document.elements
@@ -694,6 +694,17 @@ describe('axes de construction', () => {
     expect(selectActiveElements(store()).map((el) => el.type)).toEqual(['axis'])
     store().selectAll()
     expect(store().selectedIds).toHaveLength(1)
+  })
+
+  it('le niveau du dessous attire seulement quand il est affiché en transparence', () => {
+    store().addElement(createWallElement('Mur RDC', [0, 0, 4000, 0], 200, 2700))
+    store().addLevel() // on passe sur l'étage, vide
+    store().setShowLowerLevel(true)
+    expect(selectSnapElements(store()).map((el) => el.name)).toEqual(['Mur RDC'])
+    // Même référence tant que rien ne change (les calculs d'aimantation sont mis en cache dessus).
+    expect(selectSnapElements(store())).toBe(selectSnapElements(store()))
+    store().setShowLowerLevel(false)
+    expect(selectSnapElements(store())).toEqual([])
   })
 
   it('supprimer un niveau garde les axes', () => {

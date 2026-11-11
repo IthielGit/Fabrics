@@ -20,7 +20,7 @@ import {
   removeVertex,
 } from '../../features/geometry/transform'
 import type { Point } from '../../features/geometry/viewport'
-import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
+import { selectActiveElements, selectSnapElements, useEditorStore } from '../../stores/editorStore'
 
 interface VertexHandlesProps {
   /** Faux quand un outil de tracé est actif ou pendant la saisie d'un texte. */
@@ -59,16 +59,13 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
     event.cancelBubble = true
     const store = useEditorStore.getState()
     store.beginLiveEdit()
-    snapVertices.current = collectSnapVertices(
-      store.project?.document.elements ?? [],
-      new Set([element.id]),
-    )
+    // Éléments qui attirent : le niveau actif, plus le niveau du dessous s'il est affiché.
+    const attracting = selectSnapElements(store)
+    snapVertices.current = collectSnapVertices(attracting, new Set([element.id]))
     snapAxes.current = collectSnapAxes(store.project?.document.elements ?? [], new Set([element.id]))
-    // Le sommet d'un mur se raccorde à l'axe des autres murs du niveau actif.
+    // Le sommet d'un mur se raccorde à l'axe des autres murs.
     snapWallAxes.current =
-      element.type === 'wall'
-        ? collectSnapWallAxes(selectActiveElements(store), new Set([element.id]))
-        : []
+      element.type === 'wall' ? collectSnapWallAxes(attracting, new Set([element.id])) : []
     // Guides d'alignement : un mur s'aligne sur les points d'axe des autres éléments, une pièce ou
     // une cote aussi sur les angles des faces de murs.
     // Une extrémité de cote s'aimante aussi aux bords et au milieu des ouvertures.
@@ -78,7 +75,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
         : []
     snapAlign.current =
       element.type === 'wall'
-        ? collectAlignTargets(selectActiveElements(store), new Set([element.id]))
+        ? collectAlignTargets(attracting, new Set([element.id]))
         : [...snapVertices.current, ...snapOpenings.current]
   }
 
