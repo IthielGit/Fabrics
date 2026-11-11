@@ -16,7 +16,14 @@ const TICK_MM = 120
 const EXTENSION_GAP_MM = 100
 const TEXT_FONT_MM = 180
 const TEXT_MIN_PX = 9
-const TEXT_BOX_WIDTH_MM = 4000
+/** L'unité est plus petite et plus claire que le chiffre. */
+const UNIT_SCALE = 0.65
+const UNIT_COLOR = '#6b7280'
+const UNIT_GAP_EM = 0.2
+/** Largeur moyenne d'un caractère, en multiples de la taille de police (police sans empattement). */
+const CHAR_WIDTH_EM = 0.56
+/** En dessous de cette longueur à l'écran (px), la cote est trop courte pour porter l'unité. */
+const MIN_UNIT_LENGTH_PX = 90
 /** Zone de clic minimale autour de la ligne de cote, en pixels écran. */
 const MIN_HIT_WIDTH_PX = 12
 
@@ -56,6 +63,17 @@ export default function DimensionShape({
     { x: from.x + normal.x * gap, y: from.y + normal.y * gap },
     to,
   ])
+
+  // Texte : « 3500 » (+ « mm » en petit), centré sur la ligne de cote.
+  const full = formatLength(length)
+  const unit = full.slice(full.lastIndexOf(' ') + 1)
+  const value = full.slice(0, full.lastIndexOf(' '))
+  const showUnit = length * viewScale >= MIN_UNIT_LENGTH_PX
+  const valueWidth = value.length * CHAR_WIDTH_EM * fontSize
+  const unitWidth = showUnit
+    ? unit.length * CHAR_WIDTH_EM * fontSize * UNIT_SCALE + UNIT_GAP_EM * fontSize
+    : 0
+  const textStart = -(valueWidth + unitWidth) / 2
 
   const flat = (a: { x: number; y: number }, b: { x: number; y: number }) => [a.x, a.y, b.x, b.y]
 
@@ -97,15 +115,25 @@ export default function DimensionShape({
         <Line key={`tick-${i}`} points={points} stroke={COLOR} strokeWidth={thin * 1.2} />
       ))}
       <Group x={center.x} y={center.y} rotation={textAngle} listening={false}>
+        {/* Le chiffre à la taille normale, l'unité plus petite et plus claire pour ne pas encombrer. */}
         <Text
-          x={-TEXT_BOX_WIDTH_MM / 2}
+          x={textStart}
           y={-fontSize * 1.25}
-          width={TEXT_BOX_WIDTH_MM}
-          align="center"
-          text={formatLength(length)}
+          text={value}
           fontSize={fontSize}
           fill={COLOR}
+          wrap="none"
         />
+        {showUnit && (
+          <Text
+            x={textStart + valueWidth + UNIT_GAP_EM * fontSize}
+            y={-fontSize * 1.25 + fontSize * (1 - UNIT_SCALE) * 0.9}
+            text={unit}
+            fontSize={fontSize * UNIT_SCALE}
+            fill={UNIT_COLOR}
+            wrap="none"
+          />
+        )}
       </Group>
     </Group>
   )

@@ -40,7 +40,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 -->
 
 ### 2026-11-11 — Hors jalon · G · Style des cotes
-- Fait : demande de l'utilisateur (image d'un plan coté). Les cotes se rapprochent de ce style : trait **noir**, **chiffres plus petits** posés juste au-dessus de la ligne, **lignes d'attache fines qui ne touchent pas l'objet** (un petit écart au départ, un dépassement au bout), traits obliques à 45° un peu plus longs. Le texte d'une cote **verticale se lit de bas en haut** (-90°), quel que soit le sens de la mesure. Les valeurs restent en mm avec leur unité (règle du projet), l'image n'en avait pas.
+- Fait : demande de l'utilisateur (image d'un plan coté). Les cotes se rapprochent de ce style : trait **noir**, **chiffres plus petits** posés juste au-dessus de la ligne, **lignes d'attache fines qui ne touchent pas l'objet** (un petit écart au départ, un dépassement au bout), traits obliques à 45° un peu plus longs. Le texte d'une cote **verticale se lit de bas en haut** (-90°), quel que soit le sens de la mesure. Les valeurs gardent leur unité (règle du projet) mais **l'unité « mm » est plus petite et grise** que le chiffre, et elle est **masquée quand la cote fait moins de 90 px à l'écran** (le chiffre reste) : moins d'encombrement. Largeur du texte estimée (≈ 0,56 × la taille de police par caractère), donc le centrage est approximatif.
 - Fichiers : `src/features/geometry/dimension(.test).ts`, `src/components/editor/shapes/DimensionShape.tsx`
 - Vérification : build ✓ lint ✓ tests ✓ (1936) — rendu à contrôler à l'écran
 - Commit : feat: style des cotes (texte, lignes d'attache)
