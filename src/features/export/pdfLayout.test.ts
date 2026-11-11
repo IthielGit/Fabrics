@@ -14,6 +14,8 @@ describe('feuilles', () => {
   it('donne la taille selon l’orientation', () => {
     expect(sheetSize('a4', 'portrait')).toEqual({ width: 210, height: 297 })
     expect(sheetSize('a3', 'landscape')).toEqual({ width: 420, height: 297 })
+    expect(sheetSize('a2', 'landscape')).toEqual({ width: 594, height: 420 })
+    expect(sheetSize('a2', 'portrait')).toEqual({ width: 420, height: 594 })
   })
 
   it('propose l’orientation qui épouse les proportions', () => {

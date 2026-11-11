@@ -244,6 +244,9 @@ function ExportForm({ onClose }: { onClose: () => void }) {
               <Choice name="export-sheet" checked={sheet === 'a3'} onSelect={() => setSheet('a3')}>
                 A3
               </Choice>
+              <Choice name="export-sheet" checked={sheet === 'a2'} onSelect={() => setSheet('a2')}>
+                A2
+              </Choice>
             </Group>
             <Group label={fr.export.orientation}>
               <Choice

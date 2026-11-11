@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · Feuille A2 pour les PDF
+- Fait : demande de l'utilisateur (les plans sont souvent imprimés en A2). Le format **A2** (420 × 594 mm) s'ajoute à A4 et A3 dans la fenêtre Exporter (plans, visuels, métrés en PDF) et dans la fenêtre PDF des vues (façades, coupes, planche). Le cartouche affiche « A2 ». Liste des formats commune : `SHEET_FORMATS`.
+- Fichiers : `src/features/export/pdfLayout(.test).ts`, `src/components/editor/ExportDialog.tsx`, `src/components/views/ViewsPdfDialog.tsx`
+- Vérification : build ✓ lint ✓ tests ✓ (2161) — PDF A2 à ouvrir dans le navigateur
+- Commit : feat: feuille A2 pour les PDF
+
 ### 2026-11-11 — Plan du jalon M10 ter
 - Fait : demande de l'utilisateur. Nouveau jalon **M10 ter — Documents client / exécution** dans `docs/03-ROADMAP.md`, après M10 bis. Un seul calcul, deux présentations. Lot A : métrés Client (pièces, dimensions intérieures, surface au sol, nombre d'ouvertures ; PDF d'une page) et Exécution (tout, avec repères `M01`/`P01`/`F01`, toutes les ouvertures déduites ; CSV + PDF). Lot B : cotes Client (cotes extérieures totales, nom et dimensions intérieures des pièces) et Exécution (trois chaînes de façade, chaînes intérieures, baies `largeur / hauteur` + allège, altitudes, escaliers), réglage « Cotation » dans la barre du plan et par vue de la planche. Décisions D35 à D39. Au passage, les critères de M3, M7, M10 et M11 encore écrits en m ou en cm sont réécrits en mm (règle de `CLAUDE.md`).
 - Fichiers : `docs/03-ROADMAP.md`, `docs/PROGRESS.md`

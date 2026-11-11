@@ -1,12 +1,16 @@
 import type { Box } from '../geometry/box'
 
-export type SheetFormat = 'a4' | 'a3'
+export type SheetFormat = 'a4' | 'a3' | 'a2'
+
+/** Formats de feuille proposés dans les fenêtres d'export, du plus petit au plus grand. */
+export const SHEET_FORMATS: readonly SheetFormat[] = ['a4', 'a3', 'a2']
 export type Orientation = 'portrait' | 'landscape'
 
 /** Feuilles en portrait, en mm. */
 const SHEETS: Record<SheetFormat, { width: number; height: number }> = {
   a4: { width: 210, height: 297 },
   a3: { width: 297, height: 420 },
+  a2: { width: 420, height: 594 },
 }
 
 /** Marge de la feuille, en mm. */
@@ -60,8 +64,12 @@ export function cartoucheArea(sheet: SheetSize): Rect {
 
 /** Format de feuille dont la page (en px à 300 dpi, dans un sens ou l'autre) est exactement la taille. */
 export function matchingSheetFormat(pageWidth: number, pageHeight: number): SheetFormat | null {
-  const dims: Record<SheetFormat, [number, number]> = { a4: [2480, 3508], a3: [3508, 4961] }
-  for (const format of ['a4', 'a3'] as const) {
+  const dims: Record<SheetFormat, [number, number]> = {
+    a4: [2480, 3508],
+    a3: [3508, 4961],
+    a2: [4961, 7016],
+  }
+  for (const format of SHEET_FORMATS) {
     const [w, h] = dims[format]
     if ((pageWidth === w && pageHeight === h) || (pageWidth === h && pageHeight === w)) return format
   }

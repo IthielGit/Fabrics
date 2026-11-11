@@ -120,6 +120,9 @@ export default function ViewsPdfDialog({ build, viewTitle, showNorth = false, on
           <Choice name="views-sheet" checked={sheet === 'a3'} onSelect={() => setSheet('a3')}>
             A3
           </Choice>
+          <Choice name="views-sheet" checked={sheet === 'a2'} onSelect={() => setSheet('a2')}>
+            A2
+          </Choice>
         </Group>
         <Group label={fr.export.orientation}>
           <Choice
