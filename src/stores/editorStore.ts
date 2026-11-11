@@ -32,7 +32,7 @@ import { stretchZone } from '../features/geometry/stretchZone'
 import { translateElement } from '../features/geometry/transform'
 import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
-import type { CanvasElement, FabricsDocument, PlanSettings, Project } from '../types/document'
+import type { CanvasElement, FabricsDocument, PlanSettings, Project, RoofShape } from '../types/document'
 
 export type EditorTool =
   | 'select'
@@ -43,6 +43,7 @@ export type EditorTool =
   | 'wall'
   | 'room'
   | 'platform'
+  | 'roof'
   | 'stair'
   | 'chimney'
   | 'dimension'
@@ -59,6 +60,7 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
   'wall',
   'room',
   'platform',
+  'roof',
   'stair',
   'chimney',
   'dimension',
@@ -77,6 +79,8 @@ export function isPlanTool(tool: EditorTool): boolean {
 export type WallMode = 'polyline' | 'straight'
 export type RoomMode = 'polygon' | 'rectangle'
 export type PlatformMode = 'polygon' | 'rectangle'
+/** Tracé d'un toit plat ; un toit en pente se trace toujours en rectangle. */
+export type RoofMode = 'polygon' | 'rectangle'
 export type StairShapeChoice = 'straight' | 'l' | 'u'
 export type SidePanelTab = 'properties' | 'library' | 'layers' | 'measurements'
 export type SaveStatus = 'saved' | 'saving' | 'error'
@@ -108,6 +112,11 @@ interface EditorState {
   platformMode: PlatformMode
   /** Mode Rectangle : crée aussi un mur fermé autour de la pièce. */
   roomWithWalls: boolean
+  /** Forme et tracé de la prochaine toiture (outil Toiture) ; état d'interface. */
+  roofShape: RoofShape
+  roofMode: RoofMode
+  setRoofShape: (shape: RoofShape) => void
+  setRoofMode: (mode: RoofMode) => void
   /** Style et taille posés par les outils Porte et Fenêtre ; état d'interface, hors historique. */
   openingPresets: Record<'door' | 'window', OpeningPreset>
   setOpeningPreset: (kind: 'door' | 'window', preset: OpeningPreset) => void
@@ -344,6 +353,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     platformMode: 'polygon',
     stairShape: 'straight',
     roomWithWalls: false,
+    roofShape: 'gable',
+    roofMode: 'rectangle',
     openingPresets: defaultPresets(),
     editingTextId: null,
     activeLevelId: null,
@@ -402,6 +413,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     setRoomMode: (roomMode) => set({ roomMode }),
     setPlatformMode: (platformMode) => set({ platformMode }),
     setStairShape: (stairShape) => set({ stairShape }),
+    setRoofShape: (roofShape) => set({ roofShape }),
+    setRoofMode: (roofMode) => set({ roofMode }),
     setOpeningPreset: (kind, preset) =>
       set((state) => ({ openingPresets: { ...state.openingPresets, [kind]: preset } })),
     setRoomWithWalls: (roomWithWalls) => set({ roomWithWalls }),

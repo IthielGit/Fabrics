@@ -1,5 +1,8 @@
 import { Circle, Label, Line, Tag, Text } from 'react-konva'
+import { computeRoof, defaultRidgeEdge } from '../../features/building/roof'
 import { closedWallAxisAround, rectangleCorners } from '../../features/documents/construction'
+import { ROOF_DEFAULTS } from '../../features/documents/elements'
+import type { RoofShape } from '../../types/document'
 import { useEditorStore } from '../../stores/editorStore'
 import {
   flattenPoints,
@@ -22,6 +25,38 @@ interface PolylineDraftLayerProps {
 }
 
 const ACCENT = '#4f46e5'
+
+/** Aperçu d'une toiture en cours de tracé : débord, faîtage et arêtiers avec les valeurs par défaut. */
+function RoofDraftLines({ corners, shape, scale }: { corners: number[]; shape: RoofShape; scale: number }) {
+  const result = computeRoof(
+    {
+      points: corners,
+      shape,
+      pitch: ROOF_DEFAULTS.pitch,
+      overhang: shape === 'flat' ? ROOF_DEFAULTS.flatOverhang : ROOF_DEFAULTS.overhang,
+      ridgeEdge: defaultRidgeEdge(corners),
+    },
+    0,
+  )
+  if ('problem' in result) return null
+  const g = result.geometry
+  const segments = [...(g.ridge ? [g.ridge] : []), ...g.hips]
+  return (
+    <>
+      <Line
+        points={flattenPoints(g.overhangOutline)}
+        closed
+        stroke={ACCENT}
+        strokeWidth={1 / scale}
+        dash={[3 / scale, 3 / scale]}
+        listening={false}
+      />
+      {segments.map(([a, b], i) => (
+        <Line key={i} points={[a.x, a.y, b.x, b.y]} stroke={ACCENT} strokeWidth={1.5 / scale} listening={false} />
+      ))}
+    </>
+  )
+}
 
 const SNAP_COLORS: Record<SnapKind, string> = {
   opening: '#0891b2', // bord ou milieu d'une porte, fenêtre ou baie
@@ -88,7 +123,9 @@ export default function PolylineDraftLayer({
   const roomMode = useEditorStore((state) => state.roomMode)
   const withWalls = useEditorStore((state) => state.roomWithWalls)
   const platformMode = useEditorStore((state) => state.platformMode)
-  const polygonTool = tool === 'room' || tool === 'platform'
+  const roofShape = useEditorStore((state) => state.roofShape)
+  const roofMode = useEditorStore((state) => state.roofMode)
+  const polygonTool = tool === 'room' || tool === 'platform' || tool === 'roof'
   const { points, cursor, fillMode, region } = draft
   const path = cursor && points.length > 0 ? [...points, cursor] : points
   const last = points[points.length - 1]
@@ -142,7 +179,8 @@ export default function PolylineDraftLayer({
   // Pièce en mode Rectangle : aperçu du rectangle entre le premier coin et le curseur.
   if (
     (tool === 'room' && roomMode === 'rectangle') ||
-    (tool === 'platform' && platformMode === 'rectangle')
+    (tool === 'platform' && platformMode === 'rectangle') ||
+    (tool === 'roof' && (roofShape !== 'flat' || roofMode === 'rectangle'))
   ) {
     const first = points[0]
     const corners = first && cursor ? rectangleCorners(first, cursor) : null
@@ -176,6 +214,9 @@ export default function PolylineDraftLayer({
             dash={[6 / scale, 4 / scale]}
             listening={false}
           />
+        )}
+        {corners && tool === 'roof' && (
+          <RoofDraftLines corners={flattenPoints(corners)} shape={roofShape} scale={scale} />
         )}
         {first && <Circle x={first.x} y={first.y} radius={4 / scale} fill={ACCENT} />}
         <SnapMarker draft={draft} scale={scale} />

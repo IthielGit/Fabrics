@@ -46,9 +46,12 @@ export interface SnapVertex extends Point {
  * - Cote : les faces des murs, les sommets des pièces et les extrémités des cotes.
  */
 export function preferredVertexKinds(
-  tool: 'wall' | 'room' | 'platform' | 'dimension' | 'axis' | 'section',
+  tool: 'wall' | 'room' | 'platform' | 'roof' | 'dimension' | 'axis' | 'section',
 ): ReadonlySet<VertexKind> {
   switch (tool) {
+    case 'roof':
+      // Une toiture se trace au nu extérieur des murs (D40).
+      return new Set(['wall-face-outer', 'wall-face', 'draft'])
     case 'wall':
     case 'axis':
     case 'section':

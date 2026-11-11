@@ -77,7 +77,8 @@ export function elementSnapLines(element: CanvasElement): SnapLines {
     case 'wall':
       return wallLines(element.points, element.thickness, elementBounds(element))
     case 'room':
-    case 'platform': {
+    case 'platform':
+    case 'roof': {
       const vertices = toPoints(element.points)
       return { xs: vertices.map((p) => p.x), ys: vertices.map((p) => p.y) }
     }

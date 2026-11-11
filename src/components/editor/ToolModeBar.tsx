@@ -8,7 +8,7 @@ import {
 } from '../../features/openings/styles'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
-import type { OpeningStyle } from '../../types/document'
+import type { OpeningStyle, RoofShape } from '../../types/document'
 
 interface ModeButtonProps {
   label: string
@@ -88,6 +88,42 @@ function OpeningToolOptions({ kind }: { kind: 'door' | 'window' }) {
   )
 }
 
+const ROOF_SHAPES: readonly RoofShape[] = ['flat', 'shed', 'gable', 'hip']
+
+/** Forme de la toiture à tracer ; un toit plat peut aussi se tracer en polygone. */
+function RoofToolOptions() {
+  const shape = useEditorStore((state) => state.roofShape)
+  const mode = useEditorStore((state) => state.roofMode)
+  const setShape = useEditorStore((state) => state.setRoofShape)
+  const setMode = useEditorStore((state) => state.setRoofMode)
+  return (
+    <>
+      {ROOF_SHAPES.map((value) => (
+        <ModeButton
+          key={value}
+          label={fr.roof.shapes[value]}
+          active={shape === value}
+          onClick={() => setShape(value)}
+        />
+      ))}
+      {shape === 'flat' && (
+        <div className="ml-1 flex items-center gap-1 border-l border-slate-200 pl-2">
+          <ModeButton
+            label={fr.toolModes.roofRectangle}
+            active={mode === 'rectangle'}
+            onClick={() => setMode('rectangle')}
+          />
+          <ModeButton
+            label={fr.toolModes.roofPolygon}
+            active={mode === 'polygon'}
+            onClick={() => setMode('polygon')}
+          />
+        </div>
+      )}
+    </>
+  )
+}
+
 /**
  * Modes de l'outil Mur (polyligne / mur droit) et de l'outil Pièce (polygone / rectangle, avec ou
  * sans murs), options des outils Porte et Fenêtre, sans bouton de plus dans la barre d'outils.
@@ -106,7 +142,14 @@ export default function ToolModeBar() {
   const setRoomWithWalls = useEditorStore((state) => state.setRoomWithWalls)
 
   const isOpeningTool = tool === 'door' || tool === 'window'
-  if (!isOpeningTool && tool !== 'wall' && tool !== 'room' && tool !== 'platform' && tool !== 'stair') {
+  if (
+    !isOpeningTool &&
+    tool !== 'wall' &&
+    tool !== 'room' &&
+    tool !== 'platform' &&
+    tool !== 'stair' &&
+    tool !== 'roof'
+  ) {
     return null
   }
 
@@ -118,6 +161,8 @@ export default function ToolModeBar() {
     >
       {isOpeningTool ? (
         <OpeningToolOptions kind={tool} />
+      ) : tool === 'roof' ? (
+        <RoofToolOptions />
       ) : tool === 'stair' ? (
         <>
           {(['straight', 'l', 'u'] as const).map((shape) => (

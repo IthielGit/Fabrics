@@ -32,7 +32,12 @@ export function pointInZone(point: Point, zone: Box): boolean {
 
 /** Éléments dont les points sont déformés par l'étirement. */
 function hasStretchablePoints(element: CanvasElement): boolean {
-  return element.type === 'wall' || element.type === 'room' || element.type === 'dimension'
+  return (
+    element.type === 'wall' ||
+    element.type === 'room' ||
+    element.type === 'dimension' ||
+    element.type === 'roof'
+  )
 }
 
 /** Éléments posés : ils gardent leur taille et se déplacent entiers. */
@@ -137,7 +142,7 @@ export function stretchZone(
 
   for (const el of free) {
     if (!hasStretchablePoints(el)) continue
-    if (el.type === 'wall' || el.type === 'room') {
+    if (el.type === 'wall' || el.type === 'room' || el.type === 'roof') {
       const points = movePoints(el.points, zone, moved)
       if (points.some((value, i) => value !== el.points[i])) {
         const next = { ...el, points }

@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot B, tâche 1 (calcul pur des toitures)
-- **Prochaine tâche :** M10 bis, Lot B, tâche 2 (outil Toiture et symbole 2D), puis 3D, façades et coupes, métrés ; puis **M10 ter**, puis M11
+- **Dernière tâche terminée :** M10 bis, Lot B, tâche 2 (outil Toiture et symbole 2D)
+- **Prochaine tâche :** M10 bis, Lot B, tâche 3 (toiture en 3D), puis façades et coupes, métrés ; puis **M10 ter**, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M10 bis · Lot B · Tâche 2 · Outil Toiture et symbole 2D
+- Fait : **outil Toiture** (bouton maison, famille Construction, sans raccourci). Barre d'options : Plat, Un pan, Deux pans (par défaut), Croupe ; pour un toit plat, tracé Rectangle ou Polygone ; un toit en pente se trace toujours en rectangle (deux clics). L'outil attrape d'abord les **faces extérieures** des murs (D40). Pendant le tracé : rectangle, cotes, surface, et en plus le débord en pointillé, le faîtage et les arêtiers avec les valeurs par défaut. **Dessin sur le plan** : contour au nu extérieur, débord en pointillé, faîtage et arêtiers en trait fort, une flèche par versant vers le bas avec la pente (« 35° ») ; contour rouge si la toiture n'est pas valable. Pas de remplissage : on la sélectionne par ses traits, et le plan reste lisible et cliquable dessous. **Propriétés** : nom, forme, pente (1° à 75°, au dixième), débord (mm), « Pivoter le faîtage » (deux pans) ou « Changer le côté haut » (un pan), et les mesures : hauteur et altitude du faîtage (ou du point haut), surface réelle, surface au sol avec débord, faîtage, égouts, arêtiers, pignons. Un message rouge explique un toit en pente sur un contour non rectangulaire ou une pente hors limites. Changer de forme : un débord encore à sa valeur par défaut prend celle de la nouvelle forme (500 / 0 mm). **Édition** : déplacement par les points (D6), `Maj + R`, Étirer une zone et Redimensionner l'ensemble ; un toit en pente reste un rectangle quand on glisse un coin (le coin opposé ne bouge pas, pas d'ajout ni de retrait de sommet) ; un toit plat a des sommets libres. Icône dans le panneau Calques, emprise d'export avec le débord.
+- Vérifié dans un navigateur sans fenêtre : deux pans, croupe, un pan et toit plat en L dessinés ; outil et options ; tracé d'une nouvelle toiture (aperçu, création, propriétés : faîtage 6200 mm pour 5200 mm + 2 × 500 mm).
+- Fichiers : `src/components/editor/{shapes/RoofShape,RoofFields}.tsx` (nouveaux), `src/components/editor/{usePolylineDrawing.ts,PolylineDraftLayer,ToolModeBar,ToolHint,Toolbar,EditorStage,ElementNode,PropertiesPanel,VertexHandles}.tsx`, `src/features/geometry/{transform,rotateSelection,snapping,snapLines,stretchZone,resizeBlock}.ts`, `src/stores/editorStore.ts` (`roof`, `roofShape`, `roofMode`), `src/i18n/fr.ts`, test `roofEditing.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2299, dont 8 nouveaux)
+- Commit : feat: M10 bis lot B tâche 2, outil Toiture et symbole 2D
 
 ### 2026-11-11 — M10 bis · Lot B · Tâche 1 · Calcul pur des toitures
 - Fait : nouveau type **`roof`** (contour au nu extérieur des murs, forme, pente en degrés, débord en mm, côté du faîtage `ridgeEdge`) ; pas de changement de version du document. **Calcul pur** `computeRoof` (`src/features/building/roof.ts`) : pour un toit plat (polygone quelconque, contour agrandi du débord), un pan, deux pans et croupe (rectangle obligatoire, pente de 1° à 75°) : versants en 3D avec leur sens de pente, faîtage et arêtiers dans le plan, pignons triangulaires (un pan : deux triangles rectangles et le mur haut rehaussé), altitudes du faîtage et de l'égout, surfaces projetée et réelle, longueurs de faîtage, d'égout et d'arêtiers, nombre de pignons. Refus : contour qui n'est pas un rectangle, pente hors limites, moins de trois points. `createRoofElement` applique les valeurs par défaut (D41) et met le faîtage le long du grand côté ; `pivotRidge` fait le tour des quatre côtés. Décisions D40 à D45 (contour, valeurs par défaut, épaisseur, pignons, toit plat, niveau), corrigées selon les règles déjà en place à la demande de l'utilisateur.

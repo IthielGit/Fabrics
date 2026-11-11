@@ -8,6 +8,7 @@ import ImageShape from './shapes/ImageShape'
 import LineShape from './shapes/LineShape'
 import OpeningShape from './shapes/OpeningShape'
 import PlatformShape from './shapes/PlatformShape'
+import RoofShape from './shapes/RoofShape'
 import RectShape from './shapes/RectShape'
 import RoomShape from './shapes/RoomShape'
 import SectionShape from './shapes/SectionShape'
@@ -49,6 +50,8 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <FurnitureShape element={element} {...interaction} />
     case 'platform':
       return <PlatformShape element={element} {...interaction} />
+    case 'roof':
+      return <RoofShape element={element} {...interaction} />
     case 'stair':
       return <StairShape element={element} {...interaction} />
     case 'chimney':

@@ -7,11 +7,13 @@ import type {
   ImageElement,
   PlatformElement,
   RectElement,
+  RoofElement,
   RoomElement,
   SectionLineElement,
   StairElement,
   WallElement,
 } from '../../types/document'
+import { isPitched, isRoofRectangle } from '../building/roof'
 import { getSymbol } from '../library/catalog'
 import { resizeSymbol } from '../library/resize'
 import { stairSize } from '../stairs/stairs'
@@ -25,6 +27,7 @@ export function hasAbsolutePoints(
   | WallElement
   | RoomElement
   | PlatformElement
+  | RoofElement
   | DimensionElement
   | AxisElement
   | SectionLineElement {
@@ -32,6 +35,7 @@ export function hasAbsolutePoints(
     element.type === 'wall' ||
     element.type === 'room' ||
     element.type === 'platform' ||
+    element.type === 'roof' ||
     element.type === 'dimension' ||
     element.type === 'axis' ||
     element.type === 'section'
@@ -47,6 +51,7 @@ export function translateElement(element: CanvasElement, dx: number, dy: number)
     case 'wall':
     case 'room':
     case 'platform':
+    case 'roof':
       return { ...element, points: element.points.map((v, i) => v + (i % 2 === 0 ? dx : dy)) }
     case 'dimension':
     case 'axis':
@@ -132,7 +137,17 @@ export function moveVertex(element: CanvasElement, index: number, to: Point): Ca
     points[index * 2 + 1] = to.y
     return { ...element, points }
   }
-  if (element.type === 'wall' || element.type === 'room' || element.type === 'platform') {
+  if (element.type === 'roof' && isPitched(element.shape) && isRoofRectangle(element.points)) {
+    // Toit en pente : le rectangle reste un rectangle (le coin opposé ne bouge pas, les deux voisins
+    // glissent le long de leurs côtés).
+    return { ...element, points: moveRectangleCorner(element.points, index, to) }
+  }
+  if (
+    element.type === 'wall' ||
+    element.type === 'room' ||
+    element.type === 'platform' ||
+    element.type === 'roof'
+  ) {
     const points = [...element.points]
     points[index * 2] = to.x
     points[index * 2 + 1] = to.y
@@ -142,13 +157,45 @@ export function moveVertex(element: CanvasElement, index: number, to: Point): Ca
 }
 
 /** Nombre minimal de sommets : 2 pour un mur, 3 pour une pièce. Une cote est fixe (2 sommets). */
-const MIN_VERTICES = { wall: 2, room: 3, platform: 3 } as const
+const MIN_VERTICES = { wall: 2, room: 3, platform: 3, roof: 3 } as const
 
-/** Un mur, une pièce : leur nombre de sommets peut changer (pas une cote). */
+/**
+ * Un mur, une pièce, une plateforme, un toit plat : leur nombre de sommets peut changer (pas une
+ * cote ; pas un toit en pente, qui reste un rectangle).
+ */
 function hasEditableVertexCount(
   element: CanvasElement,
-): element is WallElement | RoomElement | PlatformElement {
-  return element.type === 'wall' || element.type === 'room' || element.type === 'platform'
+): element is WallElement | RoomElement | PlatformElement | RoofElement {
+  return (
+    element.type === 'wall' ||
+    element.type === 'room' ||
+    element.type === 'platform' ||
+    (element.type === 'roof' && !isPitched(element.shape))
+  )
+}
+
+/**
+ * Déplace le coin `index` d'un rectangle vers `to` en gardant un rectangle de même orientation : le
+ * coin opposé reste fixe, les deux coins voisins glissent sur leurs côtés.
+ */
+export function moveRectangleCorner(points: readonly number[], index: number, to: Point): number[] {
+  const pts = toPoints(points)
+  if (pts.length !== 4) return [...points]
+  const i = ((index % 4) + 4) % 4
+  const opposite = pts[(i + 2) % 4]
+  const direction = (p: Point) => {
+    const length = Math.hypot(p.x - opposite.x, p.y - opposite.y) || 1
+    return { x: (p.x - opposite.x) / length, y: (p.y - opposite.y) / length }
+  }
+  const u = direction(pts[(i + 1) % 4])
+  const v = direction(pts[(i + 3) % 4])
+  const du = (to.x - opposite.x) * u.x + (to.y - opposite.y) * u.y
+  const dv = (to.x - opposite.x) * v.x + (to.y - opposite.y) * v.y
+  const result = [...pts]
+  result[(i + 1) % 4] = { x: opposite.x + u.x * du, y: opposite.y + u.y * du }
+  result[(i + 3) % 4] = { x: opposite.x + v.x * dv, y: opposite.y + v.y * dv }
+  result[i] = { x: opposite.x + u.x * du + v.x * dv, y: opposite.y + u.y * du + v.y * dv }
+  return result.flatMap((p) => [p.x, p.y])
 }
 
 /**

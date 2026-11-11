@@ -70,7 +70,8 @@ export function rotateSelectionQuarterTurn(selection: readonly CanvasElement[]):
     switch (element.type) {
       case 'wall':
       case 'room':
-      case 'platform': {
+      case 'platform':
+      case 'roof': {
         const points: number[] = []
         for (let i = 0; i < element.points.length; i += 2) {
           const p = turnPoint(element.points[i], element.points[i + 1], center)

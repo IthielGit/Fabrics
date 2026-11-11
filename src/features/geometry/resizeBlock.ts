@@ -19,7 +19,12 @@ export const MIN_BLOCK_SIZE = 500
 
 /** Éléments qui s'étirent avec le bloc (leurs points sont déformés). */
 function stretches(element: CanvasElement): boolean {
-  return element.type === 'wall' || element.type === 'room' || element.type === 'dimension'
+  return (
+    element.type === 'wall' ||
+    element.type === 'room' ||
+    element.type === 'dimension' ||
+    element.type === 'roof'
+  )
 }
 
 /** Éléments qui gardent leur taille et se déplacent avec le bloc. */
@@ -132,7 +137,7 @@ export function resizeBlock(
       out.push({ ...el, points: [mapX(ax), mapY(ay), mapX(bx), mapY(by)] })
       continue
     }
-    if (el.type !== 'wall' && el.type !== 'room') continue
+    if (el.type !== 'wall' && el.type !== 'room' && el.type !== 'roof') continue
     const points: number[] = []
     for (let i = 0; i < el.points.length; i += 2) points.push(mapX(el.points[i]), mapY(el.points[i + 1]))
     const next = { ...el, points }

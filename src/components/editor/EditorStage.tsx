@@ -154,6 +154,7 @@ export default function EditorStage() {
     activeTool === 'wall' ||
     activeTool === 'room' ||
     activeTool === 'platform' ||
+    activeTool === 'roof' ||
     activeTool === 'dimension' ||
     activeTool === 'axis' ||
     activeTool === 'section'

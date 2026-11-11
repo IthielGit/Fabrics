@@ -21,6 +21,7 @@ import ChimneyFields from './ChimneyFields'
 import FurnitureFields from './FurnitureFields'
 import OpeningFields from './OpeningFields'
 import PlatformFields from './PlatformFields'
+import RoofFields from './RoofFields'
 import SectionFields from './SectionFields'
 import StairFields from './StairFields'
 import PlanElementFields from './PlanElementFields'
@@ -140,6 +141,7 @@ export default function PropertiesPanel() {
         {element.type === 'opening' && <OpeningFields element={element} />}
         {element.type === 'furniture' && <FurnitureFields element={element} />}
         {element.type === 'platform' && <PlatformFields element={element} />}
+        {element.type === 'roof' && <RoofFields element={element} />}
         {element.type === 'stair' && <StairFields element={element} />}
         {element.type === 'chimney' && <ChimneyFields element={element} />}
         {element.type === 'section' && <SectionFields element={element} />}

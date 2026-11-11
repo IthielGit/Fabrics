@@ -4,6 +4,7 @@ import {
   createAxisElement,
   createDimensionElement,
   createPlatformElement,
+  createRoofElement,
   createRoomElement,
   createSectionElement,
   createWallElement,
@@ -38,7 +39,7 @@ import { selectActiveElements, selectSnapElements, useEditorStore } from '../../
 import type { CanvasElement } from '../../types/document'
 import { isTypingTarget } from './isTypingTarget'
 
-export type PolylineTool = 'wall' | 'room' | 'platform' | 'dimension' | 'axis' | 'section'
+export type PolylineTool = 'wall' | 'room' | 'platform' | 'roof' | 'dimension' | 'axis' | 'section'
 
 export interface PolylineDraft {
   /** Points déjà posés (coordonnées du document, en mm). */
@@ -61,6 +62,7 @@ const MIN_POINTS: Record<PolylineTool, number> = {
   wall: 2,
   room: 3,
   platform: 3,
+  roof: 3,
   dimension: 2,
   axis: 2,
   section: 2,
@@ -114,12 +116,17 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
   const wallMode = useEditorStore((state) => state.wallMode)
   const roomMode = useEditorStore((state) => state.roomMode)
   const platformMode = useEditorStore((state) => state.platformMode)
+  const roofShape = useEditorStore((state) => state.roofShape)
+  const roofMode = useEditorStore((state) => state.roofMode)
+  // Un toit en pente se trace toujours en rectangle ; un toit plat, au choix.
+  const roofRect = roofShape !== 'flat' || roofMode === 'rectangle'
   // Mur droit et pièce rectangle : deux clics suffisent (premier point, puis point opposé).
   const rectMode =
     (tool === 'room' && roomMode === 'rectangle') ||
-    (tool === 'platform' && platformMode === 'rectangle')
-  // Pièce et plateforme sont des polygones fermés (même tracé).
-  const polygonTool = tool === 'room' || tool === 'platform'
+    (tool === 'platform' && platformMode === 'rectangle') ||
+    (tool === 'roof' && roofRect)
+  // Pièce, plateforme et toiture sont des polygones fermés (même tracé).
+  const polygonTool = tool === 'room' || tool === 'platform' || tool === 'roof'
   const twoClicks = rectMode || (tool === 'wall' && wallMode === 'straight')
   const key =
     tool === 'wall'
@@ -128,7 +135,9 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         ? `room:${roomMode}`
         : tool === 'platform'
           ? `platform:${platformMode}`
-          : tool
+          : tool === 'roof'
+            ? `roof:${roofShape}:${roofRect ? 'rectangle' : 'polygon'}`
+            : tool
   const [stored, setStored] = useState<StoredDraft>({ key, draft: EMPTY })
   const storedRef = useRef<StoredDraft>(stored)
   const vertexCache = useRef<{ elements: readonly CanvasElement[]; vertices: Point[] } | null>(null)
@@ -276,6 +285,18 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
       if (!isRectangle(a, b)) return
       const name = nextElementName(fr.elements.platform, 'platform', selectActiveElements(state))
       state.addElement(createPlatformElement(name, flattenPoints(rectangleCorners(a, b))))
+      return
+    }
+    if (tool === 'roof') {
+      const name = nextElementName(fr.elements.roof, 'roof', selectActiveElements(state))
+      if (rectMode) {
+        const [a, b] = points
+        if (!isRectangle(a, b)) return
+        state.addElement(createRoofElement(name, flattenPoints(rectangleCorners(a, b)), state.roofShape))
+      } else {
+        // Contour quelconque : seulement pour un toit plat.
+        state.addElement(createRoofElement(name, flat, 'flat'))
+      }
       return
     }
     if (rectMode) {
