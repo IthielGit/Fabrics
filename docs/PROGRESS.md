@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M9 — Outils de construction (en cours ; M8 validé le 2026-11-11)
-- **Dernière tâche terminée :** lot E de M9 (cheminées) : tous les lots de M9 sont codés
-- **Prochaine tâche :** validation de M9 par l'utilisateur (critères d'acceptation à contrôler dans le navigateur), puis M10
+- **Jalon en cours :** M10 — Façades, coupes et planche (M9 validé le 2026-11-11)
+- **Dernière tâche terminée :** validation de M9 par l'utilisateur
+- **Prochaine tâche :** plan de M10 à faire valider (liste des tâches et des fichiers), puis première tâche
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -23,8 +23,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
-| M9 Outils de construction | tous les lots faits, en attente de validation | |
-| M10 Façades, coupes et planche | à faire | |
+| M9 Outils de construction | terminé | 2026-11-11 |
+| M10 Façades, coupes et planche | en cours | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
@@ -39,6 +39,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M10 · Tâche 1 · Calcul des façades
+- Fait : choix validés avec l'utilisateur : écran « Vues » en lecture seule ouvert par un bouton de l'en-tête (la planche en dernier onglet) ; faces blanches à contour noir (hachures, textures et toitures dans un jalon ultérieur, notés dans « Idées » et dans la roadmap) ; escaliers, cheminées et plateformes inclus. **Calcul pur** : `projectModel` projette le modèle 3D sur un plan vertical (u = droite de la personne qui regarde, v = hauteur), ne garde que les faces verticales tournées vers elle, triées de la plus lointaine à la plus proche (algorithme du peintre) ; `buildElevation` donne la façade N, S, E ou O selon le nord réglé, avec son emprise et les cotes de niveaux (altitudes des planchers). Une face vue par la tranche (moins de 0,5 mm de large) n'est pas dessinée. Pas encore d'écran : suivent les tâches 2 à 7.
+- Limite connue : le tri se fait par face (milieu de la face), approximation classique du peintre ; sans conséquence pour des faces blanches à contour noir sur des murs droits.
+- Fichiers : `src/features/building/views/{projection,elevation}.ts`, `elevation.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2090, dont 12 nouveaux)
 
 ### 2026-11-11 — Hors jalon · I · Étirer par zone (tâche 4 sur 4 : validation)
 - Fait : contrôle dans le navigateur par l'utilisateur : outil Étirer (rectangle, aperçu, distance au clavier, annulation en un pas) validé. **Étirer par zone terminé.**
@@ -580,6 +586,8 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
+- Hachures et textures dans les façades et coupes : jalon à prévoir après M10 (demande de l'utilisateur le 2026-11-11 ; M10 = faces blanches, contour noir).
+- Toitures (versants, débords) en 3D, façades et coupes : jalon à prévoir après M10 (demande de l'utilisateur le 2026-11-11 ; M10 garde le toit plat).
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
 - Glisser un seul mur à la poignée (option A) : poignée au milieu d'un segment droit, le mur se déplace perpendiculairement, les voisins s'allongent et la pièce suit ; réutilise `stretchZone` (demande de l'utilisateur le 2026-11-11, après l'option C).
 - Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).

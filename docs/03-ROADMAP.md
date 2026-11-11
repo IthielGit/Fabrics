@@ -396,3 +396,6 @@ Objectif : retrouver ses projets sur un autre appareil.
 - Traductions anglais et malgache, mode sombre, accessibilité avancée
 - Abonnements et paiements, statistiques d'usage, conformité RGPD complète
 - Toits en pente, export DWG
+- **Après M10 (décidé avec l'utilisateur le 2026-11-11)** : hachures et textures dans les
+  façades et coupes (M10 livre des faces blanches à contour noir) ; **toitures** (versants,
+  débords) dans le modèle 3D, les façades et les coupes (M10 garde le toit plat)
