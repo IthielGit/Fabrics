@@ -612,8 +612,9 @@ les éléments modifiés.
 
 - Façade = projection orthographique du modèle neutre sur un plan vertical (N, S, E, O selon
   `northAngle`). Faces cachées traitées par **algorithme du peintre** : on trie les faces de
-  la plus lointaine à la plus proche et on les dessine remplies de blanc avec un contour, en
-  2D dans Konva.
+  la plus lointaine à la plus proche et on les dessine remplies de blanc avec un contour. Les
+  vues sont un `Drawing` (polygones, lignes, textes en mm réels) affiché en SVG et imprimé en PDF
+  vectoriel (`src/features/building/views/drawing.ts`), pas dans Konva.
 - Coupe = même principe, limité à ce qui est derrière la ligne de coupe ; les sections
   coupées (intersection des boîtes avec le plan de coupe) sont remplies en noir.
 - Les vues sont **calculées**, jamais stockées dans le document.

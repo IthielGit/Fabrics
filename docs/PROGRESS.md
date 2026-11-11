@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 — Façades, coupes et planche (M9 validé le 2026-11-11)
-- **Dernière tâche terminée :** validation de M9 par l'utilisateur
-- **Prochaine tâche :** plan de M10 à faire valider (liste des tâches et des fichiers), puis première tâche
+- **Dernière tâche terminée :** tâche 6 de M10 (export PDF des vues) ; toutes les tâches de M10 sont codées
+- **Prochaine tâche :** essai de M10 par l'utilisateur dans le navigateur et retour de ses remarques, puis validation et M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -24,7 +24,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
 | M9 Outils de construction | terminé | 2026-11-11 |
-| M10 Façades, coupes et planche | en cours | |
+| M10 Façades, coupes et planche | tous les lots faits, en attente de validation | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |

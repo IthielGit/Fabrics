@@ -304,13 +304,13 @@ détaillées : `docs/02-ARCHITECTURE.md`, section « Outils de construction (M9)
 
 Objectif : obtenir sans dessiner les façades et les coupes, et les présenter ensemble.
 
-- [ ] Façades (élévations) Nord, Sud, Est, Ouest générées à partir du modèle 3D
-- [ ] Outil Ligne de coupe sur le plan (repère A–A, B–B…, sens de vue) ; coupe générée,
+- [x] Façades (élévations) Nord, Sud, Est, Ouest générées à partir du modèle 3D
+- [x] Outil Ligne de coupe sur le plan (repère A–A, B–B…, sens de vue) ; coupe générée,
       matières coupées en noir
-- [ ] Vues générées en lecture seule, toujours à jour avec le plan
-- [ ] Planche : affichage côte à côte des niveaux, façades et coupes, avec leurs titres
-- [ ] Export PDF de la planche ou d'une vue seule, à l'échelle choisie, avec cartouche
-- [ ] Cotes de niveaux (altitudes) sur les façades et coupes
+- [x] Vues générées en lecture seule, toujours à jour avec le plan
+- [x] Planche : affichage côte à côte des niveaux, façades et coupes, avec leurs titres
+- [x] Export PDF de la planche ou d'une vue seule, à l'échelle choisie, avec cartouche
+- [x] Cotes de niveaux (altitudes) sur les façades et coupes
 
 **Critères d'acceptation**
 - Une façade montre chaque fenêtre du mur correspondant, à la bonne hauteur
