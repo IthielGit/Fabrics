@@ -39,6 +39,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · G · Style des cotes
+- Fait : demande de l'utilisateur (image d'un plan coté). Les cotes se rapprochent de ce style : trait **noir**, **chiffres plus petits** posés juste au-dessus de la ligne, **lignes d'attache fines qui ne touchent pas l'objet** (un petit écart au départ, un dépassement au bout), traits obliques à 45° un peu plus longs. Le texte d'une cote **verticale se lit de bas en haut** (-90°), quel que soit le sens de la mesure. Les valeurs restent en mm avec leur unité (règle du projet), l'image n'en avait pas.
+- Fichiers : `src/features/geometry/dimension(.test).ts`, `src/components/editor/shapes/DimensionShape.tsx`
+- Vérification : build ✓ lint ✓ tests ✓ (1936) — rendu à contrôler à l'écran
+- Commit : feat: style des cotes (texte, lignes d'attache)
+
 ### 2026-11-11 — Hors jalon · F · Cotes aimantées aux ouvertures
 - Fait : demande de l'utilisateur (la cote doit tenir compte des fenêtres, portes et autres ouvertures, avec l'aimantation). Avec l'outil **Cote**, et quand on **glisse l'extrémité d'une cote**, le curseur s'aimante aux **deux jambages** (bords) et au **milieu** de chaque porte, fenêtre ou baie visible, sur l'axe du mur et sur ses deux faces (9 points par ouverture). Repère **turquoise** ; priorité : ouverture, sommet, axe, alignement, grille. On peut ainsi coter la largeur d'une ouverture, ou un trumeau (angle du mur → bord de l'ouverture). Les points d'ouverture servent aussi de repères aux guides d'alignement. Alt désactive les guides comme avant. Ouvertures masquées, ou dont le mur est masqué ou absent : ignorées.
 - Limite : seuls les outils Cote (et ses poignées) utilisent ces points ; murs, pièces et axes inchangés.

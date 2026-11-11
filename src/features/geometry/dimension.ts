@@ -9,7 +9,7 @@ export interface DimensionGeometry {
   extensions: [[Point, Point], [Point, Point]]
   /** Milieu de la ligne de cote (position du texte). */
   center: Point
-  /** Angle du texte en degrés, toujours lisible (jamais à l'envers) : entre -90 et 90. */
+  /** Angle du texte en degrés, toujours lisible (jamais à l'envers) : de -90 inclus à 90 exclu. */
   textAngle: number
   /** Vecteur unitaire le long de la cote. */
   direction: Point
@@ -47,8 +47,9 @@ export function dimensionGeometry(
 
   const line: [Point, Point] = [shift(a, offset), shift(b, offset)]
   let angle = (Math.atan2(direction.y, direction.x) * 180) / Math.PI
-  if (angle > 90) angle -= 180
-  else if (angle <= -90) angle += 180
+  // Plage [-90, 90[ : un texte vertical se lit de bas en haut (convention des plans).
+  if (angle >= 90 - 1e-9) angle -= 180
+  else if (angle < -90 - 1e-9) angle += 180
 
   return {
     length,

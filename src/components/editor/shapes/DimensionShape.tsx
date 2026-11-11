@@ -9,11 +9,13 @@ interface DimensionShapeProps extends ShapeInteraction {
   element: DimensionElement
 }
 
-const COLOR = '#334155'
+const COLOR = '#111827'
 /** Longueur d'un trait oblique aux extrémités de la ligne de cote (mm). */
-const TICK_MM = 100
-const TEXT_FONT_MM = 250
-const TEXT_MIN_PX = 10
+const TICK_MM = 120
+/** Écart entre l'objet mesuré et le début de la ligne d'attache, en mm (elle ne le touche pas). */
+const EXTENSION_GAP_MM = 100
+const TEXT_FONT_MM = 180
+const TEXT_MIN_PX = 9
 const TEXT_BOX_WIDTH_MM = 4000
 /** Zone de clic minimale autour de la ligne de cote, en pixels écran. */
 const MIN_HIT_WIDTH_PX = 12
@@ -46,6 +48,13 @@ export default function DimensionShape({
     p.y - tickVector.y,
     p.x + tickVector.x,
     p.y + tickVector.y,
+  ])
+
+  // Les lignes d'attache commencent un peu avant l'objet mesuré, comme sur un plan coté.
+  const gap = Math.min(EXTENSION_GAP_MM, Math.abs(element.offset) / 2) * (element.offset < 0 ? -1 : 1)
+  const spacedExtensions = extensions.map(([from, to]) => [
+    { x: from.x + normal.x * gap, y: from.y + normal.y * gap },
+    to,
   ])
 
   const flat = (a: { x: number; y: number }, b: { x: number; y: number }) => [a.x, a.y, b.x, b.y]
@@ -81,16 +90,16 @@ export default function DimensionShape({
         strokeWidth={thin}
         hitStrokeWidth={MIN_HIT_WIDTH_PX / viewScale}
       />
-      {extensions.map(([from, to], i) => (
+      {spacedExtensions.map(([from, to], i) => (
         <Line key={`ext-${i}`} points={flat(from, to)} stroke={COLOR} strokeWidth={thin / 1.5} />
       ))}
       {ticks.map((points, i) => (
-        <Line key={`tick-${i}`} points={points} stroke={COLOR} strokeWidth={thin * 1.4} />
+        <Line key={`tick-${i}`} points={points} stroke={COLOR} strokeWidth={thin * 1.2} />
       ))}
       <Group x={center.x} y={center.y} rotation={textAngle} listening={false}>
         <Text
           x={-TEXT_BOX_WIDTH_MM / 2}
-          y={-fontSize * 1.3}
+          y={-fontSize * 1.25}
           width={TEXT_BOX_WIDTH_MM}
           align="center"
           text={formatLength(length)}

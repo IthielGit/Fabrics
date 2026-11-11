@@ -39,19 +39,17 @@ describe('dimensionGeometry', () => {
     expect(dimensionGeometry([1000, 0, 0, 0], 0)!.textAngle).toBeCloseTo(0)
   })
 
-  it('texte vertical : 90° ou -90° mais jamais à l’envers', () => {
-    const down = dimensionGeometry([0, 0, 0, 1000], 0)!.textAngle
-    const up = dimensionGeometry([0, 1000, 0, 0], 0)!.textAngle
-    expect(Math.abs(down)).toBeCloseTo(90)
-    expect(Math.abs(up)).toBeCloseTo(90)
+  it('texte vertical : toujours -90° (lu de bas en haut), quel que soit le sens de la mesure', () => {
+    expect(dimensionGeometry([0, 0, 0, 1000], 0)!.textAngle).toBeCloseTo(-90)
+    expect(dimensionGeometry([0, 1000, 0, 0], 0)!.textAngle).toBeCloseTo(-90)
   })
 
-  it('l’angle du texte reste dans ]-90, 90]', () => {
+  it('l’angle du texte reste dans [-90, 90[', () => {
     for (let deg = 0; deg < 360; deg += 15) {
       const rad = (deg * Math.PI) / 180
       const g = dimensionGeometry([0, 0, Math.cos(rad) * 1000, Math.sin(rad) * 1000], 0)!
-      expect(g.textAngle).toBeGreaterThan(-90 - 1e-9)
-      expect(g.textAngle).toBeLessThanOrEqual(90 + 1e-9)
+      expect(g.textAngle).toBeGreaterThanOrEqual(-90 - 1e-9)
+      expect(g.textAngle).toBeLessThan(90)
     }
   })
 
