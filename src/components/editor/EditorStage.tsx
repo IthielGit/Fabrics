@@ -1,4 +1,4 @@
-import type Konva from 'konva'
+import Konva from 'konva'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Ellipse, Group, Layer, Line, Rect, Stage } from 'react-konva'
 import {
@@ -15,6 +15,7 @@ import {
 import { drawOrder } from '../../features/documents/layers'
 import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
+import { panView, wheelAction } from '../../features/geometry/navigation'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
 import { computeWallJoinsOf } from '../../features/geometry/wallJoins'
 import { getSymbol } from '../../features/library/catalog'
@@ -45,10 +46,13 @@ import { useCalibrationTool } from './useCalibrationTool'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
 import { useOpeningTool, type OpeningToolKind } from './useOpeningTool'
+import { usePanDrag } from './usePanDrag'
 import { usePolylineDrawing, type PolylineTool } from './usePolylineDrawing'
 import VertexHandles from './VertexHandles'
 
-const WHEEL_ZOOM_STEP = 1.1
+// Seul le bouton gauche déplace un élément : le bouton du milieu sert à déplacer la vue.
+Konva.dragButtons = [0]
+
 /** Opacité du niveau de référence (le niveau du dessous), affiché en transparence. */
 const REFERENCE_OPACITY = 0.3
 /** En dessous de cette taille (px écran), un tracé ou une sélection est un simple clic. */
@@ -99,6 +103,7 @@ export default function EditorStage() {
 
   const { ref: containerRef, size } = useContainerSize<HTMLDivElement>()
   const [spaceDown, setSpaceDown] = useState(false)
+  const panDrag = usePanDrag()
   // Tracé d'une forme (outils rectangle / ellipse)
   const [draft, setDraft] = useState<Gesture | null>(null)
   // Rectangle de sélection (outil Sélection)
@@ -178,13 +183,15 @@ export default function EditorStage() {
     event.evt.preventDefault()
     const pointer = event.target.getStage()?.getPointerPosition()
     if (!pointer) return
-    const factor = event.evt.deltaY < 0 ? WHEEL_ZOOM_STEP : 1 / WHEEL_ZOOM_STEP
-    const next = zoomAtPoint(
-      { zoom, x: stagePosition.x, y: stagePosition.y },
-      pointer,
-      zoom * factor,
-      unitScale,
-    )
+    const { deltaX, deltaY, deltaMode, ctrlKey, shiftKey } = event.evt
+    const action = wheelAction({ deltaX, deltaY, deltaMode, ctrlKey, shiftKey })
+    if (!action) return
+    const view = { zoom, x: stagePosition.x, y: stagePosition.y }
+    // Glissement à deux doigts ou Maj + molette : on déplace la vue ; sinon on zoome vers le curseur.
+    const next =
+      action.kind === 'pan'
+        ? panView(view, action.dx, action.dy)
+        : zoomAtPoint(view, pointer, zoom * action.factor, unitScale)
     setView({ zoom: next.zoom, stagePosition: { x: next.x, y: next.y } })
   }
 
@@ -226,6 +233,11 @@ export default function EditorStage() {
   }
 
   const handlePointerDown = (event: PointerEvent) => {
+    // Clic molette maintenu : déplace la vue, quel que soit l'outil.
+    if (event.evt instanceof MouseEvent && event.evt.button === 1) {
+      panDrag.start(event.evt)
+      return
+    }
     if (spaceDown) return
     if (event.evt instanceof MouseEvent && event.evt.button !== 0) return
     const point = pointerInDocument(event)
@@ -361,7 +373,13 @@ export default function EditorStage() {
   const editingElement = elements.find((el) => el.id === editingTextId)
   const draftBox = draft ? normalizeBox(draft.start, draft.current) : null
   const bandBox = band ? normalizeBox(band.start, band.current) : null
-  const cursor = spaceDown ? 'grab' : activeTool !== 'select' ? 'crosshair' : 'default'
+  const cursor = panDrag.panning
+    ? 'grabbing'
+    : spaceDown
+      ? 'grab'
+      : activeTool !== 'select'
+        ? 'crosshair'
+        : 'default'
 
   return (
     <div

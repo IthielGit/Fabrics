@@ -44,6 +44,9 @@ export function useElementInteractions(): Handlers {
   const session = useRef<DragSession>(EMPTY_SESSION)
 
   const onPointerDown = useCallback((event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
+    // Clic molette ou clic droit : ni sélection ni glissement ; le clic remonte à la scène, qui
+    // déplace la vue avec le clic molette.
+    if (event.evt instanceof MouseEvent && event.evt.button !== 0) return
     event.cancelBubble = true // empêche le rectangle de sélection de démarrer
     // `currentTarget` = l'élément du document (un groupe pour un mur, une pièce ou une cote),
     // alors que `target` serait la forme précise cliquée à l'intérieur.

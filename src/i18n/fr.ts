@@ -59,6 +59,12 @@ export const fr = {
     zoomWithPrintScale: (percent: number, scale: number) =>
       `Zoom ${percent} % · Impression 1:${scale}`,
     fitToScreen: 'Ajuster à l’écran',
+    scrollHorizontal: 'Défilement horizontal',
+    scrollVertical: 'Défilement vertical',
+    minimap: 'Mini-carte',
+    showMinimap: 'Afficher la mini-carte',
+    hideMinimap: 'Masquer la mini-carte',
+    minimapHelp: 'Cliquez ou glissez pour aller à un endroit du plan',
     undo: 'Annuler',
     redo: 'Rétablir',
     saving: 'Enregistrement…',

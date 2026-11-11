@@ -5,6 +5,8 @@ import EditorStage from '../components/editor/EditorStage'
 import LayersPanel from '../components/editor/LayersPanel'
 import LevelSelector from '../components/editor/LevelSelector'
 import LevelsPanel from '../components/editor/LevelsPanel'
+import MiniMap from '../components/editor/MiniMap'
+import ScrollBars from '../components/editor/ScrollBars'
 import LibraryPanel from '../components/library/LibraryPanel'
 import MeasurementsPanel from '../components/editor/MeasurementsPanel'
 import Notice from '../components/editor/Notice'
@@ -87,6 +89,8 @@ export default function EditorPage() {
           <Toolbar />
           <LevelSelector />
           <ZoomControls />
+          <MiniMap />
+          <ScrollBars />
           <Notice />
           <ToolHint />
         </div>
