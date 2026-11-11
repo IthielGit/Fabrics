@@ -379,6 +379,17 @@ export const fr = {
     door: 'Survolez un mur et cliquez pour poser une porte (elle s’ouvre du côté du curseur) · Échap : quitter',
     window: 'Survolez un mur et cliquez pour poser une fenêtre · Échap : quitter',
   },
+  blockResize: {
+    title: 'Redimensionner l’ensemble',
+    width: 'Largeur',
+    depth: 'Profondeur',
+    hint: 'Mesuré sur la pièce (face intérieure) ; sans pièce, sur l’axe des murs. Les murs, le sol et les cotes s’étirent ; les portes, fenêtres et meubles gardent leur taille (un meuble contre un mur reste contre lui). Annulable en un seul pas.',
+    invalid: 'Dimensions impossibles : 500 mm au minimum de chaque côté.',
+    removed: (count: number) =>
+      count === 1
+        ? 'Une ouverture ne tenait plus sur son mur raccourci : elle a été retirée.'
+        : `${count} ouvertures ne tenaient plus sur leur mur raccourci : elles ont été retirées.`,
+  },
   sidePanel: {
     label: 'Panneaux',
     properties: 'Propriétés',

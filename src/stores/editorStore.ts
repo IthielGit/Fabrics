@@ -23,6 +23,7 @@ import {
 } from '../features/documents/wallOpenings'
 import { fr } from '../i18n/fr'
 import type { Guide } from '../features/geometry/guides'
+import { resizeBlock } from '../features/geometry/resizeBlock'
 import { translateElement } from '../features/geometry/transform'
 import { fitToScreen, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
@@ -160,6 +161,12 @@ interface EditorState {
   /** Remplace des éléments (par identifiant) : un seul état d'historique par appel. */
   replaceElements: (elements: CanvasElement[]) => void
   updateElements: (ids: string[], updater: (element: CanvasElement) => CanvasElement) => void
+  /**
+   * Redimensionne la sélection comme un bloc (pièce + murs + ouvertures + meubles) à `width × depth`
+   * mm : un seul pas d'historique. Renvoie le nombre d'ouvertures retirées, ou `null` si rien n'a
+   * été fait (sélection sans mur ni pièce, taille invalide).
+   */
+  resizeSelectionBlock: (width: number, depth: number) => number | null
   removeElements: (ids: string[]) => void
   duplicateElements: (ids: string[]) => void
   /**
@@ -231,13 +238,17 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     change: (document: FabricsDocument) => FabricsDocument,
     selectedIds?: string[],
     extra?: Partial<EditorState>,
+    /** Faux quand la modification place elle-même les ouvertures (redimensionnement en bloc). */
+    reconcile = true,
   ) {
     const { project, history, revision } = get()
     if (!project) return
     const changed = change(project.document)
     if (changed === project.document) return
     // Les ouvertures suivent leur mur quand sa forme change (sommet déplacé, ajouté, retiré).
-    const elements = reconcileOpenings(project.document.elements, changed.elements)
+    const elements = reconcile
+      ? reconcileOpenings(project.document.elements, changed.elements)
+      : changed.elements
     const next = elements === changed.elements ? changed : { ...changed, elements: [...elements] }
     set({
       project: { ...project, document: next },
@@ -484,6 +495,27 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         ...doc,
         elements: doc.elements.map((el) => (target.has(el.id) ? updater(el) : el)),
       }))
+    },
+
+    resizeSelectionBlock: (width, depth) => {
+      const { project, selectedIds } = get()
+      if (!project) return null
+      const all = project.document.elements
+      const selection = all.filter((el) => selectedIds.includes(el.id))
+      const result = resizeBlock(selection, all, { width, depth })
+      if (!result) return null
+      const byId = new Map(result.elements.map((el) => [el.id, el]))
+      const removed = new Set(result.removedIds)
+      commit(
+        (doc) => ({
+          ...doc,
+          elements: doc.elements.flatMap((el) => (removed.has(el.id) ? [] : [byId.get(el.id) ?? el])),
+        }),
+        undefined,
+        undefined,
+        false,
+      )
+      return result.removedIds.length
     },
 
     removeElements: (ids) => {

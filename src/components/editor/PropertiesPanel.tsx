@@ -14,6 +14,7 @@ import {
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement, TextElement } from '../../types/document'
+import BlockResizeSection from './BlockResizeSection'
 import ColorField from '../ui/ColorField'
 import NumberField from '../ui/NumberField'
 import ChimneyFields from './ChimneyFields'
@@ -117,10 +118,12 @@ export default function PropertiesPanel() {
             value={commonValue(selected, 'opacity')}
             onCommit={setNumber('opacity')}
           />
+          <BlockResizeSection />
         </div>
       )}
 
       {selected.length === 1 && renderSingleElementFields(selected[0])}
+      {selected.length === 1 && <BlockResizeSection />}
     </section>
   )
 
