@@ -3,10 +3,12 @@ import type {
   FabricsDocument,
   Level,
   OpeningElement,
+  StairElement,
   WallElement,
 } from '../../types/document'
 import { elementsOfLevel } from '../documents/levels'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
+import { stairStatus } from '../stairs/stairs'
 
 export interface RoomMeasure {
   id: string
@@ -28,6 +30,28 @@ export interface PlatformMeasure {
   thickness: number
   /** Volume : surface × épaisseur, en mm³. */
   volume: number
+}
+
+export interface StairMeasure {
+  id: string
+  name: string
+  shape: StairElement['shape']
+  /** Emmarchement, en mm. */
+  width: number
+  /** Hauteur à monter, en mm (`null` sans niveau au-dessus). */
+  rise: number | null
+  /** Nombre de contremarches (`null` sans niveau au-dessus). */
+  risers: number | null
+  /** Nombre de girons. */
+  treads: number | null
+  /** Hauteur d'une contremarche, en mm. */
+  riserHeight: number | null
+  /** Giron, en mm. */
+  treadDepth: number | null
+  /** `ok`, `too-short` (longueur insuffisante) ou `no-level-above`. */
+  status: 'ok' | 'too-short' | 'no-level-above'
+  /** Longueur de volées nécessaire (mm) quand l'escalier est trop court. */
+  requiredRun: number | null
 }
 
 export interface WallMeasure {
@@ -62,6 +86,7 @@ export interface Measurements {
   rooms: RoomMeasure[]
   walls: WallMeasure[]
   platforms: PlatformMeasure[]
+  stairs: StairMeasure[]
   /** Ouvertures posées sur un mur existant, dans l'ordre du document. */
   openings: OpeningMeasure[]
   totals: {
@@ -102,10 +127,14 @@ function openingMeasure(opening: OpeningElement, wall: WallElement): OpeningMeas
  * aucun prix. Tous les éléments sont comptés, même masqués : masquer ne change que l'affichage.
  * Résultats en mm et mm² ; la mise en forme (m, m²) est faite par `features/units`.
  */
-export function computeMeasurements(elements: readonly CanvasElement[]): Measurements {
+export function computeMeasurements(
+  elements: readonly CanvasElement[],
+  levels?: readonly Level[],
+): Measurements {
   const rooms: RoomMeasure[] = []
   const walls: WallMeasure[] = []
   const platforms: PlatformMeasure[] = []
+  const stairs: StairMeasure[] = []
   const openings: OpeningMeasure[] = []
 
   // Les ouvertures d'abord : un mur a besoin de la surface des siennes.
@@ -129,6 +158,22 @@ export function computeMeasurements(elements: readonly CanvasElement[]): Measure
         name: element.name,
         area: polygonArea(element.points),
         perimeter: polygonPerimeter(element.points),
+      })
+    } else if (element.type === 'stair') {
+      const status = stairStatus(element, levels)
+      const steps = status.kind === 'no-level-above' ? null : status.steps
+      stairs.push({
+        id: element.id,
+        name: element.name,
+        shape: element.shape,
+        width: element.width,
+        rise: status.kind === 'no-level-above' ? null : status.rise,
+        risers: steps?.risers ?? null,
+        treads: steps?.treads ?? null,
+        riserHeight: steps?.riserHeight ?? null,
+        treadDepth: steps?.treadDepth ?? null,
+        status: status.kind,
+        requiredRun: status.kind === 'too-short' ? status.steps.requiredRun : null,
       })
     } else if (element.type === 'platform') {
       const area = polygonArea(element.points)
@@ -163,6 +208,7 @@ export function computeMeasurements(elements: readonly CanvasElement[]): Measure
     rooms,
     walls,
     platforms,
+    stairs,
     openings,
     totals: {
       roomArea: rooms.reduce((sum, room) => sum + room.area, 0),
@@ -198,6 +244,7 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
     rooms: list.flatMap((m) => m.rooms),
     walls: list.flatMap((m) => m.walls),
     platforms: list.flatMap((m) => m.platforms),
+    stairs: list.flatMap((m) => m.stairs),
     openings: list.flatMap((m) => m.openings),
     totals: {
       roomArea: sum((m) => m.totals.roomArea),
@@ -223,7 +270,7 @@ export function computeBuildingMeasurements(
 ): BuildingMeasurements {
   const levels = (document.levels ?? []).map((level) => ({
     level,
-    measurements: computeMeasurements(elementsOfLevel(document.elements, level.id)),
+    measurements: computeMeasurements(elementsOfLevel(document.elements, level.id), document.levels),
   }))
   return { levels, total: sumMeasurements(levels.map((l) => l.measurements)) }
 }

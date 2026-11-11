@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M9 — Outils de construction (en cours ; M8 validé le 2026-11-11)
-- **Dernière tâche terminée :** lot C de M9 (plateformes)
-- **Prochaine tâche :** lot D de M9 (escaliers entre niveaux)
+- **Dernière tâche terminée :** lot D de M9 (escaliers entre niveaux)
+- **Prochaine tâche :** lot D bis de M9 (trémies)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -23,7 +23,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
-| M9 Outils de construction | en cours (lots A, B et C faits) | |
+| M9 Outils de construction | en cours (lots A à D faits) | |
 | M10 Façades, coupes et planche | à faire | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
@@ -39,6 +39,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M9 · Lot D · Escaliers entre niveaux
+- Fait : nouveau type **`stair`** (droit, en L, en U ; `x, y, rotation` comme le mobilier ; marches, paliers et trémie calculés, jamais stockés ; pas de changement de version). **Calcul** (`src/features/stairs/`, fonctions pures) : hauteur à monter = altitude du niveau du dessus − altitude du niveau de départ ; contremarches n = plus petit entier avec hauteur ≤ 180 mm ; girons = n − 1 ; giron = longueur des volées ÷ girons (≥ 250 mm) ; longueur nécessaire = (n − 1) × 250 mm. 2 700 mm donnent 15 contremarches de 180 mm, 14 girons, 3500 mm ; 2 880 mm donnent 16 contremarches. **Outil Escalier** (bouton `Footprints`, sans raccourci) : choix Droit / En L / En U dans la barre de modes, aperçu fantôme, clic = pose centrée avec des longueurs qui suffisent ; **refusée sur le dernier niveau** (message). **Propriétés** : forme (les longueurs sont recalculées au changement), emmarchement, longueurs des volées, jour central (U), Retourner (L et U), marge de trémie, et les marches calculées. **2D** : volées avec lignes de marche, palier, flèche de montée ; **en rouge** avec « Trop court : 3500 mm nécessaires » ou « Aucun niveau au-dessus » (niveau du dessus supprimé : l'escalier reste, sans marches ni trémie). Contour en fantôme (pointillé) sur le niveau du dessus. **3D** : une marche pleine par giron (+ le palier, qui compte pour une marche), cliquable. **Métrés** : tableau « Escaliers » (contremarches, hauteur de contremarche, girons) dans le panneau, et dans le CSV (forme, emmarchement, contremarches, hauteur, girons, giron, remarque). Un escalier ne se redimensionne pas à la poignée (déplacement et rotation seulement ; `Maj + R` le tourne autour du centre de son emprise). Dupliquer un niveau ne copie pas ses escaliers (seuls les murs sont copiés, comme avant).
+- Choix : pour que « changer la hauteur d'étage » recalcule les marches, **changer la hauteur d'un niveau remonte ou descend d'autant les niveaux au-dessus** quand ils étaient empilés dessus (le niveau du dessus démarrait exactement à altitude + hauteur) ; un niveau dont l'altitude a été réglée à la main n'est pas déplacé. Un escalier en U a une trémie rectangulaire (volées, palier et jour central).
+- Fichiers : `src/features/stairs/{stairs,placement}.ts` + tests, `src/features/building/{stairSteps,model,types}.ts`, `src/features/documents/{elements,levels,properties}.ts`, `src/features/geometry/{transform,rotateSelection}.ts`, `src/features/export/bounds.ts`, `src/features/measurements/{measurements,csv}.ts`, `src/components/editor/{shapes/StairShape,StairFields,StairGhost,StairUpperGhosts,ElementNode,PropertiesPanel,Toolbar,ToolModeBar,ToolHint,EditorStage,LayersPanel,SelectionTransformer,MeasurementsPanel}`, `src/components/viewer3d/Viewer3DScene.tsx`, `src/stores/editorStore.ts`, `src/i18n/fr.ts`, `src/types/document.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2016, dont 41 nouveaux) — pose, rouge, fantôme et marches 3D à contrôler dans le navigateur
+- Commit : feat: M9 lot D, escaliers entre niveaux
 
 ### 2026-11-11 — M9 · Lot C · Plateformes
 - Fait : nouveau type d'élément **`platform`** (polygone à points absolus, `elevation` = hauteur du dessus par rapport au plancher du niveau, `thickness` = épaisseur sous le dessus ; **pas de changement de version** du document). **Outil Plateforme** (bouton `Layers2` dans la barre d'outils des plans, sans raccourci clavier) avec les modes « Polygone » et « Rectangle » (2 clics) de la barre de modes ; mêmes aimantations et guides que la pièce ; les sommets se déplacent comme ceux d'une pièce. Dessin 2D : aplat sable, contour brun et étiquette de hauteur **`+450 mm`** au centre. Propriétés : nom, **hauteur du dessus** (défaut 450 mm), **épaisseur** (défaut = hauteur du dessus, estrade pleine ; jamais plus grande : une saisie plus grande est ramenée à la hauteur, et une estrade pleine suit sa hauteur quand on la change), surface, périmètre et volume. **3D** : prisme extrudé du dessus (`niveau + hauteur`) vers le bas sur son épaisseur, matière sable ; jamais sous le plancher. **Métrés** : tableau « Plateformes » dans le panneau (surface m², volume m³ = surface × épaisseur), totaux par niveau et pour le bâtiment ; **CSV** : tableau « Plateformes » (niveau, nom, surface m², hauteur du dessus mm, épaisseur mm, volume m³) avec une ligne de totaux ; la plateforme n'entre pas dans la surface des pièces. Une plateforme de 4000 × 3000 mm à 450 mm donne 12,00 m² et 5,40 m³. Elle tourne avec `Maj + R`. Unités : mm, m², m³ (nouveaux helpers `formatVolume` et `mm3ToM3`).
@@ -526,6 +533,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
+- Redimensionner une pièce préfabriquée (ou toute sélection de murs, pièces et ouvertures) d'un bloc, par exemple 4000 × 3000 mm devenu 5000 × 3500 mm : aujourd'hui les éléments posés sont indépendants et les murs, pièces et ouvertures ne se redimensionnent pas à la poignée (demande de l'utilisateur le 2026-11-11, à prioriser).
 - Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).

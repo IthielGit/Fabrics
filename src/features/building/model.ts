@@ -10,6 +10,7 @@ import type {
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import type { BuildOptions, BuildingModel, Bounds3, SlabShape, WallPiece } from './types'
+import { buildStairSteps } from './stairSteps'
 import { buildWallPieces } from './wallPieces'
 
 /** Niveaux à afficher : tous, ou jusqu'à `upToLevelId` compris (triés par altitude). */
@@ -114,7 +115,7 @@ export function buildBuildingModel(
 ): BuildingModel {
   const allLevels = doc.levels ?? []
   const levels = visibleLevels(allLevels, options.upToLevelId)
-  if (levels.length === 0) return { walls: [], slabs: [], bounds: null }
+  if (levels.length === 0) return { walls: [], steps: [], slabs: [], bounds: null }
 
   const sortedAll = [...allLevels].sort((a, b) => a.elevation - b.elevation)
   const topLevel = sortedAll[sortedAll.length - 1]
@@ -129,6 +130,7 @@ export function buildBuildingModel(
     (el): el is OpeningElement => el.type === 'opening' && !el.hidden,
   )
   const walls: WallPiece[] = []
+  const steps: WallPiece[] = []
   const slabs: SlabShape[] = []
 
   for (const el of doc.elements) {
@@ -137,6 +139,8 @@ export function buildBuildingModel(
     if (!level) continue
     if (el.type === 'wall') {
       walls.push(...buildWallPieces(el as WallElement, openings, level))
+    } else if (el.type === 'stair') {
+      steps.push(...buildStairSteps(el, level, allLevels))
     } else if (el.type === 'platform') {
       const shape = buildPlatform(el, level)
       if (shape) slabs.push(shape)
@@ -149,5 +153,5 @@ export function buildBuildingModel(
       }
     }
   }
-  return { walls, slabs, bounds: modelBounds(walls, slabs) }
+  return { walls, steps, slabs, bounds: modelBounds([...walls, ...steps], slabs) }
 }

@@ -5,6 +5,7 @@ import { unionBoxes } from '../geometry/box'
 import { dimensionGeometry } from '../geometry/dimension'
 import { openingGeometry } from '../geometry/openings'
 import { openingSymbol } from '../geometry/openingSymbol'
+import { stairFootprint } from '../stairs/stairs'
 import { toPoints } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import { wallFaces } from '../geometry/walls'
@@ -89,6 +90,8 @@ export function elementBounds(element: CanvasElement): Box | null {
     case 'room':
     case 'platform':
       return pointsBox(toPoints(element.points))
+    case 'stair':
+      return pointsBox(stairFootprint(element))
     case 'dimension': {
       const geometry = dimensionGeometry(element.points, element.offset)
       const [ax, ay, bx, by] = element.points

@@ -40,6 +40,9 @@ import PolylineDraftLayer from './PolylineDraftLayer'
 import SelectionTransformer from './SelectionTransformer'
 import { WallJoinsContext } from './shapes/WallJoinsContext'
 import FurnitureGhost from './FurnitureGhost'
+import StairGhost from './StairGhost'
+import StairUpperGhosts from './StairUpperGhosts'
+import { planStairPlacement } from '../../features/stairs/placement'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
 import { useCalibrationTool } from './useCalibrationTool'
@@ -248,6 +251,24 @@ export default function EditorStage() {
     useLibraryPrefs.getState().addRecent(def.id)
   }
 
+  /** Pose un escalier centré sur `point` ; refusé s'il n'y a pas de niveau au-dessus du niveau actif. */
+  const placeStair = (point: Point) => {
+    const state = useEditorStore.getState()
+    const stair = planStairPlacement(
+      project.document.levels,
+      state.activeLevelId,
+      state.stairShape,
+      point,
+      furnitureGrid,
+      nextElementName(fr.elements.stair, 'stair', elements),
+    )
+    if (!stair) {
+      state.setNotice(fr.stairs.lastLevelRefused)
+      return
+    }
+    addElement(stair) // l'escalier posé devient la sélection ; l'outil reste actif
+  }
+
   const handlePointerDown = (event: PointerEvent) => {
     // Clic molette maintenu : déplace la vue, quel que soit l'outil.
     if (event.evt instanceof MouseEvent && event.evt.button === 1) {
@@ -267,6 +288,8 @@ export default function EditorStage() {
       openingTool.onPointerDown(event)
     } else if (activeTool === 'furniture') {
       placeFurniture(point)
+    } else if (activeTool === 'stair') {
+      placeStair(point)
     } else if (drawing) {
       setDraft({ start: point, current: point, additive: false })
     } else if (activeTool === 'select') {
@@ -283,7 +306,7 @@ export default function EditorStage() {
     if (polylineTool) polylineDrawing.onPointerMove(event)
     if (activeTool === 'calibrate') calibration.onPointerMove(event)
     if (openingKind) openingTool.onPointerMove(event)
-    if (activeTool === 'furniture') setGhostPoint(pointerInDocument(event))
+    if (activeTool === 'furniture' || activeTool === 'stair') setGhostPoint(pointerInDocument(event))
     if (!draft && !band) return
     const point = pointerInDocument(event)
     if (!point) return
@@ -482,6 +505,7 @@ export default function EditorStage() {
                 </WallJoinsContext.Provider>
               </Group>
             )}
+            <StairUpperGhosts scale={scale} />
             <WallJoinsContext.Provider value={wallJoins}>
               {drawOrder(elements).map((element) => (
                 <ElementNode
@@ -532,6 +556,9 @@ export default function EditorStage() {
               <CalibrationDraftLayer state={calibration.state} scale={scale} />
             )}
             {openingKind && <OpeningPreviewLayer preview={openingTool.preview} scale={scale} />}
+            {activeTool === 'stair' && ghostPoint && (
+              <StairGhost point={ghostPoint} grid={furnitureGrid} scale={scale} />
+            )}
             {activeTool === 'furniture' && ghostPoint && furnitureSymbolId && (
               <FurnitureGhost
                 symbolId={furnitureSymbolId}

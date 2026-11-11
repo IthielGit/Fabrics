@@ -35,13 +35,15 @@ export default function MeasurementsPanel() {
   if (!isPlan) return null
   const active = building.levels.find((entry) => entry.level.id === activeLevelId)
   const measurements = active?.measurements ?? computeMeasurements([])
-  const { rooms, walls, platforms, openings, totals } = measurements
+  const { rooms, walls, platforms, stairs, openings, totals } = measurements
   // Le niveau affiché est vide : on le dit ; le CSV, lui, couvre tout le bâtiment.
-  const isEmpty = rooms.length === 0 && walls.length === 0 && platforms.length === 0
+  const isEmpty =
+    rooms.length === 0 && walls.length === 0 && platforms.length === 0 && stairs.length === 0
   const buildingEmpty =
     building.total.rooms.length === 0 &&
     building.total.walls.length === 0 &&
-    building.total.platforms.length === 0
+    building.total.platforms.length === 0 &&
+    building.total.stairs.length === 0
 
   const handleExport = () => {
     const csv = measurementsToCsv(building, fr.measurements.csv, furnitureCsvRows(elements ?? []))
@@ -147,6 +149,47 @@ export default function MeasurementsPanel() {
       )}
       {walls.length > 0 && openings.length > 0 && (
         <p className="mt-1 text-xs text-slate-500">{fr.measurements.netAreaNote}</p>
+      )}
+
+      {stairs.length > 0 && (
+        <table className="mt-4 w-full text-sm">
+          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+            {fr.measurements.stairs}
+          </caption>
+          <thead>
+            <tr>
+              <th className={HEAD}>{fr.measurements.name}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.stairRisers}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.stairRiserHeight}</th>
+              <th className={`${HEAD} text-right`}>{fr.measurements.stairTreads}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {stairs.map((stair) => (
+              <tr
+                key={stair.id}
+                onClick={() => setSelection([stair.id])}
+                className={rowClass(stair.id)}
+                title={
+                  stair.status === 'too-short'
+                    ? fr.stairs.tooShort(Math.ceil(stair.requiredRun ?? 0))
+                    : stair.status === 'no-level-above'
+                      ? fr.stairs.noLevelAbove
+                      : `${fr.stairs.treadDepth} : ${formatLength(stair.treadDepth ?? 0)} · ${fr.stairs.width} : ${formatLength(stair.width)}`
+                }
+              >
+                <td className={`max-w-20 truncate px-1 py-1 ${stair.status === 'ok' ? '' : 'text-red-700'}`}>
+                  {stair.name}
+                </td>
+                <td className={NUMBER}>{stair.risers ?? '—'}</td>
+                <td className={NUMBER}>
+                  {stair.riserHeight === null ? '—' : formatLength(stair.riserHeight)}
+                </td>
+                <td className={NUMBER}>{stair.treads ?? '—'}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
 
       {platforms.length > 0 && (

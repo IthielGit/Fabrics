@@ -159,6 +159,20 @@ export interface FurnitureElement extends BaseElement {
   mirrored?: boolean;        // objet retourné gauche / droite
 }
 
+// Escalier entre deux niveaux (M9) : x, y = coin haut-gauche de son emprise avant rotation (comme
+// `furniture`). Les marches, les paliers et la trémie sont calculés, jamais stockés ; le niveau de
+// départ est `levelId`, le niveau d'arrivée est celui juste au-dessus.
+export interface StairElement extends BaseElement {
+  type: 'stair';
+  shape: 'straight' | 'l' | 'u';
+  width: number;             // mm, emmarchement (largeur d'une volée)
+  length: number;            // mm, longueur de la 1re volée (seule volée pour 'straight')
+  length2?: number;          // mm, longueur de la 2e volée ('l', 'u')
+  gap?: number;              // mm, jour central entre les deux volées ('u')
+  mirrored?: boolean;        // tourne à gauche / à droite ('l', 'u')
+  voidMargin: number;        // mm, marge de la trémie autour de l'emprise (défaut 50)
+}
+
 // Plateforme (M9) : estrade ou podium. Polygone à points absolus (déplacement seul, règle D6).
 export interface PlatformElement extends BaseElement {
   type: 'platform';
@@ -171,4 +185,4 @@ export interface PlatformElement extends BaseElement {
 export type CanvasElement =
   | TextElement | RectElement | EllipseElement | LineElement | ImageElement
   | WallElement | RoomElement | DimensionElement | OpeningElement | AxisElement
-  | FurnitureElement | PlatformElement;
+  | FurnitureElement | PlatformElement | StairElement;

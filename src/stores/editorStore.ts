@@ -37,6 +37,7 @@ export type EditorTool =
   | 'wall'
   | 'room'
   | 'platform'
+  | 'stair'
   | 'dimension'
   | 'axis'
   | 'furniture'
@@ -49,6 +50,7 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
   'wall',
   'room',
   'platform',
+  'stair',
   'dimension',
   'axis',
   'furniture',
@@ -63,6 +65,7 @@ export function isPlanTool(tool: EditorTool): boolean {
 export type WallMode = 'polyline' | 'straight'
 export type RoomMode = 'polygon' | 'rectangle'
 export type PlatformMode = 'polygon' | 'rectangle'
+export type StairShapeChoice = 'straight' | 'l' | 'u'
 export type SaveStatus = 'saved' | 'saving' | 'error'
 
 export const HISTORY_LIMIT = 100
@@ -84,6 +87,8 @@ interface EditorState {
   wallMode: WallMode
   /** Mode de l'outil Pièce : polygone libre ou rectangle (2 clics) ; état d'interface. */
   roomMode: RoomMode
+  /** Forme de l'escalier posé par l'outil Escalier ; état d'interface. */
+  stairShape: StairShapeChoice
   /** Mode de l'outil Plateforme : polygone libre ou rectangle (2 clics) ; état d'interface. */
   platformMode: PlatformMode
   /** Mode Rectangle : crée aussi un mur fermé autour de la pièce. */
@@ -115,6 +120,7 @@ interface EditorState {
   setWallMode: (mode: WallMode) => void
   setRoomMode: (mode: RoomMode) => void
   setPlatformMode: (mode: PlatformMode) => void
+  setStairShape: (shape: StairShapeChoice) => void
   setRoomWithWalls: (withWalls: boolean) => void
   setNotice: (notice: string | null) => void
   setGuides: (guides: Guide[]) => void
@@ -264,6 +270,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     wallMode: 'polyline',
     roomMode: 'polygon',
     platformMode: 'polygon',
+    stairShape: 'straight',
     roomWithWalls: false,
     editingTextId: null,
     activeLevelId: null,
@@ -319,6 +326,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     setWallMode: (wallMode) => set({ wallMode }),
     setRoomMode: (roomMode) => set({ roomMode }),
     setPlatformMode: (platformMode) => set({ platformMode }),
+    setStairShape: (stairShape) => set({ stairShape }),
     setRoomWithWalls: (roomWithWalls) => set({ roomWithWalls }),
     setNotice: (notice) => set({ notice }),
     setGuides: (guides) => set({ guides }),

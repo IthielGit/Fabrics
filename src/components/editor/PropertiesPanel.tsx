@@ -19,6 +19,7 @@ import NumberField from '../ui/NumberField'
 import FurnitureFields from './FurnitureFields'
 import OpeningFields from './OpeningFields'
 import PlatformFields from './PlatformFields'
+import StairFields from './StairFields'
 import PlanElementFields from './PlanElementFields'
 import PageSizeSection from './PageSizeSection'
 import PlanSettingsSection from './PlanSettingsSection'
@@ -134,6 +135,7 @@ export default function PropertiesPanel() {
         {element.type === 'opening' && <OpeningFields element={element} />}
         {element.type === 'furniture' && <FurnitureFields element={element} />}
         {element.type === 'platform' && <PlatformFields element={element} />}
+        {element.type === 'stair' && <StairFields element={element} />}
         {numericPropsFor(element).map((prop) => (
           <NumberField
             key={prop}

@@ -43,7 +43,9 @@ export default function SelectionTransformer({ enabled }: SelectionTransformerPr
   const furnitureModes = onlyFurniture
     ? selected.map((el) => (el.type === 'furniture' ? getSymbol(el.symbol)?.resize : undefined) ?? 'free')
     : []
-  let anchors = onlyText ? TEXT_ANCHORS : ALL_ANCHORS
+  // Un escalier se déplace et tourne ; ses dimensions se règlent dans le panneau Propriétés.
+  const onlyStairs = selected.length > 0 && selected.every((el) => el.type === 'stair')
+  let anchors = onlyText ? TEXT_ANCHORS : onlyStairs ? [] : ALL_ANCHORS
   let keepRatio = false
   if (onlyFurniture) {
     if (furnitureModes.every((mode) => mode === 'fixed')) anchors = []

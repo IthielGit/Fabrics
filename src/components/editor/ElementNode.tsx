@@ -9,6 +9,7 @@ import OpeningShape from './shapes/OpeningShape'
 import PlatformShape from './shapes/PlatformShape'
 import RectShape from './shapes/RectShape'
 import RoomShape from './shapes/RoomShape'
+import StairShape from './shapes/StairShape'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 import TextShape from './shapes/TextShape'
 import WallShape from './shapes/WallShape'
@@ -46,5 +47,7 @@ export default function ElementNode({ element, editing = false, ...interaction }
       return <FurnitureShape element={element} {...interaction} />
     case 'platform':
       return <PlatformShape element={element} {...interaction} />
+    case 'stair':
+      return <StairShape element={element} {...interaction} />
   }
 }

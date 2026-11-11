@@ -2,12 +2,17 @@ import type {
   AxisElement,
   CanvasElement,
   DimensionElement,
+  FurnitureElement,
+  ImageElement,
   PlatformElement,
+  RectElement,
   RoomElement,
+  StairElement,
   WallElement,
 } from '../../types/document'
 import { getSymbol } from '../library/catalog'
 import { resizeSymbol } from '../library/resize'
+import { stairSize } from '../stairs/stairs'
 import { toPoints } from './polygon'
 import type { Point } from './viewport'
 
@@ -49,6 +54,21 @@ export function translateElement(element: CanvasElement, dx: number, dy: number)
 
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
 
+/** Largeur et hauteur de la boîte (avant rotation) d'un élément posé par son coin haut-gauche. */
+export function boxSize(element: FurnitureElement | RectElement | ImageElement | StairElement): {
+  width: number
+  height: number
+} {
+  switch (element.type) {
+    case 'furniture':
+      return { width: element.width, height: element.depth }
+    case 'stair':
+      return stairSize(element)
+    default:
+      return { width: element.width, height: element.height }
+  }
+}
+
 /**
  * Pivote un élément d'un quart de tour (+90°, sens horaire) autour de son centre : il ne « saute »
  * pas. Concerne les objets de bibliothèque, rectangles, images et ellipses ; les autres éléments
@@ -61,9 +81,9 @@ export function rotateQuarterTurn(element: CanvasElement): CanvasElement {
       return { ...element, rotation } // x, y = centre : rien d'autre à corriger
     case 'furniture':
     case 'rect':
-    case 'image': {
-      const w = element.width
-      const h = element.type === 'furniture' ? element.depth : element.height
+    case 'image':
+    case 'stair': {
+      const { width: w, height: h } = boxSize(element)
       const before = toRadians(element.rotation)
       const after = toRadians(rotation)
       // Centre actuel, puis coin haut-gauche qui le garde en place après rotation.

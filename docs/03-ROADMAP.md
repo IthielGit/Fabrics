@@ -258,17 +258,17 @@ détaillées : `docs/02-ARCHITECTURE.md`, section « Outils de construction (M9)
 - [x] Volume en 3D ; surface (m²) et volume = surface × épaisseur (m³) dans les métrés et le CSV
 
 ### Lot D — Escaliers entre niveaux
-- [ ] Type `stair` : droit (`length`), en L (`length` + `length2`), en U (`length` +
+- [x] Type `stair` : droit (`length`), en L (`length` + `length2`), en U (`length` +
       `length2` + jour central `gap`), retournable ; posé sur un niveau, relié au niveau du dessus
-- [ ] Nombre de contremarches calculé depuis la hauteur à monter (≤ 180 mm chacune), giron
+- [x] Nombre de contremarches calculé depuis la hauteur à monter (≤ 180 mm chacune), giron
       = longueur des volées ÷ nombre de girons, au moins 250 mm ; recalculé quand une altitude
       change ; pose refusée sur le dernier niveau ; escalier trop court en rouge avec la
       longueur nécessaire
-- [ ] Niveau du dessus supprimé plus tard : l'escalier reste, en rouge, avec le message
+- [x] Niveau du dessus supprimé plus tard : l'escalier reste, en rouge, avec le message
       « aucun niveau au-dessus », sans trémie. Dupliquer un niveau ne copie pas ses escaliers
-- [ ] Symbole 2D (marches, flèche de montée), marches en 3D, escalier visible en fantôme sur
+- [x] Symbole 2D (marches, flèche de montée), marches en 3D, escalier visible en fantôme sur
       le niveau du dessus
-- [ ] Métrés : nombre de contremarches et de girons, hauteur de contremarche, giron,
+- [x] Métrés : nombre de contremarches et de girons, hauteur de contremarche, giron,
       emmarchement (en mm)
 
 ### Lot D bis — Trémie

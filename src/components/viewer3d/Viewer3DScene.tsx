@@ -22,6 +22,7 @@ const ROOF_MATERIAL = new THREE.MeshStandardMaterial({
 })
 
 const PLATFORM_MATERIAL = new THREE.MeshStandardMaterial({ color: '#d6b98c', roughness: 0.85 })
+const STAIR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#cbb89d', roughness: 0.85 })
 const SELECTED_WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a5b4fc', roughness: 0.9 })
 
 /** Un déplacement de plus de ce nombre de pixels entre appui et relâchement est un geste de caméra, pas un clic. */
@@ -29,11 +30,18 @@ const CLICK_MAX_DRAG = 4
 
 interface WallMeshProps {
   piece: WallPiece
+  /** Matière hors sélection (murs par défaut). */
+  material?: THREE.Material
   selected: boolean
   onSelectWall: (wallId: string, levelId: string) => void
 }
 
-const WallMesh = memo(function WallMesh({ piece, selected, onSelectWall }: WallMeshProps) {
+const WallMesh = memo(function WallMesh({
+  piece,
+  material = WALL_MATERIAL,
+  selected,
+  onSelectWall,
+}: WallMeshProps) {
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
     if (event.delta > CLICK_MAX_DRAG) return
     event.stopPropagation() // le morceau le plus proche de la caméra gagne
@@ -42,7 +50,7 @@ const WallMesh = memo(function WallMesh({ piece, selected, onSelectWall }: WallM
   return (
     <mesh
       geometry={BOX}
-      material={selected ? SELECTED_WALL_MATERIAL : WALL_MATERIAL}
+      material={selected ? SELECTED_WALL_MATERIAL : material}
       position={[piece.center.x, piece.center.y, piece.center.z]}
       scale={[piece.size.x, piece.size.y, piece.size.z]}
       rotation={[0, piece.rotationY, 0]}
@@ -193,6 +201,15 @@ export default function Viewer3DScene({
           <WallMesh
             key={`${piece.sourceId}-${i}`}
             piece={piece}
+            selected={selectedIds.has(piece.sourceId)}
+            onSelectWall={onSelectWall}
+          />
+        ))}
+        {model.steps.map((piece, i) => (
+          <WallMesh
+            key={`step-${piece.sourceId}-${i}`}
+            piece={piece}
+            material={STAIR_MATERIAL}
             selected={selectedIds.has(piece.sourceId)}
             onSelectWall={onSelectWall}
           />

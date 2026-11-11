@@ -1,7 +1,7 @@
 import type { CanvasElement } from '../../types/document'
 import { elementBounds } from '../export/bounds'
 import { unionBoxes } from './box'
-import { rotateQuarterTurn } from './transform'
+import { boxSize, rotateQuarterTurn } from './transform'
 import type { Point } from './viewport'
 
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
@@ -13,9 +13,9 @@ function ownCenter(element: CanvasElement): Point | null {
       return { x: element.x, y: element.y }
     case 'furniture':
     case 'rect':
-    case 'image': {
-      const w = element.width
-      const h = element.type === 'furniture' ? element.depth : element.height
+    case 'image':
+    case 'stair': {
+      const { width: w, height: h } = boxSize(element)
       const angle = toRadians(element.rotation)
       return {
         x: element.x + (w * Math.cos(angle) - h * Math.sin(angle)) / 2,

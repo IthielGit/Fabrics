@@ -11,6 +11,7 @@ import type {
   PlatformElement,
   RectElement,
   RoomElement,
+  StairElement,
   TextElement,
   WallElement,
 } from '../../types/document'
@@ -185,6 +186,35 @@ export function createPlatformElement(
     elevation,
     thickness: elevation,
     fill: '#d6b98c',
+  }
+}
+
+/**
+ * Escalier posé avec le coin haut-gauche de son emprise en (x, y). Les longueurs viennent de
+ * `defaultStairLengths` (calculées pour la hauteur à monter) ; l'emmarchement par défaut est 1000 mm.
+ */
+export function createStairElement(
+  name: string,
+  shape: StairElement['shape'],
+  x: number,
+  y: number,
+  lengths: { length: number; length2?: number; gap?: number },
+  width: number = 1000,
+  voidMargin: number = 50,
+): StairElement {
+  return {
+    ...BASE,
+    id: crypto.randomUUID(),
+    type: 'stair',
+    name,
+    x,
+    y,
+    shape,
+    width,
+    length: lengths.length,
+    ...(lengths.length2 !== undefined ? { length2: lengths.length2 } : {}),
+    ...(lengths.gap !== undefined ? { gap: lengths.gap } : {}),
+    voidMargin,
   }
 }
 

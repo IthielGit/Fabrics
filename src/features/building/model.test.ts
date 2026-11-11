@@ -157,6 +157,7 @@ describe('buildBuildingModel', () => {
   it('un document sans niveaux (Visuel) donne un modèle vide', () => {
     expect(buildBuildingModel({ elements: [], levels: undefined })).toEqual({
       walls: [],
+      steps: [],
       slabs: [],
       bounds: null,
     })

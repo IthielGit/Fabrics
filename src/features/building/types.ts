@@ -44,6 +44,8 @@ export interface Bounds3 {
 
 export interface BuildingModel {
   walls: WallPiece[]
+  /** Marches et paliers des escaliers (mêmes boîtes orientées que les murs). */
+  steps: WallPiece[]
   slabs: SlabShape[]
   /** Emprise de tout le modèle, ou `null` s'il est vide. */
   bounds: Bounds3 | null

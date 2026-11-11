@@ -37,9 +37,11 @@ export default function ToolModeBar() {
   const setRoomMode = useEditorStore((state) => state.setRoomMode)
   const platformMode = useEditorStore((state) => state.platformMode)
   const setPlatformMode = useEditorStore((state) => state.setPlatformMode)
+  const stairShape = useEditorStore((state) => state.stairShape)
+  const setStairShape = useEditorStore((state) => state.setStairShape)
   const setRoomWithWalls = useEditorStore((state) => state.setRoomWithWalls)
 
-  if (tool !== 'wall' && tool !== 'room' && tool !== 'platform') return null
+  if (tool !== 'wall' && tool !== 'room' && tool !== 'platform' && tool !== 'stair') return null
 
   return (
     <div
@@ -47,7 +49,18 @@ export default function ToolModeBar() {
       aria-label={fr.toolModes.label}
       className="absolute bottom-16 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
     >
-      {tool === 'platform' ? (
+      {tool === 'stair' ? (
+        <>
+          {(['straight', 'l', 'u'] as const).map((shape) => (
+            <ModeButton
+              key={shape}
+              label={fr.stairs.shapes[shape]}
+              active={stairShape === shape}
+              onClick={() => setStairShape(shape)}
+            />
+          ))}
+        </>
+      ) : tool === 'platform' ? (
         <>
           <ModeButton
             label={fr.toolModes.platformPolygon}

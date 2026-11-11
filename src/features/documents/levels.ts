@@ -120,7 +120,18 @@ export function updateLevel(
   }
   const unchanged = (Object.keys(next) as (keyof Level)[]).every((key) => next[key] === current[key])
   if (unchanged) return levels
-  return sortLevels(levels.map((l) => (l.id === id ? next : l)))
+  const sorted = sortLevels(levels.map((l) => (l.id === id ? next : l)))
+
+  // Changer la hauteur d'étage d'un niveau empilé sous le suivant (le niveau du dessus démarre
+  // exactement là où il finissait) remonte ou descend d'autant les niveaux au-dessus : le
+  // bâtiment reste empilé, et les escaliers se recalculent.
+  const delta = next.height - current.height
+  const index = sorted.findIndex((l) => l.id === id)
+  const above = sorted[index + 1]
+  if (delta !== 0 && above && above.elevation === current.elevation + current.height) {
+    return sorted.map((l, i) => (i > index ? { ...l, elevation: l.elevation + delta } : l))
+  }
+  return sorted
 }
 
 /**

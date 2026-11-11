@@ -34,6 +34,20 @@ export interface CsvLabels {
   bays: string
   /** Nom de chaque type d'ouverture. */
   kinds: Record<'door' | 'window' | 'bay', string>
+  /** Intitulés du tableau des escaliers (absent : pas de tableau). */
+  stairs?: {
+    title: string
+    shape: string
+    shapes: Record<'straight' | 'l' | 'u', string>
+    width: string
+    risers: string
+    riserHeight: string
+    treads: string
+    treadDepth: string
+    remark: string
+    tooShort: (requiredRun: number) => string
+    noLevelAbove: string
+  }
   /** Intitulés du tableau des plateformes (absent : pas de tableau). */
   platforms?: {
     title: string
@@ -177,6 +191,45 @@ export function measurementsToCsv(
           mm(opening.height),
           mm(opening.sillHeight),
           m2(opening.area),
+        ],
+      ),
+    )
+  }
+
+  // Escaliers : nombre de contremarches et de girons, hauteur de contremarche, giron, emmarchement.
+  const stairLabels = labels.stairs
+  if (stairLabels && total.stairs.length > 0) {
+    lines.push(
+      '',
+      row(text(stairLabels.title)),
+      row(
+        text(labels.level),
+        text(labels.name),
+        text(stairLabels.shape),
+        text(stairLabels.width),
+        text(stairLabels.risers),
+        text(stairLabels.riserHeight),
+        text(stairLabels.treads),
+        text(stairLabels.treadDepth),
+        text(stairLabels.remark),
+      ),
+      ...perLevel(
+        (m) => m.stairs,
+        (stair) => [
+          text(stair.name),
+          text(stairLabels.shapes[stair.shape]),
+          mm(stair.width),
+          stair.risers === null ? '' : String(stair.risers),
+          stair.riserHeight === null ? '' : mm(stair.riserHeight),
+          stair.treads === null ? '' : String(stair.treads),
+          stair.treadDepth === null ? '' : mm(stair.treadDepth),
+          text(
+            stair.status === 'too-short'
+              ? stairLabels.tooShort(Math.ceil(stair.requiredRun ?? 0))
+              : stair.status === 'no-level-above'
+                ? stairLabels.noLevelAbove
+                : '',
+          ),
         ],
       ),
     )
