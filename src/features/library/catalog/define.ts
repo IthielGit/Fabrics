@@ -22,6 +22,7 @@ const CATEGORY_HEIGHT: Record<SymbolCategory, number> = {
   hospitality: 900,
   'health-education': 800,
   leisure: 900,
+  prefabs: 0,
   sets: 0,
 }
 

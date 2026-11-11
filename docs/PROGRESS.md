@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M9 — Outils de construction (en cours ; M8 validé le 2026-11-11)
-- **Dernière tâche terminée :** lot A de M9 (mur droit, pièce rectangulaire, pièce avec murs)
-- **Prochaine tâche :** lot B de M9 (pièces préfabriquées, `Maj + R` étendu)
+- **Dernière tâche terminée :** lot B de M9 (pièces préfabriquées, `Maj + R` étendu)
+- **Prochaine tâche :** lot C de M9 (plateformes)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -23,7 +23,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M6 Niveaux | terminé | 2026-11-10 |
 | M7 Axes et mobilier | terminé | 2026-11-10 |
 | M8 Vue 3D | terminé | 2026-11-11 |
-| M9 Outils de construction | en cours (lot A fait) | |
+| M9 Outils de construction | en cours (lots A et B faits) | |
 | M10 Façades, coupes et planche | à faire | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
@@ -39,6 +39,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-11 — M9 · Lot B · Pièces préfabriquées et Maj + R étendu
+- Fait : catégorie **« Pièces préfabriquées »** dans la Bibliothèque (7 pièces : chambre 3500 × 3200 mm, salle de bain 2500 × 2200, WC 1500 × 1500, cuisine 3600 × 3000, séjour 5000 × 4000, bureau 3000 × 3000, garage 3200 × 6000 ; dimensions = face intérieure). Chacune est **dessinée de zéro** (clean room) à partir d'objets du catalogue et se pose comme un ensemble : une pièce étiquetée, **un seul mur fermé** de 200 mm, des portes et fenêtres rattachées à ce mur (portes ouvertes vers l'intérieur, baie pour le garage) et le mobilier, avec **aperçu fantôme** (mur compris) sous le curseur, vignette avec le mur, clic ou glisser-déposer. La pose se fait en **un seul pas d'historique** (un « annuler » retire tout) ; les éléments restent ensuite **indépendants** et gardent leurs ouvertures. Elles ne fusionnent pas avec les murs voisins. **`Maj + R`** : toute la sélection tourne de 90° autour du centre de son emprise commune (murs, pièces, cotes : leurs points ; mobilier, rectangles, images, ellipses : rotation et position) ; les ouvertures suivent leur mur (une rotation du mur ne les déplace plus ni ne les supprime : `reconcileOpenings` reconnaît un mouvement rigide) ; les axes, éléments verrouillés, textes et lignes ne tournent pas. Escaliers, cheminées et plateformes seront ajoutés au quart de tour avec leurs lots.
+- Limite : les meubles de la pièce sont placés à la main sans vérification de passage ; le test contrôle seulement qu'ils restent dans la pièce et que les ouvertures tiennent dans leur mur.
+- Fichiers : `src/features/library/catalog/{prefabs,sets,define,index}.ts`, `src/features/library/{placeSet,types}.ts`, `src/features/geometry/rotateSelection(.test).ts`, `src/features/documents/wallOpenings.ts`, `src/features/library/{prefabs.test,testBrands,catalogGlobal.test}.ts`, `src/components/library/{LibraryPanel,SymbolPreview}.tsx`, `src/components/editor/{EditorStage,FurnitureGhost,useEditorShortcuts}`, `src/i18n/{fr,libraryTexts}.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (1959, dont 17 nouveaux) — aperçu fantôme, vignettes et rotation à contrôler dans le navigateur
+- Commit : feat: M9 lot B, pièces préfabriquées et Maj + R étendu
 
 ### 2026-11-11 — M9 · Lot A · Murs et pièces
 - Fait : une **barre de modes** apparaît en bas du canevas (pas de bouton de plus dans la barre d'outils). **Outil Mur** : « Polyligne » (comme avant) ou « Mur droit » (clic de début, clic de fin : le mur est créé). **Outil Pièce** : « Polygone » ou « Rectangle » (clic sur un coin, clic sur le coin opposé), avec une case **« Avec murs »** : le rectangle tracé est la face intérieure, et la pièce plus **un seul mur fermé** (axe décalé d'une demi-épaisseur) sont créés en **un seul pas d'historique** (une pièce de 4000 × 3000 mm avec un mur de 200 mm donne 12,00 m² et un axe de 4200 × 3200 mm). Aperçu en direct du rectangle avec largeur, hauteur et surface ; le mur épais est prévisualisé avec l'option. Mêmes aimantations qu'avant, sauf pour le rectangle (pas de direction contrainte, pour ne pas obtenir un rectangle aplati : un clic qui donnerait une surface nulle est ignoré). Changer de mode abandonne le tracé en cours. Maj + survol (pièce automatique) reste disponible dans les deux modes de l'outil Pièce.

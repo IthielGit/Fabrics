@@ -1,8 +1,9 @@
-import { Group } from 'react-konva'
+import { Group, Line } from 'react-konva'
+import { closedWallAxisAround } from '../../features/documents/construction'
 import { createFurnitureElement } from '../../features/documents/elements'
 import type { Point } from '../../features/geometry/viewport'
 import { getSymbol } from '../../features/library/catalog'
-import { getSet } from '../../features/library/catalog/sets'
+import { getPlaceable } from '../../features/library/catalog/prefabs'
 import { furniturePlacement } from '../../features/library/placement'
 import FurnitureShape from './shapes/FurnitureShape'
 
@@ -19,11 +20,26 @@ interface FurnitureGhostProps {
 
 /** Aperçu translucide, à taille réelle, de l'objet (ou de tous les objets de l'ensemble) qu'on est en train de poser. */
 export default function FurnitureGhost({ symbolId, point, grid, scale }: FurnitureGhostProps) {
-  const set = getSet(symbolId)
+  const set = getPlaceable(symbolId)
   if (set) {
     const origin = furniturePlacement(set, point, grid)
+    const shell = set.shell
     return (
       <Group name="ghost" listening={false}>
+        {shell && (
+          <Line
+            points={closedWallAxisAround(
+              origin,
+              { x: origin.x + set.width, y: origin.y + set.depth },
+              shell.thickness,
+            )}
+            stroke="#475569"
+            strokeWidth={shell.thickness}
+            opacity={0.35}
+            lineJoin="miter"
+            listening={false}
+          />
+        )}
         {set.members.map((member, index) => (
           <FurnitureShape
             key={index}

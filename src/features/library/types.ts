@@ -20,6 +20,7 @@ export type SymbolCategory =
   | 'hospitality'
   | 'health-education'
   | 'leisure'
+  | 'prefabs'
   | 'sets'
 
 /**

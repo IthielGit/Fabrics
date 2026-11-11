@@ -19,8 +19,8 @@ import { panView, wheelAction } from '../../features/geometry/navigation'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
 import { computeWallJoinsOf } from '../../features/geometry/wallJoins'
 import { getSymbol } from '../../features/library/catalog'
-import { getSet } from '../../features/library/catalog/sets'
-import { elementsForSet } from '../../features/library/placeSet'
+import { getPlaceable } from '../../features/library/catalog/prefabs'
+import { elementsForPrefab } from '../../features/library/placeSet'
 import { furniturePlacement } from '../../features/library/placement'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
@@ -211,14 +211,29 @@ export default function EditorStage() {
   const placeFurniture = (point: Point, symbolId?: string) => {
     const id = symbolId ?? useEditorStore.getState().furnitureSymbolId
     if (!id) return
-    const set = getSet(id)
+    const set = getPlaceable(id)
     if (set) {
-      // Un ensemble : tous ses objets d'un coup (un seul pas d'historique), centré sur le point.
+      // Un ensemble ou une pièce préfabriquée : tous ses éléments d'un coup (un seul pas
+      // d'historique), centré sur le point.
       const existing = new Map<string, number>()
       for (const el of elements) {
         if (el.type === 'furniture') existing.set(el.symbol, (existing.get(el.symbol) ?? 0) + 1)
       }
-      addElements(elementsForSet(set, furniturePlacement(set, point, furnitureGrid), symbolName, existing))
+      const origin = furniturePlacement(set, point, furnitureGrid)
+      const state = useEditorStore.getState()
+      const wallHeight =
+        project.document.levels?.find((level) => level.id === state.activeLevelId)?.height ??
+        project.document.plan?.defaultWallHeight ??
+        2500
+      addElements(
+        elementsForPrefab(set, origin, wallHeight, {
+          nameOf: symbolName,
+          existing,
+          roomName: symbolName(set.id),
+          wallName: nextElementName(fr.elements.wall, 'wall', elements),
+          openingName: (kind) => fr.elements[kind],
+        }),
+      )
       useLibraryPrefs.getState().addRecent(set.id)
       return
     }

@@ -45,6 +45,31 @@ function isTranslation(previous: readonly number[], next: readonly number[]): bo
 }
 
 /**
+ * Vrai si `next` est `previous` après un déplacement et/ou une rotation (mouvement rigide) : même
+ * nombre de points et mêmes longueurs de segments (à 1 mm près, pour les arrondis). Les segments
+ * gardent alors leur numéro et leur longueur, et les ouvertures leur place relative.
+ */
+function isRigidMotion(previous: readonly number[], next: readonly number[]): boolean {
+  if (previous.length !== next.length || previous.length < 4) return false
+  for (let i = 0; i + 3 < previous.length; i += 2) {
+    const before = Math.hypot(previous[i + 2] - previous[i], previous[i + 3] - previous[i + 1])
+    const after = Math.hypot(next[i + 2] - next[i], next[i + 3] - next[i + 1])
+    if (Math.abs(before - after) > 1) return false
+  }
+  // Même forme, pas seulement mêmes longueurs : les angles entre segments doivent être conservés.
+  for (let i = 0; i + 5 < previous.length; i += 2) {
+    const cross = (p: readonly number[]) =>
+      (p[i + 2] - p[i]) * (p[i + 5] - p[i + 3]) - (p[i + 3] - p[i + 1]) * (p[i + 4] - p[i + 2])
+    const dot = (p: readonly number[]) =>
+      (p[i + 2] - p[i]) * (p[i + 4] - p[i + 2]) + (p[i + 3] - p[i + 1]) * (p[i + 5] - p[i + 3])
+    const scale = Math.max(1, Math.hypot(cross(previous), dot(previous)))
+    if (Math.abs(cross(previous) - cross(next)) / scale > 0.01) return false
+    if (Math.abs(dot(previous) - dot(next)) / scale > 0.01) return false
+  }
+  return true
+}
+
+/**
  * Remet les ouvertures d'accord avec leurs murs après une modification : quand la forme d'un mur
  * change (sommet déplacé, ajouté ou retiré), ses ouvertures restent à l'endroit où elles étaient
  * (projetées sur le segment le plus proche) ; celles qui ne tiennent plus sont supprimées.
@@ -63,7 +88,9 @@ export function reconcileOpenings(
     if (!isWall(element)) continue
     const before = previousWalls.get(element.id)
     if (!before || before.points === element.points) continue
-    if (isTranslation(before.points, element.points)) continue
+    if (isTranslation(before.points, element.points) || isRigidMotion(before.points, element.points)) {
+      continue
+    }
     changed.set(element.id, { before, after: element })
   }
   if (changed.size === 0) return next

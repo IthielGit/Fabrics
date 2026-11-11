@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { Search, Star } from 'lucide-react'
 import { useMemo, useState, type DragEvent } from 'react'
 import { CATEGORIES, SYMBOLS } from '../../features/library/catalog'
+import { PREFABS } from '../../features/library/catalog/prefabs'
 import { SETS, type SetDef } from '../../features/library/catalog/sets'
 import { searchSymbols } from '../../features/library/search'
 import type { SymbolCategory, SymbolDef } from '../../features/library/types'
@@ -15,7 +16,7 @@ import { useLibraryPrefs } from './useLibraryPrefs'
 type Entry = SymbolDef | SetDef
 type Filter = 'all' | 'recents' | 'favorites' | SymbolCategory
 
-const ENTRIES: readonly Entry[] = [...SYMBOLS, ...SETS]
+const ENTRIES: readonly Entry[] = [...SYMBOLS, ...PREFABS, ...SETS]
 const BY_ID = new Map(ENTRIES.map((entry) => [entry.id, entry]))
 const isSet = (entry: Entry): entry is SetDef => 'members' in entry
 
@@ -134,7 +135,7 @@ export default function LibraryPanel() {
                   <span className="line-clamp-2 text-xs text-slate-900">{symbolName(entry.id)}</span>
                   <span className="text-[11px] text-slate-500">
                     {isSet(entry)
-                      ? `${fr.library.setBadge} · ${fr.library.size(entry.width, entry.depth)}`
+                      ? `${entry.shell ? fr.library.prefabBadge : fr.library.setBadge} · ${fr.library.size(entry.width, entry.depth)}`
                       : fr.library.size(entry.width, entry.depth)}
                   </span>
                 </button>

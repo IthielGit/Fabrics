@@ -34,7 +34,7 @@ const EXPECTED_COUNTS: Record<string, number> = {
 }
 
 /** Marques et références commerciales interdites dans les noms et mots-clés (règle « clean room »). */
-const BRANDS = ['ikea', 'revit', 'autodesk', 'bimobject', 'jacuzzi', 'velux', 'nespresso', 'tesla', 'bmw', 'mercedes', 'audi', 'peugeot', 'renault', 'volkswagen', 'toyota', 'vespa', 'steinway', 'yamaha', 'miele', 'bosch', 'siemens', 'samsung', 'apple', 'canva']
+import { BRANDS_FOR_TESTS as BRANDS } from './testBrands'
 
 describe('catalogue complet', () => {
   it('392 objets : le nombre annoncé dans chaque catégorie', () => {
@@ -47,7 +47,7 @@ describe('catalogue complet', () => {
   it('chaque catégorie du panneau a des objets, et toutes ont un intitulé français', () => {
     for (const category of CATEGORIES) {
       expect(fr.library.categories[category], category).toBeTruthy()
-      if (category !== 'sets') expect(SYMBOLS.some((s) => s.category === category), category).toBe(true)
+      if (category !== 'sets' && category !== 'prefabs') expect(SYMBOLS.some((s) => s.category === category), category).toBe(true)
     }
   })
 

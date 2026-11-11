@@ -427,3 +427,14 @@ export const LIBRARY_SET_TEXTS: Record<string, SymbolText> = {
   "set-bar-l-restaurant": { name: "Bar de restaurant en L", keywords: ["ensemble","bar","restaurant","comptoir","arriere","tabourets"] },
   "set-bar-garden": { name: "Bar de jardin", keywords: ["ensemble","bar","jardin","tabourets","parasol"] },
 }
+
+/** Noms et mots-clés des pièces préfabriquées (mur fermé, ouvertures, pièce et mobilier). */
+export const LIBRARY_PREFAB_TEXTS: Record<string, SymbolText> = {
+  "prefab-bedroom": { name: "Chambre", keywords: ["piece","prefabriquee","chambre","lit","armoire","chevets","fenetre","porte"] },
+  "prefab-bathroom": { name: "Salle de bain", keywords: ["piece","prefabriquee","salle","bain","douche","lavabo","wc"] },
+  "prefab-wc": { name: "WC", keywords: ["piece","prefabriquee","wc","toilettes","lavabo"] },
+  "prefab-kitchen": { name: "Cuisine", keywords: ["piece","prefabriquee","cuisine","evier","plaque","frigo","table"] },
+  "prefab-living": { name: "Séjour", keywords: ["piece","prefabriquee","sejour","salon","canape","television"] },
+  "prefab-office": { name: "Bureau", keywords: ["piece","prefabriquee","bureau","travail","bibliotheque"] },
+  "prefab-garage": { name: "Garage", keywords: ["piece","prefabriquee","garage","voiture","porte","sectionnelle"] },
+}

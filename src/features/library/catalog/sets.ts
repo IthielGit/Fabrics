@@ -14,11 +14,31 @@ export interface SetMember {
 /** Composition prête à poser : plusieurs objets du catalogue, ensuite indépendants les uns des autres. */
 export interface SetDef {
   id: string
-  category: 'sets'
+  category: 'sets' | 'prefabs'
   /** Emprise (boîte englobante des objets), en mm. */
   width: number
   depth: number
   members: readonly SetMember[]
+  /** Pièces préfabriquées (M9) : mur fermé et ouvertures autour de l'emprise (la face intérieure du mur). */
+  shell?: PrefabShell
+}
+
+/** Ouverture d'une pièce préfabriquée, posée sur l'un de ses quatre côtés. */
+export interface PrefabOpening {
+  side: 'top' | 'right' | 'bottom' | 'left'
+  /** Position du centre le long du côté, en mm depuis l'angle haut-gauche de l'emprise (x pour haut et bas, y pour gauche et droite). */
+  at: number
+  kind: 'door' | 'window' | 'bay'
+  width?: number
+  height?: number
+  sillHeight?: number
+  hinge?: 'start' | 'end'
+}
+
+/** Mur fermé d'une pièce préfabriquée : l'emprise de l'ensemble est sa face intérieure. */
+export interface PrefabShell {
+  thickness: number
+  openings: readonly PrefabOpening[]
 }
 
 interface MemberOptions {
@@ -29,7 +49,7 @@ interface MemberOptions {
 }
 
 /** Objet posé de façon que son centre soit en (cx, cy), après rotation de `rotation` degrés. */
-function member(symbol: string, cx: number, cy: number, options: MemberOptions = {}): SetMember {
+export function member(symbol: string, cx: number, cy: number, options: MemberOptions = {}): SetMember {
   const def = getSymbol(symbol)
   if (!def) throw new Error(`Objet inconnu dans un ensemble : ${symbol}`)
   const width = options.width ?? def.width

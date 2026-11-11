@@ -1,7 +1,7 @@
 // Tous les textes d'interface de Fabrics (français).
 // Aucun texte affiché à l'utilisateur ne doit être écrit directement dans un composant.
 
-import { LIBRARY_SET_TEXTS, LIBRARY_SYMBOL_TEXTS } from './libraryTexts'
+import { LIBRARY_PREFAB_TEXTS, LIBRARY_SET_TEXTS, LIBRARY_SYMBOL_TEXTS } from './libraryTexts'
 
 export const fr = {
   app: {
@@ -290,6 +290,7 @@ export const fr = {
     addFavorite: 'Ajouter aux favoris',
     removeFavorite: 'Retirer des favoris',
     setBadge: 'Ensemble',
+    prefabBadge: 'Pièce',
     noResult: 'Aucun objet ne correspond à cette recherche.',
     size: (width: number, depth: number) => `${width} × ${depth} mm`,
     categories: {
@@ -310,10 +311,11 @@ export const fr = {
       hospitality: 'Commerce et restauration',
       'health-education': 'Santé et enseignement',
       leisure: 'Loisirs et sport',
+      prefabs: 'Pièces préfabriquées',
       sets: 'Ensembles',
     } as Record<string, string>,
     // Nom et mots-clés de recherche (synonymes courants) de chaque objet du catalogue.
-    symbols: { ...LIBRARY_SYMBOL_TEXTS, ...LIBRARY_SET_TEXTS },
+    symbols: { ...LIBRARY_SYMBOL_TEXTS, ...LIBRARY_SET_TEXTS, ...LIBRARY_PREFAB_TEXTS },
   },
   hints: {
     furniture: 'Cliquez sur le plan pour poser l’objet (autant de fois que voulu) · Échap : quitter',

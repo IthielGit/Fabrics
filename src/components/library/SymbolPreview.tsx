@@ -114,6 +114,17 @@ export default function SymbolPreview({ def, size = 56 }: SymbolPreviewProps) {
 export function SetPreview({ set, size = 56 }: { set: SetDef; size?: number }) {
   return (
     <Frame size={size} width={set.width} depth={set.depth}>
+      {set.shell && (
+        <rect
+          x={-set.shell.thickness / 2}
+          y={-set.shell.thickness / 2}
+          width={set.width + set.shell.thickness}
+          height={set.depth + set.shell.thickness}
+          fill="none"
+          stroke="#475569"
+          strokeWidth={set.shell.thickness}
+        />
+      )}
       {set.members.map((member, index) => {
         const def = getSymbol(member.symbol)
         if (!def) return null

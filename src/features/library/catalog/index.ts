@@ -22,6 +22,7 @@ export const CATEGORIES: readonly SymbolCategory[] = [
   'hospitality',
   'health-education',
   'leisure',
+  'prefabs',
   'sets',
 ]
 

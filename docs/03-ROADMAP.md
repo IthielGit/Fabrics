@@ -244,11 +244,11 @@ détaillées : `docs/02-ARCHITECTURE.md`, section « Outils de construction (M9)
       l'extérieur (le tracé = faces intérieures), créés en un seul pas d'historique
 
 ### Lot B — Pièces préfabriquées
-- [ ] Catégorie « Pièces préfabriquées » dans la Bibliothèque : chambre, salle de bain, WC,
+- [x] Catégorie « Pièces préfabriquées » dans la Bibliothèque : chambre, salle de bain, WC,
       cuisine, séjour, bureau, garage (mur fermé, ouvertures, mobilier, pièce étiquetée)
-- [ ] Aperçu fantôme sous le curseur ; pose en un seul pas d'historique, annulable ; les
+- [x] Aperçu fantôme sous le curseur ; pose en un seul pas d'historique, annulable ; les
       éléments posés restent indépendants et gardent leurs ouvertures
-- [ ] `Maj + R` pivote aussi les murs, pièces, cotes et plateformes : la sélection entière
+- [x] `Maj + R` pivote aussi les murs, pièces, cotes et plateformes : la sélection entière
       tourne de 90° autour de son centre commun ; les ouvertures suivent leur mur
 
 ### Lot C — Plateformes
