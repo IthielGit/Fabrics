@@ -40,6 +40,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-11 — Hors jalon · I · Étirer par zone (tâche 4 sur 4 : validation)
+- Fait : contrôle dans le navigateur par l'utilisateur : outil Étirer (rectangle, aperçu, distance au clavier, annulation en un pas) validé. **Étirer par zone terminé.**
+- Suite possible : option A (glisser un seul mur à la poignée), notée dans « Idées ».
+- Vérification : build ✓ lint ✓ tests ✓
+
 ### 2026-11-11 — Hors jalon · I · Étirer par zone (tâche 3 sur 4 : distance au clavier)
 - Fait : pendant le déplacement de l'outil Étirer, on peut **taper la distance en mm** (chiffres, `-` en premier pour inverser, Retour arrière pour corriger) puis `Entrée` : elle s'applique dans la direction où pointe la souris (horizontale ou verticale), arrondie au mm, avec les mêmes garde-fous (angles droits, ouvertures retirées si elles ne tiennent plus). L'aperçu affiche `1000 mm ↵`. La saisie est interceptée avant les raccourcis (Retour arrière ne supprime donc pas la sélection). Le bouton et le raccourci `S` étaient déjà faits à la tâche 2.
 - Reste : tâche 4 (contrôle final dans le navigateur).
