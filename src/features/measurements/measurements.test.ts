@@ -83,6 +83,7 @@ describe('computeMeasurements', () => {
         name: 'Salon',
         area: 12_000_000,
         perimeter: 14_000,
+        dimensions: [4000, 3000],
         voidArea: 0,
         netArea: 12_000_000,
         voidOverflow: false,

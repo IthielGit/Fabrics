@@ -230,6 +230,7 @@ export const fr = {
     roomOverlap: (count: number) =>
       `${count} pièces se superposent sur ce niveau : leur surface est comptée en double. Déplacez ou redessinez l’une d’elles.`,
     exportExcel: 'Exporter en Excel',
+    versionLabel: 'Version du document',
     exportExcelHint: 'Fichier Excel : un onglet par tableau, de vrais nombres, des totaux en formules.',
     exportCsv: 'CSV',
     exportDisabled: 'Rien à exporter : dessinez d’abord une pièce ou un mur.',
@@ -243,6 +244,35 @@ export const fr = {
       dateLabel: 'Date',
       sheetLabel: 'Feuille',
       pageLabel: 'Page',
+    },
+    // Présentation Client des métrés (M10 ter) : sans épaisseur ni surface de mur
+    client: {
+      roomsTitle: 'Vos pièces',
+      levelsTitle: 'Récapitulatif',
+      level: 'Niveau',
+      room: 'Pièce',
+      dimensions: 'Dimensions (mm)',
+      floorArea: 'Surface au sol (m²)',
+      doors: 'Portes',
+      windows: 'Fenêtres',
+      bays: 'Baies vitrées',
+      building: 'Bâtiment',
+      total: 'Total',
+      pdfTitle: 'Surfaces de votre projet',
+      pdfNote: 'Surface au sol : surface de chaque pièce, trémies d’escalier retirées.',
+    },
+    // Présentation Exécution des métrés (M10 ter) : pour le chantier
+    execution: {
+      rulesTitle: 'Règles de calcul',
+      rulesColumn: 'Règle',
+      rules: [
+        'Longueurs en mm entiers, surfaces en m², volumes en m³.',
+        'Toutes les ouvertures (portes, fenêtres, baies) sont déduites des surfaces de murs, sans seuil.',
+        'Surface d’un mur : longueur × hauteur ; une face sur l’axe, ou deux faces mesurées sur les faces.',
+        'Les baies sont en dimensions brutes de maçonnerie (tableau à tableau) : les dimensions des menuiseries sont à confirmer par le menuisier après prise de cotes sur place.',
+        'Repères : M01 pour les murs, P01 pour les portes, F01 pour les fenêtres et les baies ; les mêmes que sur les plans.',
+        'Aucun prix ni devis : les quantités s’arrêtent aux mesures.',
+      ],
     },
     // Intitulés du fichier CSV
     csv: {
@@ -428,6 +458,13 @@ export const fr = {
       xlsx: 'Classeur Excel des métrés.',
     },
     metres: {
+      version: 'Version',
+      client: 'Client',
+      execution: 'Exécution',
+      versionHint: {
+        client: 'Surface au sol de chaque pièce, sans détail technique.',
+        execution: 'Tous les détails du chantier : murs, ouvertures, volumes et règles de calcul.',
+      },
       format: 'Présentation',
       tables: 'Tableaux (CSV)',
       flat: 'Données à plat (CSV)',

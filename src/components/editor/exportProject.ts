@@ -33,7 +33,7 @@ export interface ExportOptions {
   orientation: Orientation
   scale: ScaleChoice
   /** Réglages de l'export des métrés (type `csv`). */
-  metres: Pick<MetresExportOptions, 'format' | 'scope' | 'includeFurniture'>
+  metres: Pick<MetresExportOptions, 'format' | 'version' | 'scope' | 'includeFurniture'>
 }
 
 /**

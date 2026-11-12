@@ -275,6 +275,16 @@ export async function buildDrawingPdf(
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
   pdf.setProperties({ title: labels.projectName, subject: labels.subtitle ?? '', creator: 'Fabrics' })
+  drawDrawing(pdf, drawing, placement)
+  drawCartouche(pdf, sheet, scale, labels)
+  return pdf.output('blob')
+}
+
+/**
+ * Dessine un dessin de vue (vectoriel) sur la page courante, dans `placement` (largeur du dessin
+ * ramenée à celle du cadre). Sert au PDF des vues et à la vignette du PDF des métrés.
+ */
+export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
   // Facteur de réduction effectivement appliqué (identique à 1/`scale` sauf « Ajuster à la page »).
   const k = placement.width / drawing.width
   const px = (x: number) => placement.x + x * k
@@ -356,7 +366,4 @@ export async function buildDrawingPdf(
       align: text.anchor === 'middle' ? 'center' : 'left',
     })
   }
-
-  drawCartouche(pdf, sheet, scale, labels)
-  return pdf.output('blob')
 }

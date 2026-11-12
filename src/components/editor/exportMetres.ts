@@ -12,7 +12,11 @@ import {
   computeBuildingMeasurements,
   restrictToLevel,
 } from '../../features/measurements/measurements'
-import { buildMetresTables } from '../../features/measurements/tables'
+import { buildClientTables } from '../../features/measurements/clientView'
+import { buildExecutionTables } from '../../features/measurements/executionView'
+import type { MetresTable } from '../../features/measurements/tables'
+import { buildBuildingModel } from '../../features/building/model'
+import { levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
 import { fr } from '../../i18n/fr'
 import { formatDate } from '../../lib/date'
 import { downloadBlob } from '../../lib/download'
@@ -21,9 +25,13 @@ import { furnitureCsvRows } from '../library/furnitureRows'
 
 export type MetresFormat = 'tables' | 'flat' | 'xlsx' | 'pdf'
 export type MetresScope = 'building' | 'level'
+/** Client : surfaces au sol simples ; Exécution : tous les détails et les règles de calcul (M10 ter). */
+export type MetresVersion = 'client' | 'execution'
 
 export interface MetresExportOptions {
   format: MetresFormat
+  /** Version du document ; absent : Exécution (le détail complet, comme avant M10 ter). */
+  version?: MetresVersion
   /** Tout le bâtiment, ou seulement le niveau affiché. */
   scope: MetresScope
   includeFurniture: boolean
@@ -49,30 +57,58 @@ export function prepareMetres(project: Project, options: Pick<MetresExportOption
   return { building, furniture }
 }
 
+/** Vignette du plan du premier niveau qui contient des murs ou des pièces (PDF Client). */
+function planThumbnail(project: Project, levelId: string | null): Drawing | null {
+  const doc = project.document
+  const model = buildBuildingModel(doc)
+  const levels = [...(doc.levels ?? [])].sort((a, b) => a.elevation - b.elevation)
+  const ordered = levelId ? [...levels.filter((l) => l.id === levelId), ...levels] : levels
+  for (const level of ordered) {
+    const drawing = levelPlanDrawing(model, level)
+    if (drawing) return drawing
+  }
+  return null
+}
+
+/** Les tableaux de la version demandée. */
+export function metresTables(
+  building: ReturnType<typeof prepareMetres>['building'],
+  furniture: ReturnType<typeof prepareMetres>['furniture'],
+  version: MetresVersion,
+): MetresTable[] {
+  const labels = fr.measurements.csv
+  return version === 'client'
+    ? buildClientTables(building, fr.measurements.client)
+    : buildExecutionTables(building, labels, furniture, fr.measurements.execution)
+}
+
 /** Exporte les métrés du projet (CSV en tableaux, CSV à plat, Excel ou PDF) et fait télécharger le fichier. */
 export async function exportMetres(project: Project, options: MetresExportOptions): Promise<void> {
   const { building, furniture } = prepareMetres(project, options)
   const labels = fr.measurements.csv
+  const version = options.version ?? 'execution'
+  const tables = metresTables(building, furniture, version)
   const date = formatDate(new Date())
   const meta: CsvMeta = { projectName: project.name, date }
 
   if (options.format === 'pdf') {
     const sheet = sheetSize(options.sheet, options.orientation)
-    const blob = await buildMetresPdf(buildMetresTables(building, labels, furniture), sheet, {
-      title: fr.measurements.pdf.title,
+    const client = version === 'client'
+    const blob = await buildMetresPdf(tables, sheet, {
+      title: client ? fr.measurements.client.pdfTitle : fr.measurements.pdf.title,
       units: `${labels.meta?.units ?? ''} : ${labels.meta?.unitsValue ?? ''}`,
-      note: labels.meta?.noteValue ?? '',
+      note: client ? fr.measurements.client.pdfNote : (labels.meta?.noteValue ?? ''),
       continued: fr.measurements.pdf.continued,
       cartouche: {
         projectName: project.name,
-        subtitle: fr.measurements.pdf.title,
+        subtitle: client ? fr.measurements.client.pdfTitle : fr.measurements.pdf.title,
         dateLabel: fr.measurements.pdf.dateLabel,
         date,
         sheetLabel: fr.measurements.pdf.sheetLabel,
         sheet: options.sheet.toUpperCase(),
         pageLabel: fr.measurements.pdf.pageLabel,
       },
-    })
+    }, client ? planThumbnail(project, options.activeLevelId) : null)
     downloadBlob(blob, exportFileName(options.fileName, 'pdf', fr.measurements.csvFallbackName))
     return
   }
@@ -82,7 +118,7 @@ export async function exportMetres(project: Project, options: MetresExportOption
     const { buildMetresXlsx } = await import('../../features/export/metresXlsx')
     const m = labels.meta
     const bytes = buildMetresXlsx(
-      buildMetresTables(building, labels, furniture),
+      tables,
       m && {
         title: m.title,
         rows: [
@@ -105,9 +141,9 @@ export async function exportMetres(project: Project, options: MetresExportOption
   }
 
   const csv =
-    options.format === 'flat'
+    options.format === 'flat' && version === 'execution'
       ? measurementsToFlatCsv(building, labels, furniture)
-      : measurementsToCsv(building, labels, furniture, meta)
+      : measurementsToCsv(building, labels, furniture, meta, tables)
   downloadBlob(
     new Blob([csv], { type: 'text/csv;charset=utf-8' }),
     exportFileName(options.fileName, 'csv', fr.measurements.csvFallbackName),

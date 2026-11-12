@@ -20,7 +20,7 @@ import Choice from '../ui/Choice'
 import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
 import { exportProject } from './exportProject'
-import type { MetresFormat, MetresScope } from './exportMetres'
+import type { MetresFormat, MetresScope, MetresVersion } from './exportMetres'
 
 /** Fenêtre « Exporter » : PNG, JPG, PDF et, pour un plan, CSV des métrés. */
 export default function ExportDialog({ onClose }: { onClose: () => void }) {
@@ -81,6 +81,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   })
   // Métrés : présentation, périmètre et mobilier.
   const [metresFormat, setMetresFormat] = useState<MetresFormat>('xlsx')
+  const [metresVersion, setMetresVersion] = useState<MetresVersion>('execution')
   const [metresScope, setMetresScope] = useState<MetresScope>('building')
   const [includeFurniture, setIncludeFurniture] = useState(true)
   const [busy, setBusy] = useState(false)
@@ -119,7 +120,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         sheet,
         orientation,
         scale,
-        metres: { format: metresFormat, scope: metresScope, includeFurniture },
+        metres: { format: metresFormat, version: metresVersion, scope: metresScope, includeFurniture },
       })
       onClose()
     } catch {
@@ -192,8 +193,25 @@ function ExportForm({ onClose }: { onClose: () => void }) {
 
         {type === 'csv' && (
           <>
+            <Group label={fr.export.metres.version}>
+              {(['client', 'execution'] as const).map((value) => (
+                <Choice
+                  key={value}
+                  name="export-metres-version"
+                  checked={metresVersion === value}
+                  onSelect={() => {
+                    setMetresVersion(value)
+                    // Les données à plat n'existent qu'en Exécution.
+                    if (value === 'client' && metresFormat === 'flat') setMetresFormat('xlsx')
+                  }}
+                >
+                  {fr.export.metres[value]}
+                </Choice>
+              ))}
+            </Group>
+            <p className="-mt-2 text-xs text-slate-500">{fr.export.metres.versionHint[metresVersion]}</p>
             <Group label={fr.export.metres.format}>
-              {(['xlsx', 'pdf', 'tables', 'flat'] as const).map((value) => (
+              {(metresVersion === 'client' ? (['xlsx', 'pdf', 'tables'] as const) : (['xlsx', 'pdf', 'tables', 'flat'] as const)).map((value) => (
                 <Choice
                   key={value}
                   name="export-metres-format"

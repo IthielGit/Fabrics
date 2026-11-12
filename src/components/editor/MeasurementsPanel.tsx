@@ -1,19 +1,21 @@
 import { Download, FileSpreadsheet } from 'lucide-react'
-import { Fragment, useMemo } from 'react'
+import { Fragment, useMemo, useState } from 'react'
 import { furnitureCsvRows } from '../library/furnitureRows'
 import { overlappingRoomIdsCached } from '../../features/geometry/roomOverlap'
+import { buildClientTables } from '../../features/measurements/clientView'
 import { csvFileName, measurementsToCsv } from '../../features/measurements/csv'
 import {
   computeBuildingMeasurements,
   computeMeasurements,
 } from '../../features/measurements/measurements'
+import { cellText } from '../../features/measurements/tables'
 import { formatArea, formatLength, formatVolume } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { formatDate } from '../../lib/date'
 import { downloadBlob } from '../../lib/download'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
-import { exportMetres } from './exportMetres'
+import { exportMetres, metresTables, type MetresVersion } from './exportMetres'
 
 const HEAD = 'px-1 py-1 text-left text-xs font-medium text-slate-500'
 const NUMBER = 'px-1 py-1 text-right tabular-nums'
@@ -29,6 +31,8 @@ export default function MeasurementsPanel() {
   const setSelection = useEditorStore((state) => state.setSelection)
   const setActiveLevel = useEditorStore((state) => state.setActiveLevel)
 
+  // Version affichée et exportée : un réglage d'interface, pas une donnée du document.
+  const [version, setVersion] = useState<MetresVersion>('execution')
   // Recalculé à chaque modification du document : le panneau est toujours à jour.
   const building = useMemo(
     () => computeBuildingMeasurements({ elements: elements ?? [], levels }),
@@ -62,6 +66,7 @@ export default function MeasurementsPanel() {
     try {
       await exportMetres(project, {
         format: 'xlsx',
+        version,
         scope: 'building',
         includeFurniture: true,
         activeLevelId: null,
@@ -75,10 +80,14 @@ export default function MeasurementsPanel() {
   }
 
   const handleExport = () => {
-    const csv = measurementsToCsv(building, fr.measurements.csv, furnitureCsvRows(elements ?? []), {
-      projectName,
-      date: formatDate(new Date()),
-    })
+    const furniture = furnitureCsvRows(elements ?? [])
+    const csv = measurementsToCsv(
+      building,
+      fr.measurements.csv,
+      furniture,
+      { projectName, date: formatDate(new Date()) },
+      metresTables(building, furniture, version),
+    )
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
     downloadBlob(
       blob,
@@ -93,6 +102,21 @@ export default function MeasurementsPanel() {
 
   return (
     <section aria-label={fr.measurements.title} className="p-4">
+      <div role="group" aria-label={fr.measurements.versionLabel} className="mb-3 flex rounded-md border border-slate-200 p-0.5 text-xs">
+        {(['client', 'execution'] as const).map((value) => (
+          <button
+            key={value}
+            type="button"
+            aria-pressed={version === value}
+            onClick={() => setVersion(value)}
+            className={`flex-1 rounded px-2 py-1 font-medium ${
+              version === value ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100'
+            }`}
+          >
+            {fr.export.metres[value]}
+          </button>
+        ))}
+      </div>
       <div className="flex items-center justify-end gap-2">
         <h2 className="sr-only">{fr.measurements.title}</h2>
         <Button
@@ -116,6 +140,50 @@ export default function MeasurementsPanel() {
         </Button>
       </div>
 
+      {version === 'client' && (
+        <div className="mt-3 space-y-4">
+          {buildingEmpty && <p className="text-sm text-slate-500">{fr.measurements.empty}</p>}
+          {buildClientTables(building, fr.measurements.client).map((table) => (
+            <table key={table.id} className="w-full text-sm">
+              <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                {table.title}
+              </caption>
+              <thead>
+                <tr>
+                  {table.columns.map((column) => (
+                    <th key={column.header} className={`${HEAD} ${column.align === 'right' ? 'text-right' : ''}`}>
+                      {column.header}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {table.rows.map((cells, i) => (
+                  <tr key={i} className="border-t border-slate-100">
+                    {cells.map((cell, j) => (
+                      <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
+                        {cellText(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+                {table.total && (
+                  <tr className="border-t border-slate-300 font-semibold">
+                    {table.total.map((cell, j) => (
+                      <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
+                        {cellText(cell)}
+                      </td>
+                    ))}
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          ))}
+        </div>
+      )}
+
+      {version === 'execution' && (
+        <>
       {active && building.levels.length > 1 && (
         <p className="mt-2 text-xs font-medium text-slate-600">
           {fr.measurements.level} : {active.level.name}
@@ -423,6 +491,8 @@ export default function MeasurementsPanel() {
       )}
       {building.levels.length > 1 && (
         <p className="mt-1 text-xs text-slate-500">{fr.measurements.buildingNote}</p>
+      )}
+        </>
       )}
     </section>
   )

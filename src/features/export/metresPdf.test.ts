@@ -69,3 +69,19 @@ describe('buildMetresPdf', () => {
     expect(blob.size).toBeGreaterThan(500)
   })
 })
+
+describe('PDF Client avec vignette du plan', () => {
+  it('tient sur une page : vignette, tableau des pièces et cartouche', async () => {
+    const { buildBuildingModel } = await import('../building/model')
+    const { levelPlanDrawing } = await import('../building/views/drawing')
+    const { createWallElement } = await import('../documents/elements')
+    const { createLevel } = await import('../documents/levels')
+    const level = createLevel('Rez', 0, 2500, 200)
+    const wall = { ...createWallElement('Mur', [0, 0, 4000, 0, 4000, 3000, 0, 3000, 0, 0], 200, 2500), levelId: level.id }
+    const plan = levelPlanDrawing(buildBuildingModel({ elements: [wall], levels: [level] }), level)
+    expect(plan).not.toBeNull()
+    const pdf = await textOf(await buildMetresPdf([table(6)], sheetSize('a4', 'portrait'), labels, plan))
+    expect(pdf.startsWith('%PDF-')).toBe(true)
+    expect(pageCount(pdf)).toBe(1)
+  })
+})

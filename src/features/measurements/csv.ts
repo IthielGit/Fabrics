@@ -3,7 +3,7 @@ import type { RoofProblem } from '../building/roof'
 import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
 import type { BuildingMeasurements } from './measurements'
-import { buildMetresTables, cellText, mm, wallRefs } from './tables'
+import { buildMetresTables, cellText, mm, wallRefs, type MetresTable } from './tables'
 
 /** Intitulés du fichier (français, fournis par `src/i18n/fr.ts`). */
 export interface CsvLabels {
@@ -231,6 +231,8 @@ export function measurementsToCsv(
   labels: CsvLabels,
   furniture: readonly FurnitureCsvRow[] = [],
   meta?: CsvMeta,
+  /** Tableaux déjà construits (version Client ou Exécution) ; absent : les tableaux d'Exécution. */
+  tables?: readonly MetresTable[],
 ): string {
   const text = escapeCsvField
   const lines: string[] = []
@@ -247,7 +249,7 @@ export function measurementsToCsv(
     )
   }
 
-  for (const table of buildMetresTables(building, labels, furniture)) {
+  for (const table of tables ?? buildMetresTables(building, labels, furniture)) {
     if (lines.length > 0) lines.push('')
     lines.push(row(text(table.title)))
     if (table.note) lines.push(row(text(table.note)))

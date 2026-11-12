@@ -30,6 +30,8 @@ export interface RoomMeasure {
   voidArea: number
   /** Surface nette : surface au tracé moins les trémies, en mm². */
   netArea: number
+  /** Largeur × profondeur (mm) d'une pièce rectangulaire aux côtés horizontaux et verticaux ; sinon `null`. */
+  dimensions: [number, number] | null
   /** Vrai si une trémie déborde de la pièce (dalle laissée pleine, aucune surface retirée). */
   voidOverflow: boolean
 }
@@ -235,6 +237,21 @@ function chimneyMeasure(chimney: ChimneyElement): ChimneyMeasure {
   }
 }
 
+/** Largeur et profondeur d'un contour qui est un rectangle aux côtés horizontaux et verticaux (4 points). */
+export function axisAlignedRectangle(points: readonly number[]): [number, number] | null {
+  if (points.length !== 8) return null
+  const xs = [points[0], points[2], points[4], points[6]]
+  const ys = [points[1], points[3], points[5], points[7]]
+  const x0 = Math.min(...xs)
+  const x1 = Math.max(...xs)
+  const y0 = Math.min(...ys)
+  const y1 = Math.max(...ys)
+  if (x1 <= x0 || y1 <= y0) return null
+  // Les quatre sommets doivent être les quatre coins du rectangle englobant, chacun une fois.
+  const seen = new Set(xs.map((x, i) => `${x === x0 ? 'l' : x === x1 ? 'r' : '?'}${ys[i] === y0 ? 't' : ys[i] === y1 ? 'b' : '?'}`))
+  return seen.size === 4 && ![...seen].some((c) => c.includes('?')) ? [x1 - x0, y1 - y0] : null
+}
+
 /** Surface d'une ouverture dans son mur : sa hauteur est limitée à ce qui reste au-dessus de l'allège. */
 function openingMeasure(opening: OpeningElement, wall: WallElement): OpeningMeasure {
   const visibleHeight = Math.max(0, Math.min(opening.height, wall.height - opening.sillHeight))
@@ -296,6 +313,7 @@ export function computeMeasurements(
         perimeter: polygonPerimeter(element.points),
         voidArea: roomVoids.area,
         netArea: Math.max(0, area - roomVoids.area),
+        dimensions: axisAlignedRectangle(element.points),
         voidOverflow: roomVoids.overflowing.length > 0,
       })
     } else if (element.type === 'stair') {

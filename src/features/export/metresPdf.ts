@@ -1,5 +1,6 @@
 import { cellText, type MetresCell, type MetresTable } from '../measurements/tables'
-import { createPdf, drawCartouche, type Pdf, type PlanPdfLabels } from './pdf'
+import type { Drawing } from '../building/views/drawing'
+import { createPdf, drawCartouche, drawDrawing, type Pdf, type PlanPdfLabels } from './pdf'
 import { cartoucheArea, PDF_MARGIN_MM, type SheetSize } from './pdfLayout'
 
 type Rgb = [number, number, number]
@@ -23,6 +24,8 @@ const TITLE_PT = 9.5
 const NOTE_PT = 7
 const MAX_HEADER_LINES = 3
 const MAX_HEADER_COLUMN = 30
+/** Hauteur maximale de la vignette du plan, mm. */
+const PLAN_MAX_HEIGHT = 60
 
 /** Le jeu de caractères des polices standard de PDF n'a pas le vrai signe moins : trait d'union. */
 const pdfText = (text: string) => text.replace(/−/g, '-')
@@ -122,6 +125,8 @@ export async function buildMetresPdf(
   tables: readonly MetresTable[],
   sheet: SheetSize,
   labels: MetresPdfLabels,
+  /** Vignette du plan (vectorielle), sous l'en-tête de la première page. */
+  plan: Drawing | null = null,
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
   pdf.setProperties({
@@ -160,6 +165,13 @@ export async function buildMetresPdf(
     }
   }
   y += TABLE_GAP - 2
+
+  if (plan && plan.width > 0 && plan.height > 0) {
+    const k = Math.min(width / plan.width, PLAN_MAX_HEIGHT / plan.height)
+    pdf.setLineJoin('round')
+    drawDrawing(pdf, plan, { x: left, y, width: plan.width * k, height: plan.height * k })
+    y += plan.height * k + TABLE_GAP
+  }
 
   for (const table of tables) {
     const layout = layoutTable(pdf, table, width)

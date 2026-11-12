@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M10 bis terminé (à tester) ; M10 ter, lot A en cours (à la demande de l'utilisateur, tests à la fin)
-- **Dernière tâche terminée :** M10 ter, Lot A, tâche 1 (repères M01, P01, F01)
-- **Prochaine tâche :** M10 ter, Lot A, tâche 2 (présentation Client)
+- **Jalon en cours :** M10 bis terminé (à tester) ; M10 ter, lot A terminé (à tester) ; lot B (cotes) à faire
+- **Dernière tâche terminée :** M10 ter, Lot A, tâches 2 à 6 (métrés Client / Exécution)
+- **Prochaine tâche :** tester M10 bis et M10 ter lot A dans le navigateur, puis M10 ter, Lot B (cotes client / exécution), puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 ter · Lot A · Tâches 2 à 6 · Métrés Client et Exécution
+- Fait : deux présentations des mêmes calculs. **Client** : « Vos pièces » (nom, dimensions `4000 × 3000` pour une pièce rectangulaire, surface au sol trémie déduite, D37) et « Récapitulatif » (surface par niveau et pour le bâtiment, nombre de portes, fenêtres, baies) ; aucune épaisseur ni surface de mur. **Exécution** : tous les tableaux détaillés (murs avec repères, surfaces brutes et nettes par face, volumes, ouvertures avec repères, escaliers, plateformes, cheminées, toitures, totaux par niveau) suivis des **règles de calcul** (ouvertures toutes déduites sans seuil, baies brutes de maçonnerie à confirmer par le menuisier, repères, aucun prix). **PDF Client** d'une page avec vignette vectorielle du plan (premier niveau, ou le niveau affiché), tableaux et cartouche. Le panneau Métrés a une bascule **Client / Exécution** (réglage d'interface, hors historique) qui change l'affichage et les exports Excel et CSV ; la fenêtre Exporter demande la **Version** (les données à plat n'existent qu'en Exécution). Sans choix, l'export reste celui d'avant (Exécution).
+- Limites : en Exécution, la baie reste en deux colonnes « Largeur » et « Hauteur » (pas encore `largeur / hauteur`) ; la mention sur les baies brutes est dans les règles de calcul en fin de document ; la vignette du PDF Client montre un seul niveau.
+- Fichiers : `src/features/measurements/{clientView,executionView,measurements,csv}.ts`, `clientView.test.ts` et `metresPdf.test.ts` (tests), `src/features/export/{pdf,metresPdf}.ts` (`drawDrawing` extrait), `src/components/editor/{MeasurementsPanel,ExportDialog,exportMetres,exportProject}.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ ; non testé dans le navigateur (à faire à la fin, à la demande de l'utilisateur)
+- Commit : feat: M10 ter lot A, métrés Client et Exécution
 
 ### 2026-11-12 — M10 ter · Lot A · Tâche 1 · Repères M01, P01, F01
 - Fait : chaque mur, porte et fenêtre a un repère : murs `M01…`, portes `P01…`, fenêtres et baies `F01…`. Numérotation continue dans tout le bâtiment, niveau par niveau (du plus bas au plus haut), puis de haut en bas et de gauche à droite sur le plan. Le tableau des murs (colonne « Réf. ») et celui des ouvertures (nouvelle colonne « Réf. » en plus de « Réf. du mur ») les affichent ; dans le CSV à plat, une ouverture porte son propre repère (avant : celui de son mur). Les anciens repères « M1 » deviennent « M01 ». Calcul pur partagé : il servira aussi aux cotes du lot B.

@@ -435,20 +435,20 @@ l'utilisateur sur un premier PDF :
 
 - [x] Repères automatiques `M01`, `P01`, `F01` (calcul pur, avec tests), affichés dans les
       métrés d'exécution
-- [ ] Présentation **Client** (fonction pure) : pour chaque pièce, son nom, ses dimensions
+- [x] Présentation **Client** (fonction pure) : pour chaque pièce, son nom, ses dimensions
       intérieures et sa **surface au sol** (trémie déduite) ; total par niveau et pour le
       bâtiment ; nombre de portes et de fenêtres. Libellés simples, sans épaisseur ni surface
       de mur
-- [ ] PDF Client d'une page : vignette du plan, tableau des pièces, totaux, cartouche de M10
-- [ ] Présentation **Exécution** (fonction pure) : murs (repère, longueur à l'axe et par face,
+- [x] PDF Client d'une page : vignette du plan, tableau des pièces, totaux, cartouche de M10
+- [x] Présentation **Exécution** (fonction pure) : murs (repère, longueur à l'axe et par face,
       épaisseur, hauteur, surface brute et nette par face, volume), ouvertures (repère, style,
       baie brute largeur × hauteur, allège, mur porteur), escaliers, dalles, trémies,
       cheminées, toitures ; par niveau et pour le bâtiment. **Toutes les ouvertures sont
       déduites**, sans seuil. Rappel des règles de calcul imprimé en fin de document
-- [ ] CSV et PDF de plusieurs pages pour la version Exécution (repart de l'export actuel des
+- [x] CSV et PDF de plusieurs pages pour la version Exécution (repart de l'export actuel des
       métrés et de son modèle de tableaux commun `buildMetresTables` : tableaux, données à
       plat, PDF) ; la version Client passe par le même modèle
-- [ ] Panneau Métrés : bascule « Client / Exécution » ; la fenêtre Exporter demande la version
+- [x] Panneau Métrés : bascule « Client / Exécution » ; la fenêtre Exporter demande la version
 
 ### Lot B — Cotes client / exécution
 
