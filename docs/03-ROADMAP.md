@@ -858,8 +858,8 @@ Objectif : retrouver ses projets sur un autre appareil.
 - [x] Choix automatique du dépôt : local si déconnecté, Supabase si connecté (2026-11-12, à tester dans le navigateur)
 - [x] À la première connexion : proposer d'importer les projets locaux (2026-11-12, à tester dans le navigateur)
 - [x] Gestion hors ligne simple : en cas d'échec réseau, garder une copie locale et réessayer (2026-11-12, à tester dans le navigateur)
-- [ ] Partage par lien en lecture seule (plan, 3D, planche) ; désactivable à tout moment ;
-      option mot de passe et date d'expiration
+- [x] Partage par lien en lecture seule (plan, 3D, planche) ; désactivable à tout moment ;
+      option mot de passe et date d'expiration (2026-11-12, validé ; plans seulement, images non visibles)
 - [ ] Table et règles de sécurité Supabase du partage (RLS), testées avec deux comptes
 
 **Critères d'acceptation**

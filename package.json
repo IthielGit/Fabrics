@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "lint": "oxlint",
     "test": "vitest run",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check:security": "node --env-file=.env.local scripts/check-security.mjs"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

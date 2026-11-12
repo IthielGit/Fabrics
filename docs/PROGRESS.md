@@ -44,6 +44,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M13 · Lot F : contrôle de sécurité à deux comptes (script prêt, à lancer)
+- Fait : le lot E est validé par l'utilisateur (SQL exécuté, partage essayé). Vérifié à distance : un visiteur ne peut lire ni `shares` ni les projets, ne peut pas créer de lien, et un jeton inconnu donne « indisponible ». Script `scripts/check-security.mjs` (commande `npm run check:security`, jamais lancé par `npm test`) : se connecte avec deux comptes de test, crée un projet, une image et un lien protégé, puis vérifie que B ne peut ni lire, ni modifier, ni supprimer, ni créer quoi que ce soit chez A (projets, liens, images, signatures de téléchargement), que le visiteur anonyme ne lit aucune table, et que le lien se comporte comme prévu (mot de passe demandé / refusé / accepté, désactivé, réactivé, expiré, retiré, supprimé, réponse sans identifiant de compte ni mot de passe haché). Il supprime ses données à la fin.
+- Reste : lancer le script avec deux vrais comptes de test (le résultat « Sécurité validée » ferme le jalon).
+- Fichiers : `scripts/check-security.mjs`, `package.json` (script `check:security`).
+- Vérification : syntaxe ✓ lint ✓ ; le script refuse de démarrer sans les variables de test.
+
 ### 2026-11-12 — M13 · Lot E : partage par lien en lecture seule (à tester)
 - Fait : (1) base : table `shares` (jeton aléatoire de 192 bits tiré par la base, actif, mot de passe haché bcrypt, expiration), accès par colonne (le mot de passe haché n'est jamais lisible depuis le navigateur), RLS propriétaire seulement, fonctions `create_share` (plans seulement), `set_share_password`, et `get_shared_project` seule porte d'entrée des visiteurs (même réponse « indisponible » pour jeton inconnu, désactivé ou expiré). (2) bouton « Partager » dans l'éditeur (plan, connecté) : créer un lien avec mot de passe et date limite facultatifs, copier, désactiver / réactiver, changer ou retirer le mot de passe, changer la date, supprimer. (3) page publique `/s/<jeton>` : demande le mot de passe si besoin, puis plan (déplacer et zoomer seulement), niveaux, 3D et planche ; aucun outil de modification, aucun enregistrement.
 - Limites connues : les images importées ne sont pas visibles dans un plan partagé (le stockage reste privé) ; pas de limitation du nombre d'essais de mot de passe (le hachage bcrypt ralentit les essais) ; seuls les plans se partagent (pas les visuels) ; il faut réexécuter `supabase/schema.sql` dans Supabase (réexécutable sans risque).
