@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import {
   createDesignProject,
+  createExamplePlanProject,
   createPlanProject,
   duplicateProject,
   type DesignFormatId,
@@ -17,6 +18,8 @@ interface ProjectsState {
   /** Crée un projet et renvoie son identifiant (pour ouvrir l'éditeur). */
   createDesign: (formatId: DesignFormatId) => Promise<string>
   createPlan: () => Promise<string>
+  /** Crée une copie du plan d'exemple et renvoie son identifiant. */
+  createExample: () => Promise<string>
   rename: (id: string, name: string) => Promise<void>
   duplicate: (id: string) => Promise<string | null>
   remove: (id: string) => Promise<void>
@@ -45,6 +48,13 @@ export function createProjectsStore(repo: ProjectRepository) {
 
     createPlan: async () => {
       const project = createPlanProject(fr.projects.defaultPlanName)
+      await repo.save(project)
+      await get().refresh()
+      return project.id
+    },
+
+    createExample: async () => {
+      const project = createExamplePlanProject()
       await repo.save(project)
       await get().refresh()
       return project.id

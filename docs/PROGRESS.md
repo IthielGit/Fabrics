@@ -1160,6 +1160,12 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Un plan sans aucun élément affiche au centre une carte « Commencez votre plan » avec deux boutons : « Tracer une pièce » (mode rectangle, deux coins) et « Tracer des murs ». Elle disparaît au premier élément tracé.
 - Fichiers : `src/components/editor/EmptyPlanCard.tsx` (nouveau), `src/i18n/fr.ts`, `src/pages/EditorPage.tsx`. Build, lint, 2665 tests OK.
 
+### 2026-11-12 — M11 quater, Lot B (accueil)
+
+- L'accueil montre trois cartes : « Dessiner un plan », « Créer une affiche », « Voir un exemple », et un rappel que les projets restent dans ce navigateur.
+- « Voir un exemple » crée une copie du plan d'exemple (séjour + chambre, 2 murs, 2 portes, 2 fenêtres), dessiné pour Fabrics (`createExamplePlanProject`, testé).
+- Fichiers : `HomePage.tsx`, `createProject.ts`, `projectsStore.ts`, `fr.ts`. Build, lint, 2667 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

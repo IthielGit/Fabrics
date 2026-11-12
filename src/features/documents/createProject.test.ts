@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import {
   DESIGN_FORMATS,
   createDesignProject,
+  createExamplePlanProject,
   createPlanProject,
   duplicateProject,
 } from './createProject'
@@ -83,5 +84,23 @@ describe('duplicateProject', () => {
     const copy = duplicateProject(source, 'Copie')
     copy.document.page.background = '#000000'
     expect(source.document.page.background).toBe('#ffffff')
+  })
+})
+
+describe('createExamplePlanProject', () => {
+  it('crée un plan avec deux pièces, deux murs et quatre ouvertures sur le rez-de-chaussée', () => {
+    const project = createExamplePlanProject(NOW)
+    const { elements, levels } = project.document
+    expect(project.kind).toBe('plan')
+    expect(elements.filter((e) => e.type === 'room')).toHaveLength(2)
+    expect(elements.filter((e) => e.type === 'wall')).toHaveLength(2)
+    expect(elements.filter((e) => e.type === 'opening')).toHaveLength(4)
+    expect(elements.every((e) => e.levelId === levels![0].id)).toBe(true)
+  })
+
+  it('pose chaque ouverture sur un mur qui existe', () => {
+    const { elements } = createExamplePlanProject(NOW).document
+    const wallIds = new Set(elements.filter((e) => e.type === 'wall').map((e) => e.id))
+    for (const e of elements) if (e.type === 'opening') expect(wallIds.has(e.wallId)).toBe(true)
   })
 })

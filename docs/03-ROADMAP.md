@@ -802,8 +802,9 @@ extérieure. Aucun changement du format du document. Lots à valider un par un.
 - [x] **Lot A — Barre d'outils lisible** : libellés visibles à côté des icônes de base, flèche des familles
       bien visible, menu des familles aussi accessible au clic simple (2026-11-12). Raccourcis plus logiques :
       non modifiés, à fixer avec l'utilisateur.
-- [ ] **Lot B — Accueil qui guide** : cartes « Dessiner un plan », « Créer une affiche », « Voir un
-      exemple » ; un plan d'exemple créé pour Fabrics ; rappel que les projets restent dans ce navigateur.
+- [x] **Lot B — Accueil qui guide** : cartes « Dessiner un plan », « Créer une affiche », « Voir un
+      exemple » ; un plan d'exemple créé pour Fabrics ; rappel que les projets restent dans ce navigateur
+      (2026-11-12).
 - [x] **Lot C — Premier pas dans le plan vide** : carte d'invitation au centre du canevas, qui disparaît au
       premier tracé (2026-11-12).
 - [ ] **Lot D — Aide pendant le geste** : une consigne principale par outil, les astuces (Maj, Alt…) dans
