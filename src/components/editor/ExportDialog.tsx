@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { planExportExtent } from '../../features/export/bounds'
+import type { DxfScope } from '../../features/export/dxfFiles'
 import type { ExportFileType } from '../../features/export/fileName'
 import { resolutionOptions } from '../../features/export/limits'
 import {
@@ -88,15 +89,25 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   const [metresVersion, setMetresVersion] = useState<MetresVersion>(() => useEditorStore.getState().metresVersion)
   const [metresScope, setMetresScope] = useState<MetresScope>('building')
   const [includeFurniture, setIncludeFurniture] = useState(true)
+  // DXF : un fichier par niveau (D60) ; le niveau affiché, ou tous dans un zip.
+  const [dxfScope, setDxfScope] = useState<DxfScope>('level')
+  const levelCount = document?.levels?.length ?? 0
   const [busy, setBusy] = useState(false)
   // Contrôle avant export : métrés (selon le périmètre) ou plan (niveau affiché). Un manque ou un
   // débord bloque l'export (D55) ; les autres points sont seulement listés, pour les métrés.
   const warnings = useMemo(() => {
     if (!isPlan || !document) return []
-    const levelId = type === 'csv' ? (metresScope === 'level' ? activeLevelId : null) : activeLevelId
+    const levelId =
+      type === 'csv'
+        ? metresScope === 'level'
+          ? activeLevelId
+          : null
+        : type === 'dxf' && dxfScope === 'building'
+          ? null
+          : activeLevelId
     const all = metresWarnings(document, measurements, levelId)
     return type === 'csv' ? all : all.filter(isBlockingWarning)
-  }, [isPlan, type, document, measurements, metresScope, activeLevelId])
+  }, [isPlan, type, document, measurements, metresScope, dxfScope, activeLevelId])
   const [failed, setFailed] = useState(false)
 
   if (!project) return null
@@ -122,7 +133,15 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   // Les métrés en PDF ont leur propre mise en page : ni échelle ni emprise.
   const metresPdf = type === 'csv' && metresFormat === 'pdf'
   const fileExtension =
-    type === 'csv' ? (metresFormat === 'pdf' ? 'pdf' : metresFormat === 'xlsx' ? 'xlsx' : 'csv') : type
+    type === 'csv'
+      ? metresFormat === 'pdf'
+        ? 'pdf'
+        : metresFormat === 'xlsx'
+          ? 'xlsx'
+          : 'csv'
+      : type === 'dxf' && dxfScope === 'building' && levelCount > 1
+        ? 'zip'
+        : type
   const planDoesNotFit = type === 'pdf' && planPlacement !== null && !planPlacement.fits
   const selectedOption = options.find((o) => o.multiplier === multiplier)
   const tooBig = (type === 'png' || type === 'jpg') && selectedOption?.allowed === false
@@ -143,6 +162,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         orientation,
         scale,
         metres: { format: metresFormat, version: metresVersion, scope: metresScope, includeFurniture },
+        dxfScope,
       })
       onClose()
     } catch {
@@ -156,7 +176,12 @@ function ExportForm({ onClose }: { onClose: () => void }) {
     { id: 'png', label: fr.export.formatPng },
     { id: 'jpg', label: fr.export.formatJpg },
     { id: 'pdf', label: fr.export.formatPdf },
-    ...(isPlan ? [{ id: 'csv' as const, label: fr.export.formatCsv }] : []),
+    ...(isPlan
+      ? [
+          { id: 'csv' as const, label: fr.export.formatCsv },
+          { id: 'dxf' as const, label: fr.export.formatDxf },
+        ]
+      : []),
   ]
 
   return (
@@ -278,6 +303,21 @@ function ExportForm({ onClose }: { onClose: () => void }) {
               </label>
             )}
           </>
+        )}
+
+        {type === 'dxf' && levelCount > 1 && (
+          <Group label={fr.export.dxf.scope}>
+            <Choice name="export-dxf-scope" checked={dxfScope === 'level'} onSelect={() => setDxfScope('level')}>
+              {fr.export.dxf.level}
+            </Choice>
+            <Choice
+              name="export-dxf-scope"
+              checked={dxfScope === 'building'}
+              onSelect={() => setDxfScope('building')}
+            >
+              {fr.export.dxf.building}
+            </Choice>
+          </Group>
         )}
 
         {(type === 'pdf' || metresPdf) && (

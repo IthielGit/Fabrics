@@ -1,4 +1,5 @@
-import { exportFileName, type ExportFileType } from '../../features/export/fileName'
+import { exportFileName, sanitizeFileName, type ExportFileType } from '../../features/export/fileName'
+import type { DxfScope } from '../../features/export/dxfFiles'
 import { planExportExtent } from '../../features/export/bounds'
 import { imageExportSize, pdfRasterSize } from '../../features/export/limits'
 import { cartoucheFields } from '../../features/export/cartouche'
@@ -42,6 +43,30 @@ export interface ExportOptions {
   scale: ScaleChoice
   /** Réglages de l'export des métrés (type `csv`). */
   metres: Pick<MetresExportOptions, 'format' | 'version' | 'scope' | 'includeFurniture'>
+  /** Export DXF : niveau affiché ou tous les niveaux (un fichier par niveau, dans un zip). */
+  dxfScope: DxfScope
+}
+
+/**
+ * DXF du plan (M11), en mm : le niveau affiché (`.dxf`) ou un fichier par niveau réunis dans un
+ * `.zip`. Refusé comme les autres exports du plan si une pièce laisse un manque ou déborde (D55).
+ */
+async function exportDxf(project: Project, options: ExportOptions): Promise<void> {
+  const { document: doc } = project
+  const { activeLevelId, dimensioningMode } = useEditorStore.getState()
+  const scopeLevelId = options.dxfScope === 'level' ? activeLevelId : null
+  if (blockingSurfaceWarnings(doc, scopeLevelId).length > 0) throw new MetresCoverageError()
+  // Chargé à la demande : le code du DXF (et du zip) n'alourdit pas l'ouverture de l'application.
+  const { buildDxfFiles, dxfFontMm, packDxfFiles } = await import('../../features/export/dxfFiles')
+  const baseName = sanitizeFileName(options.fileName.replace(/\.(dxf|zip)$/i, ''), fr.export.planFallbackName)
+  const files = buildDxfFiles(doc, baseName, options.dxfScope, activeLevelId, {
+    mode: dimensioningMode,
+    labels: EXECUTION_LABELS,
+    fontMm: dxfFontMm(doc.plan?.scale),
+  })
+  const packed = packDxfFiles(files, exportFileName(baseName, 'zip', fr.export.planFallbackName))
+  if (!packed) throw new Error(fr.export.planEmpty)
+  downloadBlob(packed.blob, packed.name)
 }
 
 /**
@@ -65,6 +90,11 @@ export async function exportProject(project: Project, options: ExportOptions): P
       sheet: options.sheet,
       orientation: options.orientation,
     })
+    return
+  }
+
+  if (options.type === 'dxf') {
+    await exportDxf(project, options)
     return
   }
 

@@ -502,6 +502,14 @@ export const fr = {
       pdf: 'Document prêt à imprimer.',
       csv: 'Surfaces, longueurs et volumes du bâtiment : fichier Excel, document PDF ou CSV.',
       xlsx: 'Classeur Excel des métrés.',
+      dxf: 'Plan pour un logiciel de DAO (AutoCAD, LibreCAD…), en mm : murs, pièces, ouvertures, cotes, axes et mobilier sur des calques séparés.',
+      zip: 'Archive de fichiers DXF.',
+    },
+    formatDxf: 'DXF',
+    dxf: {
+      scope: 'Niveaux',
+      level: 'Niveau affiché (.dxf)',
+      building: 'Tous les niveaux (un fichier par niveau, dans un .zip)',
     },
     metres: {
       version: 'Version',
