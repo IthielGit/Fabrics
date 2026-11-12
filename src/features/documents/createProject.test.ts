@@ -3,11 +3,14 @@ import {
   DESIGN_FORMATS,
   createDesignProject,
   createExamplePlanProject,
+  createLargeHouseProject,
   createPlanProject,
   duplicateProject,
 } from './createProject'
 import { computeBuildingMeasurements } from '../measurements/measurements'
 import { isSurfaceWarning, metresWarnings } from '../measurements/warnings'
+import { toPoints } from '../geometry/polygon'
+import { pointInPolygon } from '../stairs/voids'
 
 const NOW = new Date('2026-11-10T10:00:00.000Z')
 
@@ -119,6 +122,99 @@ describe('createExamplePlanProject', () => {
       expect(walls.get(e.wallId)?.levelId).toBe(e.levelId)
     }
   })
+})
+
+describe('createLargeHouseProject', () => {
+  it('crée une maison R+3 : quatre niveaux, 21 pièces, trois escaliers, un toit en pente', () => {
+    const { elements, levels, page } = createLargeHouseProject(NOW).document
+    expect(page).toMatchObject({ width: 40000, height: 30000 })
+    expect(levels!.map((l) => l.elevation)).toEqual([0, 2700, 5400, 8100])
+    const count = (type: string) => elements.filter((e) => e.type === type).length
+    expect(count('room')).toBe(21)
+    expect(count('stair')).toBe(3)
+    const roofs = elements.filter((e) => e.type === 'roof')
+    expect(roofs).toHaveLength(1)
+    expect(roofs[0].levelId).toBe(levels![3].id)
+    expect(roofs[0].type === 'roof' && roofs[0].shape).toBe('gable')
+    expect(count('furniture')).toBeGreaterThan(60)
+  })
+
+  it('a un garage deux voitures, une véranda vitrée, des terrasses et une piscine', () => {
+    const { elements, levels } = createLargeHouseProject(NOW).document
+    const names = (type: string) => elements.filter((e) => e.type === type).map((e) => e.name)
+    expect(names('room')).toEqual(expect.arrayContaining(['Garage', 'Véranda']))
+    expect(names('platform')).toEqual(['Terrasse', 'Plage de la piscine', 'Terrasse de l’étage'])
+    const symbols = elements.flatMap((e) => (e.type === 'furniture' ? [e.symbol] : []))
+    expect(symbols.filter((s) => s === 'car' || s === 'car-suv')).toHaveLength(2)
+    expect(symbols).toContain('swimming-pool')
+    const openings = elements.flatMap((e) => (e.type === 'opening' ? [e] : []))
+    expect(openings.filter((o) => o.style === 'garageSectional' && o.width === 5000)).toHaveLength(1)
+    // Trois baies pour la véranda, une pour la terrasse de l'étage, plus la baie du séjour.
+    expect(openings.filter((o) => o.kind === 'bay')).toHaveLength(5)
+    const roofTerrace = elements.find((e) => e.name === 'Terrasse de l’étage')
+    expect(roofTerrace?.levelId).toBe(levels![1].id)
+  })
+
+  it('a une emprise de 120 m² au sol (12000 × 10000 mm hors tout)', () => {
+    const { elements } = createLargeHouseProject(NOW).document
+    const roof = elements.find((e) => e.type === 'roof')!
+    const pts = roof.type === 'roof' ? roof.points : []
+    const xs = pts.filter((_, i) => i % 2 === 0)
+    const ys = pts.filter((_, i) => i % 2 === 1)
+    expect((Math.max(...xs) - Math.min(...xs)) * (Math.max(...ys) - Math.min(...ys))).toBe(120_000_000)
+  })
+
+  it('pose chaque ouverture sur un mur du même niveau', () => {
+    const { elements } = createLargeHouseProject(NOW).document
+    const walls = new Map(elements.filter((e) => e.type === 'wall').map((e) => [e.id, e]))
+    for (const e of elements) {
+      if (e.type === 'opening') expect(walls.get(e.wallId)?.levelId).toBe(e.levelId)
+    }
+  })
+
+  it('ne déclenche aucune alerte de métrés', () => {
+    const document = createLargeHouseProject(NOW).document
+    expect(metresWarnings(document, computeBuildingMeasurements(document))).toEqual([])
+  })
+})
+
+describe('exemples : chaque meuble tient dans une pièce ou sur une terrasse de son niveau', () => {
+  // Coins d'un objet posé par son coin haut-gauche et tourné autour de ce coin, rapprochés de 2 mm
+  // de son centre : un meuble contre un mur (coin sur le bord de la pièce) compte comme dedans.
+  const corners = (el: { x: number; y: number; width: number; depth: number; rotation: number }) => {
+    const a = (el.rotation * Math.PI) / 180
+    const c = Math.cos(a)
+    const s = Math.sin(a)
+    return [
+      [2, 2],
+      [el.width - 2, 2],
+      [el.width - 2, el.depth - 2],
+      [2, el.depth - 2],
+    ].map(([u, v]) => ({ x: el.x + u * c - v * s, y: el.y + u * s + v * c }))
+  }
+
+  for (const [label, create] of [
+    ['maison à étage', createExamplePlanProject],
+    ['grande maison R+3', createLargeHouseProject],
+  ] as const) {
+    it(label, () => {
+      const { elements } = create(NOW).document
+      const areas = elements.flatMap((e) =>
+        e.type === 'room' || e.type === 'platform' ? [{ levelId: e.levelId, polygon: toPoints(e.points) }] : [],
+      )
+      // La piscine est posée au niveau du jardin, au creux de la plage en U : hors pièce et hors terrasse.
+      const misplaced = elements
+        .flatMap((e) => (e.type === 'furniture' && e.symbol !== 'swimming-pool' ? [e] : []))
+        .filter((item) => {
+          const pts = corners(item)
+          return !areas.some(
+            (area) => area.levelId === item.levelId && pts.every((p) => pointInPolygon(p, area.polygon)),
+          )
+        })
+        .map((e) => e.name)
+      expect(misplaced).toEqual([])
+    })
+  }
 })
 
 describe('plan d’exemple : contrôle des métrés', () => {

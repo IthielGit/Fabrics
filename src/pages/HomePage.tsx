@@ -1,4 +1,4 @@
-import { BookOpen, Ruler, Search } from 'lucide-react'
+import { BookOpen, Building2, Ruler, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import DeleteDialog from '../components/home/DeleteDialog'
@@ -16,7 +16,7 @@ type Dialog =
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const { projects, status, refresh, createPlan, createExample, rename, duplicate, remove } =
+  const { projects, status, refresh, createPlan, createExample, createLargeHouse, rename, duplicate, remove } =
     useProjectsStore()
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const [query, setQuery] = useState('')
@@ -38,6 +38,11 @@ export default function HomePage() {
     navigate(`/p/${id}`)
   }
 
+  const handleCreateLargeHouse = async () => {
+    const id = await createLargeHouse()
+    navigate(`/p/${id}`)
+  }
+
   const cardClass =
     'flex flex-col items-start gap-2 rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm hover:border-indigo-300 hover:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300'
 
@@ -51,7 +56,7 @@ export default function HomePage() {
 
       <main className="mx-auto max-w-5xl px-6 py-8">
         <h2 className="text-lg font-semibold">{fr.home.startTitle}</h2>
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <button type="button" className={cardClass} onClick={() => void handleCreatePlan()}>
             <Ruler size={24} className="text-indigo-600" aria-hidden="true" />
             <span className="font-semibold">{fr.home.cards.plan.title}</span>
@@ -61,6 +66,11 @@ export default function HomePage() {
             <BookOpen size={24} className="text-indigo-600" aria-hidden="true" />
             <span className="font-semibold">{fr.home.cards.example.title}</span>
             <span className="text-sm text-slate-500">{fr.home.cards.example.text}</span>
+          </button>
+          <button type="button" className={cardClass} onClick={() => void handleCreateLargeHouse()}>
+            <Building2 size={24} className="text-indigo-600" aria-hidden="true" />
+            <span className="font-semibold">{fr.home.cards.largeHouse.title}</span>
+            <span className="text-sm text-slate-500">{fr.home.cards.largeHouse.text}</span>
           </button>
         </div>
         <p className="mt-3 text-xs text-slate-500">{fr.home.storageReminder}</p>

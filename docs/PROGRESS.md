@@ -44,6 +44,21 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — Hors jalon · Rendu 3D plus soigné (lot A : objets, matières, sol)
+- Fait : (1) le parasol, la pergola, le gazebo et le carport ne sont plus des blocs pleins (mât et toile en cône ; quatre poteaux et un toit mince) ; (2) la piscine et les mares sont dessinées : bassin d'eau bleu avec margelle ; (3) chaque type d'objet a son aspect (bois, tissu, blanc laqué, métal, pierre, plantes, eau, carrosserie) et les objets ronds sont des cylindres ; voitures avec caisse, habitacle vitré et roues ; arbres avec tronc et couronne ronde ; (4) les exemples ont des murs en maçonnerie (brique pour le garage), un toit en tuiles, des terrasses en bois et une plage de piscine en pierre (la couleur d'une plateforme est maintenant reprise en 3D) ; (5) les panneaux de porte de garage ont leur propre matière métal ; (6) le terrain est une pelouse. Façades, coupes, métrés et exports ne changent pas.
+- Fichiers : `src/features/building/furnitureParts.ts` (nouveau) et son test, `types.ts`, `model.ts`, `furniture.ts`, `openingFills.ts`, `views/projection.ts`, `views/section.ts`, `src/components/viewer3d/Viewer3DScene.tsx`, `src/features/documents/examplePlan.ts`, `largeHousePlan.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2703) — à regarder dans la vue 3D de « Voir une grande maison » (à recréer).
+
+### 2026-11-12 — Hors jalon · Grande maison : garage, véranda, terrasses, piscine
+- Fait : l'exemple « grande maison R+3 » passe en page « Bâtiment » (40000 × 30000 mm) et reçoit un garage deux voitures accolé à l'est (porte sectionnelle de 5000 mm, porte de service vers la cuisine, toit plat), une véranda au sud du séjour vitrée sur trois côtés (baies coulissantes de 3000 et 4400 mm), une terrasse en L (repas sous parasol, cuisine d'été), une piscine de 10000 × 5000 mm entourée d'une plage en U (la piscine reste visible en creux en 3D) et une terrasse sur le toit du garage à l'étage 1, accessible par une baie depuis la chambre 3. 21 pièces, 3 plateformes. Aucune alerte de métrés.
+- Fichiers : `src/features/documents/largeHousePlan.ts`, `createProject.ts`, `createProject.test.ts`, `src/i18n/fr.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2692) — à regarder dans le navigateur : accueil → « Voir une grande maison ».
+
+### 2026-11-12 — Hors jalon · Exemple « grande maison R+3 »
+- Fait : nouvelle carte d'accueil « Voir une grande maison ». Maison de 12000 × 10000 mm hors tout (120 m² au sol), quatre niveaux (rez-de-chaussée + 3 étages), 19 pièces meublées, escalier en U empilé au centre (trois volées), toit à deux pans, 2 cotes et une ligne de coupe A à travers l'escalier. Aucune alerte de métrés ; un test vérifie aussi que chaque meuble des deux exemples tient dans une pièce de son niveau.
+- Fichiers : `src/features/documents/largeHousePlan.ts` (nouveau), `examplePlan.ts` (aides partagées), `createProject.ts`, `createProject.test.ts`, `src/stores/projectsStore.ts`, `src/pages/HomePage.tsx`, `src/i18n/fr.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2691) — à regarder dans le navigateur : accueil → « Voir une grande maison ».
+
 ### 2026-11-12 — Correctif · Vide entre les étages en 3D
 - Fait : la dalle n'était posée que sous les pièces ; avec des murs de 2500 mm sur un étage de 2700 mm, il restait un vide de 200 mm au droit des murs (entre étages et sous le toit). Désormais, dans la maquette (3D, façades, coupes), un mur qui monte jusque sous la dalle du dessus la traverse jusqu'au plancher suivant (au dernier niveau : jusqu'à la base du toit). Un muret plus bas garde sa hauteur ; les métrés gardent la hauteur saisie.
 - Fichiers : `src/features/building/model.ts` (`wallHeightInModel`), `src/features/building/model.test.ts`.

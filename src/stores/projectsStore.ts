@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import {
   createDesignProject,
   createExamplePlanProject,
+  createLargeHouseProject,
   createPlanProject,
   duplicateProject,
   type DesignFormatId,
@@ -20,6 +21,8 @@ interface ProjectsState {
   createPlan: () => Promise<string>
   /** Crée une copie du plan d'exemple et renvoie son identifiant. */
   createExample: () => Promise<string>
+  /** Crée une copie de l'exemple « grande maison R+3 » et renvoie son identifiant. */
+  createLargeHouse: () => Promise<string>
   rename: (id: string, name: string) => Promise<void>
   duplicate: (id: string) => Promise<string | null>
   remove: (id: string) => Promise<void>
@@ -55,6 +58,13 @@ export function createProjectsStore(repo: ProjectRepository) {
 
     createExample: async () => {
       const project = createExamplePlanProject()
+      await repo.save(project)
+      await get().refresh()
+      return project.id
+    },
+
+    createLargeHouse: async () => {
+      const project = createLargeHouseProject()
       await repo.save(project)
       await get().refresh()
       return project.id

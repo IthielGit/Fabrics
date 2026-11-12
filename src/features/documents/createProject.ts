@@ -1,6 +1,7 @@
 import { fr } from '../../i18n/fr'
 import type { FabricsDocument, PlanSettings, Project } from '../../types/document'
 import { buildExampleElements } from './examplePlan'
+import { buildLargeHouseElements } from './largeHousePlan'
 import { createLevel } from './levels'
 import { CURRENT_DOCUMENT_VERSION } from './migrations'
 
@@ -72,6 +73,29 @@ export function createExamplePlanProject(now: Date = new Date()): Project {
   project.document.levels = [ground, upper]
   project.document.elements = buildExampleElements({
     levels: project.document.levels,
+    thickness: DEFAULT_PLAN_SETTINGS.defaultWallThickness,
+    height: DEFAULT_PLAN_SETTINGS.defaultWallHeight,
+  })
+  return project
+}
+
+/**
+ * Plan d'exemple créé pour Fabrics : une grande maison R+3 (120 m² au sol, quatre niveaux, escalier
+ * en U empilé, toit à deux pans, une vingtaine de pièces meublées) avec garage deux voitures,
+ * véranda, terrasses et piscine.
+ */
+export function createLargeHouseProject(now: Date = new Date()): Project {
+  const project = createPlanProject(fr.largeHouse.name, now)
+  // Format de page « Bâtiment » (40 × 30 m) : la maison, le garage, la véranda et la piscine y tiennent.
+  project.document.page = { ...project.document.page, width: 40000, height: 30000 }
+  const levels = [project.document.levels![0]]
+  for (let n = 1; n <= 3; n++) {
+    const below = levels[n - 1]
+    levels.push(createLevel(fr.largeHouse.floorName(n), below.elevation + below.height, below.height, below.slabThickness))
+  }
+  project.document.levels = levels
+  project.document.elements = buildLargeHouseElements({
+    levels,
     thickness: DEFAULT_PLAN_SETTINGS.defaultWallThickness,
     height: DEFAULT_PLAN_SETTINGS.defaultWallHeight,
   })

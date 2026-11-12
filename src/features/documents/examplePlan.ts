@@ -1,5 +1,5 @@
 import { fr } from '../../i18n/fr'
-import type { CanvasElement, Level } from '../../types/document'
+import type { CanvasElement, Level, WallElement } from '../../types/document'
 import { defaultStairLengths, stairSize } from '../stairs/stairs'
 import {
   createDimensionElement,
@@ -28,13 +28,15 @@ const MID_Y = 7200 // cloisons horizontales
 const FOOT_X = 13400 // cloison du WC (rez-de-chaussée) et du dressing (étage)
 const TOP_X = 12000 // cloison entre salle de bains et bureau (étage)
 
-type Furniture = readonly [symbol: string, cx: number, cy: number, width: number, depth: number, rotation?: number]
+/** Objet à poser : symbole, centre, taille (mm) et rotation (0 : dos au nord, 90 : dos à l'est…). */
+export type Furniture = readonly [symbol: string, cx: number, cy: number, width: number, depth: number, rotation?: number]
 
 /**
  * Pose un objet par son centre. La rotation (degrés, sens horaire) tourne l'objet autour de son coin
- * haut-gauche : on recalcule ce coin pour que le centre reste là où on le veut.
+ * haut-gauche : on recalcule ce coin pour que le centre reste là où on le veut. `names` compte les
+ * objets déjà posés pour les numéroter (« Chaise 3 »).
  */
-function furniture(items: readonly Furniture[], names: Map<string, number>) {
+export function furniture(items: readonly Furniture[], names: Map<string, number>) {
   return items.map(([symbol, cx, cy, width, depth, rotation = 0]) => {
     const name = fr.examplePlan.items[symbol as keyof typeof fr.examplePlan.items] ?? symbol
     const count = (names.get(name) ?? 0) + 1
@@ -46,7 +48,8 @@ function furniture(items: readonly Furniture[], names: Map<string, number>) {
   })
 }
 
-function box(x1: number, y1: number, x2: number, y2: number): number[] {
+/** Contour d'une pièce rectangulaire. */
+export function box(x1: number, y1: number, x2: number, y2: number): number[] {
   return [x1, y1, x2, y1, x2, y2, x1, y2]
 }
 
@@ -66,7 +69,7 @@ export function buildExampleElements({ levels, thickness, height }: ExampleBuild
   const onLevel = (levelId: string, elements: CanvasElement[]) => elements.map((el) => ({ ...el, levelId }))
 
   // --- Rez-de-chaussée ---------------------------------------------------------------------
-  const outer0 = wall(t.outerWall, outline)
+  const outer0: WallElement = { ...wall(t.outerWall, outline), material: 'masonry' }
   const split0 = wall(t.partition, [MID_X, Y0, MID_X, Y1])
   const kitchenWall = wall(t.partition, [MID_X, MID_Y, X1, MID_Y])
   const wcWall = wall(t.partition, [FOOT_X, MID_Y, FOOT_X, Y1])
@@ -134,7 +137,7 @@ export function buildExampleElements({ levels, thickness, height }: ExampleBuild
   )
 
   // --- Étage -------------------------------------------------------------------------------
-  const outer1 = wall(t.outerWall, outline)
+  const outer1: WallElement = { ...wall(t.outerWall, outline), material: 'masonry' }
   const split1 = wall(t.partition, [MID_X, Y0, MID_X, Y1])
   const left1 = wall(t.partition, [X0, MID_Y, MID_X, MID_Y]) // sépare les deux chambres
   const right1 = wall(t.partition, [MID_X, MID_Y, X1, MID_Y])
@@ -187,7 +190,10 @@ export function buildExampleElements({ levels, thickness, height }: ExampleBuild
     ],
     names,
   )
-  const roof = createRoofElement(t.roof, [X0 - 100, Y0 - 100, X1 + 100, Y0 - 100, X1 + 100, Y1 + 100, X0 - 100, Y1 + 100], 'gable')
+  const roof = {
+    ...createRoofElement(t.roof, [X0 - 100, Y0 - 100, X1 + 100, Y0 - 100, X1 + 100, Y1 + 100, X0 - 100, Y1 + 100], 'gable'),
+    covering: 'tiles' as const,
+  }
 
   // Cotes du rez-de-chaussée ; la ligne de coupe est commune à tous les niveaux.
   const dimensions = [
