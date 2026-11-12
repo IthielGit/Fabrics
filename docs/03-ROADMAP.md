@@ -845,7 +845,7 @@ Objectif : l'application est accessible publiquement (en mode local, sans compte
 
 ---
 
-## M13 — Comptes, sauvegarde cloud et partage
+## M13 — Comptes, sauvegarde cloud et partage (terminé et validé le 2026-11-12)
 
 Objectif : retrouver ses projets sur un autre appareil.
 

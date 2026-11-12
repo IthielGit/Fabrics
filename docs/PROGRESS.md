@@ -46,7 +46,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ### 2026-11-12 — M13 · Mise en ligne des lots A à F
 - Fait : `feat/m13` fusionnée dans `main` (avance rapide) et poussée ; Cloudflare a redéployé. Vérifié à distance sur https://fabrics-8zd.pages.dev : l'adresse du projet Supabase et la clé publiable sont dans le code publié (donc les variables Cloudflare sont bonnes) ; aucune vraie clé secrète dans le code (le seul `sb_secret_` est un test de préfixe de la bibliothèque `supabase-js`) ; `/connexion`, `/nouveau-mot-de-passe` et `/s/<jeton>` renvoient l'application (200) ; la fonction de partage répond « unavailable » pour un jeton inconnu.
-- Reste : essais de l'utilisateur sur le site en ligne (connexion, projet visible sur un autre appareil, lien de partage ouvert sans compte), puis validation de M13.
+- Validé par l'utilisateur le 2026-11-12 après essai sur le site en ligne : M13 terminé, fin du MVP.
 - Vérification : build ✓ lint ✓ tests ✓ (2762).
 
 ### 2026-11-12 — M13 · Lot F : contrôle de sécurité à deux comptes (script prêt, à lancer)
