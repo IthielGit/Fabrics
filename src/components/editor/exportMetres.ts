@@ -14,6 +14,7 @@ import {
   restrictToLevel,
 } from '../../features/measurements/measurements'
 import { buildClientTables, clientMetaLabels } from '../../features/measurements/clientView'
+import { isBlockingWarning, metresWarnings } from '../../features/measurements/warnings'
 import { buildExecutionTables } from '../../features/measurements/executionView'
 import type { MetresTable, MetresVersion } from '../../features/measurements/tables'
 import { buildBuildingModel } from '../../features/building/model'
@@ -33,6 +34,14 @@ export class MetresLevelMissingError extends Error {
   constructor() {
     super(fr.export.metres.levelMissing)
     this.name = 'MetresLevelMissingError'
+  }
+}
+
+/** Une pièce laisse un manque ou déborde des murs : l'export est refusé tant que ce n'est pas corrigé (D55). */
+export class MetresCoverageError extends Error {
+  constructor() {
+    super(fr.measurements.warnings.blockedTitle)
+    this.name = 'MetresCoverageError'
   }
 }
 
@@ -60,7 +69,8 @@ export interface MetresExportOptions {
 
 /**
  * Quantités du projet sans calcul de prix : métrés du bâtiment (ou d'un niveau) prêts à exporter.
- * Lance `MetresLevelMissingError` si le niveau demandé n'existe pas.
+ * Lance `MetresLevelMissingError` si le niveau demandé n'existe pas, `MetresCoverageError` si une
+ * pièce laisse un manque ou déborde des murs (export refusé, D55).
  */
 export function prepareMetres(project: Project, options: Pick<MetresExportOptions, 'scope' | 'includeFurniture' | 'activeLevelId'>) {
   const doc = project.document
@@ -72,6 +82,7 @@ export function prepareMetres(project: Project, options: Pick<MetresExportOption
     building = restricted
     furnitureSource = elementsOfLevel(doc.elements, options.activeLevelId)
   }
+  if (metresWarnings(doc, building).some(isBlockingWarning)) throw new MetresCoverageError()
   const furniture: FurnitureCsvRow[] = options.includeFurniture ? furnitureCsvRows(furnitureSource) : []
   return { building, furniture }
 }

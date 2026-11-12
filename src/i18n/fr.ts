@@ -227,8 +227,42 @@ export const fr = {
     levelWallNetArea: 'Murs (nette)',
     empty: 'Dessinez des pièces et des murs : leurs surfaces et longueurs s’affichent ici.',
     areaNote: 'Surfaces mesurées sur le contour tracé.',
-    roomOverlap: (count: number) =>
-      `${count} pièces se superposent sur ce niveau : leur surface est comptée en double. Déplacez ou redessinez l’une d’elles.`,
+    // Contrôle des surfaces (panneau Métrés et fenêtre Exporter) : rien n'est corrigé automatiquement
+    warnings: {
+      title: 'À vérifier',
+      exportTitle: 'À vérifier avant d’envoyer ce document',
+      exportNote: 'Vous pouvez exporter quand même : rien n’est corrigé automatiquement.',
+      blockedTitle: 'Export impossible : corrigez d’abord ces pièces',
+      blockedPlanTitle: 'Export du plan impossible : corrigez d’abord ces pièces',
+      blockedNote:
+        'Une surface manque ou dépasse des murs : les métrés seraient faux. Redessinez le contour de la pièce (ou créez-la en cliquant dans la zone fermée par les murs), puis exportez.',
+      blockedButton: 'Export impossible : une pièce laisse un manque ou déborde des murs. Voir « À corriger ».',
+      toFix: 'À corriger avant d’exporter',
+      showOnPlan: 'Cliquez pour voir la zone sur le plan.',
+      more: (count: number) => `… et ${count} autre${count > 1 ? 's' : ''}.`,
+      roomOverlap: (names: string[]) =>
+        `Pièces superposées (${names.join(', ')}) : la surface commune est comptée deux fois.`,
+      voidOverflow: (name: string) =>
+        `${name} : la trémie de l’escalier déborde de la pièce, sa surface n’est pas retirée.`,
+      hiddenRoom: (name: string) => `${name} est masquée mais sa surface est comptée.`,
+      coverageGap: (name: string, area: string, wallRef: string | null) =>
+        `${name} : ${area} non couverts${wallRef ? ` le long du mur ${wallRef}` : ' autour de la pièce'}.`,
+      coverageOverflow: (name: string, area: string, wallRef: string | null) =>
+        `${name} : ${area} dépassent au-delà ${wallRef ? `du mur ${wallRef}` : 'des murs'}.`,
+      noLevel: (type: string, name: string) => `${type} « ${name} » n’a pas de niveau : il n’est pas compté.`,
+      openingOutside: (ref: string, wallRef: string) => `${ref} dépasse de son mur ${wallRef}.`,
+      openingOverlap: (first: string, second: string) => `${first} et ${second} se chevauchent sur le même mur.`,
+      types: {
+        room: 'Pièce',
+        wall: 'Mur',
+        opening: 'Ouverture',
+        platform: 'Plateforme',
+        stair: 'Escalier',
+        chimney: 'Cheminée',
+        roof: 'Toiture',
+      } as Record<string, string>,
+      otherType: 'Élément',
+    },
     exportExcel: 'Exporter en Excel',
     versionLabel: 'Version du document',
     exportExcelHint: 'Fichier Excel : un onglet par tableau, de vrais nombres, des totaux en formules.',

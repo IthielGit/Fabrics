@@ -13,6 +13,7 @@ import {
   type SheetFormat,
 } from '../../features/export/pdfLayout'
 import { computeBuildingMeasurements } from '../../features/measurements/measurements'
+import { isBlockingWarning, metresWarnings } from '../../features/measurements/warnings'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
@@ -20,6 +21,7 @@ import Choice from '../ui/Choice'
 import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
 import { exportProject } from './exportProject'
+import MetresWarningList from './MetresWarningList'
 import { VERSION_FILE_SUFFIX, type MetresFormat, type MetresScope, type MetresVersion } from './exportMetres'
 
 /** Fenêtre « Exporter » : PNG, JPG, PDF et, pour un plan, CSV des métrés. */
@@ -87,6 +89,14 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   const [metresScope, setMetresScope] = useState<MetresScope>('building')
   const [includeFurniture, setIncludeFurniture] = useState(true)
   const [busy, setBusy] = useState(false)
+  // Contrôle avant export : métrés (selon le périmètre) ou plan (niveau affiché). Un manque ou un
+  // débord bloque l'export (D55) ; les autres points sont seulement listés, pour les métrés.
+  const warnings = useMemo(() => {
+    if (!isPlan || !document) return []
+    const levelId = type === 'csv' ? (metresScope === 'level' ? activeLevelId : null) : activeLevelId
+    const all = metresWarnings(document, measurements, levelId)
+    return type === 'csv' ? all : all.filter(isBlockingWarning)
+  }, [isPlan, type, document, measurements, metresScope, activeLevelId])
   const [failed, setFailed] = useState(false)
 
   if (!project) return null
@@ -116,7 +126,10 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   const planDoesNotFit = type === 'pdf' && planPlacement !== null && !planPlacement.fits
   const selectedOption = options.find((o) => o.multiplier === multiplier)
   const tooBig = (type === 'png' || type === 'jpg') && selectedOption?.allowed === false
-  const canSubmit = !busy && emptyMessage === null && !planDoesNotFit && !tooBig
+  // Manque ou débord dans ce qui est exporté : export refusé tant que ce n'est pas corrigé (D55).
+  const blockingWarnings = warnings.filter(isBlockingWarning)
+  const otherWarnings = warnings.filter((w) => !isBlockingWarning(w))
+  const canSubmit = !busy && emptyMessage === null && !planDoesNotFit && !tooBig && blockingWarnings.length === 0
 
   const handleSubmit = async () => {
     setBusy(true)
@@ -333,6 +346,23 @@ function ExportForm({ onClose }: { onClose: () => void }) {
           </>
         )}
 
+        {emptyMessage === null && (
+          <>
+            <MetresWarningList
+              warnings={blockingWarnings}
+              title={fr.measurements.warnings.blockedTitle}
+              note={fr.measurements.warnings.blockedNote}
+              tone="error"
+              interactive
+              onNavigate={onClose}
+            />
+            <MetresWarningList
+              warnings={otherWarnings}
+              title={fr.measurements.warnings.exportTitle}
+              note={fr.measurements.warnings.exportNote}
+            />
+          </>
+        )}
         {emptyMessage && <p className="text-sm text-slate-600">{emptyMessage}</p>}
         {failed && (
           <p role="alert" className="text-sm text-red-600">

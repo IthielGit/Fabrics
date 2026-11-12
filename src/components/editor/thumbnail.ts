@@ -31,6 +31,7 @@ export function captureThumbnail(page: { width: number; height: number }): strin
     ...stage.getLayers().slice(1),
     ...stage.find('Transformer'),
     ...stage.find('.reference'),
+    ...stage.find('.surface-highlight'),
   ].filter((node) => node.visible())
   helpers.forEach((node) => node.visible(false))
   try {

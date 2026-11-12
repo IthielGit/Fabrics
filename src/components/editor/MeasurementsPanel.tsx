@@ -1,17 +1,30 @@
 import { Download, FileSpreadsheet } from 'lucide-react'
 import { Fragment, useMemo } from 'react'
-import { overlappingRoomIdsCached } from '../../features/geometry/roomOverlap'
 import { buildClientTables } from '../../features/measurements/clientView'
 import {
   computeBuildingMeasurements,
   computeMeasurements,
 } from '../../features/measurements/measurements'
 import { cellText } from '../../features/measurements/tables'
+import { type MetresWarning, isBlockingWarning, isSurfaceWarning, metresWarnings } from '../../features/measurements/warnings'
 import { formatArea, formatLength, formatVolume } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
 import { exportMetres } from './exportMetres'
+import MetresWarningList from './MetresWarningList'
+
+/** À corriger (manque, débord : bloque l'export) en rouge, puis le reste à vérifier en orange. */
+function SurfaceWarnings({ warnings }: { warnings: readonly MetresWarning[] }) {
+  const blocking = warnings.filter(isBlockingWarning)
+  const others = warnings.filter((w) => !isBlockingWarning(w))
+  return (
+    <div className="space-y-2">
+      <MetresWarningList warnings={blocking} title={fr.measurements.warnings.toFix} tone="error" interactive />
+      <MetresWarningList warnings={others} title={fr.measurements.warnings.title} interactive />
+    </div>
+  )
+}
 
 const HEAD = 'px-1 py-1 text-left text-xs font-medium text-slate-500'
 const NUMBER = 'px-1 py-1 text-right tabular-nums'
@@ -35,13 +48,17 @@ export default function MeasurementsPanel() {
     () => computeBuildingMeasurements({ elements: elements ?? [], levels }),
     [elements, levels],
   )
+  // Surfaces douteuses (superpositions, trémies, espace non couvert entre les murs) : signalées, jamais corrigées.
+  const surfaceWarnings = useMemo(
+    () => metresWarnings({ elements: elements ?? [], levels }, building).filter(isSurfaceWarning),
+    [elements, levels, building],
+  )
 
   if (!isPlan) return null
   const active = building.levels.find((entry) => entry.level.id === activeLevelId)
   const measurements = active?.measurements ?? computeMeasurements([])
   const { rooms, walls, platforms, stairs, roofs, openings, totals } = measurements
-  const overlapIds = overlappingRoomIdsCached(elements ?? [])
-  const overlapCount = rooms.filter((room) => overlapIds.has(room.id)).length
+  const levelWarnings = surfaceWarnings.filter((w) => 'levelId' in w && w.levelId === activeLevelId)
   // Le niveau affiché est vide : on le dit ; le CSV, lui, couvre tout le bâtiment.
   const isEmpty =
     rooms.length === 0 &&
@@ -55,6 +72,13 @@ export default function MeasurementsPanel() {
     building.total.platforms.length === 0 &&
     building.total.stairs.length === 0 &&
     building.total.roofs.length === 0
+  // Manque ou débord quelque part dans le bâtiment : les exports du panneau (tout le bâtiment) sont refusés.
+  const blocked = surfaceWarnings.some(isBlockingWarning)
+  const exportTitle = buildingEmpty
+    ? fr.measurements.exportDisabled
+    : blocked
+      ? fr.measurements.warnings.blockedButton
+      : undefined
 
   // Exports du panneau : tout le bâtiment, dans la version affichée.
   const runExport = async (format: 'xlsx' | 'tables') => {
@@ -106,8 +130,8 @@ export default function MeasurementsPanel() {
         <Button
           variant="primary"
           onClick={handleExportExcel}
-          disabled={buildingEmpty}
-          title={buildingEmpty ? fr.measurements.exportDisabled : fr.measurements.exportExcelHint}
+          disabled={buildingEmpty || blocked}
+          title={exportTitle ?? fr.measurements.exportExcelHint}
           className="px-2 py-1 text-xs"
         >
           <FileSpreadsheet size={14} aria-hidden="true" />
@@ -115,8 +139,8 @@ export default function MeasurementsPanel() {
         </Button>
         <Button
           onClick={handleExport}
-          disabled={buildingEmpty}
-          title={buildingEmpty ? fr.measurements.exportDisabled : undefined}
+          disabled={buildingEmpty || blocked}
+          title={exportTitle}
           className="px-2 py-1 text-xs"
         >
           <Download size={14} aria-hidden="true" />
@@ -127,6 +151,7 @@ export default function MeasurementsPanel() {
       {version === 'client' && (
         <div className="mt-3 space-y-4">
           {buildingEmpty && <p className="text-sm text-slate-500">{fr.measurements.empty}</p>}
+          <SurfaceWarnings warnings={surfaceWarnings} />
           {buildClientTables(building, fr.measurements.client).map((table) => (
             // Six colonnes dans un panneau de 320 px : défilement horizontal plutôt que des chiffres écrasés.
             <div key={table.id} className="overflow-x-auto">
@@ -179,10 +204,10 @@ export default function MeasurementsPanel() {
 
       {isEmpty && <p className="mt-3 text-sm text-slate-500">{fr.measurements.empty}</p>}
 
-      {overlapCount > 0 && (
-        <p role="alert" className="mt-3 rounded border border-red-200 bg-red-50 px-2 py-1 text-xs text-red-700">
-          {fr.measurements.roomOverlap(overlapCount)}
-        </p>
+      {levelWarnings.length > 0 && (
+        <div className="mt-3">
+          <SurfaceWarnings warnings={levelWarnings} />
+        </div>
       )}
 
       {rooms.length > 0 && (

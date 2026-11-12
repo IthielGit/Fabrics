@@ -541,16 +541,17 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
       Option A : libellé « Dimensions du tracé » (simple, honnête). Option B : calculer les
       dimensions et la surface intérieures en retirant la demi-épaisseur des murs qui bordent la
       pièce (rejoint l'idée « surface intérieure » de `docs/PROGRESS.md`, prérequis du lot B).
-- [ ] **Avertissements visibles en Client** : trémie qui déborde d'une pièce (surface laissée
+- [x] **Avertissements visibles en Client** : trémie qui déborde d'une pièce (surface laissée
       pleine) et pièces qui se chevauchent sont signalées dans la vue Client du panneau, comme en
       Exécution. Fichier : `MeasurementsPanel.tsx`.
-- [ ] **Contrôle avant export** : fonction pure `metresWarnings(document, building)` qui liste
+- [x] **Contrôle avant export** : fonction pure `metresWarnings(document, building)` qui liste
       pièces superposées, trémies qui débordent, pièces masquées comptées, pièces qui ne
       remplissent pas l'espace entre leurs murs ou qui en débordent (tâche suivante), éléments
       sans niveau (hors axes), ouvertures plus larges que leur segment ou qui se chevauchent. La fenêtre
-      Exporter affiche la liste avant le téléchargement (sans bloquer). Fichiers :
+      Exporter affiche la liste avant le téléchargement (sans bloquer, sauf manque ou débord d'une
+      pièce : export refusé jusqu'à correction, D55). Fichiers :
       `src/features/measurements/warnings.ts` (nouveau) + test, `ExportDialog.tsx`, `fr.ts`.
-- [ ] **Pièce qui ne remplit pas l'espace entre les murs** (cas très fréquent). Une pièce
+- [x] **Pièce qui ne remplit pas l'espace entre les murs** (cas très fréquent). Une pièce
       dessinée à la main laisse souvent une petite bande ou un coin non couvert entre son contour
       et les murs qui l'entourent : cette surface manque dans les métrés sans que rien ne le
       signale. Fonction pure `roomCoverageGaps(room, walls)` : calcule la zone fermée par les murs
@@ -566,7 +567,7 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
       pièce décalée de 100 mm d'un côté (bande signalée avec sa surface), coin oublié d'une pièce
       en L, pièce qui déborde d'un mur, pièce sans murs autour (aucun avertissement), écart sous
       le seuil (ignoré).
-- [ ] **Décision : pièces masquées.** Les compter (règle actuelle, avec l'avertissement ci-dessus)
+- [x] **Décision : pièces masquées** — option A retenue le 2026-11-12 (D56) : comptées, avec l'avertissement. Les compter (règle actuelle, avec l'avertissement ci-dessus)
       ou les retirer du document Client seulement.
 
 **Groupe 4 — Repères `M01`, `P01`, `F01`**

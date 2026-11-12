@@ -22,7 +22,8 @@ import { downloadBlob } from '../../lib/download'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { Project } from '../../types/document'
 import { captureRegion } from './exportStage'
-import { exportMetres, type MetresExportOptions } from './exportMetres'
+import { exportMetres, MetresCoverageError, type MetresExportOptions } from './exportMetres'
+import { blockingSurfaceWarnings } from '../../features/measurements/warnings'
 
 /** Hauteur des textes des cotes automatiques à l'écran (mm), pour estimer leur place. */
 const AUTO_DIMENSION_FONT_MM = 180
@@ -65,6 +66,11 @@ export async function exportProject(project: Project, options: ExportOptions): P
       orientation: options.orientation,
     })
     return
+  }
+
+  // Plan dont une pièce laisse un manque ou déborde des murs : export refusé (D55).
+  if (isPlan && blockingSurfaceWarnings(doc, useEditorStore.getState().activeLevelId).length > 0) {
+    throw new MetresCoverageError()
   }
 
   // Zone exportée : la page d'un Visuel, l'emprise du contenu d'un plan (cotes automatiques comprises).

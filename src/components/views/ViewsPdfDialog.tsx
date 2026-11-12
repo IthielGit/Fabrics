@@ -15,7 +15,9 @@ import {
 import { fr } from '../../i18n/fr'
 import { formatDate } from '../../lib/date'
 import { downloadBlob } from '../../lib/download'
+import { blockingSurfaceWarnings } from '../../features/measurements/warnings'
 import { useEditorStore } from '../../stores/editorStore'
+import MetresWarningList from '../editor/MetresWarningList'
 import Button from '../ui/Button'
 import Choice from '../ui/Choice'
 import Group from '../ui/ChoiceGroup'
@@ -54,6 +56,13 @@ export default function ViewsPdfDialog({
   const projectName = useEditorStore((state) => state.project?.name ?? '')
   const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
   const base = useMemo(() => build() ?? EMPTY_DRAWING, [build])
+  // Une pièce laisse un manque ou déborde des murs (n'importe quel niveau) : export refusé (D55).
+  const elements = useEditorStore((state) => state.project?.document.elements)
+  const levels = useEditorStore((state) => state.project?.document.levels)
+  const blocking = useMemo(
+    () => (elements ? blockingSurfaceWarnings({ elements, levels }) : []),
+    [elements, levels],
+  )
 
   const [fileName, setFileName] = useState(`${projectName} ${viewTitle}`.trim())
   const [sheet, setSheet] = useState<SheetFormat>('a4')
@@ -83,6 +92,7 @@ export default function ViewsPdfDialog({
   const doesNotFit = !placement.fits
 
   const submit = async () => {
+    if (blocking.length > 0) return
     setBusy(true)
     setFailed(false)
     try {
@@ -199,9 +209,17 @@ export default function ViewsPdfDialog({
           </p>
         )}
 
+        <MetresWarningList
+          warnings={blocking}
+          title={fr.measurements.warnings.blockedPlanTitle}
+          note={fr.measurements.warnings.blockedNote}
+          tone="error"
+          interactive
+          onNavigate={onClose}
+        />
         <div className="flex justify-end gap-2 pt-2">
           <Button onClick={onClose}>{fr.common.cancel}</Button>
-          <Button variant="primary" onClick={submit} disabled={busy || doesNotFit}>
+          <Button variant="primary" onClick={submit} disabled={busy || doesNotFit || blocking.length > 0}>
             {busy ? fr.export.working : fr.export.submit}
           </Button>
         </div>

@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 ter (lots A et B validés ; groupes 1 à 4 des cas limites à faire) ; M10 bis terminé, à tester dans le navigateur
-- **Dernière tâche terminée :** M10 ter, cas limites des métrés, groupes 1 (« Exports justes ») et 2 (« Lisibilité du document Client »), à tester dans le navigateur
-- **Prochaine tâche :** M10 ter, cas limites des métrés, groupes 3 et 4 (après les décisions de l'utilisateur), puis noms automatiques, puis M11
+- **Dernière tâche terminée :** M10 ter, cas limites des métrés, groupes 1, 2 et 3 (groupe 3 validé par l'utilisateur le 2026-11-12)
+- **Prochaine tâche :** groupe 4 (repères, après la décision de l'utilisateur sur leur stabilité), puis noms automatiques, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,34 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 3 · Validé par l'utilisateur
+- Fait : l'utilisateur valide le groupe 3 (contrôle des surfaces, exports bloqués si manque ou débord, pièces masquées comptées). Commit effectué.
+- Prochaine tâche : groupe 4 (repères `M01`, `P01`, `F01`), après la décision de l'utilisateur sur leur stabilité.
+
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 3 · Pièces masquées et blocage de tous les exports du plan
+- Décisions de l'utilisateur : pièces masquées **comptées** avec l'avertissement (option A, D56) ; un manque ou un débord bloque **aussi** l'export du plan en image et en PDF (D55 élargie).
+- Fait : fenêtre Exporter : PNG, JPG et PDF d'un plan refusés tant que le **niveau affiché** a un manque ou un débord (encadré rouge, bouton désactivé, `exportProject` refuse aussi). Écran Vues : le PDF (planche, façades, coupes, plans de niveau) est refusé tant qu'un manque ou un débord existe sur **n'importe quel niveau**. Nouvelle fonction pure `blockingSurfaceWarnings(document, levelId?)` + test. La capture d'image de la vue 3D n'est pas bloquée.
+- Fichiers : `src/features/measurements/warnings.ts` + test, `src/components/editor/{ExportDialog.tsx,exportProject.ts}`, `src/components/views/ViewsPdfDialog.tsx`, `src/i18n/fr.ts`, `docs/03-ROADMAP.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2499) — à tester dans le navigateur
+- Commit : à proposer
+
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 3 · Export bloqué par un manque ou un débord
+- Décision de l'utilisateur (D55) : **jamais d'export des métrés tant qu'une pièce laisse un manque ou déborde des murs** ; il faut le signaler et demander de corriger.
+- Fait : fenêtre Exporter (métrés) : encadré rouge « Export impossible : corrigez d'abord ces pièces », bouton Exporter désactivé ; un clic sur une ligne ferme la fenêtre et montre la zone sur le plan. Panneau Métrés : encadré rouge « À corriger avant d'exporter » (au-dessus de l'encadré orange « À vérifier »), boutons Excel et CSV désactivés avec une explication. Sécurité : `prepareMetres` refuse aussi l'export (`MetresCoverageError`). Les autres points (pièce masquée, élément sans niveau, ouvertures) restent de simples avertissements.
+- Portée : seul ce qui est exporté compte (« Niveau affiché » : seulement ce niveau). Élargi ensuite aux exports d'image et de PDF du plan (entrée ci-dessus).
+- Fichiers : `src/features/measurements/warnings.ts` (`isBlockingWarning`) + test, `src/components/editor/{exportMetres.ts,ExportDialog.tsx,MeasurementsPanel.tsx,MetresWarningList.tsx}`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2498) — à tester dans le navigateur
+- Commit : à proposer
+
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 3 (fiabilité des surfaces)
+- Fait : **contrôle des surfaces** (fonctions pures, rien n'est corrigé). `roomCoverageGaps` / `createCoverageChecker` : pour chaque pièce, la zone fermée par les murs autour d'elle est comparée à son contour ; les morceaux non couverts (« Salon : 0,28 m² non couverts le long du mur M02 ») et les parties qui passent au-delà des murs sont signalés au-delà de 50 mm de large ou de 0,01 m². `metresWarnings` liste en plus les pièces superposées, les trémies qui débordent, les pièces masquées (comptées, D21), les éléments sans niveau (absents des métrés, axes et coupes exceptés), les ouvertures qui dépassent de leur segment ou se chevauchent. **Panneau Métrés** : encadré « À vérifier » en Client (tout le bâtiment) et en Technique (niveau affiché ; remplace l'ancien message des pièces superposées) ; un clic affiche le niveau, sélectionne la pièce et surligne la zone en orange sur le plan (la zone disparaît dès que le plan change ; jamais dans les exports d'image). **Fenêtre Exporter** (métrés) : la liste complète s'affiche avant le téléchargement, sans bloquer.
+- Choix (D54) : le **manque** est mesuré par rapport aux **faces** des murs, le **débord** par rapport à leurs **axes** : une pièce tracée à l'axe (D49, contour tel que dessiné) ou sur les faces n'est jamais signalée. Un espace couvert par une autre pièce (cuisine et séjour dans la même zone, sans mur entre eux) n'est pas un manque ; un manque dans une zone partagée n'est signalé qu'une fois.
+- Nouveau calcul géométrique sans bibliothèque : `polygonDifference` (différence de deux polygones, trous compris), même méthode de graphe plan que `regions.ts`.
+- Décision encore en attente : pièces masquées comptées (règle actuelle, avec l'avertissement) ou retirées du document Client.
+- Fichiers : `src/features/geometry/polygonPieces.ts` (nouveau), `src/features/measurements/{roomCoverage,warnings}.ts` (nouveaux) + tests, `src/components/editor/{MetresWarningList,SurfaceHighlightLayer}.tsx` et `metresWarningText.ts` (nouveaux), `MeasurementsPanel.tsx`, `ExportDialog.tsx`, `EditorStage.tsx`, `exportStage.ts`, `thumbnail.ts`, `src/stores/editorStore.ts`, `src/i18n/fr.ts`, `docs/03-ROADMAP.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2497, dont 18 nouveaux) — à tester dans le navigateur
+- Commit : à proposer
 
 ### 2026-11-12 — M10 ter · Cas limites des métrés · Groupes 1 et 2
 - Fait, groupe 1 (exports) : la ligne de total du récapitulatif Client dit « Total du niveau » quand un seul niveau est exporté ; un niveau introuvable n'exporte plus tout le bâtiment en silence (`restrictToLevel` renvoie `null`, la fenêtre Exporter affiche un message et bloque le bouton) ; l'en-tête du CSV et du fichier Excel Client reprend le titre et la remarque du PDF Client, sans note technique ; le nom de fichier reçoit `-client` ou `-execution` (affiché à côté du champ du nom) ; la case « Inclure le mobilier » est masquée en Client ; la fenêtre Exporter s'ouvre sur la version affichée dans le panneau Métrés (état partagé dans le store, hors document et hors historique). Les boutons Excel et CSV du panneau passent par le même export que la fenêtre.
@@ -919,6 +947,9 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D51 | Version du PDF des vues | « Cotation des plans : Comme à l'écran / Client / Exécution » ; la note sur les baies est imprimée dès qu'un plan est coté en Exécution. | Garde le réglage par vue tout en permettant d'imposer une version à toute la planche. |
 | D52 | Hauteur sous plafond | Du dessus du sol de la pièce au-dessous de la dalle du niveau du dessus (altitude du niveau du dessus moins son épaisseur de dalle, comme en 3D). Dernier niveau : hauteur d'étage moins l'épaisseur du toit plat posé entre les murs. Exemples : étage du dessus à +2850 avec une dalle de 200 → 2650 ; dernier niveau de 2700 avec 200 de toit → 2500. | Demande de l'utilisateur ; même géométrie que la 3D, donc pas de contradiction. Sous un toit en pente, la hauteur variable n'est pas calculée. |
 | D53 | Nom de la version « Exécution » | Affichée **« Technique »** partout dans l'interface (réglage Cotation, version des métrés, champ « Visible en », PDF des vues). Le code, les fichiers et les documents de conception gardent « execution » / « Exécution ». | Demande de l'utilisateur ; seuls les textes de `src/i18n/fr.ts` changent. |
+| D54 | Contrôle « la pièce remplit l'espace entre ses murs » | Manque : zone fermée par les **faces** des murs moins la pièce (et moins les autres pièces de la zone). Débord : pièce moins la zone fermée par les **axes**. Seuil : 50 mm de large ou 0,01 m². Signalé, jamais corrigé. | Une pièce tracée à l'axe ou aux faces (D49) n'est pas signalée ; seules les vraies erreurs de tracé le sont. |
+| D55 | Export et surfaces fausses | Un **manque** ou un **débord** (D54) dans ce qui est exporté **bloque l'export des métrés** (fenêtre Exporter, boutons du panneau, `prepareMetres`), **du plan en PNG, JPG et PDF** (niveau affiché ; `exportProject`) et **du PDF des vues** (tout le bâtiment) jusqu'à correction. Les autres avertissements n'empêchent pas l'export. | Choix de l'utilisateur : ne jamais livrer des métrés faux. |
+| D56 | Pièces masquées | Comptées dans les métrés Client et Technique (D21 inchangée), avec l'avertissement « … est masquée mais sa surface est comptée » ; elles ne bloquent pas l'export. | Choix de l'utilisateur (option A). |
 
 ## Idées (hors jalon en cours)
 

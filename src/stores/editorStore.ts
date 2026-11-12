@@ -33,7 +33,7 @@ import { resizeBlock } from '../features/geometry/resizeBlock'
 import { splitWallInDocument } from '../features/geometry/splitWall'
 import { stretchZone } from '../features/geometry/stretchZone'
 import { translateElement } from '../features/geometry/transform'
-import { fitToScreen, type Size } from '../features/geometry/viewport'
+import { fitToScreen, type Point, type Size } from '../features/geometry/viewport'
 import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, PlanSettings, Project, RoofShape } from '../types/document'
 
@@ -97,6 +97,15 @@ interface History {
   future: FabricsDocument[]
 }
 
+/** Zone à surligner sur le plan (voir `surfaceHighlight`). */
+export interface SurfaceHighlight {
+  levelId: string
+  /** Contour puis trous, points absolus (mm). */
+  rings: Point[][]
+  /** Éléments du document au moment du clic : la zone disparaît dès qu'ils changent. */
+  elements: readonly CanvasElement[]
+}
+
 interface EditorState {
   project: Project | null
   selectedIds: string[]
@@ -133,6 +142,11 @@ interface EditorState {
   dimensioningMode: DimensioningMode
   /** Version des métrés affichée dans le panneau ; la fenêtre Exporter s'ouvre dessus (état d'interface, hors historique). */
   metresVersion: MetresVersion
+  /**
+   * Zone surlignée sur le plan après un clic sur un avertissement des métrés (surface non couverte,
+   * débord). État d'interface ; affichée tant que les éléments du document n'ont pas changé.
+   */
+  surfaceHighlight: SurfaceHighlight | null
   /** Message affiché à l'utilisateur (par exemple un fichier refusé). */
   notice: string | null
   /** Guides d'alignement affichés pendant un déplacement (état d'interface, pas du document). */
@@ -176,6 +190,7 @@ interface EditorState {
   setShowLowerLevel: (show: boolean) => void
   setDimensioningMode: (mode: DimensioningMode) => void
   setMetresVersion: (version: MetresVersion) => void
+  setSurfaceHighlight: (highlight: SurfaceHighlight | null) => void
   /** Ajoute un niveau au sommet du bâtiment et l'affiche. */
   addLevel: () => void
   /** Copie un niveau (ses murs et leurs ouvertures) juste au-dessus de lui et l'affiche. */
@@ -375,6 +390,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     showLowerLevel: true,
     dimensioningMode: 'none',
     metresVersion: 'execution',
+    surfaceHighlight: null,
     notice: null,
     guides: [],
     zoom: 1,
@@ -395,6 +411,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         editingTextId: null,
         // On ouvre un plan sur son niveau le plus bas (le rez-de-chaussée).
         activeLevelId: validActiveLevelId(project.document.levels, null),
+        surfaceHighlight: null,
         notice: null,
         zoom: 1,
         stagePosition: { x: 0, y: 0 },
@@ -484,6 +501,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     setShowLowerLevel: (showLowerLevel) => set({ showLowerLevel }),
     setDimensioningMode: (dimensioningMode) => set({ dimensioningMode }),
     setMetresVersion: (metresVersion) => set({ metresVersion }),
+    setSurfaceHighlight: (surfaceHighlight) => set({ surfaceHighlight }),
 
     addLevel: () => {
       const levels = get().project?.document.levels
