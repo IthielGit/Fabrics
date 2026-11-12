@@ -849,10 +849,10 @@ Objectif : l'application est accessible publiquement (en mode local, sans compte
 
 Objectif : retrouver ses projets sur un autre appareil.
 
-- [ ] Guider la création du projet Supabase et l'exécution de `supabase/schema.sql`
+- [x] Guider la création du projet Supabase et l'exécution de `supabase/schema.sql` (2026-11-12, table vérifiée)
 - [ ] `src/lib/supabase.ts` + `.env.local` ; variables ajoutées dans Cloudflare Pages
-- [ ] Page Connexion : inscription e-mail + mot de passe (avec vérification e-mail),
-      connexion, mot de passe oublié, déconnexion
+- [x] Page Connexion : inscription e-mail + mot de passe (avec vérification e-mail),
+      connexion, mot de passe oublié, déconnexion (2026-11-12, à tester dans le navigateur)
 - [ ] Connexion Google (optionnelle, seulement si l'utilisateur la veut)
 - [ ] `SupabaseRepository` (table `projects`, bucket `assets`, URLs signées)
 - [ ] Choix automatique du dépôt : local si déconnecté, Supabase si connecté

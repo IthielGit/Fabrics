@@ -1,14 +1,23 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router'
 import { fr } from './i18n/fr'
 import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
+import LoginPage from './pages/LoginPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
+import { useAuthStore } from './stores/authStore'
 
 export default function App() {
+  const initAuth = useAuthStore((state) => state.init)
+  useEffect(() => initAuth(), [initAuth])
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/p/:projectId" element={<EditorPage />} />
+        <Route path="/connexion" element={<LoginPage />} />
+        <Route path="/nouveau-mot-de-passe" element={<ResetPasswordPage />} />
         <Route
           path="*"
           element={

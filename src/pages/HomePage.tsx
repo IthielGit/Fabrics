@@ -1,6 +1,7 @@
 import { ArrowRight, BookOpen, Building2, ChevronRight, PencilRuler, Ruler, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
+import AccountButton from '../components/home/AccountButton'
 import DeleteDialog from '../components/home/DeleteDialog'
 import ProjectCard from '../components/home/ProjectCard'
 import RenameDialog from '../components/home/RenameDialog'
@@ -59,6 +60,7 @@ export default function HomePage() {
             <PencilRuler size={18} aria-hidden="true" />
           </span>
           <h1 className="text-xl font-bold tracking-tight text-indigo-950">{fr.app.name}</h1>
+          <AccountButton />
         </div>
       </header>
 

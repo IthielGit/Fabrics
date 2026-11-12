@@ -44,6 +44,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M13 · Lot B : page de connexion
+- Fait : pages `/connexion` (connexion, inscription avec e-mail de confirmation, mot de passe oublié) et `/nouveau-mot-de-passe` (lien reçu par e-mail) ; bouton « Se connecter » / « Se déconnecter » en haut de l'accueil, invisible quand Supabase n'est pas configuré. Contrôles de saisie (adresse valide, 8 caractères, confirmation) et erreurs Supabase traduites en français. Les projets restent encore enregistrés localement : le lot C branchera le cloud. Connexion Google : non (idée).
+- Fichiers : `src/stores/authStore.ts`, `src/features/auth/` (validation, erreurs, tests), `src/pages/LoginPage.tsx`, `ResetPasswordPage.tsx`, `src/components/auth/`, `src/components/home/AccountButton.tsx`, `App.tsx`, `HomePage.tsx`, `src/i18n/fr.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2727). Pas de test automatisé des écrans ; l'inscription et les liens par e-mail sont à essayer à la main (redirections Supabase nécessaires).
+
 ### 2026-11-12 — M13 · Lot A (partie code) : client Supabase
 - Fait : dépendance `@supabase/supabase-js` ; `src/lib/supabase.ts` (client créé seulement si `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` sont remplies, sinon `supabase` vaut `null` et l'application reste en mode local) ; `.env.example` déjà prêt.
 - Reste du lot A (à faire avec l'utilisateur) : créer le projet Supabase, exécuter `supabase/schema.sql`, remplir `.env.local`, ajouter les variables dans Cloudflare Pages, régler les adresses de redirection.
