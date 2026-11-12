@@ -256,7 +256,6 @@ du papier (voir « Export »).
 | Format | Largeur × hauteur |
 |---|---|
 | Post carré | 1080 × 1080 |
-| Story | 1080 × 1920 |
 | A4 | 2480 × 3508 (A4 à 300 dpi) |
 | Affiche A3 | 3508 × 4961 (A3 à 300 dpi) |
 | Bannière | 1500 × 500 |

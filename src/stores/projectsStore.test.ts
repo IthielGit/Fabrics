@@ -43,7 +43,7 @@ describe('projectsStore', () => {
   })
 
   it('renomme un projet (et ignore un nom vide)', async () => {
-    const id = await state().createDesign('story')
+    const id = await state().createDesign('a4')
     await state().rename(id, '  Affiche été  ')
     expect(state().projects[0].name).toBe('Affiche été')
     await state().rename(id, '   ')

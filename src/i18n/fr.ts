@@ -88,7 +88,6 @@ export const fr = {
   formats: {
     title: 'Choisir un format',
     'post-square': 'Post carré',
-    story: 'Story',
     a4: 'A4',
     a3: 'Affiche A3',
     banner: 'Bannière',

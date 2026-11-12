@@ -53,7 +53,7 @@ describe('createAutosaver', () => {
 
   it('met à jour la date de modification', async () => {
     const { autosaver, save } = setup()
-    autosaver.schedule(createDesignProject('story', 'Test', new Date('2020-01-01')))
+    autosaver.schedule(createDesignProject('a4', 'Test', new Date('2020-01-01')))
     await vi.advanceTimersByTimeAsync(1000)
     expect(save.mock.calls[0][0].updatedAt).toBe(NOW.toISOString())
   })

@@ -216,7 +216,7 @@ describe('copier / coller', () => {
     store().setSelection([a.id])
     store().copySelection()
 
-    store().loadProject(createDesignProject('story', 'Autre projet'))
+    store().loadProject(createDesignProject('a4', 'Autre projet'))
     store().pasteClipboard()
 
     expect(elements()).toHaveLength(1)
@@ -412,7 +412,7 @@ describe('revision et nom du projet', () => {
 
   it('loadProject remet tout à zéro', () => {
     store().addElement(rect('A'))
-    store().loadProject(createDesignProject('story', 'Autre'))
+    store().loadProject(createDesignProject('a4', 'Autre'))
     expect(elements()).toHaveLength(0)
     expect(store().history.past).toHaveLength(0)
     expect(store().revision).toBe(0)

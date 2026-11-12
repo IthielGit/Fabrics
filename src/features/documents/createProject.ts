@@ -4,7 +4,7 @@ import { createOpeningElement, createRoomElement, createWallElement } from './el
 import { createLevel } from './levels'
 import { CURRENT_DOCUMENT_VERSION } from './migrations'
 
-export type DesignFormatId = 'post-square' | 'story' | 'a4' | 'a3' | 'banner'
+export type DesignFormatId = 'post-square' | 'a4' | 'a3' | 'banner'
 
 export interface DesignFormat {
   id: DesignFormatId
@@ -15,7 +15,6 @@ export interface DesignFormat {
 // A4 et A3 à 300 dpi (voir docs/02-ARCHITECTURE.md).
 export const DESIGN_FORMATS: readonly DesignFormat[] = [
   { id: 'post-square', width: 1080, height: 1080 },
-  { id: 'story', width: 1080, height: 1920 },
   { id: 'a4', width: 2480, height: 3508 },
   { id: 'a3', width: 3508, height: 4961 },
   { id: 'banner', width: 1500, height: 500 },

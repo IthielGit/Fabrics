@@ -24,11 +24,10 @@ describe('createDesignProject', () => {
     expect(project.updatedAt).toBe(NOW.toISOString())
   })
 
-  it('propose les 5 formats attendus', () => {
+  it('propose les 4 formats attendus', () => {
     const sizes = Object.fromEntries(DESIGN_FORMATS.map((f) => [f.id, [f.width, f.height]]))
     expect(sizes).toEqual({
       'post-square': [1080, 1080],
-      story: [1080, 1920],
       a4: [2480, 3508],
       a3: [3508, 4961],
       banner: [1500, 500],
@@ -36,8 +35,8 @@ describe('createDesignProject', () => {
   })
 
   it('génère des identifiants différents', () => {
-    const a = createDesignProject('story', 'A')
-    const b = createDesignProject('story', 'B')
+    const a = createDesignProject('a4', 'A')
+    const b = createDesignProject('a4', 'B')
     expect(a.id).not.toBe(b.id)
   })
 })
