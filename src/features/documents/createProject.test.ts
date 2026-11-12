@@ -89,27 +89,43 @@ describe('duplicateProject', () => {
 })
 
 describe('createExamplePlanProject', () => {
-  it('crée un plan avec deux pièces, deux murs et quatre ouvertures sur le rez-de-chaussée', () => {
+  it('crée une maison à deux niveaux avec pièces, murs, ouvertures, escalier, meubles et toit', () => {
     const project = createExamplePlanProject(NOW)
     const { elements, levels } = project.document
     expect(project.kind).toBe('plan')
-    expect(elements.filter((e) => e.type === 'room')).toHaveLength(2)
-    expect(elements.filter((e) => e.type === 'wall')).toHaveLength(2)
-    expect(elements.filter((e) => e.type === 'opening')).toHaveLength(4)
-    expect(elements.every((e) => e.levelId === levels![0].id)).toBe(true)
+    expect(levels).toHaveLength(2)
+    const count = (type: string, levelId?: string) =>
+      elements.filter((e) => e.type === type && (levelId === undefined || e.levelId === levelId)).length
+    expect(count('room', levels![0].id)).toBe(4)
+    expect(count('room', levels![1].id)).toBe(6)
+    expect(count('stair', levels![0].id)).toBe(1)
+    expect(count('roof', levels![1].id)).toBe(1)
+    expect(count('furniture')).toBeGreaterThan(30)
+    expect(count('dimension')).toBeGreaterThan(0)
+    expect(count('section')).toBe(1)
   })
 
-  it('pose chaque ouverture sur un mur qui existe', () => {
+  it('ne laisse que la ligne de coupe sans niveau', () => {
     const { elements } = createExamplePlanProject(NOW).document
-    const wallIds = new Set(elements.filter((e) => e.type === 'wall').map((e) => e.id))
-    for (const e of elements) if (e.type === 'opening') expect(wallIds.has(e.wallId)).toBe(true)
+    const withoutLevel = elements.filter((e) => e.levelId === undefined)
+    expect(withoutLevel.map((e) => e.type)).toEqual(['section'])
+  })
+
+  it('pose chaque ouverture sur un mur du même niveau', () => {
+    const { elements } = createExamplePlanProject(NOW).document
+    const walls = new Map(elements.filter((e) => e.type === 'wall').map((e) => [e.id, e]))
+    for (const e of elements) {
+      if (e.type !== 'opening') continue
+      expect(walls.get(e.wallId)?.levelId).toBe(e.levelId)
+    }
   })
 })
 
-describe('plan d’exemple : contrôle des surfaces', () => {
-  it('ne déclenche aucune alerte', () => {
+describe('plan d’exemple : contrôle des métrés', () => {
+  it('ne déclenche aucune alerte (surfaces, ouvertures, murs, trémie)', () => {
     const document = createExamplePlanProject(NOW).document
-    const warnings = metresWarnings(document, computeBuildingMeasurements(document)).filter(isSurfaceWarning)
+    const warnings = metresWarnings(document, computeBuildingMeasurements(document))
     expect(warnings).toEqual([])
+    expect(warnings.filter(isSurfaceWarning)).toEqual([])
   })
 })

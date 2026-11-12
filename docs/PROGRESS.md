@@ -44,6 +44,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — Hors jalon · Exemple plus complet (« Voir un exemple »)
+- Fait : le plan d'exemple devient une maison à deux niveaux : rez-de-chaussée (séjour et coin repas, cuisine avec îlot, entrée avec escalier en L, WC et buanderie) et étage (deux chambres, salle de bains, bureau, palier, dressing), 10 pièces, une quarantaine de meubles, portes, fenêtres et baie, 3 cotes, une ligne de coupe A et une toiture à deux pans. Aucune alerte de métrés (testé).
+- Fichiers : `src/features/documents/examplePlan.ts` (nouveau, contenu du plan), `src/features/documents/createProject.ts`, `src/features/documents/createProject.test.ts`, `src/i18n/fr.ts` (textes de l'exemple et de la carte d'accueil).
+- Vérification : build ✓ lint ✓ tests ✓ (2681) — à regarder dans le navigateur : accueil → « Voir un exemple ».
+
 ### 2026-11-12 — M11 ter · Boussole du plan
 - Fait : demande de l'utilisateur (« une vraie boussole, avec une logique simple »). Règle unique : le nord est **un seul angle** (`plan.northAngle`), tout le reste en découle. **Boussole interactive** en bas à gauche du canevas d'un plan, **affichée à la demande** (bouton boussole dans la barre d'état ; masquée par défaut ; choix mémorisé dans le navigateur, jamais dans le projet) : rose N / E / S / O, aiguille rouge vers le nord, légende « Nord : 30° ». On la tourne à la souris (aimantée tous les 15°, Maj = au degré), aux flèches du clavier (Maj = 1°), double-clic ou Début = nord en haut. L'angle reste local pendant le geste et n'est enregistré qu'au relâchement : un seul « Annuler ». Liée au champ « Nord » des réglages du plan. **Rose des vents à l'impression** : la flèche des annotations de plan reçoit des graduations aux 4 points et les lettres N, E, S, O qui suivent le nord (repris dans PDF, PNG, DXF et planche) ; le repère de niveau descend sous la lettre du sud. Les lettres E, S, O sont facultatives dans `ExecutionLabels` (sans elles, seul le N est écrit, comme avant).
 - Fichiers : src/features/building/compass.ts (+ test), src/stores/compassStore.ts, src/components/editor/CompassWidget.tsx, ZoomControls.tsx, src/pages/EditorPage.tsx, src/features/dimensioning/planMarks.ts (+ test), executionDimensions.ts, planDecorations.ts, src/i18n/fr.ts, dimensioningLabels.ts
