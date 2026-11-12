@@ -25,7 +25,7 @@ function opening(
 }
 
 const details = (o: OpeningElement) => buildOpeningDetails(wall, [o], ground)
-const ofKind = (o: OpeningElement, kind: 'frame' | 'glass' | 'door') =>
+const ofKind = (o: OpeningElement, kind: 'frame' | 'glass' | 'door' | 'garage') =>
   details(o).fills.filter((f) => f.kind === kind)
 
 describe('menuiseries des portes selon le style', () => {
@@ -58,7 +58,7 @@ describe('menuiseries des portes selon le style', () => {
 
   it('garage sectionnelle : des panneaux superposés de même largeur', () => {
     const o = opening('door', 'garageSectional', { width: 2400, height: 2000 })
-    const panels = ofKind(o, 'door')
+    const panels = ofKind(o, 'garage')
     expect(panels.length).toBeGreaterThanOrEqual(3)
     expect(new Set(panels.map((p) => Math.round(p.size.x))).size).toBe(1)
     expect(new Set(panels.map((p) => Math.round(p.center.y))).size).toBe(panels.length)
@@ -66,7 +66,7 @@ describe('menuiseries des portes selon le style', () => {
   })
 
   it('garage basculante : un seul panneau', () => {
-    expect(ofKind(opening('door', 'garageTilt', { width: 2400, height: 2000 }), 'door')).toHaveLength(1)
+    expect(ofKind(opening('door', 'garageTilt', { width: 2400, height: 2000 }), 'garage')).toHaveLength(1)
   })
 
   it('coulissante en applique : le vantail est posé contre la face du mur, du côté de l\'ouverture', () => {

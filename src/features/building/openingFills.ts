@@ -117,6 +117,9 @@ export function buildOpeningDetails(
     const pane = (u0: number, u1: number, dz = 0) => add('glass', u0, u1, iy0, iy1, GLASS_DEPTH, dz)
     const leaf = (u0: number, u1: number, y0 = iy0, y1 = iy1, dz = 0) =>
       add('door', u0, u1, y0, y1, DOOR_DEPTH, dz)
+    /** Panneau d'une porte de garage : métal peint, d'un autre aspect qu'une porte en bois. */
+    const garagePanel = (u0: number, u1: number, y0: number, y1: number) =>
+      add('garage', u0, u1, y0, y1, DOOR_DEPTH)
 
     /** Triangle d'ouverture : la pointe est du côté des gonds. */
     const sideTriangle = (u0: number, u1: number, hinge: 'start' | 'end') => {
@@ -224,7 +227,7 @@ export function buildOpeningDetails(
         const count = Math.max(2, Math.round((iy1 - iy0) / GARAGE_PANEL))
         const panelHeight = (iy1 - iy0) / count
         for (let i = 0; i < count; i++) {
-          leaf(
+          garagePanel(
             iu0,
             iu1,
             iy0 + panelHeight * i + (i > 0 ? GAP / 2 : 0),
@@ -234,7 +237,7 @@ export function buildOpeningDetails(
         break
       }
       case 'garageTilt':
-        leaf(iu0, iu1)
+        garagePanel(iu0, iu1, iy0, iy1)
         break
 
       // --- Fenêtres ---

@@ -88,7 +88,7 @@ export function prismsOf(model: BuildingModel): Prism[] {
   addBoxes(model.walls, 'wall')
   addBoxes(model.steps, 'step')
   addBoxes(model.chimneys, 'chimney')
-  for (const fill of model.fills) addBoxes([fill], fill.kind)
+  for (const fill of model.fills) addBoxes([fill], fill.kind === 'garage' ? 'door' : fill.kind)
   for (const slab of model.slabs) {
     prisms.push({
       rings: [slab.outline, ...(slab.holes ?? [])],

@@ -5,7 +5,9 @@ import * as THREE from 'three'
 import type {
   Bounds3,
   BuildingModel,
+  FurnitureLook,
   OpeningFill,
+  PieceShape,
   RoofPrism,
   SlabShape,
   WallMesh,
@@ -19,6 +21,13 @@ import OrientationCube from './OrientationCube'
 const MM = 0.001
 
 const BOX = new THREE.BoxGeometry(1, 1, 1)
+// Formes rondes de diamètre et de hauteur 1 : l'échelle de chaque morceau les ajuste (ovale compris).
+const SHAPES: Record<PieceShape, THREE.BufferGeometry> = {
+  box: BOX,
+  cylinder: new THREE.CylinderGeometry(0.5, 0.5, 1, 32),
+  sphere: new THREE.SphereGeometry(0.5, 32, 20),
+  cone: new THREE.ConeGeometry(0.5, 1, 32),
+}
 // Palette neutre et chaude : enduit blanc cassé, toit gris gravier, menuiseries anthracite.
 const WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#f3f1ec', roughness: 0.95 })
 const SLAB_MATERIAL = new THREE.MeshStandardMaterial({
@@ -44,9 +53,37 @@ const GABLE_MATERIAL = new THREE.MeshStandardMaterial({
   roughness: 0.95,
   side: THREE.DoubleSide,
 })
-const PLATFORM_MATERIAL =new THREE.MeshStandardMaterial({ color: '#cdb594', roughness: 0.85 })
+const PLATFORM_MATERIAL = new THREE.MeshStandardMaterial({ color: '#cdb594', roughness: 0.85 })
+/** Une matière par couleur de plateforme (terrasse en bois, plage de piscine en pierre…). */
+const platformMaterials = new Map<string, THREE.MeshStandardMaterial>()
+function platformMaterial(color: string | undefined): THREE.MeshStandardMaterial {
+  if (!color) return PLATFORM_MATERIAL
+  let material = platformMaterials.get(color)
+  if (!material) {
+    material = new THREE.MeshStandardMaterial({ color, roughness: 0.85 })
+    platformMaterials.set(color, material)
+  }
+  return material
+}
 const STAIR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#c9b393', roughness: 0.85 })
-const FURNITURE_MATERIAL = new THREE.MeshStandardMaterial({ color: '#b9a999', roughness: 0.8 })
+const standard = (color: string, roughness = 0.8, metalness = 0) =>
+  new THREE.MeshStandardMaterial({ color, roughness, metalness })
+/** Matière des objets selon leur aspect (voir `lookOf`) : bois, tissu, plantes, eau, carrosserie… */
+const FURNITURE_MATERIALS: Record<FurnitureLook, THREE.Material> = {
+  neutral: standard('#b9a999'),
+  wood: standard('#a98258', 0.75),
+  fabric: standard('#8d99a6', 0.95),
+  canvas: standard('#efe8d6', 0.9),
+  white: standard('#f1f1ee', 0.5),
+  metal: standard('#9298a0', 0.4, 0.5),
+  stone: standard('#c3bcb0', 0.9),
+  plant: standard('#5f8f4e', 0.95),
+  water: standard('#3d9fd3', 0.12, 0.1),
+  carDark: standard('#36404a', 0.35, 0.4),
+  carLight: standard('#c9ccd0', 0.35, 0.4),
+  carGlass: standard('#222a31', 0.2, 0.3),
+  tire: standard('#1d1f22', 0.9),
+}
 const CHIMNEY_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a39d97', roughness: 0.95 })
 const FRAME_MATERIAL = new THREE.MeshStandardMaterial({ color: '#3b4048', roughness: 0.6 })
 const DOOR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#8f6d4c', roughness: 0.7 })
@@ -62,9 +99,11 @@ const FILL_MATERIALS: Record<OpeningFill['kind'], THREE.Material> = {
   frame: FRAME_MATERIAL,
   door: DOOR_MATERIAL,
   glass: GLASS_MATERIAL,
+  garage: new THREE.MeshStandardMaterial({ color: '#8e959c', roughness: 0.45, metalness: 0.35 }),
 }
 const SELECTED_WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a5b4fc', roughness: 0.9 })
-const GROUND_MATERIAL = new THREE.MeshStandardMaterial({ color: '#e7e5df', roughness: 1 })
+// Terrain : une pelouse douce plutôt qu'un sol gris.
+const GROUND_MATERIAL = new THREE.MeshStandardMaterial({ color: '#b8c79d', roughness: 1 })
 
 /**
  * Matière normale des maillages qui peuvent être surlignés par la sélection : l'export 3D la
@@ -88,6 +127,8 @@ interface PieceMeshProps {
   selected: boolean
   /** Faux pour le verre : il ne porte pas d'ombre. */
   castShadow?: boolean
+  /** Forme du volume (boîte par défaut). */
+  shape?: PieceShape
   onSelectWall: (wallId: string, levelId: string) => void
 }
 
@@ -96,6 +137,7 @@ const PieceMesh = memo(function PieceMesh({
   material = WALL_MATERIAL,
   selected,
   castShadow = true,
+  shape = 'box',
   onSelectWall,
 }: PieceMeshProps) {
   const handleClick = (event: ThreeEvent<MouseEvent>) => {
@@ -106,7 +148,7 @@ const PieceMesh = memo(function PieceMesh({
   return (
     <mesh
       ref={rememberBase(material)}
-      geometry={BOX}
+      geometry={SHAPES[shape]}
       material={selected ? SELECTED_WALL_MATERIAL : material}
       position={[piece.center.x, piece.center.y, piece.center.z]}
       scale={[piece.size.x, piece.size.y, piece.size.z]}
@@ -198,7 +240,7 @@ const SlabMesh = memo(function SlabMesh({ slab }: { slab: SlabShape }) {
         slab.kind === 'roof'
           ? (roofSurface(slab.covering) ?? ROOF_MATERIAL)
           : slab.kind === 'platform'
-            ? PLATFORM_MATERIAL
+            ? platformMaterial(slab.color)
             : SLAB_MATERIAL
       }
       position={[0, slab.baseY + slab.thickness, 0]}
@@ -479,7 +521,7 @@ export default function Viewer3DScene({
       >
         <planeGeometry args={[600, 600]} />
       </mesh>
-      <gridHelper args={[100, 100, '#d4d1ca', '#dedbd4']} position={[0, ground - 0.001, 0]} />
+      <gridHelper args={[100, 100, '#a9b88f', '#b0bf96']} position={[0, ground - 0.001, 0]} />
       <group ref={buildingRef} scale={MM}>
         {model.wallMeshes.map((mesh) => (
           <WallBody
@@ -511,7 +553,8 @@ export default function Viewer3DScene({
           <PieceMesh
             key={`furniture-${piece.sourceId}-${i}`}
             piece={piece}
-            material={FURNITURE_MATERIAL}
+            material={FURNITURE_MATERIALS[piece.look]}
+            shape={piece.shape}
             selected={selectedIds.has(piece.sourceId)}
             onSelectWall={onSelectWall}
           />

@@ -26,6 +26,35 @@ export interface WallPiece {
   material?: WallMaterial
 }
 
+/** Forme d'un volume d'objet : la boîte est la règle, les formes rondes servent aux objets ronds. */
+export type PieceShape = 'box' | 'cylinder' | 'sphere' | 'cone'
+
+/** Aspect d'un objet (la vue 3D en fait une matière) : le modèle reste sans Three.js. */
+export type FurnitureLook =
+  | 'neutral'
+  | 'wood'
+  | 'fabric'
+  | 'canvas'
+  | 'white'
+  | 'metal'
+  | 'stone'
+  | 'plant'
+  | 'water'
+  | 'carDark'
+  | 'carLight'
+  | 'carGlass'
+  | 'tire'
+
+/**
+ * Un volume d'un objet de la bibliothèque : une boîte, un cylindre, une sphère ou un cône inscrits
+ * dans `size` (x = largeur, y = hauteur, z = profondeur). Un objet simple en a un ; un parasol, une
+ * voiture ou un arbre en ont plusieurs.
+ */
+export interface FurniturePiece extends WallPiece {
+  look: FurnitureLook
+  shape: PieceShape
+}
+
 /** Dalle sous une pièce, ou toit plat au-dessus : polygone extrudé verticalement. */
 export interface SlabShape {
   /** Identifiant de la pièce du document. */
@@ -36,6 +65,8 @@ export interface SlabShape {
   outline: Point[]
   /** Couverture d'un toit plat dessiné (couleur 3D) ; absente : couleur neutre. */
   covering?: RoofCovering
+  /** Couleur d'une plateforme (celle de son plan) ; absente : couleur neutre. */
+  color?: string
   /** Altitude du dessous, mm. */
   baseY: number
   /** Épaisseur, mm. */
@@ -46,9 +77,9 @@ export interface SlabShape {
   onGround?: boolean
 }
 
-/** Remplissage d'une ouverture en 3D : cadre, vitre ou vantail de porte (boîte orientée). */
+/** Remplissage d'une ouverture en 3D : cadre, vitre, vantail de porte ou panneau de garage (boîte orientée). */
 export interface OpeningFill extends WallPiece {
-  kind: 'frame' | 'glass' | 'door'
+  kind: 'frame' | 'glass' | 'door' | 'garage'
 }
 
 /**
@@ -127,8 +158,8 @@ export interface BuildingModel {
   steps: WallPiece[]
   /** Cheminées : une boîte du plancher de leur niveau jusqu'au-dessus du dernier niveau. */
   chimneys: WallPiece[]
-  /** Objets de la bibliothèque en boîtes simples (vue 3D seulement : ni façades ni coupes). */
-  furniture: WallPiece[]
+  /** Objets de la bibliothèque en volumes simples (vue 3D seulement : ni façades ni coupes). */
+  furniture: FurniturePiece[]
   slabs: SlabShape[]
   /** Cadres, vitres et portes dans les ouvertures (vue 3D seulement ; `sourceId` = mur porteur). */
   fills: OpeningFill[]

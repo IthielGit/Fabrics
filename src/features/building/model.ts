@@ -15,6 +15,7 @@ import type {
   BuildOptions,
   BuildingModel,
   Bounds3,
+  FurniturePiece,
   OpeningFill,
   OpeningMark,
   RoofPrism,
@@ -23,7 +24,7 @@ import type {
   WallPiece,
 } from './types'
 import { buildChimney } from './chimney'
-import { buildFurniture } from './furniture'
+import { buildFurnitureParts } from './furnitureParts'
 import { collectStairVoids, pointInPolygon, voidsOfRoom, type StairVoid } from '../stairs/voids'
 import { buildStairSteps } from './stairSteps'
 import { buildOpeningDetails } from './openingFills'
@@ -116,6 +117,7 @@ export function buildPlatform(platform: PlatformElement, level: Level): SlabShap
     outline,
     baseY: top - thickness,
     thickness,
+    color: platform.fill,
   }
 }
 
@@ -231,7 +233,7 @@ export function buildBuildingModel(
   const wallMeshes: WallMesh[] = []
   const steps: WallPiece[] = []
   const chimneys: WallPiece[] = []
-  const furniture: WallPiece[] = []
+  const furniture: FurniturePiece[] = []
   const slabs: SlabShape[] = []
   const fills: OpeningFill[] = []
   const marks: OpeningMark[] = []
@@ -280,8 +282,7 @@ export function buildBuildingModel(
       const piece = buildChimney(el, level, levels)
       if (piece) chimneys.push(piece)
     } else if (el.type === 'furniture') {
-      const box = buildFurniture(el, level)
-      if (box) furniture.push(box)
+      furniture.push(...buildFurnitureParts(el, level))
     } else if (el.type === 'stair') {
       steps.push(...buildStairSteps(el, level, allLevels))
     } else if (el.type === 'platform') {

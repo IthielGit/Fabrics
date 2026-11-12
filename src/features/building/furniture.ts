@@ -7,7 +7,7 @@ import type { WallPiece } from './types'
 // objet fixé en hauteur). Fonction pure.
 
 /** Catégories sans volume en 3D : symboles conventionnels (prises, détecteurs…) et escaliers symboliques. */
-const FLAT_CATEGORIES = new Set(['electrical', 'safety', 'stairs'])
+export const FLAT_CATEGORIES = new Set(['electrical', 'safety', 'stairs'])
 
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
 

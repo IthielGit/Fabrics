@@ -414,7 +414,8 @@ export function projectModel(model: BuildingModel, look: ViewDirection): ViewFac
   for (const mesh of model.wallMeshes) faces.push(...wallMeshFaces(mesh, look))
   for (const s of model.steps) faces.push(...boxFaces(s, look, 'step'))
   for (const c of model.chimneys) faces.push(...boxFaces(c, look, 'chimney'))
-  for (const f of model.fills) faces.push(...boxFaces(f, look, f.kind))
+  // Un panneau de garage se dessine comme un vantail de porte.
+  for (const f of model.fills) faces.push(...boxFaces(f, look, f.kind === 'garage' ? 'door' : f.kind))
   // Toitures : versants inclinés, rives (épaisseur du versant) et pignons en triangle.
   for (const prism of model.roofs) faces.push(...roofPrismFaces(prism, look))
   for (const m of model.marks) {
