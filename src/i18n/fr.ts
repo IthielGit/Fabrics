@@ -260,8 +260,12 @@ export const fr = {
       bays: 'Baies vitrées',
       building: 'Bâtiment',
       total: 'Total',
+      levelTotal: 'Total du niveau',
+      freeShape: 'forme libre',
+      unnamedRoom: 'Pièce',
       pdfTitle: 'Surfaces de votre projet',
       pdfNote: 'Surface au sol : surface de chaque pièce, trémies d’escalier retirées.',
+      planCaption: (levelName: string) => `Niveau : ${levelName}`,
     },
     // Présentation Exécution des métrés (M10 ter) : pour le chantier
     execution: {
@@ -481,6 +485,7 @@ export const fr = {
       scope: 'Périmètre',
       building: 'Tout le bâtiment',
       level: 'Niveau affiché',
+      levelMissing: 'Ce niveau n’existe plus : choisissez « Tout le bâtiment » ou affichez un autre niveau.',
       furniture: 'Inclure le mobilier et les équipements',
     },
     fileName: 'Nom du fichier',

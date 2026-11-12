@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { CanvasElement, OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { fr } from '../../i18n/fr'
 import { csvFileName, escapeCsvField, measurementsToCsv, type CsvLabels } from './csv'
-import { ceilingHeight, computeBuildingMeasurements, computeMeasurements } from './measurements'
+import { ceilingHeight, computeBuildingMeasurements, computeMeasurements, restrictToLevel } from './measurements'
 
 const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
 
@@ -343,5 +343,24 @@ describe('hauteur sous plafond', () => {
   it('donnée par pièce dans les métrés', () => {
     const r = { ...room('Salon', RECT_4X3), levelId: 'L0' }
     expect(computeMeasurements([r], [L0, L1]).rooms[0].ceilingHeight).toBe(2650)
+  })
+})
+
+describe('restrictToLevel', () => {
+  const L0 = { id: 'L0', name: 'Rez', elevation: 0, height: 2700, slabThickness: 200 }
+  const L1 = { id: 'L1', name: 'Étage', elevation: 2850, height: 2700, slabThickness: 200 }
+  const building = computeBuildingMeasurements({
+    levels: [L0, L1],
+    elements: [{ ...room('Salon', RECT_4X3), levelId: 'L0' }, { ...room('Suite', RECT_4X3), levelId: 'L1' }],
+  })
+
+  it('garde un seul niveau et recalcule le total', () => {
+    const only = restrictToLevel(building, 'L1')
+    expect(only?.levels.map((e) => e.level.id)).toEqual(['L1'])
+    expect(only?.total.rooms).toHaveLength(1)
+  })
+
+  it('niveau introuvable : null, pas tout le bâtiment', () => {
+    expect(restrictToLevel(building, 'disparu')).toBeNull()
   })
 })

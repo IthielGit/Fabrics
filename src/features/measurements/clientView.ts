@@ -26,6 +26,23 @@ export interface ClientLabels {
   building: string
   /** Libellé de la ligne de total du tableau des pièces. */
   total: string
+  /** Total du récapitulatif quand un seul niveau est exporté (« Total du niveau »). */
+  levelTotal: string
+  /** Titre et remarque du document Client (PDF, en-tête du CSV et du fichier Excel). */
+  pdfTitle: string
+  pdfNote: string
+  /** Dimensions d'une pièce qui n'est pas un rectangle (« forme libre »). */
+  freeShape: string
+  /** Début du nom d'une pièce sans nom : « Pièce » donne « Pièce 1 », « Pièce 2 »… */
+  unnamedRoom: string
+}
+
+/** Tout le bâtiment, ou seulement un niveau (le libellé de la ligne de total en dépend). */
+export type ClientScope = 'building' | 'level'
+
+/** En-tête de fichier de la version Client : titre du document Client et sa remarque, sans note technique. */
+export function clientMetaLabels<T extends { title: string; noteValue: string }>(meta: T, labels: ClientLabels): T {
+  return { ...meta, title: labels.pdfTitle, noteValue: labels.pdfNote }
 }
 
 /** Dimensions d'une pièce rectangulaire aux côtés horizontaux et verticaux : `4000 × 3000`. */
@@ -34,20 +51,26 @@ export function roomDimensionsText(dimensions: readonly [number, number] | null)
   return `${Math.round(dimensions[0])} × ${Math.round(dimensions[1])}`
 }
 
-export function buildClientTables(building: BuildingMeasurements, labels: ClientLabels): MetresTable[] {
+export function buildClientTables(
+  building: BuildingMeasurements,
+  labels: ClientLabels,
+  scope: ClientScope = 'building',
+): MetresTable[] {
   const { levels, total } = building
   const tables: MetresTable[] = []
 
-  const roomRows: MetresCell[][] = levels.flatMap(({ level, measurements }) =>
-    measurements.rooms.map((room) => [
+  const roomRows: MetresCell[][] = levels.flatMap(({ level, measurements }) => {
+    // Un nom vide devient « Pièce 1 », « Pièce 2 »… (numérotation par niveau) ; des noms identiques sont gardés.
+    let unnamed = 0
+    return measurements.rooms.map((room) => [
       level.name,
-      room.name,
-      roomDimensionsText(room.dimensions),
+      room.name.trim() === '' ? `${labels.unnamedRoom} ${++unnamed}` : room.name,
+      room.dimensions ? roomDimensionsText(room.dimensions) : labels.freeShape,
       nmm(room.perimeter),
       room.ceilingHeight === null ? '' : nmm(room.ceilingHeight),
       nm2(room.netArea),
-    ]),
-  )
+    ])
+  })
   if (roomRows.length > 0) {
     tables.push({
       id: 'client-rooms',
@@ -82,8 +105,11 @@ export function buildClientTables(building: BuildingMeasurements, labels: Client
       { header: labels.windows, align: 'right' },
       { header: labels.bays, align: 'right' },
     ],
-    rows: levels.map(({ level, measurements }) => levelRow(level.name, measurements)),
-    total: levelRow(labels.building, total),
+    // Un niveau sans pièce ni ouverture n'apporte rien au client ; la version Exécution le garde.
+    rows: levels
+      .filter(({ measurements: m }) => m.rooms.length > 0 || m.totals.doors + m.totals.windows + m.totals.bays > 0)
+      .map(({ level, measurements }) => levelRow(level.name, measurements)),
+    total: levelRow(scope === 'level' ? labels.levelTotal : labels.building, total),
   })
   return tables
 }

@@ -50,6 +50,47 @@ describe('présentation Client', () => {
     expect(roomDimensionsText(null)).toBe('')
   })
 
+  it('une pièce en forme libre affiche « forme libre » dans la cellule des dimensions', () => {
+    const tables = build([room('Salon', [0, 0, 4000, 0, 4000, 3000, 2000, 3000, 2000, 5000, 0, 5000])])
+    const rooms = tables.find((t) => t.id === 'client-rooms')
+    expect(cellText(rooms?.rows[0][2] ?? '')).toBe('forme libre')
+  })
+
+  it('un nom vide devient « Pièce 1 », « Pièce 2 » par niveau ; des noms identiques sont gardés', () => {
+    const L1 = { ...L0, id: 'L1', name: 'Étage', elevation: 2900 }
+    const sq = [0, 0, 2000, 0, 2000, 2000, 0, 2000]
+    const building = computeBuildingMeasurements({
+      levels: [L0, L1],
+      elements: [
+        { ...room('a', sq), name: '' },
+        { ...room('b', sq), name: 'Chambre' },
+        { ...room('c', sq), name: 'Chambre' },
+        { ...room('d', sq), name: '   ' },
+        { ...room('e', sq), name: '', levelId: 'L1' },
+      ],
+    })
+    const rooms = buildClientTables(building, fr.measurements.client).find((t) => t.id === 'client-rooms')
+    expect(rooms?.rows.map((r) => cellText(r[1]))).toEqual(['Pièce 1', 'Chambre', 'Chambre', 'Pièce 2', 'Pièce 1'])
+  })
+
+  it('un niveau sans pièce ni ouverture est absent du récapitulatif Client, mais reste en Exécution', () => {
+    const L1 = { ...L0, id: 'L1', name: 'Étage', elevation: 2900 }
+    const building = computeBuildingMeasurements({
+      levels: [L0, L1],
+      elements: [room('Salon', [0, 0, 4000, 0, 4000, 3000, 0, 3000])],
+    })
+    const client = buildClientTables(building, fr.measurements.client).find((t) => t.id === 'client-levels')
+    expect(client?.rows.map((r) => cellText(r[0]))).toEqual(['Rez'])
+    const execution = buildExecutionTables(building, fr.measurements.csv, [], fr.measurements.execution)
+    expect(JSON.stringify(execution)).toContain('Étage')
+  })
+
+  it('un seul niveau exporté : la ligne de total dit « Total du niveau »', () => {
+    const building = computeBuildingMeasurements({ levels: [L0], elements: [room('Salon', [0, 0, 4000, 0, 4000, 3000, 0, 3000])] })
+    const levels = buildClientTables(building, fr.measurements.client, 'level').find((t) => t.id === 'client-levels')
+    expect(cellText(levels?.total?.[0] ?? '')).toBe('Total du niveau')
+  })
+
   it('le total du bâtiment est la somme des niveaux', () => {
     const L1 = { ...L0, id: 'L1', name: 'Étage', elevation: 2900 }
     const upper = { ...room('Suite', [0, 0, 2000, 0, 2000, 2000, 0, 2000]), levelId: 'L1' }

@@ -20,7 +20,7 @@ import Choice from '../ui/Choice'
 import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
 import { exportProject } from './exportProject'
-import type { MetresFormat, MetresScope, MetresVersion } from './exportMetres'
+import { VERSION_FILE_SUFFIX, type MetresFormat, type MetresScope, type MetresVersion } from './exportMetres'
 
 /** Fenêtre « Exporter » : PNG, JPG, PDF et, pour un plan, CSV des métrés. */
 export default function ExportDialog({ onClose }: { onClose: () => void }) {
@@ -36,6 +36,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   const elements = useEditorStore(selectActiveElements)
   const document = project?.document
   const isPlan = project?.kind === 'plan'
+  const activeLevelId = useEditorStore((state) => state.activeLevelId)
 
   const extent = useMemo(
     () => (isPlan ? planExportExtent(elements) : null),
@@ -81,7 +82,8 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   })
   // Métrés : présentation, périmètre et mobilier.
   const [metresFormat, setMetresFormat] = useState<MetresFormat>('xlsx')
-  const [metresVersion, setMetresVersion] = useState<MetresVersion>('execution')
+  // S'ouvre sur la version affichée dans le panneau Métrés ; la changer ici ne change pas le panneau.
+  const [metresVersion, setMetresVersion] = useState<MetresVersion>(() => useEditorStore.getState().metresVersion)
   const [metresScope, setMetresScope] = useState<MetresScope>('building')
   const [includeFurniture, setIncludeFurniture] = useState(true)
   const [busy, setBusy] = useState(false)
@@ -92,11 +94,18 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   const planPlacement =
     isPlan && region ? planPdfPlacement(region, sheetSize(sheet, orientation), scale) : null
 
+  // Le niveau affiché n'existe plus (le périmètre « niveau affiché » n'a plus de sens).
+  const levelMissing =
+    type === 'csv' &&
+    metresScope === 'level' &&
+    !measurements.levels.some((entry) => entry.level.id === activeLevelId)
   const emptyMessage =
     type === 'csv'
-      ? hasMeasures
-        ? null
-        : fr.export.csvEmpty
+      ? levelMissing
+        ? fr.export.metres.levelMissing
+        : hasMeasures
+          ? null
+          : fr.export.csvEmpty
       : isPlan && !extent
         ? fr.export.planEmpty
         : null
@@ -167,7 +176,9 @@ function ExportForm({ onClose }: { onClose: () => void }) {
               onChange={(event) => setFileName(event.target.value)}
               className="min-w-0 flex-1 rounded-md border border-slate-300 px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none"
             />
-            <span className="text-sm text-slate-500">.{fileExtension}</span>
+            <span className="text-sm text-slate-500">
+              {type === 'csv' ? VERSION_FILE_SUFFIX[metresVersion] : ''}.{fileExtension}
+            </span>
           </div>
         </div>
 
@@ -242,14 +253,17 @@ function ExportForm({ onClose }: { onClose: () => void }) {
                 {fr.export.metres.level}
               </Choice>
             </Group>
-            <label className="flex items-center gap-2 text-sm text-slate-700">
-              <input
-                type="checkbox"
-                checked={includeFurniture}
-                onChange={(event) => setIncludeFurniture(event.target.checked)}
-              />
-              {fr.export.metres.furniture}
-            </label>
+            {/* La version Client n'a pas de mobilier : l'option n'a pas de sens. */}
+            {metresVersion === 'execution' && (
+              <label className="flex items-center gap-2 text-sm text-slate-700">
+                <input
+                  type="checkbox"
+                  checked={includeFurniture}
+                  onChange={(event) => setIncludeFurniture(event.target.checked)}
+                />
+                {fr.export.metres.furniture}
+              </label>
+            )}
           </>
         )}
 

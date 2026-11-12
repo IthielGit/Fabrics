@@ -1,9 +1,7 @@
 import { Download, FileSpreadsheet } from 'lucide-react'
-import { Fragment, useMemo, useState } from 'react'
-import { furnitureCsvRows } from '../library/furnitureRows'
+import { Fragment, useMemo } from 'react'
 import { overlappingRoomIdsCached } from '../../features/geometry/roomOverlap'
 import { buildClientTables } from '../../features/measurements/clientView'
-import { csvFileName, measurementsToCsv } from '../../features/measurements/csv'
 import {
   computeBuildingMeasurements,
   computeMeasurements,
@@ -11,11 +9,9 @@ import {
 import { cellText } from '../../features/measurements/tables'
 import { formatArea, formatLength, formatVolume } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
-import { formatDate } from '../../lib/date'
-import { downloadBlob } from '../../lib/download'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
-import { exportMetres, metresTables, type MetresVersion } from './exportMetres'
+import { exportMetres } from './exportMetres'
 
 const HEAD = 'px-1 py-1 text-left text-xs font-medium text-slate-500'
 const NUMBER = 'px-1 py-1 text-right tabular-nums'
@@ -31,8 +27,9 @@ export default function MeasurementsPanel() {
   const setSelection = useEditorStore((state) => state.setSelection)
   const setActiveLevel = useEditorStore((state) => state.setActiveLevel)
 
-  // Version affichée et exportée : un réglage d'interface, pas une donnée du document.
-  const [version, setVersion] = useState<MetresVersion>('execution')
+  // Version affichée et exportée : un réglage d'interface partagé avec la fenêtre Exporter, pas une donnée du document.
+  const version = useEditorStore((state) => state.metresVersion)
+  const setVersion = useEditorStore((state) => state.setMetresVersion)
   // Recalculé à chaque modification du document : le panneau est toujours à jour.
   const building = useMemo(
     () => computeBuildingMeasurements({ elements: elements ?? [], levels }),
@@ -59,13 +56,13 @@ export default function MeasurementsPanel() {
     building.total.stairs.length === 0 &&
     building.total.roofs.length === 0
 
-  // Export principal : un vrai fichier Excel (onglets, nombres, totaux en formules), tout le bâtiment.
-  const handleExportExcel = async () => {
+  // Exports du panneau : tout le bâtiment, dans la version affichée.
+  const runExport = async (format: 'xlsx' | 'tables') => {
     const project = useEditorStore.getState().project
     if (!project) return
     try {
       await exportMetres(project, {
-        format: 'xlsx',
+        format,
         version,
         scope: 'building',
         includeFurniture: true,
@@ -78,22 +75,9 @@ export default function MeasurementsPanel() {
       useEditorStore.getState().setNotice(fr.export.failed)
     }
   }
-
-  const handleExport = () => {
-    const furniture = furnitureCsvRows(elements ?? [])
-    const csv = measurementsToCsv(
-      building,
-      fr.measurements.csv,
-      furniture,
-      { projectName, date: formatDate(new Date()) },
-      metresTables(building, furniture, version),
-    )
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' })
-    downloadBlob(
-      blob,
-      csvFileName(projectName, fr.measurements.csvFileSuffix, fr.measurements.csvFallbackName),
-    )
-  }
+  // Export principal : un vrai fichier Excel (onglets, nombres, totaux en formules).
+  const handleExportExcel = () => runExport('xlsx')
+  const handleExport = () => runExport('tables')
 
   const rowClass = (id: string) =>
     `cursor-pointer border-t border-slate-100 hover:bg-slate-50 ${

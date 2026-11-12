@@ -14,10 +14,16 @@ export function sanitizeFileName(name: string, fallback: string): string {
 
 export type ExportFileType = 'png' | 'jpg' | 'pdf' | 'csv' | 'xlsx'
 
-/** Nom complet : ajoute l'extension si l'utilisateur ne l'a pas déjà saisie. */
-export function exportFileName(name: string, type: ExportFileType, fallback: string): string {
-  const base = sanitizeFileName(name, fallback)
+/**
+ * Nom complet : ajoute l'extension si l'utilisateur ne l'a pas déjà saisie. `suffix` (« -client »)
+ * s'ajoute après le nettoyage et avant l'extension, sans doublon si le nom le porte déjà.
+ */
+export function exportFileName(name: string, type: ExportFileType, fallback: string, suffix = ''): string {
+  let base = sanitizeFileName(name, fallback)
   const extension = `.${type}`
   const hasExtension = base.toLowerCase().endsWith(extension) && base.length > extension.length
-  return hasExtension ? base : `${base}${extension}`
+  if (!suffix) return hasExtension ? base : `${base}${extension}`
+  if (hasExtension) base = base.slice(0, -extension.length)
+  if (!base.toLowerCase().endsWith(suffix.toLowerCase())) base += suffix
+  return `${base}${extension}`
 }

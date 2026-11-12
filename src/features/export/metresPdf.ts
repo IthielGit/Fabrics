@@ -24,8 +24,62 @@ const TITLE_PT = 9.5
 const NOTE_PT = 7
 const MAX_HEADER_LINES = 3
 const MAX_HEADER_COLUMN = 30
-/** Hauteur maximale de la vignette du plan, mm. */
+/** Hauteur maximale d'une vignette du plan, mm. */
 const PLAN_MAX_HEIGHT = 60
+/** Espace entre deux vignettes côte à côte, et hauteur de la légende sous chacune, mm. */
+const THUMB_GAP = 8
+const CAPTION_HEIGHT = 5
+/** Largeur maximale d'une légende, mm. */
+const CAPTION_MAX_WIDTH = 60
+
+/** Vignette du plan d'un niveau, avec sa légende (« Niveau : RDC »). */
+export interface PlanThumbnail {
+  drawing: Drawing
+  caption: string
+}
+
+export interface PlacedThumbnail {
+  /** Rang de la vignette dans la liste d'origine. */
+  index: number
+  /** Taille du dessin sur le papier, mm. */
+  width: number
+  height: number
+  /** Position horizontale depuis le bord gauche de la zone, mm. */
+  x: number
+}
+
+/**
+ * Place les vignettes en rangées : chacune est réduite pour tenir dans `available` de large et
+ * `maxHeight` de haut (proportions gardées), puis posée à droite de la précédente tant que la rangée
+ * a la place ; sinon une nouvelle rangée commence. La largeur d'une case est celle du dessin ou de sa
+ * légende si elle est plus large.
+ */
+export function packThumbnails(
+  items: readonly { width: number; height: number; captionWidth: number }[],
+  available: number,
+  maxHeight = PLAN_MAX_HEIGHT,
+  gap = THUMB_GAP,
+): PlacedThumbnail[][] {
+  const rows: PlacedThumbnail[][] = []
+  let row: PlacedThumbnail[] = []
+  let used = 0
+  items.forEach((item, index) => {
+    if (item.width <= 0 || item.height <= 0) return
+    const k = Math.min(available / item.width, maxHeight / item.height)
+    const width = item.width * k
+    const slot = Math.min(available, Math.max(width, item.captionWidth))
+    if (row.length > 0 && used + gap + slot > available) {
+      rows.push(row)
+      row = []
+      used = 0
+    }
+    if (row.length > 0) used += gap
+    row.push({ index, width, height: item.height * k, x: used })
+    used += slot
+  })
+  if (row.length > 0) rows.push(row)
+  return rows
+}
 
 /** Le jeu de caractères des polices standard de PDF n'a pas le vrai signe moins : trait d'union. */
 const pdfText = (text: string) => text.replace(/−/g, '-')
@@ -125,8 +179,8 @@ export async function buildMetresPdf(
   tables: readonly MetresTable[],
   sheet: SheetSize,
   labels: MetresPdfLabels,
-  /** Vignette du plan (vectorielle), sous l'en-tête de la première page. */
-  plan: Drawing | null = null,
+  /** Vignettes du plan (vectorielles), sous l'en-tête de la première page ; une rangée de plus si la place manque. */
+  plans: readonly PlanThumbnail[] = [],
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
   pdf.setProperties({
@@ -166,11 +220,33 @@ export async function buildMetresPdf(
   }
   y += TABLE_GAP - 2
 
-  if (plan && plan.width > 0 && plan.height > 0) {
-    const k = Math.min(width / plan.width, PLAN_MAX_HEIGHT / plan.height)
-    pdf.setLineJoin('round')
-    drawDrawing(pdf, plan, { x: left, y, width: plan.width * k, height: plan.height * k })
-    y += plan.height * k + TABLE_GAP
+  if (plans.length > 0) {
+    pdf.setFont('helvetica', 'normal')
+    pdf.setFontSize(NOTE_PT)
+    const rows = packThumbnails(
+      plans.map(({ drawing, caption }) => ({
+        width: drawing.width,
+        height: drawing.height,
+        captionWidth: Math.min(CAPTION_MAX_WIDTH, pdf.getTextWidth(pdfText(caption))),
+      })),
+      width,
+    )
+    for (const row of rows) {
+      const rowHeight = Math.max(...row.map((placed) => placed.height)) + CAPTION_HEIGHT
+      // La rangée ne tient pas sous ce qui précède : page suivante.
+      if (y + rowHeight > bottom && y > top) newPage()
+      for (const placed of row) {
+        const { drawing, caption } = plans[placed.index]
+        pdf.setLineJoin('round')
+        drawDrawing(pdf, drawing, { x: left + placed.x, y, width: placed.width, height: placed.height })
+        pdf.setFont('helvetica', 'normal')
+        pdf.setFontSize(NOTE_PT)
+        pdf.setTextColor(...MUTED)
+        pdf.text(truncate(pdf, caption, Math.max(placed.width, CAPTION_MAX_WIDTH)), left + placed.x, y + placed.height + 3.4)
+      }
+      y += rowHeight + 2
+    }
+    y += TABLE_GAP - 2
   }
 
   for (const table of tables) {

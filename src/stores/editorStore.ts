@@ -1,5 +1,6 @@
 import { create } from 'zustand'
 import type { DimensioningMode } from '../features/dimensioning/types'
+import type { MetresVersion } from '../features/measurements/tables'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
 import { copyToClipboard, takePasteCopies } from '../features/documents/clipboard'
 import { clampPageDimension } from '../features/documents/pageSize'
@@ -130,6 +131,8 @@ interface EditorState {
   showLowerLevel: boolean
   /** Cotes automatiques du plan (M10 ter lot B) : aucune, Client ou Exécution ; état d'interface, hors historique. */
   dimensioningMode: DimensioningMode
+  /** Version des métrés affichée dans le panneau ; la fenêtre Exporter s'ouvre dessus (état d'interface, hors historique). */
+  metresVersion: MetresVersion
   /** Message affiché à l'utilisateur (par exemple un fichier refusé). */
   notice: string | null
   /** Guides d'alignement affichés pendant un déplacement (état d'interface, pas du document). */
@@ -172,6 +175,7 @@ interface EditorState {
   setActiveLevel: (id: string) => void
   setShowLowerLevel: (show: boolean) => void
   setDimensioningMode: (mode: DimensioningMode) => void
+  setMetresVersion: (version: MetresVersion) => void
   /** Ajoute un niveau au sommet du bâtiment et l'affiche. */
   addLevel: () => void
   /** Copie un niveau (ses murs et leurs ouvertures) juste au-dessus de lui et l'affiche. */
@@ -370,6 +374,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     activeLevelId: null,
     showLowerLevel: true,
     dimensioningMode: 'none',
+    metresVersion: 'execution',
     notice: null,
     guides: [],
     zoom: 1,
@@ -478,6 +483,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
 
     setShowLowerLevel: (showLowerLevel) => set({ showLowerLevel }),
     setDimensioningMode: (dimensioningMode) => set({ dimensioningMode }),
+    setMetresVersion: (metresVersion) => set({ metresVersion }),
 
     addLevel: () => {
       const levels = get().project?.document.levels

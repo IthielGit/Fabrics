@@ -441,7 +441,8 @@ l'utilisateur sur un premier PDF :
       intérieures et sa **surface au sol** (trémie déduite) ; total par niveau et pour le
       bâtiment ; nombre de portes et de fenêtres. Libellés simples, sans épaisseur ni surface
       de mur
-- [x] PDF Client d'une page : vignette du plan, tableau des pièces, totaux, cartouche de M10
+- [x] PDF Client : vignette du plan, tableau des pièces, totaux, cartouche de M10 ; le PDF
+      continue sur la page suivante si les pièces ne tiennent pas sur une page
 - [x] Présentation **Exécution** (fonction pure) : murs (repère, longueur à l'axe et par face,
       épaisseur, hauteur, surface brute et nette par face, volume), ouvertures (repère, style,
       baie brute largeur × hauteur, allège, mur porteur), escaliers, dalles, trémies,
@@ -496,42 +497,42 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
 
 **Groupe 1 — Exports justes (petit, sans ambiguïté)**
 
-- [ ] **Total d'un seul niveau.** Exporté avec la portée « niveau affiché », la ligne de total
+- [x] **Total d'un seul niveau.** Exporté avec la portée « niveau affiché », la ligne de total
       du récapitulatif Client dit « Total du niveau » au lieu de « Bâtiment ».
       Fichiers : `src/features/measurements/clientView.ts` (paramètre `scope`), `src/i18n/fr.ts`,
       `src/components/editor/exportMetres.ts`, test dans `clientView.test.ts`.
-- [ ] **Niveau actif introuvable.** `restrictToLevel` ne renvoie plus tout le bâtiment en silence :
+- [x] **Niveau actif introuvable.** `restrictToLevel` ne renvoie plus tout le bâtiment en silence :
       il renvoie `null` et l'export affiche un message (« Ce niveau n'existe plus »).
       Fichiers : `src/features/measurements/measurements.ts`, `exportMetres.ts`, `ExportDialog.tsx`,
       test dans `measurements.test.ts`.
-- [ ] **En-tête Client du XLSX et du CSV.** Comme le PDF : titre « Surfaces de votre projet » et
+- [x] **En-tête Client du XLSX et du CSV.** Comme le PDF : titre « Surfaces de votre projet » et
       note Client, sans note technique. Fichiers : `exportMetres.ts` (un `meta` par version),
       `src/features/measurements/csv.ts`, `src/i18n/fr.ts`, test dans `csvExport.test.ts`.
-- [ ] **Nom de fichier par version.** Suffixe `-client` ou `-execution` ajouté au nom (après
+- [x] **Nom de fichier par version.** Suffixe `-client` ou `-execution` ajouté au nom (après
       nettoyage, avant l'extension). Fichiers : `src/features/export/fileName.ts`, `exportMetres.ts`,
       test dans `fileName.test.ts`.
-- [ ] **Option mobilier.** La case « Inclure le mobilier » est masquée en version Client (la vue
+- [x] **Option mobilier.** La case « Inclure le mobilier » est masquée en version Client (la vue
       Client n'a pas de mobilier). Fichier : `ExportDialog.tsx`.
-- [ ] **Une seule version choisie.** La fenêtre Exporter s'ouvre sur la version affichée dans le
+- [x] **Une seule version choisie.** La fenêtre Exporter s'ouvre sur la version affichée dans le
       panneau Métrés (état d'interface partagé dans le store de l'éditeur, hors document et hors
       historique). Fichiers : store de l'éditeur, `MeasurementsPanel.tsx`, `ExportDialog.tsx`.
 
 **Groupe 2 — Lisibilité du document Client**
 
-- [ ] **Pièce sans dimensions** (forme en L, rectangle incliné) : la cellule affiche « forme
+- [x] **Pièce sans dimensions** (forme en L, rectangle incliné) : la cellule affiche « forme
       libre » au lieu d'être vide. Fichiers : `clientView.ts`, `fr.ts`, test.
-- [ ] **Nom de pièce vide ou en double** : nom vide → « Pièce 1 », « Pièce 2 »… (numérotation
+- [x] **Nom de pièce vide ou en double** : nom vide → « Pièce 1 », « Pièce 2 »… (numérotation
       par niveau) ; deux pièces de même nom gardent leur nom (cas normal : « Chambre »). Fichiers :
       `clientView.ts`, test.
-- [ ] **Niveau vide** : absent du récapitulatif Client (aucune pièce, aucune ouverture), mais
+- [x] **Niveau vide** : absent du récapitulatif Client (aucune pièce, aucune ouverture), mais
       toujours présent en Exécution. Fichiers : `clientView.ts`, test.
-- [ ] **Vignette du plan** : légende « Niveau : RDC » sous la vignette ; en portée « bâtiment »,
+- [x] **Vignette du plan** : légende « Niveau : RDC » sous la vignette ; en portée « bâtiment »,
       une vignette par niveau qui a des murs (côte à côte si la place suffit, sinon page suivante).
       Vérifier sur un plan très allongé et un plan très petit que traits et textes restent
       lisibles (épaisseur de trait minimale). Fichiers : `metresPdf.ts`, `exportMetres.ts`,
       test dans `metresPdf.test.ts`.
-- [ ] **« PDF d'une page »** : si les pièces ne tiennent pas sur une page, le PDF continue sur la
-      suivante (comportement actuel) ; corriger le libellé de la tâche du lot A en conséquence.
+- [x] **« PDF d'une page »** : si les pièces ne tiennent pas sur une page, le PDF continue sur la
+      suivante (comportement actuel) ; libellé de la tâche du lot A corrigé en conséquence.
 
 **Groupe 3 — Fiabilité des surfaces (décision de l'utilisateur d'abord)**
 

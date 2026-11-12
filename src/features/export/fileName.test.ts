@@ -23,4 +23,11 @@ describe('exportFileName', () => {
   it('garde l’extension si le nom est vide', () => {
     expect(exportFileName('', 'jpg', 'visuel')).toBe('visuel.jpg')
   })
+
+  it('ajoute le suffixe de version avant l’extension, sans le doubler', () => {
+    expect(exportFileName('Maison', 'xlsx', 'metres', '-client')).toBe('Maison-client.xlsx')
+    expect(exportFileName('Maison.xlsx', 'xlsx', 'metres', '-client')).toBe('Maison-client.xlsx')
+    expect(exportFileName('Maison-Client', 'pdf', 'metres', '-client')).toBe('Maison-Client.pdf')
+    expect(exportFileName('', 'csv', 'metres', '-execution')).toBe('metres-execution.csv')
+  })
 })

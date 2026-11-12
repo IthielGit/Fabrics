@@ -497,8 +497,9 @@ export function computeBuildingMeasurements(
 }
 
 /** Le même bâtiment réduit à un seul niveau (ses métrés et ses totaux) ; inchangé si le niveau n'existe pas. */
-export function restrictToLevel(building: BuildingMeasurements, levelId: string): BuildingMeasurements {
+export function restrictToLevel(building: BuildingMeasurements, levelId: string): BuildingMeasurements | null {
   const kept = building.levels.filter((entry) => entry.level.id === levelId)
-  if (kept.length === 0) return building
+  // Niveau introuvable : pas de repli silencieux sur tout le bâtiment, l'appelant le signale.
+  if (kept.length === 0) return null
   return { ...building, levels: kept, total: sumMeasurements(kept.map((entry) => entry.measurements)) }
 }

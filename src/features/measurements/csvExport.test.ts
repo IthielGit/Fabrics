@@ -9,6 +9,7 @@ import type {
 } from '../../types/document'
 import { fr } from '../../i18n/fr'
 import { buildMetresTables } from './tables'
+import { clientMetaLabels } from './clientView'
 import { CSV_BOM, measurementsToCsv, measurementsToFlatCsv, type CsvLabels } from './csv'
 import {
   computeBuildingMeasurements,
@@ -301,5 +302,17 @@ describe('valeurs chiffrées des tableaux (Excel)', () => {
 
   it('donne les longueurs en mm', () => {
     expect(walls.rows[0][3]).toEqual({ text: '4000', value: 4000, unit: 'mm' })
+  })
+})
+
+describe('en-tête de la version Client', () => {
+  it('le CSV Client porte le titre et la remarque du client, sans la note technique', () => {
+    const building = computeBuildingMeasurements({ levels: [], elements: [] })
+    const meta = fr.measurements.csv.meta!
+    const labels = { ...fr.measurements.csv, meta: clientMetaLabels(meta, fr.measurements.client) }
+    const csv = measurementsToCsv(building, labels, [], { projectName: 'Maison', date: '12/11/2026' }, [])
+    expect(csv).toContain('Surfaces de votre projet')
+    expect(csv).toContain(fr.measurements.client.pdfNote)
+    expect(csv).not.toContain(meta.noteValue)
   })
 })

@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 ter (lots A et B validés ; groupes 1 à 4 des cas limites à faire) ; M10 bis terminé, à tester dans le navigateur
-- **Dernière tâche terminée :** M10 ter, Lot B (cotes Client et Exécution), validé dans le navigateur
-- **Prochaine tâche :** M10 ter, cas limites des métrés, groupe 1 (« Exports justes »), puis groupes 2 à 4 (les groupes 3 et 4 après les décisions de l'utilisateur), puis noms automatiques, puis M11
+- **Dernière tâche terminée :** M10 ter, cas limites des métrés, groupes 1 (« Exports justes ») et 2 (« Lisibilité du document Client »), à tester dans le navigateur
+- **Prochaine tâche :** M10 ter, cas limites des métrés, groupes 3 et 4 (après les décisions de l'utilisateur), puis noms automatiques, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupes 1 et 2
+- Fait, groupe 1 (exports) : la ligne de total du récapitulatif Client dit « Total du niveau » quand un seul niveau est exporté ; un niveau introuvable n'exporte plus tout le bâtiment en silence (`restrictToLevel` renvoie `null`, la fenêtre Exporter affiche un message et bloque le bouton) ; l'en-tête du CSV et du fichier Excel Client reprend le titre et la remarque du PDF Client, sans note technique ; le nom de fichier reçoit `-client` ou `-execution` (affiché à côté du champ du nom) ; la case « Inclure le mobilier » est masquée en Client ; la fenêtre Exporter s'ouvre sur la version affichée dans le panneau Métrés (état partagé dans le store, hors document et hors historique). Les boutons Excel et CSV du panneau passent par le même export que la fenêtre.
+- Fait, groupe 2 (lisibilité Client) : une pièce qui n'est pas un rectangle affiche « forme libre » ; un nom vide devient « Pièce 1 », « Pièce 2 »… par niveau (les noms en double sont gardés) ; un niveau sans pièce ni ouverture n'apparaît plus dans le récapitulatif Client (il reste en Technique) ; le PDF Client montre une vignette par niveau qui a des murs (portée « bâtiment »), côte à côte si la place suffit, sinon à la rangée ou à la page suivante, avec la légende « Niveau : RDC » ; les traits de la vignette ont une épaisseur fixe sur le papier, donc lisibles sur un plan très allongé comme sur un très petit (testé). Le libellé « PDF d'une page » de la roadmap est corrigé : le PDF continue sur la page suivante quand il le faut.
+- Choix : le suffixe de fichier reste `-execution` (et non `-technique`), comme le prévoit D53 pour les fichiers.
+- Fichiers : `src/features/measurements/clientView.ts`, `measurements.ts`, `tables.ts`, `src/features/export/fileName.ts`, `metresPdf.ts`, `src/components/editor/exportMetres.ts`, `ExportDialog.tsx`, `MeasurementsPanel.tsx`, `src/stores/editorStore.ts`, `src/i18n/fr.ts`, tests associés, `docs/03-ROADMAP.md`
+- Vérification : build ✓ lint ✓ tests ✓ — à tester dans le navigateur (voir ci-dessous)
+- Commit : à proposer
 
 ### 2026-11-12 — M10 ter · Lot B · Validé par l'utilisateur
 - Fait : test dans le navigateur du réglage Cotation (barre d'outils), des cotes tracées à la main (« Visible en ») et du réglage par vue de la planche : **validé** par l'utilisateur. Roadmap mise à jour.

@@ -431,3 +431,6 @@ export function buildMetresTables(
 
   return tables
 }
+
+/** Client : surfaces au sol simples ; Exécution (affichée « Technique ») : tous les détails et les règles de calcul. */
+export type MetresVersion = 'client' | 'execution'
