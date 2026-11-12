@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — Hors jalon · Séparer les côtés d'un mur
+- Fait : bouton **« Séparer les côtés »** dans Propriétés (visible quand le mur sélectionné a au moins deux côtés). Il remplace le mur par un mur par côté ; les nouveaux murs gardent épaisseur, hauteur, couleur, matériau, niveau, verrouillage et visibilité, et restent sélectionnés (un clic en choisit un seul, un double-clic les reprend tous). Le premier côté garde l'identifiant du mur d'origine ; les noms deviennent « Mur 1 », « Mur 2 »… Les portes et fenêtres passent sur le mur de leur côté, à la même place. Une ouverture posée sur un côté de longueur nulle (sommet en double) est retirée, avec un message. Un seul pas d'annulation. Pour couper un côté droit en deux, ajouter d'abord un sommet avec le « + » du milieu du côté.
+- Fichiers : `src/features/geometry/splitWall(.test).ts` (nouveaux), `src/stores/editorStore.ts` (action `splitWall`), `PlanElementFields.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ ; tests : 11 nouveaux ✓ (longueur 14000 mm, surfaces et ouvertures déduites identiques avant et après ; raccords d'angle présents). Dans la suite complète, 2386 sur 2387 : le test de vitesse « 600 murs en moins de 200 ms » échoue sous la charge (3e fois depuis C.2), et passe seul (37 sur 37). Seuil non modifié : à décider avec l'utilisateur.
+- Commit : feat: séparer les côtés d'un mur
+
 ### 2026-11-12 — Hors jalon · Sélection des murs liés
 - Fait : un clic sélectionne un seul mur (inchangé) ; un **double-clic** sélectionne tous les murs liés, de proche en proche, sur le même niveau (Maj + double-clic : les ajoute à la sélection). « Lié » = un sommet d'un mur touche l'axe d'un autre, à la demi-épaisseur près : angles, prolongements et cloisons en T. Les murs masqués et ceux des autres niveaux sont ignorés. Une indication apparaît dans Propriétés.
 - Fichiers : `src/features/building/wallChains(.test).ts` (nouveaux), `useElementInteractions.ts`, `shapes/WallShape.tsx`, `PlanElementFields.tsx`, `src/i18n/fr.ts`
@@ -816,6 +822,8 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
 - Glisser un seul mur à la poignée (option A) : poignée au milieu d'un segment droit, le mur se déplace perpendiculairement, les voisins s'allongent et la pièce suit ; réutilise `stretchZone` (demande de l'utilisateur le 2026-11-11, après l'option C).
 - Surface habitable dans les métrés client (partie des pièces sous une hauteur minimale, par exemple 1800 mm, retirée) : utile seulement après les toitures en pente de M10 bis ; la définition est à fixer avec l'utilisateur (D37).
+- Joindre des murs (l'inverse de « Séparer les côtés ») : fusionner des murs bout à bout, de même épaisseur et même matériau, en un seul tracé (proposé le 2026-11-12).
+- Outil « couper ici » : cliquer un point d'un mur sur le canevas pour le couper en deux, sans passer par le « + » puis « Séparer les côtés » (proposé le 2026-11-12, si le bouton ne suffit pas à l'usage).
 - Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).

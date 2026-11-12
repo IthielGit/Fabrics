@@ -806,6 +806,11 @@ export const fr = {
     name: 'Nom',
     wallThickness: 'Épaisseur',
     wallHeight: 'Hauteur',
+    splitWall: 'Séparer les côtés',
+    splitWallTitle: 'Remplace ce mur par un mur par côté, pour les sélectionner et les régler un à un',
+    splitWallDone: (count: number) => `${count} murs créés, un par côté.`,
+    splitWallLostOpenings: (count: number) =>
+      count === 1 ? '1 ouverture sans place a été retirée.' : `${count} ouvertures sans place ont été retirées.`,
     wallChainHint: 'Double-clic sur un mur : sélectionner tous les murs liés (Maj : les ajouter).',
     dimensionOffset: 'Décalage',
     furnitureWidth: 'Largeur',

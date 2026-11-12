@@ -5,6 +5,7 @@ import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import type { AxisElement, DimensionElement, RoomElement, WallElement } from '../../types/document'
 import { WALL_MATERIALS, withWallMaterial } from '../../features/building/materials'
+import { canSplitWall } from '../../features/geometry/splitWall'
 import NumberField from '../ui/NumberField'
 import TextField from '../ui/TextField'
 import MaterialField from './MaterialField'
@@ -27,6 +28,8 @@ function Measure({ label, value }: { label: string; value: string }) {
 /** Réglages propres à un mur, une pièce ou une cote (nom, épaisseur, hauteur, décalage…) et leurs mesures. */
 export default function PlanElementFields({ element }: { element: PlanElement }) {
   const updateElements = useEditorStore((state) => state.updateElements)
+  const splitWall = useEditorStore((state) => state.splitWall)
+  const setNotice = useEditorStore((state) => state.setNotice)
   const elements = useEditorStore((state) => state.project?.document.elements)
   const levels = useEditorStore((state) => state.project?.document.levels)
   const patch = (change: (el: PlanElement) => PlanElement) =>
@@ -167,6 +170,28 @@ export default function PlanElementFields({ element }: { element: PlanElement })
 
       {(element.type === 'wall' || element.type === 'room') && (
         <p className="text-xs text-slate-500">{fr.properties.vertexHint}</p>
+      )}
+      {element.type === 'wall' && canSplitWall(element) && (
+        <button
+          type="button"
+          title={fr.properties.splitWallTitle}
+          className="w-full rounded-md border border-slate-300 px-2 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
+          onClick={() => {
+            const result = splitWall(element.id)
+            if (!result) return
+            // Les murs créés remplacent la sélection : ce panneau disparaît, le message reste.
+            setNotice(
+              [
+                fr.properties.splitWallDone(result.count),
+                result.removedOpenings > 0 ? fr.properties.splitWallLostOpenings(result.removedOpenings) : '',
+              ]
+                .filter(Boolean)
+                .join(' '),
+            )
+          }}
+        >
+          {fr.properties.splitWall}
+        </button>
       )}
       {element.type === 'wall' && <p className="text-xs text-slate-500">{fr.properties.wallChainHint}</p>}
       {element.type === 'axis' && <p className="text-xs text-slate-500">{fr.properties.axisHint}</p>}

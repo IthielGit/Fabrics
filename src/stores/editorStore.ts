@@ -28,6 +28,7 @@ import { fr } from '../i18n/fr'
 import type { Guide } from '../features/geometry/guides'
 import type { Box } from '../features/geometry/box'
 import { resizeBlock } from '../features/geometry/resizeBlock'
+import { splitWallInDocument } from '../features/geometry/splitWall'
 import { stretchZone } from '../features/geometry/stretchZone'
 import { translateElement } from '../features/geometry/transform'
 import { fitToScreen, type Size } from '../features/geometry/viewport'
@@ -194,6 +195,11 @@ interface EditorState {
    * mur raccourci), ou `null` si rien n'a changé.
    */
   stretchZoneBy: (zone: Box, delta: { x: number; y: number }) => number | null
+  /**
+   * Sépare un mur à plusieurs côtés en un mur par côté (voir `splitWallInDocument`) : un seul pas
+   * d'historique, les nouveaux murs deviennent la sélection. `null` si rien à séparer.
+   */
+  splitWall: (id: string) => { count: number; removedOpenings: number } | null
   removeElements: (ids: string[]) => void
   duplicateElements: (ids: string[]) => void
   /**
@@ -607,6 +613,16 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         false,
       )
       return result.removedIds.length
+    },
+
+    splitWall: (id) => {
+      const { project } = get()
+      if (!project) return null
+      const result = splitWallInDocument(project.document.elements, id)
+      if (!result) return null
+      // Les ouvertures sont déjà replacées sur le mur de leur côté : pas de réajustement.
+      commit((doc) => ({ ...doc, elements: result.elements }), result.wallIds, undefined, false)
+      return { count: result.wallIds.length, removedOpenings: result.removedOpenings }
     },
 
     removeElements: (ids) => {
