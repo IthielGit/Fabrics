@@ -57,8 +57,8 @@ export const fr = {
     examplesFamily: 'Maisons d’exemple à ouvrir',
     cards: {
       plan: { title: 'Dessiner un plan', text: 'Murs, pièces, portes : les surfaces se calculent toutes seules.' },
-      example: { title: 'Voir un exemple', text: 'Une maison à étage déjà dessinée (meubles, escalier, toit, cotes), à explorer et à modifier.' },
-      largeHouse: { title: 'Voir une grande maison', text: 'Une maison R+3 de 120 m² au sol avec garage, véranda, terrasses et piscine : 21 pièces, escalier sur quatre niveaux, toit en pente.' },
+      example: { title: 'Maison R+1', text: 'Une maison à étage déjà dessinée (meubles, escalier, toit, cotes), à explorer et à modifier.' },
+      largeHouse: { title: 'Maison R+3', text: 'Une maison R+3 de 120 m² au sol avec garage, véranda, terrasses et piscine : 21 pièces, escalier sur quatre niveaux, toit en pente.' },
     },
     storageReminder:
       'Vos projets restent dans ce navigateur, sur cet appareil : ils ne sont envoyés nulle part. Pensez à exporter ceux qui comptent.',
