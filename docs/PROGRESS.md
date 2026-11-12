@@ -1194,6 +1194,13 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Limite connue : le tout premier doigt d'un geste à deux doigts peut déjà avoir posé un point avec un outil de tracé de murs ou de pièces (annulable). **À essayer sur une vraie tablette** (pas de tablette ici).
 - Fichiers : `useTouchGestures.ts` (nouveau), `navigation.ts` (+ tests), `EditorStage.tsx`, `Toolbar.tsx`, `ZoomControls.tsx`. Build, lint, 2672 tests OK.
 
+### 2026-11-12 — M11 quater, Lot J (signaux en haut à droite)
+
+- Deux pastilles permanentes en haut à droite du plan : rouge « N à corriger » (manque ou débord : l'export est bloqué) et orange « N à vérifier » (superpositions, murs qui ne se touchent pas…). Un clic déplie la liste ; un clic sur un point affiche le niveau, sélectionne l'élément et surligne la zone. Calcul différé pour ne pas ralentir le dessin. L'avis du haut (confirmations) et la pastille de l'en-tête restent.
+- Le plan d'exemple est testé : il ne déclenche aucune alerte.
+- Fichiers : `PlanSignals.tsx` (nouveau), `EditorPage.tsx`, `fr.ts`, `createProject.test.ts`. Build, lint, 2673 tests OK.
+- **Lot H** (test avec une vraie personne) : volontairement non coché, il se fait avec l'utilisateur à la fin du jalon.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

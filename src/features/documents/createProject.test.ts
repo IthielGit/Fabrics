@@ -6,6 +6,8 @@ import {
   createPlanProject,
   duplicateProject,
 } from './createProject'
+import { computeBuildingMeasurements } from '../measurements/measurements'
+import { isSurfaceWarning, metresWarnings } from '../measurements/warnings'
 
 const NOW = new Date('2026-11-10T10:00:00.000Z')
 
@@ -102,5 +104,13 @@ describe('createExamplePlanProject', () => {
     const { elements } = createExamplePlanProject(NOW).document
     const wallIds = new Set(elements.filter((e) => e.type === 'wall').map((e) => e.id))
     for (const e of elements) if (e.type === 'opening') expect(wallIds.has(e.wallId)).toBe(true)
+  })
+})
+
+describe('plan d’exemple : contrôle des surfaces', () => {
+  it('ne déclenche aucune alerte', () => {
+    const document = createExamplePlanProject(NOW).document
+    const warnings = metresWarnings(document, computeBuildingMeasurements(document)).filter(isSurfaceWarning)
+    expect(warnings).toEqual([])
   })
 })

@@ -7,6 +7,7 @@ import DimensioningSelector from '../components/editor/DimensioningSelector'
 import LevelSelector from '../components/editor/LevelSelector'
 import MiniMap from '../components/editor/MiniMap'
 import ScrollBars from '../components/editor/ScrollBars'
+import PlanSignals from '../components/editor/PlanSignals'
 import Notice from '../components/editor/Notice'
 import ShortcutsDialog from '../components/editor/ShortcutsDialog'
 import SidePanel from '../components/editor/SidePanel'
@@ -100,6 +101,7 @@ export default function EditorPage() {
           <CompassWidget />
           <MiniMap />
           <ScrollBars />
+          <PlanSignals />
           <Notice />
           <ToolHint />
         </div>

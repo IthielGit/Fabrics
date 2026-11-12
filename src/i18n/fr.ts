@@ -781,6 +781,13 @@ export const fr = {
       },
     ],
   },
+  signals: {
+    label: 'Signaux du plan',
+    errors: (count: number) => `${count} à corriger`,
+    errorsHint: 'Une pièce laisse un manque ou déborde des murs : l’export est bloqué tant que ce n’est pas corrigé. Cliquez pour voir la liste.',
+    warnings: (count: number) => `${count} à vérifier`,
+    warningsHint: 'Points qui peuvent fausser les cotes ou les métrés, sans bloquer l’export. Cliquez pour voir la liste.',
+  },
   examplePlan: {
     name: 'Exemple : petit logement',
     outerWall: 'Mur extérieur',
