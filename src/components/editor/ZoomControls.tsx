@@ -36,7 +36,7 @@ export default function ZoomControls() {
         onClick={fitView}
         title={`${fr.editor.fitToScreen} (Ctrl+0)`}
         aria-label={fr.editor.fitToScreen}
-        className="rounded p-1 hover:bg-slate-100"
+        className="rounded p-1 pointer-coarse:p-2.5 hover:bg-slate-100"
       >
         <Maximize size={16} />
       </button>
@@ -46,7 +46,7 @@ export default function ZoomControls() {
         title={minimapVisible ? fr.editor.hideMinimap : fr.editor.showMinimap}
         aria-label={minimapVisible ? fr.editor.hideMinimap : fr.editor.showMinimap}
         aria-pressed={minimapVisible}
-        className={`rounded p-1 hover:bg-slate-100 ${minimapVisible ? 'bg-indigo-50 text-indigo-700' : ''}`}
+        className={`rounded p-1 pointer-coarse:p-2.5 hover:bg-slate-100 ${minimapVisible ? 'bg-indigo-50 text-indigo-700' : ''}`}
       >
         <MapIcon size={16} />
       </button>
@@ -58,7 +58,7 @@ export default function ZoomControls() {
           title={compassVisible ? fr.editor.hideCompass : fr.editor.showCompass}
           aria-label={compassVisible ? fr.editor.hideCompass : fr.editor.showCompass}
           aria-pressed={compassVisible}
-          className={`rounded p-1 hover:bg-slate-100 ${compassVisible ? 'bg-indigo-50 text-indigo-700' : ''}`}
+          className={`rounded p-1 pointer-coarse:p-2.5 hover:bg-slate-100 ${compassVisible ? 'bg-indigo-50 text-indigo-700' : ''}`}
         >
           <Compass size={16} />
         </button>
@@ -68,7 +68,7 @@ export default function ZoomControls() {
         onClick={() => openHelp(true)}
         title={`${fr.shortcuts.open} (?)`}
         aria-label={fr.shortcuts.open}
-        className="rounded p-1 hover:bg-slate-100"
+        className="rounded p-1 pointer-coarse:p-2.5 hover:bg-slate-100"
       >
         <CircleHelp size={16} />
       </button>

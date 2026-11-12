@@ -817,8 +817,8 @@ extérieure. Aucun changement du format du document. Lots à valider un par un.
       message clair quand un export est bloqué (D55) (2026-11-12).
 - [ ] **Lot H — Test avec une vraie personne** : 3 tâches en 5 minutes, corrections qui en sortent.
 
-- [ ] **Lot I — Tablette** : déplacer la vue à deux doigts, zoom par pincement, boutons assez grands ; les
-      outils actuels doivent rester utilisables au doigt.
+- [x] **Lot I — Tablette** : déplacer la vue à deux doigts, zoom par pincement, boutons assez grands ; les
+      outils actuels doivent rester utilisables au doigt (2026-11-12, à essayer sur une vraie tablette).
 - [ ] **Lot J — Signaux en haut à droite** (demande du 2026-11-12, choix 1) : pastilles ou bandeau
       permanent en haut à droite qui signale tout de suite les erreurs et avertissements du plan (pièce qui
       ne remplit pas l'espace, export bloqué, etc.), avec le nombre et un clic qui mène à l'élément concerné.

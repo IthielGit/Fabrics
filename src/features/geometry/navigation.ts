@@ -1,6 +1,6 @@
 import type { Box } from './box'
 import { unionBoxes } from './box'
-import type { Point, Size, View } from './viewport'
+import { clampZoom, screenToDocument, type Point, type Size, type View } from './viewport'
 
 /** Cran de molette de souris : un cran zoome de 10 %. */
 export const WHEEL_ZOOM_STEP = 1.1
@@ -173,4 +173,27 @@ export function documentBoxToMinimap(layout: MinimapLayout, box: Box): Box {
     width: box.width * layout.scale,
     height: box.height * layout.scale,
   }
+}
+
+/** Deux doigts posés sur l'écran (px, dans la zone du canevas). */
+export interface TouchPair {
+  a: Point
+  b: Point
+}
+
+/**
+ * Déplacement et zoom à deux doigts : le zoom suit l'écart entre les doigts, et le point du document
+ * qui était entre les doigts les suit (glisser les deux doigts déplace donc la vue).
+ */
+export function pinchView(view: View, from: TouchPair, to: TouchPair, pxPerUnit: number): View {
+  const distance = (pair: TouchPair) => Math.hypot(pair.a.x - pair.b.x, pair.a.y - pair.b.y)
+  const before = distance(from)
+  const middle = (pair: TouchPair): Point => ({ x: (pair.a.x + pair.b.x) / 2, y: (pair.a.y + pair.b.y) / 2 })
+  // Doigts confondus : pas de rapport de zoom exploitable, on ne fait que déplacer.
+  const ratio = before < 1 ? 1 : distance(to) / before
+  const zoom = clampZoom(view.zoom * ratio)
+  const anchor = screenToDocument(middle(from), view, pxPerUnit)
+  const scale = zoom * pxPerUnit
+  const end = middle(to)
+  return { zoom, x: end.x - anchor.x * scale, y: end.y - anchor.y * scale }
 }

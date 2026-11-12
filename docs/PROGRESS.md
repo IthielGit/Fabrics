@@ -1187,6 +1187,13 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Le message d'export bloqué (D55) dans l'onglet Métrés est plus clair et en encadré orangé : il dit pourquoi et quoi faire.
 - Fichiers : `Toolbar.tsx`, `MeasurementsPanel.tsx`, `fr.ts`. Build, lint, 2668 tests OK.
 
+### 2026-11-12 — M11 quater, Lot I (tablette)
+
+- Deux doigts : déplacer la vue et pincer pour zoomer (`pinchView`, fonction pure testée ; `useTouchGestures`). Un second doigt annule le tracé ou la sélection en cours d'un doigt, et rien n'est tracé tant qu'un doigt reste posé. Le canevas bloque le zoom et le défilement de la page par le navigateur.
+- Boutons plus grands sur écran tactile (variante `pointer-coarse`) : barre d'outils, liste des familles, barre du bas.
+- Limite connue : le tout premier doigt d'un geste à deux doigts peut déjà avoir posé un point avec un outil de tracé de murs ou de pièces (annulable). **À essayer sur une vraie tablette** (pas de tablette ici).
+- Fichiers : `useTouchGestures.ts` (nouveau), `navigation.ts` (+ tests), `EditorStage.tsx`, `Toolbar.tsx`, `ZoomControls.tsx`. Build, lint, 2672 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

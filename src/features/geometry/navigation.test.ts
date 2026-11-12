@@ -5,6 +5,7 @@ import {
   minimapLayout,
   minimapToDocument,
   panView,
+  pinchView,
   positionAfterThumbDrag,
   scrollMetrics,
   visibleBox,
@@ -156,5 +157,38 @@ describe('mini-carte', () => {
     expect(far.world.y).toBe(-500)
     const drawn = documentBoxToMinimap(far, { x: 3000, y: -500, width: 400, height: 300 })
     expect(drawn.x + drawn.width).toBeLessThanOrEqual(200 + 1e-9)
+  })
+})
+
+describe('pinchView', () => {
+  const view = { zoom: 1, x: 0, y: 0 }
+  const pair = (ax: number, ay: number, bx: number, by: number) => ({
+    a: { x: ax, y: ay },
+    b: { x: bx, y: by },
+  })
+
+  it('zoome du rapport entre les écarts et garde le point central en place', () => {
+    const next = pinchView(view, pair(100, 100, 200, 100), pair(50, 100, 250, 100), 1)
+    expect(next.zoom).toBeCloseTo(2)
+    // Le point du document sous le milieu (150, 100) reste sous le milieu.
+    expect(next.x).toBeCloseTo(150 - 150 * 2)
+    expect(next.y).toBeCloseTo(100 - 100 * 2)
+  })
+
+  it('déplace la vue quand les doigts glissent sans changer d’écart', () => {
+    const next = pinchView(view, pair(100, 100, 200, 100), pair(130, 160, 230, 160), 1)
+    expect(next.zoom).toBeCloseTo(1)
+    expect(next.x).toBeCloseTo(30)
+    expect(next.y).toBeCloseTo(60)
+  })
+
+  it('ne dépasse pas les limites de zoom', () => {
+    const next = pinchView(view, pair(0, 0, 10, 0), pair(0, 0, 10000, 0), 1)
+    expect(next.zoom).toBe(16)
+  })
+
+  it('ne divise pas par zéro avec deux doigts confondus', () => {
+    const next = pinchView(view, pair(5, 5, 5, 5), pair(10, 10, 12, 12), 1)
+    expect(next.zoom).toBe(1)
   })
 })

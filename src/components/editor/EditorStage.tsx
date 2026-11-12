@@ -1,5 +1,5 @@
 import Konva from 'konva'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Ellipse, Group, Layer, Line, Rect, Stage } from 'react-konva'
 import {
   createEllipseElement,
@@ -67,6 +67,7 @@ import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
 import { useOpeningTool, type OpeningToolKind } from './useOpeningTool'
 import { usePanDrag } from './usePanDrag'
+import { useTouchGestures } from './useTouchGestures'
 import { usePolylineDrawing, type PolylineTool } from './usePolylineDrawing'
 import { useStretchTool } from './useStretchTool'
 import StretchDraftLayer from './StretchDraftLayer'
@@ -153,6 +154,12 @@ export default function EditorStage() {
   const projectId = project?.id ?? null
   // Pixels écran par unité du document (les hooks ci-dessous doivent précéder le `return` anticipé).
   const unitScale = pxPerUnit(project?.document.unit ?? 'px')
+  // Tablette : deux doigts = déplacer et zoomer ; le tracé d'un seul doigt en cours est abandonné.
+  const cancelGestures = useCallback(() => {
+    setDraft(null)
+    setBand(null)
+  }, [])
+  useTouchGestures(containerRef, unitScale, cancelGestures)
   const scale = zoom * unitScale
   // Formes tracées au glisser (rectangle, ellipse, ligne, texte).
   const drawing =
@@ -528,7 +535,7 @@ export default function EditorStage() {
     <div
       ref={containerRef}
       className="absolute inset-0 overflow-hidden bg-slate-200"
-      style={{ cursor }}
+      style={{ cursor, touchAction: 'none' }}
       onDragOver={(event) => {
         // Autorise le dépôt de fichiers (sans cela le navigateur ouvrirait l'image) et d'un objet
         // de la bibliothèque.

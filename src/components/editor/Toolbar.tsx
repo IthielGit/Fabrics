@@ -224,7 +224,7 @@ export default function Toolbar() {
                   event.preventDefault()
                   setOpenGroup(open ? null : group.id)
                 }}
-                className="flex min-h-9 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm"
+                className="flex min-h-9 pointer-coarse:min-h-12 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm"
               >
                 <Icon size={20} className="shrink-0" aria-hidden="true" />
                 <span className="truncate">{entry.short ?? entry.label}</span>
@@ -238,7 +238,7 @@ export default function Toolbar() {
                   aria-haspopup="menu"
                   onClick={() => setOpenGroup(open ? null : group.id)}
                   className={clsx(
-                    'flex w-7 shrink-0 items-center justify-center rounded-md border-l',
+                    'flex w-7 pointer-coarse:w-11 shrink-0 items-center justify-center rounded-md border-l',
                     active
                       ? 'border-indigo-400 hover:bg-indigo-500'
                       : 'border-slate-200 text-slate-500 hover:bg-slate-200 hover:text-slate-800',
@@ -267,7 +267,7 @@ export default function Toolbar() {
                       role="menuitem"
                       onClick={() => run(group, item)}
                       className={clsx(
-                        'flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm',
+                        'flex w-full items-center gap-2 rounded-md px-2 py-1.5 pointer-coarse:py-3 text-left text-sm',
                         selected ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-100',
                       )}
                     >
