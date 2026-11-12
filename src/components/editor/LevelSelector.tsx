@@ -23,6 +23,8 @@ export default function LevelSelector() {
   const referenceOn = showLowerLevel && below !== undefined
   const above = levelAbove(levels, activeLevelId)
   const upperOn = showUpperLevel && above !== undefined
+  // Avec un seul niveau, les deux interrupteurs de transparence ne servent à rien : on les cache.
+  const severalLevels = levels.length > 1
 
   return (
     <nav
@@ -44,7 +46,8 @@ export default function LevelSelector() {
         ))}
       </div>
       {/* Les deux interrupteurs de transparence forment un groupe à part, séparé des niveaux. */}
-      <span className={SEGMENT_DIVIDER} aria-hidden />
+      {severalLevels && <span className={SEGMENT_DIVIDER} aria-hidden />}
+      {severalLevels && (
       <button
         type="button"
         disabled={!below}
@@ -68,6 +71,8 @@ export default function LevelSelector() {
       >
         <Layers size={18} aria-hidden />
       </button>
+      )}
+      {severalLevels && (
       <button
         type="button"
         disabled={!above}
@@ -91,6 +96,7 @@ export default function LevelSelector() {
       >
         <Layers2 size={18} aria-hidden />
       </button>
+      )}
     </nav>
   )
 }

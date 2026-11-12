@@ -1205,6 +1205,11 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 
 - À la demande de l'utilisateur, `HomePage.tsx` retrouve sa version d'avant le lot B (boutons « Nouveau visuel » et « Nouveau plan »). Le plan d'exemple (`createExamplePlanProject`, `createExample`) reste dans le code et testé, sans bouton pour l'instant.
 
+### 2026-11-12 — Barre du haut allégée (M11 quater)
+
+- Demande de l'utilisateur : trop d'éléments en haut du plan. Solution : ligne 1 = niveau + bouton unique « Cotation : Aucune ▾ » (liste au clic) ; ligne 2 = options de l'outil (Polygone / Rectangle / Avec murs…), seulement quand l'outil en a ; les deux interrupteurs de transparence des niveaux n'apparaissent qu'avec plusieurs niveaux.
+- Fichiers : `DimensioningSelector.tsx`, `LevelSelector.tsx`, `EditorPage.tsx`.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

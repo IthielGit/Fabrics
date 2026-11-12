@@ -91,10 +91,12 @@ export default function EditorPage() {
           <EditorStage />
           <EmptyPlanCard />
           <Toolbar />
-          {/* Barre contextuelle en haut du plan : niveau affiché, cotation, puis options de l'outil en cours. */}
-          <div className="pointer-events-none absolute left-48 right-3 top-3 z-10 flex items-start gap-2">
-            <LevelSelector />
-            <DimensioningSelector />
+          {/* En haut du plan : ligne 1 = niveau affiché et cotation ; ligne 2 = options de l'outil en cours (seulement s'il en a). */}
+          <div className="pointer-events-none absolute left-48 right-3 top-3 z-10 flex flex-col items-start gap-2">
+            <div className="flex w-full items-start gap-2">
+              <LevelSelector />
+              <DimensioningSelector />
+            </div>
             <ToolModeBar />
           </div>
           <ZoomControls />
