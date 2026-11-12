@@ -799,8 +799,9 @@ Origine : audit « prise en main » du 2026-11-12 (demande de l'utilisateur). Ob
 qui n'a jamais utilisé de logiciel de plan dessine une pièce, pose une porte et lit sa surface sans aide
 extérieure. Aucun changement du format du document. Lots à valider un par un.
 
-- [ ] **Lot A — Barre d'outils lisible** : libellés visibles à côté des icônes de base, flèche des familles
-      bien visible, menu des familles aussi accessible au clic simple, raccourcis plus logiques (à fixer).
+- [x] **Lot A — Barre d'outils lisible** : libellés visibles à côté des icônes de base, flèche des familles
+      bien visible, menu des familles aussi accessible au clic simple (2026-11-12). Raccourcis plus logiques :
+      non modifiés, à fixer avec l'utilisateur.
 - [ ] **Lot B — Accueil qui guide** : cartes « Dessiner un plan », « Créer une affiche », « Voir un
       exemple » ; un plan d'exemple créé pour Fabrics ; rappel que les projets restent dans ce navigateur.
 - [ ] **Lot C — Premier pas dans le plan vide** : carte d'invitation au centre du canevas, qui disparaît au

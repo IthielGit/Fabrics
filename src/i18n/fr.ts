@@ -142,6 +142,14 @@ export const fr = {
     window: 'Fenêtre',
     calibrate: 'Calibrer l’image',
     stretch: 'Étirer une zone',
+    // Libellés courts affichés à côté des icônes de la barre d'outils.
+    short: {
+      image: 'Image',
+      importDxf: 'Fond DXF',
+      calibrate: 'Calibrer',
+      axis: 'Axe',
+      stretch: 'Étirer',
+    },
   },
   elements: {
     rect: 'Rectangle',

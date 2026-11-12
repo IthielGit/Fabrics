@@ -88,7 +88,7 @@ export default function EditorPage() {
           <EditorStage />
           <Toolbar />
           {/* Barre contextuelle en haut du plan : niveau affiché, cotation, puis options de l'outil en cours. */}
-          <div className="pointer-events-none absolute left-20 right-3 top-3 z-10 flex items-start gap-2">
+          <div className="pointer-events-none absolute left-48 right-3 top-3 z-10 flex items-start gap-2">
             <LevelSelector />
             <DimensioningSelector />
             <ToolModeBar />

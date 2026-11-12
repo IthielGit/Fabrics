@@ -1147,6 +1147,14 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D64 | Place de M11 bis | **Confirmé par l'utilisateur le 2026-11-12** : jalon **avant M12** (mise en ligne), numéroté « M11 bis » comme M10 bis et M10 ter. | Les items sont des outils d'édition ; les faire avant la mise en ligne évite de publier un éditeur incomplet. |
 | D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 
+### 2026-11-12 — M11 quater, Lot A (barre d'outils lisible)
+
+- Chaque famille de la barre d'outils montre maintenant l'icône **et le nom** de l'outil (Mur, Porte, Cote…) ; la barre fait 160 px de large, la barre du haut a été décalée en conséquence.
+- La flèche des familles est un vrai bouton séparé (plus grand, avec un trait de séparation). Un second clic sur l'outil déjà actif ouvre aussi la liste de la famille ; le clic droit marche toujours.
+- Fichiers : `src/components/editor/Toolbar.tsx`, `src/i18n/fr.ts` (libellés courts), `src/pages/EditorPage.tsx`.
+- Vérifié : build, lint et 2665 tests passent. Pas encore regardé dans le navigateur par Claude.
+- Reste ouvert : « raccourcis plus logiques » (non touchés, demande de précision à l'utilisateur).
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

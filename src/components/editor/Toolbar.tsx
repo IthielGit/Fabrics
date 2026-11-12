@@ -37,8 +37,8 @@ const MAX_DXF_BYTES = 50 * 1024 * 1024
 
 /** Une entrée d'un groupe : un outil, ou une action immédiate (importer une image). */
 type ToolEntry =
-  | { kind: 'tool'; id: EditorTool; icon: LucideIcon; label: string; shortcut?: string }
-  | { kind: 'action'; id: 'image' | 'dxf'; icon: LucideIcon; label: string; shortcut?: string }
+  | { kind: 'tool'; id: EditorTool; icon: LucideIcon; label: string; short?: string; shortcut?: string }
+  | { kind: 'action'; id: 'image' | 'dxf'; icon: LucideIcon; label: string; short?: string; shortcut?: string }
 
 interface ToolGroup {
   id: string
@@ -48,11 +48,18 @@ interface ToolGroup {
   planOnly?: boolean
 }
 
-const tool = (id: EditorTool, icon: LucideIcon, label: string, shortcut?: string): ToolEntry => ({
+const tool = (
+  id: EditorTool,
+  icon: LucideIcon,
+  label: string,
+  shortcut?: string,
+  short?: string,
+): ToolEntry => ({
   kind: 'tool',
   id,
   icon,
   label,
+  short,
   shortcut,
 })
 
@@ -74,7 +81,7 @@ function toolGroups(isPlan: boolean): ToolGroup[] {
         tool('roof', House, fr.tools.roof),
         tool('stair', Footprints, fr.tools.stair),
         tool('chimney', BrickWallFire, fr.tools.chimney),
-        tool('stretch', StretchHorizontal, fr.tools.stretch, 'S'),
+        tool('stretch', StretchHorizontal, fr.tools.stretch, 'S', fr.tools.short.stretch),
       ],
     },
     {
@@ -89,7 +96,7 @@ function toolGroups(isPlan: boolean): ToolGroup[] {
       planOnly: true,
       entries: [
         tool('dimension', Ruler, fr.tools.dimension, 'D'),
-        tool('axis', Hash, fr.tools.axis, 'A'),
+        tool('axis', Hash, fr.tools.axis, 'A', fr.tools.short.axis),
         tool('section', Scissors, fr.tools.section),
       ],
     },
@@ -107,11 +114,17 @@ function toolGroups(isPlan: boolean): ToolGroup[] {
       id: 'image',
       label: fr.tools.groups.image,
       entries: [
-        { kind: 'action', id: 'image', icon: ImagePlus, label: fr.tools.image },
+        { kind: 'action', id: 'image', icon: ImagePlus, label: fr.tools.image, short: fr.tools.short.image },
         ...(isPlan
           ? [
-              tool('calibrate', Crosshair, fr.tools.calibrate),
-              { kind: 'action' as const, id: 'dxf' as const, icon: FileInput, label: fr.tools.importDxf },
+              tool('calibrate', Crosshair, fr.tools.calibrate, undefined, fr.tools.short.calibrate),
+              {
+                kind: 'action' as const,
+                id: 'dxf' as const,
+                icon: FileInput,
+                label: fr.tools.importDxf,
+                short: fr.tools.short.importDxf,
+              },
             ]
           : []),
       ],
@@ -176,7 +189,7 @@ export default function Toolbar() {
     <nav
       ref={navRef}
       aria-label={fr.tools.label}
-      className="absolute left-3 top-3 z-20 flex flex-col gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
+      className="absolute left-3 top-3 z-20 flex w-40 flex-col gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
     >
       {groups.map((group, index) => {
         const entry = shownEntry(group)
@@ -188,40 +201,51 @@ export default function Toolbar() {
           <div key={group.id} className="relative">
             {/* Séparateur entre la sélection et les familles d'outils. */}
             {index === 1 && <hr className="mb-1 border-slate-200" />}
-            <button
-              type="button"
-              title={several ? `${withShortcut(entry)} · ${fr.tools.moreInGroup(group.label)}` : withShortcut(entry)}
-              aria-label={entry.label}
-              aria-pressed={entry.kind === 'tool' ? activeTool === entry.id : undefined}
-              onClick={() => run(group, entry)}
-              onContextMenu={(event) => {
-                if (!several) return
-                event.preventDefault()
-                setOpenGroup(open ? null : group.id)
-              }}
+            <div
               className={clsx(
-                'block rounded-md p-2',
+                'flex items-stretch rounded-md',
                 active ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100',
               )}
             >
-              <Icon size={20} />
-            </button>
-            {several && (
               <button
                 type="button"
-                title={fr.tools.moreInGroup(group.label)}
-                aria-label={fr.tools.moreInGroup(group.label)}
-                aria-expanded={open}
-                aria-haspopup="menu"
-                onClick={() => setOpenGroup(open ? null : group.id)}
-                className={clsx(
-                  'absolute bottom-0 right-0 rounded-sm p-px',
-                  active ? 'text-indigo-100 hover:bg-indigo-500' : 'text-slate-400 hover:bg-slate-200 hover:text-slate-700',
-                )}
+                title={several ? `${withShortcut(entry)} · ${fr.tools.moreInGroup(group.label)}` : withShortcut(entry)}
+                aria-label={entry.label}
+                aria-pressed={entry.kind === 'tool' ? activeTool === entry.id : undefined}
+                onClick={() => {
+                  // Un second clic sur l'outil déjà actif ouvre la liste de sa famille.
+                  if (several && entry.kind === 'tool' && activeTool === entry.id) setOpenGroup(open ? null : group.id)
+                  else run(group, entry)
+                }}
+                onContextMenu={(event) => {
+                  if (!several) return
+                  event.preventDefault()
+                  setOpenGroup(open ? null : group.id)
+                }}
+                className="flex min-h-9 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm"
               >
-                <ChevronRight size={10} strokeWidth={3} aria-hidden="true" />
+                <Icon size={20} className="shrink-0" aria-hidden="true" />
+                <span className="truncate">{entry.short ?? entry.label}</span>
               </button>
-            )}
+              {several && (
+                <button
+                  type="button"
+                  title={fr.tools.moreInGroup(group.label)}
+                  aria-label={fr.tools.moreInGroup(group.label)}
+                  aria-expanded={open}
+                  aria-haspopup="menu"
+                  onClick={() => setOpenGroup(open ? null : group.id)}
+                  className={clsx(
+                    'flex w-7 shrink-0 items-center justify-center rounded-md border-l',
+                    active
+                      ? 'border-indigo-400 hover:bg-indigo-500'
+                      : 'border-slate-200 text-slate-500 hover:bg-slate-200 hover:text-slate-800',
+                  )}
+                >
+                  <ChevronRight size={16} strokeWidth={2.5} aria-hidden="true" />
+                </button>
+              )}
+            </div>
             {open && (
               <div
                 role="menu"
