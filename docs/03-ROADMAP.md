@@ -717,7 +717,7 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 
 ### Lot F — Bibliothèque et annotations
 
-- [ ] **Pose contre un mur** : à la pose et au déplacement, l'objet se colle à la face du mur le plus
+- [x] **Pose contre un mur** : à la pose et au déplacement, l'objet se colle à la face du mur le plus
       proche et se tourne dans le bon sens. Calcul pur testé.
 - [x] **Hauteurs 3D des objets** (M8) : une hauteur de référence en mm par objet du catalogue
       (`docs/06-BIBLIOTHEQUE.md`), générique, sans valeur commerciale (principe clean room).

@@ -29,7 +29,8 @@ import {
   snapBox,
   type PlacementSnap,
 } from '../../features/geometry/snapLines'
-import { furniturePlacement, setPlacement } from '../../features/library/placement'
+import { collectWallSides } from '../../features/library/againstWall'
+import { furniturePlacement, setPlacement, type WallPose } from '../../features/library/placement'
 import { pxPerUnit } from '../../features/units/scale'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
@@ -79,6 +80,8 @@ const REFERENCE_OPACITY = 0.3
 const MIN_DRAG_PX = 4
 /** Distance d'accroche d'un objet posé sur les murs et éléments voisins, en pixels écran. */
 const PLACEMENT_SNAP_PX = 8
+/** Distance (px écran) à partir de laquelle un objet mural se colle à une face de mur. */
+const WALL_REACH_PX = 28
 
 type PointerEvent = Konva.KonvaEventObject<MouseEvent | TouchEvent>
 
@@ -128,6 +131,8 @@ export default function EditorStage() {
   const referenceWallJoins = useMemo(() => computeWallJoinsOf(referenceElements), [referenceElements])
   // Lignes d'aimantation des poses : faces et axes des murs, contours et emprises du niveau actif,
   // et du niveau du dessous quand il est affiché en transparence.
+  // Murs du niveau actif, contre lesquels un objet mural (WC, lavabo, meuble de cuisine…) se colle.
+  const wallSides = useMemo(() => collectWallSides(activeElements), [activeElements])
   const planSnapTargets = useMemo(
     () => mergeSnapLines(collectSnapLines(activeElements), collectSnapLines(referenceElements)),
     [activeElements, referenceElements],
@@ -214,6 +219,7 @@ export default function EditorStage() {
   const elements = activeElements
   // Pas de la grille d'aimantation d'un plan (`null` si l'aimantation est désactivée).
   const furnitureGrid = project.document.plan?.snapToGrid ? project.document.plan.gridSize : null
+  const wallPose: WallPose = { walls: wallSides, reach: WALL_REACH_PX / scale }
   const placementSnap: PlacementSnap = {
     targets: planSnapTargets,
     threshold: PLACEMENT_SNAP_PX / scale,
@@ -244,7 +250,7 @@ export default function EditorStage() {
     const set = getPlaceable(id)
     if (set) return setPlacement(set, point, placementSnap).guides
     const def = getSymbol(id)
-    return def ? furniturePlacement(def, point, placementSnap).guides : []
+    return def ? furniturePlacement(def, point, placementSnap, wallPose).guides : []
   }
 
   /** Coin haut-gauche d'une cheminée de taille par défaut posée sous `point`. */
@@ -313,11 +319,12 @@ export default function EditorStage() {
     }
     const def = getSymbol(id)
     if (!def) return
-    const { x, y } = furniturePlacement(def, point, placementSnap)
+    const { x, y, rotation } = furniturePlacement(def, point, placementSnap, wallPose)
     const count = elements.filter((el) => el.type === 'furniture' && el.symbol === def.id).length
-    addElement(
-      createFurnitureElement(`${symbolName(def.id)} ${count + 1}`, def.id, x, y, def.width, def.depth),
-    ) // l'objet posé devient la sélection ; l'outil reste actif pour en poser d'autres
+    addElement({
+      ...createFurnitureElement(`${symbolName(def.id)} ${count + 1}`, def.id, x, y, def.width, def.depth),
+      rotation: rotation ?? 0,
+    }) // l'objet posé devient la sélection ; l'outil reste actif pour en poser d'autres
     useLibraryPrefs.getState().addRecent(def.id)
   }
 
@@ -670,6 +677,7 @@ export default function EditorStage() {
                 point={ghostPoint}
                 snap={placementSnap}
                 scale={scale}
+                wall={wallPose}
               />
             )}
             {polylineTool && (

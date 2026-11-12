@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot F · Hauteurs 3D des objets
+- **Dernière tâche terminée :** M11 bis · Lot F · Pose contre un mur
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot F · Tâche 1 · Pose contre un mur
+- Fait : les objets **muraux** de la bibliothèque (WC, lavabo, baignoire, radiateur, éléments de cuisine, électroménager, armoires, bibliothèques, meubles hauts…, liste dans `againstWall.ts`) se collent à la **face du mur le plus proche** quand on les pose et quand on les déplace : le **dos** de l'objet (le haut du dessin, convention du catalogue) touche le mur, la face avant est tournée vers la pièce (rotation 0°, 90°, 180° ou 270° pour un mur droit), l'objet glisse le long du mur sous le curseur sans dépasser en bout. Accroche à moins de 28 px de la face du mur. L'aperçu de pose montre déjà l'objet tourné. **Alt** pendant un déplacement : sans accroche au mur. Les tables, lits, canapés et autres meubles libres ne tournent pas. Un test vérifie que tout objet du catalogue fixé en hauteur est dans la liste (sauf luminaires, hotte d'îlot, parasol, pergola, gazebo, carport, cassette de climatisation, VMC).
+- Fichiers : `src/features/library/againstWall.ts` (+ test), `placement.ts`, `src/components/editor/{EditorStage,FurnitureGhost,useElementInteractions}.tsx|ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2623 ; le test de vitesse « 600 murs » échoue parfois sous la charge) — à contrôler dans le navigateur à la fin du jalon : poser un WC près d'un mur, puis le glisser
+- Commit : feat: pose des objets muraux contre un mur (M11 bis, lot F)
 
 ### 2026-11-12 — M11 bis · Lot F · Tâche 2 · Hauteurs 3D des objets
 - Fait : chaque objet du catalogue a une **hauteur de référence en mm** (nouveau fichier `catalog/heights.ts`, valeurs génériques d'usage courant : lit 500, plan de travail 900, réfrigérateur-congélateur 1850, table 750…) et, pour un objet fixé en hauteur, la **hauteur de son dessous** (meuble haut de cuisine 700 à 1450, hotte 450 à 1850, miroir mural 900 à 1000…). Aucun nom ni mesure de fabricant (clean room). Les objets du plan s'affichent maintenant **en 3D** comme des boîtes simples de cette hauteur, posées sur le plancher de leur niveau, tournées comme sur le plan ; pas de volume pour les zones (tapis, couloirs de manœuvre), les symboles conventionnels (prises, détecteurs) et les escaliers symboliques. Clic dans la 3D = sélection de l'objet. Façades et coupes inchangées. L'export glTF reprend les objets.

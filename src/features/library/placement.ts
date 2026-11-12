@@ -1,4 +1,5 @@
 import type { Guide } from '../geometry/guides'
+import { isWallBacked, placeAgainstWall, type WallSide } from './againstWall'
 import { gridOnly, snapBox, type PlacementSnap } from '../geometry/snapLines'
 import type { SetDef } from './catalog/sets'
 import type { SymbolDef } from './types'
@@ -11,6 +12,14 @@ export interface PlacementPoint {
 export interface PlacementResult extends PlacementPoint {
   /** Guides d'alignement à afficher pendant l'aperçu. */
   guides: Guide[]
+  /** Rotation à donner à l'objet (degrés), quand il se colle à un mur ; absente : 0. */
+  rotation?: number
+}
+
+/** Murs contre lesquels un objet mural se colle, et distance d'accroche en mm. */
+export interface WallPose {
+  walls: readonly WallSide[]
+  reach: number
 }
 
 const asSnap = (snap: PlacementSnap | number | null): PlacementSnap =>
@@ -21,12 +30,19 @@ const asSnap = (snap: PlacementSnap | number | null): PlacementSnap =>
  * sur ce point, puis ses bords et son centre s'aimantent aux faces des murs et aux bords des autres
  * éléments proches ; à défaut, son **coin** (et non son centre) s'aimante à la grille, pour que ses
  * bords tombent sur la grille quelle que soit sa taille. `snap` peut être un simple pas de grille.
+ * Un objet mural (`id` dans `isWallBacked`) proche d'une face de mur s'y colle, dos au mur, et
+ * reçoit la rotation qui le tourne vers la pièce (`wall`).
  */
 export function furniturePlacement(
-  def: Pick<SymbolDef, 'width' | 'depth'>,
+  def: Pick<SymbolDef, 'width' | 'depth'> & { id?: string },
   point: PlacementPoint,
   snap: PlacementSnap | number | null,
+  wall?: WallPose,
 ): PlacementResult {
+  if (wall && def.id !== undefined && isWallBacked(def.id)) {
+    const against = placeAgainstWall(def, point, wall.walls, wall.reach)
+    if (against) return { ...against, guides: [] }
+  }
   return snapBox(
     { x: point.x - def.width / 2, y: point.y - def.depth / 2, width: def.width, height: def.depth },
     asSnap(snap),

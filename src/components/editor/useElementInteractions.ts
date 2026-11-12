@@ -14,10 +14,11 @@ import {
 } from '../../features/geometry/snapLines'
 import { hasAbsolutePoints, translateElement } from '../../features/geometry/transform'
 import type { Point } from '../../features/geometry/viewport'
+import { collectWallSides, isWallBacked, placeAgainstWall, type WallSide } from '../../features/library/againstWall'
 import { pxPerUnit } from '../../features/units/scale'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import { connectedWallIds } from '../../features/building/wallChains'
-import type { WallElement } from '../../types/document'
+import type { CanvasElement, WallElement } from '../../types/document'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 
 type Handlers = Pick<
@@ -43,6 +44,13 @@ interface DragSession {
    * garde l'aimantation sur les boîtes dessinées (`groupBox`, `targets`).
    */
   plan: { moving: SnapLines; anchor: Point; targets: SnapLines; grid: number | null } | null
+  /**
+   * Un seul objet mural déplacé (WC, lavabo, meuble de cuisine…) : il se colle à la face du mur le
+   * plus proche et se tourne vers la pièce (M11 bis). `null` pour tout autre déplacement.
+   */
+  wall: { width: number; depth: number; rotation: number; walls: WallSide[]; reach: number } | null
+  /** Rotation donnée par le mur au dernier mouvement ; absente : l'objet garde la sienne. */
+  wallRotation?: number
 }
 
 const EMPTY_SESSION: DragSession = {
@@ -51,6 +59,7 @@ const EMPTY_SESSION: DragSession = {
   targets: [],
   followers: new Map(),
   plan: null,
+  wall: null,
 }
 
 /** Aimantation géométrique d'un déplacement dans un plan (voir `DragSession.plan`). */
@@ -86,6 +95,26 @@ function planDragSnap(
     anchor: { x: box.x, y: box.y },
     targets,
     grid: plan?.snapToGrid ? plan.gridSize : null,
+  }
+}
+
+/** Pose contre un mur d'un objet mural déplacé seul (voir `DragSession.wall`). */
+function wallDragSession(
+  origins: ReadonlyMap<string, Point>,
+  elements: readonly CanvasElement[],
+): DragSession['wall'] {
+  if (origins.size !== 1) return null
+  const [id] = origins.keys()
+  const moved = elements.find((el) => el.id === id)
+  if (!moved || moved.type !== 'furniture' || !isWallBacked(moved.symbol)) return null
+  const store = useEditorStore.getState()
+  const level = selectActiveElements(store)
+  return {
+    width: moved.width,
+    depth: moved.depth,
+    rotation: moved.rotation,
+    walls: collectWallSides(level),
+    reach: 28 / (store.zoom * pxPerUnit(store.project?.document.unit ?? 'mm')),
   }
 }
 
@@ -178,6 +207,7 @@ export function useElementInteractions(): Handlers {
       targets,
       followers,
       plan: planDragSnap(new Set(origins.keys()), new Set(followers.keys())),
+      wall: wallDragSession(origins, project?.document.elements ?? []),
     }
   }, [])
 
@@ -216,6 +246,25 @@ export function useElementInteractions(): Handlers {
     }
 
     event.target.position({ x: origin.x + dx, y: origin.y + dy })
+    // Objet mural : collé à la face du mur le plus proche, tourné vers la pièce (Alt : sans).
+    const wall = session.current.wall
+    if (wall) {
+      const rad = (wall.rotation * Math.PI) / 180
+      const u = wall.width / 2
+      const v = wall.depth / 2
+      const center = {
+        x: origin.x + dx + u * Math.cos(rad) - v * Math.sin(rad),
+        y: origin.y + dy + u * Math.sin(rad) + v * Math.cos(rad),
+      }
+      const against = event.evt.altKey ? null : placeAgainstWall(wall, center, wall.walls, wall.reach)
+      if (against) {
+        event.target.position({ x: against.x, y: against.y })
+        event.target.rotation(against.rotation)
+      } else {
+        event.target.rotation(wall.rotation)
+      }
+      session.current.wallRotation = against?.rotation
+    }
     for (const [id, start] of origins) {
       if (id === draggedId) continue
       stage.findOne(`#${id}`)?.position({ x: start.x + dx, y: start.y + dy })
@@ -231,11 +280,14 @@ export function useElementInteractions(): Handlers {
     setGuides([])
     if (!stage || !project) return
     const byId = new Map(project.document.elements.map((el) => [el.id, el]))
+    const wallRotation = session.current.wallRotation
     const updated = [...session.current.origins.keys()].flatMap((id) => {
       const node = stage.findOne(`#${id}`)
       const element = byId.get(id)
       if (!node || !element) return []
-      return [translateElement(element, node.x() - element.x, node.y() - element.y)]
+      const moved = translateElement(element, node.x() - element.x, node.y() - element.y)
+      // Un objet collé à un mur garde la rotation que le mur lui a donnée.
+      return [wallRotation !== undefined && moved.type === 'furniture' ? { ...moved, rotation: wallRotation } : moved]
     })
     session.current = EMPTY_SESSION
     replaceElements(updated)

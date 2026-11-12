@@ -5,7 +5,7 @@ import type { Point } from '../../features/geometry/viewport'
 import { getSymbol } from '../../features/library/catalog'
 import { getPlaceable } from '../../features/library/catalog/prefabs'
 import type { PlacementSnap } from '../../features/geometry/snapLines'
-import { furniturePlacement, setPlacement } from '../../features/library/placement'
+import { furniturePlacement, setPlacement, type WallPose } from '../../features/library/placement'
 import FurnitureShape from './shapes/FurnitureShape'
 
 interface FurnitureGhostProps {
@@ -17,10 +17,12 @@ interface FurnitureGhostProps {
   snap: PlacementSnap
   /** Pixels écran par mm. */
   scale: number
+  /** Murs contre lesquels un objet mural se colle (aperçu tourné comme à la pose). */
+  wall?: WallPose
 }
 
 /** Aperçu translucide, à taille réelle, de l'objet (ou de tous les objets de l'ensemble) qu'on est en train de poser. */
-export default function FurnitureGhost({ symbolId, point, snap, scale }: FurnitureGhostProps) {
+export default function FurnitureGhost({ symbolId, point, snap, scale, wall }: FurnitureGhostProps) {
   const set = getPlaceable(symbolId)
   if (set) {
     const origin = setPlacement(set, point, snap)
@@ -60,10 +62,11 @@ export default function FurnitureGhost({ symbolId, point, snap, scale }: Furnitu
   }
   const def = getSymbol(symbolId)
   if (!def) return null
-  const { x, y } = furniturePlacement(def, point, snap)
+  const { x, y, rotation } = furniturePlacement(def, point, snap, wall)
   const element = {
     ...createFurnitureElement('', def.id, x, y, def.width, def.depth),
     id: 'furniture-ghost',
+    rotation: rotation ?? 0,
     opacity: 0.55,
   }
   // Le groupe « ghost » est masqué pendant les exports et la capture des miniatures.
