@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
+import EmptyPlanCard from '../components/editor/EmptyPlanCard'
 import EditorStage from '../components/editor/EditorStage'
 import DimensioningSelector from '../components/editor/DimensioningSelector'
 import LevelSelector from '../components/editor/LevelSelector'
@@ -86,6 +87,7 @@ export default function EditorPage() {
       <div className="flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
           <EditorStage />
+          <EmptyPlanCard />
           <Toolbar />
           {/* Barre contextuelle en haut du plan : niveau affiché, cotation, puis options de l'outil en cours. */}
           <div className="pointer-events-none absolute left-48 right-3 top-3 z-10 flex items-start gap-2">

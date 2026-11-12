@@ -709,6 +709,13 @@ export const fr = {
     // Nom et mots-clés de recherche (synonymes courants) de chaque objet du catalogue.
     symbols: { ...LIBRARY_SYMBOL_TEXTS, ...LIBRARY_SET_TEXTS, ...LIBRARY_PREFAB_TEXTS },
   },
+  emptyPlan: {
+    title: 'Commencez votre plan',
+    text: 'Tracez une pièce en deux clics (deux coins opposés) ou des murs un par un. Les surfaces se calculent toutes seules.',
+    drawRoom: 'Tracer une pièce',
+    drawWalls: 'Tracer des murs',
+    units: 'Toutes les longueurs sont en millimètres.',
+  },
   hints: {
     furniture: 'Cliquez sur le plan pour poser l’objet (autant de fois que voulu) · Échap : quitter',
     wall: 'Clic : poser un point (sur un mur : raccord) · Maj : angles de 45° · Alt : sans alignement · Double-clic ou Entrée : terminer · Échap : annuler',

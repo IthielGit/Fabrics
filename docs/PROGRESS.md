@@ -1155,6 +1155,11 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Vérifié : build, lint et 2665 tests passent. Pas encore regardé dans le navigateur par Claude.
 - Reste ouvert : « raccourcis plus logiques » (non touchés, demande de précision à l'utilisateur).
 
+### 2026-11-12 — M11 quater, Lot C (plan vide)
+
+- Un plan sans aucun élément affiche au centre une carte « Commencez votre plan » avec deux boutons : « Tracer une pièce » (mode rectangle, deux coins) et « Tracer des murs ». Elle disparaît au premier élément tracé.
+- Fichiers : `src/components/editor/EmptyPlanCard.tsx` (nouveau), `src/i18n/fr.ts`, `src/pages/EditorPage.tsx`. Build, lint, 2665 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
