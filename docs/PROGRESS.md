@@ -1201,6 +1201,10 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Fichiers : `PlanSignals.tsx` (nouveau), `EditorPage.tsx`, `fr.ts`, `createProject.test.ts`. Build, lint, 2673 tests OK.
 - **Lot H** (test avec une vraie personne) : volontairement non coché, il se fait avec l'utilisateur à la fin du jalon.
 
+### 2026-11-12 — Retour de l'accueil à l'original (M11 quater, lot B)
+
+- À la demande de l'utilisateur, `HomePage.tsx` retrouve sa version d'avant le lot B (boutons « Nouveau visuel » et « Nouveau plan »). Le plan d'exemple (`createExamplePlanProject`, `createExample`) reste dans le code et testé, sans bouton pour l'instant.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
