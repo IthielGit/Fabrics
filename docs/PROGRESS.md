@@ -44,6 +44,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M13 · Lot A (partie code) : client Supabase
+- Fait : dépendance `@supabase/supabase-js` ; `src/lib/supabase.ts` (client créé seulement si `VITE_SUPABASE_URL` et `VITE_SUPABASE_ANON_KEY` sont remplies, sinon `supabase` vaut `null` et l'application reste en mode local) ; `.env.example` déjà prêt.
+- Reste du lot A (à faire avec l'utilisateur) : créer le projet Supabase, exécuter `supabase/schema.sql`, remplir `.env.local`, ajouter les variables dans Cloudflare Pages, régler les adresses de redirection.
+- Fichiers : `src/lib/supabase.ts`, `src/lib/supabase.test.ts`, `package.json`.
+- Vérification : build ✓ lint ✓ tests ✓ (3 nouveaux).
+- Idée notée : les e-mails Supabase par défaut sont très limités par heure ; brancher un service d'envoi avant d'ouvrir à de vrais utilisateurs. Connexion Google : non pour M13.
+
 ### 2026-11-12 — M12 · Dépôt GitHub, redirection SPA, README
 - Fait : `feat/m11-bis` fusionnée dans `main` (avance rapide) ; `public/_redirects` créé (`/* /index.html 200`, bien présent dans `dist/`) ; README réécrit (présentation, commandes, déploiement) ; `main` poussée sur https://github.com/IthielGit/Fabrics.git.
 - Cloudflare Pages connecté (build `npm run build`, sortie `dist`, branche `main`) : https://fabrics-8zd.pages.dev. Vérifié par requête : `/`, `/p/test-123` et une adresse inconnue renvoient tous l'application (200). Lien ajouté au README.
