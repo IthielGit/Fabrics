@@ -46,7 +46,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ### 2026-11-12 — M13 · Lot F : contrôle de sécurité à deux comptes (script prêt, à lancer)
 - Fait : le lot E est validé par l'utilisateur (SQL exécuté, partage essayé). Vérifié à distance : un visiteur ne peut lire ni `shares` ni les projets, ne peut pas créer de lien, et un jeton inconnu donne « indisponible ». Script `scripts/check-security.mjs` (commande `npm run check:security`, jamais lancé par `npm test`) : se connecte avec deux comptes de test, crée un projet, une image et un lien protégé, puis vérifie que B ne peut ni lire, ni modifier, ni supprimer, ni créer quoi que ce soit chez A (projets, liens, images, signatures de téléchargement), que le visiteur anonyme ne lit aucune table, et que le lien se comporte comme prévu (mot de passe demandé / refusé / accepté, désactivé, réactivé, expiré, retiré, supprimé, réponse sans identifiant de compte ni mot de passe haché). Il supprime ses données à la fin.
-- Reste : lancer le script avec deux vrais comptes de test (le résultat « Sécurité validée » ferme le jalon).
+- Résultat : l'utilisateur a validé le lot le 2026-11-12 après avoir lancé le script (comptes de test créés par e-mail + mot de passe ; le compte B ajouté dans Supabase avec « Auto Confirm User » car la limite d'e-mails par heure était atteinte). La sortie du script n'a pas été relue par Claude.
 - Fichiers : `scripts/check-security.mjs`, `package.json` (script `check:security`).
 - Vérification : syntaxe ✓ lint ✓ ; le script refuse de démarrer sans les variables de test.
 
@@ -1326,5 +1326,6 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M14, à rediscuter).
 - Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : import de symboles SVG / DXF par l'utilisateur, niveau de détail « détaillé », variantes de style. Pose contre un mur, hauteurs 3D, bibliothèque personnelle, étiquettes de cote et annotations de plan sont planifiées dans M11 bis, lot F (2026-11-12).
 - Plafonds : tableau dans les métrés et cote sous plafond (plan Technique) sont planifiés dans M11 bis, lot G (confirmés le 2026-11-12, D63). Faux plafond : confirmé.
+- E-mails Supabase (M13) : l'envoi par défaut est limité à quelques e-mails par heure (atteint pendant les tests). Avant d'ouvrir à de vrais utilisateurs : brancher un service d'envoi (Supabase, Authentication, SMTP Settings). Connexion Google : écartée pour M13.
 - Prise en main naturelle (audit du 2026-11-12) : jalon **M11 quater** confirmé par l'utilisateur le 2026-11-12 (avant M12, tablette incluse en lot I), dans `docs/03-ROADMAP.md`. Ordre : A, C, puis le reste. Lot J (signaux en haut à droite) ajouté le 2026-11-12.
 - Alertes et signaux en haut à droite de l'écran (demande du 2026-11-12) : pastilles ou bandeau qui signalent immédiatement les erreurs et avertissements (ex. pièce qui ne remplit pas l'espace, export bloqué). Aujourd'hui, l'avis (Notice) s'affiche en haut au centre. Placé dans M11 quater, lot J (choix de l'utilisateur, 2026-11-12).

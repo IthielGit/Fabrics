@@ -860,7 +860,7 @@ Objectif : retrouver ses projets sur un autre appareil.
 - [x] Gestion hors ligne simple : en cas d'échec réseau, garder une copie locale et réessayer (2026-11-12, à tester dans le navigateur)
 - [x] Partage par lien en lecture seule (plan, 3D, planche) ; désactivable à tout moment ;
       option mot de passe et date d'expiration (2026-11-12, validé ; plans seulement, images non visibles)
-- [ ] Table et règles de sécurité Supabase du partage (RLS), testées avec deux comptes
+- [x] Table et règles de sécurité Supabase du partage (RLS), testées avec deux comptes (2026-11-12, `npm run check:security` ; validé par l'utilisateur, sortie non relue par Claude)
 
 **Critères d'acceptation**
 - Un projet créé sur l'ordinateur apparaît sur le téléphone avec le même compte
