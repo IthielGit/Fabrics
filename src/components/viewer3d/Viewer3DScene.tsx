@@ -11,7 +11,7 @@ import type {
   WallMesh,
   WallPiece,
 } from '../../features/building/types'
-import { roofColor3d, wallColor3d } from '../../features/building/materials'
+import { applyPlanarUv, roofSurface, wallSurface } from './materialTextures'
 import OrientationCube from './OrientationCube'
 
 /** Le modèle est en mm ; la scène est en mètres. */
@@ -60,17 +60,6 @@ const FILL_MATERIALS: Record<OpeningFill['kind'], THREE.Material> = {
   frame: FRAME_MATERIAL,
   door: DOOR_MATERIAL,
   glass: GLASS_MATERIAL,
-}
-/** Matériaux colorés (un par couleur), créés une fois : un mur sans matériau garde WALL_MATERIAL. */
-const COLOR_MATERIALS = new Map<string, THREE.MeshStandardMaterial>()
-function coloredMaterial(color: string, doubleSided: boolean): THREE.MeshStandardMaterial {
-  const key = `${color}|${doubleSided}`
-  let material = COLOR_MATERIALS.get(key)
-  if (!material) {
-    material = new THREE.MeshStandardMaterial({ color, roughness: 0.9, ...(doubleSided ? { side: THREE.DoubleSide } : {}) })
-    COLOR_MATERIALS.set(key, material)
-  }
-  return material
 }
 const SELECTED_WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a5b4fc', roughness: 0.9 })
 const GROUND_MATERIAL = new THREE.MeshStandardMaterial({ color: '#e7e5df', roughness: 1 })
@@ -129,6 +118,7 @@ const WallBody = memo(function WallBody({ mesh, selected, onSelectWall }: WallBo
     const g = new THREE.BufferGeometry()
     g.setAttribute('position', new THREE.Float32BufferAttribute(mesh.positions, 3))
     g.setAttribute('normal', new THREE.Float32BufferAttribute(mesh.normals, 3))
+    applyPlanarUv(g)
     g.computeBoundingSphere()
     return g
   }, [mesh.positions, mesh.normals])
@@ -138,8 +128,7 @@ const WallBody = memo(function WallBody({ mesh, selected, onSelectWall }: WallBo
     event.stopPropagation()
     onSelectWall(mesh.sourceId, mesh.levelId)
   }
-  const wallColor = wallColor3d(mesh.material)
-  const wallMaterial = wallColor ? coloredMaterial(wallColor, false) : WALL_MATERIAL
+  const wallMaterial = wallSurface(mesh.material) ?? WALL_MATERIAL
   return (
     <mesh
       geometry={geometry}
@@ -159,6 +148,7 @@ function slabGeometry(slab: SlabShape): THREE.ExtrudeGeometry {
   const extruded = new THREE.ExtrudeGeometry(shape, { depth: slab.thickness, bevelEnabled: false })
   // Plan (x, y) → 3D (x, z) ; l'extrusion part vers le bas depuis le dessus de la dalle.
   extruded.rotateX(Math.PI / 2)
+  applyPlanarUv(extruded)
   return extruded
 }
 
@@ -193,9 +183,7 @@ const SlabMesh = memo(function SlabMesh({ slab }: { slab: SlabShape }) {
       geometry={cachedSlabGeometry(slab)}
       material={
         slab.kind === 'roof'
-          ? roofColor3d(slab.covering)
-            ? coloredMaterial(roofColor3d(slab.covering) as string, true)
-            : ROOF_MATERIAL
+          ? (roofSurface(slab.covering) ?? ROOF_MATERIAL)
           : slab.kind === 'platform'
             ? PLATFORM_MATERIAL
             : SLAB_MATERIAL
@@ -244,6 +232,7 @@ function roofPrismGeometry(prism: RoofPrism): THREE.BufferGeometry {
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
   geometry.computeVertexNormals()
+  applyPlanarUv(geometry)
   return geometry
 }
 
@@ -266,9 +255,7 @@ const RoofPrismMesh = memo(function RoofPrismMesh({ prism, selected, onSelectWal
     ? SELECTED_WALL_MATERIAL
     : prism.kind === 'gable'
       ? GABLE_MATERIAL
-      : roofColor3d(prism.covering)
-        ? coloredMaterial(roofColor3d(prism.covering) as string, true)
-        : PITCHED_ROOF_MATERIAL
+      : (roofSurface(prism.covering) ?? PITCHED_ROOF_MATERIAL)
   return <mesh geometry={geometry} material={material} castShadow receiveShadow onClick={handleClick} />
 })
 

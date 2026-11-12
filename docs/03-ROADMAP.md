@@ -483,6 +483,96 @@ toujours le plan. Les cotes tracées à la main restent des éléments du docume
 - Un projet d'avant M10 ter s'ouvre sans changement
 - Aucun montant, prix ni devis dans aucune des deux versions
 
+### À traiter — Cas limites des métrés client / exécution (audit du 2026-11-12)
+
+Issu de l'audit du lot A. À traiter avant M11, dans l'ordre des groupes. Chaque tâche : une
+fonction pure testée (Vitest) quand il y a un calcul, textes dans `src/i18n/fr.ts`, puis
+`npm run build`, `npm run lint`, `npm test`. Les groupes 3 et 4 commencent par une **décision
+de l'utilisateur** (notée dans `docs/PROGRESS.md`).
+
+**Groupe 1 — Exports justes (petit, sans ambiguïté)**
+
+- [ ] **Total d'un seul niveau.** Exporté avec la portée « niveau affiché », la ligne de total
+      du récapitulatif Client dit « Total du niveau » au lieu de « Bâtiment ».
+      Fichiers : `src/features/measurements/clientView.ts` (paramètre `scope`), `src/i18n/fr.ts`,
+      `src/components/editor/exportMetres.ts`, test dans `clientView.test.ts`.
+- [ ] **Niveau actif introuvable.** `restrictToLevel` ne renvoie plus tout le bâtiment en silence :
+      il renvoie `null` et l'export affiche un message (« Ce niveau n'existe plus »).
+      Fichiers : `src/features/measurements/measurements.ts`, `exportMetres.ts`, `ExportDialog.tsx`,
+      test dans `measurements.test.ts`.
+- [ ] **En-tête Client du XLSX et du CSV.** Comme le PDF : titre « Surfaces de votre projet » et
+      note Client, sans note technique. Fichiers : `exportMetres.ts` (un `meta` par version),
+      `src/features/measurements/csv.ts`, `src/i18n/fr.ts`, test dans `csvExport.test.ts`.
+- [ ] **Nom de fichier par version.** Suffixe `-client` ou `-execution` ajouté au nom (après
+      nettoyage, avant l'extension). Fichiers : `src/features/export/fileName.ts`, `exportMetres.ts`,
+      test dans `fileName.test.ts`.
+- [ ] **Option mobilier.** La case « Inclure le mobilier » est masquée en version Client (la vue
+      Client n'a pas de mobilier). Fichier : `ExportDialog.tsx`.
+- [ ] **Une seule version choisie.** La fenêtre Exporter s'ouvre sur la version affichée dans le
+      panneau Métrés (état d'interface partagé dans le store de l'éditeur, hors document et hors
+      historique). Fichiers : store de l'éditeur, `MeasurementsPanel.tsx`, `ExportDialog.tsx`.
+
+**Groupe 2 — Lisibilité du document Client**
+
+- [ ] **Pièce sans dimensions** (forme en L, rectangle incliné) : la cellule affiche « forme
+      libre » au lieu d'être vide. Fichiers : `clientView.ts`, `fr.ts`, test.
+- [ ] **Nom de pièce vide ou en double** : nom vide → « Pièce 1 », « Pièce 2 »… (numérotation
+      par niveau) ; deux pièces de même nom gardent leur nom (cas normal : « Chambre »). Fichiers :
+      `clientView.ts`, test.
+- [ ] **Niveau vide** : absent du récapitulatif Client (aucune pièce, aucune ouverture), mais
+      toujours présent en Exécution. Fichiers : `clientView.ts`, test.
+- [ ] **Vignette du plan** : légende « Niveau : RDC » sous la vignette ; en portée « bâtiment »,
+      une vignette par niveau qui a des murs (côte à côte si la place suffit, sinon page suivante).
+      Vérifier sur un plan très allongé et un plan très petit que traits et textes restent
+      lisibles (épaisseur de trait minimale). Fichiers : `metresPdf.ts`, `exportMetres.ts`,
+      test dans `metresPdf.test.ts`.
+- [ ] **« PDF d'une page »** : si les pièces ne tiennent pas sur une page, le PDF continue sur la
+      suivante (comportement actuel) ; corriger le libellé de la tâche du lot A en conséquence.
+
+**Groupe 3 — Fiabilité des surfaces (décision de l'utilisateur d'abord)**
+
+- [ ] **Décision : dimensions affichées au client.** Le contour d'une pièce est tel que dessiné
+      (souvent à l'axe des murs) ; la roadmap promet des « dimensions intérieures ».
+      Option A : libellé « Dimensions du tracé » (simple, honnête). Option B : calculer les
+      dimensions et la surface intérieures en retirant la demi-épaisseur des murs qui bordent la
+      pièce (rejoint l'idée « surface intérieure » de `docs/PROGRESS.md`, prérequis du lot B).
+- [ ] **Avertissements visibles en Client** : trémie qui déborde d'une pièce (surface laissée
+      pleine) et pièces qui se chevauchent sont signalées dans la vue Client du panneau, comme en
+      Exécution. Fichier : `MeasurementsPanel.tsx`.
+- [ ] **Contrôle avant export** : fonction pure `metresWarnings(document, building)` qui liste
+      pièces superposées, trémies qui débordent, pièces masquées comptées, éléments sans niveau
+      (hors axes), ouvertures plus larges que leur segment ou qui se chevauchent. La fenêtre
+      Exporter affiche la liste avant le téléchargement (sans bloquer). Fichiers :
+      `src/features/measurements/warnings.ts` (nouveau) + test, `ExportDialog.tsx`, `fr.ts`.
+- [ ] **Décision : pièces masquées.** Les compter (règle actuelle, avec l'avertissement ci-dessus)
+      ou les retirer du document Client seulement.
+
+**Groupe 4 — Repères `M01`, `P01`, `F01`**
+
+- [ ] **Ordre de lecture sans saut de bande** : regrouper en lignes par écart réel entre éléments
+      (tri par y, nouvelle ligne quand l'écart dépasse 500 mm) au lieu de `Math.round(y / 500)` ;
+      deux murs à y = 749 et y = 751 sont sur la même ligne. Fichiers : `references.ts`, test
+      dans `references.test.ts`.
+- [ ] **Ouverture hors de son segment** : centre ramené sur le segment (`offset` borné à sa
+      longueur) pour le classement. Fichiers : `references.ts`, test.
+- [ ] **Décision : stabilité des repères.** Les repères changent dès qu'on ajoute ou déplace un
+      élément ; un PDF déjà envoyé peut ne plus correspondre. Option A : garder le calcul et
+      imprimer « Repères valables à la date du document ». Option B : figer les repères (champ
+      facultatif enregistré, sans migration), les nouveaux éléments prennent le numéro suivant.
+- [ ] **Tri au-delà de 99** : repères sur trois chiffres (`M001`) dès qu'un type dépasse 99
+      éléments, pour que le tri d'Excel reste juste. Fichiers : `references.ts`, test.
+
+**Critères d'acceptation**
+- Un export Client « niveau affiché » du R+1 dit « Total du niveau » et non « Bâtiment »
+- Un XLSX ou CSV Client ne contient aucun mot technique (épaisseur, surface de mur, volume)
+- Exporter la version Client puis Exécution donne deux fichiers distincts
+  (`maison-client.pdf`, `maison-execution.pdf`)
+- Une pièce en L affiche « forme libre » ; une pièce sans nom affiche « Pièce 1 »
+- Une trémie qui déborde ou deux pièces superposées sont signalées dans la vue Client et dans
+  la fenêtre Exporter
+- Deux murs à y = 749 et y = 751, x = 0 et x = 1000, reçoivent `M01` puis `M02`
+- Un projet d'avant cette étape s'ouvre sans changement
+
 ## M11 — Import et export
 
 - [ ] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
