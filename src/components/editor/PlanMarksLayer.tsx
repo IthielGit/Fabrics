@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { Group, Line, Text } from 'react-konva'
-import { planMarks } from '../../features/dimensioning/planMarks'
+import { planDecorations } from '../../features/dimensioning/planDecorations'
 import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
 import { useEditorStore } from '../../stores/editorStore'
 
@@ -11,8 +11,8 @@ const TEXT_BOX_MM = 8000
 const INK = '#111827'
 
 /**
- * Flèche du nord et repère de niveau du niveau affiché (M11 bis), quand l'option est cochée dans les
- * réglages du plan. Calculés à chaque modification du plan, jamais enregistrés ; sans clic. Les mêmes
+ * Flèche du nord, repère de niveau et étiquettes de cote du niveau affiché (M11 bis), selon les
+ * options cochées dans les réglages du plan. Calculés à chaque modification du plan, jamais enregistrés ; sans clic. Les mêmes
  * traits sont repris dans les exports PDF, PNG et DXF.
  */
 export default function PlanMarksLayer({ scale }: { scale: number }) {
@@ -24,7 +24,7 @@ export default function PlanMarksLayer({ scale }: { scale: number }) {
   const font = Math.max(FONT_MM, LABEL_MIN_PX / scale)
   const marks = useMemo(() => {
     if (!elements || !levels || activeLevelId === null) return null
-    return planMarks({ elements, levels, plan }, activeLevelId, EXECUTION_LABELS, font)
+    return planDecorations({ elements, levels, plan }, activeLevelId, EXECUTION_LABELS, font)
   }, [elements, levels, plan, activeLevelId, font])
   if (!marks) return null
 
@@ -40,17 +40,19 @@ export default function PlanMarksLayer({ scale }: { scale: number }) {
         />
       ))}
       {marks.texts.map((text, i) => (
-        <Text
-          key={i}
-          x={text.anchor === 'middle' ? text.x - TEXT_BOX_MM / 2 : text.x}
-          y={text.y - text.size}
-          width={TEXT_BOX_MM}
-          align={text.anchor === 'middle' ? 'center' : 'left'}
-          text={text.text}
-          fontSize={text.size}
-          fontStyle={text.bold ? 'bold' : 'normal'}
-          fill={INK}
-        />
+        // Le texte est tourné autour de son point d'ancrage (le milieu de sa ligne de base).
+        <Group key={i} x={text.x} y={text.y} rotation={text.angle ?? 0}>
+          <Text
+            x={text.anchor === 'middle' ? -TEXT_BOX_MM / 2 : 0}
+            y={-text.size}
+            width={TEXT_BOX_MM}
+            align={text.anchor === 'middle' ? 'center' : 'left'}
+            text={text.text}
+            fontSize={text.size}
+            fontStyle={text.bold ? 'bold' : 'normal'}
+            fill={INK}
+          />
+        </Group>
       ))}
     </Group>
   )

@@ -93,6 +93,15 @@ export default function PlanSettingsSection() {
         />
         {fr.planSettings.annotations}
       </label>
+
+      <label className="flex items-center gap-2 text-sm text-slate-600" title={fr.planSettings.dimensionLabelsHint}>
+        <input
+          type="checkbox"
+          checked={plan.showDimensionLabels === true}
+          onChange={(event) => updatePlanSettings({ showDimensionLabels: event.target.checked })}
+        />
+        {fr.planSettings.dimensionLabels}
+      </label>
     </div>
   )
 }

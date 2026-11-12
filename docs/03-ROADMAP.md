@@ -675,8 +675,8 @@ l'ordre de lecture du plan (de haut en bas, puis de gauche à droite).
 
 Objectif : dessiner plus vite et plus juste sur un fond DXF et entre niveaux, placer le mobilier
 sans réglage manuel, et sortir les plafonds dans les métrés et les cotes.
-Ajouté le 2026-11-12 à la demande de l'utilisateur. **Planification seulement** : rien n'est codé
-tant que le jalon n'est pas lancé. Placé avant M12 (décision D64, confirmée le 2026-11-12).
+Ajouté le 2026-11-12 à la demande de l'utilisateur. **Fait le 2026-11-12** (lots A à G), à tester
+dans le navigateur. Placé avant M12 (décision D64, confirmée le 2026-11-12).
 
 **Règles de jalon** : chaque tâche = fonction pure testée (Vitest) quand il y a un calcul, textes
 dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf indication contraire.
@@ -724,7 +724,7 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 - [x] **Bibliothèque personnelle** : enregistrer une sélection d'objets sous un nom (« Ensemble
       cuisine ») et la réinsérer ailleurs. Stockage local du navigateur ; synchronisation avec le
       compte au M13.
-- [ ] **Étiquettes de cote automatiques** : à la demande, une cote (longueur d'un mur, largeur d'une
+- [x] **Étiquettes de cote automatiques** : à la demande, une cote (longueur d'un mur, largeur d'une
       ouverture) posée sur le plan et recalculée avec le plan. **À préciser avec l'utilisateur**
       avant de coder (quels éléments, faut-il les garder dans le document ?).
 - [x] **Annotations de plan** : flèche du nord et repère de niveau, dessinés de zéro (pas de symbole

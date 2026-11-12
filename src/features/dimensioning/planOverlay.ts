@@ -3,7 +3,8 @@ import type { FabricsDocument } from '../../types/document'
 import { annotationGraphics } from './annotationGraphics'
 import type { ExecutionLabels } from './executionDimensions'
 import { levelAnnotations } from './levelAnnotations'
-import { mergeOverlays, planMarks } from './planMarks'
+import { planDecorations } from './planDecorations'
+import { mergeOverlays } from './planMarks'
 import type { DimensioningMode } from './types'
 
 /** En Client, les textes sont plus grands (document destiné au client, peu de cotes). */
@@ -21,7 +22,7 @@ export function planOverlay(
   fontMm: number,
 ): PlanOverlay | null {
   // Flèche du nord et repère de niveau (option du plan), quel que soit le réglage « Cotation ».
-  const marks = planMarks(document, levelId, labels, fontMm)
+  const marks = planDecorations(document, levelId, labels, fontMm)
   if (mode === 'none') return marks
   const annotations = levelAnnotations(document, levelId, mode, labels)
   return mergeOverlays(

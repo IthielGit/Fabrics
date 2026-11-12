@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot F · Annotations de plan
-- **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
+- **Jalon en cours :** M11 bis Dessin précis, bibliothèque et plafonds (terminé, à tester dans le navigateur) ; M11 terminé, à tester ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M11 bis · Lot F · Étiquettes de cote automatiques (jalon M11 bis terminé, à tester)
+- **Prochaine tâche :** test de M11 et de M11 bis dans le navigateur (et de l'export DXF dans LibreCAD) par l'utilisateur, puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -28,7 +28,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M10 bis Ouvertures détaillées, toitures, hachures et textures | terminé, à tester dans le navigateur (lots A, B et C) | |
 | M10 ter Documents client / exécution (métrés et cotes) | terminé | 2026-11-12 |
 | M11 Import et export | terminé, à tester dans le navigateur | |
-| M11 bis Dessin précis, bibliothèque et plafonds | planifié, pas commencé | |
+| M11 bis Dessin précis, bibliothèque et plafonds | terminé, à tester dans le navigateur (lots A à G) | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
 | M14 Collaboration temps réel | après le MVP | |
@@ -42,6 +42,17 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot F · Tâche 4 · Étiquettes de cote automatiques
+- Décision de l'utilisateur (D66) : option « calculées, non enregistrées », longueurs de murs **et** largeurs d'ouvertures.
+- Fait : case **« Étiquettes de cote »** dans les réglages du plan (option `plan.showDimensionLabels`, facultative, absente = non). Quand elle est cochée, le plan écrit en mm, **le long des murs**, la longueur de chaque côté de mur (côté extérieur) et la largeur de chaque porte, fenêtre et baie (côté intérieur), texte aligné sur le mur et jamais à l'envers. Les côtés trop courts pour porter un chiffre ne sont pas étiquetés. Recalculées à chaque modification du plan, **jamais enregistrées** dans le document (seule la case l'est). Reprises dans le PDF et le PNG du plan, les plans de niveau de la planche et le DXF (calque `COTES`), avec la flèche du nord.
+- Fichiers : `src/features/dimensioning/{lengthLabels,planDecorations}.ts` (+ test), `planOverlay.ts`, `src/components/editor/{PlanMarksLayer,PlanSettingsSection}.tsx`, `src/i18n/fr.ts`, `src/types/document.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2641)
+- Commit : feat: étiquettes de cote automatiques des murs et des ouvertures (M11 bis, lot F)
+
+### 2026-11-12 — M11 bis · Jalon terminé, à tester dans le navigateur
+- Toutes les tâches des lots A à G sont faites et commitées une par une (ou par lot). Le test dans le navigateur est prévu à la fin du jalon, à la demande de l'utilisateur ; scénarios à parcourir : voir la réponse de fin de session.
+- Validation de l'utilisateur : en attente.
 
 ### 2026-11-12 — M11 bis · Lot F · Tâche 5 · Annotations de plan (flèche du nord, repère de niveau)
 - Fait : case **« Flèche du nord et repère de niveau »** dans les réglages du plan (Propriétés, rien de sélectionné) ; option `plan.showAnnotations` (facultative, absente = non : un projet d'avant M11 bis ne change pas). Quand elle est cochée, le plan affiche **à droite du bâtiment** une flèche du nord dans un cercle (dessinée de zéro avec des traits simples, pointe vers le nord réglé dans « Nord », lettre N) et le repère du niveau affiché (« Niveau RDC (±0) »). Calculés à chaque modification, jamais enregistrés. Repris dans le **PDF et le PNG** du plan (la zone exportée s'agrandit pour les contenir), dans les **plans de niveau de la planche** et dans le **DXF** (sur le calque `COTES`, comme les cotes automatiques), indépendamment du réglage « Cotation ». Taille proportionnelle à la hauteur des textes, donc lisible à toutes les échelles.
@@ -1106,6 +1117,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 |---|---|---|---|
 | D63 | Plafonds (« sous plafonds ») | **Confirmé par l'utilisateur le 2026-11-12** : tableau « Plafonds » dans les métrés (Client et Technique : surface de plafond, hauteur sous plafond, périmètre ; export CSV, Excel et PDF) ; option « faux plafond » par pièce ; cote d'altitude « sous plafond » **sur le plan Technique seulement**. Rien sur le plan Client. | Les métrés sont l'endroit où le client et l'exécution lisent les surfaces ; le plan Client reste sans cote superflue (D50, D53) ; la hauteur sous plafond existe déjà (D52), donc peu de code nouveau. |
 | D64 | Place de M11 bis | **Confirmé par l'utilisateur le 2026-11-12** : jalon **avant M12** (mise en ligne), numéroté « M11 bis » comme M10 bis et M10 ter. | Les items sont des outils d'édition ; les faire avant la mise en ligne évite de publier un éditeur incomplet. |
+| D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 
 ## Idées (hors jalon en cours)
 

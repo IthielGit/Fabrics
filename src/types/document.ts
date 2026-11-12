@@ -43,6 +43,7 @@ export interface PlanSettings {
   snapToGrid: boolean;
   defaultWallThickness: number; // mm, défaut 200
   defaultWallHeight: number;    // mm, défaut 2500 — plus utilisé depuis M6 (la hauteur d'un nouveau mur vient du niveau actif) ; conservé pour les anciens projets
+  showDimensionLabels?: boolean; // M11 bis : longueur des murs et largeur des ouvertures écrites le long des murs ; absent = non
   showAnnotations?: boolean;    // M11 bis : flèche du nord et repère de niveau sur le plan et dans les exports ; absent = non
   northAngle: number;           // M8 : degrés, de 0 à 359 ; sens horaire depuis le haut du plan vers la direction du nord (0 = le nord est en haut)
 }

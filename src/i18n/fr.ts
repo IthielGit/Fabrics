@@ -914,6 +914,8 @@ export const fr = {
     unitMm: 'mm',
     northAngle: 'Nord (sens horaire depuis le haut)',
     annotations: 'Flèche du nord et repère de niveau',
+    dimensionLabels: 'Étiquettes de cote',
+    dimensionLabelsHint: 'Écrit la longueur de chaque mur et la largeur de chaque porte, fenêtre et baie (en mm) le long des murs. Recalculées avec le plan, reprises dans les PDF, les images et les DXF.',
     annotationsHint: 'Dessine la flèche du nord et le repère du niveau à droite du plan ; ils sont repris dans les PDF, les images et les DXF.',
     unitDegrees: '°',
   },

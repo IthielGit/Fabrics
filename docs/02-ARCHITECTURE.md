@@ -477,6 +477,7 @@ export interface Level {
 }
 // FabricsDocument.levels?: Level[]   (projets Plan uniquement, au moins un niveau)
 // BaseElement.levelId?: string       (éléments de plan ; absent = commun à tous les niveaux)
+// PlanSettings.showDimensionLabels?: boolean (M11 bis : étiquettes de longueur calculées, jamais enregistrées ; absent = non)
 // PlanSettings.showAnnotations?: boolean (M11 bis : flèche du nord et repère de niveau ; absent = non)
 // PlanSettings.northAngle: number    (M8, réalisé, version 4 : degrés 0–359, sens horaire depuis le haut du plan ; 0 = nord en haut)
 
