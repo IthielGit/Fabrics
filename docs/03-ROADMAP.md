@@ -605,8 +605,8 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
 ### Hors jalon — Noms automatiques des murs et des ouvertures (demande du 2026-11-12)
 
 Demande de l'utilisateur : « Mur 1 », « Porte 2 » ne se lisent pas naturellement. Les murs,
-portes, fenêtres et baies prennent un nom tiré des **pièces qu'ils touchent**. Fait le 2026-11-12,
-à tester dans le navigateur.
+portes, fenêtres et baies prennent un nom tiré des **pièces qu'ils touchent**. Fait et validé dans le
+navigateur le 2026-11-12.
 
 **Principe** (décisions D58 et D59 dans `docs/PROGRESS.md`) : le nom est **calculé à l'affichage**, jamais
 enregistré ; il suit les renommages de pièces, les déplacements et le sens d'ouverture. Un nom

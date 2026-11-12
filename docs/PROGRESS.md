@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M10 ter (lots A et B validés ; groupes 1 à 4 des cas limites à faire) ; M10 bis terminé, à tester dans le navigateur
-- **Dernière tâche terminée :** noms automatiques des murs et des ouvertures (à tester dans le navigateur) ; M10 ter groupe 4 à tester aussi
-- **Prochaine tâche :** validation dans le navigateur du groupe 4 et des noms automatiques, puis M11
+- **Jalon en cours :** M11 Import et export (à planifier) ; M10 ter terminé et validé
+- **Dernière tâche terminée :** noms automatiques des murs et des ouvertures (validés dans le navigateur)
+- **Prochaine tâche :** M11, plan des tâches à présenter avant de coder
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -26,7 +26,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M9 Outils de construction | terminé | 2026-11-11 |
 | M10 Façades, coupes et planche | terminé | 2026-11-11 |
 | M10 bis Ouvertures détaillées, toitures, hachures et textures | terminé, à tester dans le navigateur (lots A, B et C) | |
-| M10 ter Documents client / exécution (métrés et cotes) | en cours (lots A et B validés ; cas limites à faire) | |
+| M10 ter Documents client / exécution (métrés et cotes) | terminé | 2026-11-12 |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 ter et noms automatiques · Test dans le navigateur validé
+- Fait : l'utilisateur a validé dans le navigateur le groupe 4 des cas limites (repères) et les noms automatiques des murs et des ouvertures. M10 ter est terminé.
+- Décisions de l'utilisateur : la numérotation des murs au même nom est gardée (« Mur extérieur Cuisine 1 », « 2 ») ; le choix D59 (pas de champ `customName`) est validé.
+- Fichiers : `docs/PROGRESS.md`
+- Vérification : test dans le navigateur par l'utilisateur ✓
+- Commit : docs: M10 ter et noms automatiques validés
 
 ### 2026-11-12 — Hors jalon · Noms automatiques des murs et des ouvertures
 - Fait : les murs et les ouvertures prennent un nom tiré des pièces qu'ils touchent, **calculé à l'affichage**, jamais enregistré. **Murs** : « Mur Cuisine / Séjour », « Mur extérieur Cuisine », « Mur isolé » ; au-delà de deux pièces, les deux plus grandes dans l'ordre de lecture puis « +N » ; deux murs du même niveau au même nom sont numérotés (« Mur extérieur Cuisine 1 », « 2 »). **Ouvertures** : « Porte Cuisine 1 » (pièce vers laquelle la porte s'ouvre), « Fenêtre Séjour 2 » (pièce côté intérieur), les baies comptent avec les fenêtres, « Porte 1 » sans pièce ; « Chambre 1 – 1 » quand la pièce finit par un nombre ; une pièce sans nom devient « Pièce 1 ». Les pièces masquées comptent (D56) ; seules les pièces du même niveau sont regardées. **Nom tapé** : il reste prioritaire ; dans Propriétés, le champ « Nom » est vide avec le nom automatique en grisé, et le vider rend le nom automatique (aussi dans les calques). Les anciens noms par défaut (« Mur 1 », « Porte 2 », « Mur 1 1 ») sont traités comme automatiques : aucun changement de format, aucune migration. **Partout** : calques, Propriétés, panneau Métrés (dont « Mur : … » d'une ouverture), exports CSV, Excel et PDF des métrés, avertissements. **Séparer les côtés** : les morceaux d'un mur au nom automatique prennent chacun le leur ; un nom tapé est gardé et numéroté (« Façade 1 », « Façade 2 »).
