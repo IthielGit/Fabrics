@@ -5,6 +5,7 @@ import {
   ChevronDown,
   ChevronUp,
   Circle,
+  FileInput,
   DoorOpen,
   Eye,
   EyeOff,
@@ -66,8 +67,11 @@ export default function LayersPanel() {
   const [dropSlot, setDropSlot] = useState<number | null>(null)
 
   if (!isOpen) return null
-  // Le dessus est en haut de la liste.
-  const rows = [...elements].reverse()
+  // Le dessus est en haut de la liste. Les traits d'un même fond DXF n'occupent qu'une ligne.
+  const ordered = [...elements].reverse()
+  const rows = layerRows(ordered)
+  /** Place dans la liste complète (pour le glisser-déposer) d'un emplacement entre deux lignes. */
+  const fullSlot = (slot: number) => (slot >= rows.length ? ordered.length : rows[slot].fullIndex)
 
   const handleRowClick = (id: string, additive: boolean) => {
     if (additive) {
@@ -111,7 +115,7 @@ export default function LayersPanel() {
 
   const handleDrop = (event: DragEvent<HTMLElement>) => {
     event.preventDefault()
-    if (dragId !== null && dropSlot !== null) reorderElement(dragId, dropSlot)
+    if (dragId !== null && dropSlot !== null) reorderElement(dragId, fullSlot(dropSlot))
     endDrag()
   }
 
@@ -122,7 +126,26 @@ export default function LayersPanel() {
       {rows.length === 0 && <p className="mt-3 text-sm text-slate-500">{fr.layers.empty}</p>}
 
       <ul className="mt-3 space-y-0.5" onDrop={handleDrop} onDragLeave={() => setDropSlot(null)}>
-        {rows.map((element, rowIndex) => {
+        {rows.map((row, rowIndex) => {
+          const element = row.element
+          if (element.type === 'line' && element.groupId !== undefined) {
+            return (
+              <BackgroundRow
+                key={element.id}
+                element={element}
+                ids={row.ids}
+                selected={row.ids.every((id) => selectedIds.includes(id))}
+                onSelect={(additive) =>
+                  setSelection(
+                    additive ? [...selectedIds.filter((id) => !row.ids.includes(id)), ...row.ids] : row.ids,
+                  )
+                }
+                onToggle={(field) =>
+                  updateElements(row.ids, (el) => ({ ...el, [field]: !element[field] }))
+                }
+              />
+            )
+          }
           const Icon = TYPE_ICONS[element.type]
           const selected = selectedIds.includes(element.id)
           const dragging = dragId === element.id
@@ -236,5 +259,94 @@ export default function LayersPanel() {
         })}
       </ul>
     </section>
+  )
+}
+
+interface LayerRow {
+  element: CanvasElement
+  /** Éléments représentés par la ligne (tous les traits d'un fond DXF, ou l'élément seul). */
+  ids: string[]
+  /** Rang du premier élément dans la liste complète (dessus en premier). */
+  fullIndex: number
+}
+
+/** Lignes du panneau : un élément par ligne, sauf les traits d'un même fond DXF, réunis. */
+function layerRows(ordered: readonly CanvasElement[]): LayerRow[] {
+  const rows: LayerRow[] = []
+  const groups = new Map<string, LayerRow>()
+  ordered.forEach((element, fullIndex) => {
+    const groupId = element.type === 'line' ? element.groupId : undefined
+    if (groupId === undefined) {
+      rows.push({ element, ids: [element.id], fullIndex })
+      return
+    }
+    const existing = groups.get(groupId)
+    if (existing) {
+      existing.ids.push(element.id)
+      return
+    }
+    const row = { element, ids: [element.id], fullIndex }
+    groups.set(groupId, row)
+    rows.push(row)
+  })
+  return rows
+}
+
+/** Ligne d'un fond DXF importé : nom, nombre de traits, masquer et verrouiller d'un coup. */
+function BackgroundRow({
+  element,
+  ids,
+  selected,
+  onSelect,
+  onToggle,
+}: {
+  element: CanvasElement
+  ids: string[]
+  selected: boolean
+  onSelect: (additive: boolean) => void
+  onToggle: (field: 'hidden' | 'locked') => void
+}) {
+  return (
+    <li
+      onClick={(event) => onSelect(event.shiftKey)}
+      title={fr.layers.backgroundHint}
+      className={clsx(
+        'relative flex items-center gap-1 rounded-md px-1 py-1 text-sm',
+        selected ? 'bg-indigo-50 text-indigo-900' : 'text-slate-700 hover:bg-slate-50',
+        element.hidden && 'text-slate-400',
+      )}
+      aria-selected={selected}
+    >
+      <span className="w-[14px]" aria-hidden="true" />
+      <FileInput size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
+      <span className="min-w-0 flex-1 truncate">{element.name}</span>
+      <span className="shrink-0 text-xs text-slate-400">{fr.layers.backgroundCount(ids.length)}</span>
+      <button
+        type="button"
+        title={element.hidden ? fr.layers.show : fr.layers.hide}
+        aria-label={element.hidden ? fr.layers.show : fr.layers.hide}
+        aria-pressed={element.hidden}
+        onClick={(event) => {
+          event.stopPropagation()
+          onToggle('hidden')
+        }}
+        className={ROW_BUTTON}
+      >
+        {element.hidden ? <EyeOff size={14} /> : <Eye size={14} />}
+      </button>
+      <button
+        type="button"
+        title={element.locked ? fr.layers.unlock : fr.layers.lock}
+        aria-label={element.locked ? fr.layers.unlock : fr.layers.lock}
+        aria-pressed={element.locked}
+        onClick={(event) => {
+          event.stopPropagation()
+          onToggle('locked')
+        }}
+        className={ROW_BUTTON}
+      >
+        {element.locked ? <Lock size={14} /> : <Unlock size={14} />}
+      </button>
+    </li>
   )
 }

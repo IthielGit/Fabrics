@@ -662,7 +662,7 @@ l'ordre de lecture du plan (de haut en bas, puis de gauche à droite).
 ## M11 — Import et export
 
 - [x] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
-- [ ] Import DXF comme calque de fond verrouillé, sur un niveau, à l'échelle
+- [x] Import DXF comme calque de fond verrouillé, sur un niveau, à l'échelle
 - [ ] Export 3D (glTF) du bâtiment
 
 **Critères d'acceptation**

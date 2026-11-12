@@ -176,6 +176,9 @@ export interface LineElement extends BaseElement {
   stroke: string;
   strokeWidth: number;
   arrowEnd: boolean;
+  // Fond importé (M11, DXF) : toutes les lignes d'un même fichier partagent ce groupe ; une seule
+  // ligne dans les calques, trait fin constant à l'écran. Absent : ligne ordinaire.
+  groupId?: string;
 }
 
 export interface ImageElement extends BaseElement {
@@ -672,8 +675,8 @@ les éléments modifiés.
 
 - DXF exporté : unités mm (`$INSUNITS = 4`), calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`,
   `AXES`, `MOBILIER` ; un fichier par niveau (D60), plusieurs niveaux réunis dans un .zip.
-- DXF importé : lignes et polylignes converties en éléments `line`, groupées et verrouillées
-  sur le niveau actif.
+- DXF importé : lignes, polylignes, arcs, cercles, blocs convertis en éléments `line` liés par
+  `groupId` (D62) et verrouillés, sous les autres éléments du niveau actif.
 - glTF : `GLTFExporter` fourni par `three`.
 - Partage : table Supabase `shares` (jeton aléatoire, projet, actif, mot de passe haché
   optionnel, expiration), RLS activé ; la lecture publique passe par une fonction Postgres

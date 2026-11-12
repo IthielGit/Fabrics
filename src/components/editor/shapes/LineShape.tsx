@@ -18,6 +18,9 @@ export default function LineShape({
   onDragMove,
   onDragEnd,
 }: LineShapeProps) {
+  // Trait d'un fond DXF : toujours un pixel à l'écran, quel que soit le zoom (D62).
+  const background = element.groupId !== undefined
+  const strokeWidth = background ? 1 / viewScale : element.strokeWidth
   const common = {
     id: element.id,
     name: 'element',
@@ -27,10 +30,11 @@ export default function LineShape({
     rotation: element.rotation,
     opacity: element.opacity,
     stroke: element.stroke,
-    strokeWidth: element.strokeWidth,
+    strokeWidth,
     lineCap: 'round' as const,
     lineJoin: 'round' as const,
-    hitStrokeWidth: Math.max(element.strokeWidth, MIN_HIT_WIDTH_PX / viewScale),
+    perfectDrawEnabled: !background,
+    hitStrokeWidth: Math.max(strokeWidth, MIN_HIT_WIDTH_PX / viewScale),
     visible: !element.hidden,
     listening: interactive && !element.locked,
     draggable: interactive && !element.locked,

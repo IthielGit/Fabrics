@@ -105,11 +105,22 @@ export function useElementInteractions(): Handlers {
     // `currentTarget` = l'élément du document (un groupe pour un mur, une pièce ou une cote),
     // alors que `target` serait la forme précise cliquée à l'intérieur.
     const id = event.currentTarget.id()
-    const { selectedIds, setSelection } = useEditorStore.getState()
+    const { selectedIds, setSelection, project } = useEditorStore.getState()
+    // Fond DXF déverrouillé : un clic sur un trait prend tout le fond (il se déplace d'un bloc).
+    const clicked = project?.document.elements.find((el) => el.id === id)
+    const groupId = clicked?.type === 'line' ? clicked.groupId : undefined
+    const ids = groupId
+      ? (project?.document.elements ?? [])
+          .filter((el) => el.type === 'line' && el.groupId === groupId)
+          .map((el) => el.id)
+      : [id]
     if (event.evt.shiftKey) {
-      setSelection(selectedIds.includes(id) ? selectedIds.filter((i) => i !== id) : [...selectedIds, id])
+      const taken = new Set(ids)
+      setSelection(
+        selectedIds.includes(id) ? selectedIds.filter((i) => !taken.has(i)) : [...selectedIds, ...ids],
+      )
     } else if (!selectedIds.includes(id)) {
-      setSelection([id])
+      setSelection(ids)
     }
   }, [])
 

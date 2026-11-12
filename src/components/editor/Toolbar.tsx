@@ -6,6 +6,7 @@ import {
   Circle,
   Crosshair,
   DoorOpen,
+  FileInput,
   Footprints,
   Grid2x2,
   Hash,
@@ -22,16 +23,22 @@ import {
   Type,
   type LucideIcon,
 } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { ACCEPTED_IMAGE_TYPES } from '../../features/documents/images'
 import { fr } from '../../i18n/fr'
 import { useEditorStore, type EditorTool } from '../../stores/editorStore'
 import { importImageFiles } from './importImages'
 
+// Chargée à la demande : la lecture des DXF (`dxf-parser`) n'alourdit pas l'ouverture de l'éditeur.
+const ImportDxfDialog = lazy(() => import('./ImportDxfDialog'))
+
+/** Au-delà, un DXF est refusé avant lecture (le navigateur serait trop lent). */
+const MAX_DXF_BYTES = 50 * 1024 * 1024
+
 /** Une entrée d'un groupe : un outil, ou une action immédiate (importer une image). */
 type ToolEntry =
   | { kind: 'tool'; id: EditorTool; icon: LucideIcon; label: string; shortcut?: string }
-  | { kind: 'action'; id: 'image'; icon: LucideIcon; label: string; shortcut?: string }
+  | { kind: 'action'; id: 'image' | 'dxf'; icon: LucideIcon; label: string; shortcut?: string }
 
 interface ToolGroup {
   id: string
@@ -101,7 +108,12 @@ function toolGroups(isPlan: boolean): ToolGroup[] {
       label: fr.tools.groups.image,
       entries: [
         { kind: 'action', id: 'image', icon: ImagePlus, label: fr.tools.image },
-        ...(isPlan ? [tool('calibrate', Crosshair, fr.tools.calibrate)] : []),
+        ...(isPlan
+          ? [
+              tool('calibrate', Crosshair, fr.tools.calibrate),
+              { kind: 'action' as const, id: 'dxf' as const, icon: FileInput, label: fr.tools.importDxf },
+            ]
+          : []),
       ],
     },
   ]
@@ -120,6 +132,9 @@ export default function Toolbar() {
   const setTool = useEditorStore((state) => state.setTool)
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
   const fileInput = useRef<HTMLInputElement>(null)
+  const dxfInput = useRef<HTMLInputElement>(null)
+  // Fichier DXF choisi, en attente de confirmation dans la fenêtre d'import.
+  const [dxfFile, setDxfFile] = useState<{ name: string; text: string } | null>(null)
   const navRef = useRef<HTMLElement>(null)
   // Dernière entrée choisie dans chaque famille : c'est elle que montre le bouton de la famille.
   const [lastByGroup, setLastByGroup] = useState<Record<string, string>>({})
@@ -147,7 +162,7 @@ export default function Toolbar() {
   const run = (group: ToolGroup, entry: ToolEntry) => {
     setLastByGroup((previous) => ({ ...previous, [group.id]: entry.id }))
     setOpenGroup(null)
-    if (entry.kind === 'action') fileInput.current?.click()
+    if (entry.kind === 'action') (entry.id === 'dxf' ? dxfInput : fileInput).current?.click()
     else setTool(entry.id)
   }
 
@@ -256,6 +271,30 @@ export default function Toolbar() {
           event.target.value = '' // permet de choisir deux fois le même fichier
         }}
       />
+      <input
+        ref={dxfInput}
+        type="file"
+        hidden
+        accept=".dxf"
+        onChange={(event) => {
+          const file = event.target.files?.[0]
+          event.target.value = ''
+          if (!file) return
+          if (file.size > MAX_DXF_BYTES) {
+            useEditorStore.getState().setNotice(fr.dxfImport.errors.tooLarge)
+            return
+          }
+          void file.text().then(
+            (text) => setDxfFile({ name: file.name, text }),
+            () => useEditorStore.getState().setNotice(fr.dxfImport.errors.unreadable),
+          )
+        }}
+      />
+      {dxfFile && (
+        <Suspense fallback={null}>
+          <ImportDxfDialog fileName={dxfFile.name} text={dxfFile.text} onClose={() => setDxfFile(null)} />
+        </Suspense>
+      )}
     </nav>
   )
 }

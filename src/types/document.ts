@@ -94,6 +94,9 @@ export interface LineElement extends BaseElement {
   stroke: string;
   strokeWidth: number;
   arrowEnd: boolean;
+  // Fond importé (M11, DXF) : toutes les lignes d'un même fichier partagent ce groupe ; une seule
+  // ligne dans les calques, trait fin constant à l'écran. Absent : ligne ordinaire.
+  groupId?: string;
 }
 
 export interface ImageElement extends BaseElement {

@@ -203,6 +203,8 @@ interface EditorState {
   addElement: (element: CanvasElement) => void
   /** Ajoute plusieurs éléments d'un coup (un ensemble de la bibliothèque) : un seul état d'historique, ils deviennent la sélection. */
   addElements: (elements: CanvasElement[]) => void
+  /** Pose des éléments sous tous les autres (fond DXF importé), sans les sélectionner : un seul état d'historique. */
+  addBackgroundElements: (elements: CanvasElement[]) => void
   /** Remplace des éléments (par identifiant) : un seul état d'historique par appel. */
   replaceElements: (elements: CanvasElement[]) => void
   updateElements: (ids: string[], updater: (element: CanvasElement) => CanvasElement) => void
@@ -586,6 +588,11 @@ export const useEditorStore = create<EditorState>()((set, get) => {
           : element,
       )
       commit((doc) => ({ ...doc, elements: [...doc.elements, ...placed] }), placed.map((el) => el.id))
+    },
+
+    addBackgroundElements: (elements) => {
+      if (elements.length === 0) return
+      commit((doc) => ({ ...doc, elements: [...elements, ...doc.elements] }), [])
     },
 
     replaceElements: (elements) => {

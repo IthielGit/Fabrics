@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 · Tâche 1 · Export DXF
-- **Prochaine tâche :** M11 · Tâche 2 · Import DXF en calque de fond
+- **Dernière tâche terminée :** M11 · Tâche 2 · Import DXF en calque de fond
+- **Prochaine tâche :** M11 · Tâche 3 · Export 3D (glTF)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 · Tâche 2 · Import DXF en calque de fond
+- Fait : bouton « Importer un DXF (fond de plan) » dans la famille Image de la barre d'outils (plans seulement). Une fenêtre montre l'unité lue dans le fichier (`$INSUNITS` : mm, cm, m, pouces, pieds ; mm par défaut si le fichier ne la donne pas, avec un avertissement), modifiable, puis les **dimensions réelles du dessin en mm** et le nombre de traits, pour vérifier l'échelle avant d'importer. Sont repris : lignes, polylignes (avec arcs), cercles, arcs, ellipses, splines, contenu des blocs (position, rotation, échelle, réseaux) et dessin des cotes ; pas les textes ni les hachures, ni l'espace papier. Les lignes qui se suivent sont réunies (moins d'éléments). Le dessin est posé **sur le niveau actif, sous tous les autres éléments, verrouillé**, centré sur la vue (dézoom automatique s'il est plus grand qu'elle), en gris et en trait d'un pixel quel que soit le zoom. Dans les calques, tout le fond tient sur **une seule ligne** (« Fond DXF – plan.dxf », nombre de traits) : masquer, verrouiller, sélectionner en entier (Suppr le retire) ; déverrouillé, un clic sur un trait prend tout le fond, qui se déplace d'un bloc. Refus au-delà de 20 000 traits ou 50 Mo. Code chargé à la demande.
+- Choix techniques (D62) : champ facultatif `groupId` sur les éléments `line` (pas de nouveau type, pas de changement de version du document).
+- Fichiers : `src/features/export/dxfImport.ts` (nouveau, + tests), `src/components/editor/ImportDxfDialog.tsx` (nouveau), `Toolbar.tsx`, `LayersPanel.tsx`, `useElementInteractions.ts`, `shapes/LineShape.tsx`, `src/stores/editorStore.ts` (`addBackgroundElements`), `src/types/document.ts`, `docs/02-ARCHITECTURE.md`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2556) ; une ligne de 5000 mm importée mesure 5000 mm (test), aller-retour export → import exact — test dans le navigateur à faire par l'utilisateur
+- Commit : feat: import DXF en calque de fond (M11)
 
 ### 2026-11-12 — M11 · Tâche 1 · Export DXF
 - Fait : nouveau format « DXF » dans la fenêtre Exporter d'un plan. Fichier texte écrit à la main (version R12, lisible par AutoCAD et LibreCAD), **en mm** (`$INSUNITS = 4`), axe y retourné (le haut du plan reste en haut). Calques `MURS` (contour des murs vu en plan, ouvertures découpées et angles raccordés, sans coutures), `PIECES` (contour fermé, nom et surface), `OUVERTURES` (symbole du plan : battant, arc, vitrage ; pointillés en type de trait `DASHED`), `COTES` (cotes tracées à la main selon le réglage « Cotation », plus les cotes automatiques Client / Technique quand elles sont affichées), `AXES` (ligne, bulles, étiquettes), `MOBILIER` (dessin des objets de la bibliothèque). Textes à 2,5 mm sur le papier à l'échelle du projet ; accents codés `\U+00E9`. Un fichier par niveau (D60) : « Niveau affiché (.dxf) » ou « Tous les niveaux » (un .dxf par niveau dans un .zip). Bloqué comme les autres exports du plan par un manque ou un débord de pièce (D55). Code chargé à la demande.
@@ -1011,11 +1018,14 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | # | Sujet | Décision | Raison |
 |---|---|---|---|
 | D60 | Fichiers DXF | **Un fichier par niveau** (calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`, `AXES`, `MOBILIER`), pas de calque par niveau. « Tous les niveaux » : un .dxf par niveau réunis dans un .zip. | Choix de l'utilisateur. |
+| D62 | Fond DXF importé | Des éléments `line` verrouillés liés par un champ facultatif `groupId` (une ligne dans les calques, trait d'un pixel à l'écran), posés sous les autres éléments du niveau actif. Pas de nouveau type d'élément. | Le modèle n'a pas de groupes ; un champ facultatif évite une migration. |
 | D61 | Bibliothèque DXF | `dxf-parser` (MIT) accepté pour l'import ; l'export reste écrit à la main (R12, ASCII). | Choix de l'utilisateur ; un lecteur DXF écrit à la main serait fragile. |
 
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
+- Aimantation sur les sommets et les traits d'un fond DXF importé, pour redessiner les murs par-dessus (M11, proposé le 2026-11-12).
+- Reprendre les textes d'un DXF importé et exporter dans le DXF les escaliers, plateformes, toitures et cheminées (M11, proposé le 2026-11-12).
 - Afficher aussi le **niveau du dessus** en transparence (désactivé par défaut), et qu'il attire comme celui du dessous : pour aligner le RDC sur le R+1 (proposé le 2026-11-11, à confirmer).
 - ~~Export des métrés en vrai fichier Excel~~ : fait (hors jalon K bis, avec `fflate`).
 - ~~Hachures et textures dans les façades et coupes~~ et ~~toitures (versants, débords)~~ : planifiés dans le jalon M10 bis (2026-11-11).
