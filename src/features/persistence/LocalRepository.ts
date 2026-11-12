@@ -84,6 +84,11 @@ export class LocalRepository implements ProjectRepository {
     return url
   }
 
+  /** Le fichier d'une image (pour l'envoyer vers un compte) ; `null` s'il n'existe pas. */
+  async getAssetBlob(id: string): Promise<Blob | null> {
+    return (await get<Blob>(assetKey(id))) ?? null
+  }
+
   private revokeUrl(id: string): void {
     const url = this.objectUrls.get(id)
     if (url) {

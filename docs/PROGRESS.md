@@ -44,6 +44,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M13 · Lot D : import des projets locaux et hors ligne
+- Fait : (1) à la connexion, si le navigateur contient des projets, une fenêtre propose de les copier dans le compte (images d'abord, puis projet ; jamais d'écrasement d'un projet déjà dans le compte ; les projets locaux ne sont pas supprimés ; refus ou succès mémorisés par compte sur l'appareil, un échec laisse la proposition active). (2) `ResilientRepository` autour du dépôt cloud : réseau coupé → projet ou image gardés dans IndexedDB (séparés par compte), l'enregistrement ne signale pas d'erreur, l'en-tête affiche « Hors ligne : modifications gardées sur cet appareil », renvoi automatique au retour du réseau, toutes les 30 s, et au démarrage ; les écritures passent une par une pour qu'un renvoi tardif n'écrase jamais un enregistrement plus récent ; les erreurs qui ne viennent pas du réseau (droits, données) remontent normalement.
+- Limites connues : la liste de l'accueil hors ligne reste en erreur (seules les modifications sont gardées) ; une suppression de projet hors ligne échoue ; si le même projet est modifié sur deux appareils, le dernier envoi gagne.
+- Fichiers : `src/features/persistence/ResilientRepository.ts`, `networkError.ts`, `importLocal.ts`, `importPrompt.ts` (+ tests), `repository.ts`, `LocalRepository.ts`, `src/stores/syncStore.ts`, `src/components/home/ImportLocalDialog.tsx`, `SaveIndicator.tsx`, `HomePage.tsx`, `src/i18n/fr.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2750, dont 14 nouveaux). À tester dans le navigateur (mode « Hors connexion » des outils de développement).
+
 ### 2026-11-12 — M13 · Lot C : sauvegarde dans le cloud
 - Fait : `SupabaseRepository` (liste sans document, lecture avec migration, enregistrement par `upsert`, suppression avec nettoyage des images plus utilisées, images dans `assets/<compte>/<image>`, URLs signées d'une heure mises en cache) ; `repository` suit la connexion : cloud si connecté, local sinon, choisi avant que la session soit déclarée prête ; l'accueil et l'éditeur attendent la fin de lecture de la session avant de lire les projets, et relisent si le compte change. Les projets locaux restent intacts dans le navigateur (lot D : import proposé).
 - Vérifié à distance : un visiteur anonyme ne peut pas créer de projet (erreur RLS 42501).

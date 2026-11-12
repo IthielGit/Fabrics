@@ -83,6 +83,32 @@ export const fr = {
     resetDone: 'Mot de passe modifié. Vous êtes connecté.',
     resetNoLink: 'Ce lien n’est plus valable. Demandez un nouveau lien depuis la page de connexion.',
     signedInAs: (email: string) => `Connecté : ${email}`,
+    sync: {
+      pending: 'Hors ligne : modifications gardées sur cet appareil',
+      pendingHint:
+        'Votre connexion est coupée. Vos modifications sont gardées sur cet appareil et partiront dans votre compte dès que la connexion reviendra. Ne fermez pas définitivement le navigateur avant.',
+    },
+    importLocal: {
+      title: 'Importer vos projets de cet appareil ?',
+      message: (count: number) =>
+        count === 1
+          ? '1 projet est enregistré dans ce navigateur. Le copier dans votre compte pour le retrouver sur tous vos appareils ? Il ne sera pas supprimé de ce navigateur.'
+          : `${count} projets sont enregistrés dans ce navigateur. Les copier dans votre compte pour les retrouver sur tous vos appareils ? Ils ne seront pas supprimés de ce navigateur.`,
+      importAction: 'Importer',
+      decline: 'Non merci',
+      progress: (done: number, total: number) => `Import en cours… ${done} sur ${total}`,
+      resultTitle: 'Import terminé',
+      imported: (count: number) =>
+        count === 1 ? '1 projet copié dans votre compte.' : `${count} projets copiés dans votre compte.`,
+      skipped: (count: number) =>
+        count === 1
+          ? '1 projet était déjà dans votre compte : laissé tel quel.'
+          : `${count} projets étaient déjà dans votre compte : laissés tels quels.`,
+      failed: (count: number) =>
+        count === 1
+          ? '1 projet n’a pas pu être copié. Vous pourrez réessayer à la prochaine connexion.'
+          : `${count} projets n’ont pas pu être copiés. Vous pourrez réessayer à la prochaine connexion.`,
+    },
     problems: {
       emailInvalid: 'Cette adresse e-mail ne semble pas valide.',
       passwordTooShort: 'Le mot de passe doit contenir au moins 8 caractères.',

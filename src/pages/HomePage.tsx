@@ -3,10 +3,13 @@ import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
 import DeleteDialog from '../components/home/DeleteDialog'
+import ImportLocalDialog from '../components/home/ImportLocalDialog'
 import ProjectCard from '../components/home/ProjectCard'
 import RenameDialog from '../components/home/RenameDialog'
 import Button from '../components/ui/Button'
 import { filterProjectsByName } from '../features/persistence/filterProjects'
+import { wasImportAsked } from '../features/persistence/importPrompt'
+import { localRepository } from '../features/persistence/repository'
 import type { ProjectSummary } from '../features/persistence/types'
 import { fr } from '../i18n/fr'
 import { useAuthStore } from '../stores/authStore'
@@ -31,6 +34,19 @@ export default function HomePage() {
     if (authStatus === 'loading') return
     void refresh()
   }, [refresh, authStatus, userId])
+
+  // À la connexion : s'il y a des projets dans ce navigateur, on propose de les copier dans le compte (une fois par compte).
+  const [localToImport, setLocalToImport] = useState(0)
+  useEffect(() => {
+    if (authStatus !== 'signedIn' || !userId || wasImportAsked(userId)) return
+    let cancelled = false
+    void localRepository.list().then((list) => {
+      if (!cancelled) setLocalToImport(list.length)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [authStatus, userId])
 
   const closeDialog = () => setDialog(null)
 
@@ -210,6 +226,16 @@ export default function HomePage() {
         )}
       </main>
 
+      {localToImport > 0 && userId && (
+        <ImportLocalDialog
+          userId={userId}
+          count={localToImport}
+          onClose={(imported) => {
+            setLocalToImport(0)
+            if (imported) void refresh()
+          }}
+        />
+      )}
       {dialog?.type === 'rename' && (
         <RenameDialog
           currentName={dialog.project.name}
