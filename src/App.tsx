@@ -5,6 +5,7 @@ import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import SharePage from './pages/SharePage'
 import { useAuthStore } from './stores/authStore'
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/p/:projectId" element={<EditorPage />} />
+        <Route path="/s/:token" element={<SharePage />} />
         <Route path="/connexion" element={<LoginPage />} />
         <Route path="/nouveau-mot-de-passe" element={<ResetPasswordPage />} />
         <Route

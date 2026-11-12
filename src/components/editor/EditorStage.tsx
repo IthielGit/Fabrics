@@ -94,7 +94,12 @@ interface Gesture {
   additive: boolean
 }
 
-export default function EditorStage() {
+interface EditorStageProps {
+  /** Lecture seule (page de partage) : on peut déplacer la vue et zoomer, mais rien ne se sélectionne ni ne se modifie. */
+  readOnly?: boolean
+}
+
+export default function EditorStage({ readOnly = false }: EditorStageProps) {
   const project = useEditorStore((state) => state.project)
   const zoom = useEditorStore((state) => state.zoom)
   const stagePosition = useEditorStore((state) => state.stagePosition)
@@ -185,7 +190,7 @@ export default function EditorStage() {
   const openingKind: OpeningToolKind | null =
     activeTool === 'door' || activeTool === 'window' ? activeTool : null
   const openingTool = useOpeningTool(openingKind, scale)
-  const selecting = activeTool === 'select' && !spaceDown
+  const selecting = activeTool === 'select' && !spaceDown && !readOnly
 
   // Communique la taille de la zone au store, et ajuste la page à l'écran à l'ouverture.
   useEffect(() => {
@@ -371,6 +376,7 @@ export default function EditorStage() {
   }
 
   const handlePointerDown = (event: PointerEvent) => {
+    if (readOnly) return // la vue se déplace par le glisser de la scène
     // Clic molette maintenu : déplace la vue, quel que soit l'outil.
     if (event.evt instanceof MouseEvent && event.evt.button === 1) {
       panDrag.start(event.evt)
@@ -543,6 +549,10 @@ export default function EditorStage() {
         if (types.includes('Files') || types.includes(FURNITURE_DRAG_TYPE)) event.preventDefault()
       }}
       onDrop={(event) => {
+        if (readOnly) {
+          event.preventDefault()
+          return
+        }
         const symbolId = event.dataTransfer.getData(FURNITURE_DRAG_TYPE)
         if (symbolId === '' && event.dataTransfer.files.length === 0) return
         event.preventDefault()
@@ -569,7 +579,7 @@ export default function EditorStage() {
           y={stagePosition.y}
           scaleX={scale}
           scaleY={scale}
-          draggable={spaceDown}
+          draggable={spaceDown || readOnly}
           onWheel={handleWheel}
           onDragEnd={handleDragEnd}
           onMouseDown={handlePointerDown}

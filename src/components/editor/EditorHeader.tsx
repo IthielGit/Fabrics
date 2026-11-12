@@ -1,8 +1,9 @@
 import clsx from 'clsx'
-import { ArrowLeft, Box, Download, PanelsTopLeft, Redo2, Undo2 } from 'lucide-react'
+import { ArrowLeft, Box, Download, PanelsTopLeft, Redo2, Share2, Undo2 } from 'lucide-react'
 import { useState, type KeyboardEvent } from 'react'
 import { Link } from 'react-router'
 import { fr } from '../../i18n/fr'
+import { useAuthStore } from '../../stores/authStore'
 import { useEditorStore } from '../../stores/editorStore'
 import { useViewer3DStore } from '../../stores/viewer3dStore'
 import { useViewsStore } from '../../stores/viewsStore'
@@ -10,6 +11,7 @@ import Button from '../ui/Button'
 import ExportDialog from './ExportDialog'
 import PlanCheckBadge from './PlanCheckBadge'
 import SaveIndicator from './SaveIndicator'
+import ShareDialog from './ShareDialog'
 
 const ICON_BUTTON =
   'rounded-md p-2 text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent'
@@ -29,6 +31,10 @@ export default function EditorHeader() {
   // Pendant la saisie on garde un brouillon ; le nom n'est validé qu'à la sortie du champ.
   const [draftName, setDraftName] = useState<string | null>(null)
   const [exportOpen, setExportOpen] = useState(false)
+  const [shareOpen, setShareOpen] = useState(false)
+  // Le partage passe par le compte : il n'existe que pour un plan, connecté.
+  const projectId = useEditorStore((state) => state.project?.id ?? null)
+  const signedIn = useAuthStore((state) => state.status === 'signedIn')
 
   const commitName = () => {
     if (draftName !== null && draftName.trim()) renameProject(draftName.trim())
@@ -91,6 +97,12 @@ export default function EditorHeader() {
             {fr.views.openLabel}
           </button>
         )}
+        {isPlan && signedIn && (
+          <Button onClick={() => setShareOpen(true)} className="mr-1 px-3 py-1.5">
+            <Share2 size={16} aria-hidden="true" />
+            {fr.share.open}
+          </Button>
+        )}
         <Button onClick={() => setExportOpen(true)} className="mr-2 px-3 py-1.5">
           <Download size={16} aria-hidden="true" />
           {fr.export.open}
@@ -117,6 +129,7 @@ export default function EditorHeader() {
         </button>
       </div>
       {exportOpen && <ExportDialog onClose={() => setExportOpen(false)} />}
+      {shareOpen && projectId && <ShareDialog projectId={projectId} onClose={() => setShareOpen(false)} />}
     </header>
   )
 }
