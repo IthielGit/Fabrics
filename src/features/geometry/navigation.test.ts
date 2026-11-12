@@ -4,6 +4,7 @@ import {
   documentBoxToMinimap,
   minimapLayout,
   minimapToDocument,
+  fitBoxView,
   panView,
   pinchView,
   positionAfterThumbDrag,
@@ -190,5 +191,24 @@ describe('pinchView', () => {
   it('ne divise pas par zéro avec deux doigts confondus', () => {
     const next = pinchView(view, pair(5, 5, 5, 5), pair(10, 10, 12, 12), 1)
     expect(next.zoom).toBe(1)
+  })
+})
+
+describe('fitBoxView', () => {
+  it('centre la zone dans la fenêtre', () => {
+    const view = fitBoxView({ x: 1000, y: 2000, width: 400, height: 200 }, { width: 800, height: 600 }, 1)
+    const scale = view.zoom
+    expect(view.x + 1200 * scale).toBeCloseTo(400)
+    expect(view.y + 2100 * scale).toBeCloseTo(300)
+  })
+
+  it('n’agrandit pas une petite zone au-delà du zoom maximal', () => {
+    const view = fitBoxView({ x: 0, y: 0, width: 10, height: 10 }, { width: 800, height: 600 }, 1)
+    expect(view.zoom).toBe(2)
+  })
+
+  it('rétrécit pour faire tenir une grande zone', () => {
+    const view = fitBoxView({ x: 0, y: 0, width: 10000, height: 100 }, { width: 800, height: 600 }, 1)
+    expect(view.zoom).toBeLessThan(0.1)
   })
 })

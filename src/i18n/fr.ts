@@ -318,6 +318,24 @@ export const fr = {
       blockedButton:
         'Export impossible : une pièce laisse un manque ou déborde des murs, les métrés seraient faux. Corrigez les points de la liste « À corriger » ci-dessous (cliquez pour voir la zone), puis exportez.',
       toFix: 'À corriger avant d’exporter',
+      seeOnPlan: 'Voir sur le plan',
+      whatToDo: 'Que faire :',
+      advice: {
+        roomOverlap: 'Redessinez l’une des deux pièces pour qu’elle s’arrête au bord de l’autre.',
+        voidOverflow: 'Déplacez l’escalier ou agrandissez la pièce pour que la trémie reste à l’intérieur.',
+        hiddenRoom: 'Réaffichez la pièce dans l’onglet Calques, ou supprimez-la si elle est inutile.',
+        coverageGap:
+          'Redessinez la pièce : choisissez l’outil Pièce, puis cliquez dans la zone fermée par les murs. La zone orangée n’est pas couverte.',
+        coverageOverflow:
+          'Redessinez la pièce, ou glissez ses coins jusqu’à la face intérieure des murs. La zone orangée dépasse.',
+        noLevel: 'Supprimez cet élément et recréez-le sur le niveau voulu.',
+        openingOutside:
+          'Glissez l’ouverture le long de son mur, ou réduisez sa largeur dans l’onglet Propriétés.',
+        openingOverlap: 'Déplacez l’une des deux ouvertures le long du mur pour qu’elles ne se touchent plus.',
+        wallGap: 'Cliquez le bouton de correction : le mur est prolongé jusqu’à l’autre mur (annulable).',
+        wallOverlap:
+          'Cliquez le bouton de correction s’il est proposé, sinon supprimez le mur en double ou mettez les deux murs bout à bout.',
+      },
       showOnPlan: 'Cliquez pour voir la zone sur le plan.',
       more: (count: number) => `… et ${count} autre${count > 1 ? 's' : ''}.`,
       roomOverlap: (names: string[]) =>

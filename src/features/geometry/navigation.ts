@@ -197,3 +197,31 @@ export function pinchView(view: View, from: TouchPair, to: TouchPair, pxPerUnit:
   const end = middle(to)
   return { zoom, x: end.x - anchor.x * scale, y: end.y - anchor.y * scale }
 }
+
+/**
+ * Vue qui centre `box` dans la zone visible et la cadre avec une marge, sans dépasser `maxZoom`
+ * (une petite zone, comme une porte, n'est pas agrandie à l'extrême).
+ */
+export function fitBoxView(
+  box: Box,
+  container: Size,
+  pxPerUnit: number,
+  padding: number = 160,
+  maxZoom: number = 2,
+): View {
+  const width = Math.max(box.width, 1)
+  const height = Math.max(box.height, 1)
+  const zoom = clampZoom(
+    Math.min(
+      maxZoom,
+      (container.width - padding * 2) / (width * pxPerUnit),
+      (container.height - padding * 2) / (height * pxPerUnit),
+    ),
+  )
+  const scale = zoom * pxPerUnit
+  return {
+    zoom,
+    x: container.width / 2 - (box.x + width / 2) * scale,
+    y: container.height / 2 - (box.y + height / 2) * scale,
+  }
+}

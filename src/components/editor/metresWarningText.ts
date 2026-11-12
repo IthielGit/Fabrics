@@ -51,3 +51,8 @@ export function metresWarningTargets(warning: MetresWarning): string[] {
       return [...warning.wallIds]
   }
 }
+
+/** Phrase « que faire » d'un avertissement (en français, via `fr.ts`). */
+export function metresWarningAdvice(warning: MetresWarning): string {
+  return fr.measurements.warnings.advice[warning.kind]
+}

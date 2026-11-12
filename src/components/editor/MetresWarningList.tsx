@@ -3,7 +3,10 @@ import type { MetresWarning } from '../../features/measurements/warnings'
 import { applyWallFix } from '../../features/geometry/wallContacts'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
-import { metresWarningTargets, metresWarningText } from './metresWarningText'
+import { fitBoxView } from '../../features/geometry/navigation'
+import { pxPerUnit } from '../../features/units/scale'
+import { boxRing, warningFocusBox } from '../../features/measurements/warningFocus'
+import { metresWarningAdvice, metresWarningTargets, metresWarningText } from './metresWarningText'
 
 /** Au-delà, la liste est raccourcie (« … et 3 autres »). */
 const MAX_SHOWN = 8
@@ -32,15 +35,29 @@ export default function MetresWarningList({
   if (warnings.length === 0) return null
   const shown = warnings.slice(0, MAX_SHOWN)
 
+  /** Affiche le niveau, sélectionne l'élément, entoure la zone et centre le plan dessus. */
   const handleClick = (warning: MetresWarning) => {
     const state = useEditorStore.getState()
     const elements = state.project?.document.elements
-    if (!elements) return
+    if (!elements || !state.project) return
     if ('levelId' in warning && warning.levelId !== state.activeLevelId) state.setActiveLevel(warning.levelId)
-    state.setSelection(metresWarningTargets(warning))
-    state.setSurfaceHighlight(
-      'rings' in warning ? { levelId: warning.levelId, rings: warning.rings, elements } : null,
-    )
+    const targets = metresWarningTargets(warning)
+    state.setSelection(targets)
+    const box = warningFocusBox(warning, targets, elements)
+    const levelId = 'levelId' in warning ? warning.levelId : state.activeLevelId
+    if (box && levelId) {
+      state.setSurfaceHighlight({
+        levelId,
+        rings: 'rings' in warning ? warning.rings : [boxRing(box)],
+        elements,
+      })
+      if (state.viewportSize.width > 0) {
+        const view = fitBoxView(box, state.viewportSize, pxPerUnit(state.project.document.unit))
+        state.setView({ zoom: view.zoom, stagePosition: { x: view.x, y: view.y } })
+      }
+    } else {
+      state.setSurfaceHighlight(null)
+    }
     onNavigate?.()
   }
 
@@ -67,28 +84,33 @@ export default function MetresWarningList({
       </p>
       <ul className="space-y-0.5">
         {shown.map((warning, i) => (
-          <li key={i}>
-            {interactive ? (
-              <button
-                type="button"
-                onClick={() => handleClick(warning)}
-                title={'rings' in warning ? fr.measurements.warnings.showOnPlan : undefined}
-                className="text-left underline decoration-amber-300 underline-offset-2 hover:decoration-amber-700"
-              >
-                {metresWarningText(warning)}
-              </button>
-            ) : (
-              metresWarningText(warning)
+          <li key={i} className={interactive ? 'rounded bg-white/60 p-1.5' : undefined}>
+            {metresWarningText(warning)}
+            {interactive && (
+              <p className="mt-0.5 opacity-90">
+                <span className="font-semibold">{t.whatToDo}</span> {metresWarningAdvice(warning)}
+              </p>
             )}
-            {interactive && 'fix' in warning && warning.fix && (
-              <button
-                type="button"
-                onClick={() => handleFix(warning)}
-                title={warning.kind === 'wallGap' ? t.fixGapHint : t.fixOverlapHint}
-                className="ml-1.5 rounded border border-amber-400 bg-white px-1.5 py-px font-medium text-amber-900 hover:bg-amber-100"
-              >
-                {warning.kind === 'wallGap' ? t.fixGap : t.fixOverlap}
-              </button>
+            {interactive && (
+              <div className="mt-1 flex flex-wrap gap-1.5">
+                <button
+                  type="button"
+                  onClick={() => handleClick(warning)}
+                  className="rounded border border-slate-400 bg-white px-1.5 py-px font-medium text-slate-800 hover:bg-slate-100"
+                >
+                  {t.seeOnPlan}
+                </button>
+                {'fix' in warning && warning.fix && (
+                  <button
+                    type="button"
+                    onClick={() => handleFix(warning)}
+                    title={warning.kind === 'wallGap' ? t.fixGapHint : t.fixOverlapHint}
+                    className="rounded border border-amber-500 bg-white px-1.5 py-px font-medium text-amber-900 hover:bg-amber-100"
+                  >
+                    {warning.kind === 'wallGap' ? t.fixGap : t.fixOverlap}
+                  </button>
+                )}
+              </div>
             )}
           </li>
         ))}

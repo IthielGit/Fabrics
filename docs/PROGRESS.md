@@ -1215,6 +1215,12 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - L'accueil montre deux cartes : « Dessiner un plan » et « Voir un exemple », plus le rappel que les projets restent dans ce navigateur. Plus de bouton ni de carte pour créer un visuel (affiche, post…) ; les visuels déjà créés restent dans la liste des projets. `NewDesignDialog` n'est plus utilisé par l'accueil.
 - Fichiers : `HomePage.tsx`, `fr.ts`. Build, lint, 2673 tests OK.
 
+### 2026-11-12 — Signaux : pointer et dire quoi faire (M11 quater, lot J)
+
+- Chaque point de la liste (pastilles en haut à droite et onglet Métrés) montre maintenant : le constat, une ligne « Que faire : … » propre à chaque cas, un bouton « Voir sur le plan » et, pour les murs, le bouton de correction.
+- « Voir sur le plan » affiche le bon niveau, sélectionne l'élément, **entoure la zone en orangé** (contour de la surface, ou rectangle autour du mur, de la pièce ou de l'ouverture) et **centre et zoome le plan** dessus.
+- Fichiers : `warningFocus.ts` (+ test), `navigation.ts` (`fitBoxView`, + tests), `MetresWarningList.tsx`, `metresWarningText.ts`, `fr.ts`. Build, lint, 2680 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
