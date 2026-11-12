@@ -222,3 +222,78 @@ export function textureSegments(polygon: readonly Pt[], texture: FacadeTexture, 
       return [...parallelLines(polygon, vertical, unit), ...parallelLines(polygon, vertical, unit, unit * 0.15)]
   }
 }
+
+function bbox(polygon: readonly Pt[]): [number, number, number, number] {
+  let x0 = Infinity
+  let y0 = Infinity
+  let x1 = -Infinity
+  let y1 = -Infinity
+  for (const [x, y] of polygon) {
+    x0 = Math.min(x0, x)
+    y0 = Math.min(y0, y)
+    x1 = Math.max(x1, x)
+    y1 = Math.max(y1, y)
+  }
+  return [x0, y0, x1, y1]
+}
+
+/**
+ * Contour d'un groupe de polygones qui se touchent ou se chevauchent (morceaux de murs hachurés),
+ * sans les coutures : pour chaque polygone de `which`, les parties de ses côtés qui ne sont pas
+ * dans un autre polygone de `all`. Un côté est testé à `gap` mm vers l'extérieur : un côté commun
+ * à deux morceaux disparaît, un vrai bord reste.
+ */
+export function exposedOutline(all: readonly (readonly Pt[])[], which: readonly number[], gap = 0.5): Segment[] {
+  const boxes = all.map(bbox)
+  const out: Segment[] = []
+  for (const i of which) {
+    const polygon = all[i]
+    if (!polygon || polygon.length < 3) continue
+    let area2 = 0
+    for (let k = 0; k < polygon.length; k++) {
+      const [px, py] = polygon[k]
+      const [qx, qy] = polygon[(k + 1) % polygon.length]
+      area2 += px * qy - qx * py
+    }
+    const sign = area2 >= 0 ? 1 : -1
+    for (let k = 0; k < polygon.length; k++) {
+      const a = polygon[k]
+      const b = polygon[(k + 1) % polygon.length]
+      const ex = b[0] - a[0]
+      const ey = b[1] - a[1]
+      const len2 = ex * ex + ey * ey
+      if (len2 < gap * gap) continue
+      const len = Math.sqrt(len2)
+      const nx = (sign * ey * gap) / len
+      const ny = (-sign * ex * gap) / len
+      const a2: Pt = [a[0] + nx, a[1] + ny]
+      const b2: Pt = [b[0] + nx, b[1] + ny]
+      const covered: [number, number][] = []
+      const [ex0, ey0, ex1, ey1] = bbox([a2, b2])
+      all.forEach((other, j) => {
+        if (j === i || other.length < 3) return
+        const [ox0, oy0, ox1, oy1] = boxes[j]
+        if (ox1 < ex0 || ox0 > ex1 || oy1 < ey0 || oy0 > ey1) return
+        for (const [sx, sy, tx, ty] of clipSegmentToPolygon(a2, b2, other)) {
+          const t0 = ((sx - a2[0]) * ex + (sy - a2[1]) * ey) / len2
+          const t1 = ((tx - a2[0]) * ex + (ty - a2[1]) * ey) / len2
+          covered.push([Math.min(t0, t1), Math.max(t0, t1)])
+        }
+      })
+      covered.sort((m, n) => m[0] - n[0])
+      let t = 0
+      const minT = gap / len
+      const emit = (from: number, to: number) => {
+        if (to - from < minT) return
+        out.push([a[0] + ex * from, a[1] + ey * from, a[0] + ex * to, a[1] + ey * to])
+      }
+      for (const [c0, c1] of covered) {
+        if (c0 > t) emit(t, Math.min(c0, 1))
+        t = Math.max(t, c1)
+        if (t >= 1) break
+      }
+      if (t < 1) emit(t, 1)
+    }
+  }
+  return out
+}

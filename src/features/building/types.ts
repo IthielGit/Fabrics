@@ -1,3 +1,4 @@
+import type { WallMaterial } from '../../types/document'
 import type { Point } from '../geometry/viewport'
 
 /**
@@ -21,6 +22,8 @@ export interface WallPiece {
   size: Vec3
   /** Rotation autour de l'axe y, en radians (convention Three.js). */
   rotationY: number
+  /** Matériau du mur (hachure en coupe) ; absent : rendu neutre. */
+  material?: WallMaterial
 }
 
 /** Dalle sous une pièce, ou toit plat au-dessus : polygone extrudé verticalement. */

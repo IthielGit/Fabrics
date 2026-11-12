@@ -102,6 +102,7 @@ export function buildWallPieces(
         },
         size: { x: u.to - u.from, y: y1 - y0, z: wall.thickness },
         rotationY,
+        ...(wall.material ? { material: wall.material } : {}),
       })
     }
     for (const u of solid) add(u, 0, height)

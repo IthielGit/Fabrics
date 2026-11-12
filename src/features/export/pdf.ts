@@ -41,7 +41,7 @@ const MUTED: Rgb = [102, 102, 102]
 const HAIRLINE: Rgb = [166, 166, 166]
 
 /** Épaisseurs de trait en mm sur le papier : le dessin se lit par ses épaisseurs, pas par la couleur. */
-const LINE = { frame: 0.5, rule: 0.35, heavy: 0.5, normal: 0.2, hair: 0.12, cut: 0.35, divider: 0.2 }
+const LINE = { frame: 0.5, rule: 0.35, heavy: 0.5, normal: 0.2, hair: 0.12, hatch: 0.08, cut: 0.35, divider: 0.2 }
 
 export interface CartoucheField {
   /** Intitulé de la cellule (« Échelle »), affiché en petites capitales grises. */
@@ -312,6 +312,14 @@ export async function buildDrawingPdf(
         const { first, segments } = outline(polygon)
         pdf.setFillColor(...hexToRgb(FILL_COLORS[polygon.fill]))
         pdf.lines(segments, px(first[0]), py(first[1]), [1, 1], 'F', true)
+      }
+      // Hachures des matières coupées, sur les fonds et sous les contours.
+      if (batch.some((p) => p.hatch?.length)) {
+        pdf.setLineWidth(LINE.hatch)
+        for (const polygon of batch) {
+          for (const [x1, y1, x2, y2] of polygon.hatch ?? []) pdf.line(px(x1), py(y1), px(x2), py(y2))
+        }
+        pdf.setLineWidth(head.fill === 'black' ? LINE.cut : LINE.normal)
       }
       for (const polygon of batch) {
         polygon.points.forEach(([x, y], i) => {

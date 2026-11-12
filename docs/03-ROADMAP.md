@@ -386,7 +386,7 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
       rendu actuel (blanc, ou noir en coupe). Catalogue et générateur de motifs vectoriels purs
       (`materials.ts`, `views/patterns.ts`), avec tests
 - [x] Choix du matériau et de la couverture dans Propriétés (aussi pour plusieurs murs)
-- [ ] Hachures des matières coupées dans les coupes (et les plans de niveau de la planche),
+- [x] Hachures des matières coupées dans les coupes (et les plans de niveau de la planche),
       selon le matériau
 - [ ] Textures des façades (brique, enduit, bardage bois, couverture des versants), motifs
       originaux dessinés pour Fabrics ; mêmes motifs, en vectoriel, dans le PDF des vues et de

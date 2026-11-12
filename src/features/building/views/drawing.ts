@@ -1,7 +1,9 @@
 import type { Level } from '../../../types/document'
+import type { HatchPattern } from '../materials'
 import type { BuildingModel } from '../types'
 import type { LevelMark, ViewBounds, ViewFace } from './projection'
 import { formatElevation } from './labels'
+import { exposedOutline, hatchSegments, type Segment } from './patterns'
 import { prismsOf, type Prism } from './section'
 
 /**
@@ -28,6 +30,11 @@ export interface DrawPolygon {
   open?: boolean
   /** Ligne brisée en pointillé (avec `open`). */
   dashed?: boolean
+  /**
+   * Hachure de la matière coupée (traits fins `[x1, y1, x2, y2]`), peinte sur le fond, avant les
+   * contours. Absente : pas de hachure.
+   */
+  hatch?: Segment[]
 }
 
 /**
@@ -60,8 +67,11 @@ export interface DrawLine {
   x2: number
   y2: number
   dashed?: boolean
-  /** Épaisseur : `heavy` (ligne de sol), `normal` (par défaut), `hair` (filet, ligne de niveau). */
-  weight?: 'heavy' | 'normal' | 'hair'
+  /**
+   * Épaisseur : `heavy` (ligne de sol), `cut` (contour d'une matière coupée hachurée), `normal`
+   * (par défaut), `hair` (filet, ligne de niveau).
+   */
+  weight?: 'heavy' | 'cut' | 'normal' | 'hair'
   /** Trait gris (cotes de niveaux, filets) plutôt que noir. */
   muted?: boolean
 }
@@ -111,13 +121,34 @@ export function autoFontMm(width: number, height: number): number {
 }
 
 /**
- * Remplissage d'une face : matière coupée en noir (une vitre coupée reste blanche, cernée d'un
- * trait), vitre vue de face en gris clair, tout le reste en blanc.
+ * Remplissage d'une face : matière coupée en noir, ou en blanc hachuré si elle a un matériau (une
+ * vitre coupée reste blanche, cernée d'un trait), vitre vue de face en gris clair, tout le reste en
+ * blanc.
  */
 function faceFill(face: ViewFace): DrawFill {
   if (face.kind === 'mark') return 'none'
   if (face.kind === 'glass') return face.cut ? 'white' : 'light'
-  return face.cut ? 'black' : 'white'
+  return face.cut && !face.material ? 'black' : 'white'
+}
+
+/**
+ * Matière coupée hachurée : fond blanc et hachure du matériau, sans trait propre ; son contour (sans
+ * les coutures entre morceaux) est ajouté à part par `hatchedOutline`.
+ */
+function hatched(points: [number, number][], material: HatchPattern, unit: number, layer: number): DrawPolygon {
+  return { points, fill: 'white', hatch: hatchSegments(points, material, unit), edges: points.map(() => false), layer }
+}
+
+/**
+ * Contour des matières coupées hachurées (indices `which` de `polygons`) : leurs côtés qui ne sont
+ * pas dans une autre matière coupée (`cutIndices`), en trait de coupe.
+ */
+function hatchedOutline(polygons: readonly DrawPolygon[], cutIndices: readonly number[], which: readonly number[]): DrawLine[] {
+  if (which.length === 0) return []
+  const all = cutIndices.map((i) => polygons[i].points)
+  const position = new Map(cutIndices.map((index, k) => [index, k]))
+  const local = which.map((i) => position.get(i) ?? -1).filter((k) => k >= 0)
+  return exposedOutline(all, local).map(([x1, y1, x2, y2]) => ({ x1, y1, x2, y2, weight: 'cut' }))
 }
 
 interface ViewLike {
@@ -145,14 +176,24 @@ export function drawingFromView(view: ViewLike, fontMm?: number): Drawing | null
   const x = (u: number) => u - bounds.minU + marginL
   const y = (v: number) => bounds.maxV - v + marginT
 
-  const polygons: DrawPolygon[] = view.faces.map((face) => ({
-    points: face.polygon.map(([u, v]) => [x(u), y(v)] as [number, number]),
-    fill: faceFill(face),
-    ...(face.kind === 'mark' ? { open: true, ...(face.dashed ? { dashed: true } : {}) } : {}),
-    ...(face.edges ? { edges: face.edges, layer: face.depth } : {}),
-  }))
+  const cutIndices: number[] = []
+  const hatchedIndices: number[] = []
+  const polygons: DrawPolygon[] = view.faces.map((face, index) => {
+    const points = face.polygon.map(([u, v]) => [x(u), y(v)] as [number, number])
+    if (face.cut) cutIndices.push(index)
+    if (face.cut && face.material && face.kind !== 'glass') {
+      hatchedIndices.push(index)
+      return hatched(points, face.material, font, face.depth)
+    }
+    return {
+      points,
+      fill: faceFill(face),
+      ...(face.kind === 'mark' ? { open: true, ...(face.dashed ? { dashed: true } : {}) } : {}),
+      ...(face.edges ? { edges: face.edges, layer: face.depth } : {}),
+    }
+  })
 
-  const lines: DrawLine[] = []
+  const lines: DrawLine[] = hatchedOutline(polygons, cutIndices, hatchedIndices)
   const texts: DrawText[] = []
   if (bounds.minV - 1 <= 0 && bounds.maxV + 1 >= 0) {
     lines.push({ x1: 0, y1: y(0), x2: width - marginR + font, y2: y(0), weight: 'heavy' })
@@ -214,7 +255,8 @@ function planRole(prism: Prism, cutV: number): PlanRole | null {
 const PLAN_ORDER: Record<PlanRole, number> = { floor: 0, below: 1, glass: 2, cut: 3 }
 
 /**
- * Plan d'un niveau vu de dessus, coupé à 1 m du plancher comme un plan d'architecte : sols en gris
+ * Plan d'un niveau vu de dessus, coupé à 1 m du plancher comme un plan d'architecte (un mur qui a un
+ * matériau est blanc hachuré plutôt que noir) : sols en gris
  * clair, murs coupés en noir plein (sans couture entre leurs morceaux), allèges des fenêtres vues
  * sous la coupe, cadres et vitres dans les ouvertures. `null` si le niveau est vide.
  */
@@ -242,8 +284,16 @@ export function levelPlanDrawing(model: BuildingModel, level: Level, fontMm?: nu
   }
   const font = fontMm ?? autoFontMm(maxX - minX, maxY - minY)
   const margin = font * 2
-  const polygons: DrawPolygon[] = items.map(({ prism, role }) => {
+  const cutIndices: number[] = []
+  const hatchedIndices: number[] = []
+  const polygons: DrawPolygon[] = items.map(({ prism, role }, index) => {
     const points = prism.rings[0].map((pt) => [pt.x - minX + margin, pt.y - minY + margin] as [number, number])
+    if (role === 'cut') cutIndices.push(index)
+    if (role === 'cut' && prism.material) {
+      // Mur coupé avec un matériau : blanc hachuré, cerné de son contour sans coutures.
+      hatchedIndices.push(index)
+      return hatched(points, prism.material, font, 0)
+    }
     if (role === 'cut' && prism.kind !== 'frame') {
       // Murs et cheminées coupés : noir plein, sans trait, pour que les morceaux se fondent.
       return { points, fill: 'black', edges: points.map(() => false), layer: 0 }
@@ -256,7 +306,7 @@ export function levelPlanDrawing(model: BuildingModel, level: Level, fontMm?: nu
     width: maxX - minX + margin * 2,
     height: maxY - minY + margin * 2,
     polygons,
-    lines: [],
+    lines: hatchedOutline(polygons, cutIndices, hatchedIndices),
     texts: [],
   }
 }
@@ -325,7 +375,13 @@ export function composeSheet(entries: readonly SheetEntry[], fontMm: number): Sh
       weight: 'hair',
     })
     for (const p of entry.drawing.polygons) {
-      drawing.polygons.push({ ...p, points: p.points.map(([px, py]) => [px + at.x, py + oy] as [number, number]) })
+      drawing.polygons.push({
+        ...p,
+        points: p.points.map(([px, py]) => [px + at.x, py + oy] as [number, number]),
+        ...(p.hatch
+          ? { hatch: p.hatch.map(([x1, y1, x2, y2]) => [x1 + at.x, y1 + oy, x2 + at.x, y2 + oy] as Segment) }
+          : {}),
+      })
     }
     for (const l of entry.drawing.lines) {
       drawing.lines.push({ ...l, x1: l.x1 + at.x, x2: l.x2 + at.x, y1: l.y1 + oy, y2: l.y2 + oy })

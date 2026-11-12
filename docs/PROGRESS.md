@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot C, tâche 1 (matériaux et motifs : calcul pur)
-- **Prochaine tâche :** M10 bis, Lot C, tâche 2 (choix du matériau et de la couverture dans Propriétés) ; puis **M10 ter**, puis M11
+- **Dernière tâche terminée :** M10 bis, Lot C, tâche 3 (hachures dans les coupes et les plans de niveau)
+- **Prochaine tâche :** M10 bis, Lot C, tâche 4 (textures des façades) ; puis tâche 5 (couleurs en 3D), puis **M10 ter**, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 bis · Lot C · Tâche 3 · Hachures dans les coupes et les plans de niveau
+- Fait : un mur qui a un matériau est dessiné, là où il est coupé, en **blanc hachuré** au lieu du noir plein : dans les coupes et dans les plans de niveau de la planche, à l'écran et dans le PDF (mêmes traits vectoriels). Hachure selon le matériau (béton 45° serré, maçonnerie 45° espacé, brique 45° doublé, bois fil le long du mur, isolant zigzag, plâtre pointillé), écartement constant sur le papier (D47). La matière hachurée est cernée d'un trait de coupe **sans couture** entre ses morceaux (angles, allèges, linteaux) : nouvelle fonction pure `exposedOutline`. Sans matériau : rendu d'avant (noir). Le matériau suit le mur dans le modèle (`WallPiece.material`, `ViewFace.material`).
+- Limites : les pignons (prolongement du mur sous la toiture) et le profil coupé des toitures restent noirs ; aux angles, un bout de contour est tracé deux fois au même endroit (invisible).
+- Fichiers : `src/features/building/views/{drawing,patterns,section,projection}.ts`, `hatching.test.ts` (nouveau), `src/features/building/{types,wallPieces}.ts`, `src/components/views/ViewDrawing.tsx`, `src/features/export/pdf.ts`
+- Vérification : build ✓ lint ✓ ; tests : 10 nouveaux ✓. Suite complète 2396 sur 2397 : toujours le test de vitesse « 600 murs en moins de 200 ms » sous la charge, qui passe seul (37 sur 37).
+- Commit : feat: M10 bis lot C tâche 3, hachures dans les coupes et les plans
 
 ### 2026-11-12 — Hors jalon · Séparer les côtés d'un mur
 - Fait : bouton **« Séparer les côtés »** dans Propriétés (visible quand le mur sélectionné a au moins deux côtés). Il remplace le mur par un mur par côté ; les nouveaux murs gardent épaisseur, hauteur, couleur, matériau, niveau, verrouillage et visibilité, et restent sélectionnés (un clic en choisit un seul, un double-clic les reprend tous). Le premier côté garde l'identifiant du mur d'origine ; les noms deviennent « Mur 1 », « Mur 2 »… Les portes et fenêtres passent sur le mur de leur côté, à la même place. Une ouverture posée sur un côté de longueur nulle (sommet en double) est retirée, avec un message. Un seul pas d'annulation. Pour couper un côté droit en deux, ajouter d'abord un sommet avec le « + » du milieu du côté.

@@ -1,4 +1,4 @@
-import type { Level } from '../../../types/document'
+import type { Level, WallMaterial } from '../../../types/document'
 import { sectionLook } from '../../geometry/sections'
 import type { Point } from '../../geometry/viewport'
 import type { BuildingModel, RoofPrism, Vec3, WallPiece } from '../types'
@@ -43,6 +43,8 @@ export interface Prism {
   kind: FaceKind
   sourceId: string
   levelId: string
+  /** Matériau d'un mur : hachure de la matière coupée. */
+  material?: WallMaterial
 }
 
 /** Contour d'une boîte orientée (morceau de mur, marche, cheminée), dans le plan. */
@@ -77,6 +79,7 @@ export function prismsOf(model: BuildingModel): Prism[] {
         kind,
         sourceId: piece.sourceId,
         levelId: piece.levelId,
+        ...(kind === 'wall' && piece.material ? { material: piece.material } : {}),
       })
     }
   }
@@ -177,6 +180,7 @@ function prismFaces(
       sourceId: prism.sourceId,
       levelId: prism.levelId,
       cut: true,
+      ...(prism.material ? { material: prism.material } : {}),
     }
     const clamped = clampToWidth(face, uLo, uHi)
     if (clamped) faces.push(clamped)

@@ -1,4 +1,4 @@
-import type { Level } from '../../../types/document'
+import type { Level, WallMaterial } from '../../../types/document'
 import type { Point } from '../../geometry/viewport'
 import type { BuildingModel, OpeningMark, RoofPrism, SlabShape, Vec3, WallMesh, WallPiece } from '../types'
 
@@ -40,8 +40,10 @@ export interface ViewFace {
   kind: FaceKind
   sourceId: string
   levelId: string
-  /** Vrai pour une matière coupée par le plan de coupe (dessinée en noir). */
+  /** Vrai pour une matière coupée par le plan de coupe (dessinée en noir, ou hachurée). */
   cut?: boolean
+  /** Matériau d'une matière coupée : hachure au lieu du noir plein. */
+  material?: WallMaterial
   /**
    * Côtés à tracer (côté i = coin i → coin i+1). Absent : tous. Les jonctions entre faces d'un
    * même mur ne sont pas tracées, pour que le mur se lise d'un seul tenant.

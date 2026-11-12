@@ -11,7 +11,14 @@ interface ViewDrawingProps {
   drawing: Drawing
 }
 
-const STROKE_PX = { heavy: 2, normal: 1, hair: 0.75 } as const
+const STROKE_PX = { heavy: 2, cut: 1.4, normal: 1, hair: 0.75 } as const
+/** Traits de hachure : plus fins que les filets, pour que le contour de la matière domine. */
+const HATCH_PX = 0.5
+
+/** Chemin SVG des traits de hachure d'un polygone. */
+function hatchPath(polygon: DrawPolygon): string {
+  return (polygon.hatch ?? []).map(([x1, y1, x2, y2]) => `M${x1},${y1}L${x2},${y2}`).join('')
+}
 
 /** Chemin SVG des côtés marqués d'un polygone (côté i = point i → point i+1). */
 function edgesPath(points: readonly [number, number][], edges: readonly boolean[]): string {
@@ -77,6 +84,15 @@ export default function ViewDrawing({ drawing }: ViewDrawingProps) {
             {batch.map((p, i) => (
               <polygon key={i} points={pointsOf(p)} fill={fillOf(p)} stroke="none" shapeRendering="crispEdges" />
             ))}
+            {batch.some((p) => p.hatch?.length) && (
+              <path
+                d={batch.map(hatchPath).join('')}
+                fill="none"
+                stroke={INK}
+                strokeWidth={HATCH_PX}
+                vectorEffect="non-scaling-stroke"
+              />
+            )}
             <path
               d={batch.map((p) => edgesPath(p.points, p.edges ?? [])).join('')}
               fill="none"
