@@ -44,6 +44,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M13 · Connexion Google (correction du journal)
+- Constat : la connexion Google est déjà en place, contrairement à ce que le journal disait (« écartée pour M13 ») : le bouton « Continuer avec Google » (`LoginPage.tsx`, `signInWithGoogle` dans `authStore.ts`, textes dans `fr.ts`) a été ajouté dans les fichiers par l'utilisateur et a été embarqué sans que Claude le remarque dans le commit `b13e50c` (« fix: le script de sécurité… ») par un `git add -A`. Il est donc déjà sur `main` et en ligne. Le fournisseur Google est activé dans Supabase.
+- Vérifié : la fonction d'autorisation Supabase redirige bien vers `accounts.google.com` (302), avec retour vers le site ; build ✓ lint ✓.
+- Non vérifié par Claude : une vraie connexion Google de bout en bout, et le lien automatique d'un compte Google avec un compte e-mail de même adresse (comportement par défaut de Supabase).
+- Leçon de méthode : avant un commit, lister les fichiers modifiés (`git status`) au lieu d'un `git add -A` aveugle.
+
 ### 2026-11-12 — M13 · Mise en ligne des lots A à F
 - Fait : `feat/m13` fusionnée dans `main` (avance rapide) et poussée ; Cloudflare a redéployé. Vérifié à distance sur https://fabrics-8zd.pages.dev : l'adresse du projet Supabase et la clé publiable sont dans le code publié (donc les variables Cloudflare sont bonnes) ; aucune vraie clé secrète dans le code (le seul `sb_secret_` est un test de préfixe de la bibliothèque `supabase-js`) ; `/connexion`, `/nouveau-mot-de-passe` et `/s/<jeton>` renvoient l'application (200) ; la fonction de partage répond « unavailable » pour un jeton inconnu.
 - Validé par l'utilisateur le 2026-11-12 après essai sur le site en ligne : M13 terminé, fin du MVP.
@@ -1331,6 +1337,6 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M14, à rediscuter).
 - Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : import de symboles SVG / DXF par l'utilisateur, niveau de détail « détaillé », variantes de style. Pose contre un mur, hauteurs 3D, bibliothèque personnelle, étiquettes de cote et annotations de plan sont planifiées dans M11 bis, lot F (2026-11-12).
 - Plafonds : tableau dans les métrés et cote sous plafond (plan Technique) sont planifiés dans M11 bis, lot G (confirmés le 2026-11-12, D63). Faux plafond : confirmé.
-- E-mails Supabase (M13) : l'envoi par défaut est limité à quelques e-mails par heure (atteint pendant les tests). Avant d'ouvrir à de vrais utilisateurs : brancher un service d'envoi (Supabase, Authentication, SMTP Settings). Connexion Google : écartée pour M13.
+- E-mails Supabase (M13) : l'envoi par défaut est limité à quelques e-mails par heure (atteint pendant les tests). Avant d'ouvrir à de vrais utilisateurs : brancher un service d'envoi (Supabase, Authentication, SMTP Settings). Connexion Google : finalement en place (voir l'entrée « Connexion Google »).
 - Prise en main naturelle (audit du 2026-11-12) : jalon **M11 quater** confirmé par l'utilisateur le 2026-11-12 (avant M12, tablette incluse en lot I), dans `docs/03-ROADMAP.md`. Ordre : A, C, puis le reste. Lot J (signaux en haut à droite) ajouté le 2026-11-12.
 - Alertes et signaux en haut à droite de l'écran (demande du 2026-11-12) : pastilles ou bandeau qui signalent immédiatement les erreurs et avertissements (ex. pièce qui ne remplit pas l'espace, export bloqué). Aujourd'hui, l'avis (Notice) s'affiche en haut au centre. Placé dans M11 quater, lot J (choix de l'utilisateur, 2026-11-12).

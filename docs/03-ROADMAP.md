@@ -853,7 +853,7 @@ Objectif : retrouver ses projets sur un autre appareil.
 - [x] `src/lib/supabase.ts` + `.env.local` ; variables ajoutées dans Cloudflare Pages (2026-11-12, client et `.env.local` en place ; variables Cloudflare non vérifiées ici)
 - [x] Page Connexion : inscription e-mail + mot de passe (avec vérification e-mail),
       connexion, mot de passe oublié, déconnexion (2026-11-12, à tester dans le navigateur)
-- [ ] Connexion Google (optionnelle, seulement si l'utilisateur la veut)
+- [x] Connexion Google (optionnelle) : bouton « Continuer avec Google » sur la page Connexion, fournisseur activé dans Supabase par l'utilisateur (vérifié le 2026-11-12 : la redirection part bien vers Google)
 - [x] `SupabaseRepository` (table `projects`, bucket `assets`, URLs signées) (2026-11-12, à tester dans le navigateur)
 - [x] Choix automatique du dépôt : local si déconnecté, Supabase si connecté (2026-11-12, à tester dans le navigateur)
 - [x] À la première connexion : proposer d'importer les projets locaux (2026-11-12, à tester dans le navigateur)
