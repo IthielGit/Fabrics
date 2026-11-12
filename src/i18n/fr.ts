@@ -150,6 +150,14 @@ export const fr = {
     window: 'Fenêtre',
     calibrate: 'Calibrer l’image',
     stretch: 'Étirer une zone',
+    // Une ligne d'explication pour les mots qu'on ne comprend pas du premier coup.
+    explain: {
+      platform: 'Un sol surélevé : une estrade ou un podium posé dans une pièce.',
+      axis: 'Une ligne de repère (A, B… ou 1, 2…) pour aligner la construction.',
+      section: 'Un trait qui montre où le bâtiment est coupé pour le voir de côté, de l’intérieur.',
+      stretch: 'Agrandit ou rétrécit une pièce en déplaçant tout un côté, avec ses murs.',
+      calibrate: 'Donne à une image importée sa taille réelle, à partir d’une distance connue.',
+    } as Record<string, string>,
     // Libellés courts affichés à côté des icônes de la barre d'outils.
     short: {
       image: 'Image',
@@ -309,7 +317,8 @@ export const fr = {
       blockedPlanTitle: 'Export du plan impossible : corrigez d’abord ces pièces',
       blockedNote:
         'Une surface manque ou dépasse des murs : les métrés seraient faux. Redessinez le contour de la pièce (ou créez-la en cliquant dans la zone fermée par les murs), puis exportez.',
-      blockedButton: 'Export impossible : une pièce laisse un manque ou déborde des murs. Voir « À corriger ».',
+      blockedButton:
+        'Export impossible : une pièce laisse un manque ou déborde des murs, les métrés seraient faux. Corrigez les points de la liste « À corriger » ci-dessous (cliquez pour voir la zone), puis exportez.',
       toFix: 'À corriger avant d’exporter',
       showOnPlan: 'Cliquez pour voir la zone sur le plan.',
       more: (count: number) => `… et ${count} autre${count > 1 ? 's' : ''}.`,

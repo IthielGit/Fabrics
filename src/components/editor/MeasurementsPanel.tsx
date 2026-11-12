@@ -156,7 +156,10 @@ export default function MeasurementsPanel() {
       </div>
       {/* La raison du blocage est écrite, pas seulement dans une infobulle. */}
       {exportTitle && (
-        <p className="mt-2 text-xs text-slate-500" role="status">
+        <p
+          className={blocked ? 'mt-2 rounded-md border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900' : 'mt-2 text-xs text-slate-500'}
+          role="status"
+        >
           {exportTitle}
         </p>
       )}

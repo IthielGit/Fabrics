@@ -813,8 +813,8 @@ extérieure. Aucun changement du format du document. Lots à valider un par un.
       sélection, outils) (2026-11-12).
 - [x] **Lot F — Panneau de droite rangé** : Niveaux sortis de Calques ; réglages avancés (échelle, nord,
       étiquettes) repliés quand rien n'est sélectionné (2026-11-12).
-- [ ] **Lot G — Vocabulaire** : explication en une ligne pour Plateforme, Axe, Coupe, Étirer, Calibrer ;
-      message clair quand un export est bloqué (D55).
+- [x] **Lot G — Vocabulaire** : explication en une ligne pour Plateforme, Axe, Coupe, Étirer, Calibrer ;
+      message clair quand un export est bloqué (D55) (2026-11-12).
 - [ ] **Lot H — Test avec une vraie personne** : 3 tâches en 5 minutes, corrections qui en sortent.
 
 - [ ] **Lot I — Tablette** : déplacer la vue à deux doigts, zoom par pincement, boutons assez grands ; les

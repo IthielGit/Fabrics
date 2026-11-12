@@ -209,7 +209,9 @@ export default function Toolbar() {
             >
               <button
                 type="button"
-                title={several ? `${withShortcut(entry)} · ${fr.tools.moreInGroup(group.label)}` : withShortcut(entry)}
+                title={[withShortcut(entry), fr.tools.explain[entry.id], several ? fr.tools.moreInGroup(group.label) : null]
+                  .filter(Boolean)
+                  .join(' · ')}
                 aria-label={entry.label}
                 aria-pressed={entry.kind === 'tool' ? activeTool === entry.id : undefined}
                 onClick={() => {
@@ -250,7 +252,7 @@ export default function Toolbar() {
               <div
                 role="menu"
                 aria-label={group.label}
-                className="absolute left-full top-0 ml-2 w-56 rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
+                className="absolute left-full top-0 ml-2 w-64 rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
               >
                 <p className="px-2 pb-1 pt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
                   {group.label}
@@ -269,8 +271,13 @@ export default function Toolbar() {
                         selected ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700 hover:bg-slate-100',
                       )}
                     >
-                      <ItemIcon size={16} aria-hidden="true" />
-                      <span className="flex-1">{item.label}</span>
+                      <ItemIcon size={16} className="shrink-0" aria-hidden="true" />
+                      <span className="flex-1">
+                        {item.label}
+                        {fr.tools.explain[item.id] && (
+                          <span className="block text-xs font-normal text-slate-500">{fr.tools.explain[item.id]}</span>
+                        )}
+                      </span>
                       {item.shortcut && (
                         <kbd className="rounded border border-slate-200 px-1 text-[11px] text-slate-500">
                           {item.shortcut}
