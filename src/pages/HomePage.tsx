@@ -1,5 +1,5 @@
-import { Plus, Ruler } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { Plus, Ruler, Search } from 'lucide-react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import DeleteDialog from '../components/home/DeleteDialog'
 import NewDesignDialog from '../components/home/NewDesignDialog'
@@ -7,6 +7,7 @@ import ProjectCard from '../components/home/ProjectCard'
 import RenameDialog from '../components/home/RenameDialog'
 import Button from '../components/ui/Button'
 import type { DesignFormatId } from '../features/documents/createProject'
+import { filterProjectsByName } from '../features/persistence/filterProjects'
 import type { ProjectSummary } from '../features/persistence/types'
 import { fr } from '../i18n/fr'
 import { useProjectsStore } from '../stores/projectsStore'
@@ -21,6 +22,8 @@ export default function HomePage() {
   const { projects, status, refresh, createDesign, createPlan, rename, duplicate, remove } =
     useProjectsStore()
   const [dialog, setDialog] = useState<Dialog | null>(null)
+  const [query, setQuery] = useState('')
+  const shown = useMemo(() => filterProjectsByName(projects, query), [projects, query])
 
   useEffect(() => {
     void refresh()
@@ -81,8 +84,30 @@ export default function HomePage() {
         )}
 
         {projects.length > 0 && (
+          <div className="relative mt-4 max-w-md">
+            <Search
+              size={16}
+              aria-hidden="true"
+              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+            />
+            <input
+              type="search"
+              value={query}
+              onChange={(event) => setQuery(event.target.value)}
+              placeholder={fr.home.searchPlaceholder}
+              aria-label={fr.home.searchLabel}
+              className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+            />
+          </div>
+        )}
+
+        {projects.length > 0 && shown.length === 0 && (
+          <p className="mt-4 text-sm text-slate-500">{fr.home.noSearchResult(query.trim())}</p>
+        )}
+
+        {shown.length > 0 && (
           <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {projects.map((project) => (
+            {shown.map((project) => (
               <ProjectCard
                 key={project.id}
                 project={project}

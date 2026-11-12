@@ -44,6 +44,9 @@ export const fr = {
     emptyText:
       'Créez un visuel (affiche, post, flyer) ou un plan à l’échelle pour commencer. Vos projets sont enregistrés automatiquement dans ce navigateur.',
     loadError: 'Impossible de charger vos projets.',
+    searchLabel: 'Rechercher un projet',
+    searchPlaceholder: 'Rechercher un projet par son nom',
+    noSearchResult: (query: string) => `Aucun projet ne correspond à « ${query} ».`,
   },
   projects: {
     defaultDesignName: 'Visuel sans titre',

@@ -705,7 +705,7 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 
 ### Lot D — Accueil
 
-- [ ] **Recherche de projets** sur l'accueil : filtre par nom (insensible à la casse et aux accents),
+- [x] **Recherche de projets** sur l'accueil : filtre par nom (insensible à la casse et aux accents),
       liste locale ; fonction pure de filtrage testée.
 
 ### Lot E — Échanges DXF

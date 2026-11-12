@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot C · Niveau du dessus et aimantation
+- **Dernière tâche terminée :** M11 bis · Lot D · Recherche de projets
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot D · Recherche de projets sur l'accueil
+- Fait : un champ « Rechercher un projet par son nom » au-dessus de la liste (affiché dès qu'il y a un projet). Le filtre ignore la casse et les accents et demande **tous** les mots tapés, dans n'importe quel ordre ; liste locale, immédiate. Sans résultat : « Aucun projet ne correspond à « … » ». Champ vide : tous les projets, dans leur ordre.
+- Fichiers : `src/features/persistence/filterProjects.ts` (+ test), `src/pages/HomePage.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ — à vérifier dans le navigateur : page d'accueil, taper « ete » trouve « Affiche été »
+- Commit : feat: recherche de projets sur l'accueil (M11 bis, lot D)
 
 ### 2026-11-12 — M11 bis · Lot C · Niveau du dessus et aimantation sur les niveaux de référence
 - Fait : nouveau bouton (icône « calques ») à côté de celui du niveau du dessous, dans le sélecteur de niveau : **affiche le niveau du dessus en transparence**, sans interaction. **Désactivé par défaut**, réglage d'interface (hors document, hors historique, comme celui du dessous). **Aimantation** : les tracés, les poignées de sommets et les déplacements s'aimantent sur les murs et sommets du niveau du dessous (déjà le cas) **et du dessus** quand ils sont affichés. Les croisements de faces de murs ne sont plus cherchés entre murs de niveaux différents (plus de points d'accroche fantômes).
