@@ -586,7 +586,7 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
       élément ; un PDF déjà envoyé peut ne plus correspondre. Option A : garder le calcul et
       imprimer « Repères valables à la date du document ». Option B : figer les repères (champ
       facultatif enregistré, sans migration), les nouveaux éléments prennent le numéro suivant.
-- [ ] **Tri au-delà de 99** : repères sur trois chiffres (`M001`) dès qu'un type dépasse 99
+- [x] **Tri au-delà de 99** : repères sur trois chiffres (`M001`) dès qu'un type dépasse 99
       éléments, pour que le tri d'Excel reste juste. Fichiers : `references.ts`, test.
 
 **Critères d'acceptation**

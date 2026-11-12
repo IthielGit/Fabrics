@@ -88,4 +88,25 @@ describe('repères M01, P01, F01', () => {
     expect(openings.get('milieu')).toBe('F02')
     expect(openings.get('loin')).toBe('F03')
   })
+
+  it('99 murs : deux chiffres ; 100 murs : trois chiffres pour tous les murs', () => {
+    const many = (count: number): CanvasElement[] =>
+      Array.from({ length: count }, (_, i) => wall(`w${i}`, [i * 1000, 0, i * 1000 + 500, 0]))
+    const small = buildReferences({ elements: many(99), levels: [L0] }).walls
+    expect(small.get('w0')).toBe('M01')
+    expect(small.get('w98')).toBe('M99')
+    const large = buildReferences({ elements: many(100), levels: [L0] }).walls
+    expect(large.get('w0')).toBe('M001')
+    expect(large.get('w99')).toBe('M100')
+  })
+
+  it('la largeur se décide par type : 100 murs n’allongent pas les repères des portes', () => {
+    const elements: CanvasElement[] = [
+      ...Array.from({ length: 100 }, (_, i) => wall(`w${i}`, [i * 1000, 0, i * 1000 + 500, 0])),
+      opening('p', 'w0', { offset: 100 }),
+    ]
+    const { walls, openings } = buildReferences({ elements, levels: [L0] })
+    expect(walls.get('w0')).toBe('M001')
+    expect(openings.get('p')).toBe('P01')
+  })
 })

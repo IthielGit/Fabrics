@@ -16,7 +16,9 @@ export interface References {
 /** Deux éléments consécutifs (triés par hauteur) à moins de cet écart (mm) sont sur la « même ligne ». */
 const ROW_BAND = 500
 
-const pad = (prefix: string, n: number) => `${prefix}${String(n).padStart(2, '0')}`
+/** Deux chiffres au minimum ; trois dès qu'un type dépasse 99 éléments, pour que le tri d'Excel reste juste. */
+const pad = (prefix: string, n: number, total: number) =>
+  `${prefix}${String(n).padStart(Math.max(2, String(total).length), '0')}`
 
 interface Placed<T> {
   item: T
@@ -71,8 +73,9 @@ function readingOrder<T extends { id: string }>(list: Placed<T>[]): T[] {
 }
 
 export function buildReferences(document: Pick<FabricsDocument, 'elements' | 'levels'>): References {
-  const walls = new Map<string, string>()
-  const openings = new Map<string, string>()
+  // Numéros d'abord ; la largeur dépend du nombre total d'éléments de chaque type, connu à la fin.
+  const wallNumbers = new Map<string, number>()
+  const openingNumbers = new Map<string, { prefix: 'P' | 'F'; n: number }>()
   const byId = new Map(
     document.elements.filter((el): el is WallElement => el.type === 'wall').map((wall) => [wall.id, wall]),
   )
@@ -84,7 +87,7 @@ export function buildReferences(document: Pick<FabricsDocument, 'elements' | 'le
     const onLevel = (el: CanvasElement) => el.levelId === level.id
     const levelWalls = document.elements.filter((el): el is WallElement => el.type === 'wall' && onLevel(el))
     for (const wall of readingOrder(levelWalls.map((item) => ({ item, ...wallCentre(item) })))) {
-      walls.set(wall.id, pad('M', ++wallN))
+      wallNumbers.set(wall.id, ++wallN)
     }
     const levelOpenings: Placed<OpeningElement>[] = []
     for (const el of document.elements) {
@@ -94,8 +97,12 @@ export function buildReferences(document: Pick<FabricsDocument, 'elements' | 'le
       levelOpenings.push({ item: el, ...openingCentre(el, wall) })
     }
     for (const opening of readingOrder(levelOpenings)) {
-      openings.set(opening.id, opening.kind === 'door' ? pad('P', ++doorN) : pad('F', ++windowN))
+      openingNumbers.set(opening.id, opening.kind === 'door' ? { prefix: 'P', n: ++doorN } : { prefix: 'F', n: ++windowN })
     }
   }
+  const walls = new Map([...wallNumbers].map(([id, n]) => [id, pad('M', n, wallN)]))
+  const openings = new Map(
+    [...openingNumbers].map(([id, { prefix, n }]) => [id, pad(prefix, n, prefix === 'P' ? doorN : windowN)]),
+  )
   return { walls, openings }
 }

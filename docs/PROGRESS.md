@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 ter (lots A et B validés ; groupes 1 à 4 des cas limites à faire) ; M10 bis terminé, à tester dans le navigateur
-- **Dernière tâche terminée :** M10 ter, cas limites des métrés, groupes 1, 2 et 3 (groupe 3 validé par l'utilisateur le 2026-11-12)
-- **Prochaine tâche :** groupe 4 (repères, option A retenue), en attente du feu vert, puis noms automatiques, puis M11
+- **Dernière tâche terminée :** M10 ter, cas limites des métrés, groupes 1 à 4 (groupes 1 à 3 validés ; groupe 4 à tester dans le navigateur)
+- **Prochaine tâche :** validation du groupe 4 par l'utilisateur, puis noms automatiques, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Tâche 4 · Repères au-delà de 99
+- Fait : dès qu'un type dépasse 99 éléments (murs, portes ou fenêtres), tous les repères de ce type passent à trois chiffres (`M001`…`M100`), pour que le tri d'Excel reste juste. Chaque type décide pour lui-même : 100 murs n'allongent pas `P01`.
+- Fichiers : `src/features/measurements/references.ts`, `references.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓
+- Commit : feat: repères sur trois chiffres au-delà de 99
 
 ### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Tâche 3 · Mention des repères
 - Fait : « Repères valables à la date du document » est imprimé dans la remarque d'en-tête et dans les règles de calcul des métrés Technique (PDF, Excel, CSV), et dans la note des PDF de plans cotés en Technique (fenêtre Exporter et écran Vues). La version Client n'en a pas besoin (aucun repère).
