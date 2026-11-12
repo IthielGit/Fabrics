@@ -62,16 +62,29 @@ export default function HomePage() {
             <span className="font-semibold">{fr.home.cards.plan.title}</span>
             <span className="text-sm text-slate-500">{fr.home.cards.plan.text}</span>
           </button>
-          <button type="button" className={cardClass} onClick={() => void handleCreateExample()}>
-            <BookOpen size={24} className="text-indigo-600" aria-hidden="true" />
-            <span className="font-semibold">{fr.home.cards.example.title}</span>
-            <span className="text-sm text-slate-500">{fr.home.cards.example.text}</span>
-          </button>
-          <button type="button" className={cardClass} onClick={() => void handleCreateLargeHouse()}>
-            <Building2 size={24} className="text-indigo-600" aria-hidden="true" />
-            <span className="font-semibold">{fr.home.cards.largeHouse.title}</span>
-            <span className="text-sm text-slate-500">{fr.home.cards.largeHouse.text}</span>
-          </button>
+          <section
+            aria-labelledby="examples-family"
+            className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-3 sm:col-span-2"
+          >
+            <h3
+              id="examples-family"
+              className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-indigo-700"
+            >
+              {fr.home.examplesFamily}
+            </h3>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <button type="button" className={cardClass} onClick={() => void handleCreateExample()}>
+                <BookOpen size={24} className="text-indigo-600" aria-hidden="true" />
+                <span className="font-semibold">{fr.home.cards.example.title}</span>
+                <span className="text-sm text-slate-500">{fr.home.cards.example.text}</span>
+              </button>
+              <button type="button" className={cardClass} onClick={() => void handleCreateLargeHouse()}>
+                <Building2 size={24} className="text-indigo-600" aria-hidden="true" />
+                <span className="font-semibold">{fr.home.cards.largeHouse.title}</span>
+                <span className="text-sm text-slate-500">{fr.home.cards.largeHouse.text}</span>
+              </button>
+            </div>
+          </section>
         </div>
         <p className="mt-3 text-xs text-slate-500">{fr.home.storageReminder}</p>
 

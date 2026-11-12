@@ -54,6 +54,7 @@ export const fr = {
     newDesign: 'Nouveau visuel',
     newPlan: 'Nouveau plan',
     startTitle: 'Par où commencer ?',
+    examplesFamily: 'Exemples à explorer',
     cards: {
       plan: { title: 'Dessiner un plan', text: 'Murs, pièces, portes : les surfaces se calculent toutes seules.' },
       example: { title: 'Voir un exemple', text: 'Une maison à étage déjà dessinée (meubles, escalier, toit, cotes), à explorer et à modifier.' },
