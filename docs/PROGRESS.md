@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot F · Bibliothèque personnelle
+- **Dernière tâche terminée :** M11 bis · Lot F · Annotations de plan
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot F · Tâche 5 · Annotations de plan (flèche du nord, repère de niveau)
+- Fait : case **« Flèche du nord et repère de niveau »** dans les réglages du plan (Propriétés, rien de sélectionné) ; option `plan.showAnnotations` (facultative, absente = non : un projet d'avant M11 bis ne change pas). Quand elle est cochée, le plan affiche **à droite du bâtiment** une flèche du nord dans un cercle (dessinée de zéro avec des traits simples, pointe vers le nord réglé dans « Nord », lettre N) et le repère du niveau affiché (« Niveau RDC (±0) »). Calculés à chaque modification, jamais enregistrés. Repris dans le **PDF et le PNG** du plan (la zone exportée s'agrandit pour les contenir), dans les **plans de niveau de la planche** et dans le **DXF** (sur le calque `COTES`, comme les cotes automatiques), indépendamment du réglage « Cotation ». Taille proportionnelle à la hauteur des textes, donc lisible à toutes les échelles.
+- Fichiers : `src/features/dimensioning/planMarks.ts` (+ test), `planOverlay.ts`, `executionDimensions.ts` (libellés `north`, `levelMark`), `src/components/editor/{PlanMarksLayer,EditorStage,PlanSettingsSection}.tsx`, `src/features/export/dxfPlan.ts`, `src/i18n/{fr,dimensioningLabels}.ts`, `src/types/document.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2634) — à contrôler dans le navigateur et dans un PDF à la fin du jalon
+- Commit : feat: flèche du nord et repère de niveau sur le plan et les exports (M11 bis, lot F)
 
 ### 2026-11-12 — M11 bis · Lot F · Tâche 3 · Bibliothèque personnelle
 - Fait : dans le panneau Bibliothèque, bouton **« Enregistrer la sélection »** (actif quand la sélection contient des objets de la bibliothèque) : on donne un nom (« Ensemble cuisine ») et les objets (position, rotation, taille, retournement) sont gardés relativement au coin de leur emprise ; les murs, pièces et autres éléments de la sélection ne sont pas gardés. L'ensemble apparaît dans la puce **« Mes ensembles »** (et dans la recherche et la catégorie Ensembles) avec la mention « Mon ensemble » ; il se pose comme un ensemble du catalogue (clic puis clic sur le plan, ou glisser-déposer, un seul pas d'annulation) avec les mêmes positions relatives. Bouton corbeille pour le supprimer. **Stockage local du navigateur** (`fabrics.library.userSets`, 50 ensembles au plus), jamais dans le projet ; synchronisation avec le compte au jalon M13.

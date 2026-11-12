@@ -50,6 +50,7 @@ import SelectionTransformer from './SelectionTransformer'
 import { WallJoinsContext } from './shapes/WallJoinsContext'
 import FurnitureGhost from './FurnitureGhost'
 import AutoDimensionsLayer from './AutoDimensionsLayer'
+import PlanMarksLayer from './PlanMarksLayer'
 import SurfaceHighlightLayer from './SurfaceHighlightLayer'
 import ChimneyUpperGhosts from './ChimneyUpperGhosts'
 import StairGhost from './StairGhost'
@@ -626,6 +627,7 @@ export default function EditorStage() {
               ))}
             </WallJoinsContext.Provider>
             <AutoDimensionsLayer scale={scale} />
+            <PlanMarksLayer scale={scale} />
             <SurfaceHighlightLayer scale={scale} />
             <SelectionTransformer enabled={selecting && editingTextId === null} />
             <VertexHandles enabled={selecting && editingTextId === null} scale={scale} />

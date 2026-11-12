@@ -84,6 +84,15 @@ export default function PlanSettingsSection() {
         step={15}
         onCommit={(degrees) => updatePlanSettings({ northAngle: normalizeNorthAngle(degrees) })}
       />
+
+      <label className="flex items-center gap-2 text-sm text-slate-600" title={fr.planSettings.annotationsHint}>
+        <input
+          type="checkbox"
+          checked={plan.showAnnotations === true}
+          onChange={(event) => updatePlanSettings({ showAnnotations: event.target.checked })}
+        />
+        {fr.planSettings.annotations}
+      </label>
     </div>
   )
 }

@@ -416,7 +416,7 @@ function chimneyEntities(elements: readonly CanvasElement[]): DxfEntity[] {
  * masqués ne sont pas exportés.
  */
 export function levelDxfEntities(
-  document: Pick<FabricsDocument, 'elements' | 'levels'>,
+  document: Pick<FabricsDocument, 'elements' | 'levels' | 'plan'>,
   levelId: string,
   options: DxfPlanOptions,
 ): DxfEntity[] {
@@ -468,7 +468,7 @@ export function levelDxfEntities(
 
 /** Fichier DXF d'un niveau (texte), en mm, un calque par famille d'éléments. */
 export function levelDxf(
-  document: Pick<FabricsDocument, 'elements' | 'levels'>,
+  document: Pick<FabricsDocument, 'elements' | 'levels' | 'plan'>,
   levelId: string,
   options: DxfPlanOptions,
 ): string {

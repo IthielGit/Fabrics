@@ -17,6 +17,8 @@ const LABELS: ExecutionLabels = {
   floor: (a) => `Sol ${a}`,
   slab: (a) => `Dalle ${a}`,
   ceiling: (a) => `${a} sous plafond`,
+  north: 'N',
+  levelMark: (name, altitude) => `Niveau ${name} (${altitude})`,
   stairVoid: 'Trémie',
   risers: (n, h) => `${n} CM × ${h}`,
   tread: (mm) => `Giron ${mm}`,

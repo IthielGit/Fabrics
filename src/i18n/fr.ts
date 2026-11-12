@@ -758,6 +758,8 @@ export const fr = {
     floor: (altitude: string) => `Sol ${altitude}`,
     slab: (altitude: string) => `Dalle ${altitude}`,
     ceiling: (altitude: string) => `${altitude} sous plafond`,
+    north: 'N',
+    levelMark: (levelName: string, altitude: string) => `Niveau ${levelName} (${altitude})`,
     stairVoid: 'Trémie',
     risers: (count: number, height: number) => `${count} CM × ${height}`,
     tread: (mm: number) => `Giron ${mm}`,
@@ -911,6 +913,8 @@ export const fr = {
     wallThickness: 'Épaisseur des murs',
     unitMm: 'mm',
     northAngle: 'Nord (sens horaire depuis le haut)',
+    annotations: 'Flèche du nord et repère de niveau',
+    annotationsHint: 'Dessine la flèche du nord et le repère du niveau à droite du plan ; ils sont repris dans les PDF, les images et les DXF.',
     unitDegrees: '°',
   },
   viewer3d: {

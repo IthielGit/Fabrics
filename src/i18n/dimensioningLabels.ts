@@ -7,6 +7,8 @@ export const EXECUTION_LABELS: ExecutionLabels = {
   floor: fr.dimensioning.floor,
   slab: fr.dimensioning.slab,
   ceiling: fr.dimensioning.ceiling,
+  north: fr.dimensioning.north,
+  levelMark: fr.dimensioning.levelMark,
   stairVoid: fr.dimensioning.stairVoid,
   risers: fr.dimensioning.risers,
   tread: fr.dimensioning.tread,

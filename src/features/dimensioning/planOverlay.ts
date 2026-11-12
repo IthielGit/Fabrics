@@ -3,22 +3,31 @@ import type { FabricsDocument } from '../../types/document'
 import { annotationGraphics } from './annotationGraphics'
 import type { ExecutionLabels } from './executionDimensions'
 import { levelAnnotations } from './levelAnnotations'
+import { mergeOverlays, planMarks } from './planMarks'
 import type { DimensioningMode } from './types'
 
 /** En Client, les textes sont plus grands (document destiné au client, peu de cotes). */
 export const CLIENT_TEXT_FACTOR = 1.3
 
-/** Cotes automatiques d'un niveau prêtes à dessiner sur la planche ; `null` pour « Aucune ». */
+/**
+ * Cotes automatiques d'un niveau prêtes à dessiner sur la planche, plus la flèche du nord et le
+ * repère de niveau quand le plan les demande ; `null` pour « Aucune » sans annotation.
+ */
 export function planOverlay(
-  document: Pick<FabricsDocument, 'elements' | 'levels'>,
+  document: Pick<FabricsDocument, 'elements' | 'levels' | 'plan'>,
   levelId: string,
   mode: DimensioningMode,
   labels: ExecutionLabels,
   fontMm: number,
 ): PlanOverlay | null {
-  if (mode === 'none') return null
+  // Flèche du nord et repère de niveau (option du plan), quel que soit le réglage « Cotation ».
+  const marks = planMarks(document, levelId, labels, fontMm)
+  if (mode === 'none') return marks
   const annotations = levelAnnotations(document, levelId, mode, labels)
-  return annotationGraphics(annotations, mode === 'client' ? fontMm * CLIENT_TEXT_FACTOR : fontMm)
+  return mergeOverlays(
+    annotationGraphics(annotations, mode === 'client' ? fontMm * CLIENT_TEXT_FACTOR : fontMm),
+    marks,
+  )
 }
 
 interface Region {

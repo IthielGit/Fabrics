@@ -31,6 +31,10 @@ export interface ExecutionLabels {
   slab: (altitude: string) => string
   /** « +2650 sous plafond ». */
   ceiling: (altitude: string) => string
+  /** « N » : lettre de la flèche du nord. */
+  north: string
+  /** « Niveau RDC (±0) » : repère de niveau du plan. */
+  levelMark: (levelName: string, altitude: string) => string
   /** « Trémie ». */
   stairVoid: string
   /** « 16 CM × 175 ». */

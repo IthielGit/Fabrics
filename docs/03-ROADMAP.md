@@ -727,7 +727,7 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 - [ ] **Étiquettes de cote automatiques** : à la demande, une cote (longueur d'un mur, largeur d'une
       ouverture) posée sur le plan et recalculée avec le plan. **À préciser avec l'utilisateur**
       avant de coder (quels éléments, faut-il les garder dans le document ?).
-- [ ] **Annotations de plan** : flèche du nord et repère de niveau, dessinés de zéro (pas de symbole
+- [x] **Annotations de plan** : flèche du nord et repère de niveau, dessinés de zéro (pas de symbole
       tiers), inclus dans PDF, PNG et DXF.
 
 ### Lot G — Plafonds : cotes et métrés (D63 : tout confirmé le 2026-11-12)
