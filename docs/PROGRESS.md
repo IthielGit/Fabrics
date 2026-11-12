@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M12 Mise en ligne (code sur GitHub, reste la connexion à Cloudflare Pages) ; M11 bis Dessin précis, bibliothèque et plafonds (terminé, à tester dans le navigateur) ; M11 terminé, à tester ; M10 ter terminé et validé
+- **Jalon en cours :** M12 Mise en ligne (déployé, reste à tester dans le navigateur) ; M11 bis Dessin précis, bibliothèque et plafonds (terminé, à tester dans le navigateur) ; M11 terminé, à tester ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M11 bis · Lot F · Étiquettes de cote automatiques (jalon M11 bis terminé, à tester)
 - **Prochaine tâche :** test de M11 et de M11 bis dans le navigateur (et de l'export DXF dans LibreCAD) par l'utilisateur, puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
@@ -30,7 +30,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 Import et export | terminé, à tester dans le navigateur | |
 | M11 bis Dessin précis, bibliothèque et plafonds | terminé, à tester dans le navigateur (lots A à G) | |
 | M11 ter Boussole du plan | terminé, à tester dans le navigateur | |
-| M12 Mise en ligne | en cours : code poussé sur GitHub, reste Cloudflare Pages | |
+| M12 Mise en ligne | en ligne (https://fabrics-8zd.pages.dev), reste le test dans le navigateur | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
 | M14 Collaboration temps réel | après le MVP | |
 
@@ -46,7 +46,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ### 2026-11-12 — M12 · Dépôt GitHub, redirection SPA, README
 - Fait : `feat/m11-bis` fusionnée dans `main` (avance rapide) ; `public/_redirects` créé (`/* /index.html 200`, bien présent dans `dist/`) ; README réécrit (présentation, commandes, déploiement) ; `main` poussée sur https://github.com/IthielGit/Fabrics.git.
-- Reste : connecter Cloudflare Pages (build `npm run build`, sortie `dist`), vérifier en ligne, ajouter le lien `*.pages.dev` au README.
+- Cloudflare Pages connecté (build `npm run build`, sortie `dist`, branche `main`) : https://fabrics-8zd.pages.dev. Vérifié par requête : `/`, `/p/test-123` et une adresse inconnue renvoient tous l'application (200). Lien ajouté au README.
+- Reste : test dans le navigateur par l'utilisateur (création, sauvegarde, export, rechargement sur `/p/…`) ; le redéploiement automatique au prochain `git push` sera confirmé par ce push.
 - Fichiers : `public/_redirects`, `README.md`, `docs/03-ROADMAP.md`, `docs/PROGRESS.md`.
 - Vérification : build ✓ lint ✓ tests ✓ (2713 ; le test de vitesse « 600 murs » a échoué sous la charge et passe seul : connu).
 

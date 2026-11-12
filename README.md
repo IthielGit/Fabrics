@@ -8,7 +8,7 @@ Application web d'édition visuelle sur canevas, avec deux types de projets :
 
 Les projets sont enregistrés dans le navigateur (mode local, sans compte).
 
-**Version en ligne :** _(lien `*.pages.dev` à ajouter après le déploiement)_
+**Version en ligne :** https://fabrics-8zd.pages.dev
 
 ## Commandes
 
