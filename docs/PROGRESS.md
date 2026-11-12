@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot D · Recherche de projets
+- **Dernière tâche terminée :** M11 bis · Lot E · Échanges DXF (escaliers, plateformes, toitures, cheminées, textes)
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,18 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot E · Tâche 2 · Import DXF : les textes
+- Fait : l'import reprend les **textes** (TEXT et MTEXT, y compris dans les blocs, avec leur position, échelle et rotation). Chaque texte devient un élément `text` **verrouillé, du même groupe que les traits** (une seule ligne « Fond DXF – plan.dxf » dans les calques, « N éléments ») : masquer, verrouiller, sélectionner en entier, Suppr, déplacement d'un bloc une fois déverrouillé. **Hauteur** : la hauteur des majuscules du fichier, en mm, donne la taille de police (÷ 0,7) ; le point d'accroche (ligne de base, haut, milieu, centre, droite) est ramené au coin haut-gauche ; rotation conservée (axe y retourné). Codes de mise en forme retirés (`\P`, polices, `\U+00E9`, `%%c` `%%d` `%%p`). Un fichier qui ne contient que des textes est accepté. La fenêtre d'import affiche le nombre de textes ; 5000 textes au plus (les suivants sont ignorés).
+- Choix technique (D65) : champ facultatif `groupId` sur les éléments `text` (comme sur `line`, D62), sans changement de version du document.
+- Fichiers : `src/features/export/dxfImport.ts` (+ tests), `src/features/documents/backgroundGroup.ts` (nouveau), `src/types/document.ts`, `ImportDxfDialog.tsx`, `LayersPanel.tsx`, `useElementInteractions.ts`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2602) ; aller-retour avec l'export (« Séjour » à 125 mm) ✓ — test dans le navigateur à faire à la fin du jalon
+- Commit : feat: import DXF des textes et export des escaliers, plateformes, toitures, cheminées (M11 bis, lot E)
+
+### 2026-11-12 — M11 bis · Lot E · Tâche 1 · Export DXF : escaliers, plateformes, toitures, cheminées
+- Fait : quatre calques de plus dans le DXF d'un niveau. `ESCALIERS` : contour de l'emprise (volées et palier), lignes de marche selon le nombre de girons calculé, ligne de foulée de chaque volée. `PLATEFORMES` : contour fermé et altitude du dessus (« +450 », en mm). `TOITURES` : contour au nu des murs (pointillés), bord du débord, faîtage et arêtiers. `CHEMINEES` : carré et ses deux diagonales. Éléments masqués non exportés ; tout en mm.
+- Fichiers : `src/features/export/dxfPlan.ts` (+ tests), `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ — à ouvrir dans LibreCAD à la fin du jalon
 
 ### 2026-11-12 — M11 bis · Lot D · Recherche de projets sur l'accueil
 - Fait : un champ « Rechercher un projet par son nom » au-dessus de la liste (affiché dès qu'il y a un projet). Le filtre ignore la casse et les accents et demande **tous** les mots tapés, dans n'importe quel ordre ; liste locale, immédiate. Sans résultat : « Aucun projet ne correspond à « … » ». Champ vide : tous les projets, dans leur ordre.
@@ -1055,6 +1067,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 |---|---|---|---|
 | D60 | Fichiers DXF | **Un fichier par niveau** (calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`, `AXES`, `MOBILIER`), pas de calque par niveau. « Tous les niveaux » : un .dxf par niveau réunis dans un .zip. | Choix de l'utilisateur. |
 | D62 | Fond DXF importé | Des éléments `line` verrouillés liés par un champ facultatif `groupId` (une ligne dans les calques, trait d'un pixel à l'écran), posés sous les autres éléments du niveau actif. Pas de nouveau type d'élément. | Le modèle n'a pas de groupes ; un champ facultatif évite une migration. |
+| D65 | Textes d'un fond DXF | Éléments `text` verrouillés portant le même `groupId` que les traits (champ facultatif, comme D62) ; hauteur des majuscules du fichier ÷ 0,7 = taille de police. | Une seule ligne dans les calques, aucune migration. |
 | D61 | Bibliothèque DXF | `dxf-parser` (MIT) accepté pour l'import ; l'export reste écrit à la main (R12, ASCII). | Choix de l'utilisateur ; un lecteur DXF écrit à la main serait fragile. |
 
 ### 2026-11-12 — Planification M11 bis

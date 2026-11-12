@@ -67,6 +67,8 @@ export interface TextElement extends BaseElement {
   fontStyle: 'normal' | 'bold' | 'italic' | 'bold italic';
   align: 'left' | 'center' | 'right';
   fill: string;
+  // Texte d'un fond importé (M11 bis, DXF) : même groupe que les traits du fond (`LineElement.groupId`).
+  groupId?: string;
 }
 
 export interface RectElement extends BaseElement {

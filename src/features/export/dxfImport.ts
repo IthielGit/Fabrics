@@ -12,15 +12,19 @@ import type {
   ILwpolylineEntity,
   IPoint,
   IPolylineEntity,
+  IMtextEntity,
   ISplineEntity,
+  ITextEntity,
 } from 'dxf-parser'
-import type { LineElement } from '../../types/document'
+import type { LineElement, TextElement } from '../../types/document'
+import { createTextElement } from '../documents/elements'
 import type { Point } from '../geometry/viewport'
 
 /**
  * Import d'un DXF comme calque de fond (M11) : les traits du fichier (lignes, polylignes, arcs,
  * cercles, ellipses, splines, contenus des blocs et des cotes) deviennent des éléments `line`
- * verrouillés, à l'échelle réelle (mm). Les textes et les hachures ne sont pas repris.
+ * verrouillés, à l'échelle réelle (mm). Les textes (TEXT, MTEXT) deviennent des éléments `text`
+ * verrouillés du même groupe ; les hachures ne sont pas reprises.
  */
 
 /** Unité choisie pour lire le fichier. */
@@ -53,14 +57,35 @@ export interface DxfPath {
   closed: boolean
 }
 
+/**
+ * Un texte lu dans le fichier : position, hauteur des majuscules et rotation (sens trigonométrique,
+ * degrés) dans le repère du fichier (y vers le haut), avec son point d'accroche.
+ */
+export interface DxfText {
+  x: number
+  y: number
+  /** Hauteur des majuscules, unités du fichier. */
+  height: number
+  rotation: number
+  text: string
+  /** Largeur du cadre d'un texte multiligne (unités du fichier), 0 si inconnue. */
+  width: number
+  /** Accroche horizontale et verticale du point (x, y) sur le texte. */
+  halign: 'left' | 'center' | 'right'
+  valign: 'baseline' | 'top' | 'middle' | 'bottom'
+}
+
 export interface ParsedDxf {
   paths: DxfPath[]
+  texts: DxfText[]
   /** Valeur de `$INSUNITS`, ou `null` si le fichier ne la donne pas. */
   insUnits: number | null
 }
 
 /** Au-delà, le fichier est refusé : le plan deviendrait trop lent à afficher. */
 export const MAX_DXF_PATHS = 20000
+/** Nombre maximal de textes repris (les suivants sont ignorés). */
+export const MAX_DXF_TEXTS = 5000
 /** Profondeur maximale de blocs imbriqués (protège d'un bloc qui s'insère lui-même). */
 const MAX_BLOCK_DEPTH = 8
 /** Pas angulaire maximal pour découper un arc, en degrés. */
@@ -224,6 +249,7 @@ function apply(m: Matrix, points: readonly number[]): number[] {
 
 interface Collector {
   paths: DxfPath[]
+  texts: DxfText[]
   blocks: Record<string, IBlock>
 }
 
@@ -231,6 +257,49 @@ function push(collector: Collector, m: Matrix, points: number[], closed: boolean
   if (points.length < 4 || points.some((v) => !Number.isFinite(v))) return
   collector.paths.push({ points: apply(m, points), closed })
   if (collector.paths.length > MAX_DXF_PATHS) throw new DxfReadError('tooLarge')
+}
+
+/**
+ * Texte lisible d'un TEXT ou MTEXT : codes de mise en forme retirés (`\\P` = retour à la ligne),
+ * `\\U+00E9` et `%%c` `%%d` `%%p` remplacés par leur caractère.
+ */
+export function cleanDxfText(raw: string): string {
+  return raw
+    .replace(/\\U\+([0-9a-fA-F]{4})/g, (_, hex: string) => String.fromCharCode(parseInt(hex, 16)))
+    .replace(/\\S([^;^]*)[\^/#]([^;]*);/g, '$1/$2')
+    .replace(/\\[fFHWTQCcAa][^;]*;/g, '')
+    .replace(/\\[LlOoKk]/g, '')
+    .replace(/\\P/g, '\n')
+    .replace(/\\~/g, ' ')
+    .replace(/\\([\\{}])/g, '$1')
+    .replace(/[{}]/g, '')
+    .replace(/%%[cC]/g, 'Ø')
+    .replace(/%%[dD]/g, '°')
+    .replace(/%%[pP]/g, '±')
+    .replace(/%%[uUoO]/g, '')
+    .replace(/%%%/g, '%')
+    .trim()
+}
+
+const MTEXT_H: Record<number, DxfText['halign']> = { 1: 'left', 2: 'center', 3: 'right', 4: 'left', 5: 'center', 6: 'right', 7: 'left', 8: 'center', 9: 'right' }
+const MTEXT_V: Record<number, DxfText['valign']> = { 1: 'top', 2: 'top', 3: 'top', 4: 'middle', 5: 'middle', 6: 'middle', 7: 'bottom', 8: 'bottom', 9: 'bottom' }
+
+/** Ajoute un texte, transformé par la matrice (position, échelle, rotation du bloc qui le contient). */
+function pushText(collector: Collector, m: Matrix, text: Omit<DxfText, 'text'> & { text: string }): void {
+  const clean = cleanDxfText(text.text)
+  const factor = Math.hypot(m[0], m[1])
+  if (!clean || !(text.height > 0) || !Number.isFinite(text.x) || !Number.isFinite(text.y)) return
+  if (collector.texts.length >= MAX_DXF_TEXTS) return
+  const [x, y] = apply(m, [text.x, text.y])
+  collector.texts.push({
+    ...text,
+    text: clean,
+    x,
+    y,
+    height: text.height * factor,
+    width: text.width * factor,
+    rotation: text.rotation + (Math.atan2(m[1], m[0]) * 180) / Math.PI,
+  })
 }
 
 function insertBlock(collector: Collector, name: string, m: Matrix, depth: number): void {
@@ -280,6 +349,41 @@ function collect(collector: Collector, entity: IEntity, m: Matrix, depth: number
     case 'SPLINE': {
       const s = entity as ISplineEntity
       push(collector, m, splinePoints(s), s.closed)
+      return
+    }
+    case 'TEXT': {
+      const t = entity as ITextEntity
+      // Texte aligné (centre, droite…) : le point d'accroche est le second point (groupe 11).
+      const aligned = (t.halign ?? 0) > 0 && t.endPoint !== undefined
+      const anchor = aligned ? t.endPoint : t.startPoint
+      if (!anchor) return
+      pushText(collector, m, {
+        x: anchor.x,
+        y: anchor.y,
+        height: t.textHeight,
+        rotation: t.rotation ?? 0,
+        text: t.text ?? '',
+        width: 0,
+        halign: aligned ? (t.halign === 2 ? 'right' : 'center') : 'left',
+        valign: 'baseline',
+      })
+      return
+    }
+    case 'MTEXT': {
+      const t = entity as IMtextEntity
+      if (!t.position) return
+      const direction = t.directionVector
+      const rotation = direction ? (Math.atan2(direction.y, direction.x) * 180) / Math.PI : (t.rotation ?? 0)
+      pushText(collector, m, {
+        x: t.position.x,
+        y: t.position.y,
+        height: t.height,
+        rotation,
+        text: t.text ?? '',
+        width: t.width ?? 0,
+        halign: MTEXT_H[t.attachmentPoint] ?? 'left',
+        valign: MTEXT_V[t.attachmentPoint] ?? 'top',
+      })
       return
     }
     case 'INSERT': {
@@ -346,15 +450,15 @@ export function parseDxfText(text: string): ParsedDxf {
     throw new DxfReadError('unreadable')
   }
   if (!dxf) throw new DxfReadError('unreadable')
-  const collector: Collector = { paths: [], blocks: dxf.blocks ?? {} }
+  const collector: Collector = { paths: [], texts: [], blocks: dxf.blocks ?? {} }
   for (const entity of dxf.entities ?? []) {
     if (entity.inPaperSpace) continue // présentation (cartouche, fenêtres) : pas le dessin
     collect(collector, entity, IDENTITY, 0)
   }
   const paths = chainPaths(collector.paths)
-  if (paths.length === 0) throw new DxfReadError('empty')
+  if (paths.length === 0 && collector.texts.length === 0) throw new DxfReadError('empty')
   const units = dxf.header?.$INSUNITS
-  return { paths, insUnits: typeof units === 'number' ? units : null }
+  return { paths, texts: collector.texts, insUnits: typeof units === 'number' ? units : null }
 }
 
 export interface DxfExtent {
@@ -381,6 +485,13 @@ export function pathsExtent(paths: readonly DxfPath[]): DxfExtent | null {
   return Number.isFinite(minX) ? { minX, minY, maxX, maxY } : null
 }
 
+/** Boîte englobante des traits, ou à défaut des points d'insertion des textes (unités du fichier). */
+function fitExtent(paths: readonly DxfPath[], texts: readonly DxfText[]): DxfExtent | null {
+  const extent = pathsExtent(paths)
+  if (extent || texts.length === 0) return extent
+  return pathsExtent([{ points: texts.flatMap((t) => [t.x, t.y]), closed: false }])
+}
+
 /** Couleur des traits d'un fond DXF : gris, pour se distinguer du dessin de Fabrics. */
 export const DXF_BACKGROUND_STROKE = '#94a3b8'
 
@@ -396,8 +507,9 @@ export function dxfPathsToLines(
   factor: number,
   center: Point,
   meta: { name: string; groupId: string; levelId?: string },
+  texts: readonly DxfText[] = [],
 ): LineElement[] {
-  const extent = pathsExtent(paths)
+  const extent = fitExtent(paths, texts)
   if (!extent) return []
   const cx = ((extent.minX + extent.maxX) / 2) * factor
   const cy = (-(extent.minY + extent.maxY) / 2) * factor
@@ -425,6 +537,64 @@ export function dxfPathsToLines(
       strokeWidth: 1,
       arrowEnd: false,
       groupId: meta.groupId,
+    }
+  })
+}
+
+/** Part de la taille de police (Konva) que représente la hauteur des majuscules. */
+const CAP_RATIO = 0.7
+/** Distance de la ligne de base au haut du texte, en part de la taille de police. */
+const BASELINE_RATIO = 0.8
+/** Largeur moyenne d'un caractère, en part de la taille de police (pour centrer ou aligner à droite). */
+const CHAR_WIDTH_RATIO = 0.6
+
+/**
+ * Textes du fichier en éléments `text` du plan, à l'échelle (même centrage que les traits), verrouillés
+ * et du même groupe. La hauteur des majuscules du fichier (mm) donne la taille de police ; le point
+ * d'accroche du fichier (ligne de base, haut, milieu, centre, droite) est ramené au coin haut-gauche.
+ * Le texte est tourné autour de ce coin ; l'axe y est retourné, donc le sens de rotation aussi.
+ */
+export function dxfTextsToElements(
+  paths: readonly DxfPath[],
+  texts: readonly DxfText[],
+  factor: number,
+  center: Point,
+  meta: { name: string; groupId: string; levelId?: string },
+): TextElement[] {
+  const extent = fitExtent(paths, texts)
+  if (!extent) return []
+  const dx = center.x - ((extent.minX + extent.maxX) / 2) * factor
+  const dy = center.y + ((extent.minY + extent.maxY) / 2) * factor
+  return texts.map((t) => {
+    const fontSize = round((t.height * factor) / CAP_RATIO)
+    const lines = t.text.split('\n')
+    const longest = Math.max(...lines.map((line) => line.length))
+    const estimated = longest * fontSize * CHAR_WIDTH_RATIO
+    const width = t.width > 0 ? t.width * factor : Math.max(estimated, fontSize)
+    const blockHeight = lines.length * fontSize * 1.2
+    // Décalage du point d'accroche au coin haut-gauche, dans le repère du texte (y vers le bas).
+    const shiftX = t.halign === 'center' ? -width / 2 : t.halign === 'right' ? -width : 0
+    const shiftY =
+      t.valign === 'baseline'
+        ? -fontSize * BASELINE_RATIO
+        : t.valign === 'middle'
+          ? -blockHeight / 2
+          : t.valign === 'bottom'
+            ? -blockHeight
+            : 0
+    const angle = (-t.rotation * Math.PI) / 180
+    const cos = Math.cos(angle)
+    const sin = Math.sin(angle)
+    const element = createTextElement(meta.name, 0, 0, t.text, fontSize)
+    return {
+      ...element,
+      x: round(t.x * factor + dx + shiftX * cos - shiftY * sin),
+      y: round(-t.y * factor + dy + shiftX * sin + shiftY * cos),
+      rotation: round((-t.rotation + 360) % 360),
+      width: round(width),
+      locked: true,
+      groupId: meta.groupId,
+      ...(meta.levelId ? { levelId: meta.levelId } : {}),
     }
   })
 }

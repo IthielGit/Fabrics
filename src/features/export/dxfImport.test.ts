@@ -2,9 +2,11 @@ import { describe, expect, it } from 'vitest'
 import { writeDxf } from './dxf'
 import {
   chainPaths,
+  cleanDxfText,
   DXF_UNIT_FACTORS,
   DxfReadError,
   dxfPathsToLines,
+  dxfTextsToElements,
   parseDxfText,
   pathsExtent,
   unitFromInsunits,
@@ -132,5 +134,81 @@ describe('dxfPathsToLines', () => {
   it('un trait fermé revient à son premier point', () => {
     const [element] = dxfPathsToLines([{ points: [0, 0, 1000, 0, 1000, 1000], closed: true }], 1, { x: 0, y: 0 }, meta)
     expect(element.points.slice(-2)).toEqual(element.points.slice(0, 2))
+  })
+})
+
+const text = (x: number, y: number, height: number, value: string, rotation = 0) => [
+  '0', 'TEXT', '8', '0', '10', String(x), '20', String(y), '30', '0', '40', String(height), '1', value, '50', String(rotation),
+]
+const mtext = (x: number, y: number, height: number, value: string, attachment = 1) => [
+  '0', 'MTEXT', '8', '0', '10', String(x), '20', String(y), '30', '0', '40', String(height), '41', '2000', '71', String(attachment), '1', value,
+]
+
+describe('cleanDxfText', () => {
+  it('décode les accents, les retours à la ligne et les symboles', () => {
+    expect(cleanDxfText('Salle \\U+00E9t\\U+00E9')).toBe('Salle été')
+    expect(cleanDxfText('{\\fArial|b0;Cuisine}\\PRDC')).toBe('Cuisine\nRDC')
+    expect(cleanDxfText('%%c120 %%p5 20%%d')).toBe('Ø120 ±5 20°')
+  })
+})
+
+describe('textes d’un DXF', () => {
+  it('TEXT et MTEXT sont lus avec leur hauteur', () => {
+    const parsed = parseDxfText(dxf([...line(0, 0, 5000, 0), ...text(100, 200, 125, 'Salon'), ...mtext(0, 3000, 200, 'Cuisine\\PRDC')]))
+    expect(parsed.texts).toHaveLength(2)
+    expect(parsed.texts[0]).toMatchObject({ x: 100, y: 200, height: 125, text: 'Salon', halign: 'left', valign: 'baseline' })
+    expect(parsed.texts[1]).toMatchObject({ height: 200, text: 'Cuisine\nRDC', valign: 'top', width: 2000 })
+  })
+
+  it('un texte dans un bloc suit la position et l’échelle du bloc', () => {
+    const blocks = ['0', 'BLOCK', '8', '0', '2', 'ETIQ', '70', '0', '10', '0', '20', '0', '30', '0', ...text(0, 0, 100, 'A'), '0', 'ENDBLK']
+    const insert = ['0', 'INSERT', '8', '0', '2', 'ETIQ', '10', '1000', '20', '500', '30', '0', '41', '2', '42', '2']
+    const parsed = parseDxfText(dxf([...line(0, 0, 10, 0), ...insert], { blocks }))
+    expect(parsed.texts[0]).toMatchObject({ x: 1000, y: 500, height: 200 })
+  })
+
+  it('un fichier de textes seuls est accepté', () => {
+    expect(parseDxfText(dxf(text(0, 0, 100, 'Seul'))).texts).toHaveLength(1)
+  })
+
+  it('la hauteur des majuscules en mm donne la taille de police, et l’axe y est retourné', () => {
+    const parsed = parseDxfText(dxf([...line(0, 0, 4000, 2000), ...text(0, 2000, 140, 'Haut')]))
+    const [element] = dxfTextsToElements(parsed.paths, parsed.texts, 1, { x: 10000, y: 10000 }, meta)
+    expect(element.fontSize).toBe(200) // 140 / 0,7
+    expect(element.text).toBe('Haut')
+    expect(element.locked).toBe(true)
+    expect(element.groupId).toBe('g1')
+    expect(element.levelId).toBe('l1')
+    // Le bord haut du dessin (y = 2000) est en haut : x = 8000, y = 9000 moins la ligne de base (0,8 × 200).
+    expect(element.x).toBeCloseTo(8000)
+    expect(element.y).toBeCloseTo(9000 - 160)
+  })
+
+  it('même échelle et même centrage que les traits', () => {
+    const parsed = parseDxfText(dxf([...line(0, 0, 4000, 2000), ...text(4000, 0, 100, 'X')]))
+    const [lineElement] = dxfPathsToLines(parsed.paths, 1, { x: 0, y: 0 }, meta, parsed.texts)
+    const [element] = dxfTextsToElements(parsed.paths, parsed.texts, 1, { x: 0, y: 0 }, meta)
+    // Le texte est posé au pied du trait (x = 4000, y = 0) : même repère.
+    expect(element.x).toBeCloseTo(lineElement.points[2])
+    expect(element.y + (100 / 0.7) * 0.8).toBeCloseTo(lineElement.points[1])
+  })
+
+  it('un texte tourné de 90° est lu de bas en haut', () => {
+    const parsed = parseDxfText(dxf([...line(0, 0, 10, 0), ...text(0, 0, 100, 'V', 90)]))
+    const [element] = dxfTextsToElements(parsed.paths, parsed.texts, 1, { x: 0, y: 0 }, meta)
+    expect(element.rotation).toBe(270)
+  })
+
+  it('aller-retour avec l’export : un texte accentué retrouve sa hauteur', () => {
+    const file = writeDxf(
+      [{ name: 'T', color: 7 }],
+      [
+        { kind: 'line', layer: 'T', x1: 0, y1: 0, x2: 1000, y2: 0 },
+        { kind: 'text', layer: 'T', x: 100, y: 100, height: 125, text: 'Séjour' },
+      ],
+    )
+    const parsed = parseDxfText(file)
+    expect(parsed.texts[0].text).toBe('Séjour')
+    expect(parsed.texts[0].height).toBe(125)
   })
 })

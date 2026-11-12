@@ -710,9 +710,9 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 
 ### Lot E — Échanges DXF
 
-- [ ] **Export DXF** : ajouter les escaliers, plateformes, toitures et cheminées (nouveaux calques,
+- [x] **Export DXF** : ajouter les escaliers, plateformes, toitures et cheminées (nouveaux calques,
       D60 complétée).
-- [ ] **Import DXF** : reprendre les **textes** (TEXT, MTEXT) du fond, à leur place, à leur hauteur
+- [x] **Import DXF** : reprendre les **textes** (TEXT, MTEXT) du fond, à leur place, à leur hauteur
       en mm (D62 : le texte garde son calque d'origine, verrouillé comme le reste du fond).
 
 ### Lot F — Bibliothèque et annotations

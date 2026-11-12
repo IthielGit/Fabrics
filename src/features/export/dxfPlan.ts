@@ -5,6 +5,7 @@ import type {
   OpeningElement,
   WallElement,
 } from '../../types/document'
+import { computeRoof } from '../building/roof'
 import { buildWallPieces } from '../building/wallPieces'
 import { exposedOutline } from '../building/views/patterns'
 import type { WallPiece } from '../building/types'
@@ -19,6 +20,7 @@ import { openingGeometry } from '../geometry/openings'
 import { openingSymbol } from '../geometry/openingSymbol'
 import { polygonArea, polygonCentroid } from '../geometry/polygon'
 import { computeWallJoinsOf } from '../geometry/wallJoins'
+import { stairLayout, stairStatus, stairToWorld } from '../stairs/stairs'
 import { getSymbol } from '../library/catalog'
 import { drawSymbol } from '../library/drawing'
 import { arcPoints } from '../library/primitives'
@@ -34,6 +36,10 @@ export const DXF_LAYERS = {
   dimensions: 'COTES',
   axes: 'AXES',
   furniture: 'MOBILIER',
+  stairs: 'ESCALIERS',
+  platforms: 'PLATEFORMES',
+  roofs: 'TOITURES',
+  chimneys: 'CHEMINEES',
 } as const
 
 const LAYERS: DxfLayer[] = [
@@ -43,6 +49,10 @@ const LAYERS: DxfLayer[] = [
   { name: DXF_LAYERS.dimensions, color: 1 },
   { name: DXF_LAYERS.axes, color: 6 },
   { name: DXF_LAYERS.furniture, color: 8 },
+  { name: DXF_LAYERS.stairs, color: 2 },
+  { name: DXF_LAYERS.platforms, color: 5 },
+  { name: DXF_LAYERS.roofs, color: 30 },
+  { name: DXF_LAYERS.chimneys, color: 9 },
 ]
 
 /** Hauteur des majuscules par rapport à la taille de police d'un texte SVG ou Konva. */
@@ -292,6 +302,114 @@ function furnitureEntities(elements: readonly CanvasElement[]): DxfEntity[] {
   return out
 }
 
+/** Escalier : contour, lignes de marche (girons) et ligne de foulée de chaque volée, palier compris. */
+function stairEntities(elements: readonly CanvasElement[], levels: FabricsDocument['levels']): DxfEntity[] {
+  const layer = DXF_LAYERS.stairs
+  const out: DxfEntity[] = []
+  for (const stair of elements) {
+    if (stair.type !== 'stair' || stair.hidden) continue
+    const status = stairStatus(stair, levels)
+    const treads = status.kind === 'no-level-above' ? 0 : status.steps.treads
+    const layout = stairLayout(stair, treads)
+    const world = (x: number, y: number): Pt => {
+      const p = stairToWorld(stair, { x, y })
+      return [p.x, p.y]
+    }
+    const line = (a: Pt, b: Pt) => out.push({ kind: 'line', layer, x1: a[0], y1: a[1], x2: b[0], y2: b[1] })
+    out.push({
+      kind: 'polyline',
+      layer,
+      points: layout.outline.flatMap((p) => world(p.x, p.y)),
+      closed: true,
+    })
+    if (layout.landing) {
+      const l = layout.landing
+      // Le palier se sépare des volées par un trait (sauf là où le contour le fait déjà).
+      line(world(l.x, l.y + l.height), world(l.x + l.width, l.y + l.height))
+    }
+    for (const f of layout.flights) {
+      const vertical = f.direction === 'right'
+      for (let i = 1; i < f.treads; i++) {
+        if (vertical) {
+          const x = f.x + (f.width * i) / f.treads
+          line(world(x, f.y), world(x, f.y + f.height))
+        } else {
+          const y = f.y + (f.height * i) / f.treads
+          line(world(f.x, y), world(f.x + f.width, y))
+        }
+      }
+      // Ligne de foulée au milieu de la volée, dans le sens de la montée.
+      const cx = f.x + f.width / 2
+      const cy = f.y + f.height / 2
+      if (vertical) line(world(f.x, cy), world(f.x + f.width, cy))
+      else if (f.direction === 'up') line(world(cx, f.y + f.height), world(cx, f.y))
+      else line(world(cx, f.y), world(cx, f.y + f.height))
+    }
+  }
+  return out
+}
+
+/** Plateforme : contour fermé et altitude du dessus (« +450 », mm) au centre. */
+function platformEntities(elements: readonly CanvasElement[], fontMm: number): DxfEntity[] {
+  const layer = DXF_LAYERS.platforms
+  const out: DxfEntity[] = []
+  for (const el of elements) {
+    if (el.type !== 'platform' || el.hidden || el.points.length < 6) continue
+    out.push({ kind: 'polyline', layer, points: el.points, closed: true })
+    const centroid = polygonCentroid(el.points)
+    if (centroid) {
+      out.push({
+        kind: 'text',
+        layer,
+        x: centroid.x,
+        y: centroid.y + fontMm / 2,
+        height: fontMm,
+        text: `+${formatDecimal(el.elevation, 0)}`,
+        anchor: 'middle',
+      })
+    }
+  }
+  return out
+}
+
+/**
+ * Toiture : contour au nu des murs, bord du débord, faîtage et arêtiers. Sans géométrie calculable
+ * (contour trop court), seul le contour est exporté.
+ */
+function roofEntities(elements: readonly CanvasElement[]): DxfEntity[] {
+  const layer = DXF_LAYERS.roofs
+  const out: DxfEntity[] = []
+  for (const roof of elements) {
+    if (roof.type !== 'roof' || roof.hidden || roof.points.length < 6) continue
+    out.push({ kind: 'polyline', layer, points: roof.points, closed: true, dashed: true })
+    const result = computeRoof(roof, 0)
+    if ('problem' in result) continue
+    const g = result.geometry
+    if (roof.overhang > 0) {
+      out.push({ kind: 'polyline', layer, points: g.overhangOutline.flatMap((p) => [p.x, p.y]), closed: true })
+    }
+    for (const [a, b] of [...(g.ridge ? [g.ridge] : []), ...g.hips]) {
+      out.push({ kind: 'line', layer, x1: a.x, y1: a.y, x2: b.x, y2: b.y })
+    }
+  }
+  return out
+}
+
+/** Cheminée (conduit) : carré et ses deux diagonales, comme le symbole du plan. */
+function chimneyEntities(elements: readonly CanvasElement[]): DxfEntity[] {
+  const layer = DXF_LAYERS.chimneys
+  const out: DxfEntity[] = []
+  for (const el of elements) {
+    if (el.type !== 'chimney' || el.hidden) continue
+    const place = placer(el.x, el.y, el.rotation)
+    const [a, b, c, d] = [place(0, 0), place(el.width, 0), place(el.width, el.depth), place(0, el.depth)]
+    out.push({ kind: 'polyline', layer, points: [...a, ...b, ...c, ...d], closed: true })
+    out.push({ kind: 'line', layer, x1: a[0], y1: a[1], x2: c[0], y2: c[1] })
+    out.push({ kind: 'line', layer, x1: b[0], y1: b[1], x2: d[0], y2: d[1] })
+  }
+  return out
+}
+
 /**
  * Entités DXF d'un niveau : murs, pièces, ouvertures, cotes (tracées à la main, plus les cotes
  * automatiques du réglage « Cotation »), axes et mobilier, chacun sur son calque. Les éléments
@@ -341,6 +459,10 @@ export function levelDxfEntities(
     ...overlayEntities,
     ...axisEntities(elements),
     ...furnitureEntities(elements),
+    ...stairEntities(elements, document.levels),
+    ...platformEntities(elements, fontMm),
+    ...roofEntities(elements),
+    ...chimneyEntities(elements),
   ]
 }
 

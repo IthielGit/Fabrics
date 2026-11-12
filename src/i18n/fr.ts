@@ -196,14 +196,16 @@ export const fr = {
     size: 'Dimensions',
     sizeValue: (width: string, height: string) => `${width} × ${height} mm`,
     count: 'Traits',
+    textCount: 'Textes',
     level: 'Niveau',
-    hint: 'Le dessin est posé sous les autres éléments, verrouillé, au centre de la vue. Les textes et les hachures du fichier ne sont pas repris.',
+    hint: 'Le dessin est posé sous les autres éléments, verrouillé, au centre de la vue. Les textes (TEXT, MTEXT) sont repris à leur place, à leur hauteur réelle ; les hachures ne le sont pas.',
     submit: 'Importer',
     layerName: (fileName: string) => `Fond DXF – ${fileName}`,
-    done: (count: number) => `Fond DXF importé : ${count} trait${count > 1 ? 's' : ''}, verrouillé. Déverrouillez-le dans les calques pour le déplacer.`,
+    done: (count: number, texts = 0) =>
+      `Fond DXF importé : ${count} trait${count > 1 ? 's' : ''}${texts > 0 ? ` et ${texts} texte${texts > 1 ? 's' : ''}` : ''}, verrouillé. Déverrouillez-le dans les calques pour le déplacer.`,
     errors: {
       unreadable: 'Ce fichier n’a pas pu être lu comme un DXF (format texte). Enregistrez-le en DXF ASCII depuis votre logiciel de DAO.',
-      empty: 'Aucun trait trouvé dans ce fichier (lignes, polylignes, arcs, cercles).',
+      empty: 'Aucun trait ni texte trouvé dans ce fichier (lignes, polylignes, arcs, cercles, textes).',
       tooLarge: 'Ce fichier est trop lourd pour être affiché comme fond de plan (plus de 20 000 traits ou 50 Mo).',
     },
   },
@@ -220,7 +222,7 @@ export const fr = {
     nameLabel: 'Nom du calque',
     drag: 'Glisser pour réordonner',
     backgroundHint: 'Fond importé : cliquez pour le sélectionner en entier (Suppr pour le retirer).',
-    backgroundCount: (count: number) => `${count} trait${count > 1 ? 's' : ''}`,
+    backgroundCount: (count: number) => `${count} élément${count > 1 ? 's' : ''}`,
   },
   measurements: {
     title: 'Métrés',

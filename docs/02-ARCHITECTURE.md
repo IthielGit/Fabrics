@@ -149,6 +149,8 @@ export interface TextElement extends BaseElement {
   fontStyle: 'normal' | 'bold' | 'italic' | 'bold italic';
   align: 'left' | 'center' | 'right';
   fill: string;
+  // Texte d'un fond importé (M11 bis, DXF) : même groupe que les traits du fond.
+  groupId?: string;
 }
 
 export interface RectElement extends BaseElement {
@@ -674,9 +676,10 @@ les éléments modifiés.
 ### Import et export (M11), partage (M13)
 
 - DXF exporté : unités mm (`$INSUNITS = 4`), calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`,
-  `AXES`, `MOBILIER` ; un fichier par niveau (D60), plusieurs niveaux réunis dans un .zip.
+  `AXES`, `MOBILIER`, `ESCALIERS`, `PLATEFORMES`, `TOITURES`, `CHEMINEES` (M11 bis) ; un fichier par niveau (D60), plusieurs niveaux réunis dans un .zip.
 - DXF importé : lignes, polylignes, arcs, cercles, blocs convertis en éléments `line` liés par
-  `groupId` (D62) et verrouillés, sous les autres éléments du niveau actif.
+  `groupId` (D62) et verrouillés, sous les autres éléments du niveau actif. M11 bis : les textes
+  (TEXT, MTEXT) deviennent des éléments `text` verrouillés du même `groupId` (champ facultatif).
 - glTF : `GLTFExporter` fourni par `three`.
 - Partage : table Supabase `shares` (jeton aléatoire, projet, actif, mot de passe haché
   optionnel, expiration), RLS activé ; la lecture publique passe par une fonction Postgres

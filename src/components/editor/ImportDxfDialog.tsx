@@ -3,6 +3,7 @@ import {
   DXF_UNIT_FACTORS,
   DxfReadError,
   dxfPathsToLines,
+  dxfTextsToElements,
   parseDxfText,
   pathsExtent,
   unitFromInsunits,
@@ -53,7 +54,17 @@ export default function ImportDxfDialog({
     (state) => state.project?.document.levels?.find((l) => l.id === state.activeLevelId)?.name ?? '',
   )
 
-  const extent = useMemo(() => (parsed ? pathsExtent(parsed.paths) : null), [parsed])
+  const extent = useMemo(
+    () =>
+      parsed
+        ? pathsExtent(
+            parsed.paths.length > 0
+              ? parsed.paths
+              : [{ points: parsed.texts.flatMap((t) => [t.x, t.y]), closed: false }],
+          )
+        : null,
+    [parsed],
+  )
   const factor = DXF_UNIT_FACTORS[unit]
   const width = extent ? (extent.maxX - extent.minX) * factor : 0
   const height = extent ? (extent.maxY - extent.minY) * factor : 0
@@ -69,12 +80,14 @@ export default function ImportDxfDialog({
       { zoom, x: stagePosition.x, y: stagePosition.y },
       ppu,
     )
-    const lines = dxfPathsToLines(parsed.paths, factor, center, {
+    const meta = {
       name: fr.dxfImport.layerName(fileName),
       groupId: crypto.randomUUID(),
       ...(activeLevelId ? { levelId: activeLevelId } : {}),
-    })
-    store.addBackgroundElements(lines)
+    }
+    const lines = dxfPathsToLines(parsed.paths, factor, center, meta, parsed.texts)
+    const texts = dxfTextsToElements(parsed.paths, parsed.texts, factor, center, meta)
+    store.addBackgroundElements([...lines, ...texts])
     // Dessin plus grand que la vue : on dézoome pour le voir en entier, centré.
     const fit = Math.min(
       (viewportSize.width - FIT_PADDING * 2) / (width * ppu),
@@ -90,7 +103,7 @@ export default function ImportDxfDialog({
         },
       })
     }
-    store.setNotice(fr.dxfImport.done(lines.length))
+    store.setNotice(fr.dxfImport.done(lines.length, texts.length))
     onClose()
   }
 
@@ -123,6 +136,8 @@ export default function ImportDxfDialog({
               </dd>
               <dt className="text-slate-500">{fr.dxfImport.count}</dt>
               <dd className="text-slate-900">{parsed?.paths.length ?? 0}</dd>
+              <dt className="text-slate-500">{fr.dxfImport.textCount}</dt>
+              <dd className="text-slate-900">{parsed?.texts.length ?? 0}</dd>
               {levelName && (
                 <>
                   <dt className="text-slate-500">{fr.dxfImport.level}</dt>

@@ -1,3 +1,4 @@
+import { backgroundGroupId } from '../../features/documents/backgroundGroup'
 import clsx from 'clsx'
 import {
   Armchair,
@@ -128,7 +129,7 @@ export default function LayersPanel() {
       <ul className="mt-3 space-y-0.5" onDrop={handleDrop} onDragLeave={() => setDropSlot(null)}>
         {rows.map((row, rowIndex) => {
           const element = row.element
-          if (element.type === 'line' && element.groupId !== undefined) {
+          if (backgroundGroupId(element) !== undefined) {
             return (
               <BackgroundRow
                 key={element.id}
@@ -275,7 +276,7 @@ function layerRows(ordered: readonly CanvasElement[]): LayerRow[] {
   const rows: LayerRow[] = []
   const groups = new Map<string, LayerRow>()
   ordered.forEach((element, fullIndex) => {
-    const groupId = element.type === 'line' ? element.groupId : undefined
+    const groupId = backgroundGroupId(element)
     if (groupId === undefined) {
       rows.push({ element, ids: [element.id], fullIndex })
       return

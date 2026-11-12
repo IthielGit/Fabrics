@@ -4,8 +4,12 @@ import {
   createAxisElement,
   createDimensionElement,
   createFurnitureElement,
+  createChimneyElement,
   createOpeningElement,
+  createPlatformElement,
+  createRoofElement,
   createRoomElement,
+  createStairElement,
   createWallElement,
 } from '../documents/elements'
 import { createLevel } from '../documents/levels'
@@ -93,6 +97,44 @@ describe('levelDxfEntities', () => {
 
   it('n’exporte pas les éléments masqués', () => {
     expect(entities([{ ...wall([0, 0, 5000, 0]), hidden: true }])).toHaveLength(0)
+  })
+})
+
+describe('escaliers, plateformes, toitures et cheminées', () => {
+  it('un escalier droit : contour de 1000 × 4000 mm, lignes de marche et ligne de foulée', () => {
+    const stair = { ...createStairElement('Escalier', 'straight', 1000, 500, { length: 4000 }), levelId: ground.id }
+    const list = onLayer(entities([stair]), DXF_LAYERS.stairs)
+    const outline = list.find((e) => e.kind === 'polyline')
+    expect(outline).toMatchObject({ closed: true, points: [1000, 500, 2000, 500, 2000, 4500, 1000, 4500] })
+    // 2700 mm à monter → 15 contremarches, 14 girons : 13 lignes de marche + la ligne de foulée.
+    expect(list.filter((e) => e.kind === 'line')).toHaveLength(14)
+  })
+
+  it('une plateforme : contour et altitude du dessus en mm', () => {
+    const platform = { ...createPlatformElement('Estrade', [0, 0, 2000, 0, 2000, 1000, 0, 1000], 450), levelId: ground.id }
+    const list = onLayer(entities([platform]), DXF_LAYERS.platforms)
+    expect(list.some((e) => e.kind === 'polyline' && e.closed)).toBe(true)
+    expect(list.find((e) => e.kind === 'text')).toMatchObject({ text: '+450' })
+  })
+
+  it('une toiture à deux pans : contour, débord et faîtage', () => {
+    const roof = { ...createRoofElement('Toit', [0, 0, 8000, 0, 8000, 5000, 0, 5000], 'gable'), levelId: ground.id }
+    const list = onLayer(entities([roof]), DXF_LAYERS.roofs)
+    expect(list.filter((e) => e.kind === 'polyline')).toHaveLength(2)
+    const ridge = list.find((e) => e.kind === 'line')!
+    expect(length(ridge)).toBeGreaterThan(7000) // faîtage le long du grand côté
+  })
+
+  it('une cheminée : carré et deux diagonales', () => {
+    const chimney = { ...createChimneyElement('Conduit', 100, 200, 600, 600), levelId: ground.id }
+    const list = onLayer(entities([chimney]), DXF_LAYERS.chimneys)
+    expect(list).toHaveLength(3)
+    expect(list.filter((e) => e.kind === 'line').map(length)[0]).toBeCloseTo(Math.hypot(600, 600))
+  })
+
+  it('un élément masqué n’est pas exporté', () => {
+    const chimney = { ...createChimneyElement('Conduit', 0, 0), levelId: ground.id, hidden: true }
+    expect(entities([chimney])).toHaveLength(0)
   })
 })
 

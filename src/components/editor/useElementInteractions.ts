@@ -1,3 +1,4 @@
+import { backgroundGroupId } from '../../features/documents/backgroundGroup'
 import type Konva from 'konva'
 import { useCallback, useMemo, useRef } from 'react'
 import { translateBox, unionBoxes, type Box } from '../../features/geometry/box'
@@ -108,10 +109,10 @@ export function useElementInteractions(): Handlers {
     const { selectedIds, setSelection, project } = useEditorStore.getState()
     // Fond DXF déverrouillé : un clic sur un trait prend tout le fond (il se déplace d'un bloc).
     const clicked = project?.document.elements.find((el) => el.id === id)
-    const groupId = clicked?.type === 'line' ? clicked.groupId : undefined
+    const groupId = clicked ? backgroundGroupId(clicked) : undefined
     const ids = groupId
       ? (project?.document.elements ?? [])
-          .filter((el) => el.type === 'line' && el.groupId === groupId)
+          .filter((el) => backgroundGroupId(el) === groupId)
           .map((el) => el.id)
       : [id]
     if (event.evt.shiftKey) {
