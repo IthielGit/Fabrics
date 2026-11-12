@@ -1210,6 +1210,11 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Demande de l'utilisateur : trop d'éléments en haut du plan. Solution : ligne 1 = niveau + bouton unique « Cotation : Aucune ▾ » (liste au clic) ; ligne 2 = options de l'outil (Polygone / Rectangle / Avec murs…), seulement quand l'outil en a ; les deux interrupteurs de transparence des niveaux n'apparaissent qu'avec plusieurs niveaux.
 - Fichiers : `DimensioningSelector.tsx`, `LevelSelector.tsx`, `EditorPage.tsx`.
 
+### 2026-11-12 — Accueil qui guide, version plan seulement (M11 quater, lot B)
+
+- L'accueil montre deux cartes : « Dessiner un plan » et « Voir un exemple », plus le rappel que les projets restent dans ce navigateur. Plus de bouton ni de carte pour créer un visuel (affiche, post…) ; les visuels déjà créés restent dans la liste des projets. `NewDesignDialog` n'est plus utilisé par l'accueil.
+- Fichiers : `HomePage.tsx`, `fr.ts`. Build, lint, 2673 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

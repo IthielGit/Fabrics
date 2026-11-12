@@ -1,25 +1,22 @@
-import { Plus, Ruler, Search } from 'lucide-react'
+import { BookOpen, Ruler, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import DeleteDialog from '../components/home/DeleteDialog'
-import NewDesignDialog from '../components/home/NewDesignDialog'
 import ProjectCard from '../components/home/ProjectCard'
 import RenameDialog from '../components/home/RenameDialog'
 import Button from '../components/ui/Button'
-import type { DesignFormatId } from '../features/documents/createProject'
 import { filterProjectsByName } from '../features/persistence/filterProjects'
 import type { ProjectSummary } from '../features/persistence/types'
 import { fr } from '../i18n/fr'
 import { useProjectsStore } from '../stores/projectsStore'
 
 type Dialog =
-  | { type: 'new-design' }
   | { type: 'rename'; project: ProjectSummary }
   | { type: 'delete'; project: ProjectSummary }
 
 export default function HomePage() {
   const navigate = useNavigate()
-  const { projects, status, refresh, createDesign, createPlan, rename, duplicate, remove } =
+  const { projects, status, refresh, createPlan, createExample, rename, duplicate, remove } =
     useProjectsStore()
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const [query, setQuery] = useState('')
@@ -31,15 +28,18 @@ export default function HomePage() {
 
   const closeDialog = () => setDialog(null)
 
-  const handleCreateDesign = async (formatId: DesignFormatId) => {
-    const id = await createDesign(formatId)
-    navigate(`/p/${id}`)
-  }
-
   const handleCreatePlan = async () => {
     const id = await createPlan()
     navigate(`/p/${id}`)
   }
+
+  const handleCreateExample = async () => {
+    const id = await createExample()
+    navigate(`/p/${id}`)
+  }
+
+  const cardClass =
+    'flex flex-col items-start gap-2 rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm hover:border-indigo-300 hover:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300'
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
@@ -50,16 +50,20 @@ export default function HomePage() {
       </header>
 
       <main className="mx-auto max-w-5xl px-6 py-8">
-        <div className="flex flex-wrap gap-3">
-          <Button variant="primary" onClick={() => setDialog({ type: 'new-design' })}>
-            <Plus size={16} aria-hidden="true" />
-            {fr.home.newDesign}
-          </Button>
-          <Button onClick={() => void handleCreatePlan()}>
-            <Ruler size={16} aria-hidden="true" />
-            {fr.home.newPlan}
-          </Button>
+        <h2 className="text-lg font-semibold">{fr.home.startTitle}</h2>
+        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          <button type="button" className={cardClass} onClick={() => void handleCreatePlan()}>
+            <Ruler size={24} className="text-indigo-600" aria-hidden="true" />
+            <span className="font-semibold">{fr.home.cards.plan.title}</span>
+            <span className="text-sm text-slate-500">{fr.home.cards.plan.text}</span>
+          </button>
+          <button type="button" className={cardClass} onClick={() => void handleCreateExample()}>
+            <BookOpen size={24} className="text-indigo-600" aria-hidden="true" />
+            <span className="font-semibold">{fr.home.cards.example.title}</span>
+            <span className="text-sm text-slate-500">{fr.home.cards.example.text}</span>
+          </button>
         </div>
+        <p className="mt-3 text-xs text-slate-500">{fr.home.storageReminder}</p>
 
         <h2 className="mt-10 text-lg font-semibold">{fr.home.title}</h2>
 
@@ -120,9 +124,6 @@ export default function HomePage() {
         )}
       </main>
 
-      {dialog?.type === 'new-design' && (
-        <NewDesignDialog onSelect={(id) => void handleCreateDesign(id)} onClose={closeDialog} />
-      )}
       {dialog?.type === 'rename' && (
         <RenameDialog
           currentName={dialog.project.name}

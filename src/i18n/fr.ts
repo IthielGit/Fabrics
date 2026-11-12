@@ -56,14 +56,13 @@ export const fr = {
     startTitle: 'Par où commencer ?',
     cards: {
       plan: { title: 'Dessiner un plan', text: 'Murs, pièces, portes : les surfaces se calculent toutes seules.' },
-      design: { title: 'Créer une affiche', text: 'Texte, formes et images pour une affiche ou un post.' },
       example: { title: 'Voir un exemple', text: 'Un petit logement déjà dessiné, à explorer et à modifier.' },
     },
     storageReminder:
       'Vos projets restent dans ce navigateur, sur cet appareil : ils ne sont envoyés nulle part. Pensez à exporter ceux qui comptent.',
     emptyTitle: 'Aucun projet pour le moment',
     emptyText:
-      'Créez un visuel (affiche, post, flyer) ou un plan à l’échelle pour commencer. Vos projets sont enregistrés automatiquement dans ce navigateur.',
+      'Dessinez un plan à l’échelle pour commencer. Vos projets sont enregistrés automatiquement dans ce navigateur.',
     loadError: 'Impossible de charger vos projets.',
     searchLabel: 'Rechercher un projet',
     searchPlaceholder: 'Rechercher un projet par son nom',
