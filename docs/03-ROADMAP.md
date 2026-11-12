@@ -572,7 +572,7 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
 
 **Groupe 4 — Repères `M01`, `P01`, `F01`**
 
-- [ ] **Ordre de lecture sans saut de bande** : regrouper en lignes par écart réel entre éléments
+- [x] **Ordre de lecture sans saut de bande** : regrouper en lignes par écart réel entre éléments
       (tri par y, nouvelle ligne quand l'écart dépasse 500 mm) au lieu de `Math.round(y / 500)` ;
       deux murs à y = 749 et y = 751 sont sur la même ligne. Fichiers : `references.ts`, test
       dans `references.test.ts`.

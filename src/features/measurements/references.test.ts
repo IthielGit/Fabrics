@@ -54,4 +54,24 @@ describe('repères M01, P01, F01', () => {
     const second = buildReferences({ elements: [...elements].reverse(), levels: [L0] }).walls
     expect([...first]).toEqual([...second])
   })
+
+  it('deux murs à y = 749 et y = 751 sont sur la même ligne : on lit de gauche à droite', () => {
+    const elements: CanvasElement[] = [
+      wall('droite', [1000, 751, 2000, 751]),
+      wall('gauche', [0, 749, 1000, 749]),
+    ]
+    const { walls } = buildReferences({ elements, levels: [L0] })
+    expect(walls.get('gauche')).toBe('M01')
+    expect(walls.get('droite')).toBe('M02')
+  })
+
+  it('un écart de plus de 500 mm change de ligne, même avec x plus petit', () => {
+    const elements: CanvasElement[] = [
+      wall('dessous', [0, 1300, 1000, 1300]),
+      wall('dessus', [5000, 0, 6000, 0]),
+    ]
+    const { walls } = buildReferences({ elements, levels: [L0] })
+    expect(walls.get('dessus')).toBe('M01')
+    expect(walls.get('dessous')).toBe('M02')
+  })
 })

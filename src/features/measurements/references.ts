@@ -13,7 +13,7 @@ export interface References {
   openings: Map<string, string>
 }
 
-/** Deux éléments dont la hauteur sur le plan diffère de moins que cela sont sur la « même ligne ». */
+/** Deux éléments consécutifs (triés par hauteur) à moins de cet écart (mm) sont sur la « même ligne ». */
 const ROW_BAND = 500
 
 const pad = (prefix: string, n: number) => `${prefix}${String(n).padStart(2, '0')}`
@@ -50,14 +50,23 @@ function openingCentre(opening: OpeningElement, wall: WallElement): { x: number;
   return { x: ax + (bx - ax) * t, y: ay + (by - ay) * t }
 }
 
-/** Haut en bas (par bandes), puis gauche à droite ; l'identifiant départage deux égalités. */
+/**
+ * Haut en bas, puis gauche à droite. On trie par hauteur ; une nouvelle ligne commence quand l'écart
+ * avec l'élément précédent dépasse `ROW_BAND` (pas de bandes fixes : deux murs à y = 749 et y = 751
+ * sont sur la même ligne). L'identifiant départage deux égalités.
+ */
 function readingOrder<T extends { id: string }>(list: Placed<T>[]): T[] {
-  return [...list]
-    .sort(
-      (a, b) =>
-        Math.round(a.y / ROW_BAND) - Math.round(b.y / ROW_BAND) || a.x - b.x || a.item.id.localeCompare(b.item.id),
-    )
-    .map((entry) => entry.item)
+  const byHeight = [...list].sort((a, b) => a.y - b.y || a.x - b.x || a.item.id.localeCompare(b.item.id))
+  const rows: Placed<T>[][] = []
+  let previousY = -Infinity
+  for (const entry of byHeight) {
+    if (rows.length === 0 || entry.y - previousY > ROW_BAND) rows.push([])
+    rows[rows.length - 1].push(entry)
+    previousY = entry.y
+  }
+  return rows.flatMap((row) =>
+    row.sort((a, b) => a.x - b.x || a.y - b.y || a.item.id.localeCompare(b.item.id)).map((entry) => entry.item),
+  )
 }
 
 export function buildReferences(document: Pick<FabricsDocument, 'elements' | 'levels'>): References {

@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Tâche 1 · Ordre de lecture sans saut de bande
+- Fait : les repères se lisent de haut en bas par lignes réelles (nouvelle ligne quand l'écart avec l'élément précédent dépasse 500 mm), puis de gauche à droite. Deux murs à y = 749 et y = 751 sont sur la même ligne.
+- Fichiers : `src/features/measurements/references.ts`, `references.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2501)
+- Commit : fix: ordre de lecture des repères sans saut de bande
+
 ### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Décision sur les repères
 - Décision de l'utilisateur (D57) : option A, les repères restent **recalculés** à chaque modification ; les documents qui les montrent portent la mention « Repères valables à la date du document ».
 - Plan du groupe 4 présenté, en attente du feu vert. Aucun code modifié.
