@@ -540,10 +540,27 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
       pleine) et pièces qui se chevauchent sont signalées dans la vue Client du panneau, comme en
       Exécution. Fichier : `MeasurementsPanel.tsx`.
 - [ ] **Contrôle avant export** : fonction pure `metresWarnings(document, building)` qui liste
-      pièces superposées, trémies qui débordent, pièces masquées comptées, éléments sans niveau
-      (hors axes), ouvertures plus larges que leur segment ou qui se chevauchent. La fenêtre
+      pièces superposées, trémies qui débordent, pièces masquées comptées, pièces qui ne
+      remplissent pas l'espace entre leurs murs ou qui en débordent (tâche suivante), éléments
+      sans niveau (hors axes), ouvertures plus larges que leur segment ou qui se chevauchent. La fenêtre
       Exporter affiche la liste avant le téléchargement (sans bloquer). Fichiers :
       `src/features/measurements/warnings.ts` (nouveau) + test, `ExportDialog.tsx`, `fr.ts`.
+- [ ] **Pièce qui ne remplit pas l'espace entre les murs** (cas très fréquent). Une pièce
+      dessinée à la main laisse souvent une petite bande ou un coin non couvert entre son contour
+      et les murs qui l'entourent : cette surface manque dans les métrés sans que rien ne le
+      signale. Fonction pure `roomCoverageGaps(room, walls)` : calcule la zone fermée par les murs
+      autour de la pièce (même référence que le contour : axe ou face, selon la décision
+      « dimensions affichées au client »), lui retire la pièce et renvoie les morceaux restants
+      au-delà d'un seuil (par exemple plus de 50 mm de large ou plus de 0,01 m²), avec leur
+      surface. Le cas inverse est aussi signalé : une pièce qui déborde au-delà des murs.
+      Affichage : avertissement dans le panneau Métrés (Client et Exécution) et dans le contrôle
+      avant export (« Salon : 0,12 m² non couverts le long du mur M04 ») ; la zone manquante est
+      surlignée sur le plan quand on clique l'avertissement. Rien n'est corrigé automatiquement.
+      Fichiers : `src/features/measurements/roomCoverage.ts` (nouveau) + test,
+      `warnings.ts`, `MeasurementsPanel.tsx`, `fr.ts`. Tests : pièce exacte (aucun écart),
+      pièce décalée de 100 mm d'un côté (bande signalée avec sa surface), coin oublié d'une pièce
+      en L, pièce qui déborde d'un mur, pièce sans murs autour (aucun avertissement), écart sous
+      le seuil (ignoré).
 - [ ] **Décision : pièces masquées.** Les compter (règle actuelle, avec l'avertissement ci-dessus)
       ou les retirer du document Client seulement.
 
@@ -570,6 +587,8 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
 - Une pièce en L affiche « forme libre » ; une pièce sans nom affiche « Pièce 1 »
 - Une trémie qui déborde ou deux pièces superposées sont signalées dans la vue Client et dans
   la fenêtre Exporter
+- Une pièce dessinée 100 mm trop courte contre un mur de 4000 mm est signalée (« 0,40 m² non
+  couverts ») ; une pièce qui touche exactement ses murs ne l'est pas
 - Deux murs à y = 749 et y = 751, x = 0 et x = 1000, reçoivent `M01` puis `M02`
 - Un projet d'avant cette étape s'ouvre sans changement
 
