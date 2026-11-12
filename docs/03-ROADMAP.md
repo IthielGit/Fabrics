@@ -755,6 +755,29 @@ plafonds, hauteur sous plafond).
 
 ---
 
+## M11 ter — Boussole du plan
+
+Demande de l'utilisateur du 2026-11-12. Règle unique : **le nord est un seul angle**
+(`plan.northAngle`, 0° = nord en haut) ; la boussole, la rose des vents imprimée, le cube 3D et les
+façades s'en déduisent. Aucun changement du format du document.
+
+- [x] **Boussole interactive** en bas à gauche du canevas d'un plan, **affichée à la demande**
+      (bouton dans la barre d'état, masquée par défaut, choix mémorisé dans le navigateur) : rose
+      N / E / S / O et aiguille rouge vers le nord, qui tourne avec l'angle ; on la tourne à la souris
+      (aimantée tous les 15°, Maj = au degré), aux flèches du clavier, double-clic = nord en haut ;
+      un seul « Annuler » par geste. Liée au champ « Nord » des réglages du plan.
+- [x] **Rose des vents à l'impression** : la flèche du nord des annotations de plan devient une rose
+      (graduations et lettres N, E, S, O qui suivent le nord), reprise dans PDF, PNG, DXF et planche.
+
+**Critères d'acceptation**
+- Le bouton boussole apparaît dans un plan (pas dans un visuel) ; la boussole est masquée à la première ouverture
+- Tourner la boussole à 30° met le champ « Nord » à 30° ; saisir 90° dans le champ tourne la boussole
+- Un geste complet de rotation = une seule étape d'annulation
+- Avec « Flèche du nord et repère de niveau » cochée, les exports montrent N, E, S, O dans le bon sens
+- Les textes sont en français ; aucune nouvelle dépendance
+
+---
+
 ## M12 — Mise en ligne
 
 Objectif : l'application est accessible publiquement (en mode local, sans compte).

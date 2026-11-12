@@ -33,6 +33,10 @@ export interface ExecutionLabels {
   ceiling: (altitude: string) => string
   /** « N » : lettre de la flèche du nord. */
   north: string
+  /** « E », « S », « O » : les autres lettres de la rose des vents (sans elles, seul le N est écrit). */
+  east?: string
+  south?: string
+  west?: string
   /** « Niveau RDC (±0) » : repère de niveau du plan. */
   levelMark: (levelName: string, altitude: string) => string
   /** « Trémie ». */

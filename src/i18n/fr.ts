@@ -102,6 +102,8 @@ export const fr = {
     showMinimap: 'Afficher la mini-carte',
     hideMinimap: 'Masquer la mini-carte',
     minimapHelp: 'Cliquez ou glissez pour aller à un endroit du plan',
+    showCompass: 'Afficher la boussole',
+    hideCompass: 'Masquer la boussole',
     undo: 'Annuler',
     redo: 'Rétablir',
     saving: 'Enregistrement…',
@@ -916,8 +918,13 @@ export const fr = {
     annotations: 'Flèche du nord et repère de niveau',
     dimensionLabels: 'Étiquettes de cote',
     dimensionLabelsHint: 'Écrit la longueur de chaque mur et la largeur de chaque porte, fenêtre et baie (en mm) le long des murs. Recalculées avec le plan, reprises dans les PDF, les images et les DXF.',
-    annotationsHint: 'Dessine la flèche du nord et le repère du niveau à droite du plan ; ils sont repris dans les PDF, les images et les DXF.',
+    annotationsHint: 'Dessine la rose des vents (nord) et le repère du niveau à droite du plan ; ils sont repris dans les PDF, les images et les DXF.',
     unitDegrees: '°',
+  },
+  compass: {
+    label: 'Boussole : direction du nord',
+    value: (degrees: number) => `Nord : ${degrees}°`,
+    help: 'Tournez la boussole pour régler le nord (tous les 15° ; Maj = au degré). Double-clic : nord en haut.',
   },
   viewer3d: {
     title: 'Vue 3D',

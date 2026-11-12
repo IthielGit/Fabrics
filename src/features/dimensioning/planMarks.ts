@@ -27,7 +27,7 @@ const BUILDING_TYPES = new Set(['wall', 'room', 'platform', 'roof', 'stair', 'ch
 export function planMarks(
   document: Pick<FabricsDocument, 'elements' | 'levels' | 'plan'>,
   levelId: string,
-  labels: Pick<ExecutionLabels, 'north' | 'levelMark'>,
+  labels: Pick<ExecutionLabels, 'north' | 'east' | 'south' | 'west' | 'levelMark'>,
   fontMm: number,
 ): PlanOverlay | null {
   if (!document.plan?.showAnnotations) return null
@@ -64,6 +64,13 @@ export function planMarks(
       'hair',
     )
   }
+  // Rose des vents : une graduation à chaque point cardinal (N, E, S, O), tournée avec le nord.
+  for (const quarter of [0, 90, 180, 270]) {
+    const rad = (quarter * Math.PI) / 180
+    const along = Math.cos(rad)
+    const across = Math.sin(rad)
+    segment(at(radius * along, radius * across), at(radius * 0.8 * along, radius * 0.8 * across), 'hair')
+  }
   // Flèche : pointe au nord, deux ailes, creux au centre (une moitié noircie par un trait de milieu).
   const tip = at(radius * 0.95, 0)
   const left = at(-radius * 0.7, -radius * 0.38)
@@ -75,17 +82,24 @@ export function planMarks(
   segment(right, tip)
   segment(tip, notch)
 
-  const texts: DrawText[] = [
-    // La lettre reste droite, au-dessus du cercle quel que soit le nord.
-    { x: cx, y: cy - radius - fontMm * 0.5, text: labels.north, size: fontMm * 1.4, anchor: 'middle', bold: true },
-    {
-      x: cx,
-      y: cy + radius + fontMm * 2.2,
-      text: labels.levelMark(level.name, formatAltitude(level.elevation)),
-      size: fontMm,
-      anchor: 'middle',
-    },
-  ]
+  // Lettres N, E, S, O au bout de leur direction, restant droites (lisibles) quel que soit le nord.
+  const letter = (text: string, quarter: number, size: number, bold: boolean): DrawText => {
+    const rad = (quarter * Math.PI) / 180
+    const spot = at((radius + size * 0.9) * Math.cos(rad), (radius + size * 0.9) * Math.sin(rad))
+    return { x: spot.x, y: spot.y + size * 0.35, text, size, anchor: 'middle', bold }
+  }
+  const texts: DrawText[] = [letter(labels.north, 0, fontMm * 1.4, true)]
+  if (labels.east) texts.push(letter(labels.east, 90, fontMm, false))
+  if (labels.south) texts.push(letter(labels.south, 180, fontMm, false))
+  if (labels.west) texts.push(letter(labels.west, 270, fontMm, false))
+  texts.push({
+    x: cx,
+    // Sous la lettre du sud, quel que soit le nord.
+    y: cy + radius + fontMm * 3.6,
+    text: labels.levelMark(level.name, formatAltitude(level.elevation)),
+    size: fontMm,
+    anchor: 'middle',
+  })
   return { lines, texts }
 }
 

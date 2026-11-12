@@ -27,9 +27,9 @@ describe('flèche du nord et repère de niveau', () => {
     expect(planOverlay(doc({ showAnnotations: false }), ground.id, 'none', EXECUTION_LABELS, 125)).toBeNull()
   })
 
-  it('une flèche à droite du bâtiment, avec la lettre N et le niveau', () => {
+  it('une rose des vents à droite du bâtiment, avec les lettres N, E, S, O et le niveau', () => {
     const marks = planMarks(doc(), ground.id, EXECUTION_LABELS, 125)!
-    expect(marks.texts.map((t) => t.text)).toEqual(['N', 'Niveau RDC (±0)'])
+    expect(marks.texts.map((t) => t.text)).toEqual(['N', 'E', 'S', 'O', 'Niveau RDC (±0)'])
     const xs = marks.lines.flatMap((l) => [l.x1, l.x2])
     expect(Math.min(...xs)).toBeGreaterThan(8100) // au-delà du bout du mur (8000 + demi-épaisseur)
   })
@@ -42,6 +42,18 @@ describe('flèche du nord et repère de niveau', () => {
     const tipRight = right.lines[right.lines.length - 5]
     expect(tipUp.y1).toBeLessThan(tipUp.y2)
     expect(tipRight.x1).toBeGreaterThan(tipRight.x2)
+  })
+
+  it('les lettres suivent le nord : à 90°, le N est à droite du cercle et le E en bas', () => {
+    const marks = planMarks(doc({ northAngle: 90 }), ground.id, EXECUTION_LABELS, 125)!
+    const at = (letter: string) => marks.texts.find((t) => t.text === letter)!
+    expect(at('N').x).toBeGreaterThan(at('S').x)
+    expect(at('E').y).toBeGreaterThan(at('O').y)
+  })
+
+  it('sans lettres E, S, O fournies, seul le N est écrit', () => {
+    const marks = planMarks(doc(), ground.id, { north: 'N', levelMark: EXECUTION_LABELS.levelMark }, 125)!
+    expect(marks.texts.map((t) => t.text)).toEqual(['N', 'Niveau RDC (±0)'])
   })
 
   it('un niveau sans bâtiment ou inconnu : rien', () => {

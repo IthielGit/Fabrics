@@ -1,5 +1,6 @@
-import { Map as MapIcon, Maximize } from 'lucide-react'
+import { Compass, Map as MapIcon, Maximize } from 'lucide-react'
 import { fr } from '../../i18n/fr'
+import { useCompassStore } from '../../stores/compassStore'
 import { useEditorStore } from '../../stores/editorStore'
 import { useMinimapStore } from '../../stores/minimapStore'
 
@@ -14,6 +15,9 @@ export default function ZoomControls() {
 
   const minimapVisible = useMinimapStore((state) => state.visible)
   const toggleMinimap = useMinimapStore((state) => state.toggle)
+
+  const compassVisible = useCompassStore((state) => state.visible)
+  const toggleCompass = useCompassStore((state) => state.toggle)
 
   const percent = Math.round(zoom * 100)
 
@@ -43,6 +47,19 @@ export default function ZoomControls() {
       >
         <MapIcon size={16} />
       </button>
+      {/* La boussole règle le nord d'un plan : pas de bouton pour un visuel. */}
+      {printScale !== undefined && (
+        <button
+          type="button"
+          onClick={toggleCompass}
+          title={compassVisible ? fr.editor.hideCompass : fr.editor.showCompass}
+          aria-label={compassVisible ? fr.editor.hideCompass : fr.editor.showCompass}
+          aria-pressed={compassVisible}
+          className={`rounded p-1 hover:bg-slate-100 ${compassVisible ? 'bg-indigo-50 text-indigo-700' : ''}`}
+        >
+          <Compass size={16} />
+        </button>
+      )}
     </div>
   )
 }

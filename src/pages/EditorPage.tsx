@@ -14,6 +14,7 @@ import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import ZoomControls from '../components/editor/ZoomControls'
+import CompassWidget from '../components/editor/CompassWidget'
 import ViewsScreen from '../components/views/ViewsScreen'
 import Viewer3DPanel from '../components/viewer3d/Viewer3DPanel'
 import { repository } from '../features/persistence/repository'
@@ -93,6 +94,7 @@ export default function EditorPage() {
             <ToolModeBar />
           </div>
           <ZoomControls />
+          <CompassWidget />
           <MiniMap />
           <ScrollBars />
           <Notice />

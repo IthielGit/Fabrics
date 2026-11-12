@@ -12,7 +12,7 @@ import { mergeOverlays, planMarks } from './planMarks'
 export function planDecorations(
   document: Pick<FabricsDocument, 'elements' | 'levels' | 'plan'>,
   levelId: string,
-  labels: Pick<ExecutionLabels, 'north' | 'levelMark'>,
+  labels: Pick<ExecutionLabels, 'north' | 'east' | 'south' | 'west' | 'levelMark'>,
   fontMm: number,
 ): PlanOverlay | null {
   return mergeOverlays(planMarks(document, levelId, labels, fontMm), lengthLabels(document, levelId, fontMm))

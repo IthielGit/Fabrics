@@ -29,6 +29,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M10 ter Documents client / exécution (métrés et cotes) | terminé | 2026-11-12 |
 | M11 Import et export | terminé, à tester dans le navigateur | |
 | M11 bis Dessin précis, bibliothèque et plafonds | terminé, à tester dans le navigateur (lots A à G) | |
+| M11 ter Boussole du plan | terminé, à tester dans le navigateur | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
 | M14 Collaboration temps réel | après le MVP | |
@@ -42,6 +43,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 ter · Boussole du plan
+- Fait : demande de l'utilisateur (« une vraie boussole, avec une logique simple »). Règle unique : le nord est **un seul angle** (`plan.northAngle`), tout le reste en découle. **Boussole interactive** en bas à gauche du canevas d'un plan, **affichée à la demande** (bouton boussole dans la barre d'état ; masquée par défaut ; choix mémorisé dans le navigateur, jamais dans le projet) : rose N / E / S / O, aiguille rouge vers le nord, légende « Nord : 30° ». On la tourne à la souris (aimantée tous les 15°, Maj = au degré), aux flèches du clavier (Maj = 1°), double-clic ou Début = nord en haut. L'angle reste local pendant le geste et n'est enregistré qu'au relâchement : un seul « Annuler ». Liée au champ « Nord » des réglages du plan. **Rose des vents à l'impression** : la flèche des annotations de plan reçoit des graduations aux 4 points et les lettres N, E, S, O qui suivent le nord (repris dans PDF, PNG, DXF et planche) ; le repère de niveau descend sous la lettre du sud. Les lettres E, S, O sont facultatives dans `ExecutionLabels` (sans elles, seul le N est écrit, comme avant).
+- Fichiers : src/features/building/compass.ts (+ test), src/stores/compassStore.ts, src/components/editor/CompassWidget.tsx, ZoomControls.tsx, src/pages/EditorPage.tsx, src/features/dimensioning/planMarks.ts (+ test), executionDimensions.ts, planDecorations.ts, src/i18n/fr.ts, dimensioningLabels.ts
+- Vérification : build ✓ lint ✓ tests ✓ (2654 au total) — **à contrôler dans le navigateur** : ouvrir un plan, cliquer l'icône boussole en bas à gauche, tourner l'aiguille, vérifier le champ « Nord » dans Propriétés ; cocher « Flèche du nord et repère de niveau » et regarder un export PDF
+- Idée notée : régler le nord avec le capteur d'un téléphone (non fait : demande des autorisations, inutile sur PC).
+- Commit : feat: boussole du plan et rose des vents (M11 ter)
 
 ### 2026-11-12 — M11 bis · Correctif · Import DXF hors de la page
 - Problème vu à l'essai : un DXF plus grand que la page (feuille A0 avec cartouche, par exemple) était centré sur la vue et débordait de la page et de la grille.
@@ -1142,6 +1150,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
 - ~~Aimantation des murs et des sommets sur ceux du niveau de référence~~ : planifié dans M11 bis, lot C (2026-11-12).
 - ~~Pivoter un objet de 90° au clavier~~ : fait, `Maj + R` (décidé par l'utilisateur).
+- Régler le nord avec le capteur d'orientation d'un téléphone (boussole réelle) : non fait en M11 ter (autorisations, inutile sur PC), à reprendre si le besoin vient du terrain.
 - Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M14, à rediscuter).
 - Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : import de symboles SVG / DXF par l'utilisateur, niveau de détail « détaillé », variantes de style. Pose contre un mur, hauteurs 3D, bibliothèque personnelle, étiquettes de cote et annotations de plan sont planifiées dans M11 bis, lot F (2026-11-12).
 - Plafonds : tableau dans les métrés et cote sous plafond (plan Technique) sont planifiés dans M11 bis, lot G (confirmés le 2026-11-12, D63). Faux plafond : confirmé.
