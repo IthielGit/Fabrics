@@ -114,6 +114,13 @@ describe('présentation Exécution', () => {
     const rules = tables[tables.length - 1].rows.map((row) => cellText(row[0]))
     expect(rules.some((rule) => rule.includes('déduites') && rule.includes('sans seuil'))).toBe(true)
     expect(rules.some((rule) => rule.includes('menuisier'))).toBe(true)
+    expect(rules.some((rule) => rule.includes('Repères valables à la date du document'))).toBe(true)
+  })
+
+  it('la mention des repères est dans la note Technique, pas dans la version Client', () => {
+    const technical = fr.measurements.csv.meta?.noteValue ?? ''
+    expect(technical).toContain('Repères valables à la date du document')
+    expect(fr.measurements.client.pdfNote).not.toContain('Repères')
   })
 
   it('aucun prix, montant ni devis dans les deux versions', () => {

@@ -310,7 +310,7 @@ export const fr = {
         'Toutes les ouvertures (portes, fenêtres, baies) sont déduites des surfaces de murs, sans seuil.',
         'Surface d’un mur : longueur × hauteur ; une face sur l’axe, ou deux faces mesurées sur les faces.',
         'Les baies sont en dimensions brutes de maçonnerie (tableau à tableau) : les dimensions des menuiseries sont à confirmer par le menuisier après prise de cotes sur place.',
-        'Repères : M01 pour les murs, P01 pour les portes, F01 pour les fenêtres et les baies ; les mêmes que sur les plans.',
+        'Repères : M01 pour les murs, P01 pour les portes, F01 pour les fenêtres et les baies ; les mêmes que sur les plans. Repères valables à la date du document : ils peuvent changer si le plan est modifié.',
         'Aucun prix ni devis : les quantités s’arrêtent aux mesures.',
       ],
     },
@@ -380,7 +380,7 @@ export const fr = {
         unitsValue: 'Longueurs en mm, surfaces en m², volumes en m³',
         note: 'Remarque',
         noteValue:
-          'Les totaux sont calculés sur les valeurs exactes, avant arrondi : ils peuvent différer de quelques centièmes de la somme des lignes affichées.',
+          'Les totaux sont calculés sur les valeurs exactes, avant arrondi : ils peuvent différer de quelques centièmes de la somme des lignes affichées. Repères valables à la date du document.',
       },
       flat: {
         columns: {
@@ -686,7 +686,7 @@ export const fr = {
     pdfVersion: 'Cotation des plans',
     pdfOptions: { screen: 'Comme à l’écran', client: 'Client', execution: 'Technique' },
     baysNote:
-      'Baies cotées en dimensions brutes de maçonnerie (tableau à tableau). Dimensions des menuiseries : à confirmer par le menuisier après prise de cotes sur place.',
+      'Baies cotées en dimensions brutes de maçonnerie (tableau à tableau). Dimensions des menuiseries : à confirmer par le menuisier après prise de cotes sur place. Repères valables à la date du document.',
   },
   toolModes: {
     label: 'Mode de tracé',

@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Tâche 3 · Mention des repères
+- Fait : « Repères valables à la date du document » est imprimé dans la remarque d'en-tête et dans les règles de calcul des métrés Technique (PDF, Excel, CSV), et dans la note des PDF de plans cotés en Technique (fenêtre Exporter et écran Vues). La version Client n'en a pas besoin (aucun repère).
+- Fichiers : `src/i18n/fr.ts`, `src/features/measurements/clientView.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2503)
+- Commit : feat: mention « repères valables à la date du document »
+
 ### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Tâche 2 · Ouverture hors de son segment
 - Fait : le centre d'une ouverture est ramené sur son segment (offset borné entre 0 et la longueur) pour le classement des repères. Les surfaces ne changent pas ; la fenêtre Exporter signale déjà ces ouvertures (groupe 3).
 - Fichiers : `src/features/measurements/references.ts`, `references.test.ts`

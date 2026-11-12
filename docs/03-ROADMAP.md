@@ -578,7 +578,11 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
       dans `references.test.ts`.
 - [x] **Ouverture hors de son segment** : centre ramené sur le segment (`offset` borné à sa
       longueur) pour le classement. Fichiers : `references.ts`, test.
-- [x] **Décision : stabilité des repères** — option A retenue le 2026-11-12 (D57). Les repères changent dès qu'on ajoute ou déplace un
+- [x] **Décision : stabilité des repères** — option A retenue le 2026-11-12 (D57).
+- [x] **Mention « Repères valables à la date du document »** (suite de la décision A) : imprimée
+      dans la note et dans les règles de calcul des métrés Technique (PDF, Excel, CSV) et dans la
+      note des PDF de plans cotés en Technique. Absente de la version Client (pas de repères).
+      Fichiers : `src/i18n/fr.ts`, test dans `clientView.test.ts`. Les repères changent dès qu'on ajoute ou déplace un
       élément ; un PDF déjà envoyé peut ne plus correspondre. Option A : garder le calcul et
       imprimer « Repères valables à la date du document ». Option B : figer les repères (champ
       facultatif enregistré, sans migration), les nouveaux éléments prennent le numéro suivant.
