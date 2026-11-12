@@ -17,6 +17,8 @@ interface AuthState {
   /** Chaque action renvoie `null` si elle a réussi, sinon la clé du message d'erreur. */
   signIn: (email: string, password: string) => Promise<AuthErrorKey | null>
   signUp: (email: string, password: string) => Promise<AuthErrorKey | null>
+  /** Redirige vers Google ; ne revient avec une erreur que si la redirection n'a pas pu démarrer. */
+  signInWithGoogle: () => Promise<AuthErrorKey | null>
   sendPasswordReset: (email: string) => Promise<AuthErrorKey | null>
   updatePassword: (password: string) => Promise<AuthErrorKey | null>
   signOut: () => Promise<void>
@@ -61,6 +63,15 @@ export const useAuthStore = create<AuthState>((set) => ({
       email: email.trim(),
       password,
       options: { emailRedirectTo: `${window.location.origin}/` },
+    })
+    return error ? authErrorKey(error) : null
+  },
+
+  signInWithGoogle: async () => {
+    if (!supabase) return 'generic'
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: `${window.location.origin}/` },
     })
     return error ? authErrorKey(error) : null
   },

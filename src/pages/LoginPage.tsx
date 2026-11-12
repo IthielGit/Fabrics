@@ -17,6 +17,7 @@ export default function LoginPage() {
   const status = useAuthStore((state) => state.status)
   const signIn = useAuthStore((state) => state.signIn)
   const signUp = useAuthStore((state) => state.signUp)
+  const signInWithGoogle = useAuthStore((state) => state.signInWithGoogle)
   const sendPasswordReset = useAuthStore((state) => state.sendPasswordReset)
 
   const [mode, setMode] = useState<Mode>('signIn')
@@ -63,6 +64,18 @@ export default function LoginPage() {
     else if (mode === 'signUp') setSentTo({ email: email.trim(), kind: 'signUp' })
     else if (mode === 'forgot') setSentTo({ email: email.trim(), kind: 'reset' })
     // Connexion réussie : l'état de connexion change et la page redirige vers l'accueil.
+  }
+
+  const handleGoogle = async () => {
+    if (pending) return
+    setError(null)
+    setPending(true)
+    const result = await signInWithGoogle()
+    // Succès : le navigateur part vers Google, la page est quittée.
+    if (result) {
+      setPending(false)
+      setError(result)
+    }
   }
 
   const texts: Record<Mode, { title: string; intro: string; submit: string }> = {
@@ -115,6 +128,24 @@ export default function LoginPage() {
           {pending ? fr.auth.working : current.submit}
         </Button>
       </form>
+
+      {mode !== 'forgot' && (
+        <>
+          <div className="my-4 flex items-center gap-3 text-xs text-slate-500" aria-hidden="true">
+            <span className="h-px flex-1 bg-slate-200" />
+            {fr.auth.orDivider}
+            <span className="h-px flex-1 bg-slate-200" />
+          </div>
+          <Button
+            type="button"
+            disabled={pending}
+            className="w-full justify-center"
+            onClick={() => void handleGoogle()}
+          >
+            {fr.auth.withGoogle}
+          </Button>
+        </>
+      )}
 
       <div className="mt-5 flex flex-col items-start gap-2">
         {mode === 'signIn' && (

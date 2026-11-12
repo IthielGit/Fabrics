@@ -72,6 +72,8 @@ export const fr = {
     forgotSubmit: 'Envoyer le lien',
     backToSignIn: 'Retour à la connexion',
     working: 'Un instant…',
+    withGoogle: 'Continuer avec Google',
+    orDivider: 'ou',
     checkEmailTitle: 'Vérifiez votre boîte mail',
     checkEmailSignUp: (email: string) =>
       `Si ${email} peut recevoir un compte, un e-mail de confirmation vient de partir. Cliquez sur le lien qu’il contient, puis connectez-vous. Pensez à regarder dans les courriers indésirables.`,
