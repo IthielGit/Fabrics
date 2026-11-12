@@ -1,6 +1,7 @@
 import type { User } from '@supabase/supabase-js'
 import { create } from 'zustand'
 import { authErrorKey, type AuthErrorKey } from '../features/auth/authErrors'
+import { selectRepository } from '../features/persistence/repository'
 import { cloudEnabled, supabase } from '../lib/supabase'
 
 /** disabled : Supabase non configuré (mode local) ; loading : session en cours de lecture. */
@@ -29,12 +30,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   init: () => {
     if (!supabase) return () => {}
     void supabase.auth.getSession().then(({ data }) => {
+      // Le dépôt est choisi avant de changer l'état : les pages qui attendent la fin du
+      // chargement de la session lisent alors tout de suite le bon dépôt.
+      selectRepository(data.session?.user.id ?? null)
       set({
         user: data.session?.user ?? null,
         status: data.session ? 'signedIn' : 'signedOut',
       })
     })
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
+      selectRepository(session?.user.id ?? null)
       set((state) => ({
         user: session?.user ?? null,
         status: session ? 'signedIn' : 'signedOut',

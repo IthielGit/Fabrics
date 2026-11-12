@@ -854,8 +854,8 @@ Objectif : retrouver ses projets sur un autre appareil.
 - [x] Page Connexion : inscription e-mail + mot de passe (avec vérification e-mail),
       connexion, mot de passe oublié, déconnexion (2026-11-12, à tester dans le navigateur)
 - [ ] Connexion Google (optionnelle, seulement si l'utilisateur la veut)
-- [ ] `SupabaseRepository` (table `projects`, bucket `assets`, URLs signées)
-- [ ] Choix automatique du dépôt : local si déconnecté, Supabase si connecté
+- [x] `SupabaseRepository` (table `projects`, bucket `assets`, URLs signées) (2026-11-12, à tester dans le navigateur)
+- [x] Choix automatique du dépôt : local si déconnecté, Supabase si connecté (2026-11-12, à tester dans le navigateur)
 - [ ] À la première connexion : proposer d'importer les projets locaux
 - [ ] Gestion hors ligne simple : en cas d'échec réseau, garder une copie locale et réessayer
 - [ ] Partage par lien en lecture seule (plan, 3D, planche) ; désactivable à tout moment ;

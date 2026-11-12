@@ -9,6 +9,7 @@ import Button from '../components/ui/Button'
 import { filterProjectsByName } from '../features/persistence/filterProjects'
 import type { ProjectSummary } from '../features/persistence/types'
 import { fr } from '../i18n/fr'
+import { useAuthStore } from '../stores/authStore'
 import { useProjectsStore } from '../stores/projectsStore'
 
 type Dialog =
@@ -23,9 +24,13 @@ export default function HomePage() {
   const [query, setQuery] = useState('')
   const shown = useMemo(() => filterProjectsByName(projects, query), [projects, query])
 
+  // La liste n'est lue qu'une fois la session connue, et relue quand on se connecte ou se déconnecte.
+  const authStatus = useAuthStore((state) => state.status)
+  const userId = useAuthStore((state) => state.user?.id ?? null)
   useEffect(() => {
+    if (authStatus === 'loading') return
     void refresh()
-  }, [refresh])
+  }, [refresh, authStatus, userId])
 
   const closeDialog = () => setDialog(null)
 

@@ -44,6 +44,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M13 · Lot C : sauvegarde dans le cloud
+- Fait : `SupabaseRepository` (liste sans document, lecture avec migration, enregistrement par `upsert`, suppression avec nettoyage des images plus utilisées, images dans `assets/<compte>/<image>`, URLs signées d'une heure mises en cache) ; `repository` suit la connexion : cloud si connecté, local sinon, choisi avant que la session soit déclarée prête ; l'accueil et l'éditeur attendent la fin de lecture de la session avant de lire les projets, et relisent si le compte change. Les projets locaux restent intacts dans le navigateur (lot D : import proposé).
+- Vérifié à distance : un visiteur anonyme ne peut pas créer de projet (erreur RLS 42501).
+- Limite connue : si l'on se déconnecte pendant qu'un projet est ouvert, l'enregistrement suivant part dans le dépôt local.
+- Fichiers : `src/features/persistence/SupabaseRepository.ts`, `cloudMapping.ts`, `repository.ts` (+ tests), `src/stores/authStore.ts`, `src/pages/EditorPage.tsx`, `HomePage.tsx`.
+- Vérification : build ✓ lint ✓ tests ✓ (2736, dont 12 nouveaux avec un faux client Supabase). Pas encore essayé avec un vrai compte : à tester dans le navigateur.
+
 ### 2026-11-12 — M13 · Lot B : page de connexion
 - Fait : pages `/connexion` (connexion, inscription avec e-mail de confirmation, mot de passe oublié) et `/nouveau-mot-de-passe` (lien reçu par e-mail) ; bouton « Se connecter » / « Se déconnecter » en haut de l'accueil, invisible quand Supabase n'est pas configuré. Contrôles de saisie (adresse valide, 8 caractères, confirmation) et erreurs Supabase traduites en français. Les projets restent encore enregistrés localement : le lot C branchera le cloud. Connexion Google : non (idée).
 - Fichiers : `src/stores/authStore.ts`, `src/features/auth/` (validation, erreurs, tests), `src/pages/LoginPage.tsx`, `ResetPasswordPage.tsx`, `src/components/auth/`, `src/components/home/AccountButton.tsx`, `App.tsx`, `HomePage.tsx`, `src/i18n/fr.ts`.
@@ -1200,6 +1207,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 |---|---|---|---|
 | D63 | Plafonds (« sous plafonds ») | **Confirmé par l'utilisateur le 2026-11-12** : tableau « Plafonds » dans les métrés (Client et Technique : surface de plafond, hauteur sous plafond, périmètre ; export CSV, Excel et PDF) ; option « faux plafond » par pièce ; cote d'altitude « sous plafond » **sur le plan Technique seulement**. Rien sur le plan Client. | Les métrés sont l'endroit où le client et l'exécution lisent les surfaces ; le plan Client reste sans cote superflue (D50, D53) ; la hauteur sous plafond existe déjà (D52), donc peu de code nouveau. |
 | D64 | Place de M11 bis | **Confirmé par l'utilisateur le 2026-11-12** : jalon **avant M12** (mise en ligne), numéroté « M11 bis » comme M10 bis et M10 ter. | Les items sont des outils d'édition ; les faire avant la mise en ligne évite de publier un éditeur incomplet. |
+| D67 | Miniature dans le cloud | La miniature (image encodée en texte) est stockée telle quelle dans la colonne `thumbnail_path` de `projects`, sans fichier Storage. | Évite une URL signée par carte de l'accueil ; le nom de la colonne est trompeur mais le schéma reste inchangé. À revoir si la base grossit trop. |
 | D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 
 ### 2026-11-12 — M11 quater, Lot A (barre d'outils lisible)

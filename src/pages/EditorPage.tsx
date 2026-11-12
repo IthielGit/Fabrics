@@ -22,6 +22,7 @@ import ViewsScreen from '../components/views/ViewsScreen'
 import Viewer3DPanel from '../components/viewer3d/Viewer3DPanel'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
+import { useAuthStore } from '../stores/authStore'
 import { useEditorStore } from '../stores/editorStore'
 
 type LoadState = 'loading' | 'ready' | 'not-found' | 'error'
@@ -36,8 +37,13 @@ export default function EditorPage() {
   // à l'adresse courante, on est en « chargement » (rien à remettre à zéro dans l'effet).
   const [result, setResult] = useState<{ projectId: string; state: LoadState } | null>(null)
 
+  // Les projets ne sont lus qu'une fois la session connue (local ou compte), et relus si le compte change.
+  const authStatus = useAuthStore((state) => state.status)
+  const userId = useAuthStore((state) => state.user?.id ?? null)
+  const authReady = authStatus !== 'loading'
+
   useEffect(() => {
-    if (!projectId) return
+    if (!projectId || !authReady) return
     let cancelled = false
     repository
       .get(projectId)
@@ -57,11 +63,13 @@ export default function EditorPage() {
       cancelled = true
       closeProject()
     }
-  }, [projectId, loadProject, closeProject])
+  }, [projectId, authReady, userId, loadProject, closeProject])
 
   const loadState: LoadState = !projectId
     ? 'not-found'
-    : result?.projectId === projectId
+    : !authReady
+      ? 'loading'
+      : result?.projectId === projectId
       ? result.state
       : 'loading'
 
