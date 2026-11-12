@@ -5,6 +5,7 @@ import { openingInterval, wallSegment } from '../geometry/openings'
 import type { Point } from '../geometry/viewport'
 import { computeBuildingMeasurements, type BuildingMeasurements } from './measurements'
 import { createCoverageChecker } from './roomCoverage'
+import { withDisplayNames } from '../naming/autoNames'
 
 /** Tolérance (mm) : une ouverture qui dépasse de moins que cela n'est pas signalée. */
 const OPENING_TOLERANCE = 1
@@ -138,7 +139,7 @@ export function metresWarnings(
 
   // Sans niveau, un élément mesurable n'est compté nulle part (les axes et les coupes n'ont jamais de niveau).
   if ((document.levels ?? []).length > 0) {
-    for (const element of document.elements) {
+    for (const element of withDisplayNames(document.elements)) {
       if (element.levelId !== undefined || isLevelIndependent(element) || !MEASURED_TYPES.includes(element.type)) continue
       warnings.push({ kind: 'noLevel', elementId: element.id, elementName: element.name, elementType: element.type })
     }

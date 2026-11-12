@@ -1,3 +1,4 @@
+import { withDisplayNames } from '../naming/autoNames'
 import type {
   CanvasElement,
   ChimneyElement,
@@ -485,10 +486,12 @@ export function computeBuildingMeasurements(
   document: Pick<FabricsDocument, 'elements' | 'levels'>,
 ): BuildingMeasurements {
   const voids = collectStairVoids(document.elements, document.levels)
+  // Murs et ouvertures sous leur nom affiché (automatique ou tapé) : les mêmes que dans les calques.
+  const elements = withDisplayNames(document.elements)
   const levels = (document.levels ?? []).map((level) => ({
     level,
     measurements: computeMeasurements(
-      elementsOfLevel(document.elements, level.id),
+      elementsOfLevel(elements, level.id),
       document.levels,
       voids.filter((v) => v.levelId === level.id),
     ),

@@ -29,7 +29,13 @@ describe('séparer les côtés d’un mur', () => {
       [0, 3000, 0, 0],
     ])
     expect(new Set(result.walls.map((p) => p.id)).size).toBe(4)
-    expect(result.walls.map((p) => p.name)).toEqual(['Mur 1', 'Mur 2', 'Mur 3', 'Mur 4'])
+    // Nom automatique (D58) : chaque morceau prend le sien, plus de « Mur 1 1 ».
+    expect(result.walls.map((p) => p.name)).toEqual(['', '', '', ''])
+  })
+
+  it('un nom tapé à la main est gardé et numéroté', () => {
+    const named = { ...wall(RECT), name: 'Façade' }
+    expect(splitWall(named, [])!.walls.map((p) => p.name)).toEqual(['Façade 1', 'Façade 2', 'Façade 3', 'Façade 4'])
   })
 
   it('chaque côté garde épaisseur, hauteur, matériau, niveau et verrouillage', () => {

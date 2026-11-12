@@ -144,6 +144,12 @@ export const fr = {
     window: 'Fenêtre',
     bay: 'Baie',
   },
+  // Noms automatiques des murs et des ouvertures (D58)
+  naming: {
+    exteriorWall: 'Mur extérieur',
+    isolatedWall: 'Mur isolé',
+    autoHint: (name: string) => `Nom automatique : ${name}. Videz le champ pour y revenir.`,
+  },
   levels: {
     title: 'Niveaux',
     groundFloor: 'Rez-de-chaussée',

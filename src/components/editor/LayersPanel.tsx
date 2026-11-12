@@ -26,6 +26,8 @@ import { useState, type DragEvent, type KeyboardEvent } from 'react'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement } from '../../types/document'
+import { isAutoName } from '../../features/naming/autoNames'
+import { displayNameOf, useDisplayNames } from './useDisplayNames'
 
 const TYPE_ICONS: Record<CanvasElement['type'], LucideIcon> = {
   rect: Square,
@@ -57,6 +59,7 @@ export default function LayersPanel() {
   const updateElements = useEditorStore((state) => state.updateElements)
   const reorderElement = useEditorStore((state) => state.reorderElement)
   const stepElementOrder = useEditorStore((state) => state.stepElementOrder)
+  const names = useDisplayNames()
 
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [dragId, setDragId] = useState<string | null>(null)
@@ -78,9 +81,12 @@ export default function LayersPanel() {
     setRenamingId(null)
     const trimmed = name.trim()
     const current = elements.find((el) => el.id === id)
-    if (trimmed && current && trimmed !== current.name) {
-      updateElements([id], (el) => ({ ...el, name: trimmed }))
-    }
+    if (!current) return
+    // Mur ou ouverture (nom automatique, D58) : un champ vidé rend le nom automatique.
+    const hasAutoName = names.auto.has(id)
+    if (!trimmed && !hasAutoName) return
+    if (trimmed === displayNameOf(current, names) || (!trimmed && isAutoName(current.name))) return
+    updateElements([id], (el) => ({ ...el, name: trimmed }))
   }
 
   const handleRenameKey = (id: string, event: KeyboardEvent<HTMLInputElement>) => {
@@ -155,7 +161,7 @@ export default function LayersPanel() {
               {renamingId === element.id ? (
                 <input
                   autoFocus
-                  defaultValue={element.name}
+                  defaultValue={displayNameOf(element, names)}
                   aria-label={fr.layers.nameLabel}
                   onFocus={(event) => event.target.select()}
                   onBlur={(event) => commitName(element.id, event.target.value)}
@@ -169,7 +175,7 @@ export default function LayersPanel() {
                   onDoubleClick={() => setRenamingId(element.id)}
                   className="min-w-0 flex-1 truncate"
                 >
-                  {element.name}
+                  {displayNameOf(element, names)}
                 </span>
               )}
 

@@ -10,6 +10,7 @@ import NumberField from '../ui/NumberField'
 import TextField from '../ui/TextField'
 import DimensionVisibilityField from './DimensionVisibilityField'
 import MaterialField from './MaterialField'
+import { autoNameFieldProps, useDisplayNames } from './useDisplayNames'
 
 type PlanElement = WallElement | RoomElement | DimensionElement | AxisElement
 
@@ -33,6 +34,7 @@ export default function PlanElementFields({ element }: { element: PlanElement })
   const setNotice = useEditorStore((state) => state.setNotice)
   const elements = useEditorStore((state) => state.project?.document.elements)
   const levels = useEditorStore((state) => state.project?.document.levels)
+  const names = useDisplayNames()
   const patch = (change: (el: PlanElement) => PlanElement) =>
     updateElements([element.id], (el) =>
       el.type === 'wall' || el.type === 'room' || el.type === 'dimension' || el.type === 'axis'
@@ -63,7 +65,7 @@ export default function PlanElementFields({ element }: { element: PlanElement })
       ) : (
         <TextField
           label={fr.properties.name}
-          value={element.name}
+          {...autoNameFieldProps(element, names)}
           onCommit={(name) => patch((el) => ({ ...el, name }))}
         />
       )}

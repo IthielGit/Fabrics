@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 ter (lots A et B validés ; groupes 1 à 4 des cas limites à faire) ; M10 bis terminé, à tester dans le navigateur
-- **Dernière tâche terminée :** M10 ter, cas limites des métrés, groupes 1 à 4 (groupes 1 à 3 validés ; groupe 4 à tester dans le navigateur)
-- **Prochaine tâche :** validation du groupe 4 par l'utilisateur, puis noms automatiques, puis M11
+- **Dernière tâche terminée :** noms automatiques des murs et des ouvertures (à tester dans le navigateur) ; M10 ter groupe 4 à tester aussi
+- **Prochaine tâche :** validation dans le navigateur du groupe 4 et des noms automatiques, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — Hors jalon · Noms automatiques des murs et des ouvertures
+- Fait : les murs et les ouvertures prennent un nom tiré des pièces qu'ils touchent, **calculé à l'affichage**, jamais enregistré. **Murs** : « Mur Cuisine / Séjour », « Mur extérieur Cuisine », « Mur isolé » ; au-delà de deux pièces, les deux plus grandes dans l'ordre de lecture puis « +N » ; deux murs du même niveau au même nom sont numérotés (« Mur extérieur Cuisine 1 », « 2 »). **Ouvertures** : « Porte Cuisine 1 » (pièce vers laquelle la porte s'ouvre), « Fenêtre Séjour 2 » (pièce côté intérieur), les baies comptent avec les fenêtres, « Porte 1 » sans pièce ; « Chambre 1 – 1 » quand la pièce finit par un nombre ; une pièce sans nom devient « Pièce 1 ». Les pièces masquées comptent (D56) ; seules les pièces du même niveau sont regardées. **Nom tapé** : il reste prioritaire ; dans Propriétés, le champ « Nom » est vide avec le nom automatique en grisé, et le vider rend le nom automatique (aussi dans les calques). Les anciens noms par défaut (« Mur 1 », « Porte 2 », « Mur 1 1 ») sont traités comme automatiques : aucun changement de format, aucune migration. **Partout** : calques, Propriétés, panneau Métrés (dont « Mur : … » d'une ouverture), exports CSV, Excel et PDF des métrés, avertissements. **Séparer les côtés** : les morceaux d'un mur au nom automatique prennent chacun le leur ; un nom tapé est gardé et numéroté (« Façade 1 », « Façade 2 »).
+- Choix techniques (D59) : pas de champ `customName` (prévu dans le plan) ; le champ `name` existant suffit. La pièce est cherchée 100 mm au-delà de chaque face, tous les 250 mm le long du mur (une petite pièce le long d'un long mur n'est pas ratée).
+- Fichiers : `src/features/naming/autoNames.ts` (nouveau), `autoNames.test.ts` (nouveau), `src/features/measurements/references.ts`, `measurements.ts`, `warnings.ts`, `csvExport.test.ts`, `src/features/geometry/splitWall.ts`, `splitWall.test.ts`, `src/components/editor/useDisplayNames.ts` (nouveau), `LayersPanel.tsx`, `OpeningFields.tsx`, `PlanElementFields.tsx`, `src/components/ui/TextField.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2526) — test dans le navigateur à faire par l'utilisateur
+- Commit : feat: noms automatiques des murs et des ouvertures
 
 ### 2026-11-12 — Hors jalon · Noms automatiques · Décision sur le format des murs
 - Décision de l'utilisateur (D58) : option A, « Mur Cuisine / Séjour », « Mur extérieur Cuisine », « Mur isolé ».
@@ -984,6 +991,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D56 | Pièces masquées | Comptées dans les métrés Client et Technique (D21 inchangée), avec l'avertissement « … est masquée mais sa surface est comptée » ; elles ne bloquent pas l'export. | Choix de l'utilisateur (option A). |
 | D57 | Stabilité des repères | Option A : `M01`, `P01`, `F01` recalculés à chaque modification (rien d'enregistré). Les documents Technique qui les montrent impriment « Repères valables à la date du document ». | Choix de l'utilisateur : l'ordre de lecture du plan reste toujours juste. |
 | D58 | Nom automatique d'un mur | Option A : « Mur Cuisine / Séjour » (pièces des deux côtés), « Mur extérieur Cuisine » (une pièce d'un seul côté), « Mur isolé » (aucune pièce). Calculé à l'affichage, jamais enregistré (D49). | Choix de l'utilisateur : un mur mitoyen se lit des deux côtés. |
+| D59 | Stockage du nom personnalisé | Pas de champ `customName` : un `name` vide ou au format par défaut (« Mur 1 », « Porte 2 », « Mur 1 1 ») est remplacé par le nom automatique ; tout autre nom est gardé. Plus de deux pièces : les deux plus grandes puis « +N » ; pièces masquées comptées. | Une seule source de vérité, aucune migration ; les anciens projets prennent les nouveaux noms tout seuls. |
 
 ## Idées (hors jalon en cours)
 

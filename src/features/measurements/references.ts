@@ -20,14 +20,14 @@ const ROW_BAND = 500
 const pad = (prefix: string, n: number, total: number) =>
   `${prefix}${String(n).padStart(Math.max(2, String(total).length), '0')}`
 
-interface Placed<T> {
+export interface Placed<T> {
   item: T
   x: number
   y: number
 }
 
 /** Milieu du tracé d'un mur (centre de son rectangle englobant). */
-function wallCentre(wall: WallElement): { x: number; y: number } {
+export function wallCentre(wall: WallElement): { x: number; y: number } {
   const xs: number[] = []
   const ys: number[] = []
   for (let i = 0; i + 1 < wall.points.length; i += 2) {
@@ -39,7 +39,7 @@ function wallCentre(wall: WallElement): { x: number; y: number } {
 }
 
 /** Centre d'une ouverture sur l'axe de son mur. */
-function openingCentre(opening: OpeningElement, wall: WallElement): { x: number; y: number } {
+export function openingCentre(opening: OpeningElement, wall: WallElement): { x: number; y: number } {
   const i = opening.segmentIndex * 2
   const ax = wall.points[i]
   const ay = wall.points[i + 1]
@@ -58,7 +58,7 @@ function openingCentre(opening: OpeningElement, wall: WallElement): { x: number;
  * avec l'élément précédent dépasse `ROW_BAND` (pas de bandes fixes : deux murs à y = 749 et y = 751
  * sont sur la même ligne). L'identifiant départage deux égalités.
  */
-function readingOrder<T extends { id: string }>(list: Placed<T>[]): T[] {
+export function readingOrder<T extends { id: string }>(list: Placed<T>[]): T[] {
   const byHeight = [...list].sort((a, b) => a.y - b.y || a.x - b.x || a.item.id.localeCompare(b.item.id))
   const rows: Placed<T>[][] = []
   let previousY = -Infinity

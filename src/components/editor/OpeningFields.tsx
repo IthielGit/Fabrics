@@ -23,6 +23,7 @@ import { useEditorStore } from '../../stores/editorStore'
 import type { OpeningElement, OpeningStyle } from '../../types/document'
 import NumberField from '../ui/NumberField'
 import TextField from '../ui/TextField'
+import { autoNameFieldProps, useDisplayNames } from './useDisplayNames'
 
 const KINDS: OpeningElement['kind'][] = ['door', 'window', 'bay']
 
@@ -35,6 +36,7 @@ export default function OpeningFields({ element }: { element: OpeningElement }) 
   const styleId = useId()
   const updateElements = useEditorStore((state) => state.updateElements)
   const setNotice = useEditorStore((state) => state.setNotice)
+  const names = useDisplayNames()
   const wall = useEditorStore((state) => {
     const found = state.project?.document.elements.find((el) => el.id === element.wallId)
     return found?.type === 'wall' ? found : undefined
@@ -77,7 +79,7 @@ export default function OpeningFields({ element }: { element: OpeningElement }) 
     <>
       <TextField
         label={fr.properties.name}
-        value={element.name}
+        {...autoNameFieldProps(element, names)}
         onCommit={(name) => patch((el) => ({ ...el, name }))}
       />
 

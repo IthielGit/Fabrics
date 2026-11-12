@@ -605,10 +605,10 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
 ### Hors jalon — Noms automatiques des murs et des ouvertures (demande du 2026-11-12)
 
 Demande de l'utilisateur : « Mur 1 », « Porte 2 » ne se lisent pas naturellement. Les murs,
-portes, fenêtres et baies prennent un nom tiré des **pièces qu'ils touchent**. Planifié, pas
-encore commencé : à lancer sur feu vert de l'utilisateur.
+portes, fenêtres et baies prennent un nom tiré des **pièces qu'ils touchent**. Fait le 2026-11-12,
+à tester dans le navigateur.
 
-**Principe** (décision D49 dans `docs/PROGRESS.md`) : le nom est **calculé à l'affichage**, jamais
+**Principe** (décisions D58 et D59 dans `docs/PROGRESS.md`) : le nom est **calculé à l'affichage**, jamais
 enregistré ; il suit les renommages de pièces, les déplacements et le sens d'ouverture. Un nom
 tapé à la main reste prioritaire ; vider le champ rend le nom automatique. Les anciens noms par
 défaut (« Mur 1 », « Porte 2 »…) sont traités comme automatiques. Les repères `M01`, `P01`, `F01`
@@ -628,24 +628,26 @@ l'ordre de lecture du plan (de haut en bas, puis de gauche à droite).
 - Une **porte** appartient à la pièce **vers laquelle elle s'ouvre** (champ `side`) ; une porte
   d'entrée prend donc le nom de la pièce d'arrivée.
 - Une **fenêtre** ou une **baie** appartient à la pièce côté intérieur du mur.
-- **Murs** : format à confirmer par l'utilisateur. Option A (recommandée) : « Mur Cuisine /
-  Séjour », « Mur extérieur Cuisine », « Mur extérieur Cuisine, Séjour +2 », « Mur isolé ».
-  Option B : « Mur Cuisine 1, 2… » (une seule pièce par mur, même partagé).
+- **Murs** (option A, D58) : « Mur Cuisine / Séjour », « Mur extérieur Cuisine », « Mur isolé ».
+  Au-delà de deux pièces : les deux plus grandes, dans l'ordre de lecture, puis « +N »
+  (« Mur Cuisine / Séjour +1 »). Deux murs du même niveau au même nom sont numérotés
+  (« Mur extérieur Cuisine 1 », « … 2 »).
+- Les pièces masquées comptent pour le nom, comme pour les surfaces (D56).
 
 **Tâches**
 
 - [x] **Décision : format des murs** — option A retenue le 2026-11-12 (D58).
-- [ ] **Calcul des noms** : fonction pure qui cherche, pour chaque côté d'un mur et au centre de
+- [x] **Calcul des noms** : fonction pure qui cherche, pour chaque côté d'un mur et au centre de
       chaque ouverture, la pièce du même niveau juste derrière la face. Fichiers :
       `src/features/naming/autoNames.ts` (nouveau), `autoNames.test.ts` (nouveau),
       `src/i18n/fr.ts`.
-- [ ] **Nom personnalisé** : champ facultatif `customName` (pas de changement de version du
-      document) ; vider le champ rend le nom automatique. Fichiers : `src/types/document.ts`,
+- [x] **Nom personnalisé** : le champ `name` existant suffit (D59, pas de `customName`) : un nom
+      vide ou un ancien nom par défaut est automatique ; vider le champ rend le nom automatique. Fichiers : `src/types/document.ts`,
       `LayersPanel.tsx`, `OpeningFields.tsx`, `PlanElementFields.tsx`.
-- [ ] **Affichage partout** : calques, Propriétés, panneau Métrés (dont « Mur : … » d'une
+- [x] **Affichage partout** : calques, Propriétés, panneau Métrés (dont « Mur : … » d'une
       ouverture), exports CSV, Excel et PDF. Fichiers : `src/features/measurements/measurements.ts`,
       `tables.ts`, `MeasurementsPanel.tsx`.
-- [ ] **Mur coupé** : les morceaux prennent un nom automatique (fini « Mur 1 1 »). Fichier :
+- [x] **Mur coupé** : les morceaux prennent un nom automatique (fini « Mur 1 1 »). Fichier :
       `src/features/geometry/splitWall.ts`.
 
 **Critères d'acceptation**

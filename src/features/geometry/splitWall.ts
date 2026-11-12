@@ -1,4 +1,5 @@
 import type { CanvasElement, OpeningElement, WallElement } from '../../types/document'
+import { isAutoName } from '../naming/autoNames'
 import { toPoints } from './polygon'
 
 /** En dessous de cette longueur (mm), un côté est considéré comme nul (sommet en double). */
@@ -52,7 +53,8 @@ export function splitWall(
     const part: WallElement = {
       ...wall,
       id: rank === 0 ? wall.id : newId(),
-      name: `${wall.name} ${rank + 1}`,
+      // Nom automatique (D58) : chaque morceau prend le sien ; un nom tapé est gardé et numéroté.
+      name: isAutoName(wall.name) ? '' : `${wall.name} ${rank + 1}`,
       points: [a.x, a.y, b.x, b.y],
     }
     wallOfSide.set(side, part)
