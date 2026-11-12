@@ -1,32 +1,32 @@
-# React + TypeScript + Vite
+# Fabrics
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Application web d'édition visuelle sur canevas, avec deux types de projets :
 
-Currently, two official plugins are available:
+- **Visuel** : affiches, posts, flyers (texte, formes, images).
+- **Plan** : plan de pièce ou de bâtiment à l'échelle réelle (murs, pièces, cotes, niveaux, mobilier, 3D),
+  avec calcul automatique des métrés (surfaces, périmètres, longueurs). Exports PDF, PNG, DXF, IFC, glTF.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Les projets sont enregistrés dans le navigateur (mode local, sans compte).
 
-## React Compiler
+**Version en ligne :** _(lien `*.pages.dev` à ajouter après le déploiement)_
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Commandes
 
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install      # installer les dépendances (une seule fois)
+npm run dev      # serveur de développement → http://localhost:5173
+npm run build    # vérification TypeScript + build de production (dossier dist)
+npm run lint     # oxlint
+npm test         # tests Vitest
+npm run preview  # servir le build de production en local
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+## Déploiement
+
+Hébergé sur Cloudflare Pages : build `npm run build`, dossier de sortie `dist`.
+Le fichier `public/_redirects` renvoie toutes les adresses vers `index.html` (application à page unique).
+Chaque `git push` sur la branche `main` redéploie automatiquement.
+
+## Documentation
+
+Voir le dossier [docs/](docs/) : produit, architecture, roadmap et journal de progression.

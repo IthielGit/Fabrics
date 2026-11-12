@@ -833,11 +833,11 @@ Ordre confirmé : A (barre d'outils), puis C (plan vide), puis les autres lots u
 
 Objectif : l'application est accessible publiquement (en mode local, sans compte).
 
-- [ ] Créer le dépôt GitHub et pousser le code (guider l'utilisateur pas à pas)
-- [ ] Ajouter `public/_redirects` (`/* /index.html 200`)
+- [x] Créer le dépôt GitHub et pousser le code (dépôt IthielGit/Fabrics, 2026-11-12)
+- [x] Ajouter `public/_redirects` (`/* /index.html 200`) (2026-11-12)
 - [ ] Connecter le dépôt à Cloudflare Pages (build `npm run build`, sortie `dist`)
 - [ ] Vérifier la version en ligne : création, sauvegarde, export
-- [ ] README : présentation, commandes, lien de la version en ligne
+- [x] README : présentation, commandes, lien de la version en ligne
 
 **Critères d'acceptation**
 - L'URL `*.pages.dev` fonctionne, y compris en rechargeant directement une page `/p/…`
