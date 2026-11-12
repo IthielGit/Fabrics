@@ -415,7 +415,7 @@ export function collectSnapVertices(
   excludeIds: ReadonlySet<string> = new Set(),
 ): SnapVertex[] {
   const vertices: SnapVertex[] = []
-  const walls: { points: readonly number[]; thickness: number }[] = []
+  const walls: { points: readonly number[]; thickness: number; levelId?: string }[] = []
   const tag = (points: readonly Point[], vertexKind: VertexKind): SnapVertex[] =>
     points.map((p) => ({ x: p.x, y: p.y, vertexKind }))
 
@@ -424,7 +424,7 @@ export function collectSnapVertices(
     switch (element.type) {
       case 'wall':
         vertices.push(...tag(toPoints(element.points), 'wall-axis'))
-        walls.push({ points: element.points, thickness: element.thickness })
+        walls.push({ points: element.points, thickness: element.thickness, levelId: element.levelId })
         break
       case 'room':
       case 'platform':
@@ -438,10 +438,12 @@ export function collectSnapVertices(
 
   // Angles des faces : intérieure / extérieure pour un mur fermé (la face intérieure est celle qui
   // entoure la plus petite surface), sans distinction pour un mur ouvert.
-  let faceCount = 0
+  // Les croisements de faces ne se cherchent qu'entre murs d'un même niveau : les murs d'un niveau
+  // de référence affiché ne se croisent pas avec ceux du niveau actif.
+  const faceCounts = new Map<string | undefined, number>()
   for (const wall of walls) {
     const { left, right } = wallFaces(wall.points, wall.thickness)
-    faceCount += left.length + right.length
+    faceCounts.set(wall.levelId, (faceCounts.get(wall.levelId) ?? 0) + left.length + right.length)
     const flat = toPoints(wall.points)
     const closed =
       flat.length >= 4 &&
@@ -456,7 +458,10 @@ export function collectSnapVertices(
     vertices.push(...tag(right, leftInner ? 'wall-face-outer' : 'wall-face-inner'))
   }
   // Croisements des faces de murs différents (après les angles, dans `wallFaceCorners`).
-  vertices.push(...tag(wallFaceCorners(walls).slice(faceCount), 'wall-face'))
+  for (const [levelId, faceCount] of faceCounts) {
+    const group = walls.filter((wall) => wall.levelId === levelId)
+    vertices.push(...tag(wallFaceCorners(group).slice(faceCount), 'wall-face'))
+  }
   vertices.push(...tag(axisIntersections(collectAxisSegments(elements, excludeIds)), 'axis-crossing'))
   return vertices
 }

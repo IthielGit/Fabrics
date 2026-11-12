@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement, DimensionElement, RoomElement, WallElement } from '../../types/document'
-import { createAxisElement, createOpeningElement } from '../documents/elements'
+import { createAxisElement, createOpeningElement, createWallElement } from '../documents/elements'
 import {
   collectAlignTargets,
   collectOpeningSnapPoints,
@@ -548,5 +548,18 @@ describe('nature des sommets et tri selon l’outil', () => {
       { ...NONE, vertices: [{ x: 0, y: 0 }], preferredVertices: preferredVertexKinds('room') },
     )
     expect(result.vertexKind).toBe('draft')
+  })
+})
+
+describe('collectSnapVertices : niveaux différents', () => {
+  it('ne cherche pas de croisement de faces entre des murs de deux niveaux', () => {
+    const base = { thickness: 200, height: 2700 }
+    const a = { ...createWallElement('A', [0, 0, 4000, 0], base.thickness, base.height), levelId: 'L1' }
+    const b = { ...createWallElement('B', [2000, -1000, 2000, 1000], base.thickness, base.height), levelId: 'L2' }
+    const crossing = (list: CanvasElement[]) =>
+      collectSnapVertices(list).filter((v) => v.vertexKind === 'wall-face' && Math.abs(v.y) < 500 && v.x > 1000 && v.x < 3000)
+    expect(crossing([a, b])).toHaveLength(0)
+    const sameLevel = { ...b, levelId: 'L1' }
+    expect(crossing([a, sameLevel]).length).toBeGreaterThan(0)
   })
 })

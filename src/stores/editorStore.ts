@@ -11,7 +11,7 @@ import {
   elementsOfLevel,
   elementsOnLevel,
   insertLevelAbove,
-  levelBelow,
+  referenceLevels,
   isLevelIndependent,
   moveLevel as moveLevelInList,
   newTopLevel,
@@ -140,6 +140,8 @@ interface EditorState {
   activeLevelId: string | null
   /** Affiche le niveau du dessous en transparence (calque de référence). */
   showLowerLevel: boolean
+  /** Affiche aussi le niveau du dessus en transparence (désactivé par défaut ; état d'interface, hors historique). */
+  showUpperLevel: boolean
   /** Cotes automatiques du plan (M10 ter lot B) : aucune, Client ou Exécution ; état d'interface, hors historique. */
   dimensioningMode: DimensioningMode
   /** Version des métrés affichée dans le panneau ; la fenêtre Exporter s'ouvre dessus (état d'interface, hors historique). */
@@ -190,6 +192,7 @@ interface EditorState {
   /** Change de niveau : la sélection est vidée (on ne sélectionne que sur le niveau actif). */
   setActiveLevel: (id: string) => void
   setShowLowerLevel: (show: boolean) => void
+  setShowUpperLevel: (show: boolean) => void
   setDimensioningMode: (mode: DimensioningMode) => void
   setMetresVersion: (version: MetresVersion) => void
   setSurfaceHighlight: (highlight: SurfaceHighlight | null) => void
@@ -307,36 +310,44 @@ export function selectActiveElements(state: {
 let snapCache: {
   active: readonly CanvasElement[]
   elements: readonly CanvasElement[]
-  belowId: string | null
+  referenceKey: string
   result: readonly CanvasElement[]
 } | null = null
 
 /**
  * Éléments qui attirent le tracé et les déplacements : ceux du niveau actif, plus ceux du niveau
- * du dessous quand il est affiché en transparence (pour aligner un étage sur celui d'en dessous).
- * Même référence tant que rien ne change (les calculs d'aimantation sont mis en cache dessus).
+ * du dessous et du niveau du dessus quand ils sont affichés en transparence (pour aligner un étage
+ * sur celui d'en dessous ou d'au-dessus). Même référence tant que rien ne change (les calculs
+ * d'aimantation sont mis en cache dessus).
  */
 export function selectSnapElements(state: {
   project: Project | null
   activeLevelId: string | null
   showLowerLevel: boolean
+  showUpperLevel: boolean
 }): readonly CanvasElement[] {
   const active = selectActiveElements(state)
   const document = state.project?.document
-  const below =
-    state.showLowerLevel && document?.levels && state.activeLevelId !== null
-      ? levelBelow(document.levels, state.activeLevelId)
-      : undefined
-  if (!below || !document) return active
+  const references = referenceLevels(
+    document?.levels,
+    state.activeLevelId,
+    state.showLowerLevel,
+    state.showUpperLevel,
+  )
+  if (references.length === 0 || !document) return active
+  const referenceKey = references.map((level) => level.id).join('|')
   if (
     snapCache?.active === active &&
     snapCache.elements === document.elements &&
-    snapCache.belowId === below.id
+    snapCache.referenceKey === referenceKey
   ) {
     return snapCache.result
   }
-  const result = [...active, ...elementsOfLevel(document.elements, below.id)]
-  snapCache = { active, elements: document.elements, belowId: below.id, result }
+  const result = [
+    ...active,
+    ...references.flatMap((level) => elementsOfLevel(document.elements, level.id)),
+  ]
+  snapCache = { active, elements: document.elements, referenceKey, result }
   return result
 }
 
@@ -410,6 +421,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     editingTextId: null,
     activeLevelId: null,
     showLowerLevel: true,
+    showUpperLevel: false,
     dimensioningMode: 'none',
     metresVersion: 'execution',
     surfaceHighlight: null,
@@ -521,6 +533,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     },
 
     setShowLowerLevel: (showLowerLevel) => set({ showLowerLevel }),
+    setShowUpperLevel: (showUpperLevel) => set({ showUpperLevel }),
     setDimensioningMode: (dimensioningMode) => set({ dimensioningMode }),
     setMetresVersion: (metresVersion) => set({ metresVersion }),
     setSurfaceHighlight: (surfaceHighlight) => set({ surfaceHighlight }),

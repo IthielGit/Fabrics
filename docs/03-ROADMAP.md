@@ -698,9 +698,9 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 
 ### Lot C — Niveaux
 
-- [ ] **Niveau du dessus** affiché en transparence (désactivé par défaut) : réglage d'interface,
+- [x] **Niveau du dessus** affiché en transparence (désactivé par défaut) : réglage d'interface,
       hors document, hors historique.
-- [ ] **Aimantation sur le niveau de référence** : murs et sommets s'alignent sur ceux du niveau
+- [x] **Aimantation sur le niveau de référence** : murs et sommets s'alignent sur ceux du niveau
       du dessous (aligner un étage sur celui d'en dessous), et sur le niveau du dessus si affiché.
 
 ### Lot D — Accueil

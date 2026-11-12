@@ -1,6 +1,6 @@
 import clsx from 'clsx'
-import { Layers } from 'lucide-react'
-import { levelBelow } from '../../features/documents/levels'
+import { Layers, Layers2 } from 'lucide-react'
+import { levelAbove, levelBelow } from '../../features/documents/levels'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 
@@ -14,10 +14,14 @@ export default function LevelSelector() {
   const showLowerLevel = useEditorStore((state) => state.showLowerLevel)
   const setActiveLevel = useEditorStore((state) => state.setActiveLevel)
   const setShowLowerLevel = useEditorStore((state) => state.setShowLowerLevel)
+  const showUpperLevel = useEditorStore((state) => state.showUpperLevel)
+  const setShowUpperLevel = useEditorStore((state) => state.setShowUpperLevel)
 
   if (!levels || levels.length === 0 || activeLevelId === null) return null
   const below = levelBelow(levels, activeLevelId)
   const referenceOn = showLowerLevel && below !== undefined
+  const above = levelAbove(levels, activeLevelId)
+  const upperOn = showUpperLevel && above !== undefined
 
   return (
     <nav
@@ -62,6 +66,26 @@ export default function LevelSelector() {
         )}
       >
         <Layers size={18} />
+      </button>
+      <button
+        type="button"
+        disabled={!above}
+        title={
+          !above
+            ? fr.levels.noUpperLevel
+            : showUpperLevel
+              ? `${fr.levels.hideUpper} (${fr.levels.upperLevelShown(above.name)})`
+              : fr.levels.showUpper
+        }
+        aria-label={showUpperLevel ? fr.levels.hideUpper : fr.levels.showUpper}
+        aria-pressed={upperOn}
+        onClick={() => setShowUpperLevel(!showUpperLevel)}
+        className={clsx(
+          'shrink-0 rounded-md p-2 disabled:cursor-not-allowed disabled:opacity-40',
+          upperOn ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100',
+        )}
+      >
+        <Layers2 size={18} />
       </button>
     </nav>
   )

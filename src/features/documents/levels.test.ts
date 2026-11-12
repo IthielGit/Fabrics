@@ -5,7 +5,9 @@ import {
   elementsOfLevel,
   elementsOnLevel,
   insertLevelAbove,
+  levelAbove,
   levelBelow,
+  referenceLevels,
   moveLevel,
   newTopLevel,
   nextLevelName,
@@ -174,5 +176,20 @@ describe('niveaux : éléments', () => {
     expect(copiedDoor.wallId).toBe(copiedWall.id)
     // Même position que l'original.
     expect(copiedWall.points).toEqual([0, 0, 4000, 0])
+  })
+})
+
+describe('niveaux de référence', () => {
+  it('le dessous et le dessus selon les réglages', () => {
+    const ids = (lower: boolean, upper: boolean, active: string | null) =>
+      referenceLevels(THREE, active, lower, upper).map((level) => level.id)
+    expect(ids(true, false, 'B')).toEqual(['A'])
+    expect(ids(false, true, 'B')).toEqual(['C'])
+    expect(ids(true, true, 'B')).toEqual(['A', 'C'])
+    expect(ids(true, true, 'A')).toEqual(['B'])
+    expect(ids(true, true, 'C')).toEqual(['B'])
+    expect(ids(false, false, 'B')).toEqual([])
+    expect(ids(true, true, null)).toEqual([])
+    expect(levelAbove(THREE, 'C')).toBeUndefined()
   })
 })

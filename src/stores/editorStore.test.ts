@@ -707,6 +707,22 @@ describe('axes de construction', () => {
     expect(selectSnapElements(store())).toEqual([])
   })
 
+  it('le niveau du dessus attire seulement quand il est affiché, et il est désactivé par défaut', () => {
+    store().addElement(createWallElement('Mur RDC', [0, 0, 4000, 0], 200, 2700))
+    store().addLevel()
+    store().addElement(createWallElement('Mur étage', [0, 0, 0, 3000], 200, 2700))
+    const ground = store().project!.document.levels![0].id
+    store().setActiveLevel(ground)
+    store().setShowLowerLevel(true)
+    expect(store().showUpperLevel).toBe(false)
+    expect(selectSnapElements(store()).map((el) => el.name)).toEqual(['Mur RDC'])
+    store().setShowUpperLevel(true)
+    expect(selectSnapElements(store()).map((el) => el.name)).toEqual(['Mur RDC', 'Mur étage'])
+    expect(selectSnapElements(store())).toBe(selectSnapElements(store()))
+    store().setShowUpperLevel(false)
+    expect(selectSnapElements(store()).map((el) => el.name)).toEqual(['Mur RDC'])
+  })
+
   it('supprimer un niveau garde les axes', () => {
     store().addElement(axis('A', 0))
     store().addLevel()

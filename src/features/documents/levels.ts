@@ -175,6 +175,28 @@ export function levelBelow(levels: readonly Level[], levelId: string): Level | u
   return index > 0 ? levels[index - 1] : undefined
 }
 
+/** Niveau juste au-dessus de `levelId`, s'il existe. */
+export function levelAbove(levels: readonly Level[], levelId: string): Level | undefined {
+  const index = levels.findIndex((l) => l.id === levelId)
+  return index >= 0 && index + 1 < levels.length ? levels[index + 1] : undefined
+}
+
+/**
+ * Niveaux de référence du niveau actif : celui du dessous quand `showLower`, celui du dessus quand
+ * `showUpper` (les deux s'affichent en transparence et attirent le tracé). Vide sans niveau actif.
+ */
+export function referenceLevels(
+  levels: readonly Level[] | undefined,
+  activeLevelId: string | null,
+  showLower: boolean,
+  showUpper: boolean,
+): Level[] {
+  if (!levels || activeLevelId === null) return []
+  const lower = showLower ? levelBelow(levels, activeLevelId) : undefined
+  const upper = showUpper ? levelAbove(levels, activeLevelId) : undefined
+  return [lower, upper].filter((level): level is Level => level !== undefined)
+}
+
 /**
  * Copie d'un niveau : ses murs (avec leurs ouvertures) sont recopiés au même endroit sur
  * `targetLevelId`. Les pièces, cotes, textes et images ne sont pas copiés.

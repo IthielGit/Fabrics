@@ -1,12 +1,11 @@
 import type Konva from 'konva'
 import { useCallback, useMemo, useRef } from 'react'
 import { translateBox, unionBoxes, type Box } from '../../features/geometry/box'
-import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
+import { elementsOfLevel, referenceLevels } from '../../features/documents/levels'
 import { elementBounds } from '../../features/export/bounds'
 import { computeSnap } from '../../features/geometry/guides'
 import {
   collectSnapLines,
-  EMPTY_SNAP_LINES,
   mergeSnapLines,
   movingSnapLines,
   snapLinesTo,
@@ -69,15 +68,16 @@ function planDragSnap(
     }),
   )
   if (!box) return null
-  const levels = project.document.levels
-  const below =
-    store.showLowerLevel && levels && store.activeLevelId !== null
-      ? levelBelow(levels, store.activeLevelId)
-      : undefined
+  const references = referenceLevels(
+    project.document.levels,
+    store.activeLevelId,
+    store.showLowerLevel,
+    store.showUpperLevel,
+  )
   const exclude = new Set([...ids, ...followers])
   const targets = mergeSnapLines(
     collectSnapLines(selectActiveElements(store), exclude),
-    below ? collectSnapLines(elementsOfLevel(project.document.elements, below.id)) : EMPTY_SNAP_LINES,
+    ...references.map((level) => collectSnapLines(elementsOfLevel(project.document.elements, level.id))),
   )
   const plan = project.document.plan
   return {

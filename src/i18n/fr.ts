@@ -173,6 +173,10 @@ export const fr = {
     hideLower: 'Masquer le niveau inférieur',
     noLowerLevel: 'Il n’y a pas de niveau en dessous.',
     lowerLevelShown: (name: string) => `Niveau de référence : ${name}`,
+    showUpper: 'Afficher le niveau supérieur en transparence',
+    hideUpper: 'Masquer le niveau supérieur',
+    noUpperLevel: 'Il n’y a pas de niveau au-dessus.',
+    upperLevelShown: (name: string) => `Niveau du dessus : ${name}`,
     deleteTitle: 'Supprimer le niveau',
     deleteMessage: (name: string, count: number) =>
       `Le niveau « ${name} » sera supprimé avec ses ${count} élément${count > 1 ? 's' : ''}. Vous pourrez annuler avec Ctrl+Z.`,

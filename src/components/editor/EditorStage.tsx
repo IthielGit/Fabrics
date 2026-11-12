@@ -14,7 +14,7 @@ import {
   nextElementName,
 } from '../../features/documents/elements'
 import { drawOrder } from '../../features/documents/layers'
-import { elementsOfLevel, levelBelow } from '../../features/documents/levels'
+import { elementsOfLevel, referenceLevels } from '../../features/documents/levels'
 import { boxesIntersect, distance, normalizeBox, type Box } from '../../features/geometry/box'
 import { panView, wheelAction } from '../../features/geometry/navigation'
 import { screenToDocument, zoomAtPoint, type Point } from '../../features/geometry/viewport'
@@ -112,14 +112,17 @@ export default function EditorStage() {
   const activeElements = useEditorStore(selectActiveElements)
   const activeLevelId = useEditorStore((state) => state.activeLevelId)
   const showLowerLevel = useEditorStore((state) => state.showLowerLevel)
+  const showUpperLevel = useEditorStore((state) => state.showUpperLevel)
   const levels = project?.document.levels
   const allElements = project?.document.elements
-  // Niveau de référence : les éléments du niveau du dessous, en transparence, sans interaction.
+  // Niveaux de référence : les éléments du niveau du dessous et, si demandé, du dessus, en
+  // transparence, sans interaction.
   const referenceElements = useMemo(() => {
-    if (!showLowerLevel || !levels || !allElements || activeLevelId === null) return []
-    const below = levelBelow(levels, activeLevelId)
-    return below ? elementsOfLevel(allElements, below.id) : []
-  }, [showLowerLevel, levels, allElements, activeLevelId])
+    if (!allElements) return []
+    return referenceLevels(levels, activeLevelId, showLowerLevel, showUpperLevel).flatMap((level) =>
+      elementsOfLevel(allElements, level.id),
+    )
+  }, [showLowerLevel, showUpperLevel, levels, allElements, activeLevelId])
   // Raccords d'angle des murs (niveau actif et niveau de référence séparément).
   const wallJoins = useMemo(() => computeWallJoinsOf(activeElements), [activeElements])
   const referenceWallJoins = useMemo(() => computeWallJoinsOf(referenceElements), [referenceElements])

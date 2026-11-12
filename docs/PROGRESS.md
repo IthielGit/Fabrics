@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot B · Glisser un seul mur et joindre des murs
+- **Dernière tâche terminée :** M11 bis · Lot C · Niveau du dessus et aimantation
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot C · Niveau du dessus et aimantation sur les niveaux de référence
+- Fait : nouveau bouton (icône « calques ») à côté de celui du niveau du dessous, dans le sélecteur de niveau : **affiche le niveau du dessus en transparence**, sans interaction. **Désactivé par défaut**, réglage d'interface (hors document, hors historique, comme celui du dessous). **Aimantation** : les tracés, les poignées de sommets et les déplacements s'aimantent sur les murs et sommets du niveau du dessous (déjà le cas) **et du dessus** quand ils sont affichés. Les croisements de faces de murs ne sont plus cherchés entre murs de niveaux différents (plus de points d'accroche fantômes).
+- Fichiers : `src/features/documents/levels.ts` (`levelAbove`, `referenceLevels`) + test, `src/stores/editorStore.ts` (`showUpperLevel`, `selectSnapElements`) + test, `snapping.ts` + test, `EditorStage.tsx`, `LevelSelector.tsx`, `useElementInteractions.ts`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (le test de vitesse « 600 murs en moins de 200 ms » échoue parfois sous la charge, passe seul : connu) — test dans le navigateur à faire à la fin du jalon
+- Commit : feat: niveau du dessus et aimantation sur les niveaux de référence (M11 bis, lot C)
 
 ### 2026-11-12 — M11 bis · Lot B · Tâche 2 · Joindre des murs
 - Fait : quand plusieurs murs sont sélectionnés (double-clic = murs liés), bouton **« Joindre les murs »** dans Propriétés : ils deviennent un seul mur bout à bout (l'inverse de « Séparer les côtés »). Les murs doivent être sur le même niveau, de même épaisseur, hauteur et matériau, et former une chaîne simple (ouverte ou fermée). Un mur dessiné à l'envers est retourné avec ses portes et fenêtres (place comptée depuis l'autre bout, charnière et côté d'ouverture inversés). Le mur obtenu garde l'identifiant et le nom tapé du premier ; un nom automatique reste automatique. Sinon, message clair en français (épaisseur différente, mur verrouillé, pas bout à bout…). Un seul pas d'annulation. Longueur et surfaces murales identiques avant et après (test).
