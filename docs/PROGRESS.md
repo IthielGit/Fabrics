@@ -44,6 +44,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — Correctif · Vide entre les étages en 3D
+- Fait : la dalle n'était posée que sous les pièces ; avec des murs de 2500 mm sur un étage de 2700 mm, il restait un vide de 200 mm au droit des murs (entre étages et sous le toit). Désormais, dans la maquette (3D, façades, coupes), un mur qui monte jusque sous la dalle du dessus la traverse jusqu'au plancher suivant (au dernier niveau : jusqu'à la base du toit). Un muret plus bas garde sa hauteur ; les métrés gardent la hauteur saisie.
+- Fichiers : `src/features/building/model.ts` (`wallHeightInModel`), `src/features/building/model.test.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2685) — à regarder dans la vue 3D de l'exemple.
+
 ### 2026-11-12 — Hors jalon · Exemple plus complet (« Voir un exemple »)
 - Fait : le plan d'exemple devient une maison à deux niveaux : rez-de-chaussée (séjour et coin repas, cuisine avec îlot, entrée avec escalier en L, WC et buanderie) et étage (deux chambres, salle de bains, bureau, palier, dressing), 10 pièces, une quarantaine de meubles, portes, fenêtres et baie, 3 cotes, une ligne de coupe A et une toiture à deux pans. Aucune alerte de métrés (testé).
 - Fichiers : `src/features/documents/examplePlan.ts` (nouveau, contenu du plan), `src/features/documents/createProject.ts`, `src/features/documents/createProject.test.ts`, `src/i18n/fr.ts` (textes de l'exemple et de la carte d'accueil).

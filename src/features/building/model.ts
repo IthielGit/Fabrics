@@ -38,6 +38,23 @@ export function visibleLevels(levels: readonly Level[], upToLevelId?: string): L
   return index < 0 ? sorted : sorted.slice(0, index + 1)
 }
 
+/**
+ * Hauteur d'un mur dans la maquette (3D, façades, coupes). La dalle ne couvre que les pièces : un mur
+ * qui monte jusque sous la dalle du niveau du dessus la traverse jusqu'au plancher de ce niveau, sinon
+ * il resterait un vide au droit du mur. Au dernier niveau, même règle sous le haut de l'étage (base
+ * des toits). Un mur plus bas (muret, garde-corps) ou plus haut garde sa hauteur. Les métrés ne
+ * changent pas : ils utilisent la hauteur saisie.
+ */
+export function wallHeightInModel(
+  wall: Pick<WallElement, 'height'>,
+  level: Pick<Level, 'elevation' | 'height' | 'slabThickness'>,
+  above?: Pick<Level, 'elevation' | 'slabThickness'>,
+): number {
+  const top = (above ? above.elevation : level.elevation + level.height) - level.elevation
+  const slab = above ? above.slabThickness : level.slabThickness
+  return wall.height >= top - slab && wall.height < top ? top : wall.height
+}
+
 /** Dalle sous une pièce : dessus au niveau du sol, épaisseur du niveau vers le bas. */
 export function buildRoomSlab(
   room: RoomElement,
@@ -251,12 +268,14 @@ export function buildBuildingModel(
     if (!level) continue
     if (el.type === 'wall') {
       const own = openingsByWall.get(el.id) ?? []
-      walls.push(...buildWallPieces(el as WallElement, own, level))
-      const details = buildOpeningDetails(el as WallElement, own, level)
+      const above = sortedAll[(levelRank.get(level.id) ?? 0) + 1]
+      const wall: WallElement = { ...el, height: wallHeightInModel(el, level, above) }
+      walls.push(...buildWallPieces(wall, own, level))
+      const details = buildOpeningDetails(wall, own, level)
       fills.push(...details.fills)
       marks.push(...details.marks)
-      const mesh = buildWallMesh(el as WallElement, own, level)
-      if (mesh) wallMeshes.push((el as WallElement).material ? { ...mesh, material: (el as WallElement).material } : mesh)
+      const mesh = buildWallMesh(wall, own, level)
+      if (mesh) wallMeshes.push(wall.material ? { ...mesh, material: wall.material } : mesh)
     } else if (el.type === 'chimney') {
       const piece = buildChimney(el, level, levels)
       if (piece) chimneys.push(piece)

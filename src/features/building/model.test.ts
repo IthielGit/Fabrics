@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { CanvasElement, Level, OpeningElement, WallElement } from '../../types/document'
 import { createOpeningElement, createRoomElement, createWallElement } from '../documents/elements'
 import { createLevel } from '../documents/levels'
-import { buildBuildingModel } from './model'
+import { buildBuildingModel, wallHeightInModel } from './model'
 import type { WallPiece } from './types'
 import { buildOpeningFills } from './openingFills'
 import { buildWallMesh } from './wallMesh'
@@ -295,6 +295,33 @@ describe('buildBuildingModel', () => {
     const walls = [ground, upper, l2].map((l) => wallOn(l, [0, 0, 4000, 0]))
     const model = buildBuildingModel({ elements: walls, levels: [ground, upper, l2] })
     expect(model.walls.map((w) => w.center.y)).toEqual([1250, 3750, 6250])
+  })
+})
+
+describe('wallHeightInModel (pas de vide sous la dalle du dessus)', () => {
+  const rdc = createLevel('RDC', 0, 2700, 200)
+  const etage = createLevel('Étage', 2700, 2700, 200)
+
+  it('un mur qui monte jusque sous la dalle du dessus la traverse jusqu’au plancher', () => {
+    expect(wallHeightInModel({ height: 2500 }, rdc, etage)).toBe(2700)
+    expect(wallHeightInModel({ height: 2600 }, rdc, etage)).toBe(2700)
+  })
+
+  it('au dernier niveau, le mur monte jusqu’à la base du toit', () => {
+    expect(wallHeightInModel({ height: 2500 }, etage)).toBe(2700)
+  })
+
+  it('un muret ou un mur plus haut garde sa hauteur', () => {
+    expect(wallHeightInModel({ height: 1000 }, rdc, etage)).toBe(1000)
+    expect(wallHeightInModel({ height: 2499 }, rdc, etage)).toBe(2499)
+    expect(wallHeightInModel({ height: 3000 }, rdc, etage)).toBe(3000)
+  })
+
+  it('le modèle 3D n’a plus de vide entre le haut des murs et le plancher du dessus', () => {
+    const wall = { ...createWallElement('Mur', [0, 0, 4000, 0], 200, 2500), levelId: rdc.id }
+    const model = buildBuildingModel({ elements: [wall], levels: [rdc, etage] })
+    const top = Math.max(...model.walls.map((w) => w.center.y + w.size.y / 2))
+    expect(top).toBe(etage.elevation)
   })
 })
 
