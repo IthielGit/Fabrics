@@ -1,4 +1,5 @@
-import { Line, Text, Group } from 'react-konva'
+import { Group, Line, Rect, Text } from 'react-konva'
+import { dimensionTextRow } from '../../../features/dimensioning/layout'
 import { dimensionGeometry } from '../../../features/geometry/dimension'
 import { formatLength } from '../../../features/units/format'
 
@@ -29,7 +30,17 @@ interface DimensionDrawingProps {
   withUnit?: boolean
   /** Zone de clic autour de la ligne de cote, en pixels écran ; absente : pas de clic. */
   hitWidthPx?: number
+  /**
+   * Cotes automatiques : un chiffre qui ne tient pas entre les traits passe un rang plus haut ou
+   * sous la ligne selon ce rang dans la chaîne, sur un fond blanc qui le garde lisible.
+   */
+  chainIndex?: number
+  /** Fond blanc derrière le chiffre (cotes automatiques, posées sur les murs et les meubles). */
+  textBackground?: boolean
 }
+
+/** Position verticale du haut du texte, en multiples de sa hauteur, selon le rang choisi. */
+const ROW_TOP_EM = { above: -1.25, above2: -2.45, below: 0.3 } as const
 
 /** Dessin d'une cote : ligne décalée, lignes d'attache, traits obliques et longueur en mm. */
 export default function DimensionDrawing({
@@ -39,6 +50,8 @@ export default function DimensionDrawing({
   fontMm = TEXT_FONT_MM,
   withUnit = true,
   hitWidthPx,
+  chainIndex,
+  textBackground = false,
 }: DimensionDrawingProps) {
   const geometry = dimensionGeometry(points, offset)
   if (!geometry) return null
@@ -76,6 +89,9 @@ export default function DimensionDrawing({
     ? unit.length * CHAR_WIDTH_EM * fontSize * UNIT_SCALE + UNIT_GAP_EM * fontSize
     : 0
   const textStart = -(valueWidth + unitWidth) / 2
+  // Cotes tracées à la main : toujours au-dessus ; cotes automatiques : selon la place disponible.
+  const row = chainIndex === undefined ? 'above' : dimensionTextRow(length, value, fontSize, chainIndex)
+  const textTop = ROW_TOP_EM[row] * fontSize
 
   const flat = (a: { x: number; y: number }, b: { x: number; y: number }) => [a.x, a.y, b.x, b.y]
 
@@ -94,10 +110,20 @@ export default function DimensionDrawing({
         <Line key={`tick-${i}`} points={tick} stroke={COLOR} strokeWidth={thin * 1.2} />
       ))}
       <Group x={center.x} y={center.y} rotation={textAngle} listening={false}>
+        {textBackground && (
+          <Rect
+            x={textStart - fontSize * 0.15}
+            y={textTop + fontSize * 0.05}
+            width={valueWidth + unitWidth + fontSize * 0.3}
+            height={fontSize * 1.05}
+            fill="#ffffff"
+            opacity={0.85}
+          />
+        )}
         {/* Le chiffre à la taille normale, l'unité plus petite et plus claire pour ne pas encombrer. */}
         <Text
           x={textStart}
-          y={-fontSize * 1.25}
+          y={textTop}
           text={value}
           fontSize={fontSize}
           fill={COLOR}
@@ -106,7 +132,7 @@ export default function DimensionDrawing({
         {showUnit && (
           <Text
             x={textStart + valueWidth + UNIT_GAP_EM * fontSize}
-            y={-fontSize * 1.25 + fontSize * (1 - UNIT_SCALE) * 0.9}
+            y={textTop + fontSize * (1 - UNIT_SCALE) * 0.9}
             text={unit}
             fontSize={fontSize * UNIT_SCALE}
             fill={UNIT_COLOR}

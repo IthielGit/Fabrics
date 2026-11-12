@@ -114,7 +114,10 @@ export function clientDimensions(
     if (measure.dimensions) lines.push(roomDimensionsText(measure.dimensions))
     else dimensions.push(...roomSideDimensions(room, options.roomInset))
     lines.push(formatArea(measure.netArea))
-    labels.push({ id: `room-${room.id}`, x: centre.x, y: centre.y, lines })
+    const xs = room.points.filter((_, i) => i % 2 === 0)
+    const ys = room.points.filter((_, i) => i % 2 === 1)
+    const bounds = { minX: Math.min(...xs), minY: Math.min(...ys), maxX: Math.max(...xs), maxY: Math.max(...ys) }
+    labels.push({ id: `room-${room.id}`, x: centre.x, y: centre.y, lines, bounds })
   }
   return { dimensions, labels }
 }

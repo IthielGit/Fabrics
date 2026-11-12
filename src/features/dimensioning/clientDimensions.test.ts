@@ -39,7 +39,12 @@ describe('cotes Client', () => {
   it('pièce rectangulaire : nom, 4000 × 3000 et 12,00 m², sans autre cote à l’intérieur', () => {
     const chambre = room('r1', 'Chambre', [100, 100, 4100, 100, 4100, 3100, 100, 3100])
     const { dimensions, labels } = run([box, chambre])
-    expect(labels).toEqual([{ id: 'room-r1', x: 2100, y: 1600, lines: ['Chambre', '4000 × 3000', '12,00 m²'] }])
+    expect(labels).toEqual([
+      {
+        id: 'room-r1', x: 2100, y: 1600, lines: ['Chambre', '4000 × 3000', '12,00 m²'],
+        bounds: { minX: 100, minY: 100, maxX: 4100, maxY: 3100 },
+      },
+    ])
     expect(dimensions.filter((d) => !d.id.startsWith('outer'))).toEqual([])
   })
 

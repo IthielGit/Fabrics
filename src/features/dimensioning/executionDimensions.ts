@@ -61,6 +61,13 @@ export const DEFAULT_EXECUTION_OPTIONS: ExecutionOptions = {
   openingLabelGap: 450,
 }
 
+/** Rectangle qui englobe une liste de points `[x1, y1, x2, y2, …]`. */
+function pointsBox(flat: readonly number[]) {
+  const xs = flat.filter((_, i) => i % 2 === 0)
+  const ys = flat.filter((_, i) => i % 2 === 1)
+  return { minX: Math.min(...xs), minY: Math.min(...ys), maxX: Math.max(...xs), maxY: Math.max(...ys) }
+}
+
 /** Altitude en mm entiers, avec son signe : `±0`, `+2850`, `-450`. */
 export function formatAltitude(mm: number): string {
   const rounded = Math.round(mm)
@@ -108,7 +115,7 @@ function chainToDimensions(
   for (let k = 0; k + 1 < ticks.length; k++) {
     const points: [number, number, number, number] =
       direction === 'horizontal' ? [ticks[k], at, ticks[k + 1], at] : [at, ticks[k], at, ticks[k + 1]]
-    result.push({ id: `${idPrefix}-${k}`, points, offset: 0 })
+    result.push({ id: `${idPrefix}-${k}`, points, offset: 0, chainIndex: k })
   }
   return result
 }
@@ -154,6 +161,7 @@ export function executionDimensions(
       x: centre.x,
       y: centre.y,
       lines: [room.name, formatArea(measure.netArea), floor, slab],
+      bounds: pointsBox(room.points),
     })
     for (const direction of ['horizontal', 'vertical'] as const) {
       const at = direction === 'horizontal' ? centre.y + options.innerShift : centre.x + options.innerShift
@@ -188,6 +196,8 @@ export function executionDimensions(
       x: centre.x + normal.x * distance * outward,
       y: centre.y + normal.y * distance * outward,
       lines,
+      // Si l'emplacement est pris : l'autre côté du mur.
+      alternatives: [{ x: centre.x - normal.x * distance * outward, y: centre.y - normal.y * distance * outward }],
     })
   }
 

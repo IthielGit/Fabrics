@@ -1,5 +1,6 @@
 import { useMemo } from 'react'
-import { Group, Text } from 'react-konva'
+import { Group, Rect, Text } from 'react-konva'
+import { LINE_HEIGHT_EM, dimensionObstacles, labelBox, placeLabels } from '../../features/dimensioning/layout'
 import { levelAnnotations } from '../../features/dimensioning/levelAnnotations'
 import { CLIENT_TEXT_FACTOR } from '../../features/dimensioning/planOverlay'
 import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
@@ -15,6 +16,7 @@ const LABEL_COLOR = '#111827'
 /**
  * Cotes automatiques du niveau affiché (M10 ter lot B), selon le réglage « Cotation ». Calculées à
  * chaque modification du plan, jamais enregistrées : elles suivent toujours le plan. Sans clic.
+ * Les chiffres et les étiquettes ont un fond blanc et s'écartent les uns des autres pour rester lisibles.
  */
 export default function AutoDimensionsLayer({ scale }: { scale: number }) {
   const mode = useEditorStore((state) => state.dimensioningMode)
@@ -40,22 +42,35 @@ export default function AutoDimensionsLayer({ scale }: { scale: number }) {
           viewScale={scale}
           fontMm={fontMm}
           withUnit={false}
+          chainIndex={dimension.chainIndex ?? 0}
+          textBackground
         />
       ))}
-      {annotations.labels.map((label) => {
-        const height = fontSize * 1.25 * label.lines.length
+      {placeLabels(annotations.labels, fontSize, dimensionObstacles(annotations.dimensions, fontSize)).map((label) => {
+        const height = fontSize * LINE_HEIGHT_EM * label.lines.length
+        const box = labelBox(label.lines, label.x, label.y, fontSize)
         return (
-          <Text
-            key={label.id}
-            x={label.x - LABEL_BOX_WIDTH_MM / 2}
-            y={label.y - height / 2}
-            width={LABEL_BOX_WIDTH_MM}
-            align="center"
-            text={label.lines.join('\n')}
-            fontSize={fontSize}
-            lineHeight={1.25}
-            fill={LABEL_COLOR}
-          />
+          <Group key={label.id}>
+            <Rect
+              x={box.minX}
+              y={box.minY}
+              width={box.maxX - box.minX}
+              height={box.maxY - box.minY}
+              fill="#ffffff"
+              opacity={0.85}
+              cornerRadius={fontSize * 0.2}
+            />
+            <Text
+              x={label.x - LABEL_BOX_WIDTH_MM / 2}
+              y={label.y - height / 2}
+              width={LABEL_BOX_WIDTH_MM}
+              align="center"
+              text={label.lines.join('\n')}
+              fontSize={fontSize}
+              lineHeight={LINE_HEIGHT_EM}
+              fill={LABEL_COLOR}
+            />
+          </Group>
         )
       })}
     </Group>

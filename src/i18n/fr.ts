@@ -462,7 +462,7 @@ export const fr = {
     metres: {
       version: 'Version',
       client: 'Client',
-      execution: 'Exécution',
+      execution: 'Technique',
       versionHint: {
         client: 'Surface au sol de chaque pièce, sans détail technique.',
         execution: 'Tous les détails du chantier : murs, ouvertures, volumes et règles de calcul.',
@@ -632,7 +632,7 @@ export const fr = {
   dimensioning: {
     label: 'Cotation',
     title: 'Cotes calculées automatiquement à partir du plan (elles ne modifient pas le document)',
-    modes: { none: 'Aucune', client: 'Client', execution: 'Exécution' },
+    modes: { none: 'Aucune', client: 'Client', execution: 'Technique' },
     sill: (mm: number) => `All. ${mm}`,
     floor: (altitude: string) => `Sol ${altitude}`,
     slab: (altitude: string) => `Dalle ${altitude}`,
@@ -641,11 +641,11 @@ export const fr = {
     tread: (mm: number) => `Giron ${mm}`,
     visibleIn: 'Visible en',
     visibleInTitle: 'Version de la cotation où cette cote apparaît (réglage « Cotation » du plan)',
-    visibleInOptions: { both: 'Les deux', client: 'Client', execution: 'Exécution' },
+    visibleInOptions: { both: 'Les deux', client: 'Client', execution: 'Technique' },
     sheetLabel: 'Cotation des plans',
     sheetLevel: (name: string) => `Cotation du plan « ${name} »`,
     pdfVersion: 'Cotation des plans',
-    pdfOptions: { screen: 'Comme à l’écran', client: 'Client', execution: 'Exécution' },
+    pdfOptions: { screen: 'Comme à l’écran', client: 'Client', execution: 'Technique' },
     baysNote:
       'Baies cotées en dimensions brutes de maçonnerie (tableau à tableau). Dimensions des menuiseries : à confirmer par le menuisier après prise de cotes sur place.',
   },

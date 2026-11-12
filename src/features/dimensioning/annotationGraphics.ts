@@ -1,6 +1,7 @@
 import type { DrawLine, DrawText, PlanOverlay } from '../building/views/drawing'
 import { dimensionGeometry } from '../geometry/dimension'
 import { formatDecimal } from '../units/format'
+import { dimensionObstacles, dimensionTextRow, LINE_HEIGHT_EM, placeLabels, ROW_LIFT_EM } from './layout'
 import type { AutoAnnotations } from './types'
 
 /**
@@ -8,7 +9,9 @@ import type { AutoAnnotations } from './types'
  * plan. Même géométrie que les cotes de l'éditeur (`dimensionGeometry`) : ligne de cote, lignes
  * d'attache qui ne touchent pas l'objet, traits obliques, longueur en mm entiers sans unité.
  * Les tailles (traits obliques, écarts) suivent la hauteur des textes, donc l'échelle du papier.
+ * Même mise en page qu'à l'écran : petites cotes en alternance, étiquettes écartées (`layout.ts`).
  */
+
 export function annotationGraphics(annotations: AutoAnnotations, fontMm: number): PlanOverlay {
   const lines: DrawLine[] = []
   const texts: DrawText[] = []
@@ -27,21 +30,22 @@ export function annotationGraphics(annotations: AutoAnnotations, fontMm: number)
     }
     const t = { x: ((direction.x + normal.x) / Math.SQRT2) * tick, y: ((direction.y + normal.y) / Math.SQRT2) * tick }
     for (const p of line) lines.push({ x1: p.x - t.x, y1: p.y - t.y, x2: p.x + t.x, y2: p.y + t.y })
-    // Texte au-dessus de la ligne de cote, dans le sens de lecture.
+    // Texte dans le sens de lecture : au-dessus, ou en alternance s'il ne tient pas entre les traits.
     const a = (textAngle * Math.PI) / 180
-    const lift = fontMm * 0.35
+    const value = formatDecimal(length, 0)
+    const lift = fontMm * ROW_LIFT_EM[dimensionTextRow(length, value, fontMm, dimension.chainIndex ?? 0)]
     texts.push({
       x: center.x + Math.sin(a) * lift,
       y: center.y - Math.cos(a) * lift,
-      text: formatDecimal(length, 0),
+      text: value,
       size: fontMm,
       anchor: 'middle',
       ...(textAngle !== 0 ? { angle: textAngle } : {}),
     })
   }
 
-  for (const label of annotations.labels) {
-    const step = fontMm * 1.25
+  for (const label of placeLabels(annotations.labels, fontMm, dimensionObstacles(annotations.dimensions, fontMm))) {
+    const step = fontMm * LINE_HEIGHT_EM
     const top = label.y - (step * label.lines.length) / 2
     label.lines.forEach((text, index) => {
       texts.push({ x: label.x, y: top + step * (index + 0.8), text, size: fontMm, anchor: 'middle', bold: index === 0 })

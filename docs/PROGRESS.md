@@ -42,6 +42,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M10 ter · Lot B · Lisibilité des cotes automatiques
+- Demande de l'utilisateur (capture d'un plan en Exécution) : « que ce ne soit pas trop le bordel ». Première tentative (chaînes intérieures raccourcies, étiquettes de pièce à 3 lignes, 1re chaîne à 1400 mm) **refusée** : l'utilisateur veut garder la visualisation d'origine et seulement éviter les chevauchements. Elle a été retirée.
+- Fait (mise en page seulement, mêmes cotes, mêmes étiquettes) : **petites cotes** (200, 100…) : quand le chiffre ne tient pas entre les traits, il passe un rang plus haut ou sous la ligne, en alternance le long de la chaîne ; **fond blanc** derrière chiffres et étiquettes (écran) ; **étiquettes écartées** : une étiquette évite les étiquettes déjà placées, les lignes et les chiffres des cotes (`dimensionObstacles`) ; elle essaie son autre emplacement (une ouverture passe de l'autre côté de son mur), puis des positions de plus en plus éloignées, et une étiquette de pièce reste dans sa pièce quand c'est possible (`bounds`). Les pièces sont placées en premier. Planche et PDF suivent la même mise en page (sans fond blanc).
+- Limite : dans une pièce très petite et très chargée, un léger chevauchement peut rester (l'étiquette prend alors la position qui gêne le moins).
+- Fichiers : `src/features/dimensioning/{layout,annotationGraphics,executionDimensions,clientDimensions,facadeChains,types}.ts` + tests, `src/components/editor/AutoDimensionsLayer.tsx`, `src/components/editor/shapes/DimensionDrawing.tsx`
+- Vérification : build ✓ lint ✓ tests ✓ (2465) — rendu à contrôler dans le navigateur
+- Commit : fix: cotes automatiques sans chevauchement
+
 ### 2026-11-12 — M10 ter · Lot B · Plus de détails par pièce pour le client
 - Fait : à la demande de l'utilisateur, le tableau « Vos pièces » des métrés Client (panneau, PDF, Excel, CSV) a deux colonnes de plus : **Périmètre (mm)** (tour du contour dessiné) et **Hauteur sous plafond (mm)** (nouveau `RoomMeasure.ceilingHeight`, D52). Dans le panneau Métrés, les tableaux Client défilent horizontalement s'ils sont trop larges. L'étiquette des pièces sur le plan coté en Client ne change pas (essayé puis retiré, choix de l'utilisateur).
 - Limite : sous un toit en pente, la hauteur varie ; c'est la hauteur du toit plat qui est donnée (D52).
@@ -897,6 +905,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D50 | Réglage « Cotation » | Trois choix : **Aucune** (par défaut), Client, Exécution. État d'interface, hors document et hors historique ; même chose pour le réglage par vue de la planche. | Choix de l'utilisateur : un projet existant s'ouvre sans cotes ajoutées. |
 | D51 | Version du PDF des vues | « Cotation des plans : Comme à l'écran / Client / Exécution » ; la note sur les baies est imprimée dès qu'un plan est coté en Exécution. | Garde le réglage par vue tout en permettant d'imposer une version à toute la planche. |
 | D52 | Hauteur sous plafond | Du dessus du sol de la pièce au-dessous de la dalle du niveau du dessus (altitude du niveau du dessus moins son épaisseur de dalle, comme en 3D). Dernier niveau : hauteur d'étage moins l'épaisseur du toit plat posé entre les murs. Exemples : étage du dessus à +2850 avec une dalle de 200 → 2650 ; dernier niveau de 2700 avec 200 de toit → 2500. | Demande de l'utilisateur ; même géométrie que la 3D, donc pas de contradiction. Sous un toit en pente, la hauteur variable n'est pas calculée. |
+| D53 | Nom de la version « Exécution » | Affichée **« Technique »** partout dans l'interface (réglage Cotation, version des métrés, champ « Visible en », PDF des vues). Le code, les fichiers et les documents de conception gardent « execution » / « Exécution ». | Demande de l'utilisateur ; seuls les textes de `src/i18n/fr.ts` changent. |
 
 ## Idées (hors jalon en cours)
 

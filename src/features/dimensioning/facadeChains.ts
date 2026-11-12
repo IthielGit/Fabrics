@@ -213,7 +213,7 @@ function chainDimensions(
     const points: [number, number, number, number] = horizontal(side)
       ? [u0, edge, u1, edge]
       : [edge, u0, edge, u1]
-    result.push({ id: `${idPrefix}-${k}`, points, offset })
+    result.push({ id: `${idPrefix}-${k}`, points, offset, chainIndex: k })
   }
   return result
 }
