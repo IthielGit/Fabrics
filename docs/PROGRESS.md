@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M10 bis terminé (à tester) ; M10 ter, lot A terminé (à tester) ; lot B (cotes) à faire
-- **Dernière tâche terminée :** M10 ter, Lot A, tâches 2 à 6 (métrés Client / Exécution)
-- **Prochaine tâche :** tester M10 bis et M10 ter lot A dans le navigateur, puis M10 ter, Lot B (cotes client / exécution), puis M11
+- **Jalon en cours :** M10 ter (lots A et B validés ; groupes 1 à 4 des cas limites à faire) ; M10 bis terminé, à tester dans le navigateur
+- **Dernière tâche terminée :** M10 ter, Lot B (cotes Client et Exécution), validé dans le navigateur
+- **Prochaine tâche :** M10 ter, cas limites des métrés, groupe 1 (« Exports justes »), puis groupes 2 à 4 (les groupes 3 et 4 après les décisions de l'utilisateur), puis noms automatiques, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -25,8 +25,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M8 Vue 3D | terminé | 2026-11-11 |
 | M9 Outils de construction | terminé | 2026-11-11 |
 | M10 Façades, coupes et planche | terminé | 2026-11-11 |
-| M10 bis Ouvertures détaillées, toitures, hachures et textures | en cours (lots A et B faits, lot C en cours) | |
-| M10 ter Documents client / exécution (métrés et cotes) | à faire (plan écrit) | |
+| M10 bis Ouvertures détaillées, toitures, hachures et textures | terminé, à tester dans le navigateur (lots A, B et C) | |
+| M10 ter Documents client / exécution (métrés et cotes) | en cours (lots A et B validés ; cas limites à faire) | |
 | M11 Import et export | à faire | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
@@ -41,6 +41,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 ter · Lot B · Validé par l'utilisateur
+- Fait : test dans le navigateur du réglage Cotation (barre d'outils), des cotes tracées à la main (« Visible en ») et du réglage par vue de la planche : **validé** par l'utilisateur. Roadmap mise à jour.
+- Prochaine tâche (non lancée, à la demande de l'utilisateur) : groupe 1 des cas limites des métrés (« Exports justes »).
+- Vérification : build ✓ lint ✓ tests ✓ (2465)
 
 ### 2026-11-12 — M10 ter · Lot B · Lisibilité des cotes automatiques
 - Demande de l'utilisateur (capture d'un plan en Exécution) : « que ce ne soit pas trop le bordel ». Première tentative (chaînes intérieures raccourcies, étiquettes de pièce à 3 lignes, 1re chaîne à 1400 mm) **refusée** : l'utilisateur veut garder la visualisation d'origine et seulement éviter les chevauchements. Elle a été retirée.

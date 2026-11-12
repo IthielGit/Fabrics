@@ -413,7 +413,7 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
 Objectif : de chaque plan, tirer deux documents : une version **Client** simple, sans
 vocabulaire technique, et une version **Exécution** complète pour le chantier.
 Ajouté le 2026-11-11 à la demande de l'utilisateur ; commence après la validation de M10 bis.
-**Lot A validé le 2026-11-12** (test dans le navigateur, par l'utilisateur). **Lot B codé le 2026-11-12**, à contrôler dans le navigateur.
+**Lot A validé le 2026-11-12** (test dans le navigateur, par l'utilisateur). **Lot B codé et validé le 2026-11-12** (test dans le navigateur, par l'utilisateur).
 
 **Principe : un seul calcul, deux présentations.** Les quantités et la géométrie viennent des
 calculs existants (`src/features/measurements/`, `src/features/geometry/`). Les deux versions
