@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M10 ter (lots A et B validés ; groupes 1 à 4 des cas limites à faire) ; M10 bis terminé, à tester dans le navigateur
 - **Dernière tâche terminée :** M10 ter, cas limites des métrés, groupes 1, 2 et 3 (groupe 3 validé par l'utilisateur le 2026-11-12)
-- **Prochaine tâche :** groupe 4 (repères, après la décision de l'utilisateur sur leur stabilité), puis noms automatiques, puis M11
+- **Prochaine tâche :** groupe 4 (repères, option A retenue), en attente du feu vert, puis noms automatiques, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Décision sur les repères
+- Décision de l'utilisateur (D57) : option A, les repères restent **recalculés** à chaque modification ; les documents qui les montrent portent la mention « Repères valables à la date du document ».
+- Plan du groupe 4 présenté, en attente du feu vert. Aucun code modifié.
 
 ### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 3 · Validé par l'utilisateur
 - Fait : l'utilisateur valide le groupe 3 (contrôle des surfaces, exports bloqués si manque ou débord, pièces masquées comptées). Commit effectué.
@@ -950,6 +954,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D54 | Contrôle « la pièce remplit l'espace entre ses murs » | Manque : zone fermée par les **faces** des murs moins la pièce (et moins les autres pièces de la zone). Débord : pièce moins la zone fermée par les **axes**. Seuil : 50 mm de large ou 0,01 m². Signalé, jamais corrigé. | Une pièce tracée à l'axe ou aux faces (D49) n'est pas signalée ; seules les vraies erreurs de tracé le sont. |
 | D55 | Export et surfaces fausses | Un **manque** ou un **débord** (D54) dans ce qui est exporté **bloque l'export des métrés** (fenêtre Exporter, boutons du panneau, `prepareMetres`), **du plan en PNG, JPG et PDF** (niveau affiché ; `exportProject`) et **du PDF des vues** (tout le bâtiment) jusqu'à correction. Les autres avertissements n'empêchent pas l'export. | Choix de l'utilisateur : ne jamais livrer des métrés faux. |
 | D56 | Pièces masquées | Comptées dans les métrés Client et Technique (D21 inchangée), avec l'avertissement « … est masquée mais sa surface est comptée » ; elles ne bloquent pas l'export. | Choix de l'utilisateur (option A). |
+| D57 | Stabilité des repères | Option A : `M01`, `P01`, `F01` recalculés à chaque modification (rien d'enregistré). Les documents Technique qui les montrent impriment « Repères valables à la date du document ». | Choix de l'utilisateur : l'ordre de lecture du plan reste toujours juste. |
 
 ## Idées (hors jalon en cours)
 
