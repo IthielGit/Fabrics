@@ -634,7 +634,7 @@ l'ordre de lecture du plan (de haut en bas, puis de gauche à droite).
 
 **Tâches**
 
-- [ ] **Décision : format des murs** (option A ou B ci-dessus), notée dans `docs/PROGRESS.md`.
+- [x] **Décision : format des murs** — option A retenue le 2026-11-12 (D58).
 - [ ] **Calcul des noms** : fonction pure qui cherche, pour chaque côté d'un mur et au centre de
       chaque ouverture, la pièce du même niveau juste derrière la face. Fichiers :
       `src/features/naming/autoNames.ts` (nouveau), `autoNames.test.ts` (nouveau),

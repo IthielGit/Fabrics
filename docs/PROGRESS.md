@@ -42,6 +42,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — Hors jalon · Noms automatiques · Décision sur le format des murs
+- Décision de l'utilisateur (D58) : option A, « Mur Cuisine / Séjour », « Mur extérieur Cuisine », « Mur isolé ».
+- Plan présenté, en attente du feu vert. Aucun code modifié.
+
 ### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Tâche 4 · Repères au-delà de 99
 - Fait : dès qu'un type dépasse 99 éléments (murs, portes ou fenêtres), tous les repères de ce type passent à trois chiffres (`M001`…`M100`), pour que le tri d'Excel reste juste. Chaque type décide pour lui-même : 100 murs n'allongent pas `P01`.
 - Fichiers : `src/features/measurements/references.ts`, `references.test.ts`
@@ -979,6 +983,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D55 | Export et surfaces fausses | Un **manque** ou un **débord** (D54) dans ce qui est exporté **bloque l'export des métrés** (fenêtre Exporter, boutons du panneau, `prepareMetres`), **du plan en PNG, JPG et PDF** (niveau affiché ; `exportProject`) et **du PDF des vues** (tout le bâtiment) jusqu'à correction. Les autres avertissements n'empêchent pas l'export. | Choix de l'utilisateur : ne jamais livrer des métrés faux. |
 | D56 | Pièces masquées | Comptées dans les métrés Client et Technique (D21 inchangée), avec l'avertissement « … est masquée mais sa surface est comptée » ; elles ne bloquent pas l'export. | Choix de l'utilisateur (option A). |
 | D57 | Stabilité des repères | Option A : `M01`, `P01`, `F01` recalculés à chaque modification (rien d'enregistré). Les documents Technique qui les montrent impriment « Repères valables à la date du document ». | Choix de l'utilisateur : l'ordre de lecture du plan reste toujours juste. |
+| D58 | Nom automatique d'un mur | Option A : « Mur Cuisine / Séjour » (pièces des deux côtés), « Mur extérieur Cuisine » (une pièce d'un seul côté), « Mur isolé » (aucune pièce). Calculé à l'affichage, jamais enregistré (D49). | Choix de l'utilisateur : un mur mitoyen se lit des deux côtés. |
 
 ## Idées (hors jalon en cours)
 
