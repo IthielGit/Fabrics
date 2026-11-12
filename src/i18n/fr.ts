@@ -527,6 +527,7 @@ export const fr = {
       xlsx: 'Classeur Excel des métrés.',
       dxf: 'Plan pour un logiciel de DAO (AutoCAD, LibreCAD…), en mm : murs, pièces, ouvertures, cotes, axes et mobilier sur des calques séparés.',
       zip: 'Archive de fichiers DXF.',
+      glb: 'Modèle 3D glTF.',
     },
     formatDxf: 'DXF',
     dxf: {
@@ -882,6 +883,8 @@ export const fr = {
     capture: 'Enregistrer une image PNG de la vue 3D',
     captureFailed: 'La capture de la vue 3D a échoué.',
     captureSuffix: '3D',
+    export: 'Exporter la 3D (.glb, glTF) : le bâtiment tel qu’il est affiché, en mètres',
+    exportFailed: 'L’export 3D a échoué.',
     loading: 'Chargement de la 3D…',
     error: 'La vue 3D n’a pas pu démarrer sur cet appareil.',
   },

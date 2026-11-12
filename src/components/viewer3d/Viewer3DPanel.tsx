@@ -1,4 +1,4 @@
-import { Camera, Crosshair, X } from 'lucide-react'
+import { Camera, Crosshair, Download, X } from 'lucide-react'
 import { lazy, Suspense, useCallback, useMemo, useRef, useState, type PointerEvent } from 'react'
 import { exportFileName } from '../../features/export/fileName'
 import { fr } from '../../i18n/fr'
@@ -37,6 +37,8 @@ function PanelBody() {
   const [fitToken, setFitToken] = useState(0)
   const panelRef = useRef<HTMLElement>(null)
   const captureRef = useRef<(() => string | null) | null>(null)
+  const exportRef = useRef<(() => Promise<ArrayBuffer>) | null>(null)
+  const [exporting, setExporting] = useState(false)
 
   // Un clic sur un mur en 3D le sélectionne sur le plan, en passant d'abord à son niveau.
   const selectWall = useCallback((wallId: string, levelId: string) => {
@@ -54,6 +56,23 @@ function PanelBody() {
       downloadBlob(dataUrlToBlob(dataUrl), name)
     } catch {
       store.setNotice(fr.viewer3d.captureFailed)
+    }
+  }
+
+  // Export 3D (M11) : le bâtiment tel qu'il est affiché (étage ouvert compris), en .glb.
+  const export3d = async () => {
+    const store = useEditorStore.getState()
+    setExporting(true)
+    try {
+      const run = exportRef.current
+      if (!run) throw new Error('no export')
+      const buffer = await run()
+      const name = exportFileName(projectName, 'glb', fr.export.planFallbackName)
+      downloadBlob(new Blob([buffer], { type: 'model/gltf-binary' }), name)
+    } catch {
+      store.setNotice(fr.viewer3d.exportFailed)
+    } finally {
+      setExporting(false)
     }
   }
 
@@ -104,6 +123,16 @@ function PanelBody() {
         </button>
         <button
           type="button"
+          onClick={() => void export3d()}
+          disabled={model.bounds === null || exporting}
+          title={fr.viewer3d.export}
+          aria-label={fr.viewer3d.export}
+          className={HEADER_BUTTON}
+        >
+          <Download size={16} />
+        </button>
+        <button
+          type="button"
           onClick={() => setFitToken((n) => n + 1)}
           title={fr.viewer3d.fit}
           aria-label={fr.viewer3d.fit}
@@ -132,6 +161,7 @@ function PanelBody() {
               selectedIds={selectedIds}
               onSelectWall={selectWall}
               captureRef={captureRef}
+              exportRef={exportRef}
             />
           </Suspense>
         </Viewer3DErrorBoundary>

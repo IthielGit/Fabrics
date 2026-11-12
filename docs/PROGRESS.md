@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M11 Import et export ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 · Tâche 2 · Import DXF en calque de fond
-- **Prochaine tâche :** M11 · Tâche 3 · Export 3D (glTF)
+- **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M11 · Tâche 3 · Export 3D (glTF)
+- **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -27,7 +27,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M10 Façades, coupes et planche | terminé | 2026-11-11 |
 | M10 bis Ouvertures détaillées, toitures, hachures et textures | terminé, à tester dans le navigateur (lots A, B et C) | |
 | M10 ter Documents client / exécution (métrés et cotes) | terminé | 2026-11-12 |
-| M11 Import et export | en cours | |
+| M11 Import et export | terminé, à tester dans le navigateur | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
 | M14 Collaboration temps réel | après le MVP | |
@@ -41,6 +41,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 · Tâche 3 · Export 3D (glTF)
+- Fait : nouveau bouton « Exporter la 3D » (icône de téléchargement) dans l'en-tête du panneau 3D. Il enregistre un fichier `.glb` (glTF binaire) du bâtiment **tel qu'il est affiché** (« Étage ouvert » compris) : murs, ouvertures (cadres, vitres, portes), dalles, toits, toitures, escaliers, cheminées, avec leurs couleurs et leurs motifs. Ni terrain, ni grille, ni lumières. En **mètres** (unité du glTF), y vers le haut ; un mur sélectionné garde sa couleur normale dans le fichier. Positions, rotations et échelles écrites séparément (plus lisibles dans Blender ou un visualiseur). L'exporteur (`GLTFExporter` de `three`) est chargé à la demande.
+- Fichiers : `src/features/export/gltf.ts` (nouveau, + tests), `src/components/viewer3d/Viewer3DScene.tsx`, `Viewer3DPanel.tsx`, `src/features/export/fileName.ts`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2558) ; le fichier produit commence par la signature glTF et garde l'échelle mm → m (test) — ouverture dans un visualiseur glTF à faire par l'utilisateur
+- Commit : feat: export 3D glTF du bâtiment (M11)
 
 ### 2026-11-12 — M11 · Tâche 2 · Import DXF en calque de fond
 - Fait : bouton « Importer un DXF (fond de plan) » dans la famille Image de la barre d'outils (plans seulement). Une fenêtre montre l'unité lue dans le fichier (`$INSUNITS` : mm, cm, m, pouces, pieds ; mm par défaut si le fichier ne la donne pas, avec un avertissement), modifiable, puis les **dimensions réelles du dessin en mm** et le nombre de traits, pour vérifier l'échelle avant d'importer. Sont repris : lignes, polylignes (avec arcs), cercles, arcs, ellipses, splines, contenu des blocs (position, rotation, échelle, réseaux) et dessin des cotes ; pas les textes ni les hachures, ni l'espace papier. Les lignes qui se suivent sont réunies (moins d'éléments). Le dessin est posé **sur le niveau actif, sous tous les autres éléments, verrouillé**, centré sur la vue (dézoom automatique s'il est plus grand qu'elle), en gris et en trait d'un pixel quel que soit le zoom. Dans les calques, tout le fond tient sur **une seule ligne** (« Fond DXF – plan.dxf », nombre de traits) : masquer, verrouiller, sélectionner en entier (Suppr le retire) ; déverrouillé, un clic sur un trait prend tout le fond, qui se déplace d'un bloc. Refus au-delà de 20 000 traits ou 50 Mo. Code chargé à la demande.

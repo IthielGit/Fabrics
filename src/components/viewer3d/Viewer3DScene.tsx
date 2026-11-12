@@ -11,6 +11,7 @@ import type {
   WallMesh,
   WallPiece,
 } from '../../features/building/types'
+import { exportCopy, exportGlb } from '../../features/export/gltf'
 import { applyPlanarUv, roofSurface, wallSurface } from './materialTextures'
 import OrientationCube from './OrientationCube'
 
@@ -64,6 +65,15 @@ const FILL_MATERIALS: Record<OpeningFill['kind'], THREE.Material> = {
 const SELECTED_WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a5b4fc', roughness: 0.9 })
 const GROUND_MATERIAL = new THREE.MeshStandardMaterial({ color: '#e7e5df', roughness: 1 })
 
+/**
+ * Matière normale des maillages qui peuvent être surlignés par la sélection : l'export 3D la
+ * remet à la place de la couleur de sélection (voir `ExportBridge`).
+ */
+const BASE_MATERIALS = new WeakMap<THREE.Object3D, THREE.Material>()
+const rememberBase = (material: THREE.Material) => (mesh: THREE.Mesh | null) => {
+  if (mesh) BASE_MATERIALS.set(mesh, material)
+}
+
 /** Couleur du ciel, reprise par le brouillard pour fondre l'horizon. */
 const SKY = '#eef1f4'
 
@@ -94,6 +104,7 @@ const PieceMesh = memo(function PieceMesh({
   }
   return (
     <mesh
+      ref={rememberBase(material)}
       geometry={BOX}
       material={selected ? SELECTED_WALL_MATERIAL : material}
       position={[piece.center.x, piece.center.y, piece.center.z]}
@@ -131,6 +142,7 @@ const WallBody = memo(function WallBody({ mesh, selected, onSelectWall }: WallBo
   const wallMaterial = wallSurface(mesh.material) ?? WALL_MATERIAL
   return (
     <mesh
+      ref={rememberBase(wallMaterial)}
       geometry={geometry}
       material={selected ? SELECTED_WALL_MATERIAL : wallMaterial}
       castShadow
@@ -251,12 +263,18 @@ const RoofPrismMesh = memo(function RoofPrismMesh({ prism, selected, onSelectWal
     event.stopPropagation()
     onSelectWall(prism.sourceId, prism.levelId)
   }
-  const material = selected
-    ? SELECTED_WALL_MATERIAL
-    : prism.kind === 'gable'
-      ? GABLE_MATERIAL
-      : (roofSurface(prism.covering) ?? PITCHED_ROOF_MATERIAL)
-  return <mesh geometry={geometry} material={material} castShadow receiveShadow onClick={handleClick} />
+  const base = prism.kind === 'gable' ? GABLE_MATERIAL : (roofSurface(prism.covering) ?? PITCHED_ROOF_MATERIAL)
+  const material = selected ? SELECTED_WALL_MATERIAL : base
+  return (
+    <mesh
+      ref={rememberBase(base)}
+      geometry={geometry}
+      material={material}
+      castShadow
+      receiveShadow
+      onClick={handleClick}
+    />
+  )
 })
 
 interface OrbitLike {
@@ -383,6 +401,34 @@ function CaptureBridge({ captureRef }: { captureRef: RefObject<(() => string | n
   return null
 }
 
+/**
+ * Export 3D (M11) : copie du bâtiment seul (ni terrain, ni grille, ni lumières), en mètres, avec
+ * les matières normales à la place de la couleur de sélection, en fichier `.glb`.
+ */
+function ExportBridge({
+  exportRef,
+  buildingRef,
+}: {
+  exportRef: RefObject<(() => Promise<ArrayBuffer>) | null>
+  buildingRef: RefObject<THREE.Group | null>
+}) {
+  useEffect(() => {
+    exportRef.current = async () => {
+      const building = buildingRef.current
+      if (!building) throw new Error('no building')
+      const copy = exportCopy(building, (mesh) =>
+        mesh.material === SELECTED_WALL_MATERIAL ? (BASE_MATERIALS.get(mesh) ?? WALL_MATERIAL) : null,
+      )
+      copy.name = 'Fabrics'
+      return exportGlb(copy)
+    }
+    return () => {
+      exportRef.current = null
+    }
+  }, [exportRef, buildingRef])
+  return null
+}
+
 interface SceneProps {
   model: BuildingModel
   fitToken: number
@@ -392,6 +438,8 @@ interface SceneProps {
   selectedIds: ReadonlySet<string>
   onSelectWall: (wallId: string, levelId: string) => void
   captureRef: RefObject<(() => string | null) | null>
+  /** Reçoit la fonction d'export 3D (fichier `.glb`). */
+  exportRef: RefObject<(() => Promise<ArrayBuffer>) | null>
 }
 
 /** Dessine le modèle 3D ; ne fait aucun calcul de bâtiment (voir `features/building`). */
@@ -402,7 +450,9 @@ export default function Viewer3DScene({
   selectedIds,
   onSelectWall,
   captureRef,
+  exportRef,
 }: SceneProps) {
+  const buildingRef = useRef<THREE.Group>(null)
   const ground = groundLevel(model)
   // La dalle du niveau le plus bas est sous le terrain : invisible en vrai, donc pas dessinée.
   const slabs = model.slabs.filter((slab) => !slab.onGround)
@@ -429,7 +479,7 @@ export default function Viewer3DScene({
         <planeGeometry args={[600, 600]} />
       </mesh>
       <gridHelper args={[100, 100, '#d4d1ca', '#dedbd4']} position={[0, ground - 0.001, 0]} />
-      <group scale={MM}>
+      <group ref={buildingRef} scale={MM}>
         {model.wallMeshes.map((mesh) => (
           <WallBody
             key={mesh.sourceId}
@@ -482,6 +532,7 @@ export default function Viewer3DScene({
       <CameraRig bounds={model.bounds} fitToken={fitToken} />
       <OrientationCube northAngle={northAngle} />
       <CaptureBridge captureRef={captureRef} />
+      <ExportBridge exportRef={exportRef} buildingRef={buildingRef} />
     </Canvas>
   )
 }
