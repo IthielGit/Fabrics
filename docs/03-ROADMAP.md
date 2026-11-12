@@ -470,6 +470,8 @@ toujours le plan. Les cotes tracées à la main restent des éléments du docume
       (sans champ : les deux, donc pas de migration)
 - [x] Planche : réglage de cotation par vue ; export PDF : choix de la version ; note sur les
       baies imprimée sur les documents d'exécution
+- [x] Ajout demandé le 2026-11-12 : **périmètre** et **hauteur sous plafond** de chaque pièce dans
+      le tableau des pièces des métrés Client (pas sur le plan coté, choix de l'utilisateur ; D52)
 
 **Critères d'acceptation**
 - Une pièce « Chambre » de 4000 × 3000 mm intérieurs affiche en Client « Chambre »,

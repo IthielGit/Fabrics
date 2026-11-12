@@ -22,11 +22,11 @@ const opening = (id: string, kind: OpeningElement['kind']): OpeningElement => ({
 const build = (elements: CanvasElement[]) => buildClientTables(computeBuildingMeasurements({ levels: [L0], elements }), fr.measurements.client)
 
 describe('présentation Client', () => {
-  it('une chambre de 4000 × 3000 : nom, dimensions et 12,00 m²', () => {
+  it('une chambre de 4000 × 3000 : nom, dimensions, périmètre, hauteur sous plafond et 12,00 m²', () => {
     const tables = build([room('Chambre', [0, 0, 4000, 0, 4000, 3000, 0, 3000])])
     const rooms = tables.find((t) => t.id === 'client-rooms')
-    expect(rooms?.rows[0].map(cellText)).toEqual(['Rez', 'Chambre', '4000 × 3000', '12,00'])
-    expect(rooms?.total?.map(cellText)).toEqual(['Total', '', '', '12,00'])
+    expect(rooms?.rows[0].map(cellText)).toEqual(['Rez', 'Chambre', '4000 × 3000', '14000', '2500', '12,00'])
+    expect(rooms?.total?.map(cellText)).toEqual(['Total', '', '', '', '', '12,00'])
   })
 
   it('aucune épaisseur ni surface de mur dans la version Client', () => {
@@ -89,7 +89,7 @@ describe('présentation Exécution', () => {
     const building = computeBuildingMeasurements({ levels: [L0], elements: [wall, room('Salon', [0, 0, 4000, 0, 4000, 3000, 0, 3000])] })
     const csv = measurementsToCsv(building, fr.measurements.csv, [], undefined, buildClientTables(building, fr.measurements.client))
     expect(csv).toContain('Vos pièces')
-    expect(csv).toContain('Salon;4000 × 3000;12,00')
+    expect(csv).toContain('Salon;4000 × 3000;14000;2500;12,00')
     expect(csv).not.toContain('Murs')
     expect(csv).not.toContain('Volume')
   })

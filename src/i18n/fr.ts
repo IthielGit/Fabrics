@@ -252,6 +252,8 @@ export const fr = {
       level: 'Niveau',
       room: 'Pièce',
       dimensions: 'Dimensions (mm)',
+      perimeter: 'Périmètre (mm)',
+      ceilingHeight: 'Hauteur sous plafond (mm)',
       floorArea: 'Surface au sol (m²)',
       doors: 'Portes',
       windows: 'Fenêtres',

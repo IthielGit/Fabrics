@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { CanvasElement, OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { fr } from '../../i18n/fr'
 import { csvFileName, escapeCsvField, measurementsToCsv, type CsvLabels } from './csv'
-import { computeBuildingMeasurements, computeMeasurements } from './measurements'
+import { ceilingHeight, computeBuildingMeasurements, computeMeasurements } from './measurements'
 
 const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
 
@@ -87,6 +87,7 @@ describe('computeMeasurements', () => {
         voidArea: 0,
         netArea: 12_000_000,
         voidOverflow: false,
+        ceilingHeight: null,
       },
     ])
   })
@@ -324,5 +325,23 @@ describe('métrés par niveau et pour le bâtiment', () => {
     expect(lines).toContain('Étage 1;R1;10,00;14000')
     expect(lines).toContain('Étage 1;2700;2700;10,00;2000;5,00;0,00;5,00;10,00;1,00;0;0;0')
     expect(lines).toContain('Bâtiment;;;22,00;6000;15,00;0,00;15,00;30,00;3,00;0;0;0')
+  })
+})
+
+describe('hauteur sous plafond', () => {
+  const L0 = { id: 'L0', name: 'Rez', elevation: 0, height: 2700, slabThickness: 200 }
+  const L1 = { id: 'L1', name: 'Étage', elevation: 2850, height: 2700, slabThickness: 200 }
+
+  it('du sol au-dessous de la dalle du dessus : 2850 - 200 = 2650', () => {
+    expect(ceilingHeight(L0, L1)).toBe(2650)
+  })
+
+  it('dernier niveau : hauteur d’étage moins le toit plat (2700 - 200 = 2500)', () => {
+    expect(ceilingHeight(L1, undefined)).toBe(2500)
+  })
+
+  it('donnée par pièce dans les métrés', () => {
+    const r = { ...room('Salon', RECT_4X3), levelId: 'L0' }
+    expect(computeMeasurements([r], [L0, L1]).rooms[0].ceilingHeight).toBe(2650)
   })
 })

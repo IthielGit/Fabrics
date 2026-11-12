@@ -144,40 +144,43 @@ export default function MeasurementsPanel() {
         <div className="mt-3 space-y-4">
           {buildingEmpty && <p className="text-sm text-slate-500">{fr.measurements.empty}</p>}
           {buildClientTables(building, fr.measurements.client).map((table) => (
-            <table key={table.id} className="w-full text-sm">
-              <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                {table.title}
-              </caption>
-              <thead>
-                <tr>
-                  {table.columns.map((column) => (
-                    <th key={column.header} className={`${HEAD} ${column.align === 'right' ? 'text-right' : ''}`}>
-                      {column.header}
-                    </th>
+            // Six colonnes dans un panneau de 320 px : défilement horizontal plutôt que des chiffres écrasés.
+            <div key={table.id} className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+                  {table.title}
+                </caption>
+                <thead>
+                  <tr>
+                    {table.columns.map((column) => (
+                      <th key={column.header} className={`${HEAD} ${column.align === 'right' ? 'text-right' : ''}`}>
+                        {column.header}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {table.rows.map((cells, i) => (
+                    <tr key={i} className="border-t border-slate-100">
+                      {cells.map((cell, j) => (
+                        <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
+                          {cellText(cell)}
+                        </td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
-                {table.rows.map((cells, i) => (
-                  <tr key={i} className="border-t border-slate-100">
-                    {cells.map((cell, j) => (
-                      <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
-                        {cellText(cell)}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-                {table.total && (
-                  <tr className="border-t border-slate-300 font-semibold">
-                    {table.total.map((cell, j) => (
-                      <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
-                        {cellText(cell)}
-                      </td>
-                    ))}
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                  {table.total && (
+                    <tr className="border-t border-slate-300 font-semibold">
+                      {table.total.map((cell, j) => (
+                        <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
+                          {cellText(cell)}
+                        </td>
+                      ))}
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           ))}
         </div>
       )}

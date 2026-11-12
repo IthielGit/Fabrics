@@ -1,10 +1,10 @@
 import type { BuildingMeasurements } from './measurements'
-import { nm2, ncount, type MetresCell, type MetresTable } from './tables'
+import { nm2, nmm, ncount, type MetresCell, type MetresTable } from './tables'
 
 /**
  * Présentation « Client » des métrés (M10 ter) : un document simple, sans épaisseur de mur ni
- * surface de mur. Pour chaque pièce : son nom, ses dimensions et sa **surface au sol** (trémie
- * déduite, D37) ; puis un total par niveau et pour le bâtiment avec le nombre de portes et de
+ * surface de mur. Pour chaque pièce : son nom, ses dimensions, son périmètre, sa hauteur sous
+ * plafond et sa **surface au sol** (trémie déduite, D37) ; puis un total par niveau et pour le bâtiment avec le nombre de portes et de
  * fenêtres. Mêmes calculs que la version Exécution : les deux ne peuvent pas se contredire.
  */
 export interface ClientLabels {
@@ -14,6 +14,10 @@ export interface ClientLabels {
   room: string
   /** « Dimensions (mm) ». */
   dimensions: string
+  /** « Périmètre (mm) » : tour de la pièce tel qu'elle est dessinée. */
+  perimeter: string
+  /** « Hauteur sous plafond (mm) ». */
+  ceilingHeight: string
   floorArea: string
   doors: string
   windows: string
@@ -39,6 +43,8 @@ export function buildClientTables(building: BuildingMeasurements, labels: Client
       level.name,
       room.name,
       roomDimensionsText(room.dimensions),
+      nmm(room.perimeter),
+      room.ceilingHeight === null ? '' : nmm(room.ceilingHeight),
       nm2(room.netArea),
     ]),
   )
@@ -50,10 +56,12 @@ export function buildClientTables(building: BuildingMeasurements, labels: Client
         { header: labels.level, align: 'left' },
         { header: labels.room, align: 'left' },
         { header: labels.dimensions, align: 'right' },
+        { header: labels.perimeter, align: 'right' },
+        { header: labels.ceilingHeight, align: 'right' },
         { header: labels.floorArea, align: 'right' },
       ],
       rows: roomRows,
-      total: [labels.total, '', '', nm2(total.totals.roomNetArea)],
+      total: [labels.total, '', '', '', '', nm2(total.totals.roomNetArea)],
     })
   }
 

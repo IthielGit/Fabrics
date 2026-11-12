@@ -16,7 +16,7 @@ import { openingStyle } from '../openings/styles'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
 import { wallFaces } from '../geometry/walls'
 import { buildReferences, type References } from './references'
-import { stairStatus } from '../stairs/stairs'
+import { levelAboveOf, stairStatus } from '../stairs/stairs'
 import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
 
 export interface RoomMeasure {
@@ -34,6 +34,21 @@ export interface RoomMeasure {
   dimensions: [number, number] | null
   /** Vrai si une trémie déborde de la pièce (dalle laissée pleine, aucune surface retirée). */
   voidOverflow: boolean
+  /** Hauteur sous plafond (mm), voir `ceilingHeight` ; `null` si la pièce n'a pas de niveau connu. */
+  ceilingHeight: number | null
+}
+
+/**
+ * Hauteur sous plafond d'un niveau (mm) : du dessus de son sol au-dessous de la dalle du niveau du
+ * dessus (dont le dessus est à l'altitude de ce niveau, épaisseur vers le bas, comme en 3D). Sans
+ * niveau au-dessus : hauteur d'étage moins l'épaisseur du toit plat posé entre les murs.
+ * Limite : sous un toit en pente, la hauteur varie ; c'est celle du toit plat qui est donnée.
+ */
+export function ceilingHeight(level: Level, levelAbove: Level | undefined): number {
+  const underside = levelAbove
+    ? levelAbove.elevation - levelAbove.slabThickness
+    : level.elevation + level.height - Math.min(level.slabThickness, level.height)
+  return Math.max(0, Math.round(underside - level.elevation))
 }
 
 export interface PlatformMeasure {
@@ -306,6 +321,7 @@ export function computeMeasurements(
     if (element.type === 'room') {
       const area = polygonArea(element.points)
       const roomVoids = voidsOfRoom(element, voids)
+      const roomLevel = levels?.find((level) => level.id === element.levelId)
       rooms.push({
         id: element.id,
         name: element.name,
@@ -315,6 +331,7 @@ export function computeMeasurements(
         netArea: Math.max(0, area - roomVoids.area),
         dimensions: axisAlignedRectangle(element.points),
         voidOverflow: roomVoids.overflowing.length > 0,
+        ceilingHeight: roomLevel ? ceilingHeight(roomLevel, levelAboveOf(levels, roomLevel.id)) : null,
       })
     } else if (element.type === 'stair') {
       const status = stairStatus(element, levels)
