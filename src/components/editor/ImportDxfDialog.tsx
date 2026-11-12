@@ -6,10 +6,12 @@ import {
   dxfTextsToElements,
   parseDxfText,
   pathsExtent,
+  placeImport,
   unitFromInsunits,
   type DxfUnit,
   type ParsedDxf,
 } from '../../features/export/dxfImport'
+import { PAGE_LIMITS } from '../../features/documents/pageSize'
 import { clampZoom, FIT_PADDING, screenToDocument } from '../../features/geometry/viewport'
 import { formatDecimal } from '../../features/units/format'
 import { pxPerUnit } from '../../features/units/scale'
@@ -75,11 +77,15 @@ export default function ImportDxfDialog({
     const { project, viewportSize, zoom, stagePosition, activeLevelId } = store
     if (!project) return
     const ppu = pxPerUnit(project.document.unit)
-    const center = screenToDocument(
+    const viewCenter = screenToDocument(
       { x: viewportSize.width / 2, y: viewportSize.height / 2 },
       { zoom, x: stagePosition.x, y: stagePosition.y },
       ppu,
     )
+    // Le dessin reste dans la page ; si elle est trop petite, on l'agrandit pour qu'il y tienne.
+    const placement = placeImport(width, height, project.document.page, viewCenter, PAGE_LIMITS.mm.max)
+    const center = placement.center
+    if (placement.page) store.setPageSize(placement.page.width, placement.page.height)
     const meta = {
       name: fr.dxfImport.layerName(fileName),
       groupId: crypto.randomUUID(),
@@ -93,7 +99,8 @@ export default function ImportDxfDialog({
       (viewportSize.width - FIT_PADDING * 2) / (width * ppu),
       (viewportSize.height - FIT_PADDING * 2) / (height * ppu),
     )
-    if (Number.isFinite(fit) && fit > 0 && fit < zoom) {
+    // Page agrandie : setPageSize a déjà ajusté la vue sur toute la page, qui contient le dessin.
+    if (!placement.page && Number.isFinite(fit) && fit > 0 && fit < zoom) {
       const next = clampZoom(fit)
       store.setView({
         zoom: next,

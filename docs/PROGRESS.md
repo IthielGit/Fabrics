@@ -43,6 +43,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M11 bis · Correctif · Import DXF hors de la page
+- Problème vu à l'essai : un DXF plus grand que la page (feuille A0 avec cartouche, par exemple) était centré sur la vue et débordait de la page et de la grille.
+- Correction : `placeImport` (dans `dxfImport.ts`) garde le dessin dans la page, et agrandit la page (marge de 2000 mm, limite 200 m) s'il est trop grand. `ImportDxfDialog.tsx` l'utilise. 4 tests ajoutés.
+- Pour un projet déjà importé : agrandir la page dans les réglages du plan, ou supprimer le fond et le réimporter.
+
 ### 2026-11-12 — M11 bis · Lot F · Tâche 4 · Étiquettes de cote automatiques
 - Décision de l'utilisateur (D66) : option « calculées, non enregistrées », longueurs de murs **et** largeurs d'ouvertures.
 - Fait : case **« Étiquettes de cote »** dans les réglages du plan (option `plan.showDimensionLabels`, facultative, absente = non). Quand elle est cochée, le plan écrit en mm, **le long des murs**, la longueur de chaque côté de mur (côté extérieur) et la largeur de chaque porte, fenêtre et baie (côté intérieur), texte aligné sur le mur et jamais à l'envers. Les côtés trop courts pour porter un chiffre ne sont pas étiquetés. Recalculées à chaque modification du plan, **jamais enregistrées** dans le document (seule la case l'est). Reprises dans le PDF et le PNG du plan, les plans de niveau de la planche et le DXF (calque `COTES`), avec la flèche du nord.

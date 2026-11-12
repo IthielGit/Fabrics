@@ -9,6 +9,7 @@ import {
   dxfTextsToElements,
   parseDxfText,
   pathsExtent,
+  placeImport,
   unitFromInsunits,
 } from './dxfImport'
 
@@ -210,5 +211,32 @@ describe('textes d’un DXF', () => {
     const parsed = parseDxfText(file)
     expect(parsed.texts[0].text).toBe('Séjour')
     expect(parsed.texts[0].height).toBe(125)
+  })
+})
+
+describe('placement d’un dessin importé sur la page', () => {
+  const page = { width: 20000, height: 15000 }
+  const MAX = 200000
+
+  it('un dessin qui tient reste centré sur la vue, sans toucher la page', () => {
+    const placed = placeImport(8000, 6000, page, { x: 10000, y: 7500 }, MAX)
+    expect(placed).toEqual({ center: { x: 10000, y: 7500 } })
+  })
+
+  it('un dessin qui tient mais dont le centre de la vue est trop près du bord est ramené dans la page', () => {
+    const placed = placeImport(8000, 6000, page, { x: -5000, y: 99999 }, MAX)
+    expect(placed.page).toBeUndefined()
+    expect(placed.center).toEqual({ x: 4000, y: 12000 })
+  })
+
+  it('un dessin plus grand que la page agrandit la page (marge comprise) et s’y centre', () => {
+    const placed = placeImport(30000, 21000, page, { x: 0, y: 0 }, MAX)
+    expect(placed.page).toEqual({ width: 34000, height: 25000 })
+    expect(placed.center).toEqual({ x: 17000, y: 12500 })
+  })
+
+  it('la page ne dépasse pas la limite', () => {
+    const placed = placeImport(500000, 100, page, { x: 0, y: 0 }, MAX)
+    expect(placed.page?.width).toBe(MAX)
   })
 })

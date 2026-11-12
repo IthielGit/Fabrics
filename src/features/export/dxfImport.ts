@@ -492,6 +492,36 @@ function fitExtent(paths: readonly DxfPath[], texts: readonly DxfText[]): DxfExt
   return pathsExtent([{ points: texts.flatMap((t) => [t.x, t.y]), closed: false }])
 }
 
+/** Marge laissée autour d'un dessin importé quand la page est agrandie pour le contenir (mm). */
+const IMPORT_PAGE_MARGIN = 2000
+
+/**
+ * Où poser un dessin importé de `width` × `height` mm sur une page de `page` mm : centré sur `viewCenter`
+ * (le milieu de la vue), mais décalé pour rester dans la page. S'il est plus grand que la page, celle-ci
+ * est agrandie (marge comprise, dans la limite `maxPage`) et le dessin est centré dessus. `page` est
+ * renvoyée seulement quand elle change.
+ */
+export function placeImport(
+  width: number,
+  height: number,
+  page: { width: number; height: number },
+  viewCenter: Point,
+  maxPage: number,
+): { center: Point; page?: { width: number; height: number } } {
+  const needW = Math.min(maxPage, Math.ceil(width + IMPORT_PAGE_MARGIN * 2))
+  const needH = Math.min(maxPage, Math.ceil(height + IMPORT_PAGE_MARGIN * 2))
+  const next = { width: Math.max(page.width, needW), height: Math.max(page.height, needH) }
+  const grown = next.width !== page.width || next.height !== page.height
+  const clamp = (value: number, size: number, available: number) => {
+    const half = Math.min(size, available) / 2
+    return Math.min(available - half, Math.max(half, value))
+  }
+  const center = grown
+    ? { x: next.width / 2, y: next.height / 2 }
+    : { x: clamp(viewCenter.x, width, page.width), y: clamp(viewCenter.y, height, page.height) }
+  return grown ? { center, page: next } : { center }
+}
+
 /** Couleur des traits d'un fond DXF : gris, pour se distinguer du dessin de Fabrics. */
 export const DXF_BACKGROUND_STROKE = '#94a3b8'
 
