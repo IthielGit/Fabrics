@@ -46,6 +46,7 @@ const GABLE_MATERIAL = new THREE.MeshStandardMaterial({
 })
 const PLATFORM_MATERIAL =new THREE.MeshStandardMaterial({ color: '#cdb594', roughness: 0.85 })
 const STAIR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#c9b393', roughness: 0.85 })
+const FURNITURE_MATERIAL = new THREE.MeshStandardMaterial({ color: '#b9a999', roughness: 0.8 })
 const CHIMNEY_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a39d97', roughness: 0.95 })
 const FRAME_MATERIAL = new THREE.MeshStandardMaterial({ color: '#3b4048', roughness: 0.6 })
 const DOOR_MATERIAL = new THREE.MeshStandardMaterial({ color: '#8f6d4c', roughness: 0.7 })
@@ -502,6 +503,15 @@ export default function Viewer3DScene({
             key={`chimney-${piece.sourceId}-${i}`}
             piece={piece}
             material={CHIMNEY_MATERIAL}
+            selected={selectedIds.has(piece.sourceId)}
+            onSelectWall={onSelectWall}
+          />
+        ))}
+        {model.furniture.map((piece, i) => (
+          <PieceMesh
+            key={`furniture-${piece.sourceId}-${i}`}
+            piece={piece}
+            material={FURNITURE_MATERIAL}
             selected={selectedIds.has(piece.sourceId)}
             onSelectWall={onSelectWall}
           />

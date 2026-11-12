@@ -23,6 +23,7 @@ import type {
   WallPiece,
 } from './types'
 import { buildChimney } from './chimney'
+import { buildFurniture } from './furniture'
 import { collectStairVoids, pointInPolygon, voidsOfRoom, type StairVoid } from '../stairs/voids'
 import { buildStairSteps } from './stairSteps'
 import { buildOpeningDetails } from './openingFills'
@@ -179,6 +180,7 @@ export function buildBuildingModel(
       wallMeshes: [],
       steps: [],
       chimneys: [],
+      furniture: [],
       slabs: [],
       fills: [],
       marks: [],
@@ -212,6 +214,7 @@ export function buildBuildingModel(
   const wallMeshes: WallMesh[] = []
   const steps: WallPiece[] = []
   const chimneys: WallPiece[] = []
+  const furniture: WallPiece[] = []
   const slabs: SlabShape[] = []
   const fills: OpeningFill[] = []
   const marks: OpeningMark[] = []
@@ -257,6 +260,9 @@ export function buildBuildingModel(
     } else if (el.type === 'chimney') {
       const piece = buildChimney(el, level, levels)
       if (piece) chimneys.push(piece)
+    } else if (el.type === 'furniture') {
+      const box = buildFurniture(el, level)
+      if (box) furniture.push(box)
     } else if (el.type === 'stair') {
       steps.push(...buildStairSteps(el, level, allLevels))
     } else if (el.type === 'platform') {
@@ -284,6 +290,7 @@ export function buildBuildingModel(
     wallMeshes,
     steps,
     chimneys,
+    furniture,
     slabs,
     fills,
     marks,

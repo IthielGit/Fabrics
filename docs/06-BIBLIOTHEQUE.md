@@ -748,8 +748,8 @@ conservées ici et dans la section « Idées » de `docs/PROGRESS.md`.
 
 - **Pose contre un mur** : un objet « mural » (WC, lavabo, radiateur, meuble haut) s'aimante à la
   face du mur le plus proche et se tourne dos au mur.
-- **Hauteur en 3D** : les champs `height` et `elevation` du catalogue alimentent la vue 3D
-  (boîtes simples) au jalon M8.
+- **Hauteur en 3D** : fait en M11 bis (lot F) : `catalog/heights.ts` donne une hauteur de
+  référence par objet ; la vue 3D les affiche en boîtes simples.
 - **Import de symboles par l'utilisateur** (SVG ou DXF), stockés dans son compte, jamais publics.
 - **Bibliothèque de l'utilisateur** : enregistrer une sélection (ex. « ma cuisine ») comme
   ensemble personnel.

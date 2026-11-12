@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot G · Plafonds (métrés, faux plafond, cote sous plafond)
+- **Dernière tâche terminée :** M11 bis · Lot F · Hauteurs 3D des objets
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot F · Tâche 2 · Hauteurs 3D des objets
+- Fait : chaque objet du catalogue a une **hauteur de référence en mm** (nouveau fichier `catalog/heights.ts`, valeurs génériques d'usage courant : lit 500, plan de travail 900, réfrigérateur-congélateur 1850, table 750…) et, pour un objet fixé en hauteur, la **hauteur de son dessous** (meuble haut de cuisine 700 à 1450, hotte 450 à 1850, miroir mural 900 à 1000…). Aucun nom ni mesure de fabricant (clean room). Les objets du plan s'affichent maintenant **en 3D** comme des boîtes simples de cette hauteur, posées sur le plancher de leur niveau, tournées comme sur le plan ; pas de volume pour les zones (tapis, couloirs de manœuvre), les symboles conventionnels (prises, détecteurs) et les escaliers symboliques. Clic dans la 3D = sélection de l'objet. Façades et coupes inchangées. L'export glTF reprend les objets.
+- Fichiers : `src/features/library/catalog/{heights,define}.ts` (+ test), `src/features/building/{furniture,model,types}.ts` (+ test), `src/components/viewer3d/Viewer3DScene.tsx`
+- Vérification : build ✓ lint ✓ tests ✓ (2614) ; un test vérifie que chaque objet du mobilier a sa règle propre — à contrôler dans la vue 3D à la fin du jalon
+- Commit : feat: hauteurs 3D des objets de la bibliothèque (M11 bis, lot F)
 
 ### 2026-11-12 — M11 bis · Lot G · Plafonds : métrés, faux plafond et cote sous plafond
 - Fait : **tableau « Plafonds »** dans les métrés, en **Client et en Technique** : par pièce, surface de plafond (= surface au sol, trémie déduite, D37), hauteur sous plafond (D52, aucun nouveau calcul) et périmètre ; total de la surface. Présent dans le panneau Métrés (Client : tous les niveaux ; Technique : niveau affiché), en PDF, Excel et CSV (le CSV à plat reçoit « Hauteur sous plafond » et « Faux plafond »). **Faux plafond** : case « Faux plafond » dans Propriétés d'une pièce (champ facultatif `falseCeiling`, absent = non, aucune migration) ; le tableau ajoute alors une ligne « Salon – faux plafond » avec sa surface, **sans l'ajouter au total** (il est posé sous le plafond). **Cote d'altitude sous plafond** : l'étiquette de chaque pièce du plan en cotation **Technique** gagne une ligne « +2650 sous plafond » (sol + hauteur sous plafond), entre « Sol ±0 » et « Dalle +2850 ». **Rien en Client** : les étiquettes Client sont inchangées.

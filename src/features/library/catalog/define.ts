@@ -1,6 +1,7 @@
 import { restyle } from '../primitives'
 import type { Primitive, SymbolCategory, SymbolDef } from '../types'
 import type { DrawFn } from '../templates/common'
+import { explicitReferenceHeight } from './heights'
 import type { SymbolSpec } from './specs'
 
 /** Hauteur typique par catégorie, en mm (réservée à la 3D, M8). */
@@ -57,6 +58,8 @@ export function defineSymbol(spec: SymbolSpec, drawBase: DrawFn): SymbolDef {
     max = { ...max, depth: spec.depth }
   }
 
+  // Hauteur de référence propre à l'objet (heights.ts), à défaut celle de sa catégorie.
+  const reference = explicitReferenceHeight(spec.id)
   const style = spec.zone ? 'zone' : spec.above ? 'above' : null
   const draw = (width: number, depth: number): Primitive[] => {
     const primitives = drawBase(width, depth)
@@ -75,8 +78,8 @@ export function defineSymbol(spec: SymbolSpec, drawBase: DrawFn): SymbolDef {
     mirrorable: spec.mirror === true,
     nominal: spec.nominal,
     zone: spec.zone,
-    height: spec.zone ? 0 : spec.above ? 700 : CATEGORY_HEIGHT[spec.category],
-    elevation: spec.above ? ABOVE_ELEVATION : undefined,
+    height: spec.zone ? 0 : (reference?.height ?? (spec.above ? 700 : CATEGORY_HEIGHT[spec.category])),
+    elevation: spec.above ? (reference?.elevation ?? ABOVE_ELEVATION) : reference?.elevation,
     draw,
   }
 }

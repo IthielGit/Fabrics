@@ -127,6 +127,8 @@ export interface BuildingModel {
   steps: WallPiece[]
   /** Cheminées : une boîte du plancher de leur niveau jusqu'au-dessus du dernier niveau. */
   chimneys: WallPiece[]
+  /** Objets de la bibliothèque en boîtes simples (vue 3D seulement : ni façades ni coupes). */
+  furniture: WallPiece[]
   slabs: SlabShape[]
   /** Cadres, vitres et portes dans les ouvertures (vue 3D seulement ; `sourceId` = mur porteur). */
   fills: OpeningFill[]

@@ -162,6 +162,7 @@ describe('buildBuildingModel', () => {
       wallMeshes: [],
       steps: [],
       chimneys: [],
+      furniture: [],
       slabs: [],
       fills: [],
       marks: [],

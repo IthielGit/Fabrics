@@ -3,6 +3,7 @@ import { Layers, Layers2 } from 'lucide-react'
 import { levelAbove, levelBelow } from '../../features/documents/levels'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
+import { SEGMENT_BASE, SEGMENT_DIVIDER, SEGMENTED_BAR, segmentClass } from '../ui/segmented'
 
 /**
  * Sélecteur de niveau, en haut du canevas d'un plan : un bouton par niveau, et un interrupteur
@@ -26,9 +27,9 @@ export default function LevelSelector() {
   return (
     <nav
       aria-label={fr.levels.selectorLabel}
-      className="pointer-events-auto flex min-w-0 max-w-[60%] items-center gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
+      className={clsx('pointer-events-auto min-w-0 max-w-[60%]', SEGMENTED_BAR)}
     >
-      <div className="flex min-w-0 items-center gap-1 overflow-x-auto">
+      <div className="flex min-w-0 items-center gap-0.5 overflow-x-auto">
         {levels.map((level) => (
           <button
             key={level.id}
@@ -36,17 +37,14 @@ export default function LevelSelector() {
             title={fr.levels.activate}
             aria-pressed={level.id === activeLevelId}
             onClick={() => setActiveLevel(level.id)}
-            className={clsx(
-              'shrink-0 rounded-md px-3 py-1.5 text-sm font-medium',
-              level.id === activeLevelId
-                ? 'bg-indigo-600 text-white'
-                : 'text-slate-700 hover:bg-slate-100',
-            )}
+            className={segmentClass(level.id === activeLevelId)}
           >
             {level.name}
           </button>
         ))}
       </div>
+      {/* Les deux interrupteurs de transparence forment un groupe à part, séparé des niveaux. */}
+      <span className={SEGMENT_DIVIDER} aria-hidden />
       <button
         type="button"
         disabled={!below}
@@ -61,11 +59,14 @@ export default function LevelSelector() {
         aria-pressed={referenceOn}
         onClick={() => setShowLowerLevel(!showLowerLevel)}
         className={clsx(
-          'shrink-0 rounded-md p-2 disabled:cursor-not-allowed disabled:opacity-40',
-          referenceOn ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100',
+          SEGMENT_BASE,
+          'w-8 px-0',
+          referenceOn
+            ? 'bg-indigo-100 text-indigo-700'
+            : 'text-slate-600 enabled:hover:bg-slate-100 enabled:hover:text-slate-900',
         )}
       >
-        <Layers size={18} />
+        <Layers size={18} aria-hidden />
       </button>
       <button
         type="button"
@@ -81,11 +82,14 @@ export default function LevelSelector() {
         aria-pressed={upperOn}
         onClick={() => setShowUpperLevel(!showUpperLevel)}
         className={clsx(
-          'shrink-0 rounded-md p-2 disabled:cursor-not-allowed disabled:opacity-40',
-          upperOn ? 'bg-indigo-100 text-indigo-700' : 'text-slate-600 hover:bg-slate-100',
+          SEGMENT_BASE,
+          'w-8 px-0',
+          upperOn
+            ? 'bg-indigo-100 text-indigo-700'
+            : 'text-slate-600 enabled:hover:bg-slate-100 enabled:hover:text-slate-900',
         )}
       >
-        <Layers2 size={18} />
+        <Layers2 size={18} aria-hidden />
       </button>
     </nav>
   )

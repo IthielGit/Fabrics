@@ -11,6 +11,7 @@ import { formatArea, formatLength, formatVolume } from '../../features/units/for
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
+import { SEGMENTED_BAR, segmentClass } from '../ui/segmented'
 import { exportMetres } from './exportMetres'
 import MetresWarningList from './MetresWarningList'
 
@@ -114,43 +115,51 @@ export default function MeasurementsPanel() {
 
   return (
     <section aria-label={fr.measurements.title} className="p-4">
-      <div role="group" aria-label={fr.measurements.versionLabel} className="mb-3 flex rounded-md border border-slate-200 p-0.5 text-xs">
+      <div
+        role="group"
+        aria-label={fr.measurements.versionLabel}
+        className={`${SEGMENTED_BAR} mb-3 w-full`}
+      >
         {(['client', 'execution'] as const).map((value) => (
           <button
             key={value}
             type="button"
             aria-pressed={version === value}
             onClick={() => setVersion(value)}
-            className={`flex-1 rounded px-2 py-1 font-medium ${
-              version === value ? 'bg-indigo-600 text-white' : 'text-slate-600 hover:bg-slate-100'
-            }`}
+            className={`${segmentClass(version === value)} flex-1`}
           >
             {fr.export.metres[value]}
           </button>
         ))}
       </div>
-      <div className="flex items-center justify-end gap-2">
-        <h2 className="sr-only">{fr.measurements.title}</h2>
+      <h2 className="sr-only">{fr.measurements.title}</h2>
+      <div className="flex items-center gap-2">
         <Button
           variant="primary"
           onClick={handleExportExcel}
           disabled={buildingEmpty || blocked}
           title={exportTitle ?? fr.measurements.exportExcelHint}
-          className="px-2 py-1 text-xs"
+          className="flex-1 justify-center"
         >
-          <FileSpreadsheet size={14} aria-hidden="true" />
+          <FileSpreadsheet size={16} aria-hidden="true" />
           {fr.measurements.exportExcel}
         </Button>
         <Button
           onClick={handleExport}
           disabled={buildingEmpty || blocked}
           title={exportTitle}
-          className="px-2 py-1 text-xs"
+          className="justify-center"
         >
-          <Download size={14} aria-hidden="true" />
+          <Download size={16} aria-hidden="true" />
           {fr.measurements.exportCsv}
         </Button>
       </div>
+      {/* La raison du blocage est écrite, pas seulement dans une infobulle. */}
+      {exportTitle && (
+        <p className="mt-2 text-xs text-slate-500" role="status">
+          {exportTitle}
+        </p>
+      )}
 
       {version === 'client' && (
         <div className="mt-3 space-y-4">
