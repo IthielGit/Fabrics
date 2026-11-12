@@ -52,6 +52,8 @@ export const fr = {
   auth: {
     signIn: 'Se connecter',
     signOut: 'Se déconnecter',
+    signOutTitle: 'Se déconnecter de Fabrics ?',
+    signOutMessage: 'Vous pourrez vous reconnecter à tout moment pour retrouver vos projets.',
     account: 'Compte',
     backToHome: 'Retour à l’accueil',
     email: 'Adresse e-mail',
