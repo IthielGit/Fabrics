@@ -9,6 +9,9 @@ describe('isSupabaseConfigured', () => {
     expect(isSupabaseConfigured('https://x.supabase.co', '')).toBe(false)
     expect(isSupabaseConfigured('  ', 'cle')).toBe(false)
   })
+  it("est faux si l'adresse n'est pas une adresse web (valeur provisoire)", () => {
+    expect(isSupabaseConfigured('xxx', 'xxx')).toBe(false)
+  })
   it('est vrai avec les deux variables', () => {
     expect(isSupabaseConfigured('https://x.supabase.co', 'cle')).toBe(true)
   })

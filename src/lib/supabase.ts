@@ -14,7 +14,14 @@ export function isSupabaseConfigured(
   supabaseUrl: string | undefined,
   key: string | undefined,
 ): boolean {
-  return Boolean(supabaseUrl?.trim()) && Boolean(key?.trim())
+  if (!supabaseUrl?.trim() || !key?.trim()) return false
+  // Une valeur provisoire (« xxx ») ne doit pas faire planter l'application.
+  try {
+    const { protocol } = new URL(supabaseUrl.trim())
+    return protocol === 'https:' || protocol === 'http:'
+  } catch {
+    return false
+  }
 }
 
 export const cloudEnabled = isSupabaseConfigured(url, anonKey)
