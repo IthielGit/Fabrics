@@ -811,8 +811,8 @@ extérieure. Aucun changement du format du document. Lots à valider un par un.
       un « Astuces » repliable (2026-11-12).
 - [x] **Lot E — Raccourcis et gestes** : bouton « ? » et touche `?` ouvrant la liste (déplacer, zoom,
       sélection, outils) (2026-11-12).
-- [ ] **Lot F — Panneau de droite rangé** : Niveaux sortis de Calques ; réglages avancés (échelle, nord,
-      étiquettes) repliés quand rien n'est sélectionné.
+- [x] **Lot F — Panneau de droite rangé** : Niveaux sortis de Calques ; réglages avancés (échelle, nord,
+      étiquettes) repliés quand rien n'est sélectionné (2026-11-12).
 - [ ] **Lot G — Vocabulaire** : explication en une ligne pour Plateforme, Axe, Coupe, Étirer, Calibrer ;
       message clair quand un export est bloqué (D55).
 - [ ] **Lot H — Test avec une vraie personne** : 3 tâches en 5 minutes, corrections qui en sortent.

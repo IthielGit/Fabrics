@@ -1176,6 +1176,11 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Bouton « ? » dans la barre du bas à gauche et touche `?` : fenêtre « Raccourcis et gestes » (déplacer, zoomer, sélection, outils du plan, dessin, édition).
 - Fichiers : `ShortcutsDialog.tsx`, `helpStore.ts` (nouveaux), `shortcuts.ts` (+ test), `useEditorShortcuts.ts`, `ZoomControls.tsx`, `fr.ts`. Build, lint, 2668 tests OK.
 
+### 2026-11-12 — M11 quater, Lot F (panneau de droite)
+
+- Nouvel onglet « Niveaux » (plan) séparé de « Calques ». Les « Réglages du plan » (échelle, grille, épaisseur, nord, annotations) sont repliés par défaut quand rien n'est sélectionné.
+- Fichiers : `SidePanel.tsx`, `PlanSettingsSection.tsx`, `editorStore.ts` (type d'onglet), `fr.ts`. Build, lint, 2668 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

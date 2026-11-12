@@ -849,6 +849,7 @@ export const fr = {
     label: 'Panneaux',
     properties: 'Propriétés',
     library: 'Bibliothèque',
+    levels: 'Niveaux',
     layers: 'Calques',
     measurements: 'Métrés',
   },

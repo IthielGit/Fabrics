@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { BookOpen, Calculator, Layers, SlidersHorizontal, type LucideIcon } from 'lucide-react'
+import { BookOpen, Building2, Calculator, Layers, SlidersHorizontal, type LucideIcon } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import LibraryPanel from '../library/LibraryPanel'
 import { fr } from '../../i18n/fr'
@@ -19,12 +19,13 @@ interface TabDefinition {
 const TABS: TabDefinition[] = [
   { id: 'properties', label: fr.sidePanel.properties, icon: SlidersHorizontal },
   { id: 'library', label: fr.sidePanel.library, icon: BookOpen, planOnly: true },
+  { id: 'levels', label: fr.sidePanel.levels, icon: Building2, planOnly: true },
   { id: 'layers', label: fr.sidePanel.layers, icon: Layers },
   { id: 'measurements', label: fr.sidePanel.measurements, icon: Calculator, planOnly: true },
 ]
 
 /**
- * Panneau de droite, rangé en onglets : Propriétés, Bibliothèque, Calques (et niveaux), Métrés.
+ * Panneau de droite, rangé en onglets : Propriétés, Bibliothèque, Niveaux (plan), Calques, Métrés.
  * Un seul contenu à la fois, au lieu de tous les panneaux empilés.
  */
 export default function SidePanel() {
@@ -74,12 +75,8 @@ export default function SidePanel() {
       <div role="tabpanel" className="min-h-0 flex-1 overflow-y-auto">
         {current === 'properties' && <PropertiesPanel />}
         {current === 'library' && <LibraryPanel />}
-        {current === 'layers' && (
-          <>
-            <LevelsPanel />
-            <LayersPanel />
-          </>
-        )}
+        {current === 'levels' && <LevelsPanel />}
+        {current === 'layers' && <LayersPanel />}
         {current === 'measurements' && <MeasurementsPanel />}
       </div>
     </aside>

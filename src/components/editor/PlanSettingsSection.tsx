@@ -1,3 +1,4 @@
+import { ChevronDown } from 'lucide-react'
 import { normalizeNorthAngle } from '../../features/building/north'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
@@ -21,8 +22,12 @@ export default function PlanSettingsSection() {
   if (!plan) return null
 
   return (
-    <div className="mt-4 space-y-3 border-t border-slate-200 pt-4">
-      <h3 className="text-sm font-semibold text-slate-900">{fr.planSettings.title}</h3>
+    <details className="group mt-4 border-t border-slate-200 pt-4">
+      <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-slate-900">
+        {fr.planSettings.title}
+        <ChevronDown size={16} aria-hidden="true" className="transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="mt-3 space-y-3">
 
       <div className="flex items-center justify-between gap-2">
         <label htmlFor="print-scale" className="text-sm text-slate-600">
@@ -93,6 +98,7 @@ export default function PlanSettingsSection() {
         />
         {fr.planSettings.annotations}
       </label>
-    </div>
+      </div>
+    </details>
   )
 }
