@@ -46,7 +46,8 @@ function openingCentre(opening: OpeningElement, wall: WallElement): { x: number;
   if (bx === undefined || by === undefined) return wallCentre(wall)
   const length = Math.hypot(bx - ax, by - ay)
   if (length === 0) return { x: ax, y: ay }
-  const t = opening.offset / length
+  // Une ouverture posée hors de son segment est classée comme si elle était au bout du segment.
+  const t = Math.min(1, Math.max(0, opening.offset / length))
   return { x: ax + (bx - ax) * t, y: ay + (by - ay) * t }
 }
 

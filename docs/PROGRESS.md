@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Tâche 2 · Ouverture hors de son segment
+- Fait : le centre d'une ouverture est ramené sur son segment (offset borné entre 0 et la longueur) pour le classement des repères. Les surfaces ne changent pas ; la fenêtre Exporter signale déjà ces ouvertures (groupe 3).
+- Fichiers : `src/features/measurements/references.ts`, `references.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓
+- Commit : fix: repères des ouvertures hors de leur segment
+
 ### 2026-11-12 — M10 ter · Cas limites des métrés · Groupe 4 · Tâche 1 · Ordre de lecture sans saut de bande
 - Fait : les repères se lisent de haut en bas par lignes réelles (nouvelle ligne quand l'écart avec l'élément précédent dépasse 500 mm), puis de gauche à droite. Deux murs à y = 749 et y = 751 sont sur la même ligne.
 - Fichiers : `src/features/measurements/references.ts`, `references.test.ts`

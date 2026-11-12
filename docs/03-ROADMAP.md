@@ -576,7 +576,7 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
       (tri par y, nouvelle ligne quand l'écart dépasse 500 mm) au lieu de `Math.round(y / 500)` ;
       deux murs à y = 749 et y = 751 sont sur la même ligne. Fichiers : `references.ts`, test
       dans `references.test.ts`.
-- [ ] **Ouverture hors de son segment** : centre ramené sur le segment (`offset` borné à sa
+- [x] **Ouverture hors de son segment** : centre ramené sur le segment (`offset` borné à sa
       longueur) pour le classement. Fichiers : `references.ts`, test.
 - [x] **Décision : stabilité des repères** — option A retenue le 2026-11-12 (D57). Les repères changent dès qu'on ajoute ou déplace un
       élément ; un PDF déjà envoyé peut ne plus correspondre. Option A : garder le calcul et

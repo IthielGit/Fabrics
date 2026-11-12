@@ -74,4 +74,18 @@ describe('repères M01, P01, F01', () => {
     expect(walls.get('dessus')).toBe('M01')
     expect(walls.get('dessous')).toBe('M02')
   })
+
+  it('une ouverture hors de son segment est classée au bout du segment', () => {
+    // Mur de 6000 mm ; « loin » est à offset 9000, donc ramenée à 6000, après « milieu » (3000).
+    const elements: CanvasElement[] = [
+      wall('m', [0, 0, 6000, 0]),
+      opening('loin', 'm', { kind: 'window', offset: 9000 }),
+      opening('milieu', 'm', { kind: 'window', offset: 3000 }),
+      opening('avant', 'm', { kind: 'window', offset: -500 }),
+    ]
+    const { openings } = buildReferences({ elements, levels: [L0] })
+    expect(openings.get('avant')).toBe('F01')
+    expect(openings.get('milieu')).toBe('F02')
+    expect(openings.get('loin')).toBe('F03')
+  })
 })
