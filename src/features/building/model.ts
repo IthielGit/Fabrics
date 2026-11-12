@@ -253,7 +253,7 @@ export function buildBuildingModel(
       fills.push(...details.fills)
       marks.push(...details.marks)
       const mesh = buildWallMesh(el as WallElement, own, level)
-      if (mesh) wallMeshes.push(mesh)
+      if (mesh) wallMeshes.push((el as WallElement).material ? { ...mesh, material: (el as WallElement).material } : mesh)
     } else if (el.type === 'chimney') {
       const piece = buildChimney(el, level, levels)
       if (piece) chimneys.push(piece)

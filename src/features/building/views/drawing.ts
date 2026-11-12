@@ -3,7 +3,7 @@ import type { HatchPattern } from '../materials'
 import type { BuildingModel } from '../types'
 import type { LevelMark, ViewBounds, ViewFace } from './projection'
 import { formatElevation } from './labels'
-import { exposedOutline, hatchSegments, type Segment } from './patterns'
+import { exposedOutline, hatchSegments, textureSegments, type Segment } from './patterns'
 import { prismsOf, type Prism } from './section'
 
 /**
@@ -188,6 +188,8 @@ export function drawingFromView(view: ViewLike, fontMm?: number): Drawing | null
     return {
       points,
       fill: faceFill(face),
+      // Texture de façade (parement, couverture) : traits fins sur le fond blanc de la face.
+      ...(face.texture && !face.cut ? { hatch: textureSegments(points, face.texture, font) } : {}),
       ...(face.kind === 'mark' ? { open: true, ...(face.dashed ? { dashed: true } : {}) } : {}),
       ...(face.edges ? { edges: face.edges, layer: face.depth } : {}),
     }

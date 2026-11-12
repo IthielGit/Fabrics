@@ -1,4 +1,4 @@
-import type { WallMaterial } from '../../types/document'
+import type { RoofCovering, WallMaterial } from '../../types/document'
 import type { Point } from '../geometry/viewport'
 
 /**
@@ -59,6 +59,8 @@ export interface RoofPrism {
   sourceId: string
   levelId: string
   kind: 'roof' | 'gable'
+  /** Couverture de la toiture (texture des versants en façade) ; absente : versants blancs. */
+  covering?: RoofCovering
   /** Contour du polygone (3D, au moins 3 points, dans un même plan). */
   polygon: Vec3[]
   /** Décalage de la face opposée (mm). */
@@ -99,6 +101,8 @@ export interface WallQuad {
 export interface WallMesh {
   sourceId: string
   levelId: string
+  /** Matériau du mur : texture de façade (D46) ; absent : façade blanche. */
+  material?: WallMaterial
   /** Les faces du mur (rectangles de la grille), pour les façades et les coupes. */
   quads: WallQuad[]
   /** Sommets des triangles, x y z à la suite (3 sommets par triangle, sens trigonométrique vu de l'extérieur). */

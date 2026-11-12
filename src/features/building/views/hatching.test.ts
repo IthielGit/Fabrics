@@ -104,7 +104,7 @@ describe('hachures dans les coupes', () => {
 
   it('changer le matériau change la hachure', () => {
     const count = (m: WallMaterial) =>
-      (sectionDrawing(m)?.polygons ?? []).reduce((sum, p) => sum + (p.hatch?.length ?? 0), 0)
+      (sectionDrawing(m)?.polygons ?? []).filter((p) => p.edges?.every((e) => !e)).reduce((sum, p) => sum + (p.hatch?.length ?? 0), 0)
     // Béton : traits deux fois plus serrés que la maçonnerie.
     expect(count('concrete')).toBeGreaterThan(count('masonry') * 1.5)
     expect(count('brick')).toBeGreaterThan(count('masonry') * 1.5)

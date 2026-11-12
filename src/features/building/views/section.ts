@@ -1,6 +1,7 @@
 import type { Level, WallMaterial } from '../../../types/document'
 import { sectionLook } from '../../geometry/sections'
 import type { Point } from '../../geometry/viewport'
+import { wallFacadeTexture } from '../materials'
 import type { BuildingModel, RoofPrism, Vec3, WallPiece } from '../types'
 import {
   facesBounds,
@@ -16,6 +17,7 @@ import {
   type ViewBounds,
   type ViewDirection,
   type ViewFace,
+  withRoofTexture,
 } from './projection'
 
 /** Ligne de coupe : ce qu'il faut savoir d'un élément `section` pour calculer sa coupe. */
@@ -303,7 +305,7 @@ function roofPrismSectionFaces(
     const projected = projectPolygon({ points: behind, normal: face.normal }, look, kind, prism.sourceId, prism.levelId)
     if (!projected) continue
     const clamped = clampToWidth(projected, uLo, uHi)
-    if (clamped) faces.push(clamped)
+    if (clamped) faces.push(withRoofTexture(clamped, prism))
   }
   return { faces, cut }
 }
@@ -350,7 +352,8 @@ export function buildSection(
       const edges = [...q.edges]
       if (piece[1] !== b) edges[1] = true
       if (piece[0] !== a) edges[3] = true
-      const clamped = clampToWidth({ ...face, edges }, uLo, uHi)
+      const texture = wallFacadeTexture(mesh.material)
+      const clamped = clampToWidth({ ...face, edges, ...(texture ? { texture } : {}) }, uLo, uHi)
       if (clamped) faces.push(clamped)
     }
   }

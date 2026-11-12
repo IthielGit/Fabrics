@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot C, tâche 3 (hachures dans les coupes et les plans de niveau)
-- **Prochaine tâche :** M10 bis, Lot C, tâche 4 (textures des façades) ; puis tâche 5 (couleurs en 3D), puis **M10 ter**, puis M11
+- **Dernière tâche terminée :** M10 bis, Lot C, tâche 4 (textures des façades)
+- **Prochaine tâche :** M10 bis, Lot C, tâche 5 (couleurs en 3D), puis **M10 ter**, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 bis · Lot C · Tâche 4 · Textures des façades
+- Fait : les murs sont dessinés avec la texture déduite de leur matériau (D46) dans les **façades** et sur les murs vus derrière le plan d'une **coupe** : brique apparente (rangs et joints en quinconce), enduit (points épars), bardage bois (lames). Les versants des toitures portent la texture de leur couverture : tuiles, ardoises, zinc (joints debout), bac acier (nervures). Isolant, plâtre, toiture plate, pignons et sans matériau : rien (rendu d'avant). Mêmes traits vectoriels à l'écran, dans le PDF et dans la planche (écartement constant sur le papier, D47). La matière coupée reste hachurée, jamais texturée.
+- Limites : les pignons ne prennent pas de texture (ils ne connaissent pas le mur dessous) ; les textures ne passent pas dans les plans de niveau (vus de dessus).
+- Fichiers : `src/features/building/{types,model,roofModel}.ts`, `views/{projection,section,drawing}.ts`, `views/textures.test.ts` (nouveau), `hatching.test.ts`
+- Vérification : build ✓ lint ✓ ; tests : 7 nouveaux ✓ (vues 65 sur 65)
+- Commit : feat: M10 bis lot C tâche 4, textures dans les façades, coupes et PDF
 
 ### 2026-11-12 — M10 bis · Lot C · Tâche 3 · Hachures dans les coupes et les plans de niveau
 - Fait : un mur qui a un matériau est dessiné, là où il est coupé, en **blanc hachuré** au lieu du noir plein : dans les coupes et dans les plans de niveau de la planche, à l'écran et dans le PDF (mêmes traits vectoriels). Hachure selon le matériau (béton 45° serré, maçonnerie 45° espacé, brique 45° doublé, bois fil le long du mur, isolant zigzag, plâtre pointillé), écartement constant sur le papier (D47). La matière hachurée est cernée d'un trait de coupe **sans couture** entre ses morceaux (angles, allèges, linteaux) : nouvelle fonction pure `exposedOutline`. Sans matériau : rendu d'avant (noir). Le matériau suit le mur dans le modèle (`WallPiece.material`, `ViewFace.material`).

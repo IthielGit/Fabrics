@@ -1,5 +1,6 @@
 import type { Level, WallMaterial } from '../../../types/document'
 import type { Point } from '../../geometry/viewport'
+import { roofFacadeTexture, wallFacadeTexture, type FacadeTexture } from '../materials'
 import type { BuildingModel, OpeningMark, RoofPrism, SlabShape, Vec3, WallMesh, WallPiece } from '../types'
 
 /**
@@ -44,6 +45,8 @@ export interface ViewFace {
   cut?: boolean
   /** Matériau d'une matière coupée : hachure au lieu du noir plein. */
   material?: WallMaterial
+  /** Texture vue en façade (parement du mur ou couverture du versant), dessinée en traits fins. */
+  texture?: FacadeTexture
   /**
    * Côtés à tracer (côté i = coin i → coin i+1). Absent : tous. Les jonctions entre faces d'un
    * même mur ne sont pas tracées, pour que le mur se lise d'un seul tenant.
@@ -251,12 +254,18 @@ export function projectPolygon(
   return { polygon, depth: centre.x * look.x + centre.z * look.y, kind, sourceId, levelId }
 }
 
+/** Face d'un versant avec la texture de sa couverture (les pignons n'en ont pas). */
+export function withRoofTexture(face: ViewFace, prism: RoofPrism): ViewFace {
+  const texture = prism.kind === 'roof' ? roofFacadeTexture(prism.covering) : null
+  return texture ? { ...face, texture } : face
+}
+
 /** Faces visibles d'un versant (`roof`) ou d'un pignon (`wall`) de toiture. */
 export function roofPrismFaces(prism: RoofPrism, look: ViewDirection): ViewFace[] {
   const kind: FaceKind = prism.kind === 'gable' ? 'wall' : 'roof'
   return prismPolygons(prism).flatMap((face) => {
     const projected = projectPolygon(face, look, kind, prism.sourceId, prism.levelId)
-    return projected ? [projected] : []
+    return projected ? [withRoofTexture(projected, prism)] : []
   })
 }
 
@@ -315,7 +324,8 @@ export function wallMeshFaces(mesh: WallMesh, look: ViewDirection): ViewFace[] {
       mesh.sourceId,
       mesh.levelId,
     )
-    if (face) faces.push({ ...face, edges: [...q.edges] })
+    const texture = wallFacadeTexture(mesh.material)
+    if (face) faces.push({ ...face, edges: [...q.edges], ...(texture ? { texture } : {}) })
   }
   return faces
 }

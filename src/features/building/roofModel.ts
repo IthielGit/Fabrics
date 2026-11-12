@@ -128,6 +128,7 @@ export function buildRoofParts(
     sourceId: roof.id,
     levelId: level.id,
     kind: 'roof',
+    ...(roof.covering ? { covering: roof.covering } : {}),
     polygon: slope.polygon,
     extrude: { x: 0, y: -thickness, z: 0 },
   }))
