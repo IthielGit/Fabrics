@@ -685,6 +685,9 @@ export const fr = {
     door: 'Survolez un mur et cliquez pour poser une porte (elle s’ouvre du côté du curseur) · Échap : quitter',
     window: 'Survolez un mur et cliquez pour poser une fenêtre · Échap : quitter',
   },
+  wallSide: {
+    blocked: 'Ce mur ne peut pas glisser : un mur dans son prolongement ou en biais le relie à un autre.',
+  },
   stretch: {
     blockedDiagonal: 'Impossible : un mur en biais traverse la zone',
     removed: (count: number) =>
@@ -982,6 +985,23 @@ export const fr = {
     areaOnTrace: 'Surface mesurée sur le contour tracé.',
     vertexHint:
       'Glissez un point rond pour déplacer un sommet · cliquez un petit point au milieu d’un côté pour ajouter un sommet · double-cliquez un sommet pour le retirer.',
+    wallSideHint:
+      'Glissez le petit point au milieu d’un côté pour déplacer ce mur seul : les murs voisins s’allongent, la pièce suit.',
+    joinWalls: 'Joindre les murs',
+    joinWallsTitle: 'Remplace ces murs bout à bout par un seul mur (l’inverse de « Séparer les côtés »)',
+    joinWallsDone: 'Les murs ont été joints en un seul.',
+    joinWallsProblem: {
+      few: 'Sélectionnez au moins deux murs à joindre.',
+      locked: 'Un des murs est verrouillé : déverrouillez-le d’abord.',
+      level: 'Ces murs ne sont pas sur le même niveau.',
+      thickness: 'Ces murs n’ont pas la même épaisseur : réglez-la avant de les joindre.',
+      height: 'Ces murs n’ont pas la même hauteur : réglez-la avant de les joindre.',
+      material: 'Ces murs n’ont pas le même matériau : réglez-le avant de les joindre.',
+      notChained:
+        'Ces murs ne se suivent pas bout à bout : ils doivent se toucher par leurs extrémités, sans embranchement.',
+    },
+    joinWallsLostOpenings: (count: number) =>
+      count === 1 ? '1 ouverture sans place a été retirée.' : `${count} ouvertures sans place ont été retirées.`,
     unitPercent: '%',
     unitDegrees: '°',
     unitPx: 'px',

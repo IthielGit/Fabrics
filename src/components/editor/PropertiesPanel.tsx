@@ -70,6 +70,8 @@ export default function PropertiesPanel() {
   const project = useEditorStore((state) => state.project)
   const selectedIds = useEditorStore((state) => state.selectedIds)
   const updateElements = useEditorStore((state) => state.updateElements)
+  const joinWalls = useEditorStore((state) => state.joinWalls)
+  const setNotice = useEditorStore((state) => state.setNotice)
 
   if (!project) return null
   const unit = project.document.unit
@@ -134,6 +136,32 @@ export default function PropertiesPanel() {
                 updateElements(ids, (el) => (el.type === 'wall' ? withWallMaterial(el, material) : el))
               }
             />
+          )}
+          {selectedWalls.length === selected.length && (
+            <button
+              type="button"
+              title={fr.properties.joinWallsTitle}
+              className="w-full rounded-md border border-slate-300 px-2 py-1.5 text-sm text-slate-700 hover:bg-slate-50"
+              onClick={() => {
+                const result = joinWalls(ids)
+                if (!result.ok) {
+                  setNotice(fr.properties.joinWallsProblem[result.problem])
+                  return
+                }
+                setNotice(
+                  [
+                    fr.properties.joinWallsDone,
+                    result.removedOpenings > 0
+                      ? fr.properties.joinWallsLostOpenings(result.removedOpenings)
+                      : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' '),
+                )
+              }}
+            >
+              {fr.properties.joinWalls}
+            </button>
           )}
           <BlockResizeSection />
         </div>

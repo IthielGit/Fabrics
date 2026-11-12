@@ -31,6 +31,8 @@ import type { Guide } from '../features/geometry/guides'
 import type { Box } from '../features/geometry/box'
 import { resizeBlock } from '../features/geometry/resizeBlock'
 import { splitWallInDocument } from '../features/geometry/splitWall'
+import { joinWallsInDocument, type JoinWallsProblem } from '../features/geometry/joinWalls'
+import { moveWallSide } from '../features/geometry/moveWallSide'
 import { stretchZone } from '../features/geometry/stretchZone'
 import { translateElement } from '../features/geometry/transform'
 import { fitToScreen, type Point, type Size } from '../features/geometry/viewport'
@@ -225,6 +227,24 @@ interface EditorState {
    * d'historique, les nouveaux murs deviennent la sélection. `null` si rien à séparer.
    */
   splitWall: (id: string) => { count: number; removedOpenings: number } | null
+  /**
+   * Joint des murs bout à bout en un seul (voir `joinWallsInDocument`) : un seul pas d'historique,
+   * le mur obtenu devient la sélection. Renvoie le problème qui l'empêche sinon.
+   */
+  joinWalls: (
+    ids: string[],
+  ) => { ok: true; removedOpenings: number } | { ok: false; problem: JoinWallsProblem }
+  /**
+   * Pendant un geste en direct (`beginLiveEdit`) : glisse un seul côté de mur de `distance` mm
+   * perpendiculairement, à partir de l'état du début du geste (voir `moveWallSide`). Renvoie ce qui
+   * a été fait (`blocked` : un mur aligné ou en biais l'empêche ; `removedOpenings` : ouvertures
+   * qui ne tiennent plus), ou `null` s'il n'y a pas de geste ou de mur.
+   */
+  liveMoveWallSide: (
+    wallId: string,
+    sideIndex: number,
+    distance: number,
+  ) => { blocked: boolean; removedOpenings: number; distance: number } | null
   removeElements: (ids: string[]) => void
   duplicateElements: (ids: string[]) => void
   /**
@@ -660,6 +680,37 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       // Les ouvertures sont déjà replacées sur le mur de leur côté : pas de réajustement.
       commit((doc) => ({ ...doc, elements: result.elements }), result.wallIds, undefined, false)
       return { count: result.wallIds.length, removedOpenings: result.removedOpenings }
+    },
+
+    joinWalls: (ids) => {
+      const { project } = get()
+      if (!project) return { ok: false, problem: 'few' }
+      const result = joinWallsInDocument(project.document.elements, ids)
+      if (!result.ok) return result
+      // Les ouvertures sont déjà replacées sur le nouveau mur : pas de réajustement.
+      commit((doc) => ({ ...doc, elements: result.elements }), [result.wallId], undefined, false)
+      return { ok: true, removedOpenings: result.removedOpenings }
+    },
+
+    liveMoveWallSide: (wallId, sideIndex, distance) => {
+      const { project, revision, activeLevelId } = get()
+      const base = liveBase
+      if (!project || !base) return null
+      const level = activeLevelId === null ? base.elements : elementsOnLevel(base.elements, activeLevelId)
+      const move = moveWallSide(level, wallId, sideIndex, distance)
+      if (!move) return null
+      const changed = new Map((move.result?.elements ?? []).map((el) => [el.id, el]))
+      const removed = new Set(move.result?.removedIds ?? [])
+      const elements = base.elements.flatMap((el) => (removed.has(el.id) ? [] : [changed.get(el.id) ?? el]))
+      set({
+        project: { ...project, document: { ...project.document, elements } },
+        revision: revision + 1,
+      })
+      return {
+        blocked: move.blocked,
+        removedOpenings: removed.size,
+        distance: move.delta.x + move.delta.y,
+      }
     },
 
     removeElements: (ids) => {

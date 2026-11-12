@@ -25,7 +25,9 @@ import {
   moveVertex,
   removeVertex,
 } from '../../features/geometry/transform'
+import { wallSideZone } from '../../features/geometry/moveWallSide'
 import type { Point } from '../../features/geometry/viewport'
+import { fr } from '../../i18n/fr'
 import { selectActiveElements, selectSnapElements, useEditorStore } from '../../stores/editorStore'
 
 interface VertexHandlesProps {
@@ -57,6 +59,13 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
   const snapAlign = useRef<Point[]>([])
   const snapOpenings = useRef<Point[]>([])
   const snapBackground = useRef<BackgroundSegment[]>([])
+  // Glisser d'un côté de mur : milieu du côté et direction au début du geste, dernier résultat.
+  const sideDrag = useRef<{
+    origin: Point
+    normal: Point
+    blocked: boolean
+    removedOpenings: number
+  } | null>(null)
 
   if (!enabled || !element) return null
   const vertices = getVertices(element)
@@ -168,6 +177,50 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
     setCursor(event, '')
   }
 
+  // Glisser le point du milieu d'un côté droit d'un mur déplace ce seul mur (un clic y ajoute un sommet).
+  const handleSideDragStart = (index: number) => (event: Konva.KonvaEventObject<DragEvent>) => {
+    event.cancelBubble = true
+    const store = useEditorStore.getState()
+    const current = store.project?.document.elements.find((el) => el.id === element.id)
+    const side = current?.type === 'wall' ? wallSideZone(current, index) : null
+    const middle = getSegmentMidpoints(element)[index]
+    if (!side || !middle) return
+    store.beginLiveEdit()
+    sideDrag.current = { origin: middle, normal: side.normal, blocked: false, removedOpenings: 0 }
+  }
+
+  const handleSideDragMove = (index: number) => (event: Konva.KonvaEventObject<DragEvent>) => {
+    event.cancelBubble = true
+    const drag = sideDrag.current
+    if (!drag) return
+    const node = event.target
+    const raw = (node.x() - drag.origin.x) * drag.normal.x + (node.y() - drag.origin.y) * drag.normal.y
+    // La position du mur (pas la distance) s'aimante à la grille, sinon au mm entier.
+    const grid = plan?.snapToGrid ? plan.gridSize : null
+    const start = drag.origin.x * drag.normal.x + drag.origin.y * drag.normal.y
+    const coordinate = start + raw
+    const snapped = grid !== null && grid > 0 ? Math.round(coordinate / grid) * grid : Math.round(coordinate)
+    const done = useEditorStore.getState().liveMoveWallSide(element.id, index, snapped - start)
+    if (!done) return
+    drag.blocked = done.blocked
+    drag.removedOpenings = Math.max(drag.removedOpenings, done.removedOpenings)
+    node.position({
+      x: drag.origin.x + drag.normal.x * done.distance,
+      y: drag.origin.y + drag.normal.y * done.distance,
+    })
+  }
+
+  const handleSideDragEnd = (event: Konva.KonvaEventObject<DragEvent>) => {
+    event.cancelBubble = true
+    const store = useEditorStore.getState()
+    const drag = sideDrag.current
+    sideDrag.current = null
+    store.endLiveEdit()
+    if (!drag) return
+    if (drag.blocked) store.setNotice(fr.wallSide.blocked)
+    else if (drag.removedOpenings > 0) store.setNotice(fr.stretch.removed(drag.removedOpenings))
+  }
+
   const midpoints = getSegmentMidpoints(element)
 
   return (
@@ -183,6 +236,10 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
           strokeWidth={1 / scale}
           hitStrokeWidth={8 / scale}
           opacity={0.85}
+          draggable={element.type === 'wall' && wallSideZone(element, index) !== null}
+          onDragStart={handleSideDragStart(index)}
+          onDragMove={handleSideDragMove(index)}
+          onDragEnd={handleSideDragEnd}
           onClick={handleInsert(index)}
           onTap={handleInsert(index)}
           onMouseEnter={(event) => setCursor(event, 'copy')}

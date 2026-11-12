@@ -690,9 +690,9 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 
 ### Lot B — Édition des murs
 
-- [ ] **Glisser un seul mur** (option A) : poignée au milieu d'un segment droit ; le mur se déplace
+- [x] **Glisser un seul mur** (option A) : poignée au milieu d'un segment droit ; le mur se déplace
       perpendiculairement, les murs voisins s'allongent et la pièce suit. Réutilise `stretchZone`.
-- [ ] **Joindre des murs** (inverse de « Séparer les côtés ») : fusion de murs bout à bout, de même
+- [x] **Joindre des murs** (inverse de « Séparer les côtés ») : fusion de murs bout à bout, de même
       épaisseur et même matériau, en un seul tracé. Sinon, refus avec un message clair. Fonction
       inverse de `src/features/geometry/splitWall.ts`.
 

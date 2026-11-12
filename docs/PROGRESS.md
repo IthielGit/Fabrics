@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot A · Aimantation sur le fond DXF
+- **Dernière tâche terminée :** M11 bis · Lot B · Glisser un seul mur et joindre des murs
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,17 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot B · Tâche 2 · Joindre des murs
+- Fait : quand plusieurs murs sont sélectionnés (double-clic = murs liés), bouton **« Joindre les murs »** dans Propriétés : ils deviennent un seul mur bout à bout (l'inverse de « Séparer les côtés »). Les murs doivent être sur le même niveau, de même épaisseur, hauteur et matériau, et former une chaîne simple (ouverte ou fermée). Un mur dessiné à l'envers est retourné avec ses portes et fenêtres (place comptée depuis l'autre bout, charnière et côté d'ouverture inversés). Le mur obtenu garde l'identifiant et le nom tapé du premier ; un nom automatique reste automatique. Sinon, message clair en français (épaisseur différente, mur verrouillé, pas bout à bout…). Un seul pas d'annulation. Longueur et surfaces murales identiques avant et après (test).
+- Fichiers : `src/features/geometry/joinWalls.ts` (+ test), `src/stores/editorStore.ts` (action `joinWalls`), `src/components/editor/PropertiesPanel.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2583)
+- Commit : feat: joindre des murs et glisser un seul mur (M11 bis, lot B)
+
+### 2026-11-12 — M11 bis · Lot B · Tâche 1 · Glisser un seul mur
+- Fait : le petit point rond au **milieu d'un côté droit** (horizontal ou vertical) d'un mur sélectionné se **glisse** : le mur se déplace perpendiculairement, les murs voisins s'allongent ou se raccourcissent, la pièce dont un sommet est sur ce côté suit, les ouvertures gardent leur place réelle (même calcul que l'outil Étirer : `stretchZone`). Un **clic** sur ce même point ajoute toujours un sommet. Aimantation de la position du mur à la grille (sinon au mm entier). Un mur dans son prolongement ou un côté voisin en biais bloque le glissement, avec un message. Un seul pas d'annulation par geste ; les ouvertures qui ne tiennent plus sont signalées.
+- Fichiers : `src/features/geometry/moveWallSide.ts` (+ test), `src/stores/editorStore.ts` (`liveMoveWallSide`), `src/components/editor/VertexHandles.tsx`, `PlanElementFields.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ — test dans le navigateur à faire à la fin du jalon
 
 ### 2026-11-12 — M11 bis · Lot A · Aimantation sur le fond DXF
 - Fait : les tracés (mur, pièce, plateforme, toiture, cote, axe, coupe) et les poignées de sommets s'aimantent au fond DXF importé : **extrémité** d'un trait, **croisement** de deux traits, **milieu**, puis **point du trait** (ignoré avec Maj, qui impose la direction). Un sommet du plan reste prioritaire. Le repère bleu affiche « Extrémité du fond », « Croisement du fond », « Milieu du fond » ou « Trait du fond ». **Alt** coupe cette aimantation. Seuls les traits proches du curseur sont examinés (pas de calcul sur 20 000 croisements).

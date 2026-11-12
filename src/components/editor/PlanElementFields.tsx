@@ -210,6 +210,7 @@ export default function PlanElementFields({ element }: { element: PlanElement })
           {fr.properties.splitWall}
         </button>
       )}
+      {element.type === 'wall' && <p className="text-xs text-slate-500">{fr.properties.wallSideHint}</p>}
       {element.type === 'wall' && <p className="text-xs text-slate-500">{fr.properties.wallChainHint}</p>}
       {element.type === 'axis' && <p className="text-xs text-slate-500">{fr.properties.axisHint}</p>}
     </>
