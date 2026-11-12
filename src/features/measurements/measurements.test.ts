@@ -88,6 +88,7 @@ describe('computeMeasurements', () => {
         netArea: 12_000_000,
         voidOverflow: false,
         ceilingHeight: null,
+        falseCeiling: false,
       },
     ])
   })

@@ -735,12 +735,12 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 Lecture retenue : « sous plafonds » = les **plafonds** de chaque pièce (surface de plafond, faux
 plafonds, hauteur sous plafond).
 
-- [ ] **Tableau « Plafonds » dans les métrés**, Client et Technique : par pièce, nom, surface de
+- [x] **Tableau « Plafonds » dans les métrés**, Client et Technique : par pièce, nom, surface de
       plafond (= surface au sol, trémie déduite, D37), hauteur sous plafond (D52), périmètre ; totaux
       par niveau et pour le bâtiment. Export CSV, Excel et PDF. Pas de nouveau calcul de hauteur.
-- [ ] **Faux plafond** (confirmé le 2026-11-12) : option par pièce (absent = pas de faux plafond,
+- [x] **Faux plafond** (confirmé le 2026-11-12) : option par pièce (absent = pas de faux plafond,
       donc aucune migration) ; le tableau ajoute alors une ligne « Faux plafond » avec sa surface.
-- [ ] **Cote d'altitude sous plafond sur le plan Technique** uniquement (« +2650 sous plafond », par
+- [x] **Cote d'altitude sous plafond sur le plan Technique** uniquement (« +2650 sous plafond », par
       pièce), sous le réglage « Cotation » existant. **Pas sur le plan Client** : les étiquettes Client
       restent propres (choix déjà fait en M10 ter).
 

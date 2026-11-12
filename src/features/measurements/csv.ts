@@ -3,7 +3,7 @@ import type { RoofProblem } from '../building/roof'
 import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
 import type { BuildingMeasurements } from './measurements'
-import { buildMetresTables, cellText, mm, wallRefs, type MetresTable } from './tables'
+import { buildMetresTables, cellText, mm, wallRefs, type CeilingLabels, type MetresTable } from './tables'
 
 /** Intitulés du fichier (français, fournis par `src/i18n/fr.ts`). */
 export interface CsvLabels {
@@ -26,6 +26,8 @@ export interface CsvLabels {
   area: string
   /** Surface d'une pièce au tracé (avant déduction des trémies). */
   roomTraceArea: string
+  /** Tableau « Plafonds ». */
+  ceilings: CeilingLabels
   perimeter: string
   /** Colonnes « Trémie » et « Surface nette » du tableau des pièces. */
   voidArea: string
@@ -137,6 +139,8 @@ export interface FlatLabels {
   >
   quantities: Record<
     | 'traceArea'
+    | 'ceilingHeight'
+    | 'falseCeilingArea'
     | 'perimeter'
     | 'voidArea'
     | 'netArea'
@@ -315,6 +319,8 @@ export function measurementsToFlatCsv(
         [q.perimeter, room.perimeter, unit.mm, 0],
         [q.voidArea, area(room.voidArea), unit.m2, 4],
         [q.netArea, area(room.netArea), unit.m2, 4],
+        [q.ceilingHeight, room.ceilingHeight, unit.mm, 0],
+        [q.falseCeilingArea, room.falseCeiling ? area(room.netArea) : null, unit.m2, 4],
       ])
     }
     for (const wall of m.walls) {

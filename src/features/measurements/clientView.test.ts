@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { CanvasElement, OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { fr } from '../../i18n/fr'
 import { buildClientTables, roomDimensionsText } from './clientView'
-import { measurementsToCsv } from './csv'
+import { measurementsToCsv, measurementsToFlatCsv } from './csv'
 import { buildExecutionTables } from './executionView'
 import { axisAlignedRectangle, computeBuildingMeasurements } from './measurements'
 import { cellText } from './tables'
@@ -33,7 +33,7 @@ describe('présentation Client', () => {
     const tables = build([wall, room('Salon', [0, 0, 4000, 0, 4000, 3000, 0, 3000])])
     const headers = tables.flatMap((t) => t.columns.map((c) => c.header.toLowerCase()))
     expect(headers.some((h) => h.includes('épaisseur') || h.includes('mur') || h.includes('volume'))).toBe(false)
-    expect(tables.map((t) => t.id)).toEqual(['client-rooms', 'client-levels'])
+    expect(tables.map((t) => t.id)).toEqual(['client-rooms', 'ceilings', 'client-levels'])
   })
 
   it('compte les portes et les fenêtres par niveau et pour le bâtiment', () => {
@@ -140,5 +140,48 @@ describe('présentation Exécution', () => {
     expect(csv).toContain('Salon;4000 × 3000;14000;2500;12,00')
     expect(csv).not.toContain('Murs')
     expect(csv).not.toContain('Volume')
+  })
+})
+
+describe('tableau Plafonds', () => {
+  const chambre = room('Chambre', [0, 0, 4000, 0, 4000, 3000, 0, 3000])
+  const floors = [
+    { ...L0, height: 2850 },
+    { id: 'L1', name: 'Étage', elevation: 2850, height: 2700, slabThickness: 200 },
+  ]
+  const building = (elements: CanvasElement[]) => computeBuildingMeasurements({ levels: floors, elements })
+
+  it('une chambre de 4000 × 3000 sous une dalle à +2650 : 12,00 m² et 2650 mm, en Client et en Technique', () => {
+    const b = building([chambre])
+    const client = buildClientTables(b, fr.measurements.client).find((t) => t.id === 'ceilings')
+    const technical = buildExecutionTables(b, fr.measurements.csv, [], fr.measurements.execution).find(
+      (t) => t.id === 'ceilings',
+    )
+    for (const table of [client, technical]) {
+      expect(table?.title).toBe('Plafonds')
+      expect(table?.rows[0].map(cellText)).toEqual(['Rez', 'Chambre', '12,00', '2650', '14000'])
+      expect(table?.total?.map(cellText)).toEqual(['Total', '', '12,00', '', ''])
+    }
+  })
+
+  it('un faux plafond ajoute une ligne sans changer le total ; une pièce sans l’option ne change pas', () => {
+    const plain = buildClientTables(building([chambre]), fr.measurements.client).find((t) => t.id === 'ceilings')!
+    const withFalse = buildClientTables(building([{ ...chambre, falseCeiling: true }]), fr.measurements.client).find(
+      (t) => t.id === 'ceilings',
+    )!
+    expect(plain.rows).toHaveLength(1)
+    expect(withFalse.rows).toHaveLength(2)
+    expect(withFalse.rows[1].map(cellText)).toEqual(['Rez', 'Chambre – faux plafond', '12,00', '', ''])
+    expect(withFalse.total?.map(cellText)).toEqual(plain.total?.map(cellText))
+  })
+
+  it('pas de pièce : pas de tableau Plafonds', () => {
+    expect(buildClientTables(building([wall]), fr.measurements.client).some((t) => t.id === 'ceilings')).toBe(false)
+  })
+
+  it('le CSV à plat donne la hauteur sous plafond et le faux plafond', () => {
+    const csv = measurementsToFlatCsv(building([{ ...chambre, falseCeiling: true }]), fr.measurements.csv)
+    expect(csv).toContain('Hauteur sous plafond')
+    expect(csv).toContain('Faux plafond')
   })
 })

@@ -16,6 +16,7 @@ const LABELS: ExecutionLabels = {
   sill: (mm) => `All. ${mm}`,
   floor: (a) => `Sol ${a}`,
   slab: (a) => `Dalle ${a}`,
+  ceiling: (a) => `${a} sous plafond`,
   stairVoid: 'Trémie',
   risers: (n, h) => `${n} CM × ${h}`,
   tread: (mm) => `Giron ${mm}`,
@@ -97,9 +98,9 @@ describe('cotes Exécution', () => {
   it('pièce : nom, surface, altitude du sol et de la dalle haute', () => {
     const r = room('r', 'Cuisine', [100, 100, 5700, 100, 5700, 3900, 100, 3900])
     const ground = run([box, r], [L0, L1]).labels.find((l) => l.id === 'room-r')!
-    expect(ground.lines).toEqual(['Cuisine', '21,28 m²', 'Sol ±0', 'Dalle +2850'])
+    expect(ground.lines).toEqual(['Cuisine', '21,28 m²', 'Sol ±0', '+2650 sous plafond', 'Dalle +2850'])
     const upper = run([{ ...box, levelId: 'L1' }, { ...r, levelId: 'L1' }], [L0, L1], 'L1')
-    expect(upper.labels.find((l) => l.id === 'room-r')!.lines.slice(2)).toEqual(['Sol +2850', 'Dalle +5550'])
+    expect(upper.labels.find((l) => l.id === 'room-r')!.lines.slice(2)).toEqual(['Sol +2850', '+5350 sous plafond', 'Dalle +5550'])
   })
 
   it('escalier : contremarches, hauteur et giron ; trémie cotée au niveau du dessus', () => {

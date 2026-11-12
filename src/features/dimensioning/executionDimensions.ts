@@ -29,6 +29,8 @@ export interface ExecutionLabels {
   floor: (altitude: string) => string
   /** « Dalle +2700 ». */
   slab: (altitude: string) => string
+  /** « +2650 sous plafond ». */
+  ceiling: (altitude: string) => string
   /** « Trémie ». */
   stairVoid: string
   /** « 16 CM × 175 ». */
@@ -160,7 +162,16 @@ export function executionDimensions(
       id: `room-${room.id}`,
       x: centre.x,
       y: centre.y,
-      lines: [room.name, formatArea(measure.netArea), floor, slab],
+      // Altitude sous plafond : sol + hauteur sous plafond (Technique seulement, jamais en Client).
+      lines: [
+        room.name,
+        formatArea(measure.netArea),
+        floor,
+        ...(measure.ceilingHeight === null
+          ? []
+          : [labels.ceiling(formatAltitude(level.elevation + measure.ceilingHeight))]),
+        slab,
+      ],
       bounds: pointsBox(room.points),
     })
     for (const direction of ['horizontal', 'vertical'] as const) {

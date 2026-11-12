@@ -5,7 +5,7 @@ import {
   computeBuildingMeasurements,
   computeMeasurements,
 } from '../../features/measurements/measurements'
-import { cellText } from '../../features/measurements/tables'
+import { buildCeilingTable, cellText } from '../../features/measurements/tables'
 import { type MetresWarning, isBlockingWarning, isSurfaceWarning, metresWarnings } from '../../features/measurements/warnings'
 import { formatArea, formatLength, formatVolume } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
@@ -58,6 +58,10 @@ export default function MeasurementsPanel() {
   const active = building.levels.find((entry) => entry.level.id === activeLevelId)
   const measurements = active?.measurements ?? computeMeasurements([])
   const { rooms, walls, platforms, stairs, roofs, openings, totals } = measurements
+  // Plafonds du niveau affiché (le tableau complet du bâtiment est dans les exports).
+  const ceilingTable = active
+    ? buildCeilingTable({ ...building, levels: [active] }, fr.measurements.csv.ceilings)
+    : null
   const levelWarnings = surfaceWarnings.filter((w) => 'levelId' in w && w.levelId === activeLevelId)
   // Le niveau affiché est vide : on le dit ; le CSV, lui, couvre tout le bâtiment.
   const isEmpty =
@@ -258,6 +262,45 @@ export default function MeasurementsPanel() {
         </table>
       )}
       {rooms.length > 0 && <p className="mt-1 text-xs text-slate-500">{fr.measurements.areaNote}</p>}
+      {ceilingTable && (
+        <div className="mt-3 overflow-x-auto">
+          <table className="w-full text-sm">
+            <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
+              {ceilingTable.title}
+            </caption>
+            <thead>
+              <tr>
+                {ceilingTable.columns.slice(1).map((column) => (
+                  <th key={column.header} className={`${HEAD} ${column.align === 'right' ? 'text-right' : ''}`}>
+                    {column.header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {ceilingTable.rows.map((cells, i) => (
+                <tr key={i} className="border-t border-slate-100">
+                  {cells.slice(1).map((cell, j) => (
+                    <td key={j} className={ceilingTable.columns[j + 1].align === 'right' ? NUMBER : 'max-w-24 truncate px-1 py-1'}>
+                      {cellText(cell)}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+              {ceilingTable.total && (
+                <tr className="border-t border-slate-300 font-semibold">
+                  {ceilingTable.total.slice(1).map((cell, j) => (
+                    <td key={j} className={ceilingTable.columns[j + 1].align === 'right' ? NUMBER : 'px-1 py-1'}>
+                      {cellText(cell)}
+                    </td>
+                  ))}
+                </tr>
+              )}
+            </tbody>
+          </table>
+          <p className="mt-1 text-xs text-slate-500">{ceilingTable.note}</p>
+        </div>
+      )}
 
       {walls.length > 0 && (
         <table className="mt-4 w-full text-sm">

@@ -1,5 +1,5 @@
 import type { BuildingMeasurements } from './measurements'
-import { nm2, nmm, ncount, type MetresCell, type MetresTable } from './tables'
+import { buildCeilingTable, nm2, nmm, ncount, type CeilingLabels, type MetresCell, type MetresTable } from './tables'
 
 /**
  * Présentation « Client » des métrés (M10 ter) : un document simple, sans épaisseur de mur ni
@@ -19,6 +19,8 @@ export interface ClientLabels {
   /** « Hauteur sous plafond (mm) ». */
   ceilingHeight: string
   floorArea: string
+  /** Tableau « Plafonds ». */
+  ceilings: CeilingLabels
   doors: string
   windows: string
   bays: string
@@ -49,6 +51,16 @@ export function clientMetaLabels<T extends { title: string; noteValue: string }>
 export function roomDimensionsText(dimensions: readonly [number, number] | null): string {
   if (!dimensions) return ''
   return `${Math.round(dimensions[0])} × ${Math.round(dimensions[1])}`
+}
+
+/** Rang d'une pièce sans nom parmi les pièces sans nom de son niveau (« Pièce 1 », « Pièce 2 »…). */
+function unnamedRank(building: BuildingMeasurements, roomId: string, fallback: number): number {
+  for (const { measurements } of building.levels) {
+    const unnamed = measurements.rooms.filter((room) => room.name.trim() === '')
+    const index = unnamed.findIndex((room) => room.id === roomId)
+    if (index >= 0) return index + 1
+  }
+  return fallback + 1
 }
 
 export function buildClientTables(
@@ -87,6 +99,12 @@ export function buildClientTables(
       total: [labels.total, '', '', '', '', nm2(total.totals.roomNetArea)],
     })
   }
+
+  // Plafonds : mêmes pièces, même numérotation des pièces sans nom que « Vos pièces ».
+  const ceilings = buildCeilingTable(building, labels.ceilings, (room, rank) =>
+    room.name.trim() === '' ? `${labels.unnamedRoom} ${unnamedRank(building, room.id, rank)}` : room.name,
+  )
+  if (ceilings) tables.push(ceilings)
 
   const levelRow = (name: string, m: BuildingMeasurements['total']): MetresCell[] => [
     name,

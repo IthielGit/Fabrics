@@ -1,6 +1,6 @@
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
 import type { CsvLabels, FurnitureCsvRow } from './csv'
-import type { BuildingMeasurements, Measurements } from './measurements'
+import type { BuildingMeasurements, Measurements, RoomMeasure } from './measurements'
 
 /** Colonne d'un tableau de métrés : les nombres sont alignés à droite, le texte à gauche. */
 export interface MetresColumn {
@@ -54,6 +54,63 @@ export const ndeg = (value: number): MetresNumber => ({ text: formatDecimal(valu
 
 const left = (header: string): MetresColumn => ({ header, align: 'left' })
 const right = (header: string): MetresColumn => ({ header, align: 'right' })
+
+/** Intitulés du tableau « Plafonds » (Client et Technique). */
+export interface CeilingLabels {
+  title: string
+  level: string
+  room: string
+  /** « Surface de plafond (m²) » : surface au sol de la pièce, trémie déduite. */
+  area: string
+  /** « Hauteur sous plafond (mm) ». */
+  height: string
+  perimeter: string
+  /** Ligne ajoutée pour une pièce qui a un faux plafond : « Salon – faux plafond ». */
+  falseCeiling: (roomName: string) => string
+  total: string
+  /** Explication sous le titre. */
+  note: string
+}
+
+/**
+ * Tableau « Plafonds » : par pièce, la surface de plafond (= surface au sol, trémie déduite, D37), la
+ * hauteur sous plafond et le périmètre ; une ligne de plus, « faux plafond », pour une pièce qui en a
+ * un (sa surface n'est pas ajoutée au total : le faux plafond est posé sous le plafond). `null` sans pièce.
+ * `roomName` donne le nom affiché (le rang de la pièce dans son niveau sert aux pièces sans nom).
+ */
+export function buildCeilingTable(
+  building: BuildingMeasurements,
+  labels: CeilingLabels,
+  roomName: (room: RoomMeasure, rankInLevel: number) => string = (room) => room.name,
+): MetresTable | null {
+  const rows: MetresCell[][] = []
+  let area = 0
+  for (const { level, measurements } of building.levels) {
+    measurements.rooms.forEach((room, rank) => {
+      const name = roomName(room, rank)
+      rows.push([
+        level.name,
+        name,
+        nm2(room.netArea),
+        room.ceilingHeight === null ? '' : nmm(room.ceilingHeight),
+        nmm(room.perimeter),
+      ])
+      area += room.netArea
+      if (room.falseCeiling) {
+        rows.push([level.name, labels.falseCeiling(name), nm2(room.netArea), '', ''])
+      }
+    })
+  }
+  if (rows.length === 0) return null
+  return {
+    id: 'ceilings',
+    title: labels.title,
+    note: labels.note,
+    columns: [left(labels.level), left(labels.room), right(labels.area), right(labels.height), right(labels.perimeter)],
+    rows,
+    total: [labels.total, '', nm2(area), '', ''],
+  }
+}
 
 /** Repères des murs (M01, M02…) : deux murs qui portent le même nom ne se confondent plus. */
 export function wallRefs(building: BuildingMeasurements): Map<string, string> {
@@ -113,6 +170,9 @@ export function buildMetresTables(
       ...(hasVoids ? [nm2(total.totals.voidArea), nm2(total.totals.roomNetArea)] : []),
     ),
   })
+
+  const ceilings = buildCeilingTable(building, labels.ceilings)
+  if (ceilings) tables.push(ceilings)
 
   // --- Murs : une face sur l'axe, puis deux faces sur les faces, puis le volume.
   tables.push({

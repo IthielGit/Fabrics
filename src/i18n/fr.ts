@@ -24,6 +24,19 @@ const OPENING_STYLE_LABELS: Record<OpeningStyle, string> = {
   free: 'Ouverture libre',
 }
 
+/** Intitulés du tableau « Plafonds » des métrés, communs aux versions Client et Technique. */
+const CEILING_LABELS = {
+  title: 'Plafonds',
+  level: 'Niveau',
+  room: 'Pièce',
+  area: 'Surface de plafond (m²)',
+  height: 'Hauteur sous plafond (mm)',
+  perimeter: 'Périmètre (mm)',
+  falseCeiling: (roomName: string) => `${roomName} – faux plafond`,
+  total: 'Total',
+  note: 'Surface de plafond : surface au sol de la pièce, trémies d’escalier retirées. Un faux plafond est listé sur une ligne à part : sa surface n’est pas ajoutée au total.',
+}
+
 export const fr = {
   app: {
     name: 'Fabrics',
@@ -327,6 +340,7 @@ export const fr = {
       perimeter: 'Périmètre (mm)',
       ceilingHeight: 'Hauteur sous plafond (mm)',
       floorArea: 'Surface au sol (m²)',
+      ceilings: CEILING_LABELS,
       doors: 'Portes',
       windows: 'Fenêtres',
       bays: 'Baies vitrées',
@@ -442,6 +456,8 @@ export const fr = {
         },
         quantities: {
           traceArea: 'Surface au tracé',
+          ceilingHeight: 'Hauteur sous plafond',
+          falseCeilingArea: 'Faux plafond',
           perimeter: 'Périmètre',
           voidArea: 'Trémie',
           netArea: 'Surface nette',
@@ -481,6 +497,7 @@ export const fr = {
       ref: 'Réf.',
       wallRef: 'Réf. du mur',
       roomTraceArea: 'Surface au tracé (m²)',
+      ceilings: CEILING_LABELS,
       facesLength: 'Longueur des faces (mm)',
       facesArea: 'Surface 2 faces, brute (m²)',
       facesNetArea: 'Surface 2 faces, nette (m²)',
@@ -729,6 +746,7 @@ export const fr = {
     sill: (mm: number) => `All. ${mm}`,
     floor: (altitude: string) => `Sol ${altitude}`,
     slab: (altitude: string) => `Dalle ${altitude}`,
+    ceiling: (altitude: string) => `${altitude} sous plafond`,
     stairVoid: 'Trémie',
     risers: (count: number, height: number) => `${count} CM × ${height}`,
     tread: (mm: number) => `Giron ${mm}`,
@@ -979,6 +997,8 @@ export const fr = {
     axisLabel: 'Repère',
     axisHint: 'Le repère (A, B… ou 1, 2…) s’affiche dans les bulles aux deux bouts de l’axe. Les axes valent pour tous les niveaux.',
     showRoomLabel: 'Afficher le nom et la surface',
+    falseCeiling: 'Faux plafond',
+    falseCeilingHint: 'Ajoute une ligne « faux plafond » à cette pièce dans le tableau Plafonds des métrés.',
     openingKind: 'Type',
     sillHeight: 'Allège',
     flipHinge: 'Charnière de l’autre côté',

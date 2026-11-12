@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot E · Échanges DXF (escaliers, plateformes, toitures, cheminées, textes)
+- **Dernière tâche terminée :** M11 bis · Lot G · Plafonds (métrés, faux plafond, cote sous plafond)
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot G · Plafonds : métrés, faux plafond et cote sous plafond
+- Fait : **tableau « Plafonds »** dans les métrés, en **Client et en Technique** : par pièce, surface de plafond (= surface au sol, trémie déduite, D37), hauteur sous plafond (D52, aucun nouveau calcul) et périmètre ; total de la surface. Présent dans le panneau Métrés (Client : tous les niveaux ; Technique : niveau affiché), en PDF, Excel et CSV (le CSV à plat reçoit « Hauteur sous plafond » et « Faux plafond »). **Faux plafond** : case « Faux plafond » dans Propriétés d'une pièce (champ facultatif `falseCeiling`, absent = non, aucune migration) ; le tableau ajoute alors une ligne « Salon – faux plafond » avec sa surface, **sans l'ajouter au total** (il est posé sous le plafond). **Cote d'altitude sous plafond** : l'étiquette de chaque pièce du plan en cotation **Technique** gagne une ligne « +2650 sous plafond » (sol + hauteur sous plafond), entre « Sol ±0 » et « Dalle +2850 ». **Rien en Client** : les étiquettes Client sont inchangées.
+- Vérification : une chambre de 4000 × 3000 sous une dalle à +2650 donne `12,00` m² et `2650` mm en Client et en Technique (test) ; une pièce sans l'option ne change pas ; build ✓ lint ✓ tests ✓ (2606 ; le test de vitesse « 600 murs » échoue parfois sous la charge, il passe seul)
+- Fichiers : `src/features/measurements/{tables,clientView,measurements,csv}.ts` (+ tests), `src/features/dimensioning/executionDimensions.ts` (+ test), `src/components/editor/{MeasurementsPanel,PlanElementFields}.tsx`, `src/i18n/{fr,dimensioningLabels}.ts`, `src/types/document.ts`, `docs/02-ARCHITECTURE.md`
+- Commit : feat: plafonds dans les métrés, faux plafond et cote sous plafond (M11 bis, lot G)
 
 ### 2026-11-12 — M11 bis · Lot E · Tâche 2 · Import DXF : les textes
 - Fait : l'import reprend les **textes** (TEXT et MTEXT, y compris dans les blocs, avec leur position, échelle et rotation). Chaque texte devient un élément `text` **verrouillé, du même groupe que les traits** (une seule ligne « Fond DXF – plan.dxf » dans les calques, « N éléments ») : masquer, verrouiller, sélectionner en entier, Suppr, déplacement d'un bloc une fois déverrouillé. **Hauteur** : la hauteur des majuscules du fichier, en mm, donne la taille de police (÷ 0,7) ; le point d'accroche (ligne de base, haut, milieu, centre, droite) est ramené au coin haut-gauche ; rotation conservée (axe y retourné). Codes de mise en forme retirés (`\P`, polices, `\U+00E9`, `%%c` `%%d` `%%p`). Un fichier qui ne contient que des textes est accepté. La fenêtre d'import affiche le nombre de textes ; 5000 textes au plus (les suivants sont ignorés).

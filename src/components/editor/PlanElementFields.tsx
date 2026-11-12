@@ -112,6 +112,24 @@ export default function PlanElementFields({ element }: { element: PlanElement })
           {fr.properties.showRoomLabel}
         </label>
       )}
+      {element.type === 'room' && (
+        <label className="flex items-center gap-2 text-sm text-slate-600" title={fr.properties.falseCeilingHint}>
+          <input
+            type="checkbox"
+            checked={element.falseCeiling === true}
+            onChange={(event) =>
+              patch((el) => {
+                if (el.type !== 'room') return el
+                // Sans faux plafond, le champ disparaît du document (comme une pièce d'avant M11 bis).
+                const { falseCeiling: _previous, ...rest } = el
+                void _previous
+                return event.target.checked ? { ...rest, falseCeiling: true } : rest
+              })
+            }
+          />
+          {fr.properties.falseCeiling}
+        </label>
+      )}
 
       {element.type === 'dimension' && (
         <>

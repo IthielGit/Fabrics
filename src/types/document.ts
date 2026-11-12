@@ -128,6 +128,8 @@ export interface RoomElement extends BaseElement {
   points: number[];          // polygone fermé (le dernier point rejoint le premier), absolus
   fill: string;              // couleur semi-transparente
   showLabel: boolean;        // affiche nom + surface au centre
+  // Faux plafond (M11 bis lot G) : la pièce a un faux plafond, listé dans les métrés. Absent = non.
+  falseCeiling?: boolean;
 }
 
 export interface DimensionElement extends BaseElement {

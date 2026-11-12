@@ -37,6 +37,8 @@ export interface RoomMeasure {
   voidOverflow: boolean
   /** Hauteur sous plafond (mm), voir `ceilingHeight` ; `null` si la pièce n'a pas de niveau connu. */
   ceilingHeight: number | null
+  /** Vrai si la pièce a un faux plafond (option de la pièce). */
+  falseCeiling: boolean
 }
 
 /**
@@ -333,6 +335,7 @@ export function computeMeasurements(
         dimensions: axisAlignedRectangle(element.points),
         voidOverflow: roomVoids.overflowing.length > 0,
         ceilingHeight: roomLevel ? ceilingHeight(roomLevel, levelAboveOf(levels, roomLevel.id)) : null,
+        falseCeiling: element.falseCeiling === true,
       })
     } else if (element.type === 'stair') {
       const status = stairStatus(element, levels)
