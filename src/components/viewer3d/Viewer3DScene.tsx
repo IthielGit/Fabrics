@@ -274,15 +274,26 @@ function roofPrismGeometry(prism: RoofPrism): THREE.BufferGeometry {
   const triangles = THREE.ShapeUtils.triangulateShape(flat, [])
 
   const positions: number[] = []
-  const push = (...vs: THREE.Vector3[]) => vs.forEach((p) => positions.push(p.x, p.y, p.z))
+  // Un triangle tourné vers `outward` : le sens des triangles de la triangulation n'est pas garanti,
+  // et une face mal orientée disparaît avec une matière à une face (la sélection) : on voyait alors
+  // le dessous du toit, que le haut des murs traverse.
+  const pushTriangle = (a: THREE.Vector3, b: THREE.Vector3, c: THREE.Vector3, outward: THREE.Vector3) => {
+    const facing = b.clone().sub(a).cross(c.clone().sub(a)).dot(outward)
+    const [q, r] = facing >= 0 ? [b, c] : [c, b]
+    positions.push(a.x, a.y, a.z, q.x, q.y, q.z, r.x, r.y, r.z)
+  }
   const back = pts.map((p) => p.clone().add(shift))
+  const outwardTop = shift.clone().negate() // le dessus regarde à l'opposé du décalage
   for (const [a, b, c] of triangles) {
-    push(pts[a], pts[b], pts[c])
-    push(back[a], back[c], back[b])
+    pushTriangle(pts[a], pts[b], pts[c], outwardTop)
+    pushTriangle(back[a], back[b], back[c], shift)
   }
   for (let i = 0; i < pts.length; i++) {
     const j = (i + 1) % pts.length
-    push(pts[i], back[i], back[j], pts[i], back[j], pts[j])
+    // Côté du volume : vers l'extérieur du contour (le polygone tourne dans le sens direct autour de `normal`).
+    const outward = pts[j].clone().sub(pts[i]).cross(normal)
+    pushTriangle(pts[i], back[i], back[j], outward)
+    pushTriangle(pts[i], back[j], pts[j], outward)
   }
   const geometry = new THREE.BufferGeometry()
   geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
