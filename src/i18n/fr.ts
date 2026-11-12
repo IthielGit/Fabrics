@@ -610,10 +610,23 @@ export const fr = {
       csv: 'Surfaces, longueurs et volumes du bâtiment : fichier Excel, document PDF ou CSV.',
       xlsx: 'Classeur Excel des métrés.',
       dxf: 'Plan pour un logiciel de DAO (AutoCAD, LibreCAD…), en mm : murs, pièces, ouvertures, cotes, axes et mobilier sur des calques séparés.',
+      ifc: 'Maquette pour Revit et les autres logiciels BIM (IFC2x3), en mm : niveaux, murs, ouvertures, pièces et sols. Escaliers, toitures et mobilier : pas encore.',
       zip: 'Archive de fichiers DXF.',
       glb: 'Modèle 3D glTF.',
     },
     formatDxf: 'DXF',
+    formatIfc: 'IFC (Revit)',
+    // Noms des objets écrits dans le fichier IFC.
+    ifc: {
+      site: 'Terrain',
+      building: 'Bâtiment',
+      wall: 'Mur',
+      room: 'Pièce',
+      floor: 'Sol',
+      door: 'Porte',
+      window: 'Fenêtre',
+      opening: 'Ouverture',
+    },
     dxf: {
       scope: 'Niveaux',
       level: 'Niveau affiché (.dxf)',

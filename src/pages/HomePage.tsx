@@ -1,4 +1,4 @@
-import { BookOpen, Building2, Ruler, Search } from 'lucide-react'
+import { ArrowRight, BookOpen, Building2, ChevronRight, PencilRuler, Ruler, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import DeleteDialog from '../components/home/DeleteDialog'
@@ -43,52 +43,108 @@ export default function HomePage() {
     navigate(`/p/${id}`)
   }
 
-  const cardClass =
-    'flex flex-col items-start gap-2 rounded-xl border border-slate-200 bg-white p-5 text-left shadow-sm hover:border-indigo-300 hover:shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-300'
+  const focusRing =
+    'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50'
+
+  const examples = [
+    { key: 'example', Icon: BookOpen, card: fr.home.cards.example, onOpen: handleCreateExample },
+    { key: 'largeHouse', Icon: Building2, card: fr.home.cards.largeHouse, onOpen: handleCreateLargeHouse },
+  ]
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-          <h1 className="text-2xl font-bold text-indigo-600">{fr.app.name}</h1>
+      <header className="border-b border-slate-200/80 bg-white">
+        <div className="mx-auto flex max-w-5xl items-center gap-3 px-6 py-4">
+          <span className="flex size-9 items-center justify-center rounded-xl bg-indigo-950 text-indigo-200 shadow-sm shadow-indigo-950/20">
+            <PencilRuler size={18} aria-hidden="true" />
+          </span>
+          <h1 className="text-xl font-bold tracking-tight text-indigo-950">{fr.app.name}</h1>
         </div>
       </header>
 
-      <main className="mx-auto max-w-5xl px-6 py-8">
-        <h2 className="text-lg font-semibold">{fr.home.startTitle}</h2>
-        <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          <button type="button" className={cardClass} onClick={() => void handleCreatePlan()}>
-            <Ruler size={24} className="text-indigo-600" aria-hidden="true" />
-            <span className="font-semibold">{fr.home.cards.plan.title}</span>
-            <span className="text-sm text-slate-500">{fr.home.cards.plan.text}</span>
+      <main className="mx-auto max-w-5xl px-6 pb-16 pt-12">
+        <h2 className="text-2xl font-semibold tracking-tight text-balance text-slate-950">
+          {fr.home.startTitle}
+        </h2>
+
+        <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-5">
+          <button
+            type="button"
+            onClick={() => void handleCreatePlan()}
+            className={`rise group relative flex min-h-64 flex-col items-start justify-end overflow-hidden rounded-3xl bg-indigo-950 p-7 text-left shadow-xl shadow-indigo-950/20 ring-1 ring-indigo-900 transition-shadow duration-300 hover:shadow-2xl hover:shadow-indigo-950/30 lg:col-span-3 ${focusRing}`}
+          >
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgb(165_180_252/0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgb(165_180_252/0.14)_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_at_top_right,black,transparent_70%)]"
+            />
+            <svg
+              aria-hidden="true"
+              viewBox="0 0 220 150"
+              fill="none"
+              className="pointer-events-none absolute right-6 top-6 w-44 text-indigo-300/70 transition-transform duration-500 ease-out group-hover:-translate-y-0.5 group-hover:scale-[1.03] sm:w-56"
+            >
+              <path
+                d="M8 8h204v134H8z M8 78h96 M140 8v70 M104 78v64"
+                stroke="currentColor"
+                strokeWidth="3"
+                strokeLinejoin="round"
+              />
+              <path d="M104 100a22 22 0 0 0 22-22" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M104 78h22" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M8 156h204 M8 152v8 M212 152v8" stroke="currentColor" strokeWidth="1" opacity="0.6" />
+            </svg>
+            <Ruler size={22} className="relative text-indigo-300" aria-hidden="true" />
+            <span className="relative mt-3 flex w-full items-center justify-between gap-4 text-2xl font-semibold tracking-tight text-white">
+              {fr.home.cards.plan.title}
+              <ArrowRight
+                size={22}
+                aria-hidden="true"
+                className="shrink-0 text-indigo-300 transition-transform duration-300 ease-out group-hover:translate-x-1"
+              />
+            </span>
+            <span className="relative mt-2 max-w-sm text-base leading-relaxed text-indigo-200">
+              {fr.home.cards.plan.text}
+            </span>
           </button>
+
           <section
             aria-labelledby="examples-family"
-            className="rounded-2xl border border-indigo-100 bg-indigo-50/50 p-3 sm:col-span-2"
+            className="rise flex flex-col rounded-3xl border border-slate-200 bg-white p-2 shadow-sm [animation-delay:90ms] lg:col-span-2"
           >
-            <h3
-              id="examples-family"
-              className="px-2 pb-2 text-xs font-semibold uppercase tracking-wide text-indigo-700"
-            >
+            <h3 id="examples-family" className="px-4 pb-1 pt-4 text-base font-semibold text-slate-900">
               {fr.home.examplesFamily}
             </h3>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <button type="button" className={cardClass} onClick={() => void handleCreateExample()}>
-                <BookOpen size={24} className="text-indigo-600" aria-hidden="true" />
-                <span className="font-semibold">{fr.home.cards.example.title}</span>
-                <span className="text-sm text-slate-500">{fr.home.cards.example.text}</span>
-              </button>
-              <button type="button" className={cardClass} onClick={() => void handleCreateLargeHouse()}>
-                <Building2 size={24} className="text-indigo-600" aria-hidden="true" />
-                <span className="font-semibold">{fr.home.cards.largeHouse.title}</span>
-                <span className="text-sm text-slate-500">{fr.home.cards.largeHouse.text}</span>
-              </button>
-            </div>
+            <ul className="flex flex-1 flex-col divide-y divide-slate-100">
+              {examples.map(({ key, Icon, card, onOpen }) => (
+                <li key={key} className="flex flex-1">
+                  <button
+                    type="button"
+                    onClick={() => void onOpen()}
+                    className={`group flex w-full items-start gap-4 rounded-2xl px-4 py-4 text-left transition-colors hover:bg-indigo-50/60 ${focusRing}`}
+                  >
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-colors group-hover:bg-indigo-100">
+                      <Icon size={20} aria-hidden="true" />
+                    </span>
+                    <span className="flex min-w-0 flex-1 flex-col gap-1">
+                      <span className="font-semibold text-slate-900">{card.title}</span>
+                      <span className="text-sm leading-relaxed text-slate-600">{card.text}</span>
+                    </span>
+                    <ChevronRight
+                      size={18}
+                      aria-hidden="true"
+                      className="mt-3 shrink-0 text-slate-300 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-indigo-500"
+                    />
+                  </button>
+                </li>
+              ))}
+            </ul>
           </section>
         </div>
-        <p className="mt-3 text-xs text-slate-500">{fr.home.storageReminder}</p>
+        <p className="mt-4 max-w-2xl text-xs leading-relaxed text-slate-500">
+          {fr.home.storageReminder}
+        </p>
 
-        <h2 className="mt-10 text-lg font-semibold">{fr.home.title}</h2>
+        <h2 className="mt-16 text-2xl font-semibold tracking-tight text-slate-950">{fr.home.title}</h2>
 
         {(status === 'idle' || status === 'loading') && projects.length === 0 && (
           <p className="mt-4 text-slate-500">{fr.common.loading}</p>
@@ -104,7 +160,7 @@ export default function HomePage() {
         )}
 
         {status === 'ready' && projects.length === 0 && (
-          <div className="mt-4 rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
+          <div className="mt-4 rounded-2xl border border-dashed border-slate-300 bg-white/60 p-10 text-center">
             <p className="font-medium">{fr.home.emptyTitle}</p>
             <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">{fr.home.emptyText}</p>
           </div>
@@ -123,7 +179,7 @@ export default function HomePage() {
               onChange={(event) => setQuery(event.target.value)}
               placeholder={fr.home.searchPlaceholder}
               aria-label={fr.home.searchLabel}
-              className="w-full rounded-lg border border-slate-300 bg-white py-2 pl-9 pr-3 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
+              className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm shadow-sm placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
             />
           </div>
         )}
@@ -133,7 +189,7 @@ export default function HomePage() {
         )}
 
         {shown.length > 0 && (
-          <ul className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {shown.map((project) => (
               <ProjectCard
                 key={project.id}

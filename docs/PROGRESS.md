@@ -44,6 +44,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — Hors jalon · Export IFC pour Revit (option A, sans bibliothèque)
+- Fait : nouveau format « IFC (Revit) » dans Exporter le projet (plans seulement), écrit à la main en IFC2x3 (texte STEP), en mm. Contenu : un étage par niveau, un mur par côté de ligne (bout prolongé d'une demi-épaisseur aux raccords), ouvertures (réserve dans le mur + porte ou fenêtre ; une baie devient une fenêtre), pièces (espaces) et un sol par pièce, nord du plan. Les identifiants sont déduits de ceux des éléments : deux exports du même plan donnent les mêmes. Tous les niveaux dans un seul fichier ; refusé s'il y a un manque ou un débord (D55), comme le DXF.
+- Pas encore (hors périmètre de cette tâche) : escaliers, toitures, plateformes, cheminées, mobilier, matériaux. Les raccords d'angle sont des boîtes qui se recouvrent un peu.
+- Fichiers : `src/features/export/ifc.ts` (+ `ifc.test.ts`), `fileName.ts`, `exportProject.ts`, `ExportDialog.tsx`, `src/i18n/fr.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (11 nouveaux ; le test de vitesse « 600 murs » a échoué sous la charge et passe seul : connu). **Non vérifié : l'ouverture réelle du fichier dans Revit** (pas de Revit ici).
+
 ### 2026-11-12 — Hors jalon · Exemples : fenêtres de WC hautes, têtes de lit libres
 - Fait : dans les deux exemples (maison et grande maison), les fenêtres de WC et de salle de bains avec WC sont petites et hautes (600 × 600 mm, allège 1500 mm, constante `WC_WINDOW`) ; les fenêtres sont décalées ou retirées pour qu'aucune tête de lit ne soit devant une fenêtre.
 - Fichiers : `src/features/documents/examplePlan.ts`, `largeHousePlan.ts`.
@@ -1262,7 +1268,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - ~~Hachures et textures dans les façades et coupes~~ et ~~toitures (versants, débords)~~ : planifiés dans le jalon M10 bis (2026-11-11).
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
 - ~~Glisser un seul mur à la poignée (option A)~~ : planifié dans M11 bis, lot B (demande du 2026-11-11).
-- **Export pour Revit** (demande du 2026-11-12) : un fichier `.rvt` natif est impossible (format fermé Autodesk). Piste : export **IFC** (standard ouvert que Revit ouvre et importe : murs, dalles, pièces, portes, fenêtres, niveaux, en mm), en plus du DXF déjà prévu en M11. À décider : écrire l'IFC à la main (texte STEP, sans nouvelle dépendance) ou ajouter une bibliothèque (demande d'accord, règle 6). Non planifié : à placer dans un jalon.
+- ~~**Export pour Revit**~~ : fait (IFC2x3, option A, 2026-11-12). Reste à faire : escaliers, toitures, plateformes, mobilier, matériaux dans l'IFC. Texte d'origine : un fichier `.rvt` natif est impossible (format fermé Autodesk). Piste : export **IFC** (standard ouvert que Revit ouvre et importe : murs, dalles, pièces, portes, fenêtres, niveaux, en mm), en plus du DXF déjà prévu en M11. À décider : écrire l'IFC à la main (texte STEP, sans nouvelle dépendance) ou ajouter une bibliothèque (demande d'accord, règle 6). Non planifié : à placer dans un jalon.
 - Surface habitable dans les métrés client (partie des pièces sous une hauteur minimale, par exemple 1800 mm, retirée) : utile seulement après les toitures en pente de M10 bis ; la définition est à fixer avec l'utilisateur (D37).
 - ~~Joindre des murs (l'inverse de « Séparer les côtés »)~~ : planifié dans M11 bis, lot B (2026-11-12).
 - Outil « couper ici » : cliquer un point d'un mur sur le canevas pour le couper en deux, sans passer par le « + » puis « Séparer les côtés » (proposé le 2026-11-12, si le bouton ne suffit pas à l'usage).

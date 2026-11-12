@@ -102,7 +102,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         ? metresScope === 'level'
           ? activeLevelId
           : null
-        : type === 'dxf' && dxfScope === 'building'
+        : (type === 'dxf' && dxfScope === 'building') || type === 'ifc'
           ? null
           : activeLevelId
     const all = metresWarnings(document, measurements, levelId)
@@ -180,6 +180,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
       ? [
           { id: 'csv' as const, label: fr.export.formatCsv },
           { id: 'dxf' as const, label: fr.export.formatDxf },
+          { id: 'ifc' as const, label: fr.export.formatIfc },
         ]
       : []),
   ]

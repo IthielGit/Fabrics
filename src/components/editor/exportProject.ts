@@ -70,6 +70,21 @@ async function exportDxf(project: Project, options: ExportOptions): Promise<void
 }
 
 /**
+ * IFC du plan, pour Revit : tous les niveaux dans un seul fichier. Refusé comme les autres exports
+ * du plan si une pièce laisse un manque ou déborde (D55).
+ */
+async function exportIfc(project: Project, options: ExportOptions): Promise<void> {
+  const { document: doc } = project
+  if (blockingSurfaceWarnings(doc, null).length > 0) throw new MetresCoverageError()
+  // Chargé à la demande, comme le DXF.
+  const { buildIfc } = await import('../../features/export/ifc')
+  const fileName = exportFileName(options.fileName, 'ifc', fr.export.planFallbackName)
+  const text = buildIfc(doc, { projectName: project.name, fileName, labels: fr.export.ifc })
+  if (!text) throw new Error(fr.export.planEmpty)
+  downloadBlob(new Blob([text], { type: 'application/x-step' }), fileName)
+}
+
+/**
  * Exporte le projet ouvert et fait télécharger le fichier. Lance une erreur si l'export est
  * impossible (plan vide, plan qui ne tient pas sur la feuille, image refusée par le navigateur).
  */
@@ -95,6 +110,11 @@ export async function exportProject(project: Project, options: ExportOptions): P
 
   if (options.type === 'dxf') {
     await exportDxf(project, options)
+    return
+  }
+
+  if (options.type === 'ifc') {
+    await exportIfc(project, options)
     return
   }
 

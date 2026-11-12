@@ -664,6 +664,7 @@ l'ordre de lecture du plan (de haut en bas, puis de gauche à droite).
 - [x] Export DXF (murs, pièces, cotes, ouvertures, axes sur des calques séparés, en mm)
 - [x] Import DXF comme calque de fond verrouillé, sur un niveau, à l'échelle
 - [x] Export 3D (glTF) du bâtiment
+- [x] Export IFC pour Revit (murs, ouvertures, pièces, sols, niveaux ; ajouté le 2026-11-12)
 
 **Critères d'acceptation**
 - Le DXF exporté s'ouvre dans LibreCAD avec des longueurs exactes en mm
