@@ -42,6 +42,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M10 ter · Audit des cas limites des métrés (planification)
+- Fait : audit du lot A (vue Client, vue Exécution, repères, exports) ; les cas limites trouvés sont ajoutés à la roadmap dans la section « À traiter — Cas limites des métrés client / exécution », avant M11, en quatre groupes : exports justes, lisibilité du document Client, fiabilité des surfaces, repères. Aucun code modifié.
+- Ajout à la demande de l'utilisateur (cas très fréquent) : détecter une pièce qui ne remplit pas tout l'espace entre ses murs (petite surface non couverte) ou qui déborde des murs, et le signaler sans corriger.
+- Décisions en attente de l'utilisateur : dimensions affichées au client (libellé « du tracé » ou calcul intérieur) ; pièces masquées comptées ou non en Client ; stabilité des repères (calculés à la date du document ou figés).
+- Fichiers : `docs/03-ROADMAP.md`, `docs/PROGRESS.md`
+- Vérification : documentation seulement (pas de build nécessaire)
+- Commit : docs: cas limites des métrés à traiter avant M11
+
 ### 2026-11-12 — M10 bis · Lot C · Tâche 5 (reprise) · Textures en 3D
 - Fait : à la demande de l'utilisateur, la 3D reflète la **texture** des matériaux et plus seulement leur couleur : brique en rangs décalés avec joints, maçonnerie en blocs, bardage bois en lames avec fil, béton avec joints de coffrage et trous de banche, isolant fibreux, plâtre ; tuiles et ardoises en rangs, zinc à joints debout, bac acier nervuré, toiture plate en gravillons. Les motifs sont dessinés par le code (canevas), sans image tierce, et répétés à une taille réelle (la brique reprend tous les 520 mm). Les coordonnées de texture suivent chaque face : les rangs d'un mur restent horizontaux et continus, ceux d'un versant suivent la pente. Sans matériau ni couverture : rendu d'avant. Un mur sélectionné reste violet uni.
 - Fichiers : `src/components/viewer3d/materialTextures.ts` (nouveau), `Viewer3DScene.tsx`, `materialTextures.test.ts` (nouveau)
