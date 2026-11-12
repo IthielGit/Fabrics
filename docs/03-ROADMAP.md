@@ -683,7 +683,7 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 
 ### Lot A — Aimantation sur le fond DXF
 
-- [ ] Aimantation des murs et des sommets sur les **sommets** et les **traits** du fond DXF
+- [x] Aimantation des murs et des sommets sur les **sommets** et les **traits** du fond DXF
       importé (groupe `groupId`, D62), pour redessiner les murs par-dessus. Calcul pur du point
       d'accroche le plus proche (extrémités, intersections, milieux) dans un rayon à l'écran.
       Fichiers : `src/features/geometry/` (calcul), `src/components/editor/` (accroche au dessin).

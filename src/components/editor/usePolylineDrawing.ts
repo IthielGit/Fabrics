@@ -17,6 +17,10 @@ import {
   rectangleCorners,
 } from '../../features/documents/construction'
 import { nextAxisLabel } from '../../features/geometry/axes'
+import {
+  collectBackgroundSegments,
+  type BackgroundSegment,
+} from '../../features/geometry/backgroundSnap'
 import type { Guide } from '../../features/geometry/guides'
 import { flattenPoints, pointDistance } from '../../features/geometry/polygon'
 import { nextSectionLabel, sectionTitle } from '../../features/geometry/sections'
@@ -223,6 +227,18 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     return openingCache.current.points
   }, [])
 
+  /** Traits du fond DXF importé (mis en cache). */
+  const backgroundCache = useRef<{
+    elements: readonly CanvasElement[]
+    segments: BackgroundSegment[]
+  } | null>(null)
+  const backgroundSegments = useCallback((elements: readonly CanvasElement[]): BackgroundSegment[] => {
+    if (backgroundCache.current?.elements !== elements) {
+      backgroundCache.current = { elements, segments: collectBackgroundSegments(elements) }
+    }
+    return backgroundCache.current.segments
+  }, [])
+
   const snap = useCallback(
     (raw: Point, shift: boolean, alt: boolean) => {
       const { project } = useEditorStore.getState()
@@ -241,6 +257,8 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         // Une cote s'aimante aux bords et au milieu des portes, fenêtres et baies.
         openingPoints: onOpenings,
         axes: collectSnapAxes(active),
+        // Fond DXF importé : extrémités, croisements, milieux et traits ; Alt coupe cette aimantation.
+        background: alt ? undefined : backgroundSegments(active),
         // Un mur se raccorde à l'axe d'un mur existant (pas les pièces ni les cotes, qui suivent
         // les faces) ; Alt coupe cette aimantation.
         wallAxes: tool === 'wall' && !alt ? wallAxes(active) : undefined,
@@ -262,7 +280,18 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         softAlign: !alt && !rectMode,
       })
     },
-    [tool, rectMode, polygonTool, planVertices, wallAxes, alignTargets, openingPoints, readDraft, scale],
+    [
+      tool,
+      rectMode,
+      polygonTool,
+      planVertices,
+      wallAxes,
+      alignTargets,
+      openingPoints,
+      backgroundSegments,
+      readDraft,
+      scale,
+    ],
   )
 
   const finish = useCallback(() => {

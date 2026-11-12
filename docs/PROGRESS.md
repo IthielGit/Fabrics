@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 · Tâche 3 · Export 3D (glTF)
+- **Dernière tâche terminée :** M11 bis · Lot A · Aimantation sur le fond DXF
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot A · Aimantation sur le fond DXF
+- Fait : les tracés (mur, pièce, plateforme, toiture, cote, axe, coupe) et les poignées de sommets s'aimantent au fond DXF importé : **extrémité** d'un trait, **croisement** de deux traits, **milieu**, puis **point du trait** (ignoré avec Maj, qui impose la direction). Un sommet du plan reste prioritaire. Le repère bleu affiche « Extrémité du fond », « Croisement du fond », « Milieu du fond » ou « Trait du fond ». **Alt** coupe cette aimantation. Seuls les traits proches du curseur sont examinés (pas de calcul sur 20 000 croisements).
+- Fichiers : `src/features/geometry/backgroundSnap.ts` (+ test), `snapping.ts`, `src/components/editor/usePolylineDrawing.ts`, `VertexHandles.tsx`, `PolylineDraftLayer.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ — test dans le navigateur à faire à la fin du jalon (importer un DXF, tracer un mur près d'un coin)
+- Commit : feat: aimantation sur le fond DXF (M11 bis, lot A)
 
 ### 2026-11-12 — M11 · Tâche 3 · Export 3D (glTF)
 - Fait : nouveau bouton « Exporter la 3D » (icône de téléchargement) dans l'en-tête du panneau 3D. Il enregistre un fichier `.glb` (glTF binaire) du bâtiment **tel qu'il est affiché** (« Étage ouvert » compris) : murs, ouvertures (cadres, vitres, portes), dalles, toits, toitures, escaliers, cheminées, avec leurs couleurs et leurs motifs. Ni terrain, ni grille, ni lumières. En **mètres** (unité du glTF), y vers le haut ; un mur sélectionné garde sa couleur normale dans le fichier. Positions, rotations et échelles écrites séparément (plus lisibles dans Blender ou un visualiseur). L'exporteur (`GLTFExporter` de `three`) est chargé à la demande.

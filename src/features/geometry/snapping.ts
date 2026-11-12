@@ -5,6 +5,7 @@ import {
   nearestPointOnAxes,
   type AxisSegment,
 } from './axes'
+import { nearestBackgroundSnap, type BackgroundSegment } from './backgroundSnap'
 import type { Guide } from './guides'
 import { openingGeometry } from './openings'
 import { flattenPoints, polygonArea, toPoints } from './polygon'
@@ -21,7 +22,8 @@ export type SnapKind = 'opening' | 'vertex' | 'axis' | 'wall' | 'align' | 'grid'
  *   fermé (une pièce entourée de son mur) ;
  * - `wall-face` : angle de la face d'un mur ouvert, ou croisement des faces de deux murs ;
  * - `room` : sommet d'une pièce ou d'une plateforme ; `dimension` : extrémité d'une cote ;
- * - `axis-crossing` : croisement de deux axes de construction ; `draft` : point déjà posé du tracé.
+ * - `axis-crossing` : croisement de deux axes de construction ; `draft` : point déjà posé du tracé ;
+ * - `background-*` : extrémité, croisement, milieu ou point d'un trait du fond DXF importé.
  */
 export type VertexKind =
   | 'wall-axis'
@@ -32,6 +34,10 @@ export type VertexKind =
   | 'dimension'
   | 'axis-crossing'
   | 'draft'
+  | 'background-endpoint'
+  | 'background-intersection'
+  | 'background-midpoint'
+  | 'background-edge'
 
 /** Sommet d'aimantation ; sans `vertexKind`, c'est un point du tracé en cours (`draft`). */
 export interface SnapVertex extends Point {
@@ -92,6 +98,11 @@ export interface PointSnapContext {
    * sommets, car ils sont plus précis qu'un angle de mur voisin.
    */
   openingPoints?: readonly Point[]
+  /**
+   * Traits du fond DXF importé (voir `collectBackgroundSegments`) : le point s'aimante sur leurs
+   * extrémités, croisements, milieux, puis sur le trait lui-même (sauf avec Maj).
+   */
+  background?: readonly BackgroundSegment[]
   /** Pas de la grille en mm, ou `null` si l'aimantation sur la grille est désactivée. */
   gridSize: number | null
   /** Distance d'accroche aux sommets, dans l'unité du document (8 px écran ÷ échelle). */
@@ -232,7 +243,8 @@ function nearestSnapVertex(
 
 /**
  * Aimantation d'un point en cours de placement. Ordre de priorité (docs/02-ARCHITECTURE.md) :
- * 1. un sommet existant à moins de `threshold` (les croisements d'axes en font partie) ;
+ * 1. un sommet existant à moins de `threshold` (les croisements d'axes en font partie), puis un
+ *    point du fond DXF importé (extrémité, croisement, milieu, trait) ;
  * 2. la ligne d'un axe de construction à moins de `threshold` (sauf avec Maj : la direction
  *    contrainte prime), puis l'axe d'un mur existant (même exception) ;
  * 3. l'alignement en x et en y sur les points voisins (`alignTargets`), qui produit des guides ;
@@ -258,6 +270,17 @@ export function snapPoint(raw: Point, context: PointSnapContext): PointSnapResul
       point: { x: vertex.x, y: vertex.y },
       kind: 'vertex',
       vertexKind: vertex.vertexKind ?? 'draft',
+    }
+  }
+
+  if (context.background && context.background.length > 0) {
+    const onBackground = nearestBackgroundSnap(candidate, context.background, threshold, !constrained)
+    if (onBackground) {
+      return {
+        point: onBackground.point,
+        kind: 'vertex',
+        vertexKind: `background-${onBackground.kind}`,
+      }
     }
   }
 

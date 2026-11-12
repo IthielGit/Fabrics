@@ -3,6 +3,10 @@ import { useRef } from 'react'
 import { Circle } from 'react-konva'
 import type { AxisSegment } from '../../features/geometry/axes'
 import {
+  collectBackgroundSegments,
+  type BackgroundSegment,
+} from '../../features/geometry/backgroundSnap'
+import {
   collectAlignTargets,
   collectOpeningSnapPoints,
   collectSnapAxes,
@@ -52,6 +56,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
   const snapWallAxes = useRef<WallAxisSegment[]>([])
   const snapAlign = useRef<Point[]>([])
   const snapOpenings = useRef<Point[]>([])
+  const snapBackground = useRef<BackgroundSegment[]>([])
 
   if (!enabled || !element) return null
   const vertices = getVertices(element)
@@ -64,6 +69,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
     // Éléments qui attirent : le niveau actif, plus le niveau du dessous s'il est affiché.
     const attracting = selectSnapElements(store)
     snapVertices.current = collectSnapVertices(attracting, new Set([element.id]))
+    snapBackground.current = collectBackgroundSegments(attracting)
     snapAxes.current = collectSnapAxes(store.project?.document.elements ?? [], new Set([element.id]))
     // Le sommet d'un mur se raccorde à l'axe des autres murs.
     snapWallAxes.current =
@@ -115,6 +121,7 @@ export default function VertexHandles({ enabled, scale }: VertexHandlesProps) {
             : undefined,
         openingPoints: snapOpenings.current,
         axes: snapAxes.current,
+        background: event.evt.altKey ? undefined : snapBackground.current,
         wallAxes: event.evt.altKey ? undefined : snapWallAxes.current,
         alignTargets: event.evt.altKey ? undefined : [...snapAlign.current, ...own],
         gridSize: plan?.snapToGrid ? plan.gridSize : null,

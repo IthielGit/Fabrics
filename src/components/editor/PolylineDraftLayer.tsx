@@ -79,6 +79,10 @@ const VERTEX_COLORS: Record<VertexKind, string> = {
   dimension: '#334155',
   'axis-crossing': '#be123c',
   draft: '#4f46e5',
+  'background-endpoint': '#0ea5e9',
+  'background-intersection': '#0ea5e9',
+  'background-midpoint': '#0ea5e9',
+  'background-edge': '#0ea5e9',
 }
 
 /** Repère d'aimantation du curseur et, sur un sommet, l'étiquette qui dit lequel est attrapé. */
