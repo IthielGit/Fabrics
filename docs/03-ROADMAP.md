@@ -721,7 +721,7 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
       proche et se tourne dans le bon sens. Calcul pur testé.
 - [x] **Hauteurs 3D des objets** (M8) : une hauteur de référence en mm par objet du catalogue
       (`docs/06-BIBLIOTHEQUE.md`), générique, sans valeur commerciale (principe clean room).
-- [ ] **Bibliothèque personnelle** : enregistrer une sélection d'objets sous un nom (« Ensemble
+- [x] **Bibliothèque personnelle** : enregistrer une sélection d'objets sous un nom (« Ensemble
       cuisine ») et la réinsérer ailleurs. Stockage local du navigateur ; synchronisation avec le
       compte au M13.
 - [ ] **Étiquettes de cote automatiques** : à la demande, une cote (longueur d'un mur, largeur d'une

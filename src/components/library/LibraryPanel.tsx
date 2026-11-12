@@ -1,10 +1,11 @@
 import clsx from 'clsx'
-import { Search, Star } from 'lucide-react'
+import { Bookmark, Search, Star, Trash2 } from 'lucide-react'
 import { useMemo, useState, type DragEvent } from 'react'
 import { CATEGORIES, SYMBOLS } from '../../features/library/catalog'
 import { PREFABS } from '../../features/library/catalog/prefabs'
 import { SETS, type SetDef } from '../../features/library/catalog/sets'
 import { searchSymbols } from '../../features/library/search'
+import { countSavableObjects } from '../../features/library/userSets'
 import type { SymbolCategory, SymbolDef } from '../../features/library/types'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
@@ -12,12 +13,13 @@ import { FURNITURE_DRAG_TYPE } from './dragType'
 import SymbolPreview, { SetPreview } from './SymbolPreview'
 import { categoryName, symbolName, symbolSearchText } from './symbolText'
 import { useLibraryPrefs } from './useLibraryPrefs'
+import { useUserSets } from './useUserSets'
 
 type Entry = SymbolDef | SetDef
-type Filter = 'all' | 'recents' | 'favorites' | SymbolCategory
+type Filter = 'all' | 'recents' | 'favorites' | 'mine' | SymbolCategory
 
-const ENTRIES: readonly Entry[] = [...SYMBOLS, ...PREFABS, ...SETS]
-const BY_ID = new Map(ENTRIES.map((entry) => [entry.id, entry]))
+const CATALOG: readonly Entry[] = [...SYMBOLS, ...PREFABS, ...SETS]
+const isUserSet = (entry: Entry) => entry.id.startsWith('user-')
 const isSet = (entry: Entry): entry is SetDef => 'members' in entry
 
 /**
@@ -33,11 +35,26 @@ export default function LibraryPanel() {
   const recents = useLibraryPrefs((state) => state.recents)
   const favorites = useLibraryPrefs((state) => state.favorites)
   const toggleFavorite = useLibraryPrefs((state) => state.toggleFavorite)
+  const userSets = useUserSets((state) => state.sets)
+  const saveUserSet = useUserSets((state) => state.save)
+  const removeUserSet = useUserSets((state) => state.remove)
+  const selectedIds = useEditorStore((state) => state.selectedIds)
+  const projectElements = useEditorStore((state) => state.project?.document.elements)
+  const setNotice = useEditorStore((state) => state.setNotice)
   const [query, setQuery] = useState('')
   const [filter, setFilter] = useState<Filter>('all')
+  const [naming, setNaming] = useState<string | null>(null)
+
+  // Catalogue, puis les ensembles personnels de l'utilisateur.
+  const entries = useMemo<readonly Entry[]>(() => [...CATALOG, ...userSets.map((set) => set.def)], [userSets])
+  const byId = useMemo(() => new Map(entries.map((entry) => [entry.id, entry])), [entries])
+  const savable = useMemo(
+    () => countSavableObjects((projectElements ?? []).filter((el) => selectedIds.includes(el.id))),
+    [projectElements, selectedIds],
+  )
 
   // Résultats de la recherche, avant le filtre (pour compter les objets par catégorie).
-  const found = useMemo(() => searchSymbols(ENTRIES, query, symbolSearchText), [query])
+  const found = useMemo(() => searchSymbols(entries, query, symbolSearchText), [entries, query])
   const counts = useMemo(() => {
     const byCategory = new Map<SymbolCategory, number>()
     for (const entry of found) byCategory.set(entry.category, (byCategory.get(entry.category) ?? 0) + 1)
@@ -48,7 +65,7 @@ export default function LibraryPanel() {
 
   const foundIds = new Set(found.map((entry) => entry.id))
   const fromList = (ids: readonly string[]) =>
-    ids.flatMap((id) => (foundIds.has(id) ? (BY_ID.get(id) ?? []) : []))
+    ids.flatMap((id) => (foundIds.has(id) ? (byId.get(id) ?? []) : []))
   const shown: Entry[] =
     filter === 'all'
       ? found
@@ -56,8 +73,10 @@ export default function LibraryPanel() {
         ? fromList(recents)
         : filter === 'favorites'
           ? fromList(favorites)
-          : found.filter((entry) => entry.category === filter)
-  const categories = CATEGORIES.filter((id) => ENTRIES.some((entry) => entry.category === id))
+          : filter === 'mine'
+            ? found.filter(isUserSet)
+            : found.filter((entry) => entry.category === filter)
+  const categories = CATEGORIES.filter((id) => entries.some((entry) => entry.category === id))
 
   const handleDragStart = (id: string) => (event: DragEvent<HTMLButtonElement>) => {
     event.dataTransfer.setData(FURNITURE_DRAG_TYPE, id)
@@ -101,10 +120,63 @@ export default function LibraryPanel() {
         />
       </div>
 
+      {naming === null ? (
+        <button
+          type="button"
+          disabled={savable === 0}
+          title={savable === 0 ? fr.library.saveSetNeedsSelection : fr.library.saveSetTitle}
+          onClick={() => setNaming('')}
+          className="mt-2 inline-flex w-full items-center justify-center gap-1.5 rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50"
+        >
+          <Bookmark size={14} aria-hidden="true" />
+          {fr.library.saveSet}
+        </button>
+      ) : (
+        <form
+          className="mt-2 flex items-center gap-1"
+          onSubmit={(event) => {
+            event.preventDefault()
+            const created = saveUserSet(
+              (projectElements ?? []).filter((el) => selectedIds.includes(el.id)),
+              naming,
+            )
+            if (!created) return
+            setNaming(null)
+            setFilter('mine')
+            setNotice(fr.library.savedSet(created.name))
+          }}
+        >
+          <input
+            autoFocus
+            value={naming}
+            onChange={(event) => setNaming(event.target.value)}
+            maxLength={60}
+            placeholder={fr.library.setNamePlaceholder}
+            aria-label={fr.library.setNameLabel}
+            className="min-w-0 flex-1 rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-900 focus:border-indigo-500 focus:outline-none"
+          />
+          <button
+            type="submit"
+            disabled={naming.trim() === ''}
+            className="rounded-md bg-indigo-600 px-2 py-1 text-xs font-medium text-white disabled:bg-slate-200 disabled:text-slate-600"
+          >
+            {fr.library.saveSetConfirm}
+          </button>
+          <button
+            type="button"
+            onClick={() => setNaming(null)}
+            className="rounded-md border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:bg-slate-50"
+          >
+            {fr.common.cancel}
+          </button>
+        </form>
+      )}
+
       <div className="mt-2 flex flex-wrap gap-1">
         {chip('all', fr.library.allCategories, found.length)}
         {chip('recents', fr.library.recents, fromList(recents).length)}
         {chip('favorites', fr.library.favorites, fromList(favorites).length)}
+        {chip('mine', fr.library.mine, found.filter(isUserSet).length)}
         {categories.map((id) => chip(id, categoryName(id), counts.get(id) ?? 0))}
       </div>
 
@@ -135,7 +207,7 @@ export default function LibraryPanel() {
                   <span className="line-clamp-2 text-xs text-slate-900">{symbolName(entry.id)}</span>
                   <span className="text-[11px] text-slate-500">
                     {isSet(entry)
-                      ? `${entry.shell ? fr.library.prefabBadge : fr.library.setBadge} · ${fr.library.size(entry.width, entry.depth)}`
+                      ? `${isUserSet(entry) ? fr.library.userBadge : entry.shell ? fr.library.prefabBadge : fr.library.setBadge} · ${fr.library.size(entry.width, entry.depth)}`
                       : fr.library.size(entry.width, entry.depth)}
                   </span>
                 </button>
@@ -149,6 +221,20 @@ export default function LibraryPanel() {
                 >
                   <Star size={14} fill={favorite ? 'currentColor' : 'none'} aria-hidden="true" />
                 </button>
+                {isUserSet(entry) && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      removeUserSet(entry.id)
+                      setNotice(fr.library.removedSet)
+                    }}
+                    aria-label={fr.library.removeSet}
+                    title={fr.library.removeSet}
+                    className="absolute bottom-1 right-1 rounded p-0.5 text-slate-400 hover:bg-slate-200 hover:text-red-600"
+                  >
+                    <Trash2 size={14} aria-hidden="true" />
+                  </button>
+                )}
               </li>
             )
           })}

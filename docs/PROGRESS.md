@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M11 bis · Lot F · Pose contre un mur
+- **Dernière tâche terminée :** M11 bis · Lot F · Bibliothèque personnelle
 - **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -42,6 +42,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 bis · Lot F · Tâche 3 · Bibliothèque personnelle
+- Fait : dans le panneau Bibliothèque, bouton **« Enregistrer la sélection »** (actif quand la sélection contient des objets de la bibliothèque) : on donne un nom (« Ensemble cuisine ») et les objets (position, rotation, taille, retournement) sont gardés relativement au coin de leur emprise ; les murs, pièces et autres éléments de la sélection ne sont pas gardés. L'ensemble apparaît dans la puce **« Mes ensembles »** (et dans la recherche et la catégorie Ensembles) avec la mention « Mon ensemble » ; il se pose comme un ensemble du catalogue (clic puis clic sur le plan, ou glisser-déposer, un seul pas d'annulation) avec les mêmes positions relatives. Bouton corbeille pour le supprimer. **Stockage local du navigateur** (`fabrics.library.userSets`, 50 ensembles au plus), jamais dans le projet ; synchronisation avec le compte au jalon M13.
+- Fichiers : `src/features/library/{userRegistry,userSets}.ts` (+ test), `catalog/prefabs.ts` (`getPlaceable` connaît les ensembles de l'utilisateur), `src/components/library/{LibraryPanel,useUserSets,symbolText}.ts(x)`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2628) — à tester dans le navigateur à la fin du jalon : sélectionner une cuisine, l'enregistrer, la poser ailleurs, recharger la page
+- Commit : feat: bibliothèque personnelle d'ensembles (M11 bis, lot F)
 
 ### 2026-11-12 — M11 bis · Lot F · Tâche 1 · Pose contre un mur
 - Fait : les objets **muraux** de la bibliothèque (WC, lavabo, baignoire, radiateur, éléments de cuisine, électroménager, armoires, bibliothèques, meubles hauts…, liste dans `againstWall.ts`) se collent à la **face du mur le plus proche** quand on les pose et quand on les déplace : le **dos** de l'objet (le haut du dessin, convention du catalogue) touche le mur, la face avant est tournée vers la pièce (rotation 0°, 90°, 180° ou 270° pour un mur droit), l'objet glisse le long du mur sous le curseur sans dépasser en bout. Accroche à moins de 28 px de la face du mur. L'aperçu de pose montre déjà l'objet tourné. **Alt** pendant un déplacement : sans accroche au mur. Les tables, lits, canapés et autres meubles libres ne tournent pas. Un test vérifie que tout objet du catalogue fixé en hauteur est dans la liste (sauf luminaires, hotte d'îlot, parasol, pergola, gazebo, carport, cassette de climatisation, VMC).

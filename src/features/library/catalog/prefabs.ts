@@ -1,3 +1,4 @@
+import { getUserSet } from '../userRegistry'
 import { getSymbol } from './index'
 import { SETS, member, type PrefabOpening, type SetDef, type SetMember } from './sets'
 
@@ -166,7 +167,7 @@ export const PREFABS: readonly SetDef[] = [
 
 const BY_ID = new Map<string, SetDef>([...SETS, ...PREFABS].map((set) => [set.id, set]))
 
-/** Ensemble ou pièce préfabriquée par son identifiant, ou `undefined`. */
+/** Ensemble, pièce préfabriquée ou ensemble personnel de l'utilisateur par son identifiant, ou `undefined`. */
 export function getPlaceable(id: string): SetDef | undefined {
-  return BY_ID.get(id)
+  return BY_ID.get(id) ?? getUserSet(id)?.def
 }
