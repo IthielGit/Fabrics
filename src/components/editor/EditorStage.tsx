@@ -48,6 +48,7 @@ import PolylineDraftLayer from './PolylineDraftLayer'
 import SelectionTransformer from './SelectionTransformer'
 import { WallJoinsContext } from './shapes/WallJoinsContext'
 import FurnitureGhost from './FurnitureGhost'
+import AutoDimensionsLayer from './AutoDimensionsLayer'
 import ChimneyUpperGhosts from './ChimneyUpperGhosts'
 import StairGhost from './StairGhost'
 import StairUpperGhosts from './StairUpperGhosts'
@@ -613,6 +614,7 @@ export default function EditorStage() {
                 />
               ))}
             </WallJoinsContext.Provider>
+            <AutoDimensionsLayer scale={scale} />
             <SelectionTransformer enabled={selecting && editingTextId === null} />
             <VertexHandles enabled={selecting && editingTextId === null} scale={scale} />
           </Layer>

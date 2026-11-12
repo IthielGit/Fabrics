@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import type { DimensioningMode } from '../features/dimensioning/types'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
 import { copyToClipboard, takePasteCopies } from '../features/documents/clipboard'
 import { clampPageDimension } from '../features/documents/pageSize'
@@ -127,6 +128,8 @@ interface EditorState {
   activeLevelId: string | null
   /** Affiche le niveau du dessous en transparence (calque de référence). */
   showLowerLevel: boolean
+  /** Cotes automatiques du plan (M10 ter lot B) : aucune, Client ou Exécution ; état d'interface, hors historique. */
+  dimensioningMode: DimensioningMode
   /** Message affiché à l'utilisateur (par exemple un fichier refusé). */
   notice: string | null
   /** Guides d'alignement affichés pendant un déplacement (état d'interface, pas du document). */
@@ -168,6 +171,7 @@ interface EditorState {
   /** Change de niveau : la sélection est vidée (on ne sélectionne que sur le niveau actif). */
   setActiveLevel: (id: string) => void
   setShowLowerLevel: (show: boolean) => void
+  setDimensioningMode: (mode: DimensioningMode) => void
   /** Ajoute un niveau au sommet du bâtiment et l'affiche. */
   addLevel: () => void
   /** Copie un niveau (ses murs et leurs ouvertures) juste au-dessus de lui et l'affiche. */
@@ -365,6 +369,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     editingTextId: null,
     activeLevelId: null,
     showLowerLevel: true,
+    dimensioningMode: 'none',
     notice: null,
     guides: [],
     zoom: 1,
@@ -472,6 +477,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     },
 
     setShowLowerLevel: (showLowerLevel) => set({ showLowerLevel }),
+    setDimensioningMode: (dimensioningMode) => set({ dimensioningMode }),
 
     addLevel: () => {
       const levels = get().project?.document.levels

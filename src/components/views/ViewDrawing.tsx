@@ -126,6 +126,7 @@ export default function ViewDrawing({ drawing }: ViewDrawingProps) {
           fontWeight={text.bold ? 700 : 400}
           textAnchor={text.anchor === 'middle' ? 'middle' : 'start'}
           fill={text.muted ? MUTED_INK : INK}
+          transform={text.angle ? `rotate(${text.angle} ${text.x} ${text.y})` : undefined}
         >
           {text.text}
         </text>

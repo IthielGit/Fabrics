@@ -7,6 +7,7 @@ import {
   drawingFromView,
   levelPlanDrawing,
   type Drawing,
+  type PlanOverlay,
   type SheetEntry,
   type SheetResult,
 } from './drawing'
@@ -31,6 +32,8 @@ export interface SheetInput {
   labels: SheetLabels
   /** Hauteur des textes (mm réels) ; absent : choisie d'après la taille de la planche. */
   fontMm?: number
+  /** Cotes automatiques du plan d'un niveau (M10 ter lot B) ; absent ou `null` : pas de cotes. */
+  levelOverlay?: (level: Level, fontMm: number) => PlanOverlay | null
 }
 
 function entriesFor(input: SheetInput, fontMm: number | undefined): SheetEntry[] {
@@ -41,7 +44,12 @@ function entriesFor(input: SheetInput, fontMm: number | undefined): SheetEntry[]
   }
   // Niveaux du plus bas au plus haut, puis les quatre façades, puis les coupes dans l'ordre des repères.
   for (const level of [...levels].sort((a, b) => a.elevation - b.elevation)) {
-    add(`level-${level.id}`, level.name, levelPlanDrawing(model, level, fontMm))
+    const overlay = input.levelOverlay
+    add(
+      `level-${level.id}`,
+      level.name,
+      levelPlanDrawing(model, level, fontMm, overlay ? (font) => overlay(level, font) : undefined),
+    )
   }
   for (const cardinal of CARDINALS) {
     const view = buildElevation(model, levels, cardinal, northAngle)

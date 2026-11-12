@@ -86,6 +86,8 @@ export interface DrawText {
   bold?: boolean
   /** Texte secondaire en gris (cotes de niveaux) plutôt qu'en noir. */
   muted?: boolean
+  /** Rotation en degrés autour de (x, y), sens horaire à l'écran (texte d'une cote verticale : -90). */
+  angle?: number
 }
 
 export interface Drawing {
@@ -262,7 +264,19 @@ const PLAN_ORDER: Record<PlanRole, number> = { floor: 0, below: 1, glass: 2, cut
  * clair, murs coupés en noir plein (sans couture entre leurs morceaux), allèges des fenêtres vues
  * sous la coupe, cadres et vitres dans les ouvertures. `null` si le niveau est vide.
  */
-export function levelPlanDrawing(model: BuildingModel, level: Level, fontMm?: number): Drawing | null {
+/** Lignes et textes ajoutés par-dessus le plan d'un niveau (cotes automatiques), en coordonnées du plan. */
+export interface PlanOverlay {
+  lines: DrawLine[]
+  texts: DrawText[]
+}
+
+export function levelPlanDrawing(
+  model: BuildingModel,
+  level: Level,
+  fontMm?: number,
+  /** Cotes à ajouter (M10 ter lot B), construites avec la hauteur de texte du dessin. */
+  overlay?: (fontMm: number) => PlanOverlay | null,
+): Drawing | null {
   const cutV = level.elevation + PLAN_CUT_HEIGHT
   const items = prismsOf(model)
     .filter((p) => p.levelId === level.id && (p.rings[0]?.length ?? 0) >= 3)
@@ -285,6 +299,22 @@ export function levelPlanDrawing(model: BuildingModel, level: Level, fontMm?: nu
     }
   }
   const font = fontMm ?? autoFontMm(maxX - minX, maxY - minY)
+  // Les cotes agrandissent le cadre : elles sont à l'extérieur des murs.
+  const extra = overlay?.(font) ?? null
+  if (extra) {
+    for (const l of extra.lines) {
+      minX = Math.min(minX, l.x1, l.x2)
+      maxX = Math.max(maxX, l.x1, l.x2)
+      minY = Math.min(minY, l.y1, l.y2)
+      maxY = Math.max(maxY, l.y1, l.y2)
+    }
+    for (const t of extra.texts) {
+      minX = Math.min(minX, t.x - t.size)
+      maxX = Math.max(maxX, t.x + t.size)
+      minY = Math.min(minY, t.y - t.size)
+      maxY = Math.max(maxY, t.y + t.size)
+    }
+  }
   const margin = font * 2
   const cutIndices: number[] = []
   const hatchedIndices: number[] = []
@@ -304,12 +334,17 @@ export function levelPlanDrawing(model: BuildingModel, level: Level, fontMm?: nu
     if (role === 'floor') return { points, fill: 'light' }
     return { points, fill: 'white' }
   })
+  const dx = margin - minX
+  const dy = margin - minY
   return {
     width: maxX - minX + margin * 2,
     height: maxY - minY + margin * 2,
     polygons,
-    lines: hatchedOutline(polygons, cutIndices, hatchedIndices),
-    texts: [],
+    lines: [
+      ...hatchedOutline(polygons, cutIndices, hatchedIndices),
+      ...(extra?.lines ?? []).map((l) => ({ ...l, x1: l.x1 + dx, x2: l.x2 + dx, y1: l.y1 + dy, y2: l.y2 + dy })),
+    ],
+    texts: (extra?.texts ?? []).map((t) => ({ ...t, x: t.x + dx, y: t.y + dy })),
   }
 }
 

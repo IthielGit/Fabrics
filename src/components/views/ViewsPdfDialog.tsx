@@ -22,21 +22,35 @@ import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
 
 interface ViewsPdfDialogProps {
-  /** Construit le dessin avec une hauteur de texte donnée (mm réels) ; sans argument, hauteur automatique. */
-  build: (fontMm?: number) => Drawing | null
+  /**
+   * Construit le dessin avec une hauteur de texte donnée (mm réels) ; sans argument, hauteur
+   * automatique. `version` impose la cotation des plans (planche) ; absente : comme à l'écran.
+   */
+  build: (fontMm?: number, version?: 'client' | 'execution') => Drawing | null
   /** Titre de la vue (« Façade Nord », « Coupe A–A », « Planche »). */
   viewTitle: string
   /** Vrai pour la planche (qui contient des plans) : le cartouche montre la flèche du nord. */
   showNorth?: boolean
+  /** Planche : choix de la cotation des plans ; `hasExecution` : une vue est cotée en Exécution à l'écran. */
+  dimensioning?: { hasExecution: boolean }
   onClose: () => void
 }
+
+type VersionChoice = 'screen' | 'client' | 'execution'
+const VERSIONS: readonly VersionChoice[] = ['screen', 'client', 'execution']
 
 const todayText = () => formatDate(new Date())
 
 const EMPTY_DRAWING: Drawing = { width: 1, height: 1, polygons: [], lines: [], texts: [] }
 
 /** Fenêtre « Exporter en PDF » de l'écran Vues : feuille, orientation, échelle, nom du fichier. */
-export default function ViewsPdfDialog({ build, viewTitle, showNorth = false, onClose }: ViewsPdfDialogProps) {
+export default function ViewsPdfDialog({
+  build,
+  viewTitle,
+  showNorth = false,
+  dimensioning,
+  onClose,
+}: ViewsPdfDialogProps) {
   const projectName = useEditorStore((state) => state.project?.name ?? '')
   const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
   const base = useMemo(() => build() ?? EMPTY_DRAWING, [build])
@@ -51,6 +65,10 @@ export default function ViewsPdfDialog({ build, viewTitle, showNorth = false, on
     const size = sheetSize('a4', defaultOrientation(base.width, base.height))
     return planPdfPlacement({ width: base.width, height: base.height }, size, 50).fittingScale ?? 'fit'
   })
+  const [version, setVersion] = useState<VersionChoice>('screen')
+  const forced = version === 'screen' ? undefined : version
+  // Note sur les baies : imprimée sur tout document d'exécution (D39).
+  const execution = version === 'execution' || (version === 'screen' && (dimensioning?.hasExecution ?? false))
   const [busy, setBusy] = useState(false)
   const [failed, setFailed] = useState(false)
 
@@ -60,7 +78,7 @@ export default function ViewsPdfDialog({ build, viewTitle, showNorth = false, on
   const nominalScale =
     scale === 'fit' ? planPdfPlacement({ width: base.width, height: base.height }, size, 'fit').scale : scale
   const fontMm = PAPER_TEXT_MM * nominalScale
-  const drawing = useMemo(() => build(fontMm) ?? EMPTY_DRAWING, [build, fontMm])
+  const drawing = useMemo(() => build(fontMm, forced) ?? EMPTY_DRAWING, [build, fontMm, forced])
   const placement = planPdfPlacement({ width: drawing.width, height: drawing.height }, size, scale)
   const doesNotFit = !placement.fits
 
@@ -83,6 +101,7 @@ export default function ViewsPdfDialog({ build, viewTitle, showNorth = false, on
         scaleBarUnit: fr.export.cartouche.scaleBarUnit,
         northAngle: showNorth ? northAngle : undefined,
         northLabel: fr.viewer3d.cardinal.north,
+        note: execution ? fr.dimensioning.baysNote : undefined,
       })
       downloadBlob(blob, exportFileName(fileName, 'pdf', fr.views.pdfFallbackName))
       onClose()
@@ -112,6 +131,17 @@ export default function ViewsPdfDialog({ build, viewTitle, showNorth = false, on
             <span className="text-sm text-slate-500">.pdf</span>
           </div>
         </div>
+
+        {dimensioning && (
+          <Group label={fr.dimensioning.pdfVersion}>
+            {VERSIONS.map((value) => (
+              <Choice key={value} name="views-version" checked={version === value} onSelect={() => setVersion(value)}>
+                {fr.dimensioning.pdfOptions[value]}
+              </Choice>
+            ))}
+          </Group>
+        )}
+        {execution && <p className="text-xs text-slate-500">{fr.dimensioning.baysNote}</p>}
 
         <Group label={fr.export.sheet}>
           <Choice name="views-sheet" checked={sheet === 'a4'} onSelect={() => setSheet('a4')}>

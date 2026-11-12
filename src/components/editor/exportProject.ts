@@ -13,6 +13,8 @@ import {
   type SheetFormat,
 } from '../../features/export/pdfLayout'
 import { computeMeasurements } from '../../features/measurements/measurements'
+import { planOverlay, regionWithOverlay } from '../../features/dimensioning/planOverlay'
+import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
 import { formatArea } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { dataUrlToBlob } from '../../lib/dataUrl'
@@ -21,6 +23,11 @@ import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import type { Project } from '../../types/document'
 import { captureRegion } from './exportStage'
 import { exportMetres, type MetresExportOptions } from './exportMetres'
+
+/** Hauteur des textes des cotes automatiques à l'écran (mm), pour estimer leur place. */
+const AUTO_DIMENSION_FONT_MM = 180
+/** Marge autour des cotes automatiques dans la zone exportée (mm). */
+const AUTO_DIMENSION_MARGIN_MM = 300
 
 export interface ExportOptions {
   type: ExportFileType
@@ -60,11 +67,20 @@ export async function exportProject(project: Project, options: ExportOptions): P
     return
   }
 
-  // Zone exportée : la page d'un Visuel, l'emprise du contenu d'un plan.
-  const region = isPlan
+  // Zone exportée : la page d'un Visuel, l'emprise du contenu d'un plan (cotes automatiques comprises).
+  const { dimensioningMode, activeLevelId } = useEditorStore.getState()
+  const extent = isPlan
     ? planExportExtent(shownElements)
     : { x: 0, y: 0, width: doc.page.width, height: doc.page.height }
-  if (!region) throw new Error(fr.export.planEmpty)
+  if (!extent) throw new Error(fr.export.planEmpty)
+  const region =
+    isPlan && activeLevelId !== null
+      ? regionWithOverlay(
+          extent,
+          planOverlay(doc, activeLevelId, dimensioningMode, EXECUTION_LABELS, AUTO_DIMENSION_FONT_MM),
+          AUTO_DIMENSION_MARGIN_MM,
+        )
+      : extent
   const background = doc.page.background
 
   if (options.type === 'png' || options.type === 'jpg') {
@@ -130,6 +146,8 @@ export async function exportProject(project: Project, options: ExportOptions): P
     scaleBarUnit: fr.export.cartouche.scaleBarUnit,
     northAngle: doc.plan?.northAngle ?? 0,
     northLabel: fr.viewer3d.cardinal.north,
+    // Note sur les baies : imprimée sur tout document d'exécution (D39).
+    note: dimensioningMode === 'execution' ? fr.dimensioning.baysNote : undefined,
   })
   downloadBlob(blob, fileName)
 }

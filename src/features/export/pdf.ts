@@ -63,6 +63,8 @@ export interface PlanPdfLabels {
   northAngle?: number
   /** Lettre de la flèche du nord (« N »). */
   northLabel?: string
+  /** Note imprimée en petit juste au-dessus du cartouche (note sur les baies d'un document d'exécution). */
+  note?: string
 }
 
 /** Le jeu de caractères des polices standard de PDF n'a pas le vrai signe moins : on met un trait d'union. */
@@ -216,6 +218,17 @@ export function drawCartouche(
     x += width
   })
 
+  // Note (documents d'exécution) : en petit, sur toute la largeur, juste au-dessus du cartouche.
+  if (labels.note) {
+    pdf.setFont('helvetica', 'italic')
+    pdf.setFontSize(6.5)
+    pdf.setTextColor(...MUTED)
+    const lines: string[] = pdf.splitTextToSize(pdfText(labels.note), strip.width - 4)
+    lines.forEach((line, index) => {
+      pdf.text(line, strip.x + 2, strip.y - 1.5 - (lines.length - 1 - index) * 2.8)
+    })
+  }
+
   // Cadre de la feuille, par-dessus tout.
   pdf.setDrawColor(...INK)
   pdf.setLineWidth(LINE.frame)
@@ -364,6 +377,8 @@ export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
     pdf.setFontSize(Math.max(text.size * k * MM_TO_PT, text.bold ? MIN_TITLE_PT : MIN_TEXT_PT))
     pdf.text(pdfText(text.text), px(text.x), py(text.y), {
       align: text.anchor === 'middle' ? 'center' : 'left',
+      // Angle du dessin : sens horaire à l'écran (y vers le bas) ; jsPDF tourne dans l'autre sens.
+      ...(text.angle ? { angle: -text.angle } : {}),
     })
   }
 }

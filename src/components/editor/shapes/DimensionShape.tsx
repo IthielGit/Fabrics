@@ -1,33 +1,19 @@
-import { Group, Line, Text } from 'react-konva'
+import { Group, Line } from 'react-konva'
+import { manualDimensionVisible } from '../../../features/dimensioning/visibility'
 import { dimensionGeometry } from '../../../features/geometry/dimension'
-import { formatLength } from '../../../features/units/format'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { DimensionElement } from '../../../types/document'
+import DimensionDrawing from './DimensionDrawing'
 import type { ShapeInteraction } from './shapeTypes'
 
 interface DimensionShapeProps extends ShapeInteraction {
   element: DimensionElement
 }
 
-const COLOR = '#111827'
-/** Longueur d'un trait oblique aux extrémités de la ligne de cote (mm). */
-const TICK_MM = 120
-/** Écart entre l'objet mesuré et le début de la ligne d'attache, en mm (elle ne le touche pas). */
-const EXTENSION_GAP_MM = 100
-const TEXT_FONT_MM = 180
-const TEXT_MIN_PX = 9
-/** L'unité est plus petite et plus claire que le chiffre. */
-const UNIT_SCALE = 0.65
-const UNIT_COLOR = '#6b7280'
-const UNIT_GAP_EM = 0.2
-/** Largeur moyenne d'un caractère, en multiples de la taille de police (police sans empattement). */
-const CHAR_WIDTH_EM = 0.56
-/** En dessous de cette longueur à l'écran (px), la cote est trop courte pour porter l'unité. */
-const MIN_UNIT_LENGTH_PX = 90
 /** Zone de clic minimale autour de la ligne de cote, en pixels écran. */
 const MIN_HIT_WIDTH_PX = 12
 
-/** Une cote : ligne décalée, lignes d'attache, traits obliques et longueur en mètres. */
+/** Une cote tracée à la main : son dessin (`DimensionDrawing`), sélectionnable et déplaçable. */
 export default function DimensionShape({
   element,
   interactive,
@@ -38,44 +24,11 @@ export default function DimensionShape({
   onDragEnd,
 }: DimensionShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
+  // Une cote réservée à l'autre version de la cotation est masquée (M10 ter lot B).
+  const shown = useEditorStore((state) => manualDimensionVisible(element, state.dimensioningMode))
   const geometry = dimensionGeometry(element.points, element.offset)
   if (!geometry) return null
-
-  const { line, extensions, center, textAngle, direction, normal, length } = geometry
-  const thin = 1.5 / viewScale
-  const fontSize = Math.max(TEXT_FONT_MM, TEXT_MIN_PX / viewScale)
-
-  // Trait oblique à 45° à chaque extrémité de la ligne de cote.
-  const tickVector = {
-    x: ((direction.x + normal.x) / Math.SQRT2) * TICK_MM,
-    y: ((direction.y + normal.y) / Math.SQRT2) * TICK_MM,
-  }
-  const ticks = line.map((p) => [
-    p.x - tickVector.x,
-    p.y - tickVector.y,
-    p.x + tickVector.x,
-    p.y + tickVector.y,
-  ])
-
-  // Les lignes d'attache commencent un peu avant l'objet mesuré, comme sur un plan coté.
-  const gap = Math.min(EXTENSION_GAP_MM, Math.abs(element.offset) / 2) * (element.offset < 0 ? -1 : 1)
-  const spacedExtensions = extensions.map(([from, to]) => [
-    { x: from.x + normal.x * gap, y: from.y + normal.y * gap },
-    to,
-  ])
-
-  // Texte : « 3500 » (+ « mm » en petit), centré sur la ligne de cote.
-  const full = formatLength(length)
-  const unit = full.slice(full.lastIndexOf(' ') + 1)
-  const value = full.slice(0, full.lastIndexOf(' '))
-  const showUnit = length * viewScale >= MIN_UNIT_LENGTH_PX
-  const valueWidth = value.length * CHAR_WIDTH_EM * fontSize
-  const unitWidth = showUnit
-    ? unit.length * CHAR_WIDTH_EM * fontSize * UNIT_SCALE + UNIT_GAP_EM * fontSize
-    : 0
-  const textStart = -(valueWidth + unitWidth) / 2
-
-  const flat = (a: { x: number; y: number }, b: { x: number; y: number }) => [a.x, a.y, b.x, b.y]
+  const { line } = geometry
 
   return (
     <Group
@@ -84,7 +37,7 @@ export default function DimensionShape({
       x={element.x}
       y={element.y}
       opacity={element.opacity}
-      visible={!element.hidden}
+      visible={!element.hidden && shown}
       listening={interactive && !element.locked}
       draggable={interactive && !element.locked}
       onMouseDown={onPointerDown}
@@ -95,46 +48,19 @@ export default function DimensionShape({
     >
       {selected && (
         <Line
-          points={flat(line[0], line[1])}
+          points={[line[0].x, line[0].y, line[1].x, line[1].y]}
           stroke="#6366f1"
           strokeWidth={8 / viewScale}
           opacity={0.35}
           listening={false}
         />
       )}
-      <Line
-        points={flat(line[0], line[1])}
-        stroke={COLOR}
-        strokeWidth={thin}
-        hitStrokeWidth={MIN_HIT_WIDTH_PX / viewScale}
+      <DimensionDrawing
+        points={element.points}
+        offset={element.offset}
+        viewScale={viewScale}
+        hitWidthPx={MIN_HIT_WIDTH_PX}
       />
-      {spacedExtensions.map(([from, to], i) => (
-        <Line key={`ext-${i}`} points={flat(from, to)} stroke={COLOR} strokeWidth={thin / 1.5} />
-      ))}
-      {ticks.map((points, i) => (
-        <Line key={`tick-${i}`} points={points} stroke={COLOR} strokeWidth={thin * 1.2} />
-      ))}
-      <Group x={center.x} y={center.y} rotation={textAngle} listening={false}>
-        {/* Le chiffre à la taille normale, l'unité plus petite et plus claire pour ne pas encombrer. */}
-        <Text
-          x={textStart}
-          y={-fontSize * 1.25}
-          text={value}
-          fontSize={fontSize}
-          fill={COLOR}
-          wrap="none"
-        />
-        {showUnit && (
-          <Text
-            x={textStart + valueWidth + UNIT_GAP_EM * fontSize}
-            y={-fontSize * 1.25 + fontSize * (1 - UNIT_SCALE) * 0.9}
-            text={unit}
-            fontSize={fontSize * UNIT_SCALE}
-            fill={UNIT_COLOR}
-            wrap="none"
-          />
-        )}
-      </Group>
     </Group>
   )
 }

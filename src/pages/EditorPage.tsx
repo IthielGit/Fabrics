@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EditorStage from '../components/editor/EditorStage'
+import DimensioningSelector from '../components/editor/DimensioningSelector'
 import LevelSelector from '../components/editor/LevelSelector'
 import MiniMap from '../components/editor/MiniMap'
 import ScrollBars from '../components/editor/ScrollBars'
@@ -85,9 +86,10 @@ export default function EditorPage() {
         <div className="relative min-w-0 flex-1">
           <EditorStage />
           <Toolbar />
-          {/* Barre contextuelle en haut du plan : niveau affiché, puis options de l'outil en cours. */}
+          {/* Barre contextuelle en haut du plan : niveau affiché, cotation, puis options de l'outil en cours. */}
           <div className="pointer-events-none absolute left-20 right-3 top-3 z-10 flex items-start gap-2">
             <LevelSelector />
+            <DimensioningSelector />
             <ToolModeBar />
           </div>
           <ZoomControls />

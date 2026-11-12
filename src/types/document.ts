@@ -129,6 +129,8 @@ export interface DimensionElement extends BaseElement {
   type: 'dimension';
   points: [number, number, number, number]; // deux extrémités, absolues
   offset: number;            // décalage de la ligne de cote, mm
+  // Version où la cote est visible (M10 ter lot B) ; absent : les deux (pas de migration).
+  visibleIn?: 'client' | 'execution';
 }
 
 // Ouverture (M5) : position relative à son mur, pas de points absolus.

@@ -6,6 +6,9 @@ import { buildElevation } from '../../features/building/views/elevation'
 import { buildSection } from '../../features/building/views/section'
 import { buildSheet } from '../../features/building/views/sheet'
 import type { Cardinal } from '../../features/building/north'
+import { planOverlay } from '../../features/dimensioning/planOverlay'
+import type { DimensioningMode } from '../../features/dimensioning/types'
+import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import { useViewsStore, type ViewsTab } from '../../stores/viewsStore'
@@ -28,8 +31,11 @@ interface ActiveView {
   /** Titre de la vue (cartouche et nom du fichier). */
   title: string
   note: string
-  /** Dessin construit avec cette hauteur de texte (mm réels) ; sans argument, hauteur automatique. */
-  build: (fontMm?: number) => Drawing | null
+  /**
+   * Dessin construit avec cette hauteur de texte (mm réels) ; sans argument, hauteur automatique.
+   * `version` impose une cotation à tous les plans de la planche (export PDF) ; absente : réglage de chaque vue.
+   */
+  build: (fontMm?: number, version?: 'client' | 'execution') => Drawing | null
   /** Message quand il n'y a rien à dessiner. */
   emptyText: string
 }
@@ -39,6 +45,8 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
   const model = useBuildingModel(undefined)
   const levels = useEditorStore((state) => state.project?.document.levels)
   const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
+  const elements = useEditorStore((state) => state.project?.document.elements)
+  const sheetDimensioning = useViewsStore((state) => state.sheetDimensioning)
 
   return useMemo(() => {
     const allLevels = levels ?? []
@@ -74,7 +82,8 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
     return {
       title: fr.views.sheet,
       note: fr.views.sheetNote,
-      build: (fontMm) => {
+      build: (fontMm, version) => {
+        const document = { elements: elements ?? [], levels: allLevels }
         const sheet = buildSheet({
           model,
           levels: allLevels,
@@ -82,12 +91,51 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
           northAngle,
           labels: { elevation: fr.views.elevation, section: fr.views.section, ridge: fr.views.ridge },
           fontMm,
+          levelOverlay: (level, font) =>
+            planOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
         })
         return sheet.drawing.width > 0 ? sheet.drawing : null
       },
       emptyText: fr.views.empty,
     }
-  }, [tab, sections, model, levels, northAngle])
+  }, [tab, sections, model, levels, northAngle, elements, sheetDimensioning])
+}
+
+const MODES: readonly DimensioningMode[] = ['none', 'client', 'execution']
+
+/** Planche : réglage de cotation du plan de chaque niveau (M10 ter lot B), hors document. */
+function SheetDimensioning() {
+  const levels = useEditorStore((state) => state.project?.document.levels)
+  const modes = useViewsStore((state) => state.sheetDimensioning)
+  const setMode = useViewsStore((state) => state.setSheetDimensioning)
+  if (!levels || levels.length === 0) return null
+  const sorted = [...levels].sort((a, b) => a.elevation - b.elevation)
+  return (
+    <div
+      role="group"
+      aria-label={fr.dimensioning.sheetLabel}
+      className="flex flex-wrap items-center gap-x-4 gap-y-2 px-4 pt-2 text-sm text-slate-700"
+    >
+      <span className="font-medium">{fr.dimensioning.sheetLabel}</span>
+      {sorted.map((level) => (
+        <label key={level.id} className="flex items-center gap-1.5">
+          {level.name}
+          <select
+            aria-label={fr.dimensioning.sheetLevel(level.name)}
+            value={modes[level.id] ?? 'none'}
+            onChange={(event) => setMode(level.id, event.target.value as DimensioningMode)}
+            className="rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900"
+          >
+            {MODES.map((mode) => (
+              <option key={mode} value={mode}>
+                {fr.dimensioning.modes[mode]}
+              </option>
+            ))}
+          </select>
+        </label>
+      ))}
+    </div>
+  )
 }
 
 /** Écran « Vues » : façades, coupes et planche calculées à partir du plan, en lecture seule. */
@@ -108,6 +156,9 @@ function ScreenBody() {
   // Le dessin n'est calculé qu'une fois par changement de vue, pas à chaque rendu.
   const drawing = useMemo(() => active.build(), [active])
   const view = { ...active, drawing }
+  const levels = useEditorStore((state) => state.project?.document.levels)
+  const sheetDimensioning = useViewsStore((state) => state.sheetDimensioning)
+  const hasExecution = (levels ?? []).some((level) => sheetDimensioning[level.id] === 'execution')
 
   const tabs: { key: string; label: string; value: ViewsTab }[] = [
     ...CARDINALS.map((cardinal) => ({
@@ -165,6 +216,7 @@ function ScreenBody() {
       </header>
       <main className="flex min-h-0 flex-1 flex-col">
         {view.note && <p className="px-4 pt-3 text-sm text-slate-600">{view.note}</p>}
+        {tab.kind === 'sheet' && <SheetDimensioning />}
         <div className="min-h-0 flex-1 p-4">
           {view.drawing ? (
             <ViewDrawing drawing={view.drawing} />
@@ -179,6 +231,7 @@ function ScreenBody() {
           build={active.build}
           viewTitle={view.title}
           showNorth={tab.kind === 'sheet'}
+          dimensioning={tab.kind === 'sheet' ? { hasExecution } : undefined}
           onClose={() => setPdfOpen(false)}
         />
       )}

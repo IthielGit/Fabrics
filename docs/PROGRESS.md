@@ -42,6 +42,28 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M10 ter · Lot B · Cotes Client / Exécution (tâches 1 à 5)
+- Décisions de l'utilisateur : option A pour les dimensions des pièces (D49) et réglage « Aucune » par défaut (D50).
+- Fait : **cotes automatiques**, calculées et jamais enregistrées (nouveau dossier `src/features/dimensioning/`, fonctions pures testées). **Client** : quatre cotes extérieures totales (rectangle qui englobe les faces des murs : 8000 × 6000 aux axes avec des murs de 200 donnent `8200` et `6200`) ; dans chaque pièce, son nom, `4000 × 3000` (pièce rectangulaire) ou une cote par côté (autre forme), et sa surface au sol prise dans les métrés. **Exécution** : trois chaînes par façade, au nu brut (1. baies et trumeaux : `2400 · 1200 · 2400` ; 2. axes des refends et axes de construction ; 3. longueur totale ; une chaîne qui ne dit rien de plus que le total n'est pas dessinée) ; chaînes intérieures avec l'épaisseur de chaque mur (une par rangée de pièces) ; baies `F01`, `1200 / 1350`, `All. 900` côté extérieur (repères des métrés d'exécution) ; pièces avec `Sol ±0` et `Dalle +2850` ; plateformes (altitude du dessus) ; trémies (`Trémie`, `1100 × 4600`) ; escaliers (`16 CM × 175`, `Giron 260`). **Barre du haut** : réglage « Cotation : Aucune / Client / Exécution » (état d'interface, rien dans l'historique) ; texte 1,3 fois plus grand en Client ; l'étiquette de pièce habituelle est remplacée par l'étiquette calculée. **Cotes tracées à la main** : champ « Visible en : Les deux / Client / Exécution » (`visibleIn` facultatif, sans migration ; sans valeur, la cote apparaît dans les deux versions). **Écran Vues, planche** : un réglage de cotation par plan de niveau ; la fenêtre PDF demande « Cotation des plans : Comme à l'écran / Client / Exécution » ; la note sur les baies est imprimée au-dessus du cartouche des documents d'exécution. **Export PDF / PNG du plan** : la zone exportée est agrandie pour ne pas couper les cotes extérieures, et la note sur les baies est imprimée quand la cotation est « Exécution ».
+- Limites : les chaînes de façade ne prennent que les murs horizontaux et verticaux (la longueur totale englobe quand même un mur en biais) ; l'étiquette d'une pièce en L est au centre de gravité (qui peut tomber hors de la pièce) ; la note du PDF est imprimée juste au-dessus du cartouche et peut toucher le bas d'un dessin qui remplit toute la feuille.
+- Reste : contrôle dans le navigateur par l'utilisateur (critères d'acceptation du lot B).
+- Fichiers : `src/features/dimensioning/{types,clientDimensions,facadeChains,executionDimensions,levelAnnotations,annotationGraphics,planOverlay,visibility}.ts` + tests, `src/features/building/views/{drawing,sheet}.ts`, `src/features/export/pdf.ts`, `src/components/editor/{AutoDimensionsLayer,DimensioningSelector,DimensionVisibilityField,EditorStage,PlanElementFields,exportProject}.tsx|ts`, `src/components/editor/shapes/{DimensionDrawing,DimensionShape,RoomShape}.tsx`, `src/components/views/{ViewsScreen,ViewsPdfDialog,ViewDrawing}.tsx`, `src/stores/{editorStore,viewsStore}.ts`, `src/pages/EditorPage.tsx`, `src/i18n/{fr,dimensioningLabels}.ts`, `src/types/document.ts`, `docs/02-ARCHITECTURE.md`
+- Vérification : build ✓ lint ✓ tests ✓ (2455, dont 33 nouveaux) — affichage à contrôler dans le navigateur
+- Commit : feat: M10 ter lot B, cotes Client et Exécution
+
+### 2026-11-12 — M10 bis et M10 ter lot A · Test dans le navigateur validé
+- Fait : l'utilisateur a validé le test dans le navigateur de M10 bis (ouvertures détaillées, toitures, hachures et textures) et du lot A de M10 ter (métrés Client / Exécution, repères M01 / P01 / F01). Le lot B de M10 ter (cotes) reste à faire.
+- Fichiers : `docs/PROGRESS.md`
+- Vérification : test dans le navigateur par l'utilisateur ✓
+- Commit : à proposer
+
+### 2026-11-12 — Hors jalon · Noms automatiques des murs et des ouvertures (planification)
+- Fait : à la demande de l'utilisateur, plan ajouté à la roadmap (section « Hors jalon — Noms automatiques », avant M11) : les murs, portes, fenêtres et baies prennent un nom tiré des pièces qu'ils touchent (« Porte Cuisine 1 », « Fenêtre Séjour 2 »). Aucun code modifié.
+- Décision en attente de l'utilisateur : format des murs (option A « Mur Cuisine / Séjour », recommandée, ou option B « Mur Cuisine 1 »).
+- Fichiers : `docs/03-ROADMAP.md`, `docs/PROGRESS.md`
+- Vérification : documentation seulement (pas de build nécessaire)
+- Commit : docs: plan des noms automatiques des murs et des ouvertures
+
 ### 2026-11-12 — M10 ter · Audit des cas limites des métrés (planification)
 - Fait : audit du lot A (vue Client, vue Exécution, repères, exports) ; les cas limites trouvés sont ajoutés à la roadmap dans la section « À traiter — Cas limites des métrés client / exécution », avant M11, en quatre groupes : exports justes, lisibilité du document Client, fiabilité des surfaces, repères. Aucun code modifié.
 - Ajout à la demande de l'utilisateur (cas très fréquent) : détecter une pièce qui ne remplit pas tout l'espace entre ses murs (petite surface non couverte) ou qui déborde des murs, et le signaler sans corriger.
@@ -859,6 +881,14 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D46 | Un seul champ matériau | Un mur a un `material` facultatif (béton, maçonnerie, brique, bois, isolant, plaque de plâtre) ; une toiture une `covering` facultative (tuiles, ardoises, zinc, bac acier, toiture plate). La **texture de façade se déduit** du matériau : brique → brique apparente, bois → bardage, béton et maçonnerie → enduit, isolant et plâtre → aucune. Sans valeur : rendu d'avant (pas de migration, pas de changement de version). | Choix de l'utilisateur (option A1) : simple, suffit pour la roadmap ; un parement séparé pourra venir plus tard. |
 | D47 | Écartement des motifs | Les hachures et textures sont des **traits vectoriels** découpés dans chaque face, écartés en multiples de la hauteur des textes du dessin : constants sur le papier (≈ 2 mm à l'impression) quelle que soit l'échelle. Ils partent d'une grille commune, donc deux morceaux d'un même mur se raccordent. | Lisible à 1:50 comme à 1:200 ; l'écran et le PDF dessinent les mêmes traits. |
 | D48 | 3D | **Révisée le 2026-11-12** : la 3D montre le **motif** de chaque matériau et de chaque couverture (brique en rangs, bois en lames, tuiles, zinc à joints debout…), pas seulement une couleur. Motifs dessinés par le code sur un canevas (aucune image tierce), répétés selon une taille réelle (ex. 520 mm pour la brique) ; sans matériau, 3D inchangée. | Demande de l'utilisateur après essai des aplats ; reste original (clean room) et léger. Avant : une couleur unie par matériau. |
+
+### 2026-11-12 — M10 ter, Lot B (cotes)
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D49 | Dimensions d'une pièce (Client) | Option A : le contour de la pièce **tel qu'il est dessiné** ; la surface vient des métrés. Une pièce créée en cliquant dans une zone fermée suit déjà les faces intérieures. | Choix de l'utilisateur : cotes et métrés ne peuvent pas se contredire. Le calcul intérieur (option B) pourra venir avec le contrôle « pièce qui ne remplit pas l'espace entre les murs ». |
+| D50 | Réglage « Cotation » | Trois choix : **Aucune** (par défaut), Client, Exécution. État d'interface, hors document et hors historique ; même chose pour le réglage par vue de la planche. | Choix de l'utilisateur : un projet existant s'ouvre sans cotes ajoutées. |
+| D51 | Version du PDF des vues | « Cotation des plans : Comme à l'écran / Client / Exécution » ; la note sur les baies est imprimée dès qu'un plan est coté en Exécution. | Garde le réglage par vue tout en permettant d'imposer une version à toute la planche. |
 
 ## Idées (hors jalon en cours)
 

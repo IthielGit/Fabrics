@@ -321,6 +321,7 @@ Objectif : obtenir sans dessiner les façades et les coupes, et les présenter e
 
 Objectif : des plans, façades et coupes qui ressemblent à de vrais dessins d'architecte.
 Ajouté le 2026-11-11 à la demande de l'utilisateur ; commence après la validation de M10.
+**Validé le 2026-11-12** (test dans le navigateur, par l'utilisateur).
 Unités : mm, m², m³ ; la pente d'un toit se saisit en degrés (comme la rotation et le nord).
 
 ### Lot A — Styles de portes, fenêtres et baies
@@ -412,6 +413,7 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
 Objectif : de chaque plan, tirer deux documents : une version **Client** simple, sans
 vocabulaire technique, et une version **Exécution** complète pour le chantier.
 Ajouté le 2026-11-11 à la demande de l'utilisateur ; commence après la validation de M10 bis.
+**Lot A validé le 2026-11-12** (test dans le navigateur, par l'utilisateur). **Lot B codé le 2026-11-12**, à contrôler dans le navigateur.
 
 **Principe : un seul calcul, deux présentations.** Les quantités et la géométrie viennent des
 calculs existants (`src/features/measurements/`, `src/features/geometry/`). Les deux versions
@@ -455,18 +457,18 @@ l'utilisateur sur un premier PDF :
 Les cotes automatiques sont **calculées**, pas enregistrées dans le document : elles suivent
 toujours le plan. Les cotes tracées à la main restent des éléments du document.
 
-- [ ] Calcul pur des cotes **Client** : dimensions extérieures totales du bâtiment (une cote
+- [x] Calcul pur des cotes **Client** : dimensions extérieures totales du bâtiment (une cote
       par côté) ; dans chaque pièce, son nom, ses dimensions intérieures (pièce rectangulaire :
       `4000 × 3000` ; autre forme : la longueur de chaque côté intérieur) et sa surface
-- [ ] Calcul pur des cotes **Exécution** : trois chaînes par façade (1. baies et trumeaux ;
+- [x] Calcul pur des cotes **Exécution** : trois chaînes par façade (1. baies et trumeaux ;
       2. murs de refend et axes ; 3. longueur totale), chaînes intérieures avec l'épaisseur de
       chaque mur, baies `largeur / hauteur` + allège + repère, altitudes des sols et des dalles
       (`±0`, `+2850`), trémies, escaliers (nombre de contremarches, hauteur, giron)
-- [ ] Réglage « Cotation : Client / Exécution » dans la barre d'outils du plan ; texte plus grand
-      et cotes moins nombreuses en Client
-- [ ] Cotes tracées à la main : champ facultatif « Visible en : Client / Exécution / Les deux »
+- [x] Réglage « Cotation : Aucune / Client / Exécution » dans la barre d'outils du plan (« Aucune »
+      par défaut, D50) ; texte plus grand et cotes moins nombreuses en Client
+- [x] Cotes tracées à la main : champ facultatif « Visible en : Client / Exécution / Les deux »
       (sans champ : les deux, donc pas de migration)
-- [ ] Planche : réglage de cotation par vue ; export PDF : choix de la version ; note sur les
+- [x] Planche : réglage de cotation par vue ; export PDF : choix de la version ; note sur les
       baies imprimée sur les documents d'exécution
 
 **Critères d'acceptation**
@@ -531,7 +533,7 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
 
 **Groupe 3 — Fiabilité des surfaces (décision de l'utilisateur d'abord)**
 
-- [ ] **Décision : dimensions affichées au client.** Le contour d'une pièce est tel que dessiné
+- [x] **Décision : dimensions affichées au client** — option A retenue le 2026-11-12 (D49). Le contour d'une pièce est tel que dessiné
       (souvent à l'axe des murs) ; la roadmap promet des « dimensions intérieures ».
       Option A : libellé « Dimensions du tracé » (simple, honnête). Option B : calculer les
       dimensions et la surface intérieures en retirant la demi-épaisseur des murs qui bordent la
@@ -591,6 +593,61 @@ de l'utilisateur** (notée dans `docs/PROGRESS.md`).
   couverts ») ; une pièce qui touche exactement ses murs ne l'est pas
 - Deux murs à y = 749 et y = 751, x = 0 et x = 1000, reçoivent `M01` puis `M02`
 - Un projet d'avant cette étape s'ouvre sans changement
+
+### Hors jalon — Noms automatiques des murs et des ouvertures (demande du 2026-11-12)
+
+Demande de l'utilisateur : « Mur 1 », « Porte 2 » ne se lisent pas naturellement. Les murs,
+portes, fenêtres et baies prennent un nom tiré des **pièces qu'ils touchent**. Planifié, pas
+encore commencé : à lancer sur feu vert de l'utilisateur.
+
+**Principe** (décision D49 dans `docs/PROGRESS.md`) : le nom est **calculé à l'affichage**, jamais
+enregistré ; il suit les renommages de pièces, les déplacements et le sens d'ouverture. Un nom
+tapé à la main reste prioritaire ; vider le champ rend le nom automatique. Les anciens noms par
+défaut (« Mur 1 », « Porte 2 »…) sont traités comme automatiques. Les repères `M01`, `P01`, `F01`
+ne changent pas.
+
+**Format des ouvertures : Type + Pièce + numéro**, numéro repris à 1 dans chaque pièce, dans
+l'ordre de lecture du plan (de haut en bas, puis de gauche à droite).
+
+| Cas | Nom |
+|---|---|
+| Portes de la cuisine | « Porte Cuisine 1 », « Porte Cuisine 2 » |
+| Fenêtres du séjour | « Fenêtre Séjour 1 », « Fenêtre Séjour 2 » |
+| Baie (comptée avec les fenêtres) | « Baie Séjour 1 » |
+| Pièce dont le nom finit par un nombre | « Porte Chambre 1 – 1 » |
+| Ouverture sans pièce | « Porte 1 », « Fenêtre 1 » |
+
+- Une **porte** appartient à la pièce **vers laquelle elle s'ouvre** (champ `side`) ; une porte
+  d'entrée prend donc le nom de la pièce d'arrivée.
+- Une **fenêtre** ou une **baie** appartient à la pièce côté intérieur du mur.
+- **Murs** : format à confirmer par l'utilisateur. Option A (recommandée) : « Mur Cuisine /
+  Séjour », « Mur extérieur Cuisine », « Mur extérieur Cuisine, Séjour +2 », « Mur isolé ».
+  Option B : « Mur Cuisine 1, 2… » (une seule pièce par mur, même partagé).
+
+**Tâches**
+
+- [ ] **Décision : format des murs** (option A ou B ci-dessus), notée dans `docs/PROGRESS.md`.
+- [ ] **Calcul des noms** : fonction pure qui cherche, pour chaque côté d'un mur et au centre de
+      chaque ouverture, la pièce du même niveau juste derrière la face. Fichiers :
+      `src/features/naming/autoNames.ts` (nouveau), `autoNames.test.ts` (nouveau),
+      `src/i18n/fr.ts`.
+- [ ] **Nom personnalisé** : champ facultatif `customName` (pas de changement de version du
+      document) ; vider le champ rend le nom automatique. Fichiers : `src/types/document.ts`,
+      `LayersPanel.tsx`, `OpeningFields.tsx`, `PlanElementFields.tsx`.
+- [ ] **Affichage partout** : calques, Propriétés, panneau Métrés (dont « Mur : … » d'une
+      ouverture), exports CSV, Excel et PDF. Fichiers : `src/features/measurements/measurements.ts`,
+      `tables.ts`, `MeasurementsPanel.tsx`.
+- [ ] **Mur coupé** : les morceaux prennent un nom automatique (fini « Mur 1 1 »). Fichier :
+      `src/features/geometry/splitWall.ts`.
+
+**Critères d'acceptation**
+
+- Deux portes qui s'ouvrent vers la pièce « Cuisine » s'appellent « Porte Cuisine 1 » et
+  « Porte Cuisine 2 » ; inverser le sens d'ouverture de l'une la renomme d'après l'autre pièce
+- Renommer la pièce « Séjour » en « Salon » renomme ses fenêtres sans autre action
+- Un mur renommé à la main garde son nom ; vider le champ rend le nom automatique
+- Les métrés et les exports montrent les mêmes noms que les calques
+- Un projet existant s'ouvre avec les nouveaux noms, sans migration
 
 ## M11 — Import et export
 

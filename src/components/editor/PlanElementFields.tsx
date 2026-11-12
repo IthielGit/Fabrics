@@ -8,6 +8,7 @@ import { WALL_MATERIALS, withWallMaterial } from '../../features/building/materi
 import { canSplitWall } from '../../features/geometry/splitWall'
 import NumberField from '../ui/NumberField'
 import TextField from '../ui/TextField'
+import DimensionVisibilityField from './DimensionVisibilityField'
 import MaterialField from './MaterialField'
 
 type PlanElement = WallElement | RoomElement | DimensionElement | AxisElement
@@ -111,15 +112,29 @@ export default function PlanElementFields({ element }: { element: PlanElement })
       )}
 
       {element.type === 'dimension' && (
-        <NumberField
-          label={fr.properties.dimensionOffset}
-          suffix={fr.properties.unitMm}
-          value={element.offset}
-          step={50}
-          onCommit={(mm) =>
-            patch((el) => (el.type === 'dimension' ? { ...el, offset: mm } : el))
-          }
-        />
+        <>
+          <NumberField
+            label={fr.properties.dimensionOffset}
+            suffix={fr.properties.unitMm}
+            value={element.offset}
+            step={50}
+            onCommit={(mm) =>
+              patch((el) => (el.type === 'dimension' ? { ...el, offset: mm } : el))
+            }
+          />
+          <DimensionVisibilityField
+            element={element}
+            onChange={(visibleIn) =>
+              patch((el) => {
+                if (el.type !== 'dimension') return el
+                // Sans valeur, le champ disparaît du document (comme une cote d'avant M10 ter).
+                const { visibleIn: _previous, ...rest } = el
+                void _previous
+                return visibleIn ? { ...rest, visibleIn } : rest
+              })
+            }
+          />
+        </>
       )}
 
       <div className="space-y-1 rounded-md bg-slate-50 p-2">

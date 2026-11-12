@@ -33,7 +33,9 @@ export default function RoomShape({
 
   const fontSize = Math.max(LABEL_FONT_MM, LABEL_MIN_PX / viewScale)
   const labelHeight = fontSize * 1.3 * 2 // deux lignes : nom, puis surface
-  const showLabel = element.showLabel && centroid !== null && element.points.length >= 6
+  // Avec des cotes automatiques, l'étiquette calculée (nom, dimensions, surface…) remplace celle-ci.
+  const autoLabels = useEditorStore((state) => state.dimensioningMode !== 'none')
+  const showLabel = element.showLabel && !autoLabels && centroid !== null && element.points.length >= 6
 
   return (
     // Un groupe : l'étiquette suit la pièce quand on la déplace.
