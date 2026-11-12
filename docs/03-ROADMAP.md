@@ -875,11 +875,19 @@ Objectif : retrouver ses projets sur un autre appareil.
 
 ## M14 — Collaboration temps réel
 
-- [ ] Choisir et documenter l'hébergement du serveur Yjs (option gratuite)
-- [ ] Représenter `elements` dans un `Y.Array` / `Y.Map` ; synchroniser avec `editorStore`
-- [ ] Curseurs et présence des autres participants (awareness)
-- [ ] Persistance de l'état Yjs dans Supabase
-- [ ] Partage d'un projet avec un autre compte (lecture ou édition)
+Décisions du 2026-11-12 (voir `docs/02-ARCHITECTURE.md`, « Collaboration temps réel (M14) ») : Cloudflare
+Workers + Durable Objects, invitation par lien, annuler / rétablir limité à ses propres modifications.
+Lots à valider un par un.
+
+- [x] **Lot A — Hébergement du serveur Yjs** : choix et documentation (2026-11-12, D68)
+- [ ] **Lot B — Partage avec un autre compte** (lecture ou édition) : `project_members`, `project_invites`,
+      règles RLS, lien d'invitation `/i/<jeton>`, rubrique « Partagés avec moi », fonction `my_project_role`
+- [ ] **Lot C — Serveur temps réel** : Worker + Durable Object (`collab-server/`), authentification par jeton
+      Supabase, refus des écritures d'un lecteur, déploiement
+- [ ] **Lot D — Liaison Yjs et éditeur** : `elements` en `Y.Array` / `Y.Map`, synchronisation avec
+      `editorStore`, annuler / rétablir local (`Y.UndoManager`)
+- [ ] **Lot E — Présence** : curseurs et sélections des autres participants (awareness), avatars en en-tête
+- [ ] **Lot F — Persistance dans Supabase** et reprise après coupure, essais à deux navigateurs
 
 ---
 

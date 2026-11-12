@@ -702,5 +702,53 @@ Sans ces variables, l'application fonctionne en mode local (pas de bouton de con
   redirection SPA : fichier `public/_redirects` contenant `/* /index.html 200`.
 - **Supabase** (M13) : offre gratuite. Attention : un projet gratuit inactif peut être mis en
   pause ; vérifier les limites actuelles sur le site de Supabase.
-- **Temps réel** (M14) : Cloudflare Pages ne garde pas de connexion WebSocket ouverte ; il faudra
-  choisir un hébergeur pour le serveur Yjs. Décision à prendre au début de M14.
+- **Temps réel** (M14) : **Cloudflare Workers + Durable Objects** (décision D68). Cloudflare Pages ne
+  garde pas de connexion WebSocket ouverte : le serveur temps réel est un Worker séparé, dans le même
+  compte Cloudflare, avec l'offre gratuite. Voir « Collaboration temps réel (M14) » ci-dessous.
+
+## Collaboration temps réel (M14)
+
+Décisions de l'utilisateur du 2026-11-12 : hébergement Cloudflare Workers + Durable Objects (D68),
+invitation par lien (D69), annuler / rétablir limité à ses propres modifications (D70).
+
+### Serveur temps réel
+
+- Dossier `collab-server/` à la racine, **séparé de l'application** (son propre `package.json` et son
+  `wrangler.jsonc`) : l'outil `wrangler` et le code du Worker ne s'ajoutent pas aux dépendances de
+  l'application. Déploiement indépendant de Cloudflare Pages.
+- **Un Durable Object par projet** (nom = identifiant du projet) : il garde le `Y.Doc` en mémoire, relaie
+  les mises à jour et la présence (protocole de synchronisation Yjs et `awareness`), utilise l'API de
+  mise en veille des WebSocket (pas de coût quand personne n'édite) et stocke l'état Yjs dans son propre
+  stockage (SQLite). Point d'entrée : `wss://<worker>/room/<projectId>`.
+- **Authentification** : le navigateur envoie son jeton de session Supabase à l'ouverture de la
+  connexion. Le Worker n'a **aucun secret** : il demande à Supabase, avec ce jeton, le rôle de la
+  personne sur le projet (fonction `my_project_role`, règles RLS appliquées par Supabase). Pas de rôle :
+  connexion refusée. Rôle « lecteur » : les mises à jour envoyées par cette connexion sont ignorées.
+  **Jamais de clé `service_role`**, ni dans le navigateur ni dans le Worker.
+- Persistance (lot F) : les éditeurs continuent d'enregistrer le document complet dans Supabase par
+  l'enregistrement automatique existant ; le Durable Object garde l'état vivant. À rediscuter au lot F
+  si cela pose problème (écritures concurrentes identiques, projet ouvert par personne).
+
+### Membres et invitations (lot B)
+
+- Table `project_members` (projet, compte, rôle `viewer` ou `editor`) ; le propriétaire reste
+  `projects.owner_id`. Les règles RLS de `projects` sont étendues : un membre lit le projet, un éditeur le
+  modifie ; seul le propriétaire le supprime et gère les membres.
+- Invitation **par lien** (`/i/<jeton>`), jamais par adresse e-mail (pas de recherche de comptes) :
+  table `project_invites` (jeton tiré par la base, projet, rôle, expiration, désactivable), fonction
+  `accept_invite(jeton)` qui ajoute la personne connectée comme membre. Même principe de sécurité que le
+  partage en lecture seule (lien public, aucune table lisible par un visiteur).
+- L'accueil gagne une rubrique « Partagés avec moi ».
+
+### Liaison Yjs et éditeur (lot D)
+
+- L'éditeur garde `editorStore` comme source pour l'interface. Les modifications locales sont traduites en
+  opérations Yjs ; les modifications distantes sont appliquées au document de l'éditeur.
+- Représentation : `elements` = un `Y.Array` d'identifiants (l'ordre est l'ordre d'affichage) et un
+  `Y.Map` identifiant → élément (un `Y.Map` par élément, une clé par propriété : deux personnes qui
+  modifient deux propriétés différentes du même élément ne s'écrasent pas ; les listes comme `points`
+  sont des valeurs atomiques). Niveaux, page et réglages du plan : des `Y.Map` de même nature.
+- **Annuler / rétablir** (D70) : `Y.UndoManager` limité aux modifications d'origine locale. L'historique
+  actuel (documents entiers) est remplacé par celui-ci quand une session de collaboration est ouverte.
+- Un projet sans autre participant reste utilisable sans serveur temps réel : la collaboration ne doit
+  jamais être obligatoire pour éditer.

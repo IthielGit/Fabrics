@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M13 Comptes, sauvegarde cloud et partage (lots A à F codés ; reste le contrôle de sécurité à deux comptes) ; M12 terminé et validé ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M13 · Lot F · script de contrôle de sécurité à deux comptes (prêt, jamais lancé)
-- **Prochaine tâche :** lancer `npm run check:security` avec deux comptes de test, tester la synchronisation ordinateur / téléphone, puis fermer M13 (connexion Google : optionnelle, à décider)
+- **Jalon en cours :** M14 Collaboration temps réel (lot A fait ; lot B à lancer sur feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot A · hébergement du temps réel (Cloudflare Workers + Durable Objects), documentation
+- **Prochaine tâche :** M14 · Lot B (partage avec un autre compte : tables, règles RLS, lien d'invitation), après validation du plan par l'utilisateur
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -31,8 +31,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 bis Dessin précis, bibliothèque et plafonds | terminé, à tester dans le navigateur (lots A à G) | |
 | M11 ter Boussole du plan | terminé, à tester dans le navigateur | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
-| M13 Comptes, sauvegarde cloud et partage | en cours (lots A à F codés ; contrôle de sécurité à lancer) | |
-| M14 Collaboration temps réel | après le MVP | |
+| M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
+| M14 Collaboration temps réel | en cours (lot A fait ; lots B à F à faire) | |
 
 ## Journal
 
@@ -43,6 +43,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M14 · Lot A : hébergement du temps réel (documentation)
+- Fait : décisions D68 à D70 prises avec l'utilisateur et écrites dans `docs/02-ARCHITECTURE.md` (nouvelle section « Collaboration temps réel (M14) » : serveur, authentification sans secret, membres et invitations, liaison Yjs, annuler / rétablir) ; roadmap M14 découpée en lots A à F.
+- Fichiers : `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`, `docs/PROGRESS.md`. Aucun code.
+- Vérification : documentation seulement (rien à compiler).
+- Prochain : lot B (partage avec un autre compte : tables, règles RLS, lien d'invitation), après validation.
 
 ### 2026-11-12 — M13 · Connexion Google (correction du journal)
 - Constat : la connexion Google est déjà en place, contrairement à ce que le journal disait (« écartée pour M13 ») : le bouton « Continuer avec Google » (`LoginPage.tsx`, `signInWithGoogle` dans `authStore.ts`, textes dans `fr.ts`) a été ajouté dans les fichiers par l'utilisateur et a été embarqué sans que Claude le remarque dans le commit `b13e50c` (« fix: le script de sécurité… ») par un `git add -A`. Il est donc déjà sur `main` et en ligne. Le fournisseur Google est activé dans Supabase.
@@ -1236,6 +1242,9 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 |---|---|---|---|
 | D63 | Plafonds (« sous plafonds ») | **Confirmé par l'utilisateur le 2026-11-12** : tableau « Plafonds » dans les métrés (Client et Technique : surface de plafond, hauteur sous plafond, périmètre ; export CSV, Excel et PDF) ; option « faux plafond » par pièce ; cote d'altitude « sous plafond » **sur le plan Technique seulement**. Rien sur le plan Client. | Les métrés sont l'endroit où le client et l'exécution lisent les surfaces ; le plan Client reste sans cote superflue (D50, D53) ; la hauteur sous plafond existe déjà (D52), donc peu de code nouveau. |
 | D64 | Place de M11 bis | **Confirmé par l'utilisateur le 2026-11-12** : jalon **avant M12** (mise en ligne), numéroté « M11 bis » comme M10 bis et M10 ter. | Les items sont des outils d'édition ; les faire avant la mise en ligne évite de publier un éditeur incomplet. |
+| D68 | Hébergement du temps réel (M14) | **Choix de l'utilisateur le 2026-11-12** : Cloudflare Workers + Durable Objects, dossier `collab-server/` séparé de l'application ; le Worker ne détient aucun secret (il interroge Supabase avec le jeton de la personne). | Même compte que Cloudflare Pages, offre gratuite, WebSocket avec mise en veille ; pas de `service_role`. |
+| D69 | Invitation à un projet | **Choix de l'utilisateur le 2026-11-12** : par lien (`/i/<jeton>`), jamais par adresse e-mail. | Une recherche par e-mail permettrait de deviner qui a un compte. |
+| D70 | Annuler / rétablir en collaboration | **Choix de l'utilisateur le 2026-11-12** : chaque personne ne défait que ses propres modifications (`Y.UndoManager`). | Un « annuler » ne doit pas effacer le travail des autres. |
 | D67 | Miniature dans le cloud | La miniature (image encodée en texte) est stockée telle quelle dans la colonne `thumbnail_path` de `projects`, sans fichier Storage. | Évite une URL signée par carte de l'accueil ; le nom de la colonne est trompeur mais le schéma reste inchangé. À revoir si la base grossit trop. |
 | D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 
