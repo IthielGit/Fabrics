@@ -44,6 +44,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — Hors jalon · Exemples : fenêtres de WC hautes, têtes de lit libres
+- Fait : dans les deux exemples (maison et grande maison), les fenêtres de WC et de salle de bains avec WC sont petites et hautes (600 × 600 mm, allège 1500 mm, constante `WC_WINDOW`) ; les fenêtres sont décalées ou retirées pour qu'aucune tête de lit ne soit devant une fenêtre.
+- Fichiers : `src/features/documents/examplePlan.ts`, `largeHousePlan.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2703 ; le test de vitesse « 600 murs » a échoué sous la charge et passe seul : connu).
+
 ### 2026-11-12 — Hors jalon · Rendu 3D plus soigné (lot A : objets, matières, sol)
 - Fait : (1) le parasol, la pergola, le gazebo et le carport ne sont plus des blocs pleins (mât et toile en cône ; quatre poteaux et un toit mince) ; (2) la piscine et les mares sont dessinées : bassin d'eau bleu avec margelle ; (3) chaque type d'objet a son aspect (bois, tissu, blanc laqué, métal, pierre, plantes, eau, carrosserie) et les objets ronds sont des cylindres ; voitures avec caisse, habitacle vitré et roues ; arbres avec tronc et couronne ronde ; (4) les exemples ont des murs en maçonnerie (brique pour le garage), un toit en tuiles, des terrasses en bois et une plage de piscine en pierre (la couleur d'une plateforme est maintenant reprise en 3D) ; (5) les panneaux de porte de garage ont leur propre matière métal ; (6) le terrain est une pelouse. Façades, coupes, métrés et exports ne changent pas.
 - Fichiers : `src/features/building/furnitureParts.ts` (nouveau) et son test, `types.ts`, `model.ts`, `furniture.ts`, `openingFills.ts`, `views/projection.ts`, `views/section.ts`, `src/components/viewer3d/Viewer3DScene.tsx`, `src/features/documents/examplePlan.ts`, `largeHousePlan.ts`.
@@ -1257,6 +1262,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - ~~Hachures et textures dans les façades et coupes~~ et ~~toitures (versants, débords)~~ : planifiés dans le jalon M10 bis (2026-11-11).
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
 - ~~Glisser un seul mur à la poignée (option A)~~ : planifié dans M11 bis, lot B (demande du 2026-11-11).
+- **Export pour Revit** (demande du 2026-11-12) : un fichier `.rvt` natif est impossible (format fermé Autodesk). Piste : export **IFC** (standard ouvert que Revit ouvre et importe : murs, dalles, pièces, portes, fenêtres, niveaux, en mm), en plus du DXF déjà prévu en M11. À décider : écrire l'IFC à la main (texte STEP, sans nouvelle dépendance) ou ajouter une bibliothèque (demande d'accord, règle 6). Non planifié : à placer dans un jalon.
 - Surface habitable dans les métrés client (partie des pièces sous une hauteur minimale, par exemple 1800 mm, retirée) : utile seulement après les toitures en pente de M10 bis ; la définition est à fixer avec l'utilisateur (D37).
 - ~~Joindre des murs (l'inverse de « Séparer les côtés »)~~ : planifié dans M11 bis, lot B (2026-11-12).
 - Outil « couper ici » : cliquer un point d'un mur sur le canevas pour le couper en deux, sans passer par le « + » puis « Séparer les côtés » (proposé le 2026-11-12, si le bouton ne suffit pas à l'usage).

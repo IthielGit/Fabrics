@@ -11,7 +11,7 @@ import {
   createStairElement,
   createWallElement,
 } from './elements'
-import { box, furniture, type Furniture } from './examplePlan'
+import { box, furniture, WC_WINDOW, type Furniture } from './examplePlan'
 
 /**
  * Contenu du plan d'exemple « grande maison R+3 » (créé pour Fabrics). Tout est en mm.
@@ -305,7 +305,7 @@ export function buildLargeHouseElements({ levels, thickness, height }: LargeHous
       host: WallElement,
       segmentIndex: number,
       offset: number,
-      size: Partial<Pick<OpeningElement, 'width' | 'height' | 'style'>> = {},
+      size: Partial<Pick<OpeningElement, 'width' | 'height' | 'sillHeight' | 'style'>> = {},
     ): OpeningElement => {
       counts[kind] += 1
       return {
@@ -327,16 +327,29 @@ export function buildLargeHouseElements({ levels, thickness, height }: LargeHous
       ? opening('door', outer, 1, 4100)
       : index === 1
         ? wideBay(outer, 1, 2450, 2400)
-        : opening('window', outer, 1, 2450)
+        : opening('window', outer, 1, 2450, index === 2 ? WC_WINDOW : {})
     // Segments du mur extérieur : 0 haut (gauche → droite), 1 droite (haut → bas),
     // 2 bas (droite → gauche), 3 gauche (bas → haut). `offset` = distance du début du segment au centre.
+    // Les têtes de lit ne doivent pas être devant une fenêtre : aux étages 1 et 2, la fenêtre nord de
+    // la chambre de gauche est décalée à côté du lit (le lit est centré en x = 6200), celle de la
+    // chambre de droite (étage 1, lit en x = 13600) est supprimée (elle a déjà la baie est), et la
+    // fenêtre ouest de la chambre 2 (étage 1, tête de lit à l'ouest) est supprimée aussi.
+    // Les lits de l'étage 2 (chambre 5) et du 3e étage (chambre d'amis) ont leur tête à l'est : pas de fenêtre est.
+    // Salles de bains avec WC (étages 1 et 2) : mêmes fenêtres petites et hautes que les WC.
+    const bedLevel = index === 1 || index === 2
     const openings = [
-      opening('window', outer, 0, 2300),
-      opening('window', outer, 0, 9700),
+      bedLevel ? opening('window', outer, 0, 4000, { width: 900 }) : opening('window', outer, 0, 2300),
+      ...(index === 1 ? [] : [opening('window', outer, 0, 9700, index === 2 ? WC_WINDOW : {})]),
       eastOpening,
-      opening('window', outer, 1, 7350),
+      // Au rez-de-chaussée, la fenêtre du WC est petite et haute (600 × 600 mm, allège à 1500 mm),
+      // centrée sur la cuvette.
+      ...(isGround
+        ? [opening('window', outer, 1, 8600, WC_WINDOW)]
+        : index === 2 || index === 3
+          ? []
+          : [opening('window', outer, 1, 7350, WC_WINDOW)]),
       opening('window', outer, 3, 7350),
-      opening('window', outer, 3, 2450),
+      ...(index === 1 ? [] : [opening('window', outer, 3, 2450)]),
       // Portes depuis la circulation (cloisons verticales, de haut en bas).
       ...(layout.leftSplit ? [opening('door', left, 0, 3900)] : []),
       opening('door', left, 0, 5900),
@@ -358,7 +371,7 @@ export function buildLargeHouseElements({ levels, thickness, height }: LargeHous
         wideBay(verandaWall as WallElement, 2, 2000, 3000),
       )
     } else {
-      openings.push(opening('window', outer, 2, 9500), opening('window', outer, 2, 5700), opening('window', outer, 2, 2100))
+      openings.push(opening('window', outer, 2, 9500), opening('window', outer, 2, 5700), opening('window', outer, 2, 2100, index === 1 ? WC_WINDOW : {}))
     }
 
     const rooms = layout.rooms.map(([name, points]) => createRoomElement(name, points))

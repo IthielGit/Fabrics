@@ -28,6 +28,9 @@ const MID_Y = 7200 // cloisons horizontales
 const FOOT_X = 13400 // cloison du WC (rez-de-chaussée) et du dressing (étage)
 const TOP_X = 12000 // cloison entre salle de bains et bureau (étage)
 
+/** Fenêtre de WC aux dimensions usuelles : 600 × 600 mm, allège à 1500 mm. */
+export const WC_WINDOW = { width: 600, height: 600, sillHeight: 1500 } as const
+
 /** Objet à poser : symbole, centre, taille (mm) et rotation (0 : dos au nord, 90 : dos à l'est…). */
 export type Furniture = readonly [symbol: string, cx: number, cy: number, width: number, depth: number, rotation?: number]
 
@@ -79,7 +82,11 @@ export function buildExampleElements({ levels, thickness, height }: ExampleBuild
     createOpeningElement('window', `${fr.elements.window} 1`, { wallId: outer0.id, segmentIndex: 0, offset: 2550, side: 'left' }),
     createOpeningElement('window', `${fr.elements.window} 2`, { wallId: outer0.id, segmentIndex: 0, offset: 8000, side: 'left' }),
     createOpeningElement('window', `${fr.elements.window} 3`, { wallId: outer0.id, segmentIndex: 1, offset: 1700, side: 'left' }),
-    createOpeningElement('window', `${fr.elements.window} 4`, { wallId: outer0.id, segmentIndex: 1, offset: 5100, side: 'left' }),
+    // Fenêtre des WC : petite et haute (600 × 600 mm, allège à 1500 mm), pour garder l'intimité.
+    {
+      ...createOpeningElement('window', `${fr.elements.window} 4`, { wallId: outer0.id, segmentIndex: 1, offset: 5100, side: 'left' }),
+      ...WC_WINDOW,
+    },
     createOpeningElement('window', `${fr.elements.window} 5`, { wallId: outer0.id, segmentIndex: 3, offset: 3400, side: 'left' }),
     createOpeningElement('bay', `${fr.elements.bay} 1`, { wallId: outer0.id, segmentIndex: 2, offset: 8650, side: 'left' }),
     createOpeningElement('door', `${fr.elements.door} 1`, { wallId: outer0.id, segmentIndex: 2, offset: 4300, side: 'left' }),
@@ -144,12 +151,17 @@ export function buildExampleElements({ levels, thickness, height }: ExampleBuild
   const top1 = wall(t.partition, [TOP_X, Y0, TOP_X, MID_Y])
   const foot1 = wall(t.partition, [FOOT_X, MID_Y, FOOT_X, Y1])
   const openings1 = [
-    createOpeningElement('window', `${fr.elements.window} 1`, { wallId: outer1.id, segmentIndex: 0, offset: 2550, side: 'left' }),
+    // Fenêtre de la chambre parentale décalée à côté du lit : la tête de lit ne doit pas être devant une fenêtre.
+    {
+      ...createOpeningElement('window', `${fr.elements.window} 1`, { wallId: outer1.id, segmentIndex: 0, offset: 4350, side: 'left' }),
+      width: 900,
+    },
     createOpeningElement('window', `${fr.elements.window} 2`, { wallId: outer1.id, segmentIndex: 0, offset: 7600, side: 'left' }),
     createOpeningElement('window', `${fr.elements.window} 3`, { wallId: outer1.id, segmentIndex: 0, offset: 10100, side: 'left' }),
     createOpeningElement('window', `${fr.elements.window} 4`, { wallId: outer1.id, segmentIndex: 1, offset: 1700, side: 'left' }),
     createOpeningElement('window', `${fr.elements.window} 6`, { wallId: outer1.id, segmentIndex: 2, offset: 8650, side: 'left' }),
-    createOpeningElement('window', `${fr.elements.window} 7`, { wallId: outer1.id, segmentIndex: 3, offset: 1700, side: 'left' }),
+    // Décalée vers le sud : la tête du lit simple de la chambre 2 est contre ce mur.
+    createOpeningElement('window', `${fr.elements.window} 7`, { wallId: outer1.id, segmentIndex: 3, offset: 1300, side: 'left' }),
     createOpeningElement('window', `${fr.elements.window} 8`, { wallId: outer1.id, segmentIndex: 3, offset: 5100, side: 'left' }),
     createOpeningElement('door', `${fr.elements.door} 1`, { wallId: split1.id, segmentIndex: 0, offset: 1900, side: 'left' }),
     createOpeningElement('door', `${fr.elements.door} 2`, { wallId: split1.id, segmentIndex: 0, offset: 5000, side: 'left' }),
