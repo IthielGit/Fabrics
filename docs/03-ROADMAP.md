@@ -778,6 +778,35 @@ façades s'en déduisent. Aucun changement du format du document.
 
 ---
 
+## M11 quater — Prise en main naturelle (confirmé le 2026-11-12 : placé avant M12, tablette incluse)
+
+Origine : audit « prise en main » du 2026-11-12 (demande de l'utilisateur). Objectif : qu'une personne
+qui n'a jamais utilisé de logiciel de plan dessine une pièce, pose une porte et lit sa surface sans aide
+extérieure. Aucun changement du format du document. Lots à valider un par un.
+
+- [ ] **Lot A — Barre d'outils lisible** : libellés visibles à côté des icônes de base, flèche des familles
+      bien visible, menu des familles aussi accessible au clic simple, raccourcis plus logiques (à fixer).
+- [ ] **Lot B — Accueil qui guide** : cartes « Dessiner un plan », « Créer une affiche », « Voir un
+      exemple » ; un plan d'exemple créé pour Fabrics ; rappel que les projets restent dans ce navigateur.
+- [ ] **Lot C — Premier pas dans le plan vide** : carte d'invitation au centre du canevas, qui disparaît au
+      premier tracé.
+- [ ] **Lot D — Aide pendant le geste** : une consigne principale par outil, les astuces (Maj, Alt…) dans
+      un « Astuces » repliable.
+- [ ] **Lot E — Raccourcis et gestes** : bouton « ? » et touche `?` ouvrant la liste (déplacer, zoom,
+      sélection, outils).
+- [ ] **Lot F — Panneau de droite rangé** : Niveaux sortis de Calques ; réglages avancés (échelle, nord,
+      étiquettes) repliés quand rien n'est sélectionné.
+- [ ] **Lot G — Vocabulaire** : explication en une ligne pour Plateforme, Axe, Coupe, Étirer, Calibrer ;
+      message clair quand un export est bloqué (D55).
+- [ ] **Lot H — Test avec une vraie personne** : 3 tâches en 5 minutes, corrections qui en sortent.
+
+- [ ] **Lot I — Tablette** : déplacer la vue à deux doigts, zoom par pincement, boutons assez grands ; les
+      outils actuels doivent rester utilisables au doigt.
+
+Ordre confirmé : A (barre d'outils), puis C (plan vide), puis les autres lots un par un.
+
+---
+
 ## M12 — Mise en ligne
 
 Objectif : l'application est accessible publiquement (en mode local, sans compte).

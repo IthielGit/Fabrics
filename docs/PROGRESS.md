@@ -1154,3 +1154,4 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M14, à rediscuter).
 - Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : import de symboles SVG / DXF par l'utilisateur, niveau de détail « détaillé », variantes de style. Pose contre un mur, hauteurs 3D, bibliothèque personnelle, étiquettes de cote et annotations de plan sont planifiées dans M11 bis, lot F (2026-11-12).
 - Plafonds : tableau dans les métrés et cote sous plafond (plan Technique) sont planifiés dans M11 bis, lot G (confirmés le 2026-11-12, D63). Faux plafond : confirmé.
+- Prise en main naturelle (audit du 2026-11-12) : jalon **M11 quater** confirmé par l'utilisateur le 2026-11-12 (avant M12, tablette incluse en lot I), dans `docs/03-ROADMAP.md`. Ordre : A, C, puis le reste.
