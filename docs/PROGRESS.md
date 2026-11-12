@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M12 Mise en ligne (déployé, reste à tester dans le navigateur) ; M11 bis Dessin précis, bibliothèque et plafonds (terminé, à tester dans le navigateur) ; M11 terminé, à tester ; M10 ter terminé et validé
+- **Jalon en cours :** M13 Comptes, sauvegarde cloud et partage (plan à valider) ; M12 terminé et validé ; M11 bis Dessin précis, bibliothèque et plafonds (terminé, à tester dans le navigateur) ; M11 terminé, à tester ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M11 bis · Lot F · Étiquettes de cote automatiques (jalon M11 bis terminé, à tester)
 - **Prochaine tâche :** test de M11 et de M11 bis dans le navigateur (et de l'export DXF dans LibreCAD) par l'utilisateur, puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
@@ -30,7 +30,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 Import et export | terminé, à tester dans le navigateur | |
 | M11 bis Dessin précis, bibliothèque et plafonds | terminé, à tester dans le navigateur (lots A à G) | |
 | M11 ter Boussole du plan | terminé, à tester dans le navigateur | |
-| M12 Mise en ligne | en ligne (https://fabrics-8zd.pages.dev), reste le test dans le navigateur | |
+| M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
 | M14 Collaboration temps réel | après le MVP | |
 

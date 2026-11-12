@@ -836,7 +836,7 @@ Objectif : l'application est accessible publiquement (en mode local, sans compte
 - [x] Créer le dépôt GitHub et pousser le code (dépôt IthielGit/Fabrics, 2026-11-12)
 - [x] Ajouter `public/_redirects` (`/* /index.html 200`) (2026-11-12)
 - [x] Connecter le dépôt à Cloudflare Pages (build `npm run build`, sortie `dist`) (2026-11-12, https://fabrics-8zd.pages.dev)
-- [ ] Vérifier la version en ligne : création, sauvegarde, export
+- [x] Vérifier la version en ligne : création, sauvegarde, export (validé par l'utilisateur le 2026-11-12)
 - [x] README : présentation, commandes, lien de la version en ligne
 
 **Critères d'acceptation**
