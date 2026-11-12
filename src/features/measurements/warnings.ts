@@ -2,6 +2,7 @@ import type { CanvasElement, FabricsDocument, OpeningElement, RoomElement, WallE
 import { elementsOfLevel, isLevelIndependent } from '../documents/levels'
 import { overlappingRoomIds } from '../geometry/roomOverlap'
 import { openingInterval, wallSegment } from '../geometry/openings'
+import { wallIssues, type WallFix } from '../geometry/wallContacts'
 import type { Point } from '../geometry/viewport'
 import { computeBuildingMeasurements, type BuildingMeasurements } from './measurements'
 import { createCoverageChecker } from './roomCoverage'
@@ -36,6 +37,27 @@ export type MetresWarning =
   | { kind: 'noLevel'; elementId: string; elementName: string; elementType: CanvasElement['type'] }
   | { kind: 'openingOutside'; levelId: string; openingId: string; openingRef: string; wallRef: string }
   | { kind: 'openingOverlap'; levelId: string; openingIds: [string, string]; openingRefs: [string, string] }
+  | {
+      kind: 'wallGap'
+      levelId: string
+      wallId: string
+      wallRef: string
+      otherWallRef: string
+      /** mm */
+      gap: number
+      /** Correction proposée : joindre le bout du mur à l'autre mur. */
+      fix: WallFix
+    }
+  | {
+      kind: 'wallOverlap'
+      levelId: string
+      wallIds: [string, string]
+      wallRefs: [string, string]
+      /** mm */
+      length: number
+      /** Correction proposée, ou `null` quand le choix revient à l'utilisateur. */
+      fix: WallFix | null
+    }
 
 /** Nom affiché d'une pièce (le nom vide reste reconnaissable). */
 const roomLabel = (room: RoomElement, index: number) => room.name.trim() || `#${index + 1}`
@@ -87,6 +109,38 @@ function openingChecks(
   return warnings
 }
 
+/** Écarts entre murs et murs superposés d'un niveau, avec leur correction (voir `wallIssues`). */
+function wallChecks(
+  levelId: string,
+  elements: readonly CanvasElement[],
+  building: BuildingMeasurements,
+): MetresWarning[] {
+  const walls = elements.filter((el): el is WallElement => el.type === 'wall')
+  const ref = (wall: WallElement | undefined) => (wall && (building.refs.walls.get(wall.id) ?? wall.name)) || ''
+  const byId = new Map(walls.map((wall) => [wall.id, wall]))
+  return wallIssues(walls).map((issue): MetresWarning => {
+    if (issue.kind === 'wallGap') {
+      return {
+        kind: 'wallGap',
+        levelId,
+        wallId: issue.wallId,
+        wallRef: ref(byId.get(issue.wallId)),
+        otherWallRef: ref(byId.get(issue.otherWallId)),
+        gap: issue.gap,
+        fix: issue.fix,
+      }
+    }
+    return {
+      kind: 'wallOverlap',
+      levelId,
+      wallIds: issue.wallIds,
+      wallRefs: [ref(byId.get(issue.wallIds[0])), ref(byId.get(issue.wallIds[1]))],
+      length: issue.length,
+      fix: issue.fix,
+    }
+  })
+}
+
 /**
  * Contrôle avant export des métrés : pièces superposées, trémies qui débordent, pièces masquées
  * (comptées, D21), pièces qui ne remplissent pas l'espace entre leurs murs ou qui en débordent,
@@ -135,6 +189,7 @@ export function metresWarnings(
       }
     }
     warnings.push(...openingChecks(level.id, elements, building))
+    warnings.push(...wallChecks(level.id, elements, building))
   }
 
   // Sans niveau, un élément mesurable n'est compté nulle part (les axes et les coupes n'ont jamais de niveau).
@@ -172,6 +227,8 @@ export function isSurfaceWarning(warning: MetresWarning): boolean {
     warning.kind === 'roomOverlap' ||
     warning.kind === 'voidOverflow' ||
     warning.kind === 'coverageGap' ||
-    warning.kind === 'coverageOverflow'
+    warning.kind === 'coverageOverflow' ||
+    warning.kind === 'wallGap' ||
+    warning.kind === 'wallOverlap'
   )
 }

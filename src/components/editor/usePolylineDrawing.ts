@@ -38,6 +38,7 @@ import {
 } from '../../features/geometry/snapping'
 import { createRegionFinder, type RegionFinder } from '../../features/geometry/regions'
 import type { Point } from '../../features/geometry/viewport'
+import { GAP_MAX } from '../../features/geometry/wallContacts'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, selectSnapElements, useEditorStore } from '../../stores/editorStore'
 import type { CanvasElement } from '../../types/document'
@@ -272,7 +273,9 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
               ...current,
             ],
         gridSize: plan?.snapToGrid ? plan.gridSize : null,
-        threshold: SNAP_THRESHOLD_PX / scale,
+        // Un mur s'aimante au moins à 50 mm, même très zoomé : sinon un bout posé à quelques mm d'un
+        // autre mur laisserait un écart que le contrôle du plan signale ensuite.
+        threshold: tool === 'wall' ? Math.max(SNAP_THRESHOLD_PX / scale, GAP_MAX) : SNAP_THRESHOLD_PX / scale,
         // Rectangle : les deux coins sont libres (pas de direction à contraindre, sinon on
         // obtiendrait un rectangle aplati).
         from: current.length > 0 && !rectMode ? current[current.length - 1] : null,

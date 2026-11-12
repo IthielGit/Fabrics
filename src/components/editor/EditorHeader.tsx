@@ -8,6 +8,7 @@ import { useViewer3DStore } from '../../stores/viewer3dStore'
 import { useViewsStore } from '../../stores/viewsStore'
 import Button from '../ui/Button'
 import ExportDialog from './ExportDialog'
+import PlanCheckBadge from './PlanCheckBadge'
 import SaveIndicator from './SaveIndicator'
 
 const ICON_BUTTON =
@@ -63,6 +64,7 @@ export default function EditorHeader() {
       />
 
       <SaveIndicator />
+      <PlanCheckBadge />
 
       <div className="ml-auto flex items-center gap-1">
         {isPlan && (

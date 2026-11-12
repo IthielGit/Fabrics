@@ -1,5 +1,5 @@
 import type { MetresWarning } from '../../features/measurements/warnings'
-import { formatArea } from '../../features/units/format'
+import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 
 /** Texte français d'un avertissement des métrés. */
@@ -22,6 +22,10 @@ export function metresWarningText(warning: MetresWarning): string {
       return t.openingOutside(warning.openingRef, warning.wallRef)
     case 'openingOverlap':
       return t.openingOverlap(warning.openingRefs[0], warning.openingRefs[1])
+    case 'wallGap':
+      return t.wallGap(warning.wallRef, warning.otherWallRef, formatLength(warning.gap))
+    case 'wallOverlap':
+      return t.wallOverlap(warning.wallRefs[0], warning.wallRefs[1], formatLength(warning.length))
   }
 }
 
@@ -41,5 +45,9 @@ export function metresWarningTargets(warning: MetresWarning): string[] {
       return [warning.openingId]
     case 'openingOverlap':
       return [...warning.openingIds]
+    case 'wallGap':
+      return [warning.wallId]
+    case 'wallOverlap':
+      return [...warning.wallIds]
   }
 }

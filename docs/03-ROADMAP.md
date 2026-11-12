@@ -724,9 +724,8 @@ dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf
 - [x] **Bibliothèque personnelle** : enregistrer une sélection d'objets sous un nom (« Ensemble
       cuisine ») et la réinsérer ailleurs. Stockage local du navigateur ; synchronisation avec le
       compte au M13.
-- [x] **Étiquettes de cote automatiques** : à la demande, une cote (longueur d'un mur, largeur d'une
-      ouverture) posée sur le plan et recalculée avec le plan. **À préciser avec l'utilisateur**
-      avant de coder (quels éléments, faut-il les garder dans le document ?).
+- ~~**Étiquettes de cote automatiques**~~ : fait puis **retiré** le 2026-11-12 à la demande de
+      l'utilisateur (lecture jugée peu naturelle). Voir `docs/PROGRESS.md`.
 - [x] **Annotations de plan** : flèche du nord et repère de niveau, dessinés de zéro (pas de symbole
       tiers), inclus dans PDF, PNG et DXF.
 
@@ -752,6 +751,22 @@ plafonds, hauteur sous plafond).
 - Aucune cote sous plafond n'apparaît sur un plan Client
 - Un projet d'avant M11 bis s'ouvre sans changement, avec les mêmes métrés
 - Les textes sont en français ; les unités sont en mm, m² et m³ ; aucun prix
+
+### Lot H — Murs propres : métrés justes et contrôle du plan (demande de l'utilisateur, 2026-11-12)
+
+- [x] **Raccords en T corrigés dans les métrés** : un mur qui se termine contre un autre n'est plus
+      compté deux fois dans le volume, et ses faces cachées ne sont plus comptées. Aucune interface.
+- [x] **Aimantation du mur** : distance minimale de 50 mm, même très zoomé.
+- [x] **Contrôle des murs** : écart (≤ 50 mm) entre deux murs et murs superposés, listés dans
+      « À vérifier » du panneau Métrés avec un bouton **Joindre** / **Corriger** (annulable), et
+      pastille « N points à vérifier » dans l'en-tête de l'éditeur.
+
+**Critères d'acceptation**
+- Un mur de 4000 mm qui se termine sur l'axe d'un mur de 200 mm voit son volume diminuer de
+  `100 × 200 × hauteur` ; un angle en L ne change pas
+- Deux murs à 10 mm l'un de l'autre font apparaître la pastille « 1 point à vérifier » ; « Joindre »
+  la fait disparaître, et Ctrl+Z la fait revenir
+- Un plan bien dessiné n'affiche aucune pastille
 
 ---
 

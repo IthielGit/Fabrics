@@ -239,6 +239,10 @@ export const fr = {
     backgroundHint: 'Fond importé : cliquez pour le sélectionner en entier (Suppr pour le retirer).',
     backgroundCount: (count: number) => `${count} élément${count > 1 ? 's' : ''}`,
   },
+  planCheck: {
+    badge: (count: number) => `${count} point${count > 1 ? 's' : ''} à vérifier`,
+    hint: 'Des murs ne se touchent pas ou se superposent. Cliquez pour voir où et les corriger.',
+  },
   measurements: {
     title: 'Métrés',
     rooms: 'Pièces',
@@ -305,6 +309,15 @@ export const fr = {
       noLevel: (type: string, name: string) => `${type} « ${name} » n’a pas de niveau : il n’est pas compté.`,
       openingOutside: (ref: string, wallRef: string) => `${ref} dépasse de son mur ${wallRef}.`,
       openingOverlap: (first: string, second: string) => `${first} et ${second} se chevauchent sur le même mur.`,
+      wallGap: (ref: string, otherRef: string, gap: string) =>
+        `Le mur ${ref} ne touche pas le mur ${otherRef} (écart de ${gap}) : les angles et les longueurs seront faussés.`,
+      wallOverlap: (first: string, second: string, length: string) =>
+        `Les murs ${first} et ${second} se superposent sur ${length} : cette partie est comptée deux fois.`,
+      fixGap: 'Joindre',
+      fixGapHint: 'Prolonge le mur jusqu’à l’autre mur. Vous pouvez annuler avec Ctrl+Z.',
+      fixOverlap: 'Corriger',
+      fixOverlapHint: 'Met les deux murs bout à bout, sans superposition. Vous pouvez annuler avec Ctrl+Z.',
+      fixed: 'Mur corrigé.',
       types: {
         room: 'Pièce',
         wall: 'Mur',
@@ -916,8 +929,6 @@ export const fr = {
     unitMm: 'mm',
     northAngle: 'Nord (sens horaire depuis le haut)',
     annotations: 'Flèche du nord et repère de niveau',
-    dimensionLabels: 'Étiquettes de cote',
-    dimensionLabelsHint: 'Écrit la longueur de chaque mur et la largeur de chaque porte, fenêtre et baie (en mm) le long des murs. Recalculées avec le plan, reprises dans les PDF, les images et les DXF.',
     annotationsHint: 'Dessine la rose des vents (nord) et le repère du niveau à droite du plan ; ils sont repris dans les PDF, les images et les DXF.',
     unitDegrees: '°',
   },

@@ -15,6 +15,7 @@ import { computeRoof, isPitched, type RoofProblem } from '../building/roof'
 import { elementsOfLevel } from '../documents/levels'
 import { openingStyle } from '../openings/styles'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
+import { tJunctionAdjustments } from '../geometry/wallContacts'
 import { wallFaces } from '../geometry/walls'
 import { buildReferences, type References } from './references'
 import { levelAboveOf, stairStatus } from '../stairs/stairs'
@@ -124,13 +125,13 @@ export interface WallMeasure {
   openingsArea: number
   /** Surface nette : surface brute moins les ouvertures, en mm² (jamais négative). */
   netArea: number
-  /** Longueur des deux faces, mesurées sur les faces (onglets compris), en mm. */
+  /** Longueur des deux faces, mesurées sur les faces (onglets compris), sans la part cachée par un mur en T, en mm. */
   facesLength: number
   /** Surface brute des deux faces : longueur des faces × hauteur, en mm². */
   facesArea: number
   /** Surface nette des deux faces : brute moins les ouvertures, comptées sur chaque face, en mm². */
   facesNetArea: number
-  /** Volume du mur sur l'axe, ouvertures déduites : longueur × épaisseur × hauteur, en mm³. */
+  /** Volume du mur sur l'axe, ouvertures déduites : longueur × épaisseur × hauteur, moins la part comptée dans un autre mur à un raccord en T, en mm³. */
   volume: number
 }
 
@@ -310,6 +311,7 @@ export function computeMeasurements(
   const wallById = new Map(
     elements.filter((el): el is WallElement => el.type === 'wall').map((wall) => [wall.id, wall]),
   )
+  const tJunctions = tJunctionAdjustments([...wallById.values()])
   const openingsArea = new Map<string, number>()
   for (const element of elements) {
     if (element.type !== 'opening') continue
@@ -372,7 +374,13 @@ export function computeMeasurements(
       const wallArea = length * element.height
       const deducted = openingsArea.get(element.id) ?? 0
       const faces = wallFaces(element.points, element.thickness)
-      const facesLength = pathLength(faces.left) + pathLength(faces.right)
+      // Raccords en T : la part de ce mur qui entre dans un autre n'est ni du volume en plus ni une
+      // face visible, et une face recouverte par un mur qui s'y raccorde n'est plus visible.
+      const tJoin = tJunctions.get(element.id)
+      const facesLength = Math.max(
+        0,
+        pathLength(faces.left) + pathLength(faces.right) - (tJoin ? tJoin.hiddenFaces + tJoin.coveredFace : 0),
+      )
       const facesArea = facesLength * element.height
       walls.push({
         id: element.id,
@@ -387,7 +395,12 @@ export function computeMeasurements(
         facesArea,
         // Une ouverture traverse le mur : elle est déduite sur chacune des deux faces.
         facesNetArea: Math.max(0, facesArea - 2 * deducted),
-        volume: Math.max(0, length * element.thickness * element.height - deducted * element.thickness),
+        volume: Math.max(
+          0,
+          length * element.thickness * element.height -
+            deducted * element.thickness -
+            (tJoin ? tJoin.overlapArea * element.height : 0),
+        ),
       })
     }
   }

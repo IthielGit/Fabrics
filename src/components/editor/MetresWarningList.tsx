@@ -1,5 +1,6 @@
 import { AlertTriangle } from 'lucide-react'
 import type { MetresWarning } from '../../features/measurements/warnings'
+import { applyWallFix } from '../../features/geometry/wallContacts'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import { metresWarningTargets, metresWarningText } from './metresWarningText'
@@ -43,6 +44,16 @@ export default function MetresWarningList({
     onNavigate?.()
   }
 
+  /** Applique la correction proposée (annulable avec Ctrl+Z) ; le contrôle se recalcule tout seul. */
+  const handleFix = (warning: MetresWarning) => {
+    if (!('fix' in warning) || !warning.fix) return
+    const { fix } = warning
+    const state = useEditorStore.getState()
+    state.updateElements([fix.wallId], (el) => (el.type === 'wall' ? applyWallFix(el, fix) : el))
+    state.setNotice(fr.measurements.warnings.fixed)
+  }
+  const t = fr.measurements.warnings
+
   return (
     <div
       role="alert"
@@ -68,6 +79,16 @@ export default function MetresWarningList({
               </button>
             ) : (
               metresWarningText(warning)
+            )}
+            {interactive && 'fix' in warning && warning.fix && (
+              <button
+                type="button"
+                onClick={() => handleFix(warning)}
+                title={warning.kind === 'wallGap' ? t.fixGapHint : t.fixOverlapHint}
+                className="ml-1.5 rounded border border-amber-400 bg-white px-1.5 py-px font-medium text-amber-900 hover:bg-amber-100"
+              >
+                {warning.kind === 'wallGap' ? t.fixGap : t.fixOverlap}
+              </button>
             )}
           </li>
         ))}

@@ -56,7 +56,22 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Correction : `placeImport` (dans `dxfImport.ts`) garde le dessin dans la page, et agrandit la page (marge de 2000 mm, limite 200 m) s'il est trop grand. `ImportDxfDialog.tsx` l'utilise. 4 tests ajoutés.
 - Pour un projet déjà importé : agrandir la page dans les réglages du plan, ou supprimer le fond et le réimporter.
 
-### 2026-11-12 — M11 bis · Lot F · Tâche 4 · Étiquettes de cote automatiques
+### 2026-11-12 — M11 bis · Lot H · Murs propres : métrés justes et contrôle du plan
+- Demande de l'utilisateur : rendre les irrégularités de dessin invisibles ou faciles à corriger, sans vocabulaire technique (points 1, 2 et 3 d'une même proposition).
+- Fait :
+  1. **Métrés** : `tJunctionAdjustments` (`src/features/geometry/wallContacts.ts`) repère les murs qui se terminent dans l'épaisseur d'un autre (à peu près perpendiculaires). `computeMeasurements` retire de leur volume la part comptée dans l'autre mur, et des longueurs de faces la part cachée ou recouverte. Les angles en L ne changent pas (leurs erreurs s'annulaient déjà).
+  2. **Aimantation** : un mur s'aimante au moins à 50 mm (`usePolylineDrawing.ts`), même très zoomé. L'aimantation sur l'axe des murs existait déjà.
+  3. **Contrôle** : `wallIssues` détecte les écarts (≤ 50 mm, entre deux bouts ou entre un bout et un mur) et les murs superposés. Ils s'ajoutent à « À vérifier » du panneau Métrés (`MetresWarningList`), avec un bouton **Joindre** ou **Corriger** (annulable avec Ctrl+Z), et une pastille « N points à vérifier » dans l'en-tête (`PlanCheckBadge.tsx`). Un mur entièrement dans un autre est signalé sans correction automatique.
+- Limites connues : un T en biais (hors ±3° de la perpendiculaire) ou posé sur un sommet d'un tracé à plusieurs côtés n'est pas corrigé dans les métrés ; un écart n'est cherché qu'avec un mur à plus de 30° du bout.
+- Fichiers : `src/features/geometry/wallContacts.ts` (+ test), `src/features/measurements/{measurements,warnings}.ts` (+ `wallJunctions.test.ts`), `src/components/editor/{MetresWarningList,PlanCheckBadge,EditorHeader,metresWarningText,usePolylineDrawing}`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2665)
+
+### 2026-11-12 — M11 bis · Correctif · Retrait des étiquettes de cote automatiques
+- Demande de l'utilisateur : la lecture n'était pas naturelle (longueurs de face extérieure écrites dans les pièces à côté des dimensions intérieures, murs coupés par les ouvertures). Il a demandé d'enlever l'option.
+- Fait : suppression de la case « Étiquettes de cote », de `lengthLabels.ts` (+ test), de `plan.showDimensionLabels` (type, textes, doc d'architecture). `planDecorations` ne rend plus que la flèche du nord et le repère de niveau. La décision D66 est caduque. Un ancien projet qui contient encore `showDimensionLabels` s'ouvre sans problème (le champ est ignoré).
+- Idée gardée pour plus tard : cotes de murs mesurées entre faces intérieures dans les pièces, un seul chiffre par mur malgré les ouvertures, texte jamais dans une pièce voisine.
+
+### 2026-11-12 — M11 bis · Lot F · Tâche 4 · Étiquettes de cote automatiques (retirées, voir ci-dessus)
 - Décision de l'utilisateur (D66) : option « calculées, non enregistrées », longueurs de murs **et** largeurs d'ouvertures.
 - Fait : case **« Étiquettes de cote »** dans les réglages du plan (option `plan.showDimensionLabels`, facultative, absente = non). Quand elle est cochée, le plan écrit en mm, **le long des murs**, la longueur de chaque côté de mur (côté extérieur) et la largeur de chaque porte, fenêtre et baie (côté intérieur), texte aligné sur le mur et jamais à l'envers. Les côtés trop courts pour porter un chiffre ne sont pas étiquetés. Recalculées à chaque modification du plan, **jamais enregistrées** dans le document (seule la case l'est). Reprises dans le PDF et le PNG du plan, les plans de niveau de la planche et le DXF (calque `COTES`), avec la flèche du nord.
 - Fichiers : `src/features/dimensioning/{lengthLabels,planDecorations}.ts` (+ test), `planOverlay.ts`, `src/components/editor/{PlanMarksLayer,PlanSettingsSection}.tsx`, `src/i18n/fr.ts`, `src/types/document.ts`, `docs/02-ARCHITECTURE.md`
@@ -1135,6 +1150,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
+- ~~Signaler les irrégularités de dessin qui faussent cotes et métrés~~ : fait en M11 bis, lot H (2026-11-12) pour les écarts et superpositions de murs. Reste à étudier : objets posés à quelques mm d'un mur, murs plus courts que leur épaisseur, bouts de mur sur la face (et pas l'axe) d'un autre mur dessinés en biais, raccords sur un sommet d'un tracé à plusieurs côtés.
 - ~~Aimantation sur les sommets et les traits d'un fond DXF importé~~ : planifié dans M11 bis, lot A (2026-11-12).
 - ~~Reprendre les textes d'un DXF importé et exporter dans le DXF les escaliers, plateformes, toitures et cheminées~~ : planifié dans M11 bis, lot E (2026-11-12).
 - ~~Afficher le **niveau du dessus** en transparence, et qu'il attire comme celui du dessous~~ : planifié dans M11 bis, lot C (2026-11-11, à confirmer).
