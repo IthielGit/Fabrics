@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot C, tâche 4 (textures des façades)
+- **Dernière tâche terminée :** M10 bis, Lot C, tâche 5 (couleurs en 3D) — lot C terminé
 - **Prochaine tâche :** M10 bis, Lot C, tâche 5 (couleurs en 3D), puis **M10 ter**, puis M11
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -41,6 +41,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 bis · Lot C · Tâche 5 · Couleurs en 3D
+- Fait : en 3D, un mur prend la couleur de son matériau (béton gris, maçonnerie sable, brique rouge, bois brun, isolant jaune, plâtre blanc) et une toiture celle de sa couverture (tuiles rouges, ardoises anthracite, zinc gris clair, bac acier gris bleu, toiture plate gris foncé, y compris le toit plat dessiné). Sans matériau ni couverture : couleurs d'avant. Un mur sélectionné reste violet. Couleurs unies, sans image (D48).
+- Fichiers : `src/features/building/{materials,types,roofModel}.ts`, `src/components/viewer3d/Viewer3DScene.tsx`, `materials.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2406)
+- Commit : feat: M10 bis lot C tâche 5, couleurs par matériau en 3D
 
 ### 2026-11-12 — M10 bis · Lot C · Tâche 4 · Textures des façades
 - Fait : les murs sont dessinés avec la texture déduite de leur matériau (D46) dans les **façades** et sur les murs vus derrière le plan d'une **coupe** : brique apparente (rangs et joints en quinconce), enduit (points épars), bardage bois (lames). Les versants des toitures portent la texture de leur couverture : tuiles, ardoises, zinc (joints debout), bac acier (nervures). Isolant, plâtre, toiture plate, pignons et sans matériau : rien (rendu d'avant). Mêmes traits vectoriels à l'écran, dans le PDF et dans la planche (écartement constant sur le papier, D47). La matière coupée reste hachurée, jamais texturée.

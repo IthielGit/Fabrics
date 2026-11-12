@@ -391,7 +391,7 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
 - [x] Textures des façades (brique, enduit, bardage bois, couverture des versants), motifs
       originaux dessinés pour Fabrics ; mêmes motifs, en vectoriel, dans le PDF des vues et de
       la planche
-- [ ] Couleur par matériau et par couverture en 3D (demande de l'utilisateur ; sans matériau,
+- [x] Couleur par matériau et par couverture en 3D (demande de l'utilisateur ; sans matériau,
       3D inchangée)
 
 **Critères d'acceptation**

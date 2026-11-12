@@ -34,6 +34,44 @@ export function commonChoice<T>(values: readonly (T | undefined)[]): T | undefin
   return values.every((v) => v === first) ? first : 'mixed'
 }
 
+/** Couleur d'un mur en 3D selon son matériau (D48) ; `undefined` : couleur neutre d'avant. */
+export function wallColor3d(material: WallMaterial | undefined): string | undefined {
+  switch (material) {
+    case 'concrete':
+      return '#b9b9b6'
+    case 'masonry':
+      return '#e4dccb'
+    case 'brick':
+      return '#b5593f'
+    case 'wood':
+      return '#b98d5d'
+    case 'insulation':
+      return '#e8d36a'
+    case 'plasterboard':
+      return '#f7f6f2'
+    default:
+      return undefined
+  }
+}
+
+/** Couleur d'une couverture en 3D (D48) ; `undefined` : couleur neutre d'avant. */
+export function roofColor3d(covering: RoofCovering | undefined): string | undefined {
+  switch (covering) {
+    case 'tiles':
+      return '#b4573a'
+    case 'slates':
+      return '#4a4f58'
+    case 'zinc':
+      return '#9aa3a8'
+    case 'steel':
+      return '#5f7584'
+    case 'flat':
+      return '#6e6c69'
+    default:
+      return undefined
+  }
+}
+
 /** Hachure d'une matière coupée : une par matériau de mur. */
 export type HatchPattern = WallMaterial
 

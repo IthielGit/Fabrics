@@ -116,6 +116,7 @@ export function buildRoofParts(
           sourceId: roof.id,
           levelId: level.id,
           kind: 'roof',
+          ...(roof.covering ? { covering: roof.covering } : {}),
           outline: g.overhangOutline,
           baseY: g.baseY - thickness,
           thickness,

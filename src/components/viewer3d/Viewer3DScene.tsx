@@ -11,6 +11,7 @@ import type {
   WallMesh,
   WallPiece,
 } from '../../features/building/types'
+import { roofColor3d, wallColor3d } from '../../features/building/materials'
 import OrientationCube from './OrientationCube'
 
 /** Le modèle est en mm ; la scène est en mètres. */
@@ -59,6 +60,17 @@ const FILL_MATERIALS: Record<OpeningFill['kind'], THREE.Material> = {
   frame: FRAME_MATERIAL,
   door: DOOR_MATERIAL,
   glass: GLASS_MATERIAL,
+}
+/** Matériaux colorés (un par couleur), créés une fois : un mur sans matériau garde WALL_MATERIAL. */
+const COLOR_MATERIALS = new Map<string, THREE.MeshStandardMaterial>()
+function coloredMaterial(color: string, doubleSided: boolean): THREE.MeshStandardMaterial {
+  const key = `${color}|${doubleSided}`
+  let material = COLOR_MATERIALS.get(key)
+  if (!material) {
+    material = new THREE.MeshStandardMaterial({ color, roughness: 0.9, ...(doubleSided ? { side: THREE.DoubleSide } : {}) })
+    COLOR_MATERIALS.set(key, material)
+  }
+  return material
 }
 const SELECTED_WALL_MATERIAL = new THREE.MeshStandardMaterial({ color: '#a5b4fc', roughness: 0.9 })
 const GROUND_MATERIAL = new THREE.MeshStandardMaterial({ color: '#e7e5df', roughness: 1 })
@@ -126,10 +138,12 @@ const WallBody = memo(function WallBody({ mesh, selected, onSelectWall }: WallBo
     event.stopPropagation()
     onSelectWall(mesh.sourceId, mesh.levelId)
   }
+  const wallColor = wallColor3d(mesh.material)
+  const wallMaterial = wallColor ? coloredMaterial(wallColor, false) : WALL_MATERIAL
   return (
     <mesh
       geometry={geometry}
-      material={selected ? SELECTED_WALL_MATERIAL : WALL_MATERIAL}
+      material={selected ? SELECTED_WALL_MATERIAL : wallMaterial}
       castShadow
       receiveShadow
       onClick={handleClick}
@@ -179,7 +193,9 @@ const SlabMesh = memo(function SlabMesh({ slab }: { slab: SlabShape }) {
       geometry={cachedSlabGeometry(slab)}
       material={
         slab.kind === 'roof'
-          ? ROOF_MATERIAL
+          ? roofColor3d(slab.covering)
+            ? coloredMaterial(roofColor3d(slab.covering) as string, true)
+            : ROOF_MATERIAL
           : slab.kind === 'platform'
             ? PLATFORM_MATERIAL
             : SLAB_MATERIAL
@@ -250,7 +266,9 @@ const RoofPrismMesh = memo(function RoofPrismMesh({ prism, selected, onSelectWal
     ? SELECTED_WALL_MATERIAL
     : prism.kind === 'gable'
       ? GABLE_MATERIAL
-      : PITCHED_ROOF_MATERIAL
+      : roofColor3d(prism.covering)
+        ? coloredMaterial(roofColor3d(prism.covering) as string, true)
+        : PITCHED_ROOF_MATERIAL
   return <mesh geometry={geometry} material={material} castShadow receiveShadow onClick={handleClick} />
 })
 

@@ -7,7 +7,9 @@ import {
   commonChoice,
   isRoofCovering,
   isWallMaterial,
+  roofColor3d,
   roofFacadeTexture,
+  wallColor3d,
   wallFacadeTexture,
   withRoofCovering,
   withWallMaterial,
@@ -236,5 +238,21 @@ describe('textures des façades', () => {
     const render = textureSegments(FACADE, 'render', unit)
     for (const s of render) expect(length(s)).toBeLessThanOrEqual(10 + 1e-6)
     expect(render.length).toBeLessThan(hatchSegments(FACADE, 'plasterboard', unit).length)
+  })
+})
+
+describe('couleurs 3D (D48)', () => {
+  it('sans matériau ni couverture : aucune couleur, 3D inchangée', () => {
+    expect(wallColor3d(undefined)).toBeUndefined()
+    expect(roofColor3d(undefined)).toBeUndefined()
+  })
+
+  it('chaque matériau et chaque couverture a sa couleur, toutes distinctes', () => {
+    const walls = WALL_MATERIALS.map((m) => wallColor3d(m))
+    const roofs = ROOF_COVERINGS.map((c) => roofColor3d(c))
+    for (const list of [walls, roofs]) {
+      expect(list.every((c) => /^#[0-9a-f]{6}$/.test(c ?? ''))).toBe(true)
+      expect(new Set(list).size).toBe(list.length)
+    }
   })
 })

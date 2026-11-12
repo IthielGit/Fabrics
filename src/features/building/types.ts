@@ -34,6 +34,8 @@ export interface SlabShape {
   kind: 'slab' | 'roof' | 'platform'
   /** Contour dans le plan (x, y du document), sans point de fermeture. */
   outline: Point[]
+  /** Couverture d'un toit plat dessiné (couleur 3D) ; absente : couleur neutre. */
+  covering?: RoofCovering
   /** Altitude du dessous, mm. */
   baseY: number
   /** Épaisseur, mm. */
