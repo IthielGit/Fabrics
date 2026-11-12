@@ -809,8 +809,8 @@ extérieure. Aucun changement du format du document. Lots à valider un par un.
       premier tracé (2026-11-12).
 - [x] **Lot D — Aide pendant le geste** : une consigne principale par outil, les astuces (Maj, Alt…) dans
       un « Astuces » repliable (2026-11-12).
-- [ ] **Lot E — Raccourcis et gestes** : bouton « ? » et touche `?` ouvrant la liste (déplacer, zoom,
-      sélection, outils).
+- [x] **Lot E — Raccourcis et gestes** : bouton « ? » et touche `?` ouvrant la liste (déplacer, zoom,
+      sélection, outils) (2026-11-12).
 - [ ] **Lot F — Panneau de droite rangé** : Niveaux sortis de Calques ; réglages avancés (échelle, nord,
       étiquettes) repliés quand rien n'est sélectionné.
 - [ ] **Lot G — Vocabulaire** : explication en une ligne pour Plateforme, Axe, Coupe, Étirer, Calibrer ;

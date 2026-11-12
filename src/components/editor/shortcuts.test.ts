@@ -98,6 +98,10 @@ describe('resolveShortcut', () => {
     expect(resolveShortcut(key('x', { ctrlKey: true }))).toBeNull()
   })
 
+  it('ouvre l’aide avec ?', () => {
+    expect(resolveShortcut(key('?', { shiftKey: true }))).toBe('help')
+  })
+
   it('reconnaît Échap', () => {
     expect(resolveShortcut(key('Escape'))).toBe('escape')
   })

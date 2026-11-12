@@ -8,6 +8,7 @@ import LevelSelector from '../components/editor/LevelSelector'
 import MiniMap from '../components/editor/MiniMap'
 import ScrollBars from '../components/editor/ScrollBars'
 import Notice from '../components/editor/Notice'
+import ShortcutsDialog from '../components/editor/ShortcutsDialog'
 import SidePanel from '../components/editor/SidePanel'
 import ToolHint from '../components/editor/ToolHint'
 import ToolModeBar from '../components/editor/ToolModeBar'
@@ -106,6 +107,7 @@ export default function EditorPage() {
         <SidePanel />
       </div>
       <ViewsScreen />
+      <ShortcutsDialog />
     </div>
   )
 }

@@ -1,7 +1,8 @@
-import { Compass, Map as MapIcon, Maximize } from 'lucide-react'
+import { Compass, CircleHelp, Map as MapIcon, Maximize } from 'lucide-react'
 import { fr } from '../../i18n/fr'
 import { useCompassStore } from '../../stores/compassStore'
 import { useEditorStore } from '../../stores/editorStore'
+import { useHelpStore } from '../../stores/helpStore'
 import { useMinimapStore } from '../../stores/minimapStore'
 
 /**
@@ -18,6 +19,8 @@ export default function ZoomControls() {
 
   const compassVisible = useCompassStore((state) => state.visible)
   const toggleCompass = useCompassStore((state) => state.toggle)
+
+  const openHelp = useHelpStore((state) => state.setOpen)
 
   const percent = Math.round(zoom * 100)
 
@@ -60,6 +63,15 @@ export default function ZoomControls() {
           <Compass size={16} />
         </button>
       )}
+      <button
+        type="button"
+        onClick={() => openHelp(true)}
+        title={`${fr.shortcuts.open} (?)`}
+        aria-label={fr.shortcuts.open}
+        className="rounded p-1 hover:bg-slate-100"
+      >
+        <CircleHelp size={16} />
+      </button>
     </div>
   )
 }

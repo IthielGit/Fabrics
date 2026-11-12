@@ -717,6 +717,61 @@ export const fr = {
     // Nom et mots-clés de recherche (synonymes courants) de chaque objet du catalogue.
     symbols: { ...LIBRARY_SYMBOL_TEXTS, ...LIBRARY_SET_TEXTS, ...LIBRARY_PREFAB_TEXTS },
   },
+  shortcuts: {
+    title: 'Raccourcis et gestes',
+    open: 'Aide : raccourcis et gestes',
+    sections: [
+      {
+        title: 'Déplacer et zoomer',
+        rows: [
+          { action: 'Déplacer la vue', keys: 'Espace + glisser' },
+          { action: 'Zoomer vers le curseur', keys: 'Molette' },
+          { action: 'Ajuster le plan à l’écran', keys: 'Ctrl + 0' },
+        ],
+      },
+      {
+        title: 'Sélection',
+        rows: [
+          { action: 'Outil sélection', keys: 'V' },
+          { action: 'Tout sélectionner', keys: 'Ctrl + A' },
+          { action: 'Désélectionner, ou quitter l’outil', keys: 'Échap' },
+          { action: 'Supprimer', keys: 'Suppr' },
+          { action: 'Déplacer d’un cran (×10)', keys: 'Flèches (+ Maj)' },
+          { action: 'Pivoter de 90°', keys: 'Maj + R' },
+        ],
+      },
+      {
+        title: 'Outils du plan',
+        rows: [
+          { action: 'Mur', keys: 'W' },
+          { action: 'Pièce', keys: 'P' },
+          { action: 'Porte', keys: 'B' },
+          { action: 'Fenêtre', keys: 'F' },
+          { action: 'Cote', keys: 'D' },
+          { action: 'Axe de construction', keys: 'A' },
+          { action: 'Étirer une zone', keys: 'S' },
+          { action: 'Terminer un mur ou une pièce', keys: 'Entrée ou double-clic' },
+        ],
+      },
+      {
+        title: 'Dessin et texte',
+        rows: [
+          { action: 'Texte', keys: 'T' },
+          { action: 'Rectangle', keys: 'R' },
+          { action: 'Ellipse', keys: 'O' },
+          { action: 'Ligne', keys: 'L' },
+        ],
+      },
+      {
+        title: 'Édition',
+        rows: [
+          { action: 'Annuler', keys: 'Ctrl + Z' },
+          { action: 'Rétablir', keys: 'Ctrl + Maj + Z' },
+          { action: 'Copier, coller, dupliquer', keys: 'Ctrl + C, V, D' },
+        ],
+      },
+    ],
+  },
   examplePlan: {
     name: 'Exemple : petit logement',
     outerWall: 'Mur extérieur',

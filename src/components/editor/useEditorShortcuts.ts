@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { rotateSelectionQuarterTurn } from '../../features/geometry/rotateSelection'
 import { useEditorStore } from '../../stores/editorStore'
+import { useHelpStore } from '../../stores/helpStore'
 import { isTypingTarget } from './isTypingTarget'
 import { resolveShortcut } from './shortcuts'
 
@@ -49,6 +50,9 @@ export function useEditorShortcuts() {
           break
         case 'tool-window':
           store.setTool('window')
+          break
+        case 'help':
+          useHelpStore.getState().setOpen(true)
           break
         case 'escape':
           // Annule d'abord l'outil de tracé, puis désélectionne.

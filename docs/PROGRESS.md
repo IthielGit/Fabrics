@@ -1171,6 +1171,11 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - La bulle d'aide en bas de l'écran ne montre plus qu'une consigne principale par outil ; Maj, Alt, Échap et les détails sont dans un bouton « Astuces » repliable.
 - Fichiers : `ToolHint.tsx`, `fr.ts` (`hints` devient `{ main, tips }`). Build, lint, 2667 tests OK.
 
+### 2026-11-12 — M11 quater, Lot E (raccourcis et gestes)
+
+- Bouton « ? » dans la barre du bas à gauche et touche `?` : fenêtre « Raccourcis et gestes » (déplacer, zoomer, sélection, outils du plan, dessin, édition).
+- Fichiers : `ShortcutsDialog.tsx`, `helpStore.ts` (nouveaux), `shortcuts.ts` (+ test), `useEditorShortcuts.ts`, `ZoomControls.tsx`, `fr.ts`. Build, lint, 2668 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
