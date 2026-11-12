@@ -57,6 +57,8 @@ export const fr = {
     email: 'Adresse e-mail',
     password: 'Mot de passe',
     passwordHint: '8 caractères au moins.',
+    showPassword: 'Afficher le mot de passe',
+    hidePassword: 'Masquer le mot de passe',
     confirmPassword: 'Confirmer le mot de passe',
     signInTitle: 'Connexion',
     signInIntro: 'Retrouvez vos projets sur tous vos appareils.',

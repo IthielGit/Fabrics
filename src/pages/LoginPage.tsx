@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate } from 'react-router'
+import { Navigate } from 'react-router'
 import AuthField from '../components/auth/AuthField'
 import AuthLayout from '../components/auth/AuthLayout'
 import AuthMessages from '../components/auth/AuthMessages'
@@ -11,7 +11,9 @@ import { useAuthStore } from '../stores/authStore'
 
 type Mode = 'signIn' | 'signUp' | 'forgot'
 
-const LINK_CLASS = 'text-sm text-indigo-700 underline underline-offset-2 hover:text-indigo-900'
+const LINK_CLASS =
+  'rounded-sm text-sm font-medium text-indigo-700 underline decoration-indigo-300 underline-offset-4 transition-colors hover:text-indigo-900 hover:decoration-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
+const SUBMIT_CLASS = 'h-11 w-full justify-center text-[0.9375rem]'
 
 export default function LoginPage() {
   const status = useAuthStore((state) => state.status)
@@ -102,8 +104,16 @@ export default function LoginPage() {
 
   return (
     <AuthLayout title={current.title} intro={current.intro}>
-      <form onSubmit={(event) => void handleSubmit(event)} noValidate className="flex flex-col gap-4">
-        <AuthField label={fr.auth.email} type="email" value={email} autoComplete="email" onChange={setEmail} />
+      <form onSubmit={(event) => void handleSubmit(event)} noValidate className="flex flex-col gap-5">
+        <AuthField
+          label={fr.auth.email}
+          type="email"
+          value={email}
+          autoComplete="email"
+          autoFocus
+          invalid={problems.includes('emailInvalid')}
+          onChange={setEmail}
+        />
         {mode !== 'forgot' && (
           <AuthField
             label={fr.auth.password}
@@ -111,6 +121,14 @@ export default function LoginPage() {
             value={password}
             autoComplete={mode === 'signUp' ? 'new-password' : 'current-password'}
             hint={mode === 'signUp' ? fr.auth.passwordHint : undefined}
+            invalid={problems.includes('passwordTooShort')}
+            labelAction={
+              mode === 'signIn' ? (
+                <button type="button" className={LINK_CLASS} onClick={() => switchMode('forgot')}>
+                  {fr.auth.forgotLink}
+                </button>
+              ) : undefined
+            }
             onChange={setPassword}
           />
         )}
@@ -120,43 +138,34 @@ export default function LoginPage() {
             type="password"
             value={confirm}
             autoComplete="new-password"
+            invalid={problems.includes('passwordsDiffer')}
             onChange={setConfirm}
           />
         )}
         <AuthMessages problems={problems} error={error} />
-        <Button type="submit" variant="primary" disabled={pending} className="justify-center">
+        <Button type="submit" variant="primary" disabled={pending} className={SUBMIT_CLASS}>
           {pending ? fr.auth.working : current.submit}
         </Button>
       </form>
 
       {mode !== 'forgot' && (
         <>
-          <div className="my-4 flex items-center gap-3 text-xs text-slate-500" aria-hidden="true">
+          <div className="my-6 flex items-center gap-3 text-xs text-slate-500" aria-hidden="true">
             <span className="h-px flex-1 bg-slate-200" />
             {fr.auth.orDivider}
             <span className="h-px flex-1 bg-slate-200" />
           </div>
-          <Button
-            type="button"
-            disabled={pending}
-            className="w-full justify-center"
-            onClick={() => void handleGoogle()}
-          >
+          <Button type="button" disabled={pending} className={SUBMIT_CLASS} onClick={() => void handleGoogle()}>
             {fr.auth.withGoogle}
           </Button>
         </>
       )}
 
-      <div className="mt-5 flex flex-col items-start gap-2">
+      <div className="mt-8 text-sm">
         {mode === 'signIn' && (
-          <>
-            <button type="button" className={LINK_CLASS} onClick={() => switchMode('forgot')}>
-              {fr.auth.forgotLink}
-            </button>
-            <button type="button" className={LINK_CLASS} onClick={() => switchMode('signUp')}>
-              {fr.auth.toSignUp}
-            </button>
-          </>
+          <button type="button" className={LINK_CLASS} onClick={() => switchMode('signUp')}>
+            {fr.auth.toSignUp}
+          </button>
         )}
         {mode === 'signUp' && (
           <button type="button" className={LINK_CLASS} onClick={() => switchMode('signIn')}>
@@ -168,9 +177,6 @@ export default function LoginPage() {
             {fr.auth.backToSignIn}
           </button>
         )}
-        <Link to="/" className={LINK_CLASS}>
-          {fr.auth.backToHome}
-        </Link>
       </div>
     </AuthLayout>
   )
