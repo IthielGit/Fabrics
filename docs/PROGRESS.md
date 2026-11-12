@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M11 Import et export (terminé, à tester dans le navigateur) ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M11 · Tâche 3 · Export 3D (glTF)
-- **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M12 Mise en ligne après validation
+- **Prochaine tâche :** test de M11 dans le navigateur et dans LibreCAD par l'utilisateur, puis M11 bis (planifié le 2026-11-12, pas commencé ; décisions D63 et D64 confirmées), puis M12 Mise en ligne après validation
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -28,6 +28,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M10 bis Ouvertures détaillées, toitures, hachures et textures | terminé, à tester dans le navigateur (lots A, B et C) | |
 | M10 ter Documents client / exécution (métrés et cotes) | terminé | 2026-11-12 |
 | M11 Import et export | terminé, à tester dans le navigateur | |
+| M11 bis Dessin précis, bibliothèque et plafonds | planifié, pas commencé | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
 | M14 Collaboration temps réel | après le MVP | |
@@ -1027,23 +1028,31 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D62 | Fond DXF importé | Des éléments `line` verrouillés liés par un champ facultatif `groupId` (une ligne dans les calques, trait d'un pixel à l'écran), posés sous les autres éléments du niveau actif. Pas de nouveau type d'élément. | Le modèle n'a pas de groupes ; un champ facultatif évite une migration. |
 | D61 | Bibliothèque DXF | `dxf-parser` (MIT) accepté pour l'import ; l'export reste écrit à la main (R12, ASCII). | Choix de l'utilisateur ; un lecteur DXF écrit à la main serait fragile. |
 
+### 2026-11-12 — Planification M11 bis
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D63 | Plafonds (« sous plafonds ») | **Confirmé par l'utilisateur le 2026-11-12** : tableau « Plafonds » dans les métrés (Client et Technique : surface de plafond, hauteur sous plafond, périmètre ; export CSV, Excel et PDF) ; option « faux plafond » par pièce ; cote d'altitude « sous plafond » **sur le plan Technique seulement**. Rien sur le plan Client. | Les métrés sont l'endroit où le client et l'exécution lisent les surfaces ; le plan Client reste sans cote superflue (D50, D53) ; la hauteur sous plafond existe déjà (D52), donc peu de code nouveau. |
+| D64 | Place de M11 bis | **Confirmé par l'utilisateur le 2026-11-12** : jalon **avant M12** (mise en ligne), numéroté « M11 bis » comme M10 bis et M10 ter. | Les items sont des outils d'édition ; les faire avant la mise en ligne évite de publier un éditeur incomplet. |
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
-- Aimantation sur les sommets et les traits d'un fond DXF importé, pour redessiner les murs par-dessus (M11, proposé le 2026-11-12).
-- Reprendre les textes d'un DXF importé et exporter dans le DXF les escaliers, plateformes, toitures et cheminées (M11, proposé le 2026-11-12).
-- Afficher aussi le **niveau du dessus** en transparence (désactivé par défaut), et qu'il attire comme celui du dessous : pour aligner le RDC sur le R+1 (proposé le 2026-11-11, à confirmer).
+- ~~Aimantation sur les sommets et les traits d'un fond DXF importé~~ : planifié dans M11 bis, lot A (2026-11-12).
+- ~~Reprendre les textes d'un DXF importé et exporter dans le DXF les escaliers, plateformes, toitures et cheminées~~ : planifié dans M11 bis, lot E (2026-11-12).
+- ~~Afficher le **niveau du dessus** en transparence, et qu'il attire comme celui du dessous~~ : planifié dans M11 bis, lot C (2026-11-11, à confirmer).
 - ~~Export des métrés en vrai fichier Excel~~ : fait (hors jalon K bis, avec `fflate`).
 - ~~Hachures et textures dans les façades et coupes~~ et ~~toitures (versants, débords)~~ : planifiés dans le jalon M10 bis (2026-11-11).
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
-- Glisser un seul mur à la poignée (option A) : poignée au milieu d'un segment droit, le mur se déplace perpendiculairement, les voisins s'allongent et la pièce suit ; réutilise `stretchZone` (demande de l'utilisateur le 2026-11-11, après l'option C).
+- ~~Glisser un seul mur à la poignée (option A)~~ : planifié dans M11 bis, lot B (demande du 2026-11-11).
 - Surface habitable dans les métrés client (partie des pièces sous une hauteur minimale, par exemple 1800 mm, retirée) : utile seulement après les toitures en pente de M10 bis ; la définition est à fixer avec l'utilisateur (D37).
-- Joindre des murs (l'inverse de « Séparer les côtés ») : fusionner des murs bout à bout, de même épaisseur et même matériau, en un seul tracé (proposé le 2026-11-12).
+- ~~Joindre des murs (l'inverse de « Séparer les côtés »)~~ : planifié dans M11 bis, lot B (2026-11-12).
 - Outil « couper ici » : cliquer un point d'un mur sur le canevas pour le couper en deux, sans passer par le « + » puis « Séparer les côtés » (proposé le 2026-11-12, si le bouton ne suffit pas à l'usage).
-- Recherche de projets sur l'accueil (prévue dans la maquette de `docs/01-PRODUIT.md`, mais absente de la liste de tâches de M1).
+- ~~Recherche de projets sur l'accueil~~ (prévue dans la maquette de `docs/01-PRODUIT.md`) : planifié dans M11 bis, lot D.
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
-- Aimantation des murs et des sommets sur ceux du niveau de référence (aligner un étage sur celui du dessous) : utile après M6, pas dans le jalon.
+- ~~Aimantation des murs et des sommets sur ceux du niveau de référence~~ : planifié dans M11 bis, lot C (2026-11-12).
 - ~~Pivoter un objet de 90° au clavier~~ : fait, `Maj + R` (décidé par l'utilisateur).
 - Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M14, à rediscuter).
-- Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : pose des objets contre un mur (aimantation), hauteurs 3D des objets (M8), import de symboles SVG / DXF par l'utilisateur, bibliothèque personnelle (ensembles enregistrés), niveau de détail « détaillé », étiquettes de cote automatiques, variantes de style, annotations de plan (flèche du nord, repère de niveau).
+- Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : import de symboles SVG / DXF par l'utilisateur, niveau de détail « détaillé », variantes de style. Pose contre un mur, hauteurs 3D, bibliothèque personnelle, étiquettes de cote et annotations de plan sont planifiées dans M11 bis, lot F (2026-11-12).
+- Plafonds : tableau dans les métrés et cote sous plafond (plan Technique) sont planifiés dans M11 bis, lot G (confirmés le 2026-11-12, D63). Faux plafond : confirmé.

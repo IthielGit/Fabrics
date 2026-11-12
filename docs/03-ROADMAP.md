@@ -671,6 +671,90 @@ l'ordre de lecture du plan (de haut en bas, puis de gauche à droite).
 
 ---
 
+## M11 bis — Dessin précis, bibliothèque et plafonds
+
+Objectif : dessiner plus vite et plus juste sur un fond DXF et entre niveaux, placer le mobilier
+sans réglage manuel, et sortir les plafonds dans les métrés et les cotes.
+Ajouté le 2026-11-12 à la demande de l'utilisateur. **Planification seulement** : rien n'est codé
+tant que le jalon n'est pas lancé. Placé avant M12 (décision D64, confirmée le 2026-11-12).
+
+**Règles de jalon** : chaque tâche = fonction pure testée (Vitest) quand il y a un calcul, textes
+dans `src/i18n/fr.ts`, puis build, lint et tests. Ordre des lots : A → G, sauf indication contraire.
+
+### Lot A — Aimantation sur le fond DXF
+
+- [ ] Aimantation des murs et des sommets sur les **sommets** et les **traits** du fond DXF
+      importé (groupe `groupId`, D62), pour redessiner les murs par-dessus. Calcul pur du point
+      d'accroche le plus proche (extrémités, intersections, milieux) dans un rayon à l'écran.
+      Fichiers : `src/features/geometry/` (calcul), `src/components/editor/` (accroche au dessin).
+
+### Lot B — Édition des murs
+
+- [ ] **Glisser un seul mur** (option A) : poignée au milieu d'un segment droit ; le mur se déplace
+      perpendiculairement, les murs voisins s'allongent et la pièce suit. Réutilise `stretchZone`.
+- [ ] **Joindre des murs** (inverse de « Séparer les côtés ») : fusion de murs bout à bout, de même
+      épaisseur et même matériau, en un seul tracé. Sinon, refus avec un message clair. Fonction
+      inverse de `src/features/geometry/splitWall.ts`.
+
+### Lot C — Niveaux
+
+- [ ] **Niveau du dessus** affiché en transparence (désactivé par défaut) : réglage d'interface,
+      hors document, hors historique.
+- [ ] **Aimantation sur le niveau de référence** : murs et sommets s'alignent sur ceux du niveau
+      du dessous (aligner un étage sur celui d'en dessous), et sur le niveau du dessus si affiché.
+
+### Lot D — Accueil
+
+- [ ] **Recherche de projets** sur l'accueil : filtre par nom (insensible à la casse et aux accents),
+      liste locale ; fonction pure de filtrage testée.
+
+### Lot E — Échanges DXF
+
+- [ ] **Export DXF** : ajouter les escaliers, plateformes, toitures et cheminées (nouveaux calques,
+      D60 complétée).
+- [ ] **Import DXF** : reprendre les **textes** (TEXT, MTEXT) du fond, à leur place, à leur hauteur
+      en mm (D62 : le texte garde son calque d'origine, verrouillé comme le reste du fond).
+
+### Lot F — Bibliothèque et annotations
+
+- [ ] **Pose contre un mur** : à la pose et au déplacement, l'objet se colle à la face du mur le plus
+      proche et se tourne dans le bon sens. Calcul pur testé.
+- [ ] **Hauteurs 3D des objets** (M8) : une hauteur de référence en mm par objet du catalogue
+      (`docs/06-BIBLIOTHEQUE.md`), générique, sans valeur commerciale (principe clean room).
+- [ ] **Bibliothèque personnelle** : enregistrer une sélection d'objets sous un nom (« Ensemble
+      cuisine ») et la réinsérer ailleurs. Stockage local du navigateur ; synchronisation avec le
+      compte au M13.
+- [ ] **Étiquettes de cote automatiques** : à la demande, une cote (longueur d'un mur, largeur d'une
+      ouverture) posée sur le plan et recalculée avec le plan. **À préciser avec l'utilisateur**
+      avant de coder (quels éléments, faut-il les garder dans le document ?).
+- [ ] **Annotations de plan** : flèche du nord et repère de niveau, dessinés de zéro (pas de symbole
+      tiers), inclus dans PDF, PNG et DXF.
+
+### Lot G — Plafonds : cotes et métrés (D63 : tout confirmé le 2026-11-12)
+
+Lecture retenue : « sous plafonds » = les **plafonds** de chaque pièce (surface de plafond, faux
+plafonds, hauteur sous plafond).
+
+- [ ] **Tableau « Plafonds » dans les métrés**, Client et Technique : par pièce, nom, surface de
+      plafond (= surface au sol, trémie déduite, D37), hauteur sous plafond (D52), périmètre ; totaux
+      par niveau et pour le bâtiment. Export CSV, Excel et PDF. Pas de nouveau calcul de hauteur.
+- [ ] **Faux plafond** (confirmé le 2026-11-12) : option par pièce (absent = pas de faux plafond,
+      donc aucune migration) ; le tableau ajoute alors une ligne « Faux plafond » avec sa surface.
+- [ ] **Cote d'altitude sous plafond sur le plan Technique** uniquement (« +2650 sous plafond », par
+      pièce), sous le réglage « Cotation » existant. **Pas sur le plan Client** : les étiquettes Client
+      restent propres (choix déjà fait en M10 ter).
+
+**Critères d'acceptation**
+- Une chambre de 4000 × 3000 mm sous une dalle à +2650 affiche dans les métrés une surface de
+  plafond de `12,00 m²` et une hauteur de `2650 mm`, en Client et en Technique
+- Une pièce marquée « faux plafond » ajoute sa surface dans le tableau ; une pièce sans l'option ne
+  change pas
+- Aucune cote sous plafond n'apparaît sur un plan Client
+- Un projet d'avant M11 bis s'ouvre sans changement, avec les mêmes métrés
+- Les textes sont en français ; les unités sont en mm, m² et m³ ; aucun prix
+
+---
+
 ## M12 — Mise en ligne
 
 Objectif : l'application est accessible publiquement (en mode local, sans compte).
