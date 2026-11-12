@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M11 Import et export (à planifier) ; M10 ter terminé et validé
-- **Dernière tâche terminée :** noms automatiques des murs et des ouvertures (validés dans le navigateur)
-- **Prochaine tâche :** M11, plan des tâches à présenter avant de coder
+- **Jalon en cours :** M11 Import et export ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M11 · Tâche 1 · Export DXF
+- **Prochaine tâche :** M11 · Tâche 2 · Import DXF en calque de fond
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -27,7 +27,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M10 Façades, coupes et planche | terminé | 2026-11-11 |
 | M10 bis Ouvertures détaillées, toitures, hachures et textures | terminé, à tester dans le navigateur (lots A, B et C) | |
 | M10 ter Documents client / exécution (métrés et cotes) | terminé | 2026-11-12 |
-| M11 Import et export | à faire | |
+| M11 Import et export | en cours | |
 | M12 Mise en ligne | à faire | |
 | M13 Comptes, sauvegarde cloud et partage | à faire | |
 | M14 Collaboration temps réel | après le MVP | |
@@ -41,6 +41,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M11 · Tâche 1 · Export DXF
+- Fait : nouveau format « DXF » dans la fenêtre Exporter d'un plan. Fichier texte écrit à la main (version R12, lisible par AutoCAD et LibreCAD), **en mm** (`$INSUNITS = 4`), axe y retourné (le haut du plan reste en haut). Calques `MURS` (contour des murs vu en plan, ouvertures découpées et angles raccordés, sans coutures), `PIECES` (contour fermé, nom et surface), `OUVERTURES` (symbole du plan : battant, arc, vitrage ; pointillés en type de trait `DASHED`), `COTES` (cotes tracées à la main selon le réglage « Cotation », plus les cotes automatiques Client / Technique quand elles sont affichées), `AXES` (ligne, bulles, étiquettes), `MOBILIER` (dessin des objets de la bibliothèque). Textes à 2,5 mm sur le papier à l'échelle du projet ; accents codés `\U+00E9`. Un fichier par niveau (D60) : « Niveau affiché (.dxf) » ou « Tous les niveaux » (un .dxf par niveau dans un .zip). Bloqué comme les autres exports du plan par un manque ou un débord de pièce (D55). Code chargé à la demande.
+- Fichiers : `src/features/export/dxf.ts`, `dxfPlan.ts`, `dxfFiles.ts` (nouveaux, + tests), `src/features/export/fileName.ts`, `src/components/editor/exportProject.ts`, `ExportDialog.tsx`, `src/i18n/fr.ts`, `package.json` (`dxf-parser`, accordé pour l'import ; sert aussi aux tests de relecture de l'export)
+- Vérification : build ✓ lint ✓ tests ✓ (2545) ; le DXF exporté est relu par `dxf-parser` dans les tests (une ligne de 5000 mm mesure 5000 mm) — ouverture dans LibreCAD à faire par l'utilisateur
+- Commit : feat: export DXF du plan (M11)
 
 ### 2026-11-12 — M10 ter et noms automatiques · Test dans le navigateur validé
 - Fait : l'utilisateur a validé dans le navigateur le groupe 4 des cas limites (repères) et les noms automatiques des murs et des ouvertures. M10 ter est terminé.
@@ -999,6 +1005,13 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D57 | Stabilité des repères | Option A : `M01`, `P01`, `F01` recalculés à chaque modification (rien d'enregistré). Les documents Technique qui les montrent impriment « Repères valables à la date du document ». | Choix de l'utilisateur : l'ordre de lecture du plan reste toujours juste. |
 | D58 | Nom automatique d'un mur | Option A : « Mur Cuisine / Séjour » (pièces des deux côtés), « Mur extérieur Cuisine » (une pièce d'un seul côté), « Mur isolé » (aucune pièce). Calculé à l'affichage, jamais enregistré (D49). | Choix de l'utilisateur : un mur mitoyen se lit des deux côtés. |
 | D59 | Stockage du nom personnalisé | Pas de champ `customName` : un `name` vide ou au format par défaut (« Mur 1 », « Porte 2 », « Mur 1 1 ») est remplacé par le nom automatique ; tout autre nom est gardé. Plus de deux pièces : les deux plus grandes puis « +N » ; pièces masquées comptées. | Une seule source de vérité, aucune migration ; les anciens projets prennent les nouveaux noms tout seuls. |
+
+### 2026-11-12 — M11 (import et export)
+
+| # | Sujet | Décision | Raison |
+|---|---|---|---|
+| D60 | Fichiers DXF | **Un fichier par niveau** (calques `MURS`, `PIECES`, `OUVERTURES`, `COTES`, `AXES`, `MOBILIER`), pas de calque par niveau. « Tous les niveaux » : un .dxf par niveau réunis dans un .zip. | Choix de l'utilisateur. |
+| D61 | Bibliothèque DXF | `dxf-parser` (MIT) accepté pour l'import ; l'export reste écrit à la main (R12, ASCII). | Choix de l'utilisateur ; un lecteur DXF écrit à la main serait fragile. |
 
 ## Idées (hors jalon en cours)
 
