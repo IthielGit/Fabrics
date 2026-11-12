@@ -44,6 +44,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — M13 · Mise en ligne des lots A à F
+- Fait : `feat/m13` fusionnée dans `main` (avance rapide) et poussée ; Cloudflare a redéployé. Vérifié à distance sur https://fabrics-8zd.pages.dev : l'adresse du projet Supabase et la clé publiable sont dans le code publié (donc les variables Cloudflare sont bonnes) ; aucune vraie clé secrète dans le code (le seul `sb_secret_` est un test de préfixe de la bibliothèque `supabase-js`) ; `/connexion`, `/nouveau-mot-de-passe` et `/s/<jeton>` renvoient l'application (200) ; la fonction de partage répond « unavailable » pour un jeton inconnu.
+- Reste : essais de l'utilisateur sur le site en ligne (connexion, projet visible sur un autre appareil, lien de partage ouvert sans compte), puis validation de M13.
+- Vérification : build ✓ lint ✓ tests ✓ (2762).
+
 ### 2026-11-12 — M13 · Lot F : contrôle de sécurité à deux comptes (script prêt, à lancer)
 - Fait : le lot E est validé par l'utilisateur (SQL exécuté, partage essayé). Vérifié à distance : un visiteur ne peut lire ni `shares` ni les projets, ne peut pas créer de lien, et un jeton inconnu donne « indisponible ». Script `scripts/check-security.mjs` (commande `npm run check:security`, jamais lancé par `npm test`) : se connecte avec deux comptes de test, crée un projet, une image et un lien protégé, puis vérifie que B ne peut ni lire, ni modifier, ni supprimer, ni créer quoi que ce soit chez A (projets, liens, images, signatures de téléchargement), que le visiteur anonyme ne lit aucune table, et que le lien se comporte comme prévu (mot de passe demandé / refusé / accepté, désactivé, réactivé, expiré, retiré, supprimé, réponse sans identifiant de compte ni mot de passe haché). Il supprime ses données à la fin.
 - Résultat : l'utilisateur a validé le lot le 2026-11-12 après avoir lancé le script (comptes de test créés par e-mail + mot de passe ; le compte B ajouté dans Supabase avec « Auto Confirm User » car la limite d'e-mails par heure était atteinte). La sortie du script n'a pas été relue par Claude.
