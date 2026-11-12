@@ -4,8 +4,10 @@ import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import type { AxisElement, DimensionElement, RoomElement, WallElement } from '../../types/document'
+import { WALL_MATERIALS, withWallMaterial } from '../../features/building/materials'
 import NumberField from '../ui/NumberField'
 import TextField from '../ui/TextField'
+import MaterialField from './MaterialField'
 
 type PlanElement = WallElement | RoomElement | DimensionElement | AxisElement
 
@@ -81,6 +83,13 @@ export default function PlanElementFields({ element }: { element: PlanElement })
             onCommit={(mm) =>
               patch((el) => (el.type === 'wall' ? { ...el, height: Math.max(1, mm) } : el))
             }
+          />
+          <MaterialField
+            label={fr.materials.wallMaterial}
+            options={WALL_MATERIALS}
+            optionLabels={fr.materials.walls}
+            value={element.material}
+            onChange={(material) => patch((el) => (el.type === 'wall' ? withWallMaterial(el, material) : el))}
           />
         </>
       )}
@@ -159,6 +168,7 @@ export default function PlanElementFields({ element }: { element: PlanElement })
       {(element.type === 'wall' || element.type === 'room') && (
         <p className="text-xs text-slate-500">{fr.properties.vertexHint}</p>
       )}
+      {element.type === 'wall' && <p className="text-xs text-slate-500">{fr.properties.wallChainHint}</p>}
       {element.type === 'axis' && <p className="text-xs text-slate-500">{fr.properties.axisHint}</p>}
     </>
   )

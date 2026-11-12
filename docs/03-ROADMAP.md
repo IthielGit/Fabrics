@@ -385,7 +385,7 @@ surface projetée (avec débord) ÷ cos α**. Les toits en pente demandent un re
       couverture par toit (tuiles, ardoises, zinc, bac acier, toiture plate) ; sans matériau,
       rendu actuel (blanc, ou noir en coupe). Catalogue et générateur de motifs vectoriels purs
       (`materials.ts`, `views/patterns.ts`), avec tests
-- [ ] Choix du matériau et de la couverture dans Propriétés (aussi pour plusieurs murs)
+- [x] Choix du matériau et de la couverture dans Propriétés (aussi pour plusieurs murs)
 - [ ] Hachures des matières coupées dans les coupes (et les plans de niveau de la planche),
       selon le matériau
 - [ ] Textures des façades (brique, enduit, bardage bois, couverture des versants), motifs

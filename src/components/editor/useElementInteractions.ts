@@ -16,6 +16,8 @@ import { hasAbsolutePoints, translateElement } from '../../features/geometry/tra
 import type { Point } from '../../features/geometry/viewport'
 import { pxPerUnit } from '../../features/units/scale'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
+import { connectedWallIds } from '../../features/building/wallChains'
+import type { WallElement } from '../../types/document'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 
 type Handlers = Pick<
@@ -233,12 +235,19 @@ export function useElementInteractions(): Handlers {
     }
   }, [])
 
-  // Double-clic sur un texte : on passe en édition.
+  // Double-clic sur un texte : on passe en édition. Sur un mur : on sélectionne tous les murs liés
+  // (Maj : on les ajoute à la sélection).
   const onDoubleClick = useCallback((event: Konva.KonvaEventObject<MouseEvent | TouchEvent>) => {
-    const { project, startEditingText } = useEditorStore.getState()
+    const { project, startEditingText, selectedIds, setSelection } = useEditorStore.getState()
     const id = event.currentTarget.id()
-    if (project?.document.elements.some((el) => el.id === id && el.type === 'text')) {
+    const elements = project?.document.elements ?? []
+    const target = elements.find((el) => el.id === id)
+    if (target?.type === 'text') {
       startEditingText(id)
+    } else if (target?.type === 'wall') {
+      const walls = elements.filter((el): el is WallElement => el.type === 'wall')
+      const chain = connectedWallIds(walls, id)
+      setSelection(event.evt.shiftKey ? [...new Set([...selectedIds, ...chain])] : chain)
     }
   }, [])
 

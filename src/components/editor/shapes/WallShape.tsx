@@ -22,6 +22,7 @@ export default function WallShape({
   onDragStart,
   onDragMove,
   onDragEnd,
+  onDoubleClick,
 }: WallShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
   const joins = useContext(WallJoinsContext).get(element.id)
@@ -53,6 +54,8 @@ export default function WallShape({
       draggable={interactive && !element.locked}
       onMouseDown={onPointerDown}
       onTouchStart={onPointerDown}
+      onDblClick={onDoubleClick}
+      onDblTap={onDoubleClick}
       onDragStart={onDragStart}
       onDragMove={onDragMove}
       onDragEnd={onDragEnd}

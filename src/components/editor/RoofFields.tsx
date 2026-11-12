@@ -5,8 +5,10 @@ import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import type { RoofElement, RoofShape } from '../../types/document'
+import { ROOF_COVERINGS, withRoofCovering } from '../../features/building/materials'
 import NumberField from '../ui/NumberField'
 import TextField from '../ui/TextField'
+import MaterialField from './MaterialField'
 
 const SHAPES: readonly RoofShape[] = ['flat', 'shed', 'gable', 'hip']
 const ACTION_BUTTON =
@@ -98,6 +100,14 @@ export default function RoofFields({ element }: { element: RoofElement }) {
         value={element.overhang}
         step={50}
         onCommit={(mm) => patch((el) => ({ ...el, overhang: Math.max(0, Math.round(mm)) }))}
+      />
+
+      <MaterialField
+        label={fr.materials.roofCovering}
+        options={ROOF_COVERINGS}
+        optionLabels={fr.materials.coverings}
+        value={element.covering}
+        onChange={(covering) => patch((el) => withRoofCovering(el, covering))}
       />
 
       {(element.shape === 'gable' || element.shape === 'shed') && (

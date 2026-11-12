@@ -13,8 +13,10 @@ import {
 } from '../../features/documents/properties'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
-import type { CanvasElement, TextElement } from '../../types/document'
+import { WALL_MATERIALS, commonChoice, withWallMaterial } from '../../features/building/materials'
+import type { CanvasElement, TextElement, WallElement } from '../../types/document'
 import BlockResizeSection from './BlockResizeSection'
+import MaterialField from './MaterialField'
 import ColorField from '../ui/ColorField'
 import NumberField from '../ui/NumberField'
 import ChimneyFields from './ChimneyFields'
@@ -73,6 +75,8 @@ export default function PropertiesPanel() {
   const unit = project.document.unit
   const selected = project.document.elements.filter((el) => selectedIds.includes(el.id))
 
+  const selectedWalls = selected.filter((el): el is WallElement => el.type === 'wall')
+
   const labels: Record<NumericProp, { label: string; suffix: string }> = {
     x: { label: fr.properties.x, suffix: unit === 'mm' ? fr.properties.unitMm : fr.properties.unitPx },
     y: { label: fr.properties.y, suffix: unit === 'mm' ? fr.properties.unitMm : fr.properties.unitPx },
@@ -120,6 +124,17 @@ export default function PropertiesPanel() {
             value={commonValue(selected, 'opacity')}
             onCommit={setNumber('opacity')}
           />
+          {selectedWalls.length === selected.length && (
+            <MaterialField
+              label={fr.materials.wallMaterial}
+              options={WALL_MATERIALS}
+              optionLabels={fr.materials.walls}
+              value={commonChoice(selectedWalls.map((wall) => wall.material))}
+              onChange={(material) =>
+                updateElements(ids, (el) => (el.type === 'wall' ? withWallMaterial(el, material) : el))
+              }
+            />
+          )}
           <BlockResizeSection />
         </div>
       )}

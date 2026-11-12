@@ -1,11 +1,16 @@
 import { describe, expect, it } from 'vitest'
+import { createRoofElement, createWallElement } from '../documents/elements'
+import type { WallMaterial } from '../../types/document'
 import {
   ROOF_COVERINGS,
   WALL_MATERIALS,
+  commonChoice,
   isRoofCovering,
   isWallMaterial,
   roofFacadeTexture,
   wallFacadeTexture,
+  withRoofCovering,
+  withWallMaterial,
   type FacadeTexture,
 } from './materials'
 import { clipSegmentToPolygon, hatchSegments, textureSegments, type Segment } from './views/patterns'
@@ -69,6 +74,31 @@ describe('catalogue des matériaux et couvertures', () => {
     expect(roofFacadeTexture('steel')).toBe('steel')
     expect(roofFacadeTexture('flat')).toBeNull()
     expect(roofFacadeTexture(undefined)).toBeNull()
+  })
+})
+
+describe('choix du matériau dans Propriétés', () => {
+  it('withWallMaterial pose puis retire le matériau sans laisser de champ vide', () => {
+    const wall = createWallElement('Mur', [0, 0, 3000, 0], 200, 2500)
+    const brick = withWallMaterial(wall, 'brick')
+    expect(brick.material).toBe('brick')
+    const cleared = withWallMaterial(brick, undefined)
+    expect('material' in cleared).toBe(false)
+    expect(cleared).toEqual(wall)
+  })
+
+  it('withRoofCovering pose puis retire la couverture', () => {
+    const roof = createRoofElement('Toit', [0, 0, 8000, 0, 8000, 6000, 0, 6000])
+    const tiled = withRoofCovering(roof, 'tiles')
+    expect(tiled.covering).toBe('tiles')
+    expect('covering' in withRoofCovering(tiled, undefined)).toBe(false)
+  })
+
+  it('commonChoice : valeur commune, aucune, ou plusieurs', () => {
+    expect(commonChoice<WallMaterial>(['brick', 'brick'])).toBe('brick')
+    expect(commonChoice<WallMaterial>([undefined, undefined])).toBeUndefined()
+    expect(commonChoice<WallMaterial>(['brick', 'wood'])).toBe('mixed')
+    expect(commonChoice<WallMaterial>(['brick', undefined])).toBe('mixed')
   })
 })
 

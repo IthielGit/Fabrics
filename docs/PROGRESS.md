@@ -42,6 +42,18 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-12 — Hors jalon · Sélection des murs liés
+- Fait : un clic sélectionne un seul mur (inchangé) ; un **double-clic** sélectionne tous les murs liés, de proche en proche, sur le même niveau (Maj + double-clic : les ajoute à la sélection). « Lié » = un sommet d'un mur touche l'axe d'un autre, à la demi-épaisseur près : angles, prolongements et cloisons en T. Les murs masqués et ceux des autres niveaux sont ignorés. Une indication apparaît dans Propriétés.
+- Fichiers : `src/features/building/wallChains(.test).ts` (nouveaux), `useElementInteractions.ts`, `shapes/WallShape.tsx`, `PlanElementFields.tsx`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2376, dont 7 nouveaux)
+- Commit : feat: double-clic pour sélectionner les murs liés
+
+### 2026-11-12 — M10 bis · Lot C · Tâche 2 · Choix du matériau et de la couverture dans Propriétés
+- Fait : liste « Matériau » pour un mur (six matériaux + « Aucun »), liste « Couverture » pour une toiture (cinq couvertures + « Aucun »). Avec plusieurs murs sélectionnés, la même liste change le matériau de tous d'un coup (un seul pas d'annulation) et affiche « Plusieurs » si les murs diffèrent. « Aucun » retire le champ : le fichier redevient identique à celui d'avant. Rien n'est encore dessiné différemment (hachures, textures et 3D : tâches 3 à 5).
+- Fichiers : `src/components/editor/MaterialField.tsx` (nouveau), `PlanElementFields.tsx`, `PropertiesPanel.tsx`, `RoofFields.tsx`, `src/features/building/materials(.test).ts`, `src/i18n/fr.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (2369 ; le test de vitesse « 600 murs en moins de 200 ms » a échoué une fois sous la charge du lot complet, et passe seul)
+- Commit : feat: M10 bis lot C tâche 2, choix du matériau dans Propriétés
+
 ### 2026-11-11 — M10 bis · Lot C · Tâche 1 · Matériaux et motifs (calcul pur)
 - Fait : champs facultatifs `material` sur un mur et `covering` sur une toiture (D46). Catalogue (`materials.ts`) : six matériaux, cinq couvertures, texture de façade déduite. Générateur de motifs (`views/patterns.ts`) : traits découpés dans n'importe quel polygone (convexe ou non), sur une grille commune, écartement proportionnel à la hauteur des textes (D47). **Hachures** : béton (45° serré), maçonnerie (45° espacé), brique (45° doublé), bois (fil le long du plus long côté), isolant (zigzag d'une face à l'autre), plaque de plâtre (pointillé). **Textures** : enduit (points épars), brique (rangs et joints en quinconce), bardage (lames horizontales), tuiles, ardoises (rangs et joints), zinc (joints debout), bac acier (nervures doublées). Motifs dessinés pour Fabrics. Rien n'est encore affiché (tâches 2 à 5).
 - Fichiers : `src/features/building/materials(.test).ts`, `src/features/building/views/patterns.ts` (nouveaux), `src/types/document.ts`

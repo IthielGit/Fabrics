@@ -1,4 +1,4 @@
-import type { RoofCovering, WallMaterial } from '../../types/document'
+import type { RoofCovering, RoofElement, WallElement, WallMaterial } from '../../types/document'
 
 /**
  * Matériaux des murs et couvertures des toitures (M10 bis lot C). Un seul champ par élément : la
@@ -15,6 +15,24 @@ export const WALL_MATERIALS: readonly WallMaterial[] = [
 ]
 
 export const ROOF_COVERINGS: readonly RoofCovering[] = ['tiles', 'slates', 'zinc', 'steel', 'flat']
+
+/** Copie du mur avec ce matériau ; `undefined` retire le champ (rendu neutre, fichier inchangé). */
+export function withWallMaterial(wall: WallElement, material: WallMaterial | undefined): WallElement {
+  const { material: _previous, ...rest } = wall
+  return material ? { ...rest, material } : rest
+}
+
+/** Copie du toit avec cette couverture ; `undefined` retire le champ. */
+export function withRoofCovering(roof: RoofElement, covering: RoofCovering | undefined): RoofElement {
+  const { covering: _previous, ...rest } = roof
+  return covering ? { ...rest, covering } : rest
+}
+
+/** Valeur commune d'une liste (`undefined` si aucune), ou `'mixed'` si elle diffère. */
+export function commonChoice<T>(values: readonly (T | undefined)[]): T | undefined | 'mixed' {
+  const first = values[0]
+  return values.every((v) => v === first) ? first : 'mixed'
+}
 
 /** Hachure d'une matière coupée : une par matériau de mur. */
 export type HatchPattern = WallMaterial
