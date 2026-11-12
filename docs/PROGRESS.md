@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M10 bis — Ouvertures détaillées, toitures, hachures et textures (M10 validé le 2026-11-11)
-- **Dernière tâche terminée :** M10 bis, Lot C, tâche 5 (couleurs en 3D) — lot C terminé
-- **Prochaine tâche :** M10 bis, Lot C, tâche 5 (couleurs en 3D), puis **M10 ter**, puis M11
+- **Jalon en cours :** M10 bis terminé (à tester) ; M10 ter, lot A en cours (à la demande de l'utilisateur, tests à la fin)
+- **Dernière tâche terminée :** M10 ter, Lot A, tâche 1 (repères M01, P01, F01)
+- **Prochaine tâche :** M10 ter, Lot A, tâche 2 (présentation Client)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -41,6 +41,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-12 — M10 ter · Lot A · Tâche 1 · Repères M01, P01, F01
+- Fait : chaque mur, porte et fenêtre a un repère : murs `M01…`, portes `P01…`, fenêtres et baies `F01…`. Numérotation continue dans tout le bâtiment, niveau par niveau (du plus bas au plus haut), puis de haut en bas et de gauche à droite sur le plan. Le tableau des murs (colonne « Réf. ») et celui des ouvertures (nouvelle colonne « Réf. » en plus de « Réf. du mur ») les affichent ; dans le CSV à plat, une ouverture porte son propre repère (avant : celui de son mur). Les anciens repères « M1 » deviennent « M01 ». Calcul pur partagé : il servira aussi aux cotes du lot B.
+- Fichiers : `src/features/measurements/{references,measurements,tables,csv}.ts`, `references.test.ts` (nouveau), `csvExport.test.ts`
+- Vérification : build ✓ lint ✓ tests ✓ (4 nouveaux)
+- Commit : feat: M10 ter lot A tâche 1, repères M01, P01, F01
 
 ### 2026-11-12 — M10 bis · Lot C · Tâche 5 · Couleurs en 3D
 - Fait : en 3D, un mur prend la couleur de son matériau (béton gris, maçonnerie sable, brique rouge, bois brun, isolant jaune, plâtre blanc) et une toiture celle de sa couverture (tuiles rouges, ardoises anthracite, zinc gris clair, bac acier gris bleu, toiture plate gris foncé, y compris le toit plat dessiné). Sans matériau ni couverture : couleurs d'avant. Un mur sélectionné reste violet. Couleurs unies, sans image (D48).

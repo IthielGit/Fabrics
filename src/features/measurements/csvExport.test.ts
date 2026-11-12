@@ -120,7 +120,7 @@ describe('murs : une face, deux faces et volume', () => {
 
   it('donne la longueur et la surface des deux faces, et le volume', () => {
     // Un mur droit de 4000 mm : deux faces de 4000 mm, 2 × 10,00 m², 4000 × 200 × 2500 = 2,00 m³.
-    expect(lines).toContain('Rez;M1;Mur 1;4000;200;2500;10,00;0,00;10,00;8000;20,00;20,00;2,00')
+    expect(lines).toContain('Rez;M01;Mur 1;4000;200;2500;10,00;0,00;10,00;8000;20,00;20,00;2,00')
   })
 
   it('dit comment se lisent les surfaces', () => {
@@ -151,9 +151,9 @@ describe('références des murs', () => {
       opening('Porte 1', 'autre'),
     ]
     const lines = linesOf(measurementsToCsv(oneLevel(elements), LABELS))
-    expect(lines.filter((l) => /^Rez;M\d;Mur;/.test(l))).toHaveLength(2)
-    // Deux murs au même nom : la porte indique de quel mur il s'agit (M2).
-    expect(lines).toContain('Rez;Porte 1;Porte;Battant;Mur;M2;900;2100;0;1,89')
+    expect(lines.filter((l) => /^Rez;M0\d;Mur;/.test(l))).toHaveLength(2)
+    // Deux murs au même nom : la porte indique de quel mur il s'agit (M01).
+    expect(lines).toContain('Rez;P01;Porte 1;Porte;Battant;Mur;M01;900;2100;0;1,89')
   })
 })
 
@@ -184,18 +184,18 @@ describe('ouvertures', () => {
 
   it('donne la surface nette du mur, une face et deux faces', () => {
     // 10,00 − (1,89 + 1,20) = 6,91 ; deux faces : 20,00 − 2 × 3,09 = 13,82 ; volume 2,00 − 3,09 × 0,2 = 1,38
-    expect(lines).toContain('Rez;M1;Mur 1;4000;200;2500;10,00;3,09;6,91;8000;20,00;13,82;1,38')
+    expect(lines).toContain('Rez;M01;Mur 1;4000;200;2500;10,00;3,09;6,91;8000;20,00;13,82;1,38')
   })
 
   it('ajoute un tableau des ouvertures avec le mur, sa référence, les dimensions, la surface et le total', () => {
     const start = lines.indexOf('Ouvertures')
     expect(start).toBeGreaterThan(-1)
     expect(lines[start + 1]).toBe(
-      'Niveau;Nom;Type;Style;Mur;Réf. du mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)',
+      'Niveau;Réf.;Nom;Type;Style;Mur;Réf. du mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)',
     )
-    expect(lines[start + 2]).toBe('Rez;Porte 1;Porte;Battant;Mur 1;M1;900;2100;0;1,89')
-    expect(lines[start + 3]).toBe('Rez;Fenêtre 1;Fenêtre;Deux vantaux;Mur 1;M1;1200;1000;900;1,20')
-    expect(lines[start + 4]).toBe('Total;;;;;;;;;3,09')
+    expect(lines[start + 2]).toBe('Rez;P01;Porte 1;Porte;Battant;Mur 1;M01;900;2100;0;1,89')
+    expect(lines[start + 3]).toBe('Rez;F01;Fenêtre 1;Fenêtre;Deux vantaux;Mur 1;M01;1200;1000;900;1,20')
+    expect(lines[start + 4]).toBe('Total;;;;;;;;;;3,09')
   })
 
   it('compte les portes, fenêtres et baies dans les totaux', () => {
@@ -254,8 +254,8 @@ describe('measurementsToFlatCsv', () => {
   it('met une grandeur par ligne, avec un vrai nombre et son unité', () => {
     expect(lines).toContain('Rez;Pièce;Cuisine;;Surface au tracé;12,4000;m²')
     expect(lines).toContain('Rez;Pièce;Cuisine;;Périmètre;14200;mm')
-    expect(lines).toContain('Rez;Mur;Mur 1;M1;Volume;1,6220;m³')
-    expect(lines).toContain('Rez;Ouverture;Porte 1;M1;Surface;1,8900;m²')
+    expect(lines).toContain('Rez;Mur;Mur 1;M01;Volume;1,6220;m³')
+    expect(lines).toContain('Rez;Ouverture;Porte 1;P01;Surface;1,8900;m²')
   })
 
   it('compte le mobilier, avec sa taille en référence', () => {

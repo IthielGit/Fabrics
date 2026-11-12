@@ -15,6 +15,7 @@ import { elementsOfLevel } from '../documents/levels'
 import { openingStyle } from '../openings/styles'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
 import { wallFaces } from '../geometry/walls'
+import { buildReferences, type References } from './references'
 import { stairStatus } from '../stairs/stairs'
 import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
 
@@ -399,6 +400,8 @@ export interface BuildingMeasurements {
   levels: LevelMeasurements[]
   /** Métrés du bâtiment : les listes et les totaux de tous les niveaux réunis. */
   total: Measurements
+  /** Repères M01, P01, F01… (calculés sur le document, partagés avec les cotes). */
+  refs: References
 }
 
 /** Réunit plusieurs métrés en un seul : listes mises bout à bout, totaux additionnés. */
@@ -455,12 +458,12 @@ export function computeBuildingMeasurements(
       voids.filter((v) => v.levelId === level.id),
     ),
   }))
-  return { levels, total: sumMeasurements(levels.map((l) => l.measurements)) }
+  return { levels, total: sumMeasurements(levels.map((l) => l.measurements)), refs: buildReferences(document) }
 }
 
 /** Le même bâtiment réduit à un seul niveau (ses métrés et ses totaux) ; inchangé si le niveau n'existe pas. */
 export function restrictToLevel(building: BuildingMeasurements, levelId: string): BuildingMeasurements {
   const kept = building.levels.filter((entry) => entry.level.id === levelId)
   if (kept.length === 0) return building
-  return { levels: kept, total: sumMeasurements(kept.map((entry) => entry.measurements)) }
+  return { ...building, levels: kept, total: sumMeasurements(kept.map((entry) => entry.measurements)) }
 }

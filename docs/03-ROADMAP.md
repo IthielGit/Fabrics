@@ -433,7 +433,7 @@ l'utilisateur sur un premier PDF :
 
 ### Lot A — Métrés client / exécution
 
-- [ ] Repères automatiques `M01`, `P01`, `F01` (calcul pur, avec tests), affichés dans les
+- [x] Repères automatiques `M01`, `P01`, `F01` (calcul pur, avec tests), affichés dans les
       métrés d'exécution
 - [ ] Présentation **Client** (fonction pure) : pour chaque pièce, son nom, ses dimensions
       intérieures et sa **surface au sol** (trémie déduite) ; total par niveau et pour le

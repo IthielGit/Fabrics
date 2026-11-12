@@ -55,12 +55,14 @@ export const ndeg = (value: number): MetresNumber => ({ text: formatDecimal(valu
 const left = (header: string): MetresColumn => ({ header, align: 'left' })
 const right = (header: string): MetresColumn => ({ header, align: 'right' })
 
-/**
- * Références courtes des murs du bâtiment (M1, M2…), dans l'ordre des tableaux : deux murs qui
- * portent le même nom, sur le même niveau ou sur deux niveaux, ne se confondent plus.
- */
+/** Repères des murs (M01, M02…) : deux murs qui portent le même nom ne se confondent plus. */
 export function wallRefs(building: BuildingMeasurements): Map<string, string> {
-  return new Map(building.total.walls.map((wall, index) => [wall.id, `M${index + 1}`]))
+  return building.refs.walls
+}
+
+/** Repères des ouvertures (P01 pour les portes, F01 pour les fenêtres et les baies). */
+export function openingRefs(building: BuildingMeasurements): Map<string, string> {
+  return building.refs.openings
 }
 
 /**
@@ -172,6 +174,7 @@ export function buildMetresTables(
       title: labels.openings,
       columns: [
         left(labels.level),
+        left(labels.ref),
         left(labels.name),
         left(labels.kind),
         left(labels.style),
@@ -185,6 +188,7 @@ export function buildMetresTables(
       rows: perLevel(
         (m) => m.openings,
         (opening) => [
+          openingRefs(building).get(opening.id) ?? '',
           opening.name,
           labels.kinds[opening.kind],
           labels.styles[opening.style],
@@ -196,7 +200,7 @@ export function buildMetresTables(
           nm2(opening.area),
         ],
       ),
-      total: totalRow('', '', '', '', '', '', '', '', nm2(total.totals.openingsArea)),
+      total: totalRow('', '', '', '', '', '', '', '', '', nm2(total.totals.openingsArea)),
     })
   }
 

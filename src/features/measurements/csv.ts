@@ -12,7 +12,7 @@ export interface CsvLabels {
   building: string
   /** Libellé des lignes de total d'un tableau. */
   total: string
-  /** Colonne « Réf. » d'un mur (M1, M2…) et « Réf. du mur » d'une ouverture. */
+  /** Colonne « Réf. » d'un mur (M01…), d'une porte (P01…) ou d'une fenêtre (F01…) et « Réf. du mur » d'une ouverture. */
   ref: string
   wallRef: string
   elevation: string
@@ -330,7 +330,7 @@ export function measurementsToFlatCsv(
       ])
     }
     for (const opening of m.openings) {
-      add(level.name, flat.categories.opening, opening.name, refs.get(opening.wallId) ?? '', [
+      add(level.name, flat.categories.opening, opening.name, building.refs.openings.get(opening.id) ?? '', [
         [q.width, opening.width, unit.mm, 0],
         [q.height, opening.height, unit.mm, 0],
         [q.sillHeight, opening.sillHeight, unit.mm, 0],
