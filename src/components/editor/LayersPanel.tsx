@@ -50,7 +50,27 @@ const TYPE_ICONS: Record<CanvasElement['type'], LucideIcon> = {
   roof: House,
 }
 
-const ROW_BUTTON = 'rounded p-1 text-slate-500 hover:bg-slate-200 disabled:opacity-30 disabled:hover:bg-transparent'
+const ROW_BUTTON =
+  'rounded p-1.5 text-slate-600 hover:bg-slate-200 disabled:opacity-0 disabled:hover:bg-transparent group-hover:disabled:opacity-30'
+/** Flèches et poignée : discrètes au repos, visibles au survol, au focus, sur la ligne choisie et au toucher. */
+const ROW_REVEAL =
+  'opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 focus-visible:opacity-100 pointer-coarse:opacity-100'
+
+type Family = 'furniture' | 'wall' | 'room' | 'opening' | 'dimension' | 'other'
+const FAMILY_ORDER: Family[] = ['furniture', 'wall', 'room', 'opening', 'dimension', 'other']
+
+function familyOf(element: CanvasElement): Family {
+  switch (element.type) {
+    case 'furniture':
+    case 'wall':
+    case 'room':
+    case 'opening':
+    case 'dimension':
+      return element.type
+    default:
+      return 'other'
+  }
+}
 
 export default function LayersPanel() {
   // Seuls les éléments du niveau actif sont listés.
@@ -66,11 +86,19 @@ export default function LayersPanel() {
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [dragId, setDragId] = useState<string | null>(null)
   const [dropSlot, setDropSlot] = useState<number | null>(null)
+  const [filter, setFilter] = useState<'all' | Family>('all')
 
   if (!isOpen) return null
   // Le dessus est en haut de la liste. Les traits d'un même fond DXF n'occupent qu'une ligne.
   const ordered = [...elements].reverse()
-  const rows = layerRows(ordered)
+  const allRows = layerRows(ordered)
+  const counts = new Map<Family, number>()
+  allRows.forEach((row) => counts.set(familyOf(row.element), (counts.get(familyOf(row.element)) ?? 0) + 1))
+  const families = FAMILY_ORDER.filter((family) => counts.has(family))
+  // Un filtre qui n'a plus d'éléments (supprimés) retombe sur la liste complète.
+  const activeFilter = filter !== 'all' && counts.has(filter) ? filter : 'all'
+  const filtered = activeFilter !== 'all'
+  const rows = filtered ? allRows.filter((row) => familyOf(row.element) === activeFilter) : allRows
   /** Place dans la liste complète (pour le glisser-déposer) d'un emplacement entre deux lignes. */
   const fullSlot = (slot: number) => (slot >= rows.length ? ordered.length : rows[slot].fullIndex)
 
@@ -124,7 +152,29 @@ export default function LayersPanel() {
     <section aria-label={fr.layers.title} className="border-t border-slate-200 p-4">
       <h2 className="text-sm font-semibold text-slate-900">{fr.layers.title}</h2>
 
-      {rows.length === 0 && <p className="mt-3 text-sm text-slate-500">{fr.layers.empty}</p>}
+      {allRows.length === 0 && <p className="mt-3 text-sm text-slate-600">{fr.layers.empty}</p>}
+
+      {families.length > 1 && (
+        <div role="group" aria-label={fr.layers.filterLabel} className="mt-3 flex flex-wrap gap-1.5">
+          {(['all', ...families] as const).map((id) => (
+            <button
+              key={id}
+              type="button"
+              aria-pressed={activeFilter === id}
+              onClick={() => setFilter(id)}
+              className={clsx(
+                'rounded-full border px-2.5 py-1 text-xs',
+                activeFilter === id
+                  ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                  : 'border-slate-300 text-slate-600 hover:bg-slate-100',
+              )}
+            >
+              {id === 'all' ? fr.layers.filterAll : fr.layers.families[id]}{' '}
+              <span className="text-slate-500">{id === 'all' ? allRows.length : counts.get(id)}</span>
+            </button>
+          ))}
+        </div>
+      )}
 
       <ul className="mt-3 space-y-0.5" onDrop={handleDrop} onDragLeave={() => setDropSlot(null)}>
         {rows.map((row, rowIndex) => {
@@ -153,7 +203,7 @@ export default function LayersPanel() {
           return (
             <li
               key={element.id}
-              draggable={renamingId !== element.id}
+              draggable={renamingId !== element.id && !filtered}
               onDragStart={(event) => {
                 event.dataTransfer.effectAllowed = 'move'
                 event.dataTransfer.setData('text/plain', element.id)
@@ -163,10 +213,10 @@ export default function LayersPanel() {
               onDragEnd={endDrag}
               onClick={(event) => handleRowClick(element.id, event.shiftKey)}
               className={clsx(
-                'relative flex items-center gap-1 rounded-md px-1 py-1 text-sm',
+                'group relative flex items-center gap-1 rounded-md px-1 py-0.5 text-sm',
                 selected ? 'bg-indigo-50 text-indigo-900' : 'text-slate-700 hover:bg-slate-50',
                 dragging && 'opacity-40',
-                element.hidden && 'text-slate-400',
+                element.hidden && 'text-slate-500',
               )}
               aria-selected={selected}
             >
@@ -177,7 +227,10 @@ export default function LayersPanel() {
                 <span className="absolute inset-x-0 -bottom-0.5 h-0.5 rounded bg-indigo-500" />
               )}
 
-              <span title={fr.layers.drag} className="cursor-grab text-slate-400">
+              <span
+                title={filtered ? fr.layers.filterNoDrag : fr.layers.drag}
+                className={clsx('text-slate-500', filtered ? 'cursor-not-allowed opacity-30' : clsx('cursor-grab', ROW_REVEAL, selected && 'opacity-100'))}
+              >
                 <GripVertical size={14} />
               </span>
               <Icon size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
@@ -212,7 +265,7 @@ export default function LayersPanel() {
                   event.stopPropagation()
                   stepElementOrder(element.id, 'up')
                 }}
-                className={ROW_BUTTON}
+                className={clsx(ROW_BUTTON, ROW_REVEAL, selected && 'opacity-100')}
               >
                 <ChevronUp size={14} />
               </button>
@@ -225,7 +278,7 @@ export default function LayersPanel() {
                   event.stopPropagation()
                   stepElementOrder(element.id, 'down')
                 }}
-                className={ROW_BUTTON}
+                className={clsx(ROW_BUTTON, ROW_REVEAL, selected && 'opacity-100')}
               >
                 <ChevronDown size={14} />
               </button>

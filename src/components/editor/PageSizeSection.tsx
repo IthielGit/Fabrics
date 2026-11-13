@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { ChevronDown } from 'lucide-react'
 import { DESIGN_PAGE_FORMATS, PLAN_PAGE_FORMATS, isSamePageSize } from '../../features/documents/pageSize'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
@@ -33,8 +34,13 @@ export default function PageSizeSection() {
   const sizeText = isPlan ? fr.pageSize.sizeMm : fr.pageSize.sizePx
 
   return (
-    <div className="mt-4 space-y-3 border-t border-slate-200 pt-4">
-      <h3 className="text-sm font-semibold text-slate-900">{fr.pageSize.title}</h3>
+    // Pour un plan, la taille de la page se règle rarement : repliée, pour ne pas passer avant l'aide.
+    <details open={!isPlan} className="group mt-4 border-t border-slate-200 pt-4">
+      <summary className="flex cursor-pointer list-none items-center justify-between text-sm font-semibold text-slate-900">
+        {fr.pageSize.title}
+        <ChevronDown size={16} aria-hidden="true" className="transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="mt-3 space-y-3">
       <NumberField
         label={fr.pageSize.width}
         suffix={suffix}
@@ -72,6 +78,7 @@ export default function PageSizeSection() {
           )
         })}
       </ul>
-    </div>
+      </div>
+    </details>
   )
 }
