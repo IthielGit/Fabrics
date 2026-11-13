@@ -25,6 +25,8 @@ const SIGNED_URL_MARGIN_MS = 5 * 60 * 1000
  */
 export class SupabaseRepository implements ProjectRepository {
   private signedUrls = new Map<string, { url: string; expiresAt: number }>()
+  /** Propriétaires (autres que le compte) des projets partagés déjà ouverts : leurs images sont lisibles. */
+  private assetOwners = new Set<string>()
 
   private readonly client: SupabaseClient
   private readonly userId: string
@@ -34,10 +36,12 @@ export class SupabaseRepository implements ProjectRepository {
     this.userId = userId
   }
 
+  /** Projets du compte. Ceux des autres comptes (partagés) sont lus à part, par `listSharedWithMe`. */
   async list(): Promise<ProjectSummary[]> {
     const { data, error } = await this.client
       .from('projects')
       .select(SUMMARY_COLUMNS)
+      .eq('owner_id', this.userId)
       .order('updated_at', { ascending: false })
       .overrideTypes<SummaryRow[], { merge: false }>()
     if (error) throw error
@@ -51,7 +55,10 @@ export class SupabaseRepository implements ProjectRepository {
       .eq('id', id)
       .maybeSingle<ProjectRow>()
     if (error) throw error
-    return data ? migrateProject(rowToStoredProject(data)) : null
+    if (!data) return null
+    // Projet d'un autre compte : ses images sont dans le dossier de son propriétaire.
+    if (data.owner_id && data.owner_id !== this.userId) this.assetOwners.add(data.owner_id)
+    return migrateProject(rowToStoredProject(data))
   }
 
   async save(project: Project): Promise<void> {
@@ -69,6 +76,7 @@ export class SupabaseRepository implements ProjectRepository {
     const { data: others, error: othersError } = await this.client
       .from('projects')
       .select('elements:document->elements')
+      .eq('owner_id', this.userId)
       .overrideTypes<{ elements: CanvasElement[] | null }[], { merge: false }>()
     if (othersError) throw othersError
 
@@ -95,14 +103,22 @@ export class SupabaseRepository implements ProjectRepository {
   async getAssetUrl(id: string): Promise<string> {
     const cached = this.signedUrls.get(id)
     if (cached && cached.expiresAt > Date.now()) return cached.url
-    const { data, error } = await this.client.storage
-      .from(BUCKET)
-      .createSignedUrl(assetPath(this.userId, id), SIGNED_URL_SECONDS)
-    if (error || !data) throw error ?? new Error(`Image introuvable : ${id}`)
-    this.signedUrls.set(id, {
-      url: data.signedUrl,
-      expiresAt: Date.now() + SIGNED_URL_SECONDS * 1000 - SIGNED_URL_MARGIN_MS,
-    })
-    return data.signedUrl
+    // Dossier du compte d'abord, puis ceux des propriétaires des projets partagés ouverts.
+    let lastError: Error | null = null
+    for (const folder of [this.userId, ...this.assetOwners]) {
+      const { data, error } = await this.client.storage
+        .from(BUCKET)
+        .createSignedUrl(assetPath(folder, id), SIGNED_URL_SECONDS)
+      if (error || !data) {
+        lastError = error ?? null
+        continue
+      }
+      this.signedUrls.set(id, {
+        url: data.signedUrl,
+        expiresAt: Date.now() + SIGNED_URL_SECONDS * 1000 - SIGNED_URL_MARGIN_MS,
+      })
+      return data.signedUrl
+    }
+    throw lastError ?? new Error(`Image introuvable : ${id}`)
   }
 }

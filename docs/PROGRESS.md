@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lot A fait ; lot B à lancer sur feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** hors jalon · connexion obligatoire et page d'introduction (13/11, à tester) ; dernière tâche de jalon : M14 · Lot A · hébergement du temps réel (Cloudflare Workers + Durable Objects), documentation
-- **Prochaine tâche :** M14 · Lot B (partage avec un autre compte : tables, règles RLS, lien d'invitation), après validation du plan par l'utilisateur
+- **Jalon en cours :** M14 Collaboration temps réel (lots A et B faits ; lot C à lancer sur feu vert ; lot B à tester avec Supabase) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot B · partage avec un autre compte (13/11, SQL à exécuter dans Supabase puis à tester à deux comptes)
+- **Prochaine tâche :** M14 · Lot C (serveur temps réel Cloudflare), après validation du lot B et du plan par l'utilisateur
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -34,7 +34,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
-| M14 Collaboration temps réel | en cours (lot A fait ; lots B à F à faire) | |
+| M14 Collaboration temps réel | en cours (lots A et B faits ; lots C à F à faire) | |
 
 ## Journal
 
@@ -108,6 +108,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-13 — M14 · Lot B : partage avec un autre compte (lecture ou édition)
+- Fait (base, `supabase/schema.sql`, **à ré-exécuter en entier dans Supabase**, sans risque) : tables `project_members` (projet, compte, rôle `viewer` / `editor`) et `project_invites` (jeton de 192 bits tiré par la base, rôle, expiration, désactivable) ; fonction `my_project_role` (security definer, évite la récursion entre règles RLS) ; règles de `projects` étendues (un membre lit, un éditeur modifie, seul le propriétaire supprime) ; déclencheur qui fige `owner_id` et `created_at` (l'enregistrement automatique d'un éditeur envoie la ligne entière) ; fonctions `create_invite`, `accept_invite` (jamais de rétrogradation d'un membre), `list_project_members` (propriétaire seul, avec e-mails), `my_shared_projects` ; lecture des images du propriétaire par ses membres (stockage). Aucun accès pour les visiteurs sans compte.
+- Fait (application) : lien `/i/<jeton>` (derrière la connexion, retour automatique après connexion), fenêtre « Partager » avec section « Inviter un autre compte » (rôle, date limite, copier, désactiver, supprimer ; liste des membres, changement de rôle, retrait), rubrique « Partagés avec moi » sur l'accueil (avec « Quitter le projet »), `/p/:id` choisit l'éditeur ou la lecture seule (`ProjectPage`) selon le rôle, bouton « Partager » réservé au propriétaire et ouvert aux visuels (le lien public reste réservé aux plans). « Mes projets » ne liste plus que les projets dont on est propriétaire. Visualiseur en lecture seule extrait de `SharePage` (`ReadOnlyViewer`).
+- Limites connues (voulues, traitées plus tard) : les images ajoutées par un éditeur invité restent dans son propre dossier de stockage, donc invisibles pour les autres (lot D) ; un membre peut lire toutes les images de dossier du propriétaire (identifiants non devinables) ; pas de modification simultanée tant que le serveur temps réel (lots C et D) n'existe pas : le dernier enregistrement l'emporte ; retour après connexion Google : l'invitation n'est pas reprise (le lien est à rouvrir).
+- Fichiers : `supabase/schema.sql`, `src/features/sharing/membersLogic.ts` (+ test), `membersApi.ts`, `SupabaseRepository.ts`, `cloudMapping.ts`, `src/pages/{InvitePage,ProjectPage,SharedProjectPage,EditorPage,HomePage}.tsx`, `src/components/editor/{InviteSection,ReadOnlyViewer,ShareDialog,EditorHeader}.tsx`, `src/components/home/{SharedProjectCard,LeaveDialog,useSharedProjects}`, `App.tsx`, `fr.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2820). **Non testé contre une vraie base** : les règles RLS n'ont été exécutées nulle part ici ; essai à deux comptes à faire (voir la réponse de fin de tâche).
+- Commit : feat: partage avec un autre compte (membres, invitations, RLS)
 
 ### 2026-11-13 — Hors jalon · Connexion obligatoire et page d'introduction
 - Demande de l'utilisateur : l'application ne doit plus être accessible sans connexion ; une page d'introduction mène à la connexion. Contredit l'ancien parcours « sans compte d'abord » de `docs/01-PRODUIT.md`, mis à jour (section « Accès »).

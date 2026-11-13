@@ -27,7 +27,12 @@ import { useEditorStore } from '../stores/editorStore'
 
 type LoadState = 'loading' | 'ready' | 'not-found' | 'error'
 
-export default function EditorPage() {
+interface EditorPageProps {
+  /** Faux pour un éditeur invité : il n'a pas le bouton « Partager ». */
+  isOwner?: boolean
+}
+
+export default function EditorPage({ isOwner = true }: EditorPageProps) {
   const { projectId } = useParams()
   const loadProject = useEditorStore((state) => state.loadProject)
   const closeProject = useEditorStore((state) => state.closeProject)
@@ -93,7 +98,7 @@ export default function EditorPage() {
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">
-      <EditorHeader />
+      <EditorHeader isOwner={isOwner} />
       <div className="flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
           <EditorStage />
