@@ -55,7 +55,7 @@ function PanelBody() {
       const name = exportFileName(`${projectName} ${fr.viewer3d.captureSuffix}`, 'png', fr.viewer3d.captureSuffix)
       downloadBlob(dataUrlToBlob(dataUrl), name)
     } catch {
-      store.setNotice(fr.viewer3d.captureFailed)
+      store.setNotice(fr.viewer3d.captureFailed, 'error')
     }
   }
 
@@ -70,7 +70,7 @@ function PanelBody() {
       const name = exportFileName(projectName, 'glb', fr.export.planFallbackName)
       downloadBlob(new Blob([buffer], { type: 'model/gltf-binary' }), name)
     } catch {
-      store.setNotice(fr.viewer3d.exportFailed)
+      store.setNotice(fr.viewer3d.exportFailed, 'error')
     } finally {
       setExporting(false)
     }

@@ -770,7 +770,7 @@ export const fr = {
       },
       format: 'Présentation',
       tables: 'Tableaux (CSV)',
-      flat: 'Données à plat (CSV)',
+      flat: 'Une seule liste (CSV)',
       xlsx: 'Excel (.xlsx)',
       pdf: 'Document imprimable (PDF)',
       hint: {
@@ -801,6 +801,7 @@ export const fr = {
     scaleFitNote: (scale: number) =>
       `L’échelle n’est pas garantie (environ 1:${scale}) : le cartouche l’indique.`,
     scaleDoesNotFit: (scale: number) => `Ce plan ne tient pas sur la feuille à l’échelle 1:${scale}.`,
+    applyScale: (scale: number) => `Utiliser l’échelle 1:${scale}`,
     scaleSuggestion: (fitting: number) =>
       ` Essayez 1:${fitting}, ou « Ajuster à la page ».`,
     scaleNoSuggestion: ' Essayez une feuille plus grande ou « Ajuster à la page ».',
@@ -1168,8 +1169,8 @@ export const fr = {
     label: 'Mode de tracé',
     platformPolygon: 'Polygone',
     platformRectangle: 'Rectangle',
-    wallPolyline: 'Polyligne',
-    wallStraight: 'Mur droit',
+    wallPolyline: 'Murs enchaînés',
+    wallStraight: 'Un seul mur',
     roomPolygon: 'Polygone',
     roomRectangle: 'Rectangle',
     withWalls: 'Avec murs',
@@ -1328,7 +1329,7 @@ export const fr = {
     capture: 'Enregistrer une image PNG de la vue 3D',
     captureFailed: 'La capture de la vue 3D a échoué.',
     captureSuffix: '3D',
-    export: 'Exporter la 3D (.glb, glTF) : le bâtiment tel qu’il est affiché, en mètres',
+    export: 'Exporter la 3D (.glb, glTF) : le bâtiment tel qu’il est affiché',
     exportFailed: 'L’export 3D a échoué.',
     loading: 'Chargement de la 3D…',
     error: 'La vue 3D n’a pas pu démarrer sur cet appareil.',

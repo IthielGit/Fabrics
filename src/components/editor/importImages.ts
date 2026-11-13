@@ -35,7 +35,7 @@ export async function importImageFiles(files: File[], center: Point | null = nul
   for (const file of files) {
     const check = checkImageFile(file)
     if (check === 'unsupported') {
-      useEditorStore.getState().setNotice(fr.notices.imageUnsupported(file.name))
+      useEditorStore.getState().setNotice(fr.notices.imageUnsupported(file.name), 'error')
       continue
     }
     if (check === 'too-large') {
@@ -70,7 +70,7 @@ export async function importImageFiles(files: File[], center: Point | null = nul
       )
       placed += 1
     } catch {
-      useEditorStore.getState().setNotice(fr.notices.imageUnreadable(file.name))
+      useEditorStore.getState().setNotice(fr.notices.imageUnreadable(file.name), 'error')
     }
   }
 }

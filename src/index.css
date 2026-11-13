@@ -10,6 +10,12 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Anneau de focus clavier commun : visible sur fond clair comme sur fond indigo. */
+:where(button, a, input, select, textarea, [role="tab"], summary):focus-visible {
+  outline: 2px solid rgb(79 70 229);
+  outline-offset: 2px;
+}
+
 ::selection {
   background: rgb(199 210 254);
   color: rgb(30 27 75);

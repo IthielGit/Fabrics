@@ -191,7 +191,7 @@ export default function Toolbar() {
     <nav
       ref={navRef}
       aria-label={fr.tools.label}
-      className="absolute left-3 top-3 z-20 flex w-40 flex-col gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
+      className="absolute left-3 top-3 z-20 flex w-40 max-sm:w-auto flex-col gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
     >
       {groups.map((group, index) => {
         const entry = shownEntry(group)
@@ -229,7 +229,7 @@ export default function Toolbar() {
                 className="flex min-h-9 pointer-coarse:min-h-12 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm"
               >
                 <Icon size={20} className="shrink-0" aria-hidden="true" />
-                <span className="truncate">{entry.short ?? entry.label}</span>
+                <span className="truncate max-sm:sr-only">{entry.short ?? entry.label}</span>
               </button>
               {several && (
                 <button
@@ -314,12 +314,12 @@ export default function Toolbar() {
           event.target.value = ''
           if (!file) return
           if (file.size > MAX_DXF_BYTES) {
-            useEditorStore.getState().setNotice(fr.dxfImport.errors.tooLarge)
+            useEditorStore.getState().setNotice(fr.dxfImport.errors.tooLarge, 'error')
             return
           }
           void file.text().then(
             (text) => setDxfFile({ name: file.name, text }),
-            () => useEditorStore.getState().setNotice(fr.dxfImport.errors.unreadable),
+            () => useEditorStore.getState().setNotice(fr.dxfImport.errors.unreadable, 'error'),
           )
         }}
       />

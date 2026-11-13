@@ -46,6 +46,17 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Corrections issues de l'audit UX/UI
+
+- Messages de l'éditeur : vert pour une confirmation (« Mur corrigé »), rouge pour un échec (jamais refermé tout seul), ambre pour une information ; le minuteur s'arrête au survol ; annonce lecteur d'écran adaptée.
+- Téléphone : barre d'outils réduite à ses icônes, sélecteur de niveau et cotation sur deux lignes au lieu d'être écrasés.
+- Métrés : phrase qui explique « Client » et « Technique » sous le sélecteur.
+- Export PDF : bouton « Utiliser l'échelle 1:N » dans l'alerte quand le plan ne tient pas sur la feuille ; note d'impression plus lisible.
+- Textes : « Polyligne » devient « Murs enchaînés », « Mur droit » devient « Un seul mur », « Données à plat » devient « Une seule liste », « en mètres » retiré de l'infobulle 3D.
+- Bibliothèque : les pastilles vides (Récents, Mes ensembles) restent cachées.
+- Focus clavier : anneau indigo commun à tous les boutons, liens et champs.
+- Restent à traiter (audit) : étiquettes de pièces masquées par les meubles sur le plan, tableau « Client » des métrés trop large, ajustement du zoom au contenu sur téléphone, panneau 3D + panneau de droite trop larges ensemble, vignettes des projets récents.
+
 ### 2026-11-13 — Hors jalon · Audit UX/UI de l'application
 
 - Couleurs : palette déjà cohérente (gris ardoise + indigo, ambre / rouge / vert réservés aux alertes) ; seuls des gris trop clairs (`slate-400`) sur du texte sont passés à `slate-500` (suffixe « mm », compteurs de la bibliothèque, calques).

@@ -376,6 +376,15 @@ function ExportForm({ onClose }: { onClose: () => void }) {
                 {planPlacement.fittingScale !== null
                   ? fr.export.scaleSuggestion(planPlacement.fittingScale)
                   : fr.export.scaleNoSuggestion}
+                {planPlacement.fittingScale !== null && (
+                  <button
+                    type="button"
+                    onClick={() => setScale(planPlacement.fittingScale as ScaleChoice)}
+                    className="mt-2 block rounded-md border border-amber-600 bg-amber-600 px-3 py-1.5 font-medium text-white hover:bg-amber-700"
+                  >
+                    {fr.export.applyScale(planPlacement.fittingScale)}
+                  </button>
+                )}
               </p>
             )}
             {scale === 'fit' && (
@@ -383,7 +392,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
                 {fr.export.scaleFitNote(Math.round(planPlacement.scale))}
               </p>
             )}
-            {scale !== 'fit' && <p className="text-xs text-slate-500">{fr.export.printHint}</p>}
+            {scale !== 'fit' && <p className="text-sm text-slate-600">{fr.export.printHint}</p>}
           </>
         )}
 

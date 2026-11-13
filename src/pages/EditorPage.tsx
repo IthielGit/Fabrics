@@ -100,8 +100,8 @@ export default function EditorPage() {
           <EmptyPlanCard />
           <Toolbar />
           {/* En haut du plan : ligne 1 = niveau affiché et cotation ; ligne 2 = options de l'outil en cours (seulement s'il en a). */}
-          <div className="pointer-events-none absolute left-48 right-3 top-3 z-10 flex flex-col items-start gap-2">
-            <div className="flex w-full items-start gap-2">
+          <div className="pointer-events-none absolute left-[6.5rem] right-3 top-3 z-10 sm:left-48 flex flex-col items-start gap-2">
+            <div className="flex w-full flex-wrap items-start gap-2">
               <LevelSelector />
               <DimensioningSelector />
             </div>
