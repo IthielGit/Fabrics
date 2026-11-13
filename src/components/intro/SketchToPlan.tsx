@@ -192,10 +192,10 @@ export default function SketchToPlan() {
   }
 
   return (
-    <div ref={rootRef} className="rounded-3xl bg-white p-3 ring-1 ring-slate-900/10 shadow-[0_32px_64px_-32px_rgb(30_27_75/0.45)] sm:p-4">
+    <div ref={rootRef} className="bg-white p-3 ring-1 ring-slate-900/10 shadow-[0_32px_64px_-32px_rgb(30_27_75/0.45)] sm:p-4">
       <HeroModeTabs current={mode} onSelect={selectMode} />
 
-      <div className="relative isolate aspect-[4/3] w-full overflow-hidden rounded-2xl bg-stone-50 select-none sm:aspect-[16/10] lg:aspect-auto lg:h-[560px]">
+      <div className="relative isolate aspect-[4/3] w-full overflow-hidden bg-stone-50 select-none sm:aspect-[16/10] lg:aspect-auto lg:h-[560px]">
         {/* Calque croquis */}
         <div className="absolute inset-0 bg-stone-50" style={PAPER_STYLE}>
           <SketchDrawing viewBox={viewBox} compact={compact} measures={MEASURES} className={DRAWING_FRAME} />
@@ -220,10 +220,10 @@ export default function SketchToPlan() {
           />
         </div>
 
-        <span className={`pointer-events-none absolute top-3 left-3 rounded-full bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-sm ring-1 ring-slate-900/5 transition-opacity duration-300 lg:top-6 lg:left-6 lg:text-sm ${value < 12 ? 'opacity-0' : ''}`}>
+        <span className={`pointer-events-none absolute top-3 left-3 bg-white px-3 py-1 text-xs font-medium text-slate-700 shadow-sm ring-1 ring-slate-900/5 transition-opacity duration-300 lg:top-6 lg:left-6 lg:text-sm ${value < 12 ? 'opacity-0' : ''}`}>
           {fr.intro.sketchLabel}
         </span>
-        <span className="pointer-events-none absolute top-3 right-3 rounded-full bg-indigo-600 px-3 py-1 text-xs font-medium text-white shadow-sm lg:top-6 lg:right-6 lg:text-sm">
+        <span className="pointer-events-none absolute top-3 right-3 bg-indigo-600 px-3 py-1 text-xs font-medium text-white shadow-sm lg:top-6 lg:right-6 lg:text-sm">
           {fr.intro.planLabel}
         </span>
 

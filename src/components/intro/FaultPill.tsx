@@ -23,7 +23,7 @@ export default function FaultPill({ placement, onSee }: FaultPillProps) {
     <div
       role="status"
       data-fault-pill
-      className={`${position} rounded-2xl bg-white p-4 text-sm shadow-xl shadow-indigo-950/25 ring-1 ring-amber-300`}
+      className={`${position} bg-white p-4 text-sm shadow-xl shadow-indigo-950/25 ring-1 ring-amber-300`}
     >
       <div className="flex gap-3">
         <TriangleAlert className="mt-0.5 size-5 shrink-0 text-amber-600" aria-hidden="true" />
@@ -37,7 +37,7 @@ export default function FaultPill({ placement, onSee }: FaultPillProps) {
           <button
             type="button"
             onClick={onSee}
-            className="mt-3 inline-flex h-9 items-center rounded-lg bg-indigo-600 px-3 text-sm font-medium text-white transition-[transform,background-color] duration-150 ease-out-strong hover:bg-indigo-700 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+            className="mt-3 inline-flex h-9 items-center bg-indigo-600 px-3 text-sm font-medium text-white transition-[transform,background-color] duration-150 ease-out-strong hover:bg-indigo-700 active:scale-[0.97] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             {warnings.seeOnPlan}
           </button>
