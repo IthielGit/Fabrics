@@ -829,6 +829,30 @@ Ordre confirmé : A (barre d'outils), puis C (plan vide), puis les autres lots u
 
 ---
 
+## M11 quinquies — Couper un mur ici, surface habitable
+
+Demande de l'utilisateur du 2026-11-13 (deux points de la liste « Idées »). Plan validé par
+l'utilisateur le 2026-11-13 ; **codé le 2026-11-13, à tester dans le navigateur**.
+
+- [x] **Lot A — Outil « Couper un mur ici »** (famille Construction) : survol d'un mur = repère de
+      coupe avec la distance depuis le sommet ; clic = le mur est coupé en deux à cet endroit
+      (distance arrondie à 10 mm), en un seul pas d'historique, annulable. Les portes, fenêtres et
+      baies suivent leur morceau. **Refusé** (avec un message) à moins d'une épaisseur de mur d'un
+      sommet et au milieu d'une ouverture. Fonctions pures `cutWall` / `cutWallInDocument` testées.
+- [x] **Lot B — Surface habitable dans les métrés Client** : surface nette moins la partie sous
+      **1800 mm** de hauteur sous toiture (dessous du versant = dessus moins l'épaisseur de dalle,
+      comme en 3D). La colonne « Surface habitable » n'apparaît que si elle diffère de la surface au
+      sol (« Vos pièces », « Récapitulatif », PDF, Excel, CSV). Hauteur fixe (pas de réglage par
+      projet). Fonction pure `habitableArea` testée.
+
+**Critères d'acceptation**
+- Un mur de 4000 mm coupé à 1500 mm donne deux murs de 1500 et 2500 mm, annulable d'un seul Ctrl+Z
+- Sous un toit à deux pans à 45° sur des murs de 1000 mm, une pièce de 8000 × 6000 mm a 48,00 m² au
+  sol et 32,00 m² habitables
+- Sans toiture en pente, la colonne « Surface habitable » n'apparaît pas
+
+---
+
 ## M12 — Mise en ligne
 
 Objectif : l'application est accessible publiquement (en mode local, sans compte).
@@ -868,6 +892,12 @@ Objectif : retrouver ses projets sur un autre appareil.
 - Sans variables Supabase, l'application fonctionne toujours en mode local
 - Un lien de partage désactivé ne montre plus rien, même rechargé ; la personne qui reçoit
   le lien ne peut rien modifier
+
+**Ajout hors jalon (2026-11-13, demande de l'utilisateur)** : connexion obligatoire et page d'introduction
+(`/bienvenue`). Sans session, « / » et l'éditeur renvoient vers l'introduction ; restent publics l'introduction,
+la connexion, le nouveau mot de passe et les liens de partage `/s/…` ; sans Supabase (mode local), tout reste
+accessible. Contredit l'ancien parcours « sans compte d'abord » : `docs/01-PRODUIT.md` (section « Accès ») est
+mis à jour. À tester dans le navigateur.
 
 **✅ Fin du MVP**
 
