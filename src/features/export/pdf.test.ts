@@ -33,7 +33,7 @@ describe('PDF', () => {
   it('produit un PDF de plan en A3 paysage avec cartouche', async () => {
     const sheet = sheetSize('a3', 'landscape')
     const placement = planPdfPlacement({ width: 10000, height: 6000 }, sheet, 50)
-    const blob = await buildPlanPdf(PIXEL, sheet, placement.rect, 50, {
+    const blob = await buildPlanPdf(PIXEL, sheet, placement.rect, {
       projectName: 'Maison',
       subtitle: 'Rez-de-chaussée · Pièces : 12,00 m²',
       fields: [
@@ -41,7 +41,6 @@ describe('PDF', () => {
         { label: 'Date', value: '10/11/2026' },
         { label: 'Feuille', value: 'A3' },
       ],
-      scaleBarUnit: 'mm',
       northAngle: 30,
     })
     const text = await textOf(blob)
@@ -71,7 +70,7 @@ describe('PDF', () => {
     expect(placement.rect.height).toBeCloseTo(50) // 2 500 mm ÷ 50
     expect(placement.rect.width).toBeCloseTo(100) // 5 000 mm ÷ 50
 
-    const blob = await buildDrawingPdf(drawing, sheet, placement.rect, 50, {
+    const blob = await buildDrawingPdf(drawing, sheet, placement.rect, {
       projectName: 'Maison',
       subtitle: 'Façade Nord',
       fields: [
@@ -79,7 +78,6 @@ describe('PDF', () => {
         { label: 'Date', value: '10/11/2026' },
         { label: 'Feuille', value: 'A4' },
       ],
-      scaleBarUnit: 'mm',
     })
     const text = await textOf(blob)
     expect(text.startsWith('%PDF-')).toBe(true)
