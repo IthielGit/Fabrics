@@ -30,8 +30,8 @@ export default function IntroMotion() {
       // Jamais depuis zéro : la scène apparaît par le bas, déjà un peu présente.
       gsap.fromTo(
         '[data-stage]',
-        { opacity: 0, clipPath: 'inset(12% 0% 0% 0% round 24px)' },
-        { opacity: 1, clipPath: 'inset(0% 0% 0% 0% round 24px)', duration: 1.1, ease: 'expo.out', delay: 0.3, clearProps: 'clipPath' },
+        { opacity: 0, clipPath: 'inset(12% 0% 0% 0%)' },
+        { opacity: 1, clipPath: 'inset(0% 0% 0% 0%)', duration: 1.1, ease: 'expo.out', delay: 0.3, clearProps: 'clipPath' },
       )
       gsap.from('[data-tabs]', { opacity: 0, y: 10, duration: 0.6, ease: 'power3.out', delay: 0.55, clearProps: 'all' })
 

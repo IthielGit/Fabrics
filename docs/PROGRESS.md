@@ -48,7 +48,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ### 2026-11-13 — Hors jalon · Finition de la scène du hero
 
-- Onglets, phrase et scène réunis dans un seul bloc (carte à bord arrondi).
+- Onglets, phrase et scène réunis dans un seul bloc, à angles droits (plus de bords arrondis dans le hero).
 - Les trois onglets forment un seul contrôle segmenté (moins de boutons, mêmes fonctions).
 - Scène posée sur une ombre portée décalée ; anneau d'invitation autour de la poignée jusqu'au premier geste ; carte des métrés légèrement translucide, voyant « Export Excel prêt » qui pulse.
 

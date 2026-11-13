@@ -23,13 +23,13 @@ export default function MeasuresCard({
   blocked = false,
 }: MeasuresCardProps) {
   return (
-    <div className={`rounded-2xl bg-white/95 p-4 text-slate-700 backdrop-blur-sm ${className}`}>
+    <div className={`bg-white/95 p-4 text-slate-700 backdrop-blur-sm ${className}`}>
       <p className="text-xs font-semibold tracking-wide text-slate-600 uppercase">{fr.intro.measuresTitle}</p>
       <dl className="mt-2 text-sm">
         {measures.map((room) => (
           <div
             key={room.id}
-            className={`-mx-2 flex items-baseline justify-between gap-4 rounded-lg px-2 py-1 transition-colors duration-300 ${
+            className={`-mx-2 flex items-baseline justify-between gap-4 px-2 py-1 transition-colors duration-300 ${
               activeId === room.id ? 'bg-indigo-100 text-indigo-950' : ''
             }`}
           >

@@ -8,7 +8,7 @@ interface HeroModeTabsProps {
 }
 
 const FOCUS = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-const CELL = 'h-11 rounded-lg px-3 text-[13px] leading-tight font-medium sm:px-4 sm:text-sm'
+const CELL = 'h-11 px-3 text-[13px] leading-tight font-medium sm:px-4 sm:text-sm'
 const BUTTON = `relative ${CELL} text-slate-700 transition-[transform,color] duration-150 ease-out-strong hover:text-indigo-950 active:scale-[0.97] ${FOCUS}`
 
 /**
@@ -29,7 +29,7 @@ export default function HeroModeTabs({ current, onSelect }: HeroModeTabsProps) {
       const { offsetLeft: left, offsetTop: top, offsetWidth: width, offsetHeight: height } = button
       const right = group.offsetWidth - left - width
       const bottom = group.offsetHeight - top - height
-      setClip(`inset(${top}px ${right}px ${bottom}px ${left}px round 8px)`)
+      setClip(`inset(${top}px ${right}px ${bottom}px ${left}px)`)
     }
     update()
     const observer = new ResizeObserver(update)
@@ -39,7 +39,7 @@ export default function HeroModeTabs({ current, onSelect }: HeroModeTabsProps) {
 
   return (
     <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
-      <div data-tabs className="relative w-full rounded-xl bg-slate-100 p-1 ring-1 ring-slate-900/5 lg:w-fit">
+      <div data-tabs className="relative w-full bg-slate-100 p-1 ring-1 ring-slate-900/5 lg:w-fit">
         <div ref={groupRef} role="group" aria-label={fr.intro.modesLabel} className="relative grid grid-cols-3 lg:flex">
           {HERO_MODES.map((mode) => (
             <button
