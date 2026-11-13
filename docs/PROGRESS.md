@@ -46,6 +46,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Animations de la page d'introduction (principes d'Emil Kowalski)
+
+- Titre révélé mot par mot, scène dévoilée par le bas, onglets du hero avec un fond actif qui glisse, phrase qui change avec un léger flou.
+- Retour d'appui (`scale 0.97`) sur les boutons, flèche du bouton principal qui avance au survol, poignée du comparateur qui se resserre au toucher.
+- Courbes personnalisées dans `src/index.css` (`ease-out-strong`, `ease-in-out-strong`) ; mouvement supprimé si « réduire les animations » est actif.
+- Vérifié sur navigateur (1440 et 390 px) ; build, lint et tests OK.
+
 ### 2026-11-13 — Hors jalon · Hero animé et interactif de la page d'introduction
 - Demande de l'utilisateur : un hero qui met en avant les plus-values de l'app, animé et interactif, avec GSAP et Lenis (dépôts `greensock/gsap-skills` et `darkroomengineering/lenis`). Dépendances `gsap` et `lenis` ajoutées avec son accord (listées dans `docs/02-ARCHITECTURE.md`).
 - Fait : sous le titre, trois boutons de plus-values qui pilotent la même scène. « Du croquis au plan » (séparateur à glisser), « Métrés automatiques » (le plan se révèle, surfaces comptées de 0 à leur valeur exacte, pièces surlignées tour à tour), « Contrôle avant export » (deux murs superposés repérés en orange, alerte avec les vrais textes « Que faire » et « Voir sur le plan », export marqué bloqué). Défilement fluide Lenis synchronisé avec ScrollTrigger, entrée du titre et apparition des sections au défilement ; rien de tout cela avec « réduire les animations ». Correction de texte : l'export des métrés est Excel (et non CSV). Bouton « Se connecter » de l'en-tête retiré à la demande de l'utilisateur : « J'ai déjà un compte » reste le lien de connexion.

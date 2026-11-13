@@ -5,12 +5,13 @@ import BuildingViews from '../components/intro/BuildingViews'
 import IntroMotion from '../components/intro/IntroMotion'
 import MeasuredRoom from '../components/intro/MeasuredRoom'
 import SketchToPlan from '../components/intro/SketchToPlan'
+import SplitWords from '../components/intro/SplitWords'
 import { fr } from '../i18n/fr'
 import { useAuthStore } from '../stores/authStore'
 
 const FOCUS = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-const PRIMARY = `inline-flex h-12 items-center gap-2 rounded-xl bg-indigo-600 px-6 text-[0.9375rem] font-semibold text-white shadow-md shadow-indigo-950/15 transition-colors duration-150 hover:bg-indigo-700 ${FOCUS}`
-const TEXT_LINK = `rounded-sm text-[0.9375rem] font-medium text-indigo-700 underline decoration-indigo-300 underline-offset-4 transition-colors hover:text-indigo-900 hover:decoration-indigo-700 ${FOCUS}`
+const PRIMARY = `group inline-flex h-12 items-center gap-2 rounded-xl bg-indigo-600 px-6 text-[0.9375rem] font-semibold text-white shadow-md shadow-indigo-950/15 transition-[transform,background-color] duration-150 ease-out-strong hover:bg-indigo-700 active:scale-[0.97] ${FOCUS}`
+const TEXT_LINK = `rounded-sm text-[0.9375rem] font-medium text-indigo-700 underline decoration-indigo-300 underline-offset-4 transition-[color,transform] duration-150 ease-out-strong active:scale-[0.97] hover:text-indigo-900 hover:decoration-indigo-700 ${FOCUS}`
 const CAVEAT_URL = 'https://fonts.googleapis.com/css2?family=Caveat:wght@500;600&display=swap'
 
 /**
@@ -39,7 +40,7 @@ export default function IntroPage() {
     <div className="flex flex-wrap items-center gap-x-6 gap-y-4">
       <Link to="/connexion?mode=inscription" state={linkState} className={PRIMARY}>
         {fr.intro.createAccount}
-        <ArrowRight size={18} aria-hidden="true" />
+        <ArrowRight size={18} aria-hidden="true" className="transition-transform duration-200 ease-out-strong group-hover:translate-x-0.5" />
       </Link>
       <Link to="/connexion" state={linkState} className={TEXT_LINK}>
         {fr.intro.haveAccount}
@@ -60,15 +61,15 @@ export default function IntroPage() {
       <main>
         <section className="mx-auto max-w-7xl px-6 pb-20 pt-6 lg:px-10 lg:pb-28 lg:pt-10">
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:items-end lg:gap-16">
-            <h1 data-hero className="text-balance text-[2.5rem] font-bold leading-[1.04] tracking-[-0.035em] text-indigo-950 sm:text-5xl lg:text-[4rem]">
-              {fr.intro.title}
+            <h1 data-split-now className="text-balance text-[2.5rem] font-bold leading-[1.04] tracking-[-0.035em] text-indigo-950 sm:text-5xl lg:text-[4rem]">
+              <SplitWords text={fr.intro.title} />
             </h1>
             <div data-hero className="flex flex-col gap-6 lg:pb-2">
               <p className="max-w-md text-lg leading-relaxed text-slate-600">{fr.intro.lead}</p>
               {actions}
             </div>
           </div>
-          <div className="mt-10 lg:mt-14">
+          <div data-stage className="mt-10 lg:mt-14">
             <SketchToPlan />
           </div>
         </section>
@@ -105,11 +106,11 @@ export default function IntroPage() {
         </section>
 
         <section>
-          <div data-reveal className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-20 lg:flex-row lg:items-end lg:justify-between lg:px-10 lg:py-28">
-            <h2 className="text-balance text-4xl font-bold tracking-[-0.035em] text-indigo-950 lg:text-[3.5rem] lg:leading-[1.04]">
-              {fr.intro.closingTitle}
+          <div className="mx-auto flex max-w-7xl flex-col gap-8 px-6 py-20 lg:flex-row lg:items-end lg:justify-between lg:px-10 lg:py-28">
+            <h2 data-split className="text-balance text-4xl font-bold tracking-[-0.035em] text-indigo-950 lg:text-[3.5rem] lg:leading-[1.04]">
+              <SplitWords text={fr.intro.closingTitle} />
             </h2>
-            {actions}
+            <div data-reveal>{actions}</div>
           </div>
         </section>
       </main>
