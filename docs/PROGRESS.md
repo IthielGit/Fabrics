@@ -46,10 +46,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
-### 2026-11-13 — Hors jalon · Échelle écrite en « 1/50 »
+### 2026-11-13 — Hors jalon · Échelle écrite en chiffres dans le cartouche
 
-- Le cartouche des PDF n'a plus de barre d'échelle graphique (0 · 2000 · 4000 mm) : l'échelle s'écrit en chiffres, « 1/50 », dans la cellule « Échelle » ; la flèche du nord reste à gauche.
-- Même format « 1/50 » partout dans l'interface (zoom, export, alertes, vues).
+- Le cartouche des PDF n'a plus de barre d'échelle graphique (0 · 2000 · 4000 mm) : l'échelle s'écrit en chiffres dans la cellule « Échelle » ; la flèche du nord reste à gauche.
+- Le format reste « 1:50 » partout (le passage à « 1/50 » a été annulé à la demande).
 
 ### 2026-11-13 — Hors jalon · Audit UX/UI, troisième lot
 
