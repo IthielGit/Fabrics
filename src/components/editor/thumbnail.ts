@@ -17,13 +17,17 @@ export function getEditorStage(): Konva.Stage | null {
  * Photographie la page (et seulement elle) en petite image PNG, sans les poignées de sélection
  * ni les guides. Renvoie `null` s'il n'y a pas de scène ou si la capture échoue.
  */
-export function captureThumbnail(page: { width: number; height: number }): string | null {
+export function captureThumbnail(
+  page: { width: number; height: number },
+  /** Zone du document à photographier (dans ses unités) ; par défaut, toute la page. */
+  area: { x: number; y: number; width: number; height: number } = { x: 0, y: 0, ...page },
+): string | null {
   const stage = currentStage
   if (!stage) return null
 
   const scale = stage.scaleX()
-  const widthPx = page.width * scale
-  const heightPx = page.height * scale
+  const widthPx = area.width * scale
+  const heightPx = area.height * scale
   if (widthPx <= 0 || heightPx <= 0) return null
 
   // On masque ce qui n'appartient pas au document : couches d'aide et transformateur.
@@ -36,8 +40,8 @@ export function captureThumbnail(page: { width: number; height: number }): strin
   helpers.forEach((node) => node.visible(false))
   try {
     return stage.toDataURL({
-      x: stage.x(),
-      y: stage.y(),
+      x: stage.x() + area.x * scale,
+      y: stage.y() + area.y * scale,
       width: widthPx,
       height: heightPx,
       pixelRatio: thumbnailPixelRatio(widthPx, heightPx),

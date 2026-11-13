@@ -29,7 +29,7 @@ export default function LevelSelector() {
   return (
     <nav
       aria-label={fr.levels.selectorLabel}
-      className={clsx('pointer-events-auto min-w-0 max-w-full sm:max-w-[60%]', SEGMENTED_BAR)}
+      className={clsx('pointer-events-auto min-w-0 max-w-full sm:min-w-[15rem] sm:max-w-[60%]', SEGMENTED_BAR)}
     >
       <div className="flex min-w-0 items-center gap-0.5 overflow-x-auto">
         {levels.map((level) => (
