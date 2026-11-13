@@ -6,6 +6,8 @@ import type { ProjectSummary } from './types'
 /** Une ligne de la table `projects` (voir supabase/schema.sql). */
 export interface ProjectRow {
   id: string
+  /** Propriétaire du projet (différent du compte connecté pour un projet partagé). */
+  owner_id?: string
   name: string
   kind: Project['kind']
   document: StoredProject['document']

@@ -1479,7 +1479,7 @@ export const fr = {
   },
   share: {
     open: 'Partager',
-    title: 'Partager ce plan',
+    title: 'Partager',
     intro:
       'Toute personne qui a le lien peut voir ce plan, sa 3D et la planche, sans rien pouvoir modifier. Les images importées ne sont pas visibles. Vous pouvez désactiver le lien à tout moment.',
     newLinkTitle: 'Nouveau lien',
@@ -1510,6 +1510,52 @@ export const fr = {
     loadError: 'Impossible de charger les liens. Vérifiez votre connexion puis réessayez.',
     actionError:
       'Cette action a échoué. Vérifiez votre connexion et que le plan est bien enregistré dans votre compte, puis réessayez.',
+  },
+  collab: {
+    sectionTitle: 'Inviter un autre compte',
+    intro:
+      'Envoyez ce lien à la personne : après connexion à son compte Fabrics, elle rejoint le projet. Un lecteur peut seulement regarder, un éditeur peut aussi modifier.',
+    roleLabel: 'Rôle',
+    roleViewer: 'Lecteur',
+    roleEditor: 'Éditeur',
+    expiryLabel: 'Valable jusqu’au (facultatif)',
+    create: 'Créer l’invitation',
+    creating: 'Création…',
+    invitesTitle: 'Invitations',
+    noInvites: 'Aucune invitation pour le moment.',
+    loadingInvites: 'Chargement des invitations…',
+    inviteLoadError: 'Impossible de charger les invitations. Vérifiez votre connexion puis réessayez.',
+    membersTitle: 'Comptes qui ont rejoint ce projet',
+    noMembers: 'Personne n’a encore rejoint ce projet.',
+    loadingMembers: 'Chargement des membres…',
+    memberLoadError: 'Impossible de charger les membres.',
+    unknownAccount: 'Compte sans adresse',
+    removeMember: 'Retirer',
+    changeRole: (email: string) => `Rôle de ${email}`,
+    actionError:
+      'Cette action a échoué. Vérifiez votre connexion et que le projet est bien enregistré dans votre compte, puis réessayez.',
+    notAvailableForGuest:
+      'Seul le propriétaire du projet peut inviter d’autres comptes ou gérer les membres.',
+  },
+  invitePage: {
+    loading: 'Ouverture de l’invitation…',
+    unavailableTitle: 'Invitation indisponible',
+    unavailableText:
+      'Cette invitation n’existe pas, a été désactivée ou a expiré. Demandez un nouveau lien à la personne qui vous l’a envoyé.',
+    errorText: 'Impossible d’utiliser cette invitation. Vérifiez votre connexion puis réessayez.',
+    notAvailableHere: 'Le partage avec d’autres comptes n’est pas disponible sur cette version du site.',
+    backToHome: 'Retour à l’accueil',
+  },
+  sharedWithMe: {
+    title: 'Partagés avec moi',
+    roleViewer: 'Lecture seule',
+    roleEditor: 'Peut modifier',
+    leave: 'Quitter le projet',
+    leaveTitle: 'Quitter ce projet ?',
+    leaveMessage: (name: string) =>
+      `« ${name} » disparaîtra de votre accueil. Vous pourrez le rejoindre de nouveau avec un lien d’invitation.`,
+    leaveConfirm: 'Quitter',
+    loadError: 'Impossible de charger les projets partagés avec vous.',
   },
   sharedView: {
     badge: 'Lecture seule',

@@ -2,10 +2,11 @@ import { useEffect } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router'
 import RequireAuth from './components/auth/RequireAuth'
 import { fr } from './i18n/fr'
-import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
 import IntroPage from './pages/IntroPage'
+import InvitePage from './pages/InvitePage'
 import LoginPage from './pages/LoginPage'
+import ProjectPage from './pages/ProjectPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import SharePage from './pages/SharePage'
 import { useAuthStore } from './stores/authStore'
@@ -19,7 +20,8 @@ export default function App() {
       <Routes>
         <Route element={<RequireAuth />}>
           <Route path="/" element={<HomePage />} />
-          <Route path="/p/:projectId" element={<EditorPage />} />
+          <Route path="/p/:projectId" element={<ProjectPage />} />
+          <Route path="/i/:token" element={<InvitePage />} />
         </Route>
         <Route path="/bienvenue" element={<IntroPage />} />
         <Route path="/s/:token" element={<SharePage />} />

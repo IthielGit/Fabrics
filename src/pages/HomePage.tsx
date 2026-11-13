@@ -4,13 +4,18 @@ import { useNavigate } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
 import DeleteDialog from '../components/home/DeleteDialog'
 import ImportLocalDialog from '../components/home/ImportLocalDialog'
+import LeaveDialog from '../components/home/LeaveDialog'
 import ProjectCard from '../components/home/ProjectCard'
 import RenameDialog from '../components/home/RenameDialog'
+import SharedProjectCard from '../components/home/SharedProjectCard'
+import { useSharedProjects } from '../components/home/useSharedProjects'
 import Button from '../components/ui/Button'
 import { filterProjectsByName } from '../features/persistence/filterProjects'
 import { wasImportAsked } from '../features/persistence/importPrompt'
 import { localRepository } from '../features/persistence/repository'
 import type { ProjectSummary } from '../features/persistence/types'
+import { removeMember } from '../features/sharing/membersApi'
+import type { SharedProjectSummary } from '../features/sharing/membersLogic'
 import { fr } from '../i18n/fr'
 import { useAuthStore } from '../stores/authStore'
 import { useProjectsStore } from '../stores/projectsStore'
@@ -18,6 +23,7 @@ import { useProjectsStore } from '../stores/projectsStore'
 type Dialog =
   | { type: 'rename'; project: ProjectSummary }
   | { type: 'delete'; project: ProjectSummary }
+  | { type: 'leave'; project: SharedProjectSummary }
 
 export default function HomePage() {
   const navigate = useNavigate()
@@ -30,6 +36,7 @@ export default function HomePage() {
   // La liste n'est lue qu'une fois la session connue, et relue quand on se connecte ou se déconnecte.
   const authStatus = useAuthStore((state) => state.status)
   const userId = useAuthStore((state) => state.user?.id ?? null)
+  const shared = useSharedProjects(userId)
   useEffect(() => {
     if (authStatus === 'loading') return
     void refresh()
@@ -224,6 +231,27 @@ export default function HomePage() {
             ))}
           </ul>
         )}
+        {shared.projects.length > 0 && (
+          <section aria-labelledby="shared-with-me">
+            <h2 id="shared-with-me" className="mt-16 text-2xl font-semibold tracking-tight text-slate-950">
+              {fr.sharedWithMe.title}
+            </h2>
+            <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {shared.projects.map((project) => (
+                <SharedProjectCard
+                  key={project.id}
+                  project={project}
+                  onLeave={() => setDialog({ type: 'leave', project })}
+                />
+              ))}
+            </ul>
+          </section>
+        )}
+        {shared.failed && (
+          <p role="alert" className="mt-8 text-sm text-red-700">
+            {fr.sharedWithMe.loadError}
+          </p>
+        )}
       </main>
 
       {localToImport > 0 && userId && (
@@ -253,6 +281,19 @@ export default function HomePage() {
           onConfirm={() => {
             void remove(dialog.project.id)
             closeDialog()
+          }}
+        />
+      )}
+      {dialog?.type === 'leave' && userId && (
+        <LeaveDialog
+          projectName={dialog.project.name}
+          onClose={closeDialog}
+          onConfirm={() => {
+            const { id } = dialog.project
+            closeDialog()
+            void removeMember(id, userId)
+              .catch(() => undefined)
+              .then(() => shared.reload())
           }}
         />
       )}

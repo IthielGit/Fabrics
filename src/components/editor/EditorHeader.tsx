@@ -16,7 +16,12 @@ import ShareDialog from './ShareDialog'
 const ICON_BUTTON =
   'rounded-md p-2 text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent'
 
-export default function EditorHeader() {
+interface EditorHeaderProps {
+  /** Seul le propriétaire du projet partage et invite ; un éditeur invité n'a pas le bouton. */
+  isOwner?: boolean
+}
+
+export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
   const projectName = useEditorStore((state) => state.project?.name ?? '')
   const canUndo = useEditorStore((state) => state.history.past.length > 0)
   const canRedo = useEditorStore((state) => state.history.future.length > 0)
@@ -33,7 +38,7 @@ export default function EditorHeader() {
   const [draftName, setDraftName] = useState<string | null>(null)
   const [exportOpen, setExportOpen] = useState(false)
   const [shareOpen, setShareOpen] = useState(false)
-  // Le partage passe par le compte : il n'existe que pour un plan, connecté.
+  // Le partage passe par le compte : il faut être connecté (lien public : plans seulement ; invitations : tout projet).
   const projectId = useEditorStore((state) => state.project?.id ?? null)
   const signedIn = useAuthStore((state) => state.status === 'signedIn')
 
@@ -107,7 +112,7 @@ export default function EditorHeader() {
             <span className="max-md:sr-only">{fr.views.openLabel}</span>
           </button>
         )}
-        {isPlan && signedIn && (
+        {isOwner && signedIn && (
           <Button onClick={() => setShareOpen(true)} className="mr-1 px-3 py-1.5">
             <Share2 size={16} aria-hidden="true" />
             {fr.share.open}
@@ -139,7 +144,9 @@ export default function EditorHeader() {
         </button>
       </div>
       {exportOpen && <ExportDialog onClose={() => setExportOpen(false)} />}
-      {shareOpen && projectId && <ShareDialog projectId={projectId} onClose={() => setShareOpen(false)} />}
+      {shareOpen && projectId && (
+        <ShareDialog projectId={projectId} isPlan={isPlan} onClose={() => setShareOpen(false)} />
+      )}
     </header>
   )
 }
