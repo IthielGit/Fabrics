@@ -51,6 +51,7 @@ import SelectionTransformer from './SelectionTransformer'
 import { WallJoinsContext } from './shapes/WallJoinsContext'
 import FurnitureGhost from './FurnitureGhost'
 import AutoDimensionsLayer from './AutoDimensionsLayer'
+import RoomLabelsLayer from './RoomLabelsLayer'
 import PlanMarksLayer from './PlanMarksLayer'
 import SurfaceHighlightLayer from './SurfaceHighlightLayer'
 import ChimneyUpperGhosts from './ChimneyUpperGhosts'
@@ -109,7 +110,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
   const furnitureSymbolId = useEditorStore((state) => state.furnitureSymbolId)
   const setView = useEditorStore((state) => state.setView)
   const setViewportSize = useEditorStore((state) => state.setViewportSize)
-  const fitView = useEditorStore((state) => state.fitView)
+  const fitContent = useEditorStore((state) => state.fitContent)
   const addElement = useEditorStore((state) => state.addElement)
   const addElements = useEditorStore((state) => state.addElements)
   const setTool = useEditorStore((state) => state.setTool)
@@ -200,9 +201,9 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
     setViewportSize(size)
     if (projectId && size.width > 0 && fittedProjectId.current !== projectId) {
       fittedProjectId.current = projectId
-      fitView()
+      fitContent()
     }
-  }, [size, projectId, setViewportSize, fitView])
+  }, [size, projectId, setViewportSize, fitContent])
 
   // Espace + glisser = déplacer la vue. Échap annule un tracé en cours.
   useEffect(() => {
@@ -649,6 +650,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
                 />
               ))}
             </WallJoinsContext.Provider>
+            <RoomLabelsLayer elements={elements} scale={scale} />
             <AutoDimensionsLayer scale={scale} />
             <PlanMarksLayer scale={scale} />
             <SurfaceHighlightLayer scale={scale} />

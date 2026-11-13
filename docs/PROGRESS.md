@@ -46,6 +46,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Audit UX/UI, deuxième lot
+
+- Plan : nom et surface des pièces dessinés au-dessus des meubles, de l'escalier et des axes (nouvelle couche `RoomLabelsLayer`), avec un liseré clair ; ils ne disparaissent plus dessous. Pendant le déplacement d'une pièce, son étiquette rejoint sa place au lâcher.
+- Ouverture d'un plan : le zoom cadre le dessin (et non la page entière), en tenant compte de la barre d'outils et des sélecteurs ; sur téléphone le plan est enfin lisible.
+- Métrés, vue Client : les surfaces s'affichent juste après le niveau et la pièce, visibles sans faire défiler (l'ordre du fichier exporté ne change pas).
+- Miniatures : cadrées sur le dessin ; un plan ouvert sans miniature (maison d'exemple) en reçoit une.
+- Sélecteur de niveau : largeur minimale quand la 3D réduit la place.
+
 ### 2026-11-13 — Hors jalon · Corrections issues de l'audit UX/UI
 
 - Messages de l'éditeur : vert pour une confirmation (« Mur corrigé »), rouge pour un échec (jamais refermé tout seul), ambre pour une information ; le minuteur s'arrête au survol ; annonce lecteur d'écran adaptée.

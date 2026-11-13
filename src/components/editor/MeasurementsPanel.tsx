@@ -27,8 +27,22 @@ function SurfaceWarnings({ warnings }: { warnings: readonly MetresWarning[] }) {
   )
 }
 
-const HEAD = 'px-1 py-1 text-left text-xs font-medium text-slate-500'
-const NUMBER = 'px-1 py-1 text-right tabular-nums'
+const HEAD = 'px-1 py-1 text-left text-xs font-medium text-slate-600'
+
+/**
+ * Ordre d'affichage des colonnes de la vue Client : les surfaces passent juste après les colonnes de
+ * texte (niveau, pièce), pour qu'on les voie sans faire défiler (périmètre et hauteur suivent).
+ * Seul l'affichage change : le fichier exporté garde son ordre.
+ */
+function clientColumnOrder(columns: readonly { header: string; align: string }[]): number[] {
+  const surfaceHeaders: string[] = [fr.measurements.client.floorArea, fr.measurements.client.livingArea]
+  const indexes = columns.map((_, i) => i)
+  const left = indexes.filter((i) => columns[i].align === 'left')
+  const surfaces = indexes.filter((i) => surfaceHeaders.includes(columns[i].header))
+  const others = indexes.filter((i) => !left.includes(i) && !surfaces.includes(i))
+  return [...left, ...surfaces, ...others]
+}
+const NUMBER = 'whitespace-nowrap px-1 py-1 text-right tabular-nums'
 
 /** Panneau « Métrés » d'un plan : tableau des pièces, tableau des murs, totaux, export Excel et CSV. */
 export default function MeasurementsPanel() {
@@ -169,45 +183,51 @@ export default function MeasurementsPanel() {
         <div className="mt-3 space-y-4">
           {buildingEmpty && <p className="text-sm text-slate-500">{fr.measurements.empty}</p>}
           <SurfaceWarnings warnings={surfaceWarnings} />
-          {buildClientTables(building, fr.measurements.client).map((table) => (
-            // Six colonnes dans un panneau de 320 px : défilement horizontal plutôt que des chiffres écrasés.
-            <div key={table.id} className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-                  {table.title}
-                </caption>
-                <thead>
-                  <tr>
-                    {table.columns.map((column) => (
-                      <th key={column.header} className={`${HEAD} ${column.align === 'right' ? 'text-right' : ''}`}>
-                        {column.header}
-                      </th>
+          {buildClientTables(building, fr.measurements.client).map((table) => {
+            const order = clientColumnOrder(table.columns)
+            return (
+              // Plusieurs colonnes dans un panneau étroit : défilement horizontal plutôt que des chiffres écrasés.
+              <div key={table.id} className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-600">
+                    {table.title}
+                  </caption>
+                  <thead>
+                    <tr>
+                      {order.map((j) => (
+                        <th
+                          key={table.columns[j].header}
+                          className={`${HEAD} ${table.columns[j].align === 'right' ? 'text-right' : ''}`}
+                        >
+                          {table.columns[j].header}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {table.rows.map((cells, i) => (
+                      <tr key={i} className="border-t border-slate-100">
+                        {order.map((j) => (
+                          <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
+                            {cellText(cells[j])}
+                          </td>
+                        ))}
+                      </tr>
                     ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {table.rows.map((cells, i) => (
-                    <tr key={i} className="border-t border-slate-100">
-                      {cells.map((cell, j) => (
-                        <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
-                          {cellText(cell)}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                  {table.total && (
-                    <tr className="border-t border-slate-300 font-semibold">
-                      {table.total.map((cell, j) => (
-                        <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
-                          {cellText(cell)}
-                        </td>
-                      ))}
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          ))}
+                    {table.total && (
+                      <tr className="border-t border-slate-300 font-semibold">
+                        {order.map((j) => (
+                          <td key={j} className={table.columns[j].align === 'right' ? NUMBER : 'px-1 py-1'}>
+                            {cellText(table.total![j])}
+                          </td>
+                        ))}
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+            )
+          })}
         </div>
       )}
 

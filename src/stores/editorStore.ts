@@ -36,6 +36,7 @@ import { moveWallSide } from '../features/geometry/moveWallSide'
 import { stretchZone } from '../features/geometry/stretchZone'
 import { translateElement } from '../features/geometry/transform'
 import { fitToScreen, type Point, type Size } from '../features/geometry/viewport'
+import { planExportExtent } from '../features/export/bounds'
 import { pxPerUnit } from '../features/units/scale'
 import type { CanvasElement, FabricsDocument, PlanSettings, Project, RoofShape } from '../types/document'
 
@@ -193,6 +194,8 @@ interface EditorState {
   setViewportSize: (size: Size) => void
   /** Ajuste le zoom et la position pour voir toute la page. */
   fitView: () => void
+  /** À l'ouverture d'un plan : cadre le dessin (et non la page entière) ; sans dessin, cadre la page. */
+  fitContent: () => void
   setSaveStatus: (status: SaveStatus) => void
   renameProject: (name: string) => void
 
@@ -535,6 +538,32 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         pxPerUnit(project.document.unit),
       )
       set({ zoom: view.zoom, stagePosition: { x: view.x, y: view.y } })
+    },
+    fitContent: () => {
+      const { project, viewportSize } = get()
+      if (!project || viewportSize.width === 0 || viewportSize.height === 0) return
+      const extent = project.kind === 'plan' ? planExportExtent(project.document.elements) : null
+      if (!extent || extent.width <= 0 || extent.height <= 0) {
+        get().fitView()
+        return
+      }
+      const perUnit = pxPerUnit(project.document.unit)
+      // La barre d'outils (à gauche) et les sélecteurs (en haut) recouvrent le plan : on cadre le reste.
+      const insetLeft = viewportSize.width >= 640 ? 190 : 90
+      const insetTop = 64
+      const view = fitToScreen(
+        { width: extent.width, height: extent.height },
+        { width: viewportSize.width - insetLeft, height: viewportSize.height - insetTop },
+        perUnit,
+      )
+      const scale = view.zoom * perUnit
+      set({
+        zoom: view.zoom,
+        stagePosition: {
+          x: view.x + insetLeft - extent.x * scale,
+          y: view.y + insetTop - extent.y * scale,
+        },
+      })
     },
     setSaveStatus: (saveStatus) => set({ saveStatus }),
 
