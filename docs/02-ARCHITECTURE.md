@@ -21,6 +21,8 @@ Installe toujours la **dernière version stable** au moment de l'installation, s
 | Tests | `vitest` | M1 | fonctions pures (géométrie, métrés, unités) |
 | PDF | `jspdf` | M4 | PNG/JPG viennent de Konva, sans bibliothèque |
 | Excel (métrés) | `fflate` | hors jalon K | accord de l'utilisateur le 2026-11-11 ; sert seulement à zipper le `.xlsx`, dont le XML est écrit à la main (`src/features/export/metresXlsx.ts`), chargé à la demande |
+| Animation (page d'introduction) | `gsap` | hors jalon | demandé par l'utilisateur le 2026-11-13 ; licence GreenSock « no charge » ; ScrollTrigger inclus ; sert seulement à la page `/bienvenue` (`src/components/intro/`) |
+| Défilement fluide (page d'introduction) | `lenis` | hors jalon | demandé par l'utilisateur le 2026-11-13 ; licence MIT ; actif seulement sur `/bienvenue`, arrêté en quittant la page |
 | Backend | `@supabase/supabase-js` | M13 | Auth + Postgres + Storage |
 | 3D | `three`, `@react-three/fiber`, `@react-three/drei` | M8 | **à confirmer par l'utilisateur au début de M8** ; version majeure de `@react-three/fiber` compatible avec `react` |
 | DXF (import) | `dxf-parser` | M11 | accord de l'utilisateur le 2026-11-12 (D61) ; l'export DXF est écrit à la main (format texte R12), sans bibliothèque |
