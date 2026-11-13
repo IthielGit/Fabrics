@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M14 Collaboration temps réel (lot A fait ; lot B à lancer sur feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot A · hébergement du temps réel (Cloudflare Workers + Durable Objects), documentation
+- **Dernière tâche terminée :** hors jalon · connexion obligatoire et page d'introduction (13/11, à tester) ; dernière tâche de jalon : M14 · Lot A · hébergement du temps réel (Cloudflare Workers + Durable Objects), documentation
 - **Prochaine tâche :** M14 · Lot B (partage avec un autre compte : tables, règles RLS, lien d'invitation), après validation du plan par l'utilisateur
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -30,6 +30,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 Import et export | terminé, à tester dans le navigateur | |
 | M11 bis Dessin précis, bibliothèque et plafonds | terminé, à tester dans le navigateur (lots A à G) | |
 | M11 ter Boussole du plan | terminé, à tester dans le navigateur | |
+| M11 quater Prise en main naturelle | lots A à G, I et J faits ; lot H (test avec une vraie personne) à faire ; à essayer sur une vraie tablette (lot I) | |
+| M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
 | M14 Collaboration temps réel | en cours (lot A fait ; lots B à F à faire) | |
@@ -1215,7 +1217,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 |---|---|---|---|
 | D35 | Place et contenu | Un seul jalon « M10 ter » après M10 bis pour les métrés **et** les cotes client / exécution. | Choix de l'utilisateur ; les deux partagent les repères `M01`, `P01`, `F01`. |
 | D36 | Déduction des ouvertures | Toutes les ouvertures sont déduites des surfaces de murs, sans seuil. | Choix de l'utilisateur ; c'est déjà le calcul actuel. |
-| D37 | Surface du client | Le client voit la **surface au sol** (trémie déduite), pas de « surface habitable ». | Recommandation de Claude acceptée : sans toits en pente ni hauteurs sous plafond variables, les deux sont égales ; une définition légale (hauteur minimale) ne s'appliquera qu'après les toitures (voir Idées). |
+| D37 | Surface du client | Le client voit la **surface au sol** (trémie déduite). **Complété le 2026-11-13 (demande de l'utilisateur)** : une colonne « Surface habitable » s'ajoute, seulement quand elle diffère (partie sous 1800 mm retirée, hauteur fixe). Au départ : pas de « surface habitable ». | Recommandation de Claude acceptée : sans toits en pente ni hauteurs sous plafond variables, les deux sont égales ; une définition légale (hauteur minimale) ne s'appliquera qu'après les toitures (voir Idées). |
 | D38 | Point de départ des cotes exé | Au **nu brut** des murs (faces de la maçonnerie, enduits non compris). | L'utilisateur a demandé l'usage courant à Madagascar (héritage des usages français) ; à confirmer sur un premier PDF. |
 | D39 | Cote des baies (exé) | Dimensions **brutes de maçonnerie** (tableau à tableau), `largeur / hauteur`, allège à part, avec une note : les dimensions des menuiseries sont à confirmer par le menuisier. | Même usage ; le modèle connaît le trou dans le mur, pas le jeu de pose du châssis. |
 
@@ -1349,6 +1351,13 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - « Voir sur le plan » affiche le bon niveau, sélectionne l'élément, **entoure la zone en orangé** (contour de la surface, ou rectangle autour du mur, de la pièce ou de l'ouverture) et **centre et zoome le plan** dessus.
 - Fichiers : `warningFocus.ts` (+ test), `navigation.ts` (`fitBoxView`, + tests), `MetresWarningList.tsx`, `metresWarningText.ts`, `fr.ts`. Build, lint, 2680 tests OK.
 
+### 2026-11-13 — M11 quinquies, lots A et B (couper un mur ici, surface habitable)
+
+- **Lot A, outil « Couper un mur ici »** (famille Construction, icône tranche) : on survole un mur, un trait pointillé en travers du mur et la distance depuis le sommet s'affichent (rouge si la coupe est refusée) ; un clic coupe le mur en deux. Un seul pas d'historique (Ctrl+Z recolle) ; les deux morceaux sont sélectionnés. Les portes, fenêtres et baies passent sur le bon morceau, à la même place. Refus avec message : trop près d'un sommet (moins que l'épaisseur du mur) ou au milieu d'une ouverture (choix de l'utilisateur). Distance arrondie à 10 mm. Pas de raccourci clavier (aucune lettre libre évidente).
+- **Lot B, surface habitable** (métrés Client) : pour chaque versant de toiture du niveau, on retire de la pièce la partie où le dessous du versant (dessus − épaisseur de dalle, comme en 3D) est sous 1800 mm. Sans toiture : toute la pièce, sauf si la hauteur sous plafond plate est sous 1800 mm. La colonne « Surface habitable (m², hauteur ≥ 1800 mm) » n'apparaît que si au moins une pièce diffère de plus de 0,005 m² ; quand elle apparaît, elle est remplie pour toutes les pièces (le total reste cohérent) dans « Vos pièces », « Récapitulatif », PDF, Excel et CSV Client. Version Exécution inchangée.
+- Limites connues : une trémie située dans la partie basse est retirée deux fois (résultat borné à 0) ; une partie de pièce hors de toute toiture compte entière ; hauteur de 1800 mm fixe (pas de réglage par projet, non demandé).
+- Fichiers : `splitWall.ts` (+ tests), `polygonClip.ts` (nouveau), `habitableArea.ts` (nouveau, + tests), `measurements.ts`, `clientView.ts` (+ tests), `editorStore.ts`, `useCutTool.ts` et `CutPreviewLayer.tsx` (nouveaux), `EditorStage.tsx`, `Toolbar.tsx`, `ToolHint.tsx`, `fr.ts`. Build, lint, 2800 tests OK (un test a échoué une seule fois à un premier passage complet, sans qu'on ait pu l'identifier, puis trois passages complets sont revenus verts).
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
@@ -1361,9 +1370,9 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - ~~Redimensionner une pièce préfabriquée d'un bloc~~ : fait (hors jalon I, option A).
 - ~~Glisser un seul mur à la poignée (option A)~~ : planifié dans M11 bis, lot B (demande du 2026-11-11).
 - ~~**Export pour Revit**~~ : fait (IFC2x3, option A, 2026-11-12). Reste à faire : escaliers, toitures, plateformes, mobilier, matériaux dans l'IFC. Texte d'origine : un fichier `.rvt` natif est impossible (format fermé Autodesk). Piste : export **IFC** (standard ouvert que Revit ouvre et importe : murs, dalles, pièces, portes, fenêtres, niveaux, en mm), en plus du DXF déjà prévu en M11. À décider : écrire l'IFC à la main (texte STEP, sans nouvelle dépendance) ou ajouter une bibliothèque (demande d'accord, règle 6). Non planifié : à placer dans un jalon.
-- Surface habitable dans les métrés client (partie des pièces sous une hauteur minimale, par exemple 1800 mm, retirée) : utile seulement après les toitures en pente de M10 bis ; la définition est à fixer avec l'utilisateur (D37).
+- ~~Surface habitable dans les métrés client~~ : fait en M11 quinquies, lot B (2026-11-13) : 1800 mm, colonne affichée seulement quand elle diffère.
 - ~~Joindre des murs (l'inverse de « Séparer les côtés »)~~ : planifié dans M11 bis, lot B (2026-11-12).
-- Outil « couper ici » : cliquer un point d'un mur sur le canevas pour le couper en deux, sans passer par le « + » puis « Séparer les côtés » (proposé le 2026-11-12, si le bouton ne suffit pas à l'usage).
+- ~~Outil « couper ici »~~ : fait en M11 quinquies, lot A (2026-11-13).
 - ~~Recherche de projets sur l'accueil~~ (prévue dans la maquette de `docs/01-PRODUIT.md`) : planifié dans M11 bis, lot D.
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).

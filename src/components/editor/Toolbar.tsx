@@ -18,6 +18,7 @@ import {
   Ruler,
   Scissors,
   Slash,
+  Slice,
   Square,
   StretchHorizontal,
   Type,
@@ -82,6 +83,7 @@ function toolGroups(isPlan: boolean): ToolGroup[] {
         tool('stair', Footprints, fr.tools.stair),
         tool('chimney', BrickWallFire, fr.tools.chimney),
         tool('stretch', StretchHorizontal, fr.tools.stretch, 'S', fr.tools.short.stretch),
+        tool('cut', Slice, fr.tools.cut, undefined, fr.tools.short.cut),
       ],
     },
     {

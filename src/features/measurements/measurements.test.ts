@@ -59,6 +59,7 @@ const EMPTY_TOTALS = {
   roomArea: 0,
   voidArea: 0,
   roomNetArea: 0,
+  roomHabitableArea: 0,
   platformArea: 0,
   platformVolume: 0,
   wallLength: 0,
@@ -89,6 +90,7 @@ describe('computeMeasurements', () => {
         voidOverflow: false,
         ceilingHeight: null,
         falseCeiling: false,
+        habitableArea: 12_000_000,
       },
     ])
   })

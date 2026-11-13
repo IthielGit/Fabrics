@@ -19,6 +19,8 @@ export interface ClientLabels {
   /** « Hauteur sous plafond (mm) ». */
   ceilingHeight: string
   floorArea: string
+  /** « Surface habitable (m², hauteur ≥ 1800 mm) » : colonne affichée seulement si elle diffère de la surface au sol. */
+  livingArea: string
   /** Tableau « Plafonds ». */
   ceilings: CeilingLabels
   doors: string
@@ -53,6 +55,17 @@ export function roomDimensionsText(dimensions: readonly [number, number] | null)
   return `${Math.round(dimensions[0])} × ${Math.round(dimensions[1])}`
 }
 
+/** En dessous de cet écart (mm², soit 0,005 m²), la surface habitable s'affiche comme la surface au sol. */
+const LIVING_AREA_TOLERANCE = 5000
+
+/**
+ * Vrai si au moins une pièce a une surface habitable différente de sa surface au sol (partie sous
+ * 1800 mm de hauteur) : seulement alors, les tableaux Client ajoutent la colonne « Surface habitable ».
+ */
+export function hasLivingAreaDifference(building: BuildingMeasurements): boolean {
+  return building.total.rooms.some((room) => room.netArea - room.habitableArea > LIVING_AREA_TOLERANCE)
+}
+
 /** Rang d'une pièce sans nom parmi les pièces sans nom de son niveau (« Pièce 1 », « Pièce 2 »…). */
 function unnamedRank(building: BuildingMeasurements, roomId: string, fallback: number): number {
   for (const { measurements } of building.levels) {
@@ -71,6 +84,7 @@ export function buildClientTables(
   const { levels, total } = building
   const tables: MetresTable[] = []
 
+  const withLiving = hasLivingAreaDifference(building)
   const roomRows: MetresCell[][] = levels.flatMap(({ level, measurements }) => {
     // Un nom vide devient « Pièce 1 », « Pièce 2 »… (numérotation par niveau) ; des noms identiques sont gardés.
     let unnamed = 0
@@ -81,6 +95,7 @@ export function buildClientTables(
       nmm(room.perimeter),
       room.ceilingHeight === null ? '' : nmm(room.ceilingHeight),
       nm2(room.netArea),
+      ...(withLiving ? [nm2(room.habitableArea)] : []),
     ])
   })
   if (roomRows.length > 0) {
@@ -94,9 +109,18 @@ export function buildClientTables(
         { header: labels.perimeter, align: 'right' },
         { header: labels.ceilingHeight, align: 'right' },
         { header: labels.floorArea, align: 'right' },
+        ...(withLiving ? [{ header: labels.livingArea, align: 'right' as const }] : []),
       ],
       rows: roomRows,
-      total: [labels.total, '', '', '', '', nm2(total.totals.roomNetArea)],
+      total: [
+        labels.total,
+        '',
+        '',
+        '',
+        '',
+        nm2(total.totals.roomNetArea),
+        ...(withLiving ? [nm2(total.totals.roomHabitableArea)] : []),
+      ],
     })
   }
 
@@ -109,6 +133,7 @@ export function buildClientTables(
   const levelRow = (name: string, m: BuildingMeasurements['total']): MetresCell[] => [
     name,
     nm2(m.totals.roomNetArea),
+    ...(withLiving ? [nm2(m.totals.roomHabitableArea)] : []),
     ncount(m.totals.doors),
     ncount(m.totals.windows),
     ncount(m.totals.bays),
@@ -119,6 +144,7 @@ export function buildClientTables(
     columns: [
       { header: labels.level, align: 'left' },
       { header: labels.floorArea, align: 'right' },
+      ...(withLiving ? [{ header: labels.livingArea, align: 'right' as const }] : []),
       { header: labels.doors, align: 'right' },
       { header: labels.windows, align: 'right' },
       { header: labels.bays, align: 'right' },

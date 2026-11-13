@@ -274,12 +274,14 @@ export const fr = {
     window: 'Fenêtre',
     calibrate: 'Calibrer l’image',
     stretch: 'Étirer une zone',
+    cut: 'Couper un mur ici',
     // Une ligne d'explication pour les mots qu'on ne comprend pas du premier coup.
     explain: {
       platform: 'Un sol surélevé : une estrade ou un podium posé dans une pièce.',
       axis: 'Une ligne de repère (A, B… ou 1, 2…) pour aligner la construction.',
       section: 'Un trait qui montre où le bâtiment est coupé pour le voir de côté, de l’intérieur.',
       stretch: 'Agrandit ou rétrécit une pièce en déplaçant tout un côté, avec ses murs.',
+      cut: 'Coupe un mur en deux à l’endroit où vous cliquez, sans le séparer côté par côté.',
       calibrate: 'Donne à une image importée sa taille réelle, à partir d’une distance connue.',
     } as Record<string, string>,
     // Libellés courts affichés à côté des icônes de la barre d'outils.
@@ -289,6 +291,7 @@ export const fr = {
       calibrate: 'Calibrer',
       axis: 'Axe',
       stretch: 'Étirer',
+      cut: 'Couper',
     },
   },
   elements: {
@@ -522,6 +525,7 @@ export const fr = {
       perimeter: 'Périmètre (mm)',
       ceilingHeight: 'Hauteur sous plafond (mm)',
       floorArea: 'Surface au sol (m²)',
+      livingArea: 'Surface habitable (m², hauteur ≥ 1800 mm)',
       ceilings: CEILING_LABELS,
       doors: 'Portes',
       windows: 'Fenêtres',
@@ -1101,6 +1105,7 @@ export const fr = {
     axis: { main: 'Cliquez deux points pour tracer un axe', tips: ['Il reçoit sa lettre ou son numéro', 'Maj : angles de 45°', 'Alt : sans alignement', 'Échap : annuler'] },
     section: { main: 'Cliquez deux points pour tracer une ligne de coupe', tips: ['Elle reçoit sa lettre', 'Maj : angles de 45°', 'Alt : sans alignement', 'Échap : annuler'] },
     stretch: { main: 'Glissez un rectangle autour de la partie à déplacer, puis cliquez le point de départ et le point d’arrivée', tips: ['Ou tapez la distance en mm puis Entrée (« - » pour inverser)', 'Maj : horizontal ou vertical', 'Échap : annuler'] },
+    cut: { main: 'Survolez un mur et cliquez pour le couper en deux à cet endroit', tips: ['La distance depuis le sommet est arrondie à 10 mm', 'Pas à moins d’une épaisseur de mur d’un sommet, ni au milieu d’une porte ou d’une fenêtre', 'Échap : quitter'] },
     calibrate: { main: 'Cliquez deux points de l’image dont vous connaissez la distance réelle', tips: ['Échap : annuler'] },
     door: { main: 'Survolez un mur et cliquez pour poser une porte', tips: ['Elle s’ouvre du côté du curseur', 'Échap : quitter'] },
     window: { main: 'Survolez un mur et cliquez pour poser une fenêtre', tips: ['Échap : quitter'] },
@@ -1448,6 +1453,9 @@ export const fr = {
       `« ${fileName} » est trop lourd (maximum ${maxMegabytes} Mo).`,
     imageUnreadable: (fileName: string) => `Impossible de lire ou d’enregistrer « ${fileName} ».`,
     openingNoWall: 'Cliquez sur un mur pour y poser l’ouverture.',
+    cutNoWall: 'Cliquez sur un mur pour le couper.',
+    cutTooClose: 'Trop près d’un sommet : un morceau serait plus court que l’épaisseur du mur.',
+    cutOnOpening: 'Impossible de couper au milieu d’une porte, d’une fenêtre ou d’une baie.',
     openingNoRoom: 'Pas assez de place sur ce mur pour cette ouverture.',
     openingTooTall: 'Cette ouverture est plus haute que le mur.',
     openingNoPocket:
