@@ -188,7 +188,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   return (
     <Modal title={fr.export.title} onClose={onClose}>
       <div className="space-y-4">
-        <Group label={fr.export.format}>
+        <Group label={fr.export.format} columns>
           {types.map((item) => (
             <Choice
               key={item.id}

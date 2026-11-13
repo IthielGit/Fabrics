@@ -69,7 +69,7 @@ export default function MiniMap() {
 
   return (
     <div
-      className="absolute right-5 bottom-5 rounded-md border border-slate-200 bg-white/95 p-1 shadow"
+      className="max-md:hidden absolute right-5 bottom-5 rounded-md border border-slate-200 bg-white/95 p-1 shadow"
       title={fr.editor.minimapHelp}
     >
       <svg

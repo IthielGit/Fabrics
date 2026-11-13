@@ -46,6 +46,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Audit UX/UI de l'application
+
+- Couleurs : palette déjà cohérente (gris ardoise + indigo, ambre / rouge / vert réservés aux alertes) ; seuls des gris trop clairs (`slate-400`) sur du texte sont passés à `slate-500` (suffixe « mm », compteurs de la bibliothèque, calques).
+- Éditeur sur téléphone et tablette : le panneau de droite occupait tout l'écran et écrasait le plan. Sous 1024 px il devient un tiroir (bouton dans l'en-tête, fond voilé, bouton de fermeture) ; l'en-tête passe en icônes pour tout garder visible ; la mini-carte est masquée sous 768 px.
+- Dialogue d'export : formats rangés en trois colonnes (IFC ne reste plus seul sur une ligne).
+
 ### 2026-11-13 — Hors jalon · Passe de lisibilité sur l'application
 
 - Éditeur : panneau de droite élargi (22 rem) pour que les cinq onglets respirent, textes de 11 px passés à 12 px (formats de page, bibliothèque, raccourcis), onglets avec focus clavier visible.

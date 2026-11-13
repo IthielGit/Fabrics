@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { ArrowLeft, Box, Download, PanelsTopLeft, Redo2, Share2, Undo2 } from 'lucide-react'
+import { ArrowLeft, Box, Download, PanelRight, PanelsTopLeft, Redo2, Share2, Undo2 } from 'lucide-react'
 import { useState, type KeyboardEvent } from 'react'
 import { Link } from 'react-router'
 import { fr } from '../../i18n/fr'
@@ -27,6 +27,7 @@ export default function EditorHeader() {
   const viewer3DOpen = useViewer3DStore((state) => state.open)
   const toggleViewer3D = useViewer3DStore((state) => state.toggleOpen)
   const openViews = useViewsStore((state) => state.openViews)
+  const setSidePanelOpen = useEditorStore((state) => state.setSidePanelOpen)
 
   // Pendant la saisie on garde un brouillon ; le nom n'est validé qu'à la sortie du champ.
   const [draftName, setDraftName] = useState<string | null>(null)
@@ -50,7 +51,7 @@ export default function EditorHeader() {
   }
 
   return (
-    <header className="flex h-12 shrink-0 items-center gap-3 border-b border-slate-200 bg-white px-3">
+    <header className="flex h-12 shrink-0 items-center gap-1 border-b sm:gap-3 border-slate-200 bg-white px-3">
       <Link to="/" title={fr.editor.backToHome} aria-label={fr.editor.backToHome} className={ICON_BUTTON}>
         <ArrowLeft size={18} />
       </Link>
@@ -66,13 +67,22 @@ export default function EditorHeader() {
         onChange={(event) => setDraftName(event.target.value)}
         onBlur={commitName}
         onKeyDown={handleKeyDown}
-        className="w-64 max-w-[40vw] truncate rounded-md border border-transparent px-2 py-1 font-medium text-slate-900 hover:border-slate-300 focus:border-indigo-500 focus:outline-none"
+        className="min-w-0 flex-1 truncate sm:w-64 sm:flex-none sm:max-w-[40vw] rounded-md border border-transparent px-2 py-1 font-medium text-slate-900 hover:border-slate-300 focus:border-indigo-500 focus:outline-none"
       />
 
       <SaveIndicator />
       <PlanCheckBadge />
 
-      <div className="ml-auto flex items-center gap-1">
+      <div className="flex items-center gap-0.5 sm:ml-auto sm:gap-1">
+        <button
+          type="button"
+          onClick={() => setSidePanelOpen(true)}
+          title={fr.sidePanel.open}
+          aria-label={fr.sidePanel.open}
+          className={clsx(ICON_BUTTON, 'lg:hidden')}
+        >
+          <PanelRight size={18} />
+        </button>
         {isPlan && (
           <button
             type="button"
@@ -94,7 +104,7 @@ export default function EditorHeader() {
             className="mr-1 flex items-center gap-1.5 rounded-md px-2 py-2 text-sm text-slate-700 hover:bg-slate-100"
           >
             <PanelsTopLeft size={18} aria-hidden="true" />
-            {fr.views.openLabel}
+            <span className="max-md:sr-only">{fr.views.openLabel}</span>
           </button>
         )}
         {isPlan && signedIn && (
@@ -103,9 +113,9 @@ export default function EditorHeader() {
             {fr.share.open}
           </Button>
         )}
-        <Button onClick={() => setExportOpen(true)} className="mr-2 px-3 py-1.5">
+        <Button onClick={() => setExportOpen(true)} className="mr-1 px-3 py-1.5 sm:mr-2" aria-label={fr.export.open}>
           <Download size={16} aria-hidden="true" />
-          {fr.export.open}
+          <span className="max-sm:sr-only">{fr.export.open}</span>
         </Button>
         <button
           type="button"

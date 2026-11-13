@@ -321,7 +321,7 @@ function BackgroundRow({
       <span className="w-[14px]" aria-hidden="true" />
       <FileInput size={14} className="shrink-0 text-slate-500" aria-hidden="true" />
       <span className="min-w-0 flex-1 truncate">{element.name}</span>
-      <span className="shrink-0 text-xs text-slate-400">{fr.layers.backgroundCount(ids.length)}</span>
+      <span className="shrink-0 text-xs text-slate-500">{fr.layers.backgroundCount(ids.length)}</span>
       <button
         type="button"
         title={element.hidden ? fr.layers.show : fr.layers.hide}
