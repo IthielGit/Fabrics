@@ -1133,6 +1133,8 @@ export const fr = {
   },
   sidePanel: {
     label: 'Panneaux',
+    open: 'Ouvrir les panneaux',
+    close: 'Fermer les panneaux',
     properties: 'Propriétés',
     library: 'Bibliothèque',
     levels: 'Niveaux',

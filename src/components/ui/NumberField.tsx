@@ -61,7 +61,7 @@ export default function NumberField({ label, value, suffix, step = 1, onCommit }
           onKeyDown={handleKeyDown}
           className="w-20 rounded-md border border-slate-300 px-2 py-1 text-right text-sm text-slate-900 focus:border-indigo-500 focus:outline-none"
         />
-        <span className="w-6 text-xs text-slate-400">{suffix}</span>
+        <span className="w-6 text-xs text-slate-500">{suffix}</span>
       </div>
     </div>
   )

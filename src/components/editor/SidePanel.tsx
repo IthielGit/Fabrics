@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { BookOpen, Building2, Calculator, Layers, SlidersHorizontal, type LucideIcon } from 'lucide-react'
+import { BookOpen, Building2, Calculator, Layers, SlidersHorizontal, X, type LucideIcon } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import LibraryPanel from '../library/LibraryPanel'
 import { fr } from '../../i18n/fr'
@@ -34,6 +34,8 @@ export default function SidePanel() {
   const setTab = useEditorStore((state) => state.setSidePanelTab)
   const selectedIds = useEditorStore((state) => state.selectedIds)
   const activeTool = useEditorStore((state) => state.activeTool)
+  const open = useEditorStore((state) => state.sidePanelOpen)
+  const setOpen = useEditorStore((state) => state.setSidePanelOpen)
 
   const tabs = TABS.filter((t) => isPlan || !t.planOnly)
   // Un onglet du plan dans un visuel (projet ouvert ensuite) : on revient aux propriétés.
@@ -50,9 +52,37 @@ export default function SidePanel() {
     hadSelection.current = has
   }, [selectedIds, current, activeTool, setTab])
 
+  // Sur grand écran le panneau est fixe ; en dessous il devient un tiroir par-dessus le plan.
   return (
-    <aside className="flex w-88 shrink-0 flex-col border-l border-slate-200 bg-white">
+    <>
+      {open && (
+        <button
+          type="button"
+          aria-label={fr.sidePanel.close}
+          tabIndex={-1}
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 z-30 bg-slate-950/30 lg:hidden"
+        />
+      )}
+    <aside
+      className={clsx(
+        'shrink-0 flex-col border-l border-slate-200 bg-white lg:flex lg:w-88',
+        open
+          ? 'fixed inset-y-0 right-0 z-40 flex w-[min(22rem,92vw)] shadow-2xl lg:static lg:z-auto lg:shadow-none'
+          : 'hidden',
+      )}
+    >
+
       <div role="tablist" aria-label={fr.sidePanel.label} className="flex shrink-0 border-b border-slate-200">
+        <button
+          type="button"
+          aria-label={fr.sidePanel.close}
+          title={fr.sidePanel.close}
+          onClick={() => setOpen(false)}
+          className="flex shrink-0 items-center px-3 text-slate-600 hover:bg-slate-50 lg:hidden"
+        >
+          <X size={18} aria-hidden="true" />
+        </button>
         {tabs.map(({ id, label, icon: Icon }) => (
           <button
             key={id}
@@ -80,5 +110,6 @@ export default function SidePanel() {
         {current === 'measurements' && <MeasurementsPanel />}
       </div>
     </aside>
+    </>
   )
 }

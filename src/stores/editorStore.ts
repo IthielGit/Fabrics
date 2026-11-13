@@ -118,6 +118,8 @@ interface EditorState {
   furnitureSymbolId: string | null
   /** Onglet ouvert du panneau de droite ; état d'interface. */
   sidePanelTab: SidePanelTab
+  /** Tiroir des panneaux ouvert sur petit écran (sans effet sur grand écran) ; état d'interface. */
+  sidePanelOpen: boolean
   /** Mode de l'outil Mur : tracé en polyligne ou mur droit (2 clics) ; état d'interface. */
   wallMode: WallMode
   /** Mode de l'outil Pièce : polygone libre ou rectangle (2 clics) ; état d'interface. */
@@ -172,6 +174,7 @@ interface EditorState {
   /** Choisit un objet de la bibliothèque et active l'outil de pose (sans effet dans un visuel). */
   startPlacingFurniture: (symbolId: string) => void
   setSidePanelTab: (tab: SidePanelTab) => void
+  setSidePanelOpen: (open: boolean) => void
   setWallMode: (mode: WallMode) => void
   setRoomMode: (mode: RoomMode) => void
   setPlatformMode: (mode: PlatformMode) => void
@@ -422,6 +425,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     activeTool: 'select',
     furnitureSymbolId: null,
     sidePanelTab: 'properties',
+    sidePanelOpen: false,
     wallMode: 'polyline',
     roomMode: 'polygon',
     platformMode: 'polygon',
@@ -488,6 +492,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       set({ activeTool: 'furniture', furnitureSymbolId: symbolId })
     },
     setSidePanelTab: (sidePanelTab) => set({ sidePanelTab }),
+    setSidePanelOpen: (sidePanelOpen) => set({ sidePanelOpen }),
     setWallMode: (wallMode) => set({ wallMode }),
     setRoomMode: (roomMode) => set({ roomMode }),
     setPlatformMode: (platformMode) => set({ platformMode }),

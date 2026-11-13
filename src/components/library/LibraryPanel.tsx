@@ -96,7 +96,7 @@ export default function LibraryPanel() {
           : 'border-slate-300 text-slate-600 hover:bg-slate-100',
       )}
     >
-      {label} <span className="text-slate-400">{count}</span>
+      {label} <span className="text-slate-500">{count}</span>
     </button>
   )
 

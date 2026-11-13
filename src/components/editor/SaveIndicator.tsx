@@ -23,9 +23,11 @@ export default function SaveIndicator() {
       {status === 'saved' && !offline && <Check size={14} aria-hidden="true" />}
       {offline && status !== 'saving' && <CloudOff size={14} aria-hidden="true" />}
       {status === 'error' && <AlertTriangle size={14} aria-hidden="true" />}
-      {status === 'saving' && fr.editor.saving}
-      {status === 'saved' && (offline ? fr.auth.sync.pending : fr.editor.saved)}
-      {status === 'error' && fr.editor.saveError}
+      <span className="max-sm:sr-only">
+        {status === 'saving' && fr.editor.saving}
+        {status === 'saved' && (offline ? fr.auth.sync.pending : fr.editor.saved)}
+        {status === 'error' && fr.editor.saveError}
+      </span>
     </span>
   )
 }
