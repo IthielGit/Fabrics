@@ -912,7 +912,7 @@ Lots à valider un par un.
 - [x] **Lot A — Hébergement du serveur Yjs** : choix et documentation (2026-11-12, D68)
 - [x] **Lot B — Partage avec un autre compte** (lecture ou édition) : `project_members`, `project_invites`,
       règles RLS, lien d'invitation `/i/<jeton>`, rubrique « Partagés avec moi », fonction `my_project_role`
-      (2026-11-13 ; SQL à exécuter dans Supabase, essai à deux comptes à faire)
+      (2026-11-13, validé par l'utilisateur après essai à deux comptes)
 - [ ] **Lot C — Serveur temps réel** : Worker + Durable Object (`collab-server/`), authentification par jeton
       Supabase, refus des écritures d'un lecteur, déploiement
 - [ ] **Lot D — Liaison Yjs et éditeur** : `elements` en `Y.Array` / `Y.Map`, synchronisation avec

@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A et B faits ; lot C à lancer sur feu vert ; lot B à tester avec Supabase) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot B · partage avec un autre compte (13/11, SQL à exécuter dans Supabase puis à tester à deux comptes)
-- **Prochaine tâche :** M14 · Lot C (serveur temps réel Cloudflare), après validation du lot B et du plan par l'utilisateur
+- **Jalon en cours :** M14 Collaboration temps réel (lots A et B faits et validés ; lot C à lancer sur feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot B · partage avec un autre compte (13/11, validé par l'utilisateur après essai à deux comptes)
+- **Prochaine tâche :** M14 · Lot C (serveur temps réel Cloudflare), après validation du plan par l'utilisateur
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -34,7 +34,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
-| M14 Collaboration temps réel | en cours (lots A et B faits ; lots C à F à faire) | |
+| M14 Collaboration temps réel | en cours (lots A et B faits et validés ; lots C à F à faire) | |
 
 ## Journal
 
