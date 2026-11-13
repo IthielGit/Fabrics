@@ -50,6 +50,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - Le cartouche des PDF n'a plus de barre d'échelle graphique (0 · 2000 · 4000 mm) : l'échelle s'écrit en chiffres dans la cellule « Échelle » ; la flèche du nord reste à gauche.
 - Le format reste « 1:50 » partout (le passage à « 1/50 » a été annulé à la demande).
+- Retrait de la barre d'échelle annulé : elle est de retour dans le cartouche, à côté de la flèche du nord.
 
 ### 2026-11-13 — Hors jalon · Audit UX/UI, troisième lot
 
