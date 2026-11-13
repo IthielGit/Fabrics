@@ -3,7 +3,15 @@ import type { CanvasElement, OpeningElement, WallElement } from '../../types/doc
 import { createOpeningElement, createWallElement } from '../documents/elements'
 import { computeMeasurements } from '../measurements/measurements'
 import { computeWallJoins } from './wallJoins'
-import { canSplitWall, splitWall, splitWallInDocument } from './splitWall'
+import {
+  canSplitWall,
+  cutWall,
+  cutWallInDocument,
+  cutWallProblem,
+  snapCutOffset,
+  splitWall,
+  splitWallInDocument,
+} from './splitWall'
 
 const RECT = [0, 0, 4000, 0, 4000, 3000, 0, 3000, 0, 0] // pièce fermée, 4 côtés
 
@@ -144,5 +152,95 @@ describe('séparation dans un document', () => {
     const parts = split.elements.filter((e): e is WallElement => e.type === 'wall')
     const joins = computeWallJoins(parts.map((p) => ({ id: p.id, points: p.points, thickness: p.thickness })))
     expect(joins.size).toBeGreaterThan(0)
+  })
+})
+
+describe('couper un mur en un point', () => {
+  const STRAIGHT = [0, 0, 4000, 0]
+  const open = (kind: 'door' | 'window', name: string, wallId: string, segmentIndex: number, offset: number) =>
+    createOpeningElement(kind, name, { wallId, segmentIndex, offset, side: 'left' })
+
+  it('donne deux murs bout à bout ; le premier garde l’identifiant', () => {
+    const w = wall(STRAIGHT)
+    const out = cutWall(w, [], 0, 1500, counter())
+    if (!out.ok) throw new Error('coupe refusée')
+    const [first, second] = out.result.walls
+    expect(first.id).toBe(w.id)
+    expect(first.points).toEqual([0, 0, 1500, 0])
+    expect(second.points).toEqual([1500, 0, 4000, 0])
+    expect(second.id).toBe('id-1')
+    expect(second).toMatchObject({ thickness: 200, height: 2500, material: 'brick', levelId: 'L1', locked: true })
+  })
+
+  it('la longueur totale ne change pas, même en biais', () => {
+    const out = cutWall(wall([0, 0, 3000, 4000]), [], 0, 1230)
+    if (!out.ok) throw new Error('coupe refusée')
+    const length = (p: number[]) => Math.hypot(p[2] - p[0], p[3] - p[1])
+    const [a, b] = out.result.walls
+    expect(length(a.points) + length(b.points)).toBeCloseTo(5000, 6)
+  })
+
+  it('un mur à plusieurs côtés : chaque morceau garde les côtés qui lui reviennent', () => {
+    const w = wall([0, 0, 4000, 0, 4000, 3000, 0, 3000])
+    const out = cutWall(w, [], 1, 1000, counter())
+    if (!out.ok) throw new Error('coupe refusée')
+    expect(out.result.walls[0].points).toEqual([0, 0, 4000, 0, 4000, 1000])
+    expect(out.result.walls[1].points).toEqual([4000, 1000, 4000, 3000, 0, 3000])
+  })
+
+  it('les ouvertures suivent leur morceau, à la même place dans le document', () => {
+    const w = wall([0, 0, 4000, 0, 4000, 3000])
+    const before = open('door', 'P1', w.id, 0, 500)
+    const after = open('window', 'F1', w.id, 0, 3000)
+    const other = open('window', 'F2', w.id, 1, 700)
+    const out = cutWall(w, [before, after, other], 0, 2000, counter())
+    if (!out.ok) throw new Error('coupe refusée')
+    const second = out.result.walls[1]
+    const byId = new Map(out.result.openings.map((o) => [o.id, o]))
+    expect(byId.has(before.id)).toBe(false) // reste sur le premier morceau, inchangée
+    expect(byId.get(after.id)).toMatchObject({ wallId: second.id, segmentIndex: 0, offset: 1000 })
+    expect(byId.get(other.id)).toMatchObject({ wallId: second.id, segmentIndex: 1, offset: 700 })
+  })
+
+  it('refuse une coupe trop près d’un sommet (moins que l’épaisseur)', () => {
+    const w = wall(STRAIGHT)
+    expect(cutWallProblem(w, [], 0, 100)).toBe('too-close')
+    expect(cutWallProblem(w, [], 0, 3900)).toBe('too-close')
+    expect(cutWallProblem(w, [], 0, 200)).toBeNull()
+    expect(cutWall(w, [], 0, 0).ok).toBe(false)
+  })
+
+  it('refuse une coupe au milieu d’une ouverture, accepte à son bord', () => {
+    const w = wall(STRAIGHT)
+    const door = open('door', 'P1', w.id, 0, 2000)
+    const half = door.width / 2
+    expect(cutWallProblem(w, [door], 0, 2000)).toBe('on-opening')
+    expect(cutWallProblem(w, [door], 0, 2000 + half - 10)).toBe('on-opening')
+    expect(cutWallProblem(w, [door], 0, 2000 + half)).toBeNull()
+  })
+
+  it('dans le document : les deux murs prennent la place de l’ancien', () => {
+    const w = wall(STRAIGHT)
+    const text = { id: 'x', type: 'text' } as unknown as CanvasElement
+    const out = cutWallInDocument([text, w], w.id, 0, 1000, counter())
+    if (!out.ok) throw new Error('coupe refusée')
+    expect(out.elements.map((el) => el.id)).toEqual(['x', w.id, 'id-1'])
+    expect(out.wallIds).toEqual([w.id, 'id-1'])
+  })
+
+  it('les métrés restent justes : la longueur de mur ne change pas', () => {
+    const w = wall(STRAIGHT)
+    const out = cutWallInDocument([w], w.id, 0, 1500)
+    if (!out.ok) throw new Error('coupe refusée')
+    const total = (els: CanvasElement[]) =>
+      els
+        .filter((e): e is WallElement => e.type === 'wall')
+        .reduce((sum, p) => sum + Math.hypot(p.points[2] - p.points[0], p.points[3] - p.points[1]), 0)
+    expect(total(out.elements)).toBe(total([w]))
+  })
+
+  it('snapCutOffset arrondit à 10 mm', () => {
+    expect(snapCutOffset(1234)).toBe(1230)
+    expect(snapCutOffset(1235)).toBe(1240)
   })
 })

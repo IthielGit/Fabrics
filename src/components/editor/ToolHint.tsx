@@ -31,6 +31,7 @@ export default function ToolHint() {
     tool === 'axis' ||
     tool === 'section' ||
     tool === 'stretch' ||
+    tool === 'cut' ||
     tool === 'furniture' ||
     tool === 'door' ||
     tool === 'window' ||

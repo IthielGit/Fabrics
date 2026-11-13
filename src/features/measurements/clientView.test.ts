@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement, OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { fr } from '../../i18n/fr'
-import { buildClientTables, roomDimensionsText } from './clientView'
+import { createRoofElement } from '../documents/elements'
+import { buildClientTables, hasLivingAreaDifference, roomDimensionsText } from './clientView'
 import { measurementsToCsv, measurementsToFlatCsv } from './csv'
 import { buildExecutionTables } from './executionView'
 import { axisAlignedRectangle, computeBuildingMeasurements } from './measurements'
@@ -183,5 +184,48 @@ describe('tableau Plafonds', () => {
     const csv = measurementsToFlatCsv(building([{ ...chambre, falseCeiling: true }]), fr.measurements.csv)
     expect(csv).toContain('Hauteur sous plafond')
     expect(csv).toContain('Faux plafond')
+  })
+})
+
+describe('surface habitable dans la version Client', () => {
+  const ATTIC = { id: 'L2', name: 'Combles', elevation: 2900, height: 1000, slabThickness: 200 }
+  const rect = [0, 0, 8000, 0, 8000, 6000, 0, 6000]
+  const attic = (pitch: number): CanvasElement[] => [
+    { ...room('Chambre', rect), levelId: 'L2' },
+    { ...createRoofElement('Toit', rect, 'gable'), pitch, overhang: 0, levelId: 'L2' },
+  ]
+  const buildAttic = (pitch: number) =>
+    computeBuildingMeasurements({ levels: [L0, ATTIC], elements: attic(pitch) })
+
+  it('sans pièce basse, la colonne n’apparaît pas : les tableaux sont inchangés', () => {
+    const tables = build([room('Chambre', [0, 0, 4000, 0, 4000, 3000, 0, 3000])])
+    const rooms = tables.find((t) => t.id === 'client-rooms')
+    expect(rooms?.columns.map((c) => c.header)).not.toContain(fr.measurements.client.livingArea)
+    expect(hasLivingAreaDifference(computeBuildingMeasurements({ levels: [L0], elements: [room('C', rect)] }))).toBe(false)
+  })
+
+  it('sous un toit à 45° : la colonne apparaît dans « Vos pièces » et dans le récapitulatif', () => {
+    const tables = buildClientTables(buildAttic(45), fr.measurements.client)
+    const rooms = tables.find((t) => t.id === 'client-rooms')!
+    expect(rooms.columns.at(-1)?.header).toBe(fr.measurements.client.livingArea)
+    // 48 m² au sol, 2 bandes de 8000 × 1000 mm sous 1800 mm : 32 m² habitables.
+    expect(rooms.rows[0].map(cellText).slice(-2)).toEqual(['48,00', '32,00'])
+    expect(rooms.total?.map(cellText).slice(-2)).toEqual(['48,00', '32,00'])
+    const levels = tables.find((t) => t.id === 'client-levels')!
+    expect(levels.columns.map((c) => c.header)).toContain(fr.measurements.client.livingArea)
+    expect(levels.total?.map(cellText)).toEqual(['Bâtiment', '48,00', '32,00', '0', '0', '0'])
+  })
+
+  it('le CSV Client contient la colonne quand elle s’affiche', () => {
+    const building = buildAttic(45)
+    const csv = measurementsToCsv(building, fr.measurements.csv, [], undefined, buildClientTables(building, fr.measurements.client))
+    expect(csv).toContain(fr.measurements.client.livingArea)
+    expect(csv).toContain('32,00')
+  })
+
+  it('le total du bâtiment additionne les surfaces habitables de tous les niveaux', () => {
+    const elements: CanvasElement[] = [room('Salon', [0, 0, 4000, 0, 4000, 3000, 0, 3000]), ...attic(45)]
+    const building = computeBuildingMeasurements({ levels: [L0, ATTIC], elements })
+    expect(building.total.totals.roomHabitableArea / 1_000_000).toBeCloseTo(12 + 32, 4)
   })
 })

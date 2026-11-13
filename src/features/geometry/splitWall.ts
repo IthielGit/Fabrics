@@ -100,3 +100,136 @@ export function splitWallInDocument(
     removedOpenings: result.removedOpeningIds.length,
   }
 }
+
+/** Pourquoi un mur ne peut pas être coupé à cet endroit. */
+export type CutWallProblem = 'too-close' | 'on-opening'
+
+/** Les points de coupe sont arrondis à ce pas (mm) pour obtenir des longueurs « rondes ». */
+export const CUT_STEP = 10
+
+/** Distance minimale (mm) entre la coupe et un sommet : au moins l'épaisseur du mur. */
+function minCutDistance(wall: Pick<WallElement, 'thickness'>): number {
+  return Math.max(wall.thickness, CUT_STEP)
+}
+
+/** Distance de coupe retenue (arrondie au pas) pour un clic à `offset` mm du début du côté. */
+export function snapCutOffset(offset: number): number {
+  return Math.round(offset / CUT_STEP) * CUT_STEP
+}
+
+export interface CutWallResult {
+  /** Les deux morceaux : le premier garde l'identifiant du mur d'origine. */
+  walls: [WallElement, WallElement]
+  /** Ouvertures du mur d'origine qui passent sur le second morceau (les autres ne bougent pas). */
+  openings: OpeningElement[]
+}
+
+/**
+ * Pourquoi couper le côté `segmentIndex` à `offset` mm de son début est impossible, ou `null` si la
+ * coupe est possible : trop près d'un sommet (un morceau plus court que l'épaisseur du mur), ou au
+ * milieu d'une porte, fenêtre ou baie.
+ */
+export function cutWallProblem(
+  wall: WallElement,
+  openings: readonly OpeningElement[],
+  segmentIndex: number,
+  offset: number,
+): CutWallProblem | null {
+  const points = toPoints(wall.points)
+  if (!Number.isInteger(segmentIndex) || segmentIndex < 0 || segmentIndex + 1 >= points.length) {
+    return 'too-close'
+  }
+  const a = points[segmentIndex]
+  const b = points[segmentIndex + 1]
+  const length = Math.hypot(b.x - a.x, b.y - a.y)
+  const margin = minCutDistance(wall)
+  if (offset < margin || offset > length - margin) return 'too-close'
+  const hit = openings.some(
+    (o) =>
+      o.wallId === wall.id &&
+      o.segmentIndex === segmentIndex &&
+      offset > o.offset - o.width / 2 &&
+      offset < o.offset + o.width / 2,
+  )
+  return hit ? 'on-opening' : null
+}
+
+/**
+ * Coupe un mur en deux au point situé à `offset` mm du début du côté `segmentIndex`. Chaque morceau
+ * garde épaisseur, hauteur, couleur, matériau, niveau, verrouillage et visibilité ; seul le premier
+ * garde l'identifiant. Les ouvertures passent sur le morceau qui les porte, à la même place dans le
+ * document. Fonction pure : renvoie le problème qui empêche la coupe sinon.
+ */
+export function cutWall(
+  wall: WallElement,
+  openings: readonly OpeningElement[],
+  segmentIndex: number,
+  offset: number,
+  newId: () => string = () => crypto.randomUUID(),
+): { ok: true; result: CutWallResult } | { ok: false; problem: CutWallProblem } {
+  const problem = cutWallProblem(wall, openings, segmentIndex, offset)
+  if (problem) return { ok: false, problem }
+
+  const points = toPoints(wall.points)
+  const a = points[segmentIndex]
+  const b = points[segmentIndex + 1]
+  const length = Math.hypot(b.x - a.x, b.y - a.y)
+  const cut = {
+    x: a.x + ((b.x - a.x) / length) * offset,
+    y: a.y + ((b.y - a.y) / length) * offset,
+  }
+  const flat = (list: { x: number; y: number }[]) => list.flatMap((p) => [p.x, p.y])
+
+  const first: WallElement = {
+    ...wall,
+    // Nom automatique (D58) : chaque morceau prend le sien ; un nom tapé est gardé et numéroté.
+    name: isAutoName(wall.name) ? '' : `${wall.name} 1`,
+    points: flat([...points.slice(0, segmentIndex + 1), cut]),
+  }
+  const second: WallElement = {
+    ...wall,
+    id: newId(),
+    name: isAutoName(wall.name) ? '' : `${wall.name} 2`,
+    points: flat([cut, ...points.slice(segmentIndex + 1)]),
+  }
+
+  const moved: OpeningElement[] = []
+  for (const opening of openings) {
+    if (opening.wallId !== wall.id) continue
+    const onSecond =
+      opening.segmentIndex > segmentIndex ||
+      (opening.segmentIndex === segmentIndex && opening.offset > offset)
+    if (!onSecond) continue // reste sur le premier morceau, même côté et même distance
+    moved.push({
+      ...opening,
+      wallId: second.id,
+      segmentIndex: opening.segmentIndex - segmentIndex,
+      // Sur le côté coupé, la distance se compte maintenant depuis le point de coupe.
+      offset: opening.segmentIndex === segmentIndex ? opening.offset - offset : opening.offset,
+    })
+  }
+  return { ok: true, result: { walls: [first, second], openings: moved } }
+}
+
+/** Les éléments du document après coupe du mur `wallId`, ou le problème qui l'empêche. */
+export function cutWallInDocument(
+  elements: readonly CanvasElement[],
+  wallId: string,
+  segmentIndex: number,
+  offset: number,
+  newId?: () => string,
+): { ok: true; elements: CanvasElement[]; wallIds: [string, string] } | { ok: false; problem: CutWallProblem } {
+  const wall = elements.find((el): el is WallElement => el.id === wallId && el.type === 'wall')
+  if (!wall) return { ok: false, problem: 'too-close' }
+  const openings = elements.filter((el): el is OpeningElement => el.type === 'opening')
+  const cutResult = cutWall(wall, openings, segmentIndex, offset, newId)
+  if (!cutResult.ok) return cutResult
+
+  const { walls, openings: moved } = cutResult.result
+  const movedById = new Map(moved.map((o) => [o.id, o]))
+  const next = elements.flatMap<CanvasElement>((el) => {
+    if (el.id === wall.id) return walls // les deux morceaux prennent la place du mur dans l'empilement
+    return [movedById.get(el.id) ?? el]
+  })
+  return { ok: true, elements: next, wallIds: [walls[0].id, walls[1].id] }
+}

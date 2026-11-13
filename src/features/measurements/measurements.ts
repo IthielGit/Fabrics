@@ -17,6 +17,7 @@ import { openingStyle } from '../openings/styles'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
 import { tJunctionAdjustments } from '../geometry/wallContacts'
 import { wallFaces } from '../geometry/walls'
+import { habitableArea } from './habitableArea'
 import { buildReferences, type References } from './references'
 import { levelAboveOf, stairStatus } from '../stairs/stairs'
 import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
@@ -40,6 +41,11 @@ export interface RoomMeasure {
   ceilingHeight: number | null
   /** Vrai si la pièce a un faux plafond (option de la pièce). */
   falseCeiling: boolean
+  /**
+   * Surface habitable (mm²) : surface nette moins la partie sous une hauteur de 1800 mm (toiture en
+   * pente), voir `habitableArea`. Égale à `netArea` quand rien n'est trop bas.
+   */
+  habitableArea: number
 }
 
 /**
@@ -182,6 +188,8 @@ export interface Measurements {
     /** Surface des trémies (mm²) et surface nette des pièces (mm²). */
     voidArea: number
     roomNetArea: number
+    /** Total des surfaces habitables des pièces, en mm² (voir `RoomMeasure.habitableArea`). */
+    roomHabitableArea: number
     /** Surface des plateformes (mm²) et volume (mm³ = surface × épaisseur). */
     platformArea: number
     platformVolume: number
@@ -322,22 +330,27 @@ export function computeMeasurements(
     openingsArea.set(wall.id, (openingsArea.get(wall.id) ?? 0) + measure.area)
   }
 
+  const roofElements = elements.filter((el): el is RoofElement => el.type === 'roof')
+
   for (const element of elements) {
     if (element.type === 'room') {
       const area = polygonArea(element.points)
       const roomVoids = voidsOfRoom(element, voids)
       const roomLevel = levels?.find((level) => level.id === element.levelId)
+      const roomCeilingHeight = roomLevel ? ceilingHeight(roomLevel, levelAboveOf(levels, roomLevel.id)) : null
+      const netArea = Math.max(0, area - roomVoids.area)
       rooms.push({
         id: element.id,
         name: element.name,
         area,
         perimeter: polygonPerimeter(element.points),
         voidArea: roomVoids.area,
-        netArea: Math.max(0, area - roomVoids.area),
+        netArea,
         dimensions: axisAlignedRectangle(element.points),
         voidOverflow: roomVoids.overflowing.length > 0,
-        ceilingHeight: roomLevel ? ceilingHeight(roomLevel, levelAboveOf(levels, roomLevel.id)) : null,
+        ceilingHeight: roomCeilingHeight,
         falseCeiling: element.falseCeiling === true,
+        habitableArea: habitableArea(element.points, netArea, roomLevel, roofElements, roomCeilingHeight),
       })
     } else if (element.type === 'stair') {
       const status = stairStatus(element, levels)
@@ -425,6 +438,7 @@ export function computeMeasurements(
       roomArea: rooms.reduce((sum, room) => sum + room.area, 0),
       voidArea: rooms.reduce((sum, room) => sum + room.voidArea, 0),
       roomNetArea: rooms.reduce((sum, room) => sum + room.netArea, 0),
+      roomHabitableArea: rooms.reduce((sum, room) => sum + room.habitableArea, 0),
       platformArea: platforms.reduce((sum, platform) => sum + platform.area, 0),
       platformVolume: platforms.reduce((sum, platform) => sum + platform.volume, 0),
       wallLength: walls.reduce((sum, wall) => sum + wall.length, 0),
@@ -477,6 +491,7 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
       roomArea: sum((m) => m.totals.roomArea),
       voidArea: sum((m) => m.totals.voidArea),
       roomNetArea: sum((m) => m.totals.roomNetArea),
+      roomHabitableArea: sum((m) => m.totals.roomHabitableArea),
       platformArea: sum((m) => m.totals.platformArea),
       platformVolume: sum((m) => m.totals.platformVolume),
       wallLength: sum((m) => m.totals.wallLength),

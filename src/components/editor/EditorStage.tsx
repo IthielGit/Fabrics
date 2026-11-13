@@ -43,6 +43,7 @@ import CalibrationDraftLayer from './CalibrationDraftLayer'
 import ElementNode from './ElementNode'
 import { importImageFiles } from './importImages'
 import { isTypingTarget } from './isTypingTarget'
+import CutPreviewLayer from './CutPreviewLayer'
 import OpeningPreviewLayer from './OpeningPreviewLayer'
 import PlanGrid from './PlanGrid'
 import PolylineDraftLayer from './PolylineDraftLayer'
@@ -65,6 +66,7 @@ import { setThumbnailStage } from './thumbnail'
 import { useCalibrationTool } from './useCalibrationTool'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
+import { useCutTool } from './useCutTool'
 import { useOpeningTool, type OpeningToolKind } from './useOpeningTool'
 import { usePanDrag } from './usePanDrag'
 import { useTouchGestures } from './useTouchGestures'
@@ -186,6 +188,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
   const polylineDrawing = usePolylineDrawing(polylineTool, scale)
   const calibration = useCalibrationTool(activeTool === 'calibrate')
   const stretch = useStretchTool(activeTool === 'stretch', scale)
+  const cutTool = useCutTool(activeTool === 'cut', scale)
   // Pose de portes et de fenêtres sur les murs.
   const openingKind: OpeningToolKind | null =
     activeTool === 'door' || activeTool === 'window' ? activeTool : null
@@ -393,6 +396,8 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
       calibration.onPointerDown(event)
     } else if (activeTool === 'stretch') {
       stretch.onPointerDown(event)
+    } else if (activeTool === 'cut') {
+      cutTool.onPointerDown(event)
     } else if (openingKind) {
       openingTool.onPointerDown(event)
     } else if (activeTool === 'furniture') {
@@ -417,6 +422,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
     if (polylineTool) polylineDrawing.onPointerMove(event)
     if (activeTool === 'calibrate') calibration.onPointerMove(event)
     if (activeTool === 'stretch') stretch.onPointerMove(event)
+    if (activeTool === 'cut') cutTool.onPointerMove(event)
     if (openingKind) openingTool.onPointerMove(event)
     if (activeTool === 'furniture' || activeTool === 'stair' || activeTool === 'chimney') {
       const ghost = pointerInDocument(event)
@@ -686,6 +692,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
             {activeTool === 'stretch' && (
               <StretchDraftLayer state={stretch.state} preview={stretch.preview} scale={scale} />
             )}
+            {activeTool === 'cut' && <CutPreviewLayer preview={cutTool.preview} scale={scale} />}
             {openingKind && <OpeningPreviewLayer preview={openingTool.preview} scale={scale} />}
             {activeTool === 'stair' && ghostPoint && (
               <StairGhost point={ghostPoint} snap={placementSnap} scale={scale} />

@@ -30,7 +30,7 @@ import { fr } from '../i18n/fr'
 import type { Guide } from '../features/geometry/guides'
 import type { Box } from '../features/geometry/box'
 import { resizeBlock } from '../features/geometry/resizeBlock'
-import { splitWallInDocument } from '../features/geometry/splitWall'
+import { cutWallInDocument, splitWallInDocument, type CutWallProblem } from '../features/geometry/splitWall'
 import { joinWallsInDocument, type JoinWallsProblem } from '../features/geometry/joinWalls'
 import { moveWallSide } from '../features/geometry/moveWallSide'
 import { stretchZone } from '../features/geometry/stretchZone'
@@ -55,6 +55,7 @@ export type EditorTool =
   | 'axis'
   | 'section'
   | 'stretch'
+  | 'cut'
   | 'furniture'
   | 'door'
   | 'window'
@@ -72,6 +73,7 @@ export const PLAN_TOOLS: readonly EditorTool[] = [
   'axis',
   'section',
   'stretch',
+  'cut',
   'furniture',
   'door',
   'window',
@@ -230,6 +232,16 @@ interface EditorState {
    * d'historique, les nouveaux murs deviennent la sélection. `null` si rien à séparer.
    */
   splitWall: (id: string) => { count: number; removedOpenings: number } | null
+  /**
+   * Coupe un mur en deux à `offset` mm du début de son côté `segmentIndex` (outil « Couper », voir
+   * `cutWallInDocument`) : un seul pas d'historique, les deux morceaux deviennent la sélection.
+   * Renvoie le problème qui empêche la coupe sinon.
+   */
+  cutWall: (
+    id: string,
+    segmentIndex: number,
+    offset: number,
+  ) => { ok: true } | { ok: false; problem: CutWallProblem }
   /**
    * Joint des murs bout à bout en un seul (voir `joinWallsInDocument`) : un seul pas d'historique,
    * le mur obtenu devient la sélection. Renvoie le problème qui l'empêche sinon.
@@ -693,6 +705,16 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       // Les ouvertures sont déjà replacées sur le mur de leur côté : pas de réajustement.
       commit((doc) => ({ ...doc, elements: result.elements }), result.wallIds, undefined, false)
       return { count: result.wallIds.length, removedOpenings: result.removedOpenings }
+    },
+
+    cutWall: (id, segmentIndex, offset) => {
+      const { project } = get()
+      if (!project) return { ok: false, problem: 'too-close' }
+      const result = cutWallInDocument(project.document.elements, id, segmentIndex, offset)
+      if (!result.ok) return result
+      // Les ouvertures sont déjà replacées sur le bon morceau : pas de réajustement.
+      commit((doc) => ({ ...doc, elements: result.elements }), result.wallIds, undefined, false)
+      return { ok: true }
     },
 
     joinWalls: (ids) => {
