@@ -83,7 +83,9 @@ export default function LibraryPanel() {
     event.dataTransfer.effectAllowed = 'copy'
   }
 
-  const chip = (id: Filter, label: string, count: number) => (
+  // Les listes vides (récents, ensembles) restent cachées tant qu'elles n'ont rien à montrer.
+  const chip = (id: Filter, label: string, count: number) =>
+    count === 0 && filter !== id && id !== 'all' && id !== 'favorites' ? null : (
     <button
       key={id}
       type="button"
@@ -98,7 +100,7 @@ export default function LibraryPanel() {
     >
       {label} <span className="text-slate-500">{count}</span>
     </button>
-  )
+    )
 
   return (
     <section aria-label={fr.library.title} className="p-4">
@@ -143,7 +145,7 @@ export default function LibraryPanel() {
             if (!created) return
             setNaming(null)
             setFilter('mine')
-            setNotice(fr.library.savedSet(created.name))
+            setNotice(fr.library.savedSet(created.name), 'success')
           }}
         >
           <input

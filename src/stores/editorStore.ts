@@ -157,6 +157,8 @@ interface EditorState {
   surfaceHighlight: SurfaceHighlight | null
   /** Message affiché à l'utilisateur (par exemple un fichier refusé). */
   notice: string | null
+  /** Nature du message : confirmation, information ou échec (couleur et annonce différentes). */
+  noticeTone: 'success' | 'info' | 'error'
   /** Guides d'alignement affichés pendant un déplacement (état d'interface, pas du document). */
   guides: Guide[]
   zoom: number
@@ -180,7 +182,7 @@ interface EditorState {
   setPlatformMode: (mode: PlatformMode) => void
   setStairShape: (shape: StairShapeChoice) => void
   setRoomWithWalls: (withWalls: boolean) => void
-  setNotice: (notice: string | null) => void
+  setNotice: (notice: string | null, tone?: 'success' | 'info' | 'error') => void
   setGuides: (guides: Guide[]) => void
   startEditingText: (id: string) => void
   stopEditingText: () => void
@@ -442,6 +444,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     metresVersion: 'execution',
     surfaceHighlight: null,
     notice: null,
+    noticeTone: 'info',
     guides: [],
     zoom: 1,
     stagePosition: { x: 0, y: 0 },
@@ -502,7 +505,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     setOpeningPreset: (kind, preset) =>
       set((state) => ({ openingPresets: { ...state.openingPresets, [kind]: preset } })),
     setRoomWithWalls: (roomWithWalls) => set({ roomWithWalls }),
-    setNotice: (notice) => set({ notice }),
+    setNotice: (notice, tone = 'info') => set({ notice, noticeTone: tone }),
     setGuides: (guides) => set({ guides }),
     startEditingText: (id) => set({ editingTextId: id, selectedIds: [id], activeTool: 'select' }),
     stopEditingText: () => set({ editingTextId: null }),

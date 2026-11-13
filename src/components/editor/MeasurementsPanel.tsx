@@ -101,7 +101,7 @@ export default function MeasurementsPanel() {
         orientation: 'landscape',
       })
     } catch {
-      useEditorStore.getState().setNotice(fr.export.failed)
+      useEditorStore.getState().setNotice(fr.export.failed, 'error')
     }
   }
   // Export principal : un vrai fichier Excel (onglets, nombres, totaux en formules).
@@ -132,6 +132,7 @@ export default function MeasurementsPanel() {
           </button>
         ))}
       </div>
+      <p className="-mt-1 mb-3 text-xs leading-relaxed text-slate-600">{fr.export.metres.versionHint[version]}</p>
       <h2 className="sr-only">{fr.measurements.title}</h2>
       <div className="flex items-center gap-2">
         <Button

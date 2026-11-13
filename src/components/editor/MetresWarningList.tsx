@@ -67,7 +67,7 @@ export default function MetresWarningList({
     const { fix } = warning
     const state = useEditorStore.getState()
     state.updateElements([fix.wallId], (el) => (el.type === 'wall' ? applyWallFix(el, fix) : el))
-    state.setNotice(fr.measurements.warnings.fixed)
+    state.setNotice(fr.measurements.warnings.fixed, 'success')
   }
   const t = fr.measurements.warnings
 

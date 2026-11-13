@@ -110,7 +110,7 @@ export default function ImportDxfDialog({
         },
       })
     }
-    store.setNotice(fr.dxfImport.done(lines.length, texts.length))
+    store.setNotice(fr.dxfImport.done(lines.length, texts.length), 'success')
     onClose()
   }
 
