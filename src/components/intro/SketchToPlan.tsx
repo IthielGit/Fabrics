@@ -132,7 +132,7 @@ export default function SketchToPlan() {
   useEffect(() => {
     if (!faultShown || prefersReducedMotion()) return
     contextRef.current?.add(() => {
-      gsap.from('[data-fault-pill]', { opacity: 0, y: -14, duration: 0.7, ease: 'expo.out' })
+      gsap.from('[data-fault-pill]', { opacity: 0, y: -10, scale: 0.95, transformOrigin: '100% 0%', duration: 0.5, ease: 'expo.out', clearProps: 'transform' })
       pulseRing()
     })
   }, [faultShown])
@@ -249,7 +249,7 @@ export default function SketchToPlan() {
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute top-1/2 z-20 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-indigo-950 shadow-lg shadow-indigo-950/30 ring-indigo-400 ring-offset-2 ring-offset-indigo-950 transition-opacity duration-300 peer-focus-visible:ring-4"
+          className="pointer-events-none absolute top-1/2 z-20 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-indigo-950 shadow-lg shadow-indigo-950/30 ring-indigo-400 ring-offset-2 ring-offset-indigo-950 transition-[opacity,scale] duration-300 ease-out-strong peer-focus-visible:ring-4 peer-active:scale-90"
           style={{ left: `${value}%`, opacity: value < 2 ? 0 : 1 }}
         >
           <ChevronsLeftRight className="size-5" strokeWidth={2.25} />
