@@ -352,11 +352,10 @@ export async function buildMetresPdf(
       { label: c.sheetLabel, value: c.sheet },
       { label: c.pageLabel, value: `${page}/${pageCount}` },
     ]
-    drawCartouche(pdf, sheet, null, {
+    drawCartouche(pdf, sheet, {
       projectName: c.projectName,
       subtitle: c.subtitle,
       fields,
-      scaleBarUnit: '',
     })
   }
   return pdf.output('blob')

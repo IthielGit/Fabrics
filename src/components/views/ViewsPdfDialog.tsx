@@ -96,7 +96,7 @@ export default function ViewsPdfDialog({
     setBusy(true)
     setFailed(false)
     try {
-      const blob = await buildDrawingPdf(drawing, size, placement.rect, placement.scale, {
+      const blob = await buildDrawingPdf(drawing, size, placement.rect, {
         projectName,
         subtitle: viewTitle,
         fields: cartoucheFields(
@@ -108,7 +108,6 @@ export default function ViewsPdfDialog({
           },
           fr.export.cartouche,
         ),
-        scaleBarUnit: fr.export.cartouche.scaleBarUnit,
         northAngle: showNorth ? northAngle : undefined,
         northLabel: fr.viewer3d.cardinal.north,
         note: execution ? fr.dimensioning.baysNote : undefined,

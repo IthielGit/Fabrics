@@ -187,7 +187,7 @@ export async function exportProject(project: Project, options: ExportOptions): P
     measurements.rooms.length > 0
       ? fr.export.cartouche.area(formatArea(measurements.totals.roomArea))
       : undefined
-  const blob = await buildPlanPdf(dataUrl, sheet, placement.rect, placement.scale, {
+  const blob = await buildPlanPdf(dataUrl, sheet, placement.rect, {
     projectName: project.name,
     subtitle: [levelName, areaText].filter(Boolean).join(' · ') || undefined,
     fields: cartoucheFields(
@@ -199,7 +199,6 @@ export async function exportProject(project: Project, options: ExportOptions): P
       },
       fr.export.cartouche,
     ),
-    scaleBarUnit: fr.export.cartouche.scaleBarUnit,
     northAngle: doc.plan?.northAngle ?? 0,
     northLabel: fr.viewer3d.cardinal.north,
     // Note sur les baies : imprimée sur tout document d'exécution (D39).
