@@ -192,10 +192,10 @@ export default function SketchToPlan() {
   }
 
   return (
-    <div ref={rootRef}>
+    <div ref={rootRef} className="rounded-3xl bg-white p-3 ring-1 ring-slate-900/10 shadow-[0_32px_64px_-32px_rgb(30_27_75/0.45)] sm:p-4">
       <HeroModeTabs current={mode} onSelect={selectMode} />
 
-      <div className="relative isolate -mx-6 aspect-[4/3] w-[calc(100%+3rem)] overflow-hidden bg-stone-50 ring-slate-900/10 sm:mx-0 sm:w-full sm:aspect-[16/10] sm:rounded-3xl sm:ring-1 sm:shadow-[0_32px_64px_-32px_rgb(30_27_75/0.45)] select-none lg:aspect-auto lg:h-[560px]">
+      <div className="relative isolate aspect-[4/3] w-full overflow-hidden rounded-2xl bg-stone-50 select-none sm:aspect-[16/10] lg:aspect-auto lg:h-[560px]">
         {/* Calque croquis */}
         <div className="absolute inset-0 bg-stone-50" style={PAPER_STYLE}>
           <SketchDrawing viewBox={viewBox} compact={compact} measures={MEASURES} className={DRAWING_FRAME} />
