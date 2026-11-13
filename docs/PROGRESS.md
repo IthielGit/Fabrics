@@ -44,6 +44,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Connexion obligatoire et page d'introduction
+- Demande de l'utilisateur : l'application ne doit plus être accessible sans connexion ; une page d'introduction mène à la connexion. Contredit l'ancien parcours « sans compte d'abord » de `docs/01-PRODUIT.md`, mis à jour (section « Accès »).
+- Fait : garde `RequireAuth` sur `/` et `/p/:projectId` (sans session : renvoi vers `/bienvenue` ; mode local sans Supabase : accès libre) ; restent publics `/bienvenue`, `/connexion`, `/nouveau-mot-de-passe`, `/s/…`. Après connexion, retour à la page demandée (`safeRedirectPath`, testé). `/connexion?mode=inscription` ouvre l'inscription.
+- Page `/bienvenue` « Du croquis au plan » (structure choisie par l'utilisateur) : croquis au crayon et plan propre séparés par un curseur à glisser (balayage d'ouverture, respect de « réduire les animations »), métrés calculés par `polygonArea` (`demoPlan.ts`, testé : 21,84 + 11,20 + 3,50 = 36,54 m²), cuisine cotée, planche plan / façade / coupe. Aucune promesse de visuels (l'accueil est « plan seulement »). Police manuscrite Caveat (OFL, Google Fonts) pour le croquis seulement.
+- Fichiers : `App.tsx`, `LoginPage.tsx`, `IntroPage.tsx`, `RequireAuth.tsx`, `redirect.ts` (+ test), `demoPlan.ts` (+ test), `src/components/intro/*`, `fr.ts`, `PRODUCT.md`, `docs/01-PRODUIT.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2773) — navigateur : 1440 et 390 px sans défilement horizontal, garde et retour après connexion contrôlés.
+- Commit : feat: connexion obligatoire et page d'introduction
+
 ### 2026-11-12 — M14 · Lot A : hébergement du temps réel (documentation)
 - Fait : décisions D68 à D70 prises avec l'utilisateur et écrites dans `docs/02-ARCHITECTURE.md` (nouvelle section « Collaboration temps réel (M14) » : serveur, authentification sans secret, membres et invitations, liaison Yjs, annuler / rétablir) ; roadmap M14 découpée en lots A à F.
 - Fichiers : `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`, `docs/PROGRESS.md`. Aucun code.
