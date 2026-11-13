@@ -205,7 +205,7 @@ export default function LibraryPanel() {
                 >
                   {isSet(entry) ? <SetPreview set={entry} size={64} /> : <SymbolPreview def={entry} size={64} />}
                   <span className="line-clamp-2 text-xs text-slate-900">{symbolName(entry.id)}</span>
-                  <span className="text-[11px] text-slate-500">
+                  <span className="text-xs text-slate-600">
                     {isSet(entry)
                       ? `${isUserSet(entry) ? fr.library.userBadge : entry.shell ? fr.library.prefabBadge : fr.library.setBadge} · ${fr.library.size(entry.width, entry.depth)}`
                       : fr.library.size(entry.width, entry.depth)}

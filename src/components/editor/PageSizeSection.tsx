@@ -66,7 +66,7 @@ export default function PageSizeSection() {
               >
                 <FormatThumb width={format.width} height={format.height} active={active} />
                 <span className="text-xs font-medium text-slate-900">{String(nameOf(format.id))}</span>
-                <span className="text-[11px] text-slate-500">{sizeText(format.width, format.height)}</span>
+                <span className="text-xs text-slate-600">{sizeText(format.width, format.height)}</span>
               </button>
             </li>
           )

@@ -281,7 +281,7 @@ export default function Toolbar() {
                         )}
                       </span>
                       {item.shortcut && (
-                        <kbd className="rounded border border-slate-200 px-1 text-[11px] text-slate-500">
+                        <kbd className="rounded border border-slate-200 px-1 text-xs text-slate-600">
                           {item.shortcut}
                         </kbd>
                       )}
