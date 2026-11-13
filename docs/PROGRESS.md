@@ -44,6 +44,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Finition de la scène du hero
+
+- Les trois onglets forment un seul contrôle segmenté (moins de boutons, mêmes fonctions).
+- Scène posée sur une ombre portée décalée ; anneau d'invitation autour de la poignée jusqu'au premier geste ; carte des métrés légèrement translucide, voyant « Export Excel prêt » qui pulse.
+
 ### 2026-11-13 — Hors jalon · Animations de la page d'introduction (principes d'Emil Kowalski)
 
 - Titre révélé mot par mot, scène dévoilée par le bas, onglets du hero avec un fond actif qui glisse, phrase qui change avec un léger flou.
