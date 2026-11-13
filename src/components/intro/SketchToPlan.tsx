@@ -83,6 +83,7 @@ export default function SketchToPlan() {
   const [mode, setMode] = useState<HeroMode>('sketch')
   const [activeRoom, setActiveRoom] = useState<DemoRoomId | null>(null)
   const [faultShown, setFaultShown] = useState(false)
+  const [touched, setTouched] = useState(false)
   const compact = useCompact()
   const viewBox = compact ? VIEWBOX_COMPACT : VIEWBOX
 
@@ -185,13 +186,16 @@ export default function SketchToPlan() {
   const seeOnPlan = () => contextRef.current?.add(pulseRing)
   const shown = Math.round(value)
 
-  const takeOver = () => stopMotion()
+  const takeOver = () => {
+    stopMotion()
+    setTouched(true)
+  }
 
   return (
     <div ref={rootRef}>
       <HeroModeTabs current={mode} onSelect={selectMode} />
 
-      <div className="relative isolate -mx-6 aspect-[4/3] w-[calc(100%+3rem)] overflow-hidden bg-stone-50 ring-slate-900/10 sm:mx-0 sm:w-full sm:aspect-[16/10] sm:rounded-3xl sm:ring-1 select-none lg:aspect-auto lg:h-[560px]">
+      <div className="relative isolate -mx-6 aspect-[4/3] w-[calc(100%+3rem)] overflow-hidden bg-stone-50 ring-slate-900/10 sm:mx-0 sm:w-full sm:aspect-[16/10] sm:rounded-3xl sm:ring-1 sm:shadow-[0_32px_64px_-32px_rgb(30_27_75/0.45)] select-none lg:aspect-auto lg:h-[560px]">
         {/* Calque croquis */}
         <div className="absolute inset-0 bg-stone-50" style={PAPER_STYLE}>
           <SketchDrawing viewBox={viewBox} compact={compact} measures={MEASURES} className={DRAWING_FRAME} />
@@ -244,7 +248,7 @@ export default function SketchToPlan() {
         {/* Séparateur et poignée */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-y-0 z-20 w-0.5 -translate-x-1/2 bg-white shadow-[0_0_0_1px_rgb(30_27_75/0.12)] transition-opacity duration-300"
+          className="pointer-events-none absolute inset-y-0 z-20 w-0.5 -translate-x-1/2 bg-white/90 shadow-[0_0_0_1px_rgb(30_27_75/0.12)] transition-opacity duration-300"
           style={{ left: `${value}%`, opacity: value < 2 ? 0 : 1 }}
         />
         <div
@@ -252,6 +256,9 @@ export default function SketchToPlan() {
           className="pointer-events-none absolute top-1/2 z-20 flex size-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-white text-indigo-950 shadow-lg shadow-indigo-950/30 ring-indigo-400 ring-offset-2 ring-offset-indigo-950 transition-[opacity,scale] duration-300 ease-out-strong peer-focus-visible:ring-4 peer-active:scale-90"
           style={{ left: `${value}%`, opacity: value < 2 ? 0 : 1 }}
         >
+          {!touched && value > 20 && value < 80 && (
+            <span aria-hidden="true" className="absolute inset-0 rounded-full ring-2 ring-white/80 motion-safe:animate-[invite_2.4s_var(--ease-out-strong)_1.8s_infinite]" />
+          )}
           <ChevronsLeftRight className="size-5" strokeWidth={2.25} />
         </div>
 

@@ -23,8 +23,8 @@ export default function MeasuresCard({
   blocked = false,
 }: MeasuresCardProps) {
   return (
-    <div className={`rounded-2xl bg-white p-4 text-slate-700 ${className}`}>
-      <p className="text-xs font-semibold tracking-wide text-slate-500 uppercase">{fr.intro.measuresTitle}</p>
+    <div className={`rounded-2xl bg-white/95 p-4 text-slate-700 backdrop-blur-sm ${className}`}>
+      <p className="text-xs font-semibold tracking-wide text-slate-600 uppercase">{fr.intro.measuresTitle}</p>
       <dl className="mt-2 text-sm">
         {measures.map((room) => (
           <div
@@ -51,10 +51,15 @@ export default function MeasuresCard({
           blocked ? 'text-amber-800' : 'text-slate-500'
         }`}
       >
-        <span
-          aria-hidden="true"
-          className={`size-2 rounded-full transition-colors duration-300 ${blocked ? 'bg-amber-500' : 'bg-emerald-500'}`}
-        />
+        <span className="relative flex size-2">
+          {!blocked && (
+            <span aria-hidden="true" className="absolute inset-0 rounded-full bg-emerald-500 motion-safe:animate-[invite_2.4s_var(--ease-out-strong)_infinite]" />
+          )}
+          <span
+            aria-hidden="true"
+            className={`relative size-2 rounded-full transition-colors duration-300 ${blocked ? 'bg-amber-500' : 'bg-emerald-500'}`}
+          />
+        </span>
         {blocked ? fr.intro.exportBlocked : fr.intro.exportReady}
       </p>
     </div>
