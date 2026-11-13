@@ -1,4 +1,11 @@
-import { DEMO_DIMENSIONS, DEMO_PLAN_SIZE, type DemoRoomMeasure } from '../../features/intro/demoPlan'
+import {
+  DEMO_DIMENSIONS,
+  DEMO_PLAN_SIZE,
+  DEMO_ROOMS,
+  type DemoRoomId,
+  type DemoRoomMeasure,
+} from '../../features/intro/demoPlan'
+import { DEMO_FAULT } from '../../features/intro/heroModes'
 import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 
@@ -9,6 +16,10 @@ interface PlanDrawingProps {
   /** Version téléphone : textes agrandis, cotes à l'extérieur, chaîne de gauche omise. */
   compact?: boolean
   className?: string
+  /** Pièce surlignée pendant la démonstration des métrés. */
+  highlightId?: DemoRoomId | null
+  /** Affiche le défaut de démonstration (deux murs superposés). */
+  fault?: boolean
 }
 
 /** 1 unité SVG = 10 mm. */
@@ -125,7 +136,14 @@ function DimensionChain({ lengths, orientation, at, labelSide, wallEdge, fontSiz
  * Le plan propre : murs, ouvertures, pièces avec leur surface calculée et chaînes de cotes.
  * Décoratif : les métrés lisibles par les lecteurs d'écran sont dans `MeasuresCard`.
  */
-export default function PlanDrawing({ viewBox, measures, compact = false, className }: PlanDrawingProps) {
+export default function PlanDrawing({
+  viewBox,
+  measures,
+  compact = false,
+  className,
+  highlightId = null,
+  fault = false,
+}: PlanDrawingProps) {
   const nameSize = compact ? 32 : 22
   const areaSize = compact ? 29 : 18
   const dimSize = compact ? 29 : 16
@@ -181,6 +199,16 @@ export default function PlanDrawing({ viewBox, measures, compact = false, classN
       {/* Sols des pièces, très légèrement teintés */}
       <rect x="0" y="0" width={W} height={D} fill={WALL} fillOpacity="0.04" />
 
+      {/* Surbrillance de la pièce en cours de démonstration (fondu CSS) */}
+      {DEMO_ROOMS.map((room) => (
+        <polygon
+          key={room.id}
+          points={room.points.map((value) => u(value)).join(' ')}
+          fill="#818cf8"
+          style={{ opacity: highlightId === room.id ? 0.32 : 0, transition: 'opacity 350ms ease-out' }}
+        />
+      ))}
+
       {/* Fenêtre du séjour : dormant + vitrage */}
       <rect
         x={WINDOW.from}
@@ -197,6 +225,26 @@ export default function PlanDrawing({ viewBox, measures, compact = false, classN
       <path d={partitions} fill="none" stroke={WALL} strokeWidth={INT} strokeOpacity="0.9" />
       <path d={leaves} fill="none" stroke={LABEL} strokeWidth="2" strokeLinecap="round" />
       <path d={swings} fill="none" stroke={WALL} strokeWidth="1.25" strokeOpacity="0.6" strokeDasharray="4 4" />
+
+      {/* Défaut de démonstration : deux murs superposés, repérés en orange */}
+      <g style={{ opacity: fault ? 1 : 0, transition: 'opacity 450ms ease-out' }}>
+        <path
+          d={`M${u(DEMO_FAULT.x)} ${u(DEMO_FAULT.fromY)}V${u(DEMO_FAULT.toY)}`}
+          stroke="#fb923c"
+          strokeWidth={INT + 6}
+          strokeLinecap="butt"
+          fill="none"
+        />
+        <circle
+          data-fault-ring
+          cx={u(DEMO_FAULT.x)}
+          cy={(u(DEMO_FAULT.fromY) + u(DEMO_FAULT.toY)) / 2}
+          r="16"
+          fill="none"
+          stroke="#fb923c"
+          strokeWidth="2.5"
+        />
+      </g>
 
       {/* Pièces : nom et surface calculée au centre */}
       {measures.map((room) => {
