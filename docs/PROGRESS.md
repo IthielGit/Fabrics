@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A et B faits et validés ; lot C à lancer sur feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot B · partage avec un autre compte (13/11, validé par l'utilisateur après essai à deux comptes)
-- **Prochaine tâche :** M14 · Lot C (serveur temps réel Cloudflare), après validation du plan par l'utilisateur
+- **Jalon en cours :** M14 Collaboration temps réel (lots A et B faits et validés ; lot C fait, déploiement à faire par l'utilisateur) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot C · serveur temps réel (13/11, essai local complet OK ; mise en ligne Cloudflare à faire par l'utilisateur)
+- **Prochaine tâche :** validation du lot C (déploiement), puis M14 · Lot D (liaison Yjs et éditeur) sur feu vert
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -34,7 +34,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
-| M14 Collaboration temps réel | en cours (lots A et B faits et validés ; lots C à F à faire) | |
+| M14 Collaboration temps réel | en cours (lots A et B faits et validés ; lot C fait, à déployer ; lots D à F à faire) | |
 
 ## Journal
 
@@ -108,6 +108,15 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-13 — M14 · Lot C : serveur temps réel (Cloudflare Worker + Durable Object)
+- Dépendances acceptées par l'utilisateur : `y-protocols`, `lib0`, `wrangler` (avec `yjs`, `typescript`, `vitest`), **uniquement dans `collab-server/`** ; ajoutées au tableau de `docs/02-ARCHITECTURE.md`.
+- Fait : dossier `collab-server/` séparé (son `package.json`, `wrangler.jsonc`, `README.md`). Worker : adresse `/room/<projectId>`, jeton Supabase lu dans `Sec-WebSocket-Protocol` (`fabrics-collab, <jeton>`, jamais dans l'adresse), rôle demandé à Supabase via `my_project_role` avec la clé `anon` (aucun secret, jamais `service_role`) ; 401 / 403 / 502 sinon. Durable Object `CollabRoom` (un par projet) : `Y.Doc` en mémoire, protocole de synchronisation Yjs, présence relayée, WebSocket hibernables, état sauvegardé dans son SQLite (snapshot en morceaux de 512 Ko + mises à jour, compaction toutes les 500). **Un lecteur reçoit le document mais ses modifications sont ignorées** (sa présence est relayée).
+- Limites connues : rôle vérifié à l'ouverture seulement (un membre retiré reste connecté jusqu'à sa déconnexion ; jeton expiré idem) ; messages WebSocket limités par Cloudflare (un très gros plan pourrait dépasser à la première synchronisation, à surveiller au lot F) ; compaction non essayée en vrai (fonctions testées).
+- Racine : `vite.config.ts` exclut `collab-server/` des tests de l'application.
+- Fichiers : `collab-server/{package.json,wrangler.jsonc,tsconfig.json,.gitignore,.dev.vars.example,README.md}`, `collab-server/src/{index,room,auth,protocol,persistence,env}.ts` (+ 3 fichiers de tests), `collab-server/scripts/smoke.mjs`, `vite.config.ts`, `docs/02-ARCHITECTURE.md`.
+- Vérification : application build ✓ lint ✓ tests ✓ (2820 ; le test de vitesse « 600 murs en moins de 200 ms » a échoué une fois à 229 ms sous charge, vert seul et au passage complet suivant) — serveur : types ✓, 22 tests ✓, **essai de bout en bout `npm run smoke` ✓ (10 vérifications : éditeurs synchronisés, lecteur refusé en écriture, présence, sans rôle et jeton invalide refusés, document retrouvé après redémarrage)**. Non fait : mise en ligne (demande le compte Cloudflare de l'utilisateur).
+- Commit : feat: serveur temps réel Cloudflare (Worker + Durable Object)
 
 ### 2026-11-13 — M14 · Lot B : partage avec un autre compte (lecture ou édition)
 - Fait (base, `supabase/schema.sql`, **à ré-exécuter en entier dans Supabase**, sans risque) : tables `project_members` (projet, compte, rôle `viewer` / `editor`) et `project_invites` (jeton de 192 bits tiré par la base, rôle, expiration, désactivable) ; fonction `my_project_role` (security definer, évite la récursion entre règles RLS) ; règles de `projects` étendues (un membre lit, un éditeur modifie, seul le propriétaire supprime) ; déclencheur qui fige `owner_id` et `created_at` (l'enregistrement automatique d'un éditeur envoie la ligne entière) ; fonctions `create_invite`, `accept_invite` (jamais de rétrogradation d'un membre), `list_project_members` (propriétaire seul, avec e-mails), `my_shared_projects` ; lecture des images du propriétaire par ses membres (stockage). Aucun accès pour les visiteurs sans compte.
