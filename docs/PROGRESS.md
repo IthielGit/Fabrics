@@ -46,6 +46,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Hero animé et interactif de la page d'introduction
+- Demande de l'utilisateur : un hero qui met en avant les plus-values de l'app, animé et interactif, avec GSAP et Lenis (dépôts `greensock/gsap-skills` et `darkroomengineering/lenis`). Dépendances `gsap` et `lenis` ajoutées avec son accord (listées dans `docs/02-ARCHITECTURE.md`).
+- Fait : sous le titre, trois boutons de plus-values qui pilotent la même scène. « Du croquis au plan » (séparateur à glisser), « Métrés automatiques » (le plan se révèle, surfaces comptées de 0 à leur valeur exacte, pièces surlignées tour à tour), « Contrôle avant export » (deux murs superposés repérés en orange, alerte avec les vrais textes « Que faire » et « Voir sur le plan », export marqué bloqué). Défilement fluide Lenis synchronisé avec ScrollTrigger, entrée du titre et apparition des sections au défilement ; rien de tout cela avec « réduire les animations ». Correction de texte : l'export des métrés est Excel (et non CSV). Bouton « Se connecter » de l'en-tête retiré à la demande de l'utilisateur : « J'ai déjà un compte » reste le lien de connexion.
+- Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
+- Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
+- Commit : feat: hero animé et interactif (GSAP, Lenis)
+
 ### 2026-11-13 — Hors jalon · Connexion obligatoire et page d'introduction
 - Demande de l'utilisateur : l'application ne doit plus être accessible sans connexion ; une page d'introduction mène à la connexion. Contredit l'ancien parcours « sans compte d'abord » de `docs/01-PRODUIT.md`, mis à jour (section « Accès »).
 - Fait : garde `RequireAuth` sur `/` et `/p/:projectId` (sans session : renvoi vers `/bienvenue` ; mode local sans Supabase : accès libre) ; restent publics `/bienvenue`, `/connexion`, `/nouveau-mot-de-passe`, `/s/…`. Après connexion, retour à la page demandée (`safeRedirectPath`, testé). `/connexion?mode=inscription` ouvre l'inscription.

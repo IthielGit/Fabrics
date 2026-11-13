@@ -51,12 +51,29 @@ export const fr = {
     planLabel: 'Dans Fabrics',
     compareLabel: 'Comparer le croquis et le plan',
     compareValue: (percent: number) => `${percent} % du croquis visible`,
+    modesLabel: 'Trois plus-values à essayer',
+    modes: {
+      sketch: {
+        label: 'Du croquis au plan',
+        text: 'Glissez le séparateur : votre croquis devient un plan à l’échelle.',
+      },
+      measures: {
+        label: 'Métrés automatiques',
+        text: 'Surfaces, périmètres et longueurs se calculent seuls, en mm et en m², et se mettent à jour pendant le dessin.',
+      },
+      check: {
+        label: 'Contrôle avant export',
+        text: 'Un défaut est signalé avant l’export, avec ce qu’il faut faire : un export bloqué évite un métré faux.',
+      },
+    },
+    exportReady: 'Export Excel prêt',
+    exportBlocked: 'Export bloqué',
     measuresTitle: 'Métrés',
     totalArea: 'Surface totale',
     rooms: { sejour: 'Séjour', cuisine: 'Cuisine', entree: 'Entrée' },
     measureTitle: 'Chaque trait est une mesure.',
     measureText:
-      'Fermez une pièce : sa surface et son périmètre apparaissent. Déplacez un angle : tout se recalcule. Les métrés partent en CSV en un clic.',
+      'Fermez une pièce : sa surface et son périmètre apparaissent. Déplacez un angle : tout se recalcule. Les métrés s’exportent en Excel en un clic.',
     area: 'Surface',
     perimeter: 'Périmètre',
     wall: 'Mur',
