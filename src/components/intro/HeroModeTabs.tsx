@@ -38,7 +38,7 @@ export default function HeroModeTabs({ current, onSelect }: HeroModeTabsProps) {
   }, [current])
 
   return (
-    <div className="mb-5 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
+    <div className="mb-3 flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between lg:gap-8">
       <div data-tabs className="relative w-full rounded-xl bg-slate-100 p-1 ring-1 ring-slate-900/5 lg:w-fit">
         <div ref={groupRef} role="group" aria-label={fr.intro.modesLabel} className="relative grid grid-cols-3 lg:flex">
           {HERO_MODES.map((mode) => (
