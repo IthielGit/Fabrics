@@ -26,7 +26,8 @@ Installe toujours la **dernière version stable** au moment de l'installation, s
 | Backend | `@supabase/supabase-js` | M13 | Auth + Postgres + Storage |
 | 3D | `three`, `@react-three/fiber`, `@react-three/drei` | M8 | **à confirmer par l'utilisateur au début de M8** ; version majeure de `@react-three/fiber` compatible avec `react` |
 | DXF (import) | `dxf-parser` | M11 | accord de l'utilisateur le 2026-11-12 (D61) ; l'export DXF est écrit à la main (format texte R12), sans bibliothèque |
-| Temps réel | `yjs`, `y-websocket` | M14 | hébergement à décider |
+| Temps réel | `yjs`, `y-websocket` | M14 | Cloudflare Workers + Durable Objects (D68) ; `y-websocket` côté navigateur (lot D) |
+| Temps réel (serveur) | `yjs`, `y-protocols`, `lib0` ; dev : `wrangler`, `typescript`, `vitest` | M14 lot C | accord de l'utilisateur le 2026-11-13 ; **uniquement dans `collab-server/`** (son propre `package.json`), jamais dans l'application |
 
 Interdits sans accord : `html2canvas` (inutile, Konva exporte lui-même), `fabric`, bibliothèques
 d'UI complètes (MUI, Ant…), `uuid` (on utilise `crypto.randomUUID()`), `moment`,
@@ -726,6 +727,12 @@ invitation par lien (D69), annuler / rétablir limité à ses propres modificati
   connexion. Le Worker n'a **aucun secret** : il demande à Supabase, avec ce jeton, le rôle de la
   personne sur le projet (fonction `my_project_role`, règles RLS appliquées par Supabase). Pas de rôle :
   connexion refusée. Rôle « lecteur » : les mises à jour envoyées par cette connexion sont ignorées.
+- Mise en œuvre (lot C) : le jeton voyage dans l'en-tête `Sec-WebSocket-Protocol` (`fabrics-collab, <jeton>`),
+  jamais dans l'adresse ; le Worker répond 401 (jeton refusé), 403 (aucun rôle) ou 502 (Supabase injoignable).
+  Le rôle est vérifié **à l'ouverture** seulement : un membre retiré garde sa connexion ouverte jusqu'à ce
+  qu'il la ferme. La présence est relayée sans objet `Awareness` côté serveur (son minuteur empêcherait la
+  mise en veille). Stockage : un snapshot découpé en morceaux de 512 Ko + les mises à jour suivantes,
+  compactés toutes les 500 mises à jour. Code : `collab-server/src/` ; essai local complet : `npm run smoke`.
   **Jamais de clé `service_role`**, ni dans le navigateur ni dans le Worker.
 - Persistance (lot F) : les éditeurs continuent d'enregistrer le document complet dans Supabase par
   l'enregistrement automatique existant ; le Durable Object garde l'état vivant. À rediscuter au lot F

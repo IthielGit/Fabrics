@@ -1,0 +1,14 @@
+// Configuration Cloudflare du serveur temps réel de Fabrics (M14, lot C).
+// Les valeurs Supabase ne sont pas ici : en local, fichier `.dev.vars` (copie de `.dev.vars.example`) ;
+// en ligne, `npx wrangler secret put SUPABASE_URL` et `npx wrangler secret put SUPABASE_ANON_KEY`.
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "fabrics-collab",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-10-01",
+  "observability": { "enabled": true },
+  "durable_objects": {
+    "bindings": [{ "name": "COLLAB_ROOM", "class_name": "CollabRoom" }]
+  },
+  "migrations": [{ "tag": "v1", "new_sqlite_classes": ["CollabRoom"] }]
+}
