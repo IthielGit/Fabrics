@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { AlignCenter, AlignLeft, AlignRight, Bold, Italic, type LucideIcon } from 'lucide-react'
+import { AlignCenter, AlignLeft, AlignRight, Bold, Italic, type LucideIcon, MousePointerClick } from 'lucide-react'
 import { FONT_FAMILIES, buildFontStyle, isBold, isItalic } from '../../features/documents/fonts'
 import {
   colorPropsFor,
@@ -110,7 +110,10 @@ export default function PropertiesPanel() {
 
       {selected.length === 0 && (
         <>
-          <p className="mt-3 text-sm text-slate-500">{fr.properties.empty}</p>
+          <p className="mt-3 flex items-start gap-2.5 rounded-lg bg-indigo-50 p-3 text-sm leading-snug text-indigo-950">
+            <MousePointerClick size={18} className="mt-0.5 shrink-0 text-indigo-600" aria-hidden="true" />
+            {fr.properties.empty}
+          </p>
           <PageSizeSection />
           <PlanSettingsSection />
         </>

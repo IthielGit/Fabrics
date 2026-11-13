@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { Layers, Layers2 } from 'lucide-react'
+import { ArrowDownToLine, ArrowUpToLine } from 'lucide-react'
 import { levelAbove, levelBelow } from '../../features/documents/levels'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
@@ -69,7 +69,7 @@ export default function LevelSelector() {
             : 'text-slate-600 enabled:hover:bg-slate-100 enabled:hover:text-slate-900',
         )}
       >
-        <Layers size={18} aria-hidden />
+        <ArrowDownToLine size={18} aria-hidden />
       </button>
       )}
       {severalLevels && (
@@ -94,7 +94,7 @@ export default function LevelSelector() {
             : 'text-slate-600 enabled:hover:bg-slate-100 enabled:hover:text-slate-900',
         )}
       >
-        <Layers2 size={18} aria-hidden />
+        <ArrowUpToLine size={18} aria-hidden />
       </button>
       )}
     </nav>

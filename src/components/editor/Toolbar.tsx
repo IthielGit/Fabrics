@@ -240,10 +240,10 @@ export default function Toolbar() {
                   aria-haspopup="menu"
                   onClick={() => setOpenGroup(open ? null : group.id)}
                   className={clsx(
-                    'flex w-7 pointer-coarse:w-11 shrink-0 items-center justify-center rounded-md border-l',
+                    'flex w-8 pointer-coarse:w-11 shrink-0 items-center justify-center rounded-md border-l',
                     active
                       ? 'border-indigo-400 hover:bg-indigo-500'
-                      : 'border-slate-200 text-slate-500 hover:bg-slate-200 hover:text-slate-800',
+                      : 'border-slate-300 text-slate-600 hover:bg-slate-200 hover:text-slate-900',
                   )}
                 >
                   <ChevronRight size={16} strokeWidth={2.5} aria-hidden="true" />

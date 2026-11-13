@@ -46,6 +46,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Audit UX/UI, troisième lot
+
+- Propriétés sans sélection : l'aide passe dans un encadré indigo avec icône ; « Taille de la page » est repliée pour un plan (ouverte pour un visuel).
+- Calques : pastilles par type (Meubles, Murs, Pièces, Ouvertures, Cotes, Autres) avec leur nombre ; poignée et flèches visibles au survol, au focus, sur la ligne choisie et au toucher ; le glisser-déposer reste réservé à la liste complète.
+- Niveaux : les deux boutons de transparence prennent des flèches distinctes (niveau du dessous / du dessus).
+- Barre d'outils : chevrons des sous-menus plus larges et plus contrastés.
+
 ### 2026-11-13 — Hors jalon · Audit UX/UI, deuxième lot
 
 - Plan : nom et surface des pièces dessinés au-dessus des meubles, de l'escalier et des axes (nouvelle couche `RoomLabelsLayer`), avec un liseré clair ; ils ne disparaissent plus dessous. Pendant le déplacement d'une pièce, son étiquette rejoint sa place au lâcher.
