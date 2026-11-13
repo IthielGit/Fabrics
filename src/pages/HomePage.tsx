@@ -163,7 +163,7 @@ export default function HomePage() {
             </ul>
           </section>
         </div>
-        <p className="mt-4 max-w-2xl text-xs leading-relaxed text-slate-500">
+        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600">
           {fr.home.storageReminder}
         </p>
 
@@ -185,7 +185,7 @@ export default function HomePage() {
         {status === 'ready' && projects.length === 0 && (
           <div className="mt-4 rounded-2xl border border-dashed border-slate-300 bg-white/60 p-10 text-center">
             <p className="font-medium">{fr.home.emptyTitle}</p>
-            <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">{fr.home.emptyText}</p>
+            <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">{fr.home.emptyText}</p>
           </div>
         )}
 

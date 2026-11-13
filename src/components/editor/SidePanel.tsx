@@ -51,7 +51,7 @@ export default function SidePanel() {
   }, [selectedIds, current, activeTool, setTab])
 
   return (
-    <aside className="flex w-80 shrink-0 flex-col border-l border-slate-200 bg-white">
+    <aside className="flex w-88 shrink-0 flex-col border-l border-slate-200 bg-white">
       <div role="tablist" aria-label={fr.sidePanel.label} className="flex shrink-0 border-b border-slate-200">
         {tabs.map(({ id, label, icon: Icon }) => (
           <button
@@ -61,10 +61,10 @@ export default function SidePanel() {
             aria-selected={current === id}
             onClick={() => setTab(id)}
             className={clsx(
-              'flex flex-1 flex-col items-center gap-0.5 border-b-2 px-1 py-2 text-xs font-medium',
+              'flex flex-1 flex-col items-center gap-1 border-b-2 px-1 py-2.5 text-xs font-medium transition-colors duration-150 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600',
               current === id
                 ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-500 hover:bg-slate-50 hover:text-slate-800',
+                : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900',
             )}
           >
             <Icon size={16} aria-hidden="true" />

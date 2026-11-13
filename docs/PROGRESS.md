@@ -46,6 +46,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-13 — Hors jalon · Passe de lisibilité sur l'application
+
+- Éditeur : panneau de droite élargi (22 rem) pour que les cinq onglets respirent, textes de 11 px passés à 12 px (formats de page, bibliothèque, raccourcis), onglets avec focus clavier visible.
+- Accueil : rappel de stockage local en 14 px, chevrons des maisons d'exemple plus lisibles.
+
 ### 2026-11-13 — Hors jalon · Finition de la scène du hero
 
 - Onglets, phrase et scène réunis dans un seul bloc, à angles droits (plus de bords arrondis dans le hero).
