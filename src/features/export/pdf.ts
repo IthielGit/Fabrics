@@ -210,7 +210,7 @@ export function drawCartouche(
 
 /**
  * PDF d'un plan à l'échelle : l'image de l'emprise à l'emplacement donné, puis le cadre de la feuille
- * et le cartouche (nord, projet, échelle, date). L'échelle s'écrit en chiffres (1/50) dans le cartouche.
+ * et le cartouche (nord, projet, échelle, date). L'échelle s'écrit en chiffres (1:50) dans le cartouche.
  */
 export async function buildPlanPdf(
   imageDataUrl: string,
