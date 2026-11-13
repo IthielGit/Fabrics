@@ -2,6 +2,7 @@ import { FILL_COLORS, paintBatches, type Drawing, type DrawPolygon } from '../bu
 import {
   cartoucheArea,
   PDF_MARGIN_MM,
+  scaleBarSpec,
   type Rect,
   type SheetSize,
 } from './pdfLayout'
@@ -57,6 +58,7 @@ export interface PlanPdfLabels {
   /** Cellules de droite du cartouche, de gauche à droite (échelle, date, feuille). */
   fields: CartoucheField[]
   /** Unité de la barre d'échelle graphique (« mm »). */
+  scaleBarUnit: string
   /** Nord, en degrés dans le sens horaire depuis le haut de la feuille ; absent : pas de flèche. */
   northAngle?: number
   /** Lettre de la flèche du nord (« N »). */
@@ -105,8 +107,28 @@ function drawNorthArrow(pdf: Pdf, cx: number, cy: number, angle: number, letter:
   pdf.text(letter, cx + dir.x * (radius + 2.6), cy + dir.y * (radius + 2.6) + 1, { align: 'center' })
 }
 
+/** Barre d'échelle graphique à deux segments, l'un plein, l'autre blanc, graduée en mm. */
+function drawScaleBar(pdf: Pdf, x: number, y: number, available: number, scale: number, unit: string): void {
+  const spec = scaleBarSpec(scale, available)
+  const segment = spec.paperLength / 2
+  const height = 1.6
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.divider)
+  pdf.setFillColor(...INK)
+  pdf.rect(x, y, segment, height, 'FD')
+  pdf.setFillColor(255, 255, 255)
+  pdf.rect(x + segment, y, segment, height, 'FD')
+  pdf.setFont('helvetica', 'normal')
+  pdf.setFontSize(6.5)
+  pdf.setTextColor(...INK)
+  const labelY = y + height + 3.2
+  pdf.text('0', x, labelY, { align: 'center' })
+  pdf.text(String(spec.segmentMm), x + segment, labelY, { align: 'center' })
+  pdf.text(`${spec.segmentMm * 2} ${unit}`, x + segment * 2, labelY, { align: 'center' })
+}
+
 /**
- * Cartouche de la feuille, collé au bas du cadre : à gauche la flèche du nord,
+ * Cartouche de la feuille, collé au bas du cadre : à gauche la flèche du nord et la barre d'échelle,
  * au milieu le projet et ce que montre la feuille, à droite des cellules intitulé / valeur (échelle,
  * date, feuille). Un cadre fin entoure toute la feuille ; le cartouche est séparé du dessin par un
  * filet un peu plus épais.
@@ -114,6 +136,8 @@ function drawNorthArrow(pdf: Pdf, cx: number, cy: number, angle: number, letter:
 export function drawCartouche(
   pdf: Pdf,
   sheet: SheetSize,
+  /** Dénominateur de l'échelle ; `null` : pas de barre d'échelle (un tableau n'a pas d'échelle). */
+  scale: number | null,
   labels: PlanPdfLabels,
 ): void {
   const strip = cartoucheArea(sheet)
@@ -128,7 +152,7 @@ export function drawCartouche(
     return Math.min(MAX_FIELD_WIDTH, Math.max(MIN_FIELD_WIDTH, Math.max(labelWidth, valueWidth) + 6))
   })
   const fieldsWidth = widths.reduce((sum, w) => sum + w, 0)
-  const hasLeftZone = labels.northAngle !== undefined
+  const hasLeftZone = scale !== null || labels.northAngle !== undefined
   const leftWidth = hasLeftZone
     ? Math.min(SCALE_ZONE_WIDTH, Math.max(0, strip.width - fieldsWidth - 40))
     : 0
@@ -152,9 +176,18 @@ export function drawCartouche(
     if (x > strip.x + 1 && x < strip.x + strip.width - 1) pdf.line(x, strip.y, x, strip.y + strip.height)
   }
 
-  // Zone de gauche : la flèche du nord. L'échelle s'écrit en chiffres (1/50) dans les cellules de droite.
-  if (leftWidth >= 20 && labels.northAngle !== undefined) {
-    drawNorthArrow(pdf, strip.x + 11, strip.y + strip.height / 2, labels.northAngle, labels.northLabel ?? 'N')
+  // Zone de gauche : nord et barre d'échelle.
+  if (leftWidth >= 36) {
+    const centerY = strip.y + strip.height / 2
+    let barX = strip.x + 6
+    if (labels.northAngle !== undefined) {
+      drawNorthArrow(pdf, strip.x + 11, centerY, labels.northAngle, labels.northLabel ?? 'N')
+      barX = strip.x + 24
+    }
+    const available = strip.x + leftWidth - barX - 8
+    if (scale !== null && available >= 12) {
+      drawScaleBar(pdf, barX, centerY - 1.2, available, scale, labels.scaleBarUnit)
+    }
   }
 
   // Milieu : projet (gras) et sujet de la feuille.
@@ -210,18 +243,20 @@ export function drawCartouche(
 
 /**
  * PDF d'un plan à l'échelle : l'image de l'emprise à l'emplacement donné, puis le cadre de la feuille
- * et le cartouche (nord, projet, échelle, date). L'échelle s'écrit en chiffres (1:50) dans le cartouche.
+ * et le cartouche (nord, barre d'échelle, projet, échelle, date). `scale` est le dénominateur de
+ * l'échelle (1:`scale`).
  */
 export async function buildPlanPdf(
   imageDataUrl: string,
   sheet: SheetSize,
   placement: Rect,
+  scale: number,
   labels: PlanPdfLabels,
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
   pdf.setProperties({ title: labels.projectName, subject: labels.subtitle ?? '', creator: 'Fabrics' })
   pdf.addImage(imageDataUrl, 'PNG', placement.x, placement.y, placement.width, placement.height)
-  drawCartouche(pdf, sheet, labels)
+  drawCartouche(pdf, sheet, scale, labels)
   return pdf.output('blob')
 }
 
@@ -248,12 +283,13 @@ export async function buildDrawingPdf(
   drawing: Drawing,
   sheet: SheetSize,
   placement: Rect,
+  scale: number,
   labels: PlanPdfLabels,
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
   pdf.setProperties({ title: labels.projectName, subject: labels.subtitle ?? '', creator: 'Fabrics' })
   drawDrawing(pdf, drawing, placement)
-  drawCartouche(pdf, sheet, labels)
+  drawCartouche(pdf, sheet, scale, labels)
   return pdf.output('blob')
 }
 

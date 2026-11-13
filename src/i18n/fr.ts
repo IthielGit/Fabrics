@@ -834,6 +834,7 @@ export const fr = {
       dateLabel: 'Date',
       sheetLabel: 'Feuille',
       area: (area: string) => `Pièces : ${area}`,
+      scaleBarUnit: 'mm',
     },
   },
   calibrate: {
