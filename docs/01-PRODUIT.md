@@ -80,6 +80,18 @@ planche → exporter en PDF.
 
 ## Écrans
 
+**Accès (décision de l'utilisateur, 2026-11-12) :** l'application demande une connexion. Sans
+compte, on arrive sur la page d'introduction. Restent publiques : l'introduction, la
+connexion, le choix d'un nouveau mot de passe et les liens de partage en lecture seule
+(`/s/…`). Sans Supabase configuré (mode local de développement), tout reste accessible.
+
+### Introduction (`/bienvenue`)
+Page publique : « De votre croquis au plan coté, sans calculatrice. » Un croquis au crayon et
+le même plan propre dans Fabrics, séparés par un curseur à faire glisser, avec les métrés
+calculés ; puis « Chaque trait est une mesure », « Le plan devient un bâtiment » (plan,
+façade, coupe). Les boutons mènent à la connexion (« Créer mon compte » ouvre l'inscription).
+Après connexion, on revient sur la page demandée au départ.
+
 ### Accueil (`/`)
 ```
 ┌───────────────────────────────────────────────────────────┐

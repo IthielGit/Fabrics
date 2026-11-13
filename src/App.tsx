@@ -1,8 +1,10 @@
 import { useEffect } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router'
+import RequireAuth from './components/auth/RequireAuth'
 import { fr } from './i18n/fr'
 import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
+import IntroPage from './pages/IntroPage'
 import LoginPage from './pages/LoginPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
 import SharePage from './pages/SharePage'
@@ -15,8 +17,11 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/p/:projectId" element={<EditorPage />} />
+        <Route element={<RequireAuth />}>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/p/:projectId" element={<EditorPage />} />
+        </Route>
+        <Route path="/bienvenue" element={<IntroPage />} />
         <Route path="/s/:token" element={<SharePage />} />
         <Route path="/connexion" element={<LoginPage />} />
         <Route path="/nouveau-mot-de-passe" element={<ResetPasswordPage />} />

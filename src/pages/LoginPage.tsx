@@ -1,11 +1,12 @@
 import { useState, type FormEvent } from 'react'
-import { Navigate } from 'react-router'
+import { Navigate, useLocation, useSearchParams } from 'react-router'
 import AuthField from '../components/auth/AuthField'
 import AuthLayout from '../components/auth/AuthLayout'
 import AuthMessages from '../components/auth/AuthMessages'
 import Button from '../components/ui/Button'
 import type { AuthErrorKey } from '../features/auth/authErrors'
 import { isValidEmail, signUpProblems, type FieldProblem } from '../features/auth/authValidation'
+import { safeRedirectPath } from '../features/auth/redirect'
 import { fr } from '../i18n/fr'
 import { useAuthStore } from '../stores/authStore'
 
@@ -22,7 +23,14 @@ export default function LoginPage() {
   const signInWithGoogle = useAuthStore((state) => state.signInWithGoogle)
   const sendPasswordReset = useAuthStore((state) => state.sendPasswordReset)
 
-  const [mode, setMode] = useState<Mode>('signIn')
+  const location = useLocation()
+  const [searchParams] = useSearchParams()
+  /** Page demandée avant d'arriver ici (posée par la garde de connexion). */
+  const from = (location.state as { from?: unknown } | null)?.from
+
+  const [mode, setMode] = useState<Mode>(() =>
+    searchParams.get('mode') === 'inscription' ? 'signUp' : 'signIn',
+  )
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
@@ -32,8 +40,9 @@ export default function LoginPage() {
   /** Adresse à laquelle un e-mail vient d'être envoyé (inscription ou mot de passe oublié). */
   const [sentTo, setSentTo] = useState<{ email: string; kind: 'signUp' | 'reset' } | null>(null)
 
-  // Sans Supabase ou déjà connecté : rien à faire ici.
-  if (status === 'disabled' || status === 'signedIn') return <Navigate to="/" replace />
+  // Sans Supabase : rien à faire ici. Connecté : retour à la page demandée au départ.
+  if (status === 'disabled') return <Navigate to="/" replace />
+  if (status === 'signedIn') return <Navigate to={safeRedirectPath(from)} replace />
 
   const switchMode = (next: Mode) => {
     setMode(next)
