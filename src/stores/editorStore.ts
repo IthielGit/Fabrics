@@ -92,7 +92,14 @@ export type PlatformMode = 'polygon' | 'rectangle'
 /** Tracé d'un toit plat ; un toit en pente se trace toujours en rectangle. */
 export type RoofMode = 'polygon' | 'rectangle'
 export type StairShapeChoice = 'straight' | 'l' | 'u'
-export type SidePanelTab = 'properties' | 'library' | 'levels' | 'layers' | 'measurements' | 'history'
+export type SidePanelTab =
+  | 'properties'
+  | 'library'
+  | 'levels'
+  | 'layers'
+  | 'measurements'
+  | 'history'
+  | 'comments'
 export type SaveStatus = 'saved' | 'saving' | 'error'
 
 export const HISTORY_LIMIT = 100

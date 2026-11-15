@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M16 Commentaires ancrés en cours (lots A et B validés) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M16 · Lot B · poser un commentaire sur le plan (15/11, validé par l'utilisateur)
-- **Prochaine tâche :** M16 · Lot C (fils et panneau) : plan à valider par l'utilisateur avant de coder
+- **Jalon en cours :** M16 Commentaires ancrés en cours (lots A, B et C validés) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M16 · Lot C · fils de discussion et panneau « Commentaires » (15/11, validé par l'utilisateur)
+- **Prochaine tâche :** M16 · Lot D (commentaires des membres lecteurs) : plan à valider par l'utilisateur avant de coder
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -115,6 +115,26 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M16 · Lot C : validé
+- L'utilisateur a fait les essais et validé le lot C.
+
+### 2026-11-15 — M16 · Lot C : fils et panneau « Commentaires » (codé, à tester)
+- Fait : onglet « Commentaires » dans le panneau de droite (avec un compte connecté), avec une pastille qui compte les fils ouverts. Liste filtrable (Ouverts, Résolus, Tous), du fil le plus récemment commenté au plus ancien : numéro et couleur de l'auteur, auteur, début du texte, date de la dernière activité, nombre de réponses, niveau (s'il y en a plusieurs), « Résolu ». Cliquer un fil (ou son épingle sur le plan) l'ouvre : le plan affiche son niveau et se centre sur l'épingle (qui est cerclée). Dans un fil : commentaire et réponses (auteur, date, « modifié »), Résoudre / Rouvrir, Modifier (son propre texte), Supprimer (le sien, ou n'importe lequel pour le propriétaire du projet ; confirmation, les réponses partent avec), zone de réponse (Entrée envoie), « Voir sur le plan », « Élément supprimé » quand l'ancre n'existe plus.
+- Pas encore : commentaires des membres lecteurs (lot D) ; direct (lot E, relecture toutes les 30 s en attendant).
+- Fichiers : `src/features/comments/commentsLogic.ts` (+ test : extrait, tri par activité, niveau, droits), `src/stores/commentsStore.ts` (fil ouvert, rôle, remplacer / retirer), `src/components/editor/{CommentsPanel,CommentThreadView,CommentReplyBox,focusThread,CommentPinsLayer,SidePanel,useComments}.ts(x)`, `src/stores/editorStore.ts` (onglet), `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2944). Non fait ici : essai dans le navigateur (compte connecté nécessaire).
+- **Essais à faire** (`npm run dev`, compte connecté ; idéalement deux comptes, A propriétaire et B invité en édition) :
+  1. *Onglet* : l'icône bulle apparaît dans la colonne d'onglets à droite ; une pastille indique le nombre de fils ouverts.
+  2. *Liste* : poser 3 commentaires (outil Commenter) ; ils apparaissent dans la liste, le plus récent en haut ; les filtres Ouverts / Résolus / Tous fonctionnent.
+  3. *Ouvrir* : cliquer un fil de la liste → le plan se centre sur son épingle (cerclée) ; cliquer une épingle sur le plan ouvre le panneau sur ce fil.
+  4. *Niveaux* : cliquer un fil posé à l'étage depuis le rez-de-chaussée → le plan passe à l'étage.
+  5. *Répondre* : écrire une réponse, Entrée → elle s'ajoute ; le compteur « 1 réponse » apparaît dans la liste.
+  6. *Résoudre* : Résoudre → le fil passe dans « Résolus », son épingle s'estompe, la pastille diminue ; Rouvrir le remet dans « Ouverts ».
+  7. *Modifier* : crayon sur son commentaire → modifier → « modifié » apparaît ; on ne voit pas de crayon sur le commentaire d'un autre.
+  8. *Supprimer* : poubelle → confirmation ; supprimer un fil avec réponses prévient qu'elles partent aussi. B ne peut supprimer que les siens, A (propriétaire) peut supprimer tous les commentaires.
+  9. *Élément supprimé* : supprimer le mur d'un commentaire → dans le fil, « Élément supprimé » ; le fil reste lisible.
+  10. *Deux comptes* : B répond, et A voit la réponse au plus tard 30 s après (le direct arrive au lot E).
 
 ### 2026-11-15 — M16 · Lot B : validé
 - L'utilisateur a fait les essais et validé le lot B.

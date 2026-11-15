@@ -2,12 +2,17 @@ import { describe, expect, it } from 'vitest'
 import { createWallElement } from '../documents/elements'
 import {
   buildThreads,
+  canDeleteComment,
+  canEditComment,
+  commentExcerpt,
   countOpenThreads,
   filterThreads,
+  levelNameOf,
   MAX_COMMENT_LENGTH,
   normalizeCommentBody,
   pinPosition,
   rowToComment,
+  sortByActivity,
   threadsOnLevel,
   type Comment,
   type CommentRow,
@@ -178,5 +183,55 @@ describe('pinPosition', () => {
 
   it('une réponse n’a pas de position', () => {
     expect(pinPosition(comment('r', T(0), { parentId: 'c', x: null, y: null }), [wall])).toBeNull()
+  })
+})
+
+describe('commentExcerpt', () => {
+  it('met le texte sur une ligne', () => {
+    expect(commentExcerpt('Bonjour\n\n  à   tous')).toBe('Bonjour à tous')
+  })
+
+  it('coupe un texte long avec des points de suspension', () => {
+    const excerpt = commentExcerpt('mot '.repeat(100), 20)
+    expect(excerpt.length).toBeLessThanOrEqual(20)
+    expect(excerpt.endsWith('…')).toBe(true)
+  })
+})
+
+describe('sortByActivity', () => {
+  it('met en premier le fil commenté en dernier', () => {
+    const threads = buildThreads([
+      comment('a', T(0)),
+      comment('b', T(5)),
+      comment('r', T(9), { parentId: 'a', x: null, y: null, levelId: null }),
+    ])
+    expect(sortByActivity(threads).map((thread) => thread.root.id)).toEqual(['a', 'b'])
+  })
+})
+
+describe('levelNameOf', () => {
+  const levels = [{ id: 'n1', name: 'Rez-de-chaussée' }]
+  it('donne le nom du niveau, ou rien', () => {
+    expect(levelNameOf(levels, 'n1')).toBe('Rez-de-chaussée')
+    expect(levelNameOf(levels, 'disparu')).toBeNull()
+    expect(levelNameOf(levels, null)).toBeNull()
+    expect(levelNameOf(undefined, 'n1')).toBeNull()
+  })
+})
+
+describe('droits sur un commentaire', () => {
+  const mine = comment('c', T(0), { authorId: 'alice' })
+  it('l’auteur modifie et supprime', () => {
+    expect(canEditComment(mine, 'alice')).toBe(true)
+    expect(canDeleteComment(mine, 'alice', 'editor')).toBe(true)
+  })
+  it('le propriétaire supprime mais ne modifie pas le texte des autres', () => {
+    expect(canDeleteComment(mine, 'bruno', 'owner')).toBe(true)
+    expect(canEditComment(mine, 'bruno')).toBe(false)
+  })
+  it('un autre membre ne peut ni modifier ni supprimer', () => {
+    expect(canDeleteComment(mine, 'bruno', 'editor')).toBe(false)
+    expect(canDeleteComment(mine, null, null)).toBe(false)
+    expect(canEditComment(mine, null)).toBe(false)
   })
 })

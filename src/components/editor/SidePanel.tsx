@@ -1,11 +1,25 @@
 import clsx from 'clsx'
-import { BookOpen, Building2, Calculator, History, Layers, SlidersHorizontal, X, type LucideIcon } from 'lucide-react'
-import { useEffect, useRef } from 'react'
+import {
+  BookOpen,
+  Building2,
+  Calculator,
+  History,
+  Layers,
+  MessageSquare,
+  SlidersHorizontal,
+  X,
+  type LucideIcon,
+} from 'lucide-react'
+import { useEffect, useMemo, useRef } from 'react'
 import LibraryPanel from '../library/LibraryPanel'
+import { commentsAvailable } from '../../features/comments/commentsApi'
+import { buildThreads, countOpenThreads } from '../../features/comments/commentsLogic'
 import { versionsAvailable } from '../../features/versions/versionsApi'
 import { fr } from '../../i18n/fr'
 import { useAuthStore } from '../../stores/authStore'
+import { useCommentsStore } from '../../stores/commentsStore'
 import { useEditorStore, type SidePanelTab } from '../../stores/editorStore'
+import CommentsPanel from './CommentsPanel'
 import HistoryPanel from './HistoryPanel'
 import LayersPanel from './LayersPanel'
 import LevelsPanel from './LevelsPanel'
@@ -27,6 +41,7 @@ const TABS: TabDefinition[] = [
   { id: 'levels', label: fr.sidePanel.levels, icon: Building2, planOnly: true },
   { id: 'layers', label: fr.sidePanel.layers, icon: Layers },
   { id: 'measurements', label: fr.sidePanel.measurements, icon: Calculator, planOnly: true },
+  { id: 'comments', label: fr.sidePanel.comments, icon: MessageSquare, cloudOnly: true },
   { id: 'history', label: fr.sidePanel.history, icon: History, cloudOnly: true },
 ]
 
@@ -46,7 +61,10 @@ export default function SidePanel() {
   const setOpen = useEditorStore((state) => state.setSidePanelOpen)
 
   const signedIn = useAuthStore((state) => state.user !== null)
-  const cloud = signedIn && versionsAvailable()
+  const cloud = signedIn && versionsAvailable() && commentsAvailable()
+  // Pastille de l'onglet « Commentaires » : fils encore ouverts.
+  const comments = useCommentsStore((state) => state.comments)
+  const openThreads = useMemo(() => countOpenThreads(buildThreads(comments)), [comments])
   const tabs = TABS.filter((t) => (isPlan || !t.planOnly) && (cloud || !t.cloudOnly))
   // Un onglet du plan dans un visuel (projet ouvert ensuite) : on revient aux propriétés.
   const current = tabs.some((t) => t.id === tab) ? tab : 'properties'
@@ -89,6 +107,7 @@ export default function SidePanel() {
         {current === 'levels' && <LevelsPanel />}
         {current === 'layers' && <LayersPanel />}
         {current === 'measurements' && <MeasurementsPanel />}
+        {current === 'comments' && <CommentsPanel key={projectId} />}
         {current === 'history' && <HistoryPanel key={projectId} />}
       </div>
       {/* Onglets en colonne d'icônes, à droite (M15 bis, lot D) : le nom apparaît au survol. */}
@@ -125,6 +144,14 @@ export default function SidePanel() {
             )}
           >
             <Icon size={18} aria-hidden="true" />
+            {id === 'comments' && openThreads > 0 && (
+              <span
+                aria-label={fr.comments.openBadge(openThreads)}
+                className="absolute -right-0.5 -top-0.5 flex min-w-4 items-center justify-center rounded-full bg-indigo-600 px-1 text-[10px] font-bold leading-4 text-white"
+              >
+                {openThreads > 99 ? '99+' : openThreads}
+              </span>
+            )}
             <span
               aria-hidden="true"
               className={clsx(

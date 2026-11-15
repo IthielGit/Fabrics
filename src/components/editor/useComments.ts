@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { commentsAvailable, listComments } from '../../features/comments/commentsApi'
+import { fetchMyRole } from '../../features/sharing/membersApi'
 import { listProjectPeople } from '../../features/versions/versionsApi'
 import { fr } from '../../i18n/fr'
 import { useAuthStore } from '../../stores/authStore'
@@ -34,6 +35,13 @@ export function useComments(projectId: string | undefined, ready: boolean) {
           // Hors connexion : on garde ce qui est affiché ; la prochaine lecture réessaiera.
         })
     }
+
+    // Mon rôle : le propriétaire peut supprimer les commentaires des autres.
+    fetchMyRole(projectId)
+      .then((role) => {
+        if (active) useCommentsStore.getState().setMyRole(role)
+      })
+      .catch(() => {})
 
     // Première lecture juste après l'affichage (pas d'écriture d'état pendant l'effet lui-même).
     const first = setTimeout(refresh, 0)
