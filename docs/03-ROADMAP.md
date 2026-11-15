@@ -913,8 +913,9 @@ Lots à valider un par un.
 - [x] **Lot B — Partage avec un autre compte** (lecture ou édition) : `project_members`, `project_invites`,
       règles RLS, lien d'invitation `/i/<jeton>`, rubrique « Partagés avec moi », fonction `my_project_role`
       (2026-11-13, validé par l'utilisateur après essai à deux comptes)
-- [ ] **Lot C — Serveur temps réel** : Worker + Durable Object (`collab-server/`), authentification par jeton
-      Supabase, refus des écritures d'un lecteur, déploiement
+- [x] **Lot C — Serveur temps réel** : Worker + Durable Object (`collab-server/`), authentification par jeton
+      Supabase, refus des écritures d'un lecteur, déploiement (2026-11-15, en ligne sur
+      `fabrics-collab.harinosy-tradeco.workers.dev`)
 - [ ] **Lot D — Liaison Yjs et éditeur** : `elements` en `Y.Array` / `Y.Map`, synchronisation avec
       `editorStore`, annuler / rétablir local (`Y.UndoManager`)
 - [ ] **Lot E — Présence** : curseurs et sélections des autres participants (awareness), avatars en en-tête
