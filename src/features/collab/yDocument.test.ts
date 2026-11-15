@@ -3,7 +3,18 @@ import * as Y from 'yjs'
 import { createExamplePlanProject, createPlanProject } from '../documents/createProject'
 import { createWallElement } from '../documents/elements'
 import type { CanvasElement, FabricsDocument } from '../../types/document'
-import { applyDocumentDiff, isYDocumentEmpty, longestIncreasing, readDocument, writeDocument, yParts } from './yDocument'
+import {
+  applyDocumentDiff,
+  isLaterThan,
+  isSavedAtOnly,
+  isYDocumentEmpty,
+  longestIncreasing,
+  readDocument,
+  readSavedAt,
+  writeDocument,
+  writeSavedAt,
+  yParts,
+} from './yDocument'
 
 function planDocument(): FabricsDocument {
   return createPlanProject('Essai').document
@@ -168,5 +179,51 @@ describe('longestIncreasing', () => {
     expect(longestIncreasing(values).map((index) => values[index])).toEqual([0, 1, 2])
     const other = [2, 0, 3, 1, 4]
     expect(longestIncreasing(other)).toHaveLength(3)
+  })
+})
+
+describe("marque d'enregistrement (lot F)", () => {
+  it("est absente au départ, puis notée, et n'avance que vers le plus récent", () => {
+    const ydoc = new Y.Doc()
+    writeDocument(ydoc, planDocument())
+    expect(readSavedAt(ydoc)).toBeNull()
+    writeSavedAt(ydoc, '2026-11-15T10:00:00.000Z')
+    writeSavedAt(ydoc, '2026-11-15T09:00:00.000Z')
+    expect(readSavedAt(ydoc)).toBe('2026-11-15T10:00:00.000Z')
+    writeSavedAt(ydoc, '2026-11-15T11:00:00.000Z')
+    expect(readSavedAt(ydoc)).toBe('2026-11-15T11:00:00.000Z')
+  })
+
+  it('ne change pas le document lu', () => {
+    const ydoc = new Y.Doc()
+    const document = planDocument()
+    writeDocument(ydoc, document)
+    const before = readDocument(ydoc)
+    writeSavedAt(ydoc, '2026-11-15T10:00:00.000Z')
+    expect(readDocument(ydoc)).toEqual(before)
+  })
+
+  it("est reconnue comme seul changement d'une transaction", () => {
+    const ydoc = new Y.Doc()
+    writeDocument(ydoc, planDocument())
+    const seen: boolean[] = []
+    ydoc.on('afterTransaction', (transaction: Y.Transaction) => seen.push(isSavedAtOnly(ydoc, transaction)))
+    writeSavedAt(ydoc, '2026-11-15T10:00:00.000Z')
+    applyDocumentDiff(ydoc, planDocument(), { ...planDocument(), elements: [wall('A')] })
+    expect(seen).toEqual([true, false])
+  })
+})
+
+describe('isLaterThan', () => {
+  it('compare des dates ISO', () => {
+    expect(isLaterThan('2026-11-15T11:00:00Z', '2026-11-15T10:00:00Z')).toBe(true)
+    expect(isLaterThan('2026-11-15T10:00:00Z', '2026-11-15T10:00:00Z')).toBe(false)
+    expect(isLaterThan('2026-11-15T09:00:00Z', '2026-11-15T10:00:00Z')).toBe(false)
+  })
+
+  it("une date absente ou illisible n'est jamais plus récente", () => {
+    expect(isLaterThan(null, '2026-11-15T10:00:00Z')).toBe(false)
+    expect(isLaterThan('pas une date', '2026-11-15T10:00:00Z')).toBe(false)
+    expect(isLaterThan('2026-11-15T10:00:00Z', null)).toBe(true)
   })
 })

@@ -1,7 +1,7 @@
 // Représentation d'un document Fabrics dans un `Y.Doc` (M14, lot D). Fonctions pures, testées.
 //
 // Structure (voir docs/02-ARCHITECTURE.md, « Liaison Yjs et éditeur ») :
-//   meta        Y.Map    version, unit
+//   meta        Y.Map    version, unit, savedAt (heure serveur du dernier enregistrement dans Supabase)
 //   page        Y.Map    une clé par propriété de la page
 //   plan        Y.Map    une clé par réglage du plan (vide = pas de réglages, projet Visuel)
 //   order       Y.Array  identifiants des éléments (ordre d'affichage)
@@ -46,6 +46,44 @@ export function yParts(ydoc: Y.Doc): YDocumentParts {
 /** Vrai tant que personne n'a encore écrit de document dans ce `Y.Doc`. */
 export function isYDocumentEmpty(ydoc: Y.Doc): boolean {
   return yParts(ydoc).meta.get('version') === undefined
+}
+
+// ---------------------------------------------------------------------------
+// Marque d'enregistrement (lot F)
+// ---------------------------------------------------------------------------
+
+const SAVED_AT_KEY = 'savedAt'
+
+/** Heure (serveur Supabase) du dernier enregistrement connu de la salle ; `null` si jamais notée. */
+export function readSavedAt(ydoc: Y.Doc): string | null {
+  const value = yParts(ydoc).meta.get(SAVED_AT_KEY)
+  return typeof value === 'string' ? value : null
+}
+
+/** Note l'heure d'un enregistrement réussi ; ignorée si une heure plus récente est déjà notée. */
+export function writeSavedAt(ydoc: Y.Doc, savedAt: string, origin?: unknown): void {
+  if (!isLaterThan(savedAt, readSavedAt(ydoc))) return
+  ydoc.transact(() => yParts(ydoc).meta.set(SAVED_AT_KEY, savedAt), origin)
+}
+
+/** Vrai si la transaction ne touche que la marque d'enregistrement (rien à afficher ni à enregistrer). */
+export function isSavedAtOnly(ydoc: Y.Doc, transaction: Y.Transaction): boolean {
+  const { meta } = yParts(ydoc)
+  if (transaction.changed.size !== 1) return false
+  for (const [type, keys] of transaction.changed) {
+    return (type as unknown) === meta && keys.size === 1 && keys.has(SAVED_AT_KEY)
+  }
+  return false
+}
+
+/** `a` est strictement plus récente que `b` (dates ISO). Une date absente ou illisible n'est jamais plus récente. */
+export function isLaterThan(a: string | null | undefined, b: string | null | undefined): boolean {
+  if (!a) return false
+  const left = Date.parse(a)
+  if (Number.isNaN(left)) return false
+  if (!b) return true
+  const right = Date.parse(b)
+  return Number.isNaN(right) ? true : left > right
 }
 
 // ---------------------------------------------------------------------------

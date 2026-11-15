@@ -253,14 +253,15 @@ export const fr = {
     status: {
       connecting: 'Connexion…',
       live: 'En direct',
-      offline: 'Hors ligne',
+      offline: 'Hors ligne, modifications gardées',
     },
     hint: {
       connecting: 'Connexion au serveur temps réel en cours.',
       live: 'Les personnes qui ont ce plan ouvert voient vos modifications en direct. Annuler ne retire que vos propres modifications.',
       offline:
-        'Serveur temps réel injoignable : vous pouvez continuer, vos modifications sont enregistrées et partagées dès le retour de la connexion.',
+        'Connexion au serveur temps réel perdue : continuez, vos modifications sont gardées sur cet appareil et fusionnées avec celles des autres dès le retour de la connexion.',
     },
+    reconnected: 'Connexion retrouvée : vos modifications ont été fusionnées avec celles des autres participants.',
   },
   tools: {
     label: 'Outils',

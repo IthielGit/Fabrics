@@ -43,11 +43,11 @@ function fakeClient() {
         }
         return query
       },
-      upsert: async (row: { id: string; document: Row['document'] }) => {
+      upsert: (row: { id: string; document: Row['document'] }) => {
         clock += 1
         const updated_at = `2026-01-01T00:00:${String(clock).padStart(2, '0')}Z`
         rows.set(row.id, { ...rows.get(row.id), ...row, updated_at })
-        return { error: null }
+        return { select: () => ({ single: async () => ({ data: { updated_at }, error: null }) }) }
       },
       delete: () => ({
         eq: async (_column: string, value: string) => {
@@ -117,6 +117,15 @@ describe('SupabaseRepository', () => {
     const loaded = await repo.get('a')
     expect(loaded?.name).toBe('Projet a')
     expect(loaded?.document.elements).toEqual([])
+  })
+
+  it("renvoie l'heure d'enregistrement donnée par le serveur", async () => {
+    const { client } = fakeClient()
+    const repo = new SupabaseRepository(client, 'u1')
+    const first = await repo.save(makeProject('a'))
+    const second = await repo.save(makeProject('a'))
+    expect(first.updatedAt).toBe('2026-01-01T00:00:01Z')
+    expect(second.updatedAt).toBe('2026-01-01T00:00:02Z')
   })
 
   it("renvoie null pour un projet qui n'existe pas", async () => {

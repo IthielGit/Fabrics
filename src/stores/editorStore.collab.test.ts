@@ -31,6 +31,20 @@ describe('editorStore et collaboration (M14, lot D)', () => {
     expect(after.revision).toBe(before.revision + 1)
   })
 
+  it('retient si la dernière modification venait d’une autre personne (lot F)', () => {
+    const store = useEditorStore.getState()
+    const base = useEditorStore.getState().project!.document
+    store.applyRemoteDocument({ ...base, elements: [wall('B')] }, true)
+    let state = useEditorStore.getState()
+    expect(state.remoteRevision).toBe(state.revision)
+    store.addElement(wall('C'))
+    state = useEditorStore.getState()
+    expect(state.remoteRevision).not.toBe(state.revision)
+    store.applyRemoteDocument({ ...state.project!.document, elements: [wall('D')] })
+    state = useEditorStore.getState()
+    expect(state.remoteRevision).not.toBe(state.revision)
+  })
+
   it('signale le début et la fin d’un geste, même sans modification', () => {
     const store = useEditorStore.getState()
     store.beginLiveEdit()

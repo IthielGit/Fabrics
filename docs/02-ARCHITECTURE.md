@@ -735,8 +735,8 @@ invitation par lien (D69), annuler / rétablir limité à ses propres modificati
   compactés toutes les 500 mises à jour. Code : `collab-server/src/` ; essai local complet : `npm run smoke`.
   **Jamais de clé `service_role`**, ni dans le navigateur ni dans le Worker.
 - Persistance (lot F) : les éditeurs continuent d'enregistrer le document complet dans Supabase par
-  l'enregistrement automatique existant ; le Durable Object garde l'état vivant. À rediscuter au lot F
-  si cela pose problème (écritures concurrentes identiques, projet ouvert par personne).
+  l'enregistrement automatique existant ; le Durable Object garde l'état vivant. Règles précises dans
+  « Persistance et reprise après coupure (lot F) » ci-dessous.
 
 ### Membres et invitations (lot B)
 
@@ -780,3 +780,35 @@ invitation par lien (D69), annuler / rétablir limité à ses propres modificati
   plus. Envoi limité à ~16 par seconde. Curseur et sélection ne s'affichent que sur le niveau que l'on regarde.
 - Affichage : couche Konva non cliquable (masquée par les exports et la miniature) et avatars dans l'en-tête.
   Code : `src/features/collab/presence.ts`, `src/components/editor/{PresenceLayer,PresenceAvatars}.tsx`.
+
+
+### Persistance et reprise après coupure (lot F)
+
+- **Supabase reste la source durable ; la salle (Durable Object) est l'état vivant.** Aucun changement de
+  schéma ni de serveur : tout se passe dans l'application.
+- **Marque d'enregistrement.** `SupabaseRepository.save` renvoie l'heure du serveur (`updated_at`, donnée par
+  le déclencheur de la base). Après chaque enregistrement réussi, cette heure est inscrite dans le document
+  partagé (`meta.savedAt`, origine `SAVED_ORIGIN` : ni affichée, ni enregistrée à nouveau, ni annulable ; une
+  heure plus ancienne ne remplace jamais une plus récente). Un enregistrement mis en attente hors connexion
+  (`ResilientRepository`) ne note rien : le serveur ne l'a pas reçu.
+- **Arrivée dans une salle déjà remplie** (`CollabBinding.start`) : si le projet ouvert par l'éditeur
+  (`updatedAt`) est plus récent que `savedAt`, c'est lui qui est envoyé à la salle (différence appliquée avec
+  l'origine non annulable `SEED_ORIGIN`) ; sinon (égal, plus ancien, ou salle sans marque) la version de la
+  salle remplace celle de l'éditeur, comme avant. Limite : la comparaison mélange l'heure du serveur et, pour
+  un projet revenu de la file hors connexion, l'horloge de l'appareil ; un décalage de quelques secondes ne
+  change rien en pratique. Deux personnes qui travaillent hors connexion chacune de leur côté, puis rouvrent
+  le projet dans des sessions séparées : la version enregistrée en dernier l'emporte (la fusion fine ne vaut
+  que pendant une session ouverte en même temps).
+- **Un seul enregistreur pour les modifications des autres.** Ses propres modifications, chacun les enregistre
+  lui-même (`useAutosave`). Une modification reçue d'une autre connexion (`applyRemoteDocument(…, fromPeer =
+  true)` ; annuler / rétablir ne compte pas comme « autre ») n'est enregistrée que par l'enregistreur désigné :
+  la connexion au plus petit numéro Yjs parmi celles présentes (`saveLeader.ts`, recalculé à chaque changement
+  de présence ; seul dans la salle : toujours soi). Si l'enregistreur part, le suivant reprend ce qu'il avait
+  laissé passer. Une modification locale enregistre tout le projet : plus rien n'est alors « laissé ».
+- **Reprise après coupure.** Yjs garde les modifications faites hors connexion dans le document local et les
+  fusionne à la reconnexion. L'indicateur affiche « Hors ligne, modifications gardées » ; au retour, un message
+  « Connexion retrouvée » s'affiche et un enregistrement est forcé (`collabStore.reconnections`). Fermer
+  l'onglet pendant la coupure : l'enregistrement automatique (et sa file hors connexion) garde le projet sur
+  l'appareil ; la marque ci-dessus règle la réouverture.
+- Code : `src/features/collab/{saveLeader,collabSession}.ts`, `yDocument.ts` (`readSavedAt`, `writeSavedAt`,
+  `isSavedAtOnly`, `isLaterThan`), `collabBinding.ts`, `useAutosave.ts`, `useCollaboration.ts`.

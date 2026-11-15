@@ -4,12 +4,17 @@ import { createPlanProject } from '../documents/createProject'
 import { createWallElement } from '../documents/elements'
 import type { CanvasElement, FabricsDocument } from '../../types/document'
 import { CollabBinding } from './collabBinding'
+import { readSavedAt } from './yDocument'
 
 /** Un éditeur simulé : son document, son état « geste en cours » et sa liaison. */
 class FakeEditor {
   document: FabricsDocument
   live = false
   history = { canUndo: false, canRedo: false }
+  /** Heure d'enregistrement du projet tel que l'éditeur l'a ouvert (`updatedAt`). */
+  openedAt: string | null = null
+  /** Pour chaque document reçu : venait-il d'une autre connexion ? */
+  received: boolean[] = []
   readonly ydoc = new Y.Doc()
   readonly binding: CollabBinding
 
@@ -18,9 +23,11 @@ class FakeEditor {
     this.binding = new CollabBinding(this.ydoc, {
       getDocument: () => this.document,
       isLiveEditing: () => this.live,
-      applyRemoteDocument: (next) => {
+      applyRemoteDocument: (next, fromPeer) => {
         this.document = next
+        this.received.push(fromPeer)
       },
+      getSavedAt: () => this.openedAt,
       onHistoryChange: (canUndo, canRedo) => {
         this.history = { canUndo, canRedo }
       },
@@ -160,5 +167,76 @@ describe('CollabBinding', () => {
     // Alice a modifié un élément déjà supprimé : sa modification le recrée (dernier mot à Alice).
     expect(alice.names()).toEqual(['A'])
     expect(bruno.names()).toEqual(['A'])
+  })
+
+  it('une modification d’une autre personne est signalée, pas mon annuler / rétablir', () => {
+    const { alice, bruno } = twoEditors()
+    bruno.received = []
+    alice.edit((elements) => [...elements, wall('B')])
+    expect(bruno.received).toEqual([true])
+    alice.received = []
+    alice.binding.undo()
+    expect(alice.received).toEqual([false])
+    expect(bruno.received).toEqual([true, true])
+  })
+})
+
+describe('CollabBinding : enregistrement dans Supabase (lot F)', () => {
+  it('la marque d’enregistrement part vers les autres sans rien afficher ni s’annuler', () => {
+    const { alice, bruno } = twoEditors()
+    alice.received = []
+    bruno.received = []
+    alice.binding.markSaved('2026-11-15T10:00:00.000Z')
+    expect(bruno.received).toEqual([])
+    expect(alice.received).toEqual([])
+    expect(alice.binding.canUndo()).toBe(false)
+    expect(readSavedAt(bruno.ydoc)).toBe('2026-11-15T10:00:00.000Z')
+  })
+
+  it('une marque plus ancienne ne remplace pas une plus récente', () => {
+    const { alice } = twoEditors()
+    alice.binding.markSaved('2026-11-15T10:00:00.000Z')
+    alice.binding.markSaved('2026-11-15T09:00:00.000Z')
+    expect(readSavedAt(alice.ydoc)).toBe('2026-11-15T10:00:00.000Z')
+  })
+
+  /** La salle contient A ; elle a été enregistrée à 10 h ; Carole arrive avec sa copie. */
+  function joinLater(openedAt: string | null, savedAt: string | null) {
+    const document = { ...createPlanProject('Essai').document, elements: [wall('A')] }
+    const alice = new FakeEditor(document)
+    alice.binding.start()
+    if (savedAt) alice.binding.markSaved(savedAt)
+    const carole = new FakeEditor({ ...document, elements: [wall('A'), wall('B')] })
+    carole.openedAt = openedAt
+    connect(alice.ydoc, carole.ydoc)
+    carole.binding.start()
+    return { alice, carole }
+  }
+
+  it('un projet enregistré après la salle (travail hors connexion) la met à jour', () => {
+    const { alice, carole } = joinLater('2026-11-15T11:00:00.000Z', '2026-11-15T10:00:00.000Z')
+    expect(carole.names()).toEqual(['A', 'B'])
+    expect(alice.names()).toEqual(['A', 'B'])
+  })
+
+  it('un projet enregistré avant la salle prend la version de la salle', () => {
+    const { alice, carole } = joinLater('2026-11-15T09:00:00.000Z', '2026-11-15T10:00:00.000Z')
+    expect(carole.names()).toEqual(['A'])
+    expect(alice.names()).toEqual(['A'])
+  })
+
+  it('même heure : la salle garde la priorité', () => {
+    const { carole } = joinLater('2026-11-15T10:00:00.000Z', '2026-11-15T10:00:00.000Z')
+    expect(carole.names()).toEqual(['A'])
+  })
+
+  it('salle sans marque (jamais enregistrée depuis la salle) : la salle garde la priorité', () => {
+    const { carole } = joinLater('2026-11-15T11:00:00.000Z', null)
+    expect(carole.names()).toEqual(['A'])
+  })
+
+  it('l’envoi du projet plus récent ne s’annule pas', () => {
+    const { carole } = joinLater('2026-11-15T11:00:00.000Z', '2026-11-15T10:00:00.000Z')
+    expect(carole.binding.canUndo()).toBe(false)
   })
 })

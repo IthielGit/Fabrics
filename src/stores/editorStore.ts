@@ -172,6 +172,8 @@ interface EditorState {
   saveStatus: SaveStatus
   /** Augmente à chaque modification du document (sert à déclencher la sauvegarde). */
   revision: number
+  /** Valeur de `revision` quand la dernière modification venait d'une autre personne (M14, lot F) ; 0 sinon. */
+  remoteRevision: number
 
   loadProject: (project: Project) => void
   closeProject: () => void
@@ -179,7 +181,8 @@ interface EditorState {
    * M14 : affiche un document venu de la collaboration (autre personne, annuler / rétablir
    * partagé) sans toucher à l'historique local. La sélection ne garde que les éléments existants.
    */
-  applyRemoteDocument: (document: FabricsDocument) => void
+  /** `fromPeer` : le changement vient d'une autre connexion (c'est alors à l'enregistreur désigné de le sauvegarder). */
+  applyRemoteDocument: (document: FabricsDocument, fromPeer?: boolean) => void
   setTool: (tool: EditorTool) => void
   /** Choisit un objet de la bibliothèque et active l'outil de pose (sans effet dans un visuel). */
   startPlacingFurniture: (symbolId: string) => void
@@ -478,6 +481,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     liveEditing: false,
     saveStatus: 'saved',
     revision: 0,
+    remoteRevision: 0,
 
     loadProject: (project) => {
       lastNudge = null
@@ -498,6 +502,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         liveEditing: false,
         saveStatus: 'saved',
         revision: 0,
+        remoteRevision: 0,
       })
     },
 
@@ -511,10 +516,11 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         history: EMPTY_HISTORY,
         liveEditing: false,
         revision: 0,
+        remoteRevision: 0,
       })
     },
 
-    applyRemoteDocument: (document) => {
+    applyRemoteDocument: (document, fromPeer = false) => {
       const { project, selectedIds, editingTextId, revision } = get()
       if (!project || project.document === document) return
       const existing = new Set(document.elements.map((el) => el.id))
@@ -524,6 +530,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         editingTextId: editingTextId !== null && existing.has(editingTextId) ? editingTextId : null,
         activeLevelId: validActiveLevelId(document.levels, get().activeLevelId),
         revision: revision + 1,
+        remoteRevision: fromPeer ? revision + 1 : 0,
       })
     },
 

@@ -11,7 +11,7 @@ import {
   type ProjectRow,
   type SummaryRow,
 } from './cloudMapping'
-import type { ProjectRepository, ProjectSummary } from './types'
+import type { ProjectRepository, ProjectSummary, SaveResult } from './types'
 
 const BUCKET = 'assets'
 /** Durée de validité d'une URL signée d'image, en secondes. */
@@ -61,9 +61,14 @@ export class SupabaseRepository implements ProjectRepository {
     return migrateProject(rowToStoredProject(data))
   }
 
-  async save(project: Project): Promise<void> {
-    const { error } = await this.client.from('projects').upsert(projectToRow(project))
+  async save(project: Project): Promise<SaveResult> {
+    const { data, error } = await this.client
+      .from('projects')
+      .upsert(projectToRow(project))
+      .select('updated_at')
+      .single()
     if (error) throw error
+    return { updatedAt: (data as { updated_at: string } | null)?.updated_at ?? null }
   }
 
   async remove(id: string): Promise<void> {
