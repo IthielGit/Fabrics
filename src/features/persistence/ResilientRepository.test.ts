@@ -82,7 +82,7 @@ describe('ResilientRepository', () => {
     const repo = new ResilientRepository(server.repo, 'u1', { onPendingChange: (n) => counts.push(n) })
     server.state.offline = true
 
-    await expect(repo.save(makeProject('a', 'Hors ligne'))).resolves.toBeUndefined()
+    await expect(repo.save(makeProject('a', 'Hors ligne'))).resolves.toEqual({ updatedAt: null })
 
     expect(server.projects.size).toBe(0)
     expect(repo.pendingCount).toBe(1)

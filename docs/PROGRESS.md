@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A à D faits et validés ; lot E validé ; lot F à faire) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot E · présence : curseurs, sélections, avatars (15/11, validé par l'utilisateur)
-- **Prochaine tâche :** M14 · Lot F (persistance dans Supabase et reprise après coupure) après validation du lot E : **ne pas lancer sans demande explicite de l'utilisateur**
+- **Jalon en cours :** M14 Collaboration temps réel (lots A à E faits et validés ; lot F codé, essais à deux navigateurs à faire) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot F · persistance dans Supabase et reprise après coupure (15/11, codé ; à tester par l'utilisateur)
+- **Prochaine tâche :** valider le lot F par les essais à deux navigateurs (voir le journal du 15/11) ; ce sera la fin de M14
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -115,6 +115,22 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M14 · Lot F : persistance dans Supabase et reprise après coupure
+- Constat : les modifications faites hors de la salle (connexion coupée dès l'ouverture, file hors connexion) étaient écrasées à la réouverture par l'ancienne version de la salle ; chaque modification reçue déclenchait l'enregistrement de tous les participants ; la coupure n'était pas expliquée à l'écran.
+- Fait (F1) : `SupabaseRepository.save` renvoie l'heure du serveur (`updated_at`) ; `ResilientRepository` renvoie `null` quand le projet est resté sur l'appareil. Après chaque enregistrement réussi, l'heure est notée dans la salle (`meta.savedAt`, sans effet d'affichage ni d'annulation). À l'arrivée dans une salle déjà remplie, un projet enregistré après cette heure est envoyé à la salle ; sinon la salle garde la priorité.
+- Fait (F2) : un seul enregistreur pour les modifications des autres (`saveLeader.ts` : plus petit numéro de connexion présent) ; ses propres modifications, chacun les enregistre. Si l'enregistreur part, le suivant reprend ce qu'il avait laissé passer. `applyRemoteDocument` reçoit `fromPeer` (annuler / rétablir ne compte pas comme « autre ») ; `editorStore.remoteRevision`.
+- Fait (F3) : indicateur « Hors ligne, modifications gardées » ; à la reconnexion, message « Connexion retrouvée… » et enregistrement forcé.
+- Aucun changement côté serveur Cloudflare ni dans le schéma Supabase ; aucune nouvelle dépendance.
+- Limites connues : deux personnes hors connexion chacune de leur côté puis rouvrant le projet dans des sessions séparées : la version enregistrée en dernier l'emporte ; la comparaison des heures mélange horloge du serveur et de l'appareil (projet revenu de la file hors connexion) ; le rôle n'est vérifié qu'à l'ouverture de la connexion (lot C).
+- Fichiers : `src/features/collab/{saveLeader,collabSession}.ts` (+ test du premier), `yDocument.ts`, `collabBinding.ts` (+ tests), `src/features/persistence/{types,SupabaseRepository,ResilientRepository}.ts` (+ tests), `src/stores/{editorStore,collabStore}.ts`, `src/components/editor/{useAutosave,useCollaboration}.ts`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2880). Non fait ici : essais réels à deux navigateurs.
+- **Essais à faire à la fin du jalon** (`npm run dev`, deux fenêtres : une normale et une privée, deux comptes différents, même plan ; l'un est propriétaire, l'autre invité en édition) :
+  1. *Édition à deux* : dessinez un mur dans la fenêtre A, un autre dans B. Chacun voit les deux murs. Attendez 2 s, rechargez A : les deux murs sont toujours là (ils sont enregistrés).
+  2. *Coupure* : dans la fenêtre B, ouvrez les outils du navigateur (F12) → onglet « Réseau » → choisissez « Hors connexion ». L'indicateur de B passe à « Hors ligne, modifications gardées ». Dessinez un mur dans B, un autre dans A. Remettez « Aucune limitation » : B affiche « Connexion retrouvée », et A et B montrent les mêmes murs.
+  3. *Fermeture hors connexion* : coupez le réseau de B, dessinez un mur dans B, fermez l'onglet B, puis rétablissez le réseau. Rouvrez le projet dans B : le mur dessiné hors connexion est présent (aussi chez A).
+  4. *Peu d'enregistrements* : ouvrez le plan dans trois fenêtres (trois comptes ou deux fenêtres privées), et dans l'onglet « Réseau » de chacune filtrez sur « projects ». Dessinez un mur dans A : A enregistre, une seule autre fenêtre (l'enregistreur désigné) enregistre aussi, la troisième n'envoie rien.
+  5. *Départ de l'enregistreur* : fermez la fenêtre qui enregistre les modifications de l'autre ; dessinez ensuite dans la fenêtre restante, puis rechargez : tout est conservé.
 
 ### 2026-11-15 — M14 · Lot E : présence (curseurs, sélections, avatars) — validé par l'utilisateur
 - Accord de l'utilisateur : le nom et la photo viennent du compte (Google ou autre : `full_name` / `name`, `avatar_url` / `picture`), sinon la partie de l'e-mail avant le `@` ; l'adresse e-mail complète n'est jamais partagée.

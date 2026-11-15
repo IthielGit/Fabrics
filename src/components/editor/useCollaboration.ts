@@ -3,7 +3,9 @@ import * as Y from 'yjs'
 import { WebsocketProvider } from 'y-websocket'
 import { CollabBinding } from '../../features/collab/collabBinding'
 import { collabProtocols, collabRoomBase } from '../../features/collab/collabUrl'
+import { setCollabSession } from '../../features/collab/collabSession'
 import { listPeers, MAX_SELECTION, userFromAccount } from '../../features/collab/presence'
+import { isSaveLeader } from '../../features/collab/saveLeader'
 import { fr } from '../../i18n/fr'
 import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../stores/authStore'
@@ -55,7 +57,8 @@ export function useCollaboration(projectId: string | undefined, ready: boolean) 
       const current = new CollabBinding(ydoc, {
         getDocument: () => editor.getState().project?.document ?? null,
         isLiveEditing: () => editor.getState().liveEditing,
-        applyRemoteDocument: (document) => editor.getState().applyRemoteDocument(document),
+        applyRemoteDocument: (document, fromPeer) => editor.getState().applyRemoteDocument(document, fromPeer),
+        getSavedAt: () => editor.getState().project?.updatedAt ?? null,
         onHistoryChange: (canUndo, canRedo) => useCollabStore.getState().setHistory(canUndo, canRedo),
       })
       binding = current
@@ -77,9 +80,16 @@ export function useCollaboration(projectId: string | undefined, ready: boolean) 
 
       // « Connexion… » au premier essai seulement ; après un échec on reste « Hors ligne »
       // (les nouvelles tentatives sont automatiques), et « En direct » une fois synchronisé.
-      ws.on('connection-close', () => useCollabStore.getState().setStatus('offline'))
+      // Lot F : après une coupure, Yjs fusionne tout seul ce qui a été fait de part et d'autre ;
+      // on prévient la personne et on force un enregistrement (voir `useAutosave`).
+      let wasOffline = false
+      const goOffline = () => {
+        if (current.started) wasOffline = true
+        useCollabStore.getState().setStatus('offline')
+      }
+      ws.on('connection-close', goOffline)
       ws.on('status', ({ status }) => {
-        if (status === 'disconnected') useCollabStore.getState().setStatus('offline')
+        if (status === 'disconnected') goOffline()
       })
       ws.on('sync', (synced: boolean) => {
         if (!synced) return
@@ -87,7 +97,12 @@ export function useCollaboration(projectId: string | undefined, ready: boolean) 
           current.start()
           if (!current.started) return
           setCollabHistory({ undo: () => current.undo(), redo: () => current.redo() })
+          setCollabSession({ projectId, markSaved: (savedAt) => current.markSaved(savedAt) })
           useCollabStore.getState().setActive(true)
+        } else if (wasOffline) {
+          wasOffline = false
+          useEditorStore.getState().setNotice(fr.realtime.reconnected, 'success')
+          useCollabStore.getState().markReconnected()
         }
         useCollabStore.getState().setStatus('live')
       })
@@ -99,6 +114,7 @@ export function useCollaboration(projectId: string | undefined, ready: boolean) 
       unsubscribeEditor?.()
       stopPresence?.()
       if (binding?.started) setCollabHistory(null)
+      setCollabSession(null)
       binding?.destroy()
       provider?.destroy()
       ydoc.destroy()
@@ -138,7 +154,10 @@ function startPresence(provider: WebsocketProvider, userId: string): () => void 
   }
 
   const refreshPeers = () => {
-    useCollabStore.getState().setPeers(listPeers(awareness.getStates(), awareness.clientID))
+    const states = awareness.getStates()
+    const collab = useCollabStore.getState()
+    collab.setPeers(listPeers(states, awareness.clientID))
+    collab.setSaveLeader(isSaveLeader(awareness.clientID, states.keys()))
   }
   awareness.on('change', refreshPeers)
   publish()

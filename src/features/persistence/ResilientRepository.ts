@@ -2,7 +2,7 @@ import { del, get, keys, set } from 'idb-keyval'
 import type { Project } from '../../types/document'
 import { migrateProject, type StoredProject } from '../documents/migrations'
 import { isNetworkError } from './networkError'
-import type { ProjectRepository, ProjectSummary } from './types'
+import type { ProjectRepository, ProjectSummary, SaveResult } from './types'
 
 export interface ResilientOptions {
   /** Appelée avec le nombre d'éléments (projets + images) qui attendent d'être envoyés. */
@@ -86,26 +86,28 @@ export class ResilientRepository implements ProjectRepository {
     return this.inner.get(id)
   }
 
-  save(project: Project): Promise<void> {
+  save(project: Project): Promise<SaveResult> {
     return this.serial(() => this.doSave(project))
   }
 
-  private async doSave(project: Project): Promise<void> {
+  private async doSave(project: Project): Promise<SaveResult> {
     await this.ready
+    let result: SaveResult | void
     try {
-      await this.inner.save(project)
+      result = await this.inner.save(project)
     } catch (error) {
       if (!isNetworkError(error)) throw error
       await set(this.projectKey(project.id), project)
       this.pendingProjects.add(project.id)
       this.changed()
-      return
+      return { updatedAt: null } // gardé sur cet appareil : le serveur ne l'a pas encore reçu
     }
     // Enregistré : une copie en attente plus ancienne n'a plus de raison d'être.
     if (this.pendingProjects.delete(project.id)) {
       await del(this.projectKey(project.id))
       this.changed()
     }
+    return { updatedAt: result?.updatedAt ?? null }
   }
 
   remove(id: string): Promise<void> {
