@@ -840,8 +840,22 @@ Décisions D71 à D73 (voir `docs/PROGRESS.md`).
   toutes les 30 s et ~1,5 s après chaque enregistrement (pas de Supabase Realtime ici). « Nommer » attend
   la fin de l'enregistrement en cours (`waitForSaved`), car la base copie l'état enregistré. Avatars
   communs à la présence et à l'historique : `src/components/ui/UserAvatar.tsx`.
-- **Restaurer** passe par l'éditeur : version « Avant restauration », puis le document de la version est
-  appliqué comme une modification normale (historique d'annulation, collaboration en direct).
+- **Aperçu** (lot C) : page `/p/:projectId/versions/:versionId` (`VersionPreviewPage`), pour tout membre.
+  Le document de la version est chargé dans l'éditeur **sans** enregistrement automatique ni collaboration
+  (`ReadOnlyViewer`, comme la page d'un lecteur) : l'aperçu ne peut rien modifier. Changements depuis la
+  version précédente (`versionDiff.ts`, par identifiant d'élément : ajouté, modifié, supprimé ; clés comparées
+  sans tenir compte de leur ordre) surlignés par `ChangesLayer` (couche non cliquable, absente des exports),
+  via `versionPreviewStore`. Panneau de droite `ReadOnlySidePanel` (Historique + Métrés de la version), aussi
+  sur la page d'un membre lecteur (D73).
+- **Restaurer** (lot D, éditeurs et propriétaire) : l'aperçu garde le document en attente
+  (`pendingRestore.ts`, en mémoire) et rouvre l'éditeur ; `usePendingRestore` attend la collaboration (sinon
+  la version de la salle remplacerait la restauration ; sans connexion après 15 s : restauration annulée avec
+  un message), attend la fin de l'enregistrement, crée la version nommée « Avant restauration de « … » »
+  (échec : restauration annulée), puis `replaceDocument` : une modification normale (historique d'annulation,
+  collaboration en direct).
+- **Faire une copie** (lot D, tout membre) : nouveau projet à son nom (`duplicateProject`) avec le document
+  de la version. Limite : les images restent dans le dossier du propriétaire d'origine ; elles ne
+  s'affichent plus si la personne quitte le projet d'origine.
 - Les commentaires (M16) ne font pas partie des versions.
 
 ## Commentaires ancrés (M16)

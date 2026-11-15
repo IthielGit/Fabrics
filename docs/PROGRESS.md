@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions en cours (lots A et B validés) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M15 · Lots A et B · historique de versions : base de données et panneau (15/11, validés par l'utilisateur)
-- **Prochaine tâche :** M15 · Lot C (aperçu et changements), puis lot D (feu vert donné le 15/11)
+- **Jalon en cours :** M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M15 · Lots C et D · aperçu, restauration et copie de versions (15/11, validés par l'utilisateur) : fin de M15
+- **Prochaine tâche :** M16 · Lot A (commentaires : base de données) : plan détaillé à valider ; **ne pas lancer sans demande explicite de l'utilisateur**
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -115,6 +115,23 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M15 · Lots C et D : validés (fin du jalon M15)
+- L'utilisateur a fait les essais et validé les lots C et D, donc le jalon M15.
+
+### 2026-11-15 — M15 · Lots C et D : aperçu, changements, restaurer, faire une copie (codés, à tester)
+- Fait (C) : cliquer une version dans « Historique » ouvre son aperçu `/p/<projet>/versions/<version>` en lecture seule (aucun enregistrement, aucune collaboration). Bandeau : nom ou date, auteurs, « Depuis la version précédente : N ajoutés / modifiés / supprimés » avec légende, « Revenir au projet ». Sur le plan : contour vert (ajouté), orange (modifié), rouge pointillé (supprimé), niveau par niveau. À droite : Historique (version affichée mise en évidence ; la session qui la contient s'ouvre) et Métrés de la version. Un membre lecteur a maintenant le même panneau sur sa page (sans « Nommer »).
+- Fait (D) : « Restaurer cette version » (éditeurs, propriétaire) : retour à l'éditeur, attente de la collaboration, version « Avant restauration de « … » », puis remplacement du plan comme une modification normale (partagée en direct, Ctrl+Z l'annule). « Faire une copie » (tout membre) : nouveau projet à son nom, ouvert aussitôt.
+- Limites connues : restaurer demande la connexion au serveur temps réel quand il est configuré (sinon message et rien n'est fait) ; la copie d'un plan avec images dépend du dossier du propriétaire d'origine ; aperçu sans Realtime (liste relue toutes les 30 s).
+- Fichiers : `src/features/versions/{versionDiff,pendingRestore}.ts` (+ tests), `versionsLogic.ts` (+ tests), `src/stores/versionPreviewStore.ts`, `src/stores/editorStore.ts` (`replaceDocument`, + test), `src/components/editor/{ChangesLayer,VersionBanner,ReadOnlySidePanel,HistoryPanel,HistorySessionItem,ReadOnlyViewer,EditorStage}.tsx`, `usePendingRestore.ts`, `useCollaboration.ts` (`isCollaborationConfigured`), `src/pages/{VersionPreviewPage,SharedProjectPage,EditorPage}.tsx`, `src/App.tsx` (route), `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2904). Non fait ici : essais dans le navigateur (compte connecté nécessaire).
+- **Essais à faire** (`npm run dev`, compte connecté, un plan avec quelques versions) :
+  1. *Aperçu* : Historique → cliquer une version. Le bandeau jaune apparaît ; on peut zoomer, changer de niveau, mais rien ne se modifie. Les éléments ajoutés depuis la version précédente sont entourés en vert, les modifiés en orange, les supprimés en rouge pointillé. L'onglet Métrés montre les quantités de cette version.
+  2. *Navigation* : cliquer une autre version dans le panneau de droite de l'aperçu ; « Revenir au projet » rouvre l'éditeur normal.
+  3. *Restaurer* : sur une ancienne version, « Restaurer cette version » → l'éditeur s'ouvre, le message « Version … restaurée » s'affiche, le plan est celui de la version. Dans Historique, une version « Avant restauration de … » est apparue. Ctrl+Z remet le plan d'avant.
+  4. *À deux* : B a le plan ouvert pendant que A restaure → B voit le plan restauré en direct.
+  5. *Faire une copie* : « Faire une copie » → un nouveau projet « <nom> (version du …) » s'ouvre ; il apparaît sur l'accueil.
+  6. *Lecteur* : un compte invité en lecture voit l'onglet Historique sur sa page, peut ouvrir un aperçu et faire une copie, mais ne voit ni « Nommer » ni « Restaurer ».
 
 ### 2026-11-15 — M15 · Lots A et B : validés
 - L'utilisateur a exécuté le SQL dans Supabase et validé le panneau « Historique ».

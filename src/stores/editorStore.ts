@@ -194,6 +194,8 @@ interface EditorState {
   setStairShape: (shape: StairShapeChoice) => void
   setRoomWithWalls: (withWalls: boolean) => void
   setNotice: (notice: string | null, tone?: 'success' | 'info' | 'error') => void
+  /** Remplace tout le document (restauration d'une version, M15) : une modification annulable ; sélection vidée. */
+  replaceDocument: (document: FabricsDocument) => void
   setGuides: (guides: Guide[]) => void
   startEditingText: (id: string) => void
   stopEditingText: () => void
@@ -556,6 +558,8 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       set((state) => ({ openingPresets: { ...state.openingPresets, [kind]: preset } })),
     setRoomWithWalls: (roomWithWalls) => set({ roomWithWalls }),
     setNotice: (notice, tone = 'info') => set({ notice, noticeTone: tone }),
+    // La version est déjà cohérente : pas de recalage des ouvertures sur leurs murs.
+    replaceDocument: (document) => commit(() => document, [], { editingTextId: null }, false),
     setGuides: (guides) => set({ guides }),
     startEditingText: (id) => set({ editingTextId: id, selectedIds: [id], activeTool: 'select' }),
     stopEditingText: () => set({ editingTextId: null }),

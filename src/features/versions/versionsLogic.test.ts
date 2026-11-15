@@ -3,9 +3,11 @@ import {
   groupVersions,
   localDayKey,
   normalizeVersionName,
+  previousVersionOf,
   relativeDay,
   rowToPerson,
   rowToVersion,
+  versionPath,
   type ProjectVersion,
 } from './versionsLogic'
 
@@ -126,5 +128,29 @@ describe('rowToPerson', () => {
     const person = rowToPerson({ user_id: 'u2', display_name: ' ', avatar_url: 'javascript:alert(1)' }, 'Participant')
     expect(person.name).toBe('Participant')
     expect(person.avatarUrl).toBeUndefined()
+  })
+})
+
+describe('previousVersionOf', () => {
+  const list = [
+    version('v3', 'B', at(15, 10, 0), at(15, 10, 2)),
+    version('v1', 'A', at(14, 9, 0), at(14, 9, 2)),
+    version('v2', 'A', at(14, 9, 2), at(14, 9, 4)),
+  ]
+
+  it('donne la version juste avant dans le temps, quel que soit l’ordre de la liste', () => {
+    expect(previousVersionOf(list, 'v3')?.id).toBe('v2')
+    expect(previousVersionOf(list, 'v2')?.id).toBe('v1')
+  })
+
+  it('rien avant la première, ni pour une version inconnue', () => {
+    expect(previousVersionOf(list, 'v1')).toBeNull()
+    expect(previousVersionOf(list, 'inconnue')).toBeNull()
+  })
+})
+
+describe('versionPath', () => {
+  it('construit l’adresse de l’aperçu', () => {
+    expect(versionPath('p1', 'v1')).toBe('/p/p1/versions/v1')
   })
 })

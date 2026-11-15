@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
+import ReadOnlySidePanel from '../components/editor/ReadOnlySidePanel'
 import ReadOnlyViewer from '../components/editor/ReadOnlyViewer'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
@@ -42,7 +43,8 @@ export default function SharedProjectPage({ projectId }: { projectId: string }) 
   const state: LoadState = result?.projectId === projectId ? result.state : 'loading'
 
   if (state === 'loading') return <p className="p-8 text-slate-500">{fr.common.loading}</p>
-  if (state === 'ready') return <ReadOnlyViewer />
+  // Un membre lecteur voit l'historique (D73), sans pouvoir nommer ni restaurer.
+  if (state === 'ready') return <ReadOnlyViewer aside={<ReadOnlySidePanel canName={false} />} />
   return (
     <main className="p-8">
       <h1 className="text-2xl font-bold">{fr.editor.notFoundTitle}</h1>

@@ -13,6 +13,10 @@ interface HistorySessionItemProps {
   /** Éditeurs et propriétaire : nommer et renommer. */
   canName: boolean
   editingId: string | null
+  /** Version ouverte dans l'aperçu. */
+  selectedVersionId?: string
+  /** Ouvre l'aperçu d'une version. */
+  onSelect: (versionId: string) => void
   onEdit: (versionId: string | null) => void
   onRename: (versionId: string, name: string | null) => void
 }
@@ -39,10 +43,23 @@ function Authors({ ids, people }: { ids: readonly string[]; people: ReadonlyMap<
 }
 
 /** Une session de travail de l'historique, repliée sur sa dernière étape ; ses étapes se déplient. */
-export default function HistorySessionItem({ session, people, canName, editingId, onEdit, onRename }: HistorySessionItemProps) {
-  const [open, setOpen] = useState(false)
+export default function HistorySessionItem({
+  session,
+  people,
+  canName,
+  editingId,
+  selectedVersionId,
+  onSelect,
+  onEdit,
+  onRename,
+}: HistorySessionItemProps) {
   const { latest } = session
   const steps = session.versions.length
+  // Une étape intérieure ouverte dans l'aperçu : la session s'affiche dépliée.
+  const containsSelected = session.versions.some(
+    (version) => version.id === selectedVersionId && version.id !== latest.id,
+  )
+  const [open, setOpen] = useState(containsSelected)
 
   const nameButton = (version: ProjectVersion) =>
     canName && (
@@ -68,18 +85,31 @@ export default function HistorySessionItem({ session, people, canName, editingId
   )
 
   return (
-    <li className="rounded-md border border-slate-200 px-3 py-2">
+    <li
+      className={clsx(
+        'rounded-md border px-3 py-2',
+        selectedVersionId === latest.id ? 'border-indigo-500 bg-indigo-50' : 'border-slate-200',
+      )}
+    >
       <div className="flex items-start gap-2">
         <div className="min-w-0 flex-1">
           {editingId === latest.id ? (
             nameField(latest)
           ) : (
-            <>
-              {latest.name && <p className="truncate text-sm font-semibold text-slate-900">{latest.name}</p>}
-              <p className={clsx('text-sm', latest.name ? 'text-slate-600' : 'font-medium text-slate-900')}>
+            <button
+              type="button"
+              onClick={() => onSelect(latest.id)}
+              aria-current={selectedVersionId === latest.id}
+              title={fr.history.open}
+              className="block w-full rounded text-left focus-visible:outline-2 focus-visible:outline-indigo-600"
+            >
+              {latest.name && (
+                <span className="block truncate text-sm font-semibold text-slate-900">{latest.name}</span>
+              )}
+              <span className={clsx('block text-sm', latest.name ? 'text-slate-600' : 'font-medium text-slate-900')}>
                 {fr.history.timeRange(session.startedAt, session.savedAt)}
-              </p>
-            </>
+              </span>
+            </button>
           )}
           <Authors ids={session.authors} people={people} />
         </div>
@@ -100,15 +130,27 @@ export default function HistorySessionItem({ session, people, canName, editingId
           {open && (
             <ul className="mt-1 space-y-1 border-l-2 border-slate-200 pl-3">
               {session.versions.map((version) => (
-                <li key={version.id} className="flex items-start gap-2 py-0.5">
+                <li
+                  key={version.id}
+                  className={clsx(
+                    'flex items-start gap-2 rounded px-1 py-0.5',
+                    selectedVersionId === version.id && 'bg-indigo-100',
+                  )}
+                >
                   <div className="min-w-0 flex-1">
                     {editingId === version.id ? (
                       nameField(version)
                     ) : (
-                      <p className="text-xs text-slate-700">
+                      <button
+                        type="button"
+                        onClick={() => onSelect(version.id)}
+                        aria-current={selectedVersionId === version.id}
+                        title={fr.history.open}
+                        className="block w-full rounded text-left text-xs text-slate-700 focus-visible:outline-2 focus-visible:outline-indigo-600"
+                      >
                         <span className="font-medium">{fr.history.time(version.savedAt)}</span>
                         {version.name && <span className="ml-1.5 font-semibold text-slate-900">{version.name}</span>}
-                      </p>
+                      </button>
                     )}
                     <Authors ids={version.authors} people={people} />
                   </div>

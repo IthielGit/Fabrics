@@ -14,6 +14,11 @@ import { setCollabHistory, useEditorStore } from '../../stores/editorStore'
 
 const ROOM_BASE = collabRoomBase(import.meta.env.VITE_COLLAB_URL as string | undefined)
 
+/** Vrai si un serveur temps réel est configuré (`VITE_COLLAB_URL`) et Supabase disponible. */
+export function isCollaborationConfigured(): boolean {
+  return ROOM_BASE !== null && supabase !== null
+}
+
 /** Attente maximale entre deux tentatives de reconnexion (serveur injoignable ou accès refusé). */
 const MAX_BACKOFF_MS = 30_000
 

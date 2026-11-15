@@ -1,7 +1,8 @@
 import { BookmarkPlus, Loader2 } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { useNavigate } from 'react-router'
 import { createNamedVersion, renameVersion } from '../../features/versions/versionsApi'
-import { groupVersions, relativeDay } from '../../features/versions/versionsLogic'
+import { groupVersions, relativeDay, versionPath } from '../../features/versions/versionsLogic'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
@@ -13,8 +14,16 @@ import { useVersions, waitForSaved } from './useVersions'
  * Panneau « Historique » (M15, lot B) : versions du projet par jour et par session, auteurs,
  * versions nommées. Les versions automatiques sont créées par la base à chaque enregistrement.
  */
-export default function HistoryPanel() {
+interface HistoryPanelProps {
+  /** Éditeurs et propriétaire : nommer et renommer (faux pour un lecteur). */
+  canName?: boolean
+  /** Version affichée dans l'aperçu (mise en évidence dans la liste). */
+  selectedVersionId?: string
+}
+
+export default function HistoryPanel({ canName = true, selectedVersionId }: HistoryPanelProps) {
   const projectId = useEditorStore((state) => state.project?.id)
+  const navigate = useNavigate()
   const setNotice = useEditorStore((state) => state.setNotice)
   const { status, versions, people, loadedAt, refresh } = useVersions(projectId)
   const [namedOnly, setNamedOnly] = useState(false)
@@ -23,8 +32,10 @@ export default function HistoryPanel() {
   const [editingId, setEditingId] = useState<string | null>(null)
 
   const days = useMemo(() => groupVersions(versions, { namedOnly }), [versions, namedOnly])
-  // Dans l'éditeur, on est propriétaire ou éditeur : on peut nommer (les lecteurs ont une autre page).
-  const canName = true
+  // Cliquer une version ouvre son aperçu (page en lecture seule, lot C).
+  const select = (versionId: string) => {
+    if (projectId && versionId !== selectedVersionId) navigate(versionPath(projectId, versionId))
+  }
 
   const create = async (name: string | null) => {
     setCreating(false)
@@ -69,7 +80,7 @@ export default function HistoryPanel() {
           </Button>
         )}
       </div>
-      <p className="mt-1 text-xs text-slate-600">{fr.history.intro}</p>
+      <p className="mt-1 text-xs text-slate-600">{canName ? fr.history.intro : fr.history.introReader}</p>
 
       {creating && (
         <div className="mt-3">
@@ -124,6 +135,8 @@ export default function HistoryPanel() {
                   people={people}
                   canName={canName}
                   editingId={editingId}
+                  selectedVersionId={selectedVersionId}
+                  onSelect={select}
                   onEdit={setEditingId}
                   onRename={(versionId, name) => void rename(versionId, name)}
                 />
