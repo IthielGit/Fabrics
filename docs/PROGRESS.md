@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A à E faits et validés ; lot F codé, essais à deux navigateurs à faire) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot F · persistance dans Supabase et reprise après coupure (15/11, codé ; à tester par l'utilisateur)
-- **Prochaine tâche :** valider le lot F par les essais à deux navigateurs (voir le journal du 15/11) ; ce sera la fin de M14
+- **Jalon en cours :** M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot F · persistance dans Supabase et reprise après coupure (15/11, validé par l'utilisateur)
+- **Prochaine tâche :** à définir avec l'utilisateur (voir « Plus tard » dans `docs/03-ROADMAP.md`) ; M14 est terminé
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -115,6 +115,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M14 · Lot F : validé (fin du jalon M14)
+- L'utilisateur a fait les essais à deux navigateurs et validé le lot F, donc le jalon M14.
 
 ### 2026-11-15 — M14 · Lot F : persistance dans Supabase et reprise après coupure
 - Constat : les modifications faites hors de la salle (connexion coupée dès l'ouverture, file hors connexion) étaient écrasées à la réouverture par l'ancienne version de la salle ; chaque modification reçue déclenchait l'enregistrement de tous les participants ; la coupure n'était pas expliquée à l'écran.
