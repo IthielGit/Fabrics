@@ -1,4 +1,4 @@
--- Fabrics — schéma Supabase (jalon M13)
+-- Fabrics — schéma Supabase (jalons M13 à M15)
 -- À exécuter une fois dans Supabase : SQL Editor → New query → coller → Run.
 -- Correspond au type `Project` de docs/02-ARCHITECTURE.md (document stocké en JSON).
 
@@ -546,3 +546,241 @@ grant execute on function public.accept_invite(text) to authenticated;
 grant execute on function public.list_project_members(uuid) to authenticated;
 grant execute on function public.my_shared_projects() to authenticated;
 grant execute on function public.can_read_assets_of(text) to authenticated;
+
+
+-- =========================================================
+-- M15 — Historique de versions (décisions D71 à D73)
+-- =========================================================
+-- Chaque ligne est une « étape » : l'état du document à la fin d'une fenêtre de 2 minutes de travail.
+-- Les étapes d'une même session (moins de 5 min de pause, 30 min au plus) partagent `session_id`.
+-- Les versions automatiques sont faites ICI, par la base, à chaque enregistrement du projet : quel que
+-- soit l'onglet ou la personne qui enregistre. Le navigateur ne peut que lire, nommer et renommer.
+-- Conservation (D72) : étapes détaillées 24 h ; puis la dernière étape de chaque session ; après
+-- 30 jours, une version automatique par jour (UTC). Les versions nommées ne sont jamais supprimées.
+
+create table if not exists public.project_versions (
+  id         uuid primary key default gen_random_uuid(),
+  project_id uuid not null references public.projects (id) on delete cascade,
+  session_id uuid not null,
+  name       text check (name is null or char_length(name) between 1 and 100),
+  document   jsonb not null,
+  authors    uuid[] not null default '{}',
+  started_at timestamptz not null default now(),
+  saved_at   timestamptz not null default now()
+);
+
+create index if not exists project_versions_project_saved_idx
+  on public.project_versions (project_id, saved_at desc);
+create index if not exists project_versions_session_idx
+  on public.project_versions (project_id, session_id);
+
+alter table public.project_versions enable row level security;
+
+-- Lecture : tout membre du projet, lecteurs compris (D73). Aucune écriture directe.
+drop policy if exists "versions_select_member" on public.project_versions;
+create policy "versions_select_member" on public.project_versions
+  for select to authenticated
+  using (public.my_project_role(project_id) is not null);
+
+revoke all on public.project_versions from anon, authenticated;
+grant select on public.project_versions to authenticated;
+
+-- Nettoyage d'un projet (appelé à chaque nouvelle étape : pas de tâche planifiée).
+create or replace function public.prune_project_versions(p_project_id uuid)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  -- Après 24 h : seule la dernière étape de chaque session reste (et les versions nommées).
+  delete from public.project_versions v
+   where v.project_id = p_project_id
+     and v.name is null
+     and v.saved_at < now() - interval '24 hours'
+     and exists (
+       select 1 from public.project_versions w
+        where w.project_id = v.project_id
+          and w.session_id = v.session_id
+          and w.saved_at > v.saved_at
+     );
+  -- Après 30 jours : une version automatique par jour (la dernière du jour).
+  delete from public.project_versions v
+   where v.project_id = p_project_id
+     and v.name is null
+     and v.saved_at < now() - interval '30 days'
+     and exists (
+       select 1 from public.project_versions w
+        where w.project_id = v.project_id
+          and w.name is null
+          and date_trunc('day', w.saved_at) = date_trunc('day', v.saved_at)
+          and w.saved_at > v.saved_at
+     );
+$$;
+
+-- Déclencheur : prolonge l'étape en cours ou en ouvre une nouvelle.
+create or replace function public.record_project_version()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  last_row      public.project_versions;
+  session_start timestamptz;
+  sid           uuid := gen_random_uuid();
+  uid           uuid := auth.uid();
+begin
+  if tg_op = 'UPDATE' and new.document is not distinct from old.document then
+    return null; -- renommage, miniature : pas de nouvelle version
+  end if;
+
+  -- Un enregistrement à la fois par projet : deux écritures simultanées ne créent pas deux étapes.
+  perform pg_advisory_xact_lock(hashtext('project_versions:' || new.id::text));
+
+  select * into last_row
+    from public.project_versions
+   where project_id = new.id
+   order by saved_at desc, started_at desc
+   limit 1;
+
+  -- Même fenêtre de 2 minutes : on prolonge l'étape (jamais une version nommée).
+  if found and last_row.name is null and last_row.started_at > now() - interval '2 minutes' then
+    update public.project_versions
+       set document = new.document,
+           saved_at = now(),
+           authors  = case when uid is null or uid = any (authors) then authors else authors || uid end
+     where id = last_row.id;
+    return null;
+  end if;
+
+  -- Nouvelle étape : même session si la pause fait moins de 5 min et la session moins de 30 min.
+  if found and last_row.saved_at > now() - interval '5 minutes' then
+    select min(started_at) into session_start
+      from public.project_versions
+     where project_id = new.id and session_id = last_row.session_id;
+    if session_start > now() - interval '30 minutes' then
+      sid := last_row.session_id;
+    end if;
+  end if;
+
+  insert into public.project_versions (project_id, session_id, document, authors)
+  values (new.id, sid, new.document, case when uid is null then '{}'::uuid[] else array[uid] end);
+
+  perform public.prune_project_versions(new.id);
+  return null;
+exception when others then
+  -- L'historique ne doit jamais empêcher l'enregistrement du projet lui-même.
+  raise warning 'record_project_version: %', sqlerrm;
+  return null;
+end;
+$$;
+
+drop trigger if exists projects_record_version on public.projects;
+create trigger projects_record_version
+  after insert or update of document on public.projects
+  for each row execute function public.record_project_version();
+
+-- Nommer l'état actuel du projet (éditeurs et propriétaire). Renvoie l'identifiant de la version.
+create or replace function public.create_named_version(p_project_id uuid, p_name text)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  clean    text := btrim(coalesce(p_name, ''));
+  doc      jsonb;
+  last_row public.project_versions;
+  sid      uuid := gen_random_uuid();
+  new_id   uuid;
+begin
+  if coalesce(public.my_project_role(p_project_id), '') not in ('owner', 'editor') then
+    raise exception 'project not found' using errcode = '42501';
+  end if;
+  if char_length(clean) not between 1 and 100 then
+    raise exception 'invalid version name' using errcode = '22023';
+  end if;
+
+  perform pg_advisory_xact_lock(hashtext('project_versions:' || p_project_id::text));
+
+  select document into doc from public.projects where id = p_project_id;
+
+  select * into last_row
+    from public.project_versions
+   where project_id = p_project_id
+   order by saved_at desc, started_at desc
+   limit 1;
+  if found and last_row.saved_at > now() - interval '5 minutes' then
+    sid := last_row.session_id;
+  end if;
+
+  insert into public.project_versions (project_id, session_id, name, document, authors)
+  values (p_project_id, sid, clean, doc, array[auth.uid()])
+  returning id into new_id;
+  return new_id;
+end;
+$$;
+
+-- Nommer, renommer ou retirer le nom d'une version (nom vide : redevient automatique).
+create or replace function public.rename_version(p_version_id uuid, p_name text)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  clean   text := nullif(btrim(coalesce(p_name, '')), '');
+  project uuid;
+begin
+  select project_id into project from public.project_versions where id = p_version_id;
+  if project is null or coalesce(public.my_project_role(project), '') not in ('owner', 'editor') then
+    raise exception 'version not found' using errcode = '42501';
+  end if;
+  if clean is not null and char_length(clean) > 100 then
+    raise exception 'invalid version name' using errcode = '22023';
+  end if;
+  update public.project_versions set name = clean where id = p_version_id;
+end;
+$$;
+
+-- Nom et photo des personnes d'un projet (propriétaire, membres, auteurs de versions), pour tout membre.
+-- Comme pour la présence (M14, lot E) : nom du compte, sinon la partie de l'e-mail avant le @ ;
+-- l'adresse complète n'est jamais renvoyée.
+create or replace function public.project_people(p_project_id uuid)
+returns table (user_id uuid, display_name text, avatar_url text)
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+begin
+  if public.my_project_role(p_project_id) is null then
+    raise exception 'project not found' using errcode = '42501';
+  end if;
+  return query
+    with ids as (
+      select p.owner_id as id from public.projects p where p.id = p_project_id
+      union
+      select m.user_id from public.project_members m where m.project_id = p_project_id
+      union
+      select unnest(v.authors) from public.project_versions v where v.project_id = p_project_id
+    )
+    select u.id,
+           left(coalesce(
+             nullif(btrim(u.raw_user_meta_data ->> 'full_name'), ''),
+             nullif(btrim(u.raw_user_meta_data ->> 'name'), ''),
+             split_part(u.email::text, '@', 1)
+           ), 60),
+           coalesce(u.raw_user_meta_data ->> 'avatar_url', u.raw_user_meta_data ->> 'picture')
+      from auth.users u
+      join ids on ids.id = u.id;
+end;
+$$;
+
+revoke all on function public.prune_project_versions(uuid) from public, anon, authenticated;
+revoke all on function public.create_named_version(uuid, text) from public, anon;
+revoke all on function public.rename_version(uuid, text) from public, anon;
+revoke all on function public.project_people(uuid) from public, anon;
+grant execute on function public.create_named_version(uuid, text) to authenticated;
+grant execute on function public.rename_version(uuid, text) to authenticated;
+grant execute on function public.project_people(uuid) to authenticated;
