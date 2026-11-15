@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M16 Commentaires ancrés en cours (lot A validé) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M16 · Lot A · base de données des commentaires (15/11, exécutée dans Supabase et validée par l'utilisateur)
-- **Prochaine tâche :** M16 · Lot B (poser un commentaire) : plan à valider par l'utilisateur avant de coder
+- **Jalon en cours :** M16 Commentaires ancrés en cours (lots A et B validés) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M16 · Lot B · poser un commentaire sur le plan (15/11, validé par l'utilisateur)
+- **Prochaine tâche :** M16 · Lot C (fils et panneau) : plan à valider par l'utilisateur avant de coder
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -115,6 +115,29 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M16 · Lot B : validé
+- L'utilisateur a fait les essais et validé le lot B.
+
+### 2026-11-15 — M16 · Lot B : poser un commentaire (codé, à tester)
+- Choix de l'utilisateur : un clic sur un élément attache le commentaire à cet élément (l'épingle le suit).
+- Fait : outil « Commenter » (touche C, famille « Commentaire » de la barre d'outils, avec un compte connecté seulement). Clic sur un élément ou dans le vide : bulle de saisie au point cliqué (« Sur : <élément> » quand il est attaché), Entrée envoie, Maj + Entrée retour à la ligne, Échap annule, compteur près de 2000 caractères, message si l'envoi échoue. Épingles numérotées à la couleur de l'auteur sur le niveau affiché ; estompées pour un fil résolu ou un élément supprimé ; infobulle au survol (auteur, début du texte, réponses). Après l'envoi, retour à l'outil Sélection. Couche des épingles absente des exports et de la miniature ; commentaires hors de l'historique d'annulation.
+- Pas encore : ouvrir un fil en cliquant l'épingle, répondre, résoudre, modifier, supprimer (lot C) ; commentaires des membres lecteurs (lot D) ; direct (lot E, relecture toutes les 30 s en attendant).
+- Test modifié : « C » seul n'est plus « aucune action » (c'est l'outil Commenter) ; Ctrl + C copie toujours.
+- Limite : la visée utilise la boîte englobante d'un élément (sauf les murs) : imprécise pour une pièce en L.
+- Fichiers : `src/features/comments/{commentTarget,commentTarget.test}.ts`, `src/stores/commentsStore.ts`, `src/components/editor/{CommentPinsLayer,CommentComposerOverlay,useComments}.ts(x)`, `EditorStage.tsx`, `Toolbar.tsx`, `ToolHint.tsx`, `shortcuts.ts` (+ test), `useEditorShortcuts.ts`, `src/stores/editorStore.ts`, `src/pages/EditorPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2934). Non fait ici : essai dans le navigateur (compte connecté nécessaire).
+- **Essais à faire** (`npm run dev`, compte connecté, un plan avec des murs) :
+  1. *Outil* : à gauche, un nouveau bouton « Commenter » (bulle) ; la touche C le choisit ; sans compte (ou déconnecté) il n'existe pas.
+  2. *Sur un mur* : choisir l'outil, cliquer sur un mur → bulle « Sur : Mur … » ; écrire, Entrée → une épingle « 1 » apparaît au milieu du mur et l'outil repasse à Sélection.
+  3. *L'épingle suit* : déplacer ce mur → l'épingle le suit. Supprimer le mur → l'épingle reste en place, estompée ; son infobulle dit « élément supprimé ».
+  4. *Point libre* : cliquer dans le vide → bulle sans « Sur : » ; épingle « 2 » à cet endroit.
+  5. *Infobulle* : survoler une épingle → auteur et début du texte.
+  6. *Annuler la saisie* : Échap ou « Annuler » ferme la bulle sans rien créer ; changer d'outil aussi.
+  7. *Niveaux* : un commentaire posé au rez-de-chaussée n'apparaît pas à l'étage.
+  8. *Exports* : exporter en PNG ou PDF → aucune épingle sur le fichier ; la miniature de l'accueil non plus.
+  9. *Rechargement* : recharger la page → les épingles sont toujours là (elles sont dans Supabase).
+  10. *Annuler (Ctrl+Z)* : n'enlève pas un commentaire (il n'est pas dans l'historique du plan).
 
 ### 2026-11-15 — M16 · Lot A : validé
 - L'utilisateur a exécuté le SQL dans Supabase : les 4 règles de sécurité (DELETE, INSERT, SELECT, UPDATE) sont en place et la diffusion en direct est active sur `project_comments`.

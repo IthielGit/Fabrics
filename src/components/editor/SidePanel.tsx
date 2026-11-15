@@ -76,20 +76,34 @@ export default function SidePanel() {
       )}
     <aside
       className={clsx(
-        'shrink-0 flex-col border-l border-slate-200 bg-white lg:flex lg:w-88',
+        // Largeur : 22rem de contenu + 3.25rem de rail d'onglets (M15 bis, lot D).
+        'shrink-0 flex-row border-l border-slate-200 bg-white lg:flex lg:w-[25.25rem]',
         open
-          ? 'fixed inset-y-0 right-0 z-40 flex w-[min(22rem,92vw)] shadow-2xl lg:static lg:z-auto lg:shadow-none'
+          ? 'fixed inset-y-0 right-0 z-40 flex w-[min(25.25rem,92vw)] shadow-2xl lg:static lg:z-auto lg:shadow-none'
           : 'hidden',
       )}
     >
-
-      <div role="tablist" aria-label={fr.sidePanel.label} className="flex shrink-0 border-b border-slate-200">
+      <div role="tabpanel" aria-label={tabs.find((t) => t.id === current)?.label} className="min-h-0 min-w-0 flex-1 overflow-y-auto">
+        {current === 'properties' && <PropertiesPanel />}
+        {current === 'library' && <LibraryPanel />}
+        {current === 'levels' && <LevelsPanel />}
+        {current === 'layers' && <LayersPanel />}
+        {current === 'measurements' && <MeasurementsPanel />}
+        {current === 'history' && <HistoryPanel key={projectId} />}
+      </div>
+      {/* Onglets en colonne d'icônes, à droite (M15 bis, lot D) : le nom apparaît au survol. */}
+      <div
+        role="tablist"
+        aria-label={fr.sidePanel.label}
+        aria-orientation="vertical"
+        className="flex w-13 shrink-0 flex-col items-center gap-1 border-l border-slate-200 bg-slate-50 py-2.5"
+      >
         <button
           type="button"
           aria-label={fr.sidePanel.close}
           title={fr.sidePanel.close}
           onClick={() => setOpen(false)}
-          className="flex shrink-0 items-center px-3 text-slate-600 hover:bg-slate-50 lg:hidden"
+          className="mb-1 flex size-9 items-center justify-center rounded-lg text-slate-600 hover:bg-slate-200 lg:hidden"
         >
           <X size={18} aria-hidden="true" />
         </button>
@@ -99,26 +113,30 @@ export default function SidePanel() {
             type="button"
             role="tab"
             aria-selected={current === id}
+            aria-label={label}
             onClick={() => setTab(id)}
             className={clsx(
-              'flex flex-1 flex-col items-center gap-1 border-b-2 px-1 py-2.5 text-xs font-medium transition-colors duration-150 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600',
+              'group relative flex size-9 items-center justify-center rounded-lg pointer-coarse:size-11',
+              'transition-colors duration-150 ease-out',
+              'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-indigo-600',
               current === id
-                ? 'border-indigo-600 text-indigo-700'
-                : 'border-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-900',
+                ? 'bg-indigo-100 text-indigo-700'
+                : 'text-slate-600 hover:bg-slate-200 hover:text-slate-900',
             )}
           >
-            <Icon size={16} aria-hidden="true" />
-            {label}
+            <Icon size={18} aria-hidden="true" />
+            <span
+              aria-hidden="true"
+              className={clsx(
+                'pointer-events-none absolute right-full top-1/2 z-50 mr-2 -translate-y-1/2 whitespace-nowrap',
+                'rounded-md bg-slate-900 px-2 py-1 text-xs font-medium text-white opacity-0 shadow',
+                'transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100',
+              )}
+            >
+              {label}
+            </span>
           </button>
         ))}
-      </div>
-      <div role="tabpanel" className="min-h-0 flex-1 overflow-y-auto">
-        {current === 'properties' && <PropertiesPanel />}
-        {current === 'library' && <LibraryPanel />}
-        {current === 'levels' && <LevelsPanel />}
-        {current === 'layers' && <LayersPanel />}
-        {current === 'measurements' && <MeasurementsPanel />}
-        {current === 'history' && <HistoryPanel key={projectId} />}
       </div>
     </aside>
     </>

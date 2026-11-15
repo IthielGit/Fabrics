@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 import { rotateSelectionQuarterTurn } from '../../features/geometry/rotateSelection'
+import { commentsAvailable } from '../../features/comments/commentsApi'
+import { useAuthStore } from '../../stores/authStore'
 import { useEditorStore } from '../../stores/editorStore'
 import { useHelpStore } from '../../stores/helpStore'
 import { isTypingTarget } from './isTypingTarget'
@@ -50,6 +52,10 @@ export function useEditorShortcuts() {
           break
         case 'tool-window':
           store.setTool('window')
+          break
+        case 'tool-comment':
+          // Les commentaires demandent un compte connecté.
+          if (commentsAvailable() && useAuthStore.getState().user) store.setTool('comment')
           break
         case 'help':
           useHelpStore.getState().setOpen(true)

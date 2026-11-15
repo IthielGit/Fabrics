@@ -61,6 +61,8 @@ export type EditorTool =
   | 'door'
   | 'window'
   | 'calibrate'
+  /** Poser un commentaire (M16) ; avec un compte connecté seulement. */
+  | 'comment'
 
 /** Outils qui n'existent que dans un projet de type Plan. */
 export const PLAN_TOOLS: readonly EditorTool[] = [

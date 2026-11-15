@@ -13,6 +13,7 @@ import {
   House,
   ImagePlus,
   Layers2,
+  MessageSquare,
   MousePointer2,
   Pentagon,
   Ruler,
@@ -25,8 +26,10 @@ import {
   type LucideIcon,
 } from 'lucide-react'
 import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { commentsAvailable } from '../../features/comments/commentsApi'
 import { ACCEPTED_IMAGE_TYPES } from '../../features/documents/images'
 import { fr } from '../../i18n/fr'
+import { useAuthStore } from '../../stores/authStore'
 import { useEditorStore, type EditorTool } from '../../stores/editorStore'
 import { useHelpStore } from '../../stores/helpStore'
 import { importImageFiles } from './importImages'
@@ -69,7 +72,7 @@ const tool = (
  * Familles d'outils, de la plus utilisée à la moins utilisée. Chaque famille n'occupe qu'un bouton
  * (le dernier outil choisi) ; la flèche ouvre la liste complète de la famille.
  */
-function toolGroups(isPlan: boolean): ToolGroup[] {
+function toolGroups(isPlan: boolean, canComment: boolean): ToolGroup[] {
   const groups: ToolGroup[] = [
     { id: 'select', label: fr.tools.groups.select, entries: [tool('select', MousePointer2, fr.tools.select, 'V')] },
     {
@@ -132,6 +135,16 @@ function toolGroups(isPlan: boolean): ToolGroup[] {
           : []),
       ],
     },
+    // Commentaires (M16) : avec un compte connecté seulement.
+    ...(canComment
+      ? [
+          {
+            id: 'comment',
+            label: fr.tools.groups.comment,
+            entries: [tool('comment', MessageSquare, fr.tools.comment, 'C')],
+          },
+        ]
+      : []),
   ]
   return groups.filter((group) => isPlan || !group.planOnly)
 }
@@ -174,7 +187,8 @@ export default function Toolbar() {
     }
   }, [openGroup])
 
-  const groups = toolGroups(isPlan)
+  const signedIn = useAuthStore((state) => state.user !== null)
+  const groups = toolGroups(isPlan, signedIn && commentsAvailable())
 
   const run = (group: ToolGroup, entry: ToolEntry) => {
     setLastByGroup((previous) => ({ ...previous, [group.id]: entry.id }))

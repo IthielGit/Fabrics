@@ -35,7 +35,8 @@ export default function ToolHint() {
     tool === 'furniture' ||
     tool === 'door' ||
     tool === 'window' ||
-    tool === 'calibrate'
+    tool === 'calibrate' ||
+    tool === 'comment'
   ) {
     hint = fr.hints[tool]
   }

@@ -271,7 +271,9 @@ export const fr = {
       annotate: 'Cotation',
       draw: 'Dessin et texte',
       image: 'Image',
+      comment: 'Commentaire',
     },
+    comment: 'Commenter',
     moreInGroup: (group: string) => `Autres outils : ${group}`,
     select: 'Sélection',
     rect: 'Rectangle',
@@ -933,6 +935,7 @@ export const fr = {
         title: 'Sélection',
         rows: [
           { action: 'Outil sélection', keys: 'V' },
+          { action: 'Commenter (avec un compte)', keys: 'C' },
           { action: 'Tout sélectionner', keys: 'Ctrl + A' },
           { action: 'Désélectionner, ou quitter l’outil', keys: 'Échap' },
           { action: 'Supprimer', keys: 'Suppr' },
@@ -1106,6 +1109,7 @@ export const fr = {
   hints: {
     tipsShow: 'Astuces',
     tipsHide: 'Masquer les astuces',
+    comment: { main: 'Cliquez sur un élément ou sur le plan pour poser un commentaire', tips: ['Sur un élément, l’épingle le suit s’il bouge', 'Entrée : envoyer · Maj + Entrée : retour à la ligne', 'Échap : annuler'] },
     furniture: { main: 'Cliquez sur le plan pour poser l’objet', tips: ['Autant de fois que voulu', 'Échap : quitter'] },
     wall: { main: 'Clic : poser un point du mur · double-clic ou Entrée : terminer', tips: ['Sur un mur existant : raccord', 'Maj : angles de 45°', 'Alt : sans alignement', 'Échap : annuler'] },
     room: { main: 'Clic : poser un coin · double-clic ou clic sur le 1er point : fermer', tips: ['Maj + survol : remplir une zone fermée par des murs', 'Maj (en traçant) : angles de 45°', 'Alt : sans alignement', 'Entrée : fermer', 'Échap : annuler'] },
@@ -1173,6 +1177,24 @@ export const fr = {
     layers: 'Calques',
     measurements: 'Métrés',
     history: 'Historique',
+  },
+  comments: {
+    composerLabel: 'Nouveau commentaire',
+    textLabel: 'Texte du commentaire',
+    placeholder: 'Écrivez votre commentaire…',
+    onElement: (name: string) => `Sur : ${name}`,
+    send: 'Envoyer',
+    sendError: 'Le commentaire n’a pas pu être envoyé. Vérifiez votre connexion et réessayez.',
+    keysHint: 'Entrée : envoyer · Maj + Entrée : retour à la ligne · Échap : annuler',
+    counter: (count: number, max: number) => `${count} / ${max}`,
+    tooltip: (author: string, body: string, replies: number, resolved: boolean, orphaned: boolean) => {
+      const notes = [
+        replies > 0 ? `${replies} réponse${replies > 1 ? 's' : ''}` : '',
+        resolved ? 'résolu' : '',
+        orphaned ? 'élément supprimé' : '',
+      ].filter(Boolean)
+      return `${author} : ${body}${notes.length > 0 ? `\n(${notes.join(' · ')})` : ''}`
+    },
   },
   history: {
     title: 'Historique des versions',
@@ -1426,6 +1448,14 @@ export const fr = {
     annotations: 'Flèche du nord et repère de niveau',
     annotationsHint: 'Dessine la rose des vents (nord) et le repère du niveau à droite du plan ; ils sont repris dans les PDF, les images et les DXF.',
     unitDegrees: '°',
+  },
+  liveMetres: {
+    label: 'Métrés du niveau affiché',
+    rooms: 'Pièces',
+    area: 'Surface',
+    walls: 'Murs',
+    open: 'Métrés',
+    openTitle: 'Ouvrir le détail des métrés',
   },
   compass: {
     label: 'Boussole : direction du nord',

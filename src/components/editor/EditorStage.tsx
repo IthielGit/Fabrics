@@ -65,7 +65,11 @@ import {
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
 import ChangesLayer from './ChangesLayer'
+import CommentComposerOverlay from './CommentComposerOverlay'
+import CommentPinsLayer, { COMMENT_PIN_NAME } from './CommentPinsLayer'
 import PresenceLayer from './PresenceLayer'
+import { commentTargetAt } from '../../features/comments/commentTarget'
+import { useCommentsStore } from '../../stores/commentsStore'
 import { useCollabStore } from '../../stores/collabStore'
 import { useCalibrationTool } from './useCalibrationTool'
 import { useContainerSize } from './useContainerSize'
@@ -85,6 +89,9 @@ Konva.dragButtons = [0]
 /** Opacité du niveau de référence (le niveau du dessous), affiché en transparence. */
 const REFERENCE_OPACITY = 0.3
 /** En dessous de cette taille (px écran), un tracé ou une sélection est un simple clic. */
+/** Marge de visée (pixels écran) de l'outil « Commenter » autour des éléments fins. */
+const COMMENT_HIT_TOLERANCE_PX = 8
+
 const MIN_DRAG_PX = 4
 /** Distance d'accroche d'un objet posé sur les murs et éléments voisins, en pixels écran. */
 const PLACEMENT_SNAP_PX = 8
@@ -124,6 +131,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
   const commitTextEdit = useEditorStore((state) => state.commitTextEdit)
   const stopEditingText = useEditorStore((state) => state.stopEditingText)
   const elementHandlers = useElementInteractions()
+  const commentPeople = useCommentsStore((state) => state.people)
   // Éléments du niveau actif : ce que l'on voit net, sélectionne et modifie.
   const activeElements = useEditorStore(selectActiveElements)
   const activeLevelId = useEditorStore((state) => state.activeLevelId)
@@ -207,6 +215,11 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
       fitContent()
     }
   }, [size, projectId, setViewportSize, fitContent])
+
+  // Quitter l'outil « Commenter » ferme la bulle de saisie en cours (M16).
+  useEffect(() => {
+    if (activeTool !== 'comment') useCommentsStore.getState().closeDraft()
+  }, [activeTool])
 
   // Espace + glisser = déplacer la vue. Échap annule un tracé en cours.
   useEffect(() => {
@@ -404,6 +417,16 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
       cutTool.onPointerDown(event)
     } else if (openingKind) {
       openingTool.onPointerDown(event)
+    } else if (activeTool === 'comment') {
+      // Outil « Commenter » (M16) : un clic sur l'épingle d'un commentaire n'en pose pas un autre dessus.
+      if (event.target.findAncestor(`.${COMMENT_PIN_NAME}`, true)) return
+      const target = commentTargetAt(elements, point.x, point.y, COMMENT_HIT_TOLERANCE_PX / scale)
+      useCommentsStore.getState().openDraft({
+        elementId: target.elementId,
+        levelId: activeLevelId,
+        x: target.x,
+        y: target.y,
+      })
     } else if (activeTool === 'furniture') {
       placeFurniture(point)
     } else if (activeTool === 'stair') {
@@ -739,7 +762,15 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
             <ChangesLayer elements={elements} activeLevelId={activeLevelId} scale={scale} />
             <PresenceLayer elements={elements} activeLevelId={activeLevelId} scale={scale} />
           </Layer>
+          {!readOnly && (
+            <Layer>
+              <CommentPinsLayer elements={project.document.elements} activeLevelId={activeLevelId} scale={scale} people={commentPeople} />
+            </Layer>
+          )}
         </Stage>
+      )}
+      {!readOnly && activeTool === 'comment' && (
+        <CommentComposerOverlay scale={scale} stagePosition={stagePosition} size={size} />
       )}
       {calibration.state.pending && (
         <CalibrateDialog onConfirm={calibration.confirm} onCancel={calibration.cancel} />
