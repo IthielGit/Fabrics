@@ -1639,7 +1639,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Problème : connecté à un compte, un clic sur « Dessiner un plan », « Maison R+1 » ou « Maison R+3 » enchaînait quatre allers-retours avec le serveur, l'un après l'autre : enregistrer le projet, relire toute la liste, demander son rôle, puis retélécharger le projet complet. La création du plan elle-même ne prend que quelques millisecondes.
 - Correctif : seul l'enregistrement est attendu. La liste se relit en arrière-plan ; le projet créé passe directement à l'éditeur (`src/features/persistence/justCreated.ts`), sans demander le rôle (on est propriétaire) ni le relire.
 - Le bouton cliqué affiche une roue pendant l'enregistrement, et les autres sont désactivés : plus de double création par double clic.
-- Build, lint, 2951 tests OK.
+- Build, lint, 2951 tests OK. **Validé par l'utilisateur sur la version déployée le 2026-11-15.**
 
 ## Idées (hors jalon en cours)
 
