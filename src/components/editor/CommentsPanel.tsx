@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { MessageSquare } from 'lucide-react'
+import { MessageSquare, Plus } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { colorForUser } from '../../features/collab/presence'
 import {
@@ -14,6 +14,7 @@ import {
 import { fr } from '../../i18n/fr'
 import { useCommentsStore } from '../../stores/commentsStore'
 import { useEditorStore } from '../../stores/editorStore'
+import Button from '../ui/Button'
 import CommentThreadView from './CommentThreadView'
 import { focusThread } from './focusThread'
 
@@ -30,6 +31,8 @@ export default function CommentsPanel() {
   const selectedThreadId = useCommentsStore((state) => state.selectedThreadId)
   const selectThread = useCommentsStore((state) => state.selectThread)
   const levels = useEditorStore((state) => state.project?.document.levels)
+  const activeTool = useEditorStore((state) => state.activeTool)
+  const setTool = useEditorStore((state) => state.setTool)
   const [filter, setFilter] = useState<ThreadFilter>('open')
 
   const threads = useMemo(() => buildThreads(comments), [comments])
@@ -44,8 +47,23 @@ export default function CommentsPanel() {
 
   return (
     <section aria-label={fr.comments.panelTitle} className="p-4">
-      <h2 className="text-sm font-semibold text-slate-900">{fr.comments.panelTitle}</h2>
-      <p className="mt-1 text-xs text-slate-600">{fr.comments.panelIntro}</p>
+      <div className="flex items-center justify-between gap-2">
+        <h2 className="text-sm font-semibold text-slate-900">{fr.comments.panelTitle}</h2>
+        {/* L'outil « Commenter » se lance ici (ou avec C), et plus depuis la colonne d'outils. */}
+        <Button
+          variant="primary"
+          onClick={() => setTool('comment')}
+          aria-pressed={activeTool === 'comment'}
+          title={`${fr.comments.newTitle} (C)`}
+          className="h-8 rounded-lg px-2.5 py-0 text-xs"
+        >
+          <Plus size={14} aria-hidden="true" />
+          {fr.comments.newButton}
+        </Button>
+      </div>
+      <p className="mt-1 text-xs text-slate-600">
+        {activeTool === 'comment' ? fr.comments.placing : fr.comments.panelIntro}
+      </p>
 
       <div role="group" aria-label={fr.comments.filterLabel} className="mt-3 flex rounded-md border border-slate-300 p-0.5">
         {FILTERS.map((value) => (

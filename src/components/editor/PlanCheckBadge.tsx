@@ -28,7 +28,7 @@ export default function PlanCheckBadge() {
       type="button"
       onClick={() => setSidePanelTab('measurements')}
       title={fr.planCheck.hint}
-      className="flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2.5 py-1 text-xs font-medium text-amber-900 hover:bg-amber-100"
+      className="flex h-7 shrink-0 items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2.5 text-xs font-medium text-amber-900 transition-colors duration-150 ease-out hover:bg-amber-100 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-amber-600"
     >
       <AlertTriangle size={13} aria-hidden="true" />
       {fr.planCheck.badge(count)}
