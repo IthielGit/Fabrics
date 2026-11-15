@@ -1177,6 +1177,48 @@ export const fr = {
   history: {
     title: 'Historique des versions',
     intro: 'Une version est gardée automatiquement pendant que vous travaillez. Nommez les étapes importantes pour les retrouver.',
+    introReader: 'Les versions sont gardées automatiquement pendant que le plan est modifié. Cliquez une version pour l’afficher.',
+    open: 'Afficher cette version',
+    preview: {
+      label: 'Aperçu d’une version',
+      title: (name: string | null, when: string) => name ?? `Version du ${when}`,
+      when: (iso: string) => {
+        const date = new Date(iso)
+        const day = date.toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })
+        const time = date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+        return `${day} à ${time}`
+      },
+      readOnly: 'Lecture seule : rien ne peut être modifié ici.',
+      changesSince: 'Depuis la version précédente :',
+      firstVersion: 'Première version du projet.',
+      noChanges: 'Aucun élément modifié (seuls des réglages ont pu changer).',
+      added: (count: number) => `${count} ajouté${count > 1 ? 's' : ''}`,
+      modified: (count: number) => `${count} modifié${count > 1 ? 's' : ''}`,
+      removed: (count: number) => `${count} supprimé${count > 1 ? 's' : ''}`,
+      back: 'Revenir au projet',
+      notFound:
+        'Cette version n’existe plus (les versions automatiques anciennes sont regroupées) ou vous n’y avez pas accès.',
+      loadError: 'Impossible de charger cette version. Vérifiez votre connexion.',
+      tabs: { history: 'Historique', measurements: 'Métrés' },
+      panelsLabel: 'Historique et métrés',
+      togglePanel: 'Afficher ou masquer l’historique',
+      restore: 'Restaurer cette version',
+      restoreHint:
+        'Remplace le plan actuel par cette version. L’état actuel est d’abord gardé dans une version « Avant restauration », et Ctrl+Z annule.',
+      copy: 'Faire une copie',
+      copyHint: 'Crée un nouveau projet à votre nom à partir de cette version.',
+      copyName: (projectName: string, when: string) => `${projectName} (version du ${when})`,
+      copyError: 'La copie n’a pas pu être créée. Vérifiez votre connexion.',
+    },
+    restore: {
+      running: 'Restauration de la version…',
+      backupName: (label: string) => `Avant restauration de « ${label} »`.slice(0, 100),
+      done: (label: string) => `Version « ${label} » restaurée. Ctrl+Z pour annuler.`,
+      backupError:
+        'Restauration annulée : l’état actuel n’a pas pu être gardé dans l’historique. Vérifiez votre connexion et réessayez.',
+      needsConnection:
+        'Restauration annulée : la connexion au serveur temps réel est nécessaire pour restaurer une version. Réessayez dans un instant.',
+    },
     create: 'Nommer',
     nameLabel: 'Nom de la version',
     namePlaceholder: 'Ex. : Envoyé au client',

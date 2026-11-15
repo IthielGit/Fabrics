@@ -17,6 +17,7 @@ import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useCollaboration } from '../components/editor/useCollaboration'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
+import { usePendingRestore } from '../components/editor/usePendingRestore'
 import ZoomControls from '../components/editor/ZoomControls'
 import CompassWidget from '../components/editor/CompassWidget'
 import ViewsScreen from '../components/views/ViewsScreen'
@@ -81,6 +82,8 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
 
   // M14 : collaboration temps réel une fois le projet chargé (sans effet en mode local).
   useCollaboration(projectId, loadState === 'ready')
+  // M15 : restauration demandée depuis l'aperçu d'une version.
+  usePendingRestore(projectId, loadState === 'ready')
 
   if (loadState === 'loading') {
     return <p className="p-8 text-slate-500">{fr.common.loading}</p>

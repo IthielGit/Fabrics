@@ -1,5 +1,6 @@
 import clsx from 'clsx'
-import { Box, Eye, PanelsTopLeft, PencilRuler } from 'lucide-react'
+import { Box, Eye, History, PanelsTopLeft, PencilRuler } from 'lucide-react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
@@ -15,11 +16,20 @@ import ZoomControls from './ZoomControls'
 const ICON_BUTTON =
   'rounded-md p-2 text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40'
 
+interface ReadOnlyViewerProps {
+  /** Bandeau sous l'en-tête (aperçu d'une version). */
+  banner?: ReactNode
+  /** Panneau de droite (historique et métrés d'un membre) ; jamais sur le lien public. */
+  aside?: ReactNode
+}
+
 /**
  * Plan, 3D et planche d'un projet déjà chargé dans l'éditeur, sans aucun outil de modification.
- * Utilisé par la page de partage public (`/s/…`) et par un compte invité en lecture (`/p/…`).
+ * Utilisé par la page de partage public (`/s/…`), par un compte invité en lecture (`/p/…`) et par
+ * l'aperçu d'une version (`/p/…/versions/…`).
  */
-export default function ReadOnlyViewer() {
+export default function ReadOnlyViewer({ banner, aside }: ReadOnlyViewerProps = {}) {
+  const [asideOpen, setAsideOpen] = useState(true)
   const projectName = useEditorStore((state) => state.project?.name ?? '')
   const viewer3DOpen = useViewer3DStore((state) => state.open)
   const toggleViewer3D = useViewer3DStore((state) => state.toggleOpen)
@@ -60,8 +70,21 @@ export default function ReadOnlyViewer() {
             <PanelsTopLeft size={18} aria-hidden="true" />
             {fr.views.openLabel}
           </button>
+          {aside && (
+            <button
+              type="button"
+              onClick={() => setAsideOpen((value) => !value)}
+              aria-pressed={asideOpen}
+              title={fr.history.preview.togglePanel}
+              aria-label={fr.history.preview.togglePanel}
+              className={clsx(ICON_BUTTON, asideOpen && 'bg-indigo-50 text-indigo-700')}
+            >
+              <History size={18} />
+            </button>
+          )}
         </div>
       </header>
+      {banner}
       <div className="flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
           <EditorStage readOnly />
@@ -72,6 +95,7 @@ export default function ReadOnlyViewer() {
           <Notice />
         </div>
         <Viewer3DPanel />
+        {aside && asideOpen && aside}
       </div>
       <ViewsScreen />
     </div>

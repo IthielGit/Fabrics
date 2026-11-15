@@ -941,13 +941,13 @@ restauration réservée aux éditeurs et au propriétaire. Lots à valider un pa
 - [x] **Lot B — Panneau « Historique »** (2026-11-15, validé par l'utilisateur) : liste par jour, sessions repliables (versions détaillées en dessous), auteurs avec leur
       couleur, filtre « Versions nommées seulement », créer, nommer et renommer une version
       - Critère : le panneau liste les versions du lot A, en direct quand une nouvelle version apparaît
-- [ ] **Lot C — Aperçu et changements** : cliquer une version l'affiche en lecture seule (bandeau
+- [x] **Lot C — Aperçu et changements** (2026-11-15, validé par l'utilisateur) : cliquer une version l'affiche en lecture seule (bandeau
       « Restaurer · Faire une copie · Fermer »), éléments ajoutés, modifiés et supprimés mis en évidence
       depuis la version précédente, métrés de la version dans le panneau ; historique et aperçu aussi sur la
       page en lecture seule d'un membre lecteur (D73)
       - Critère : on ne peut rien modifier pendant l'aperçu ; un mur ajouté depuis la version précédente
         est mis en évidence
-- [ ] **Lot D — Restaurer et faire une copie** : restauration (éditeurs, propriétaire) précédée d'une
+- [x] **Lot D — Restaurer et faire une copie** (2026-11-15, validé par l'utilisateur) : restauration (éditeurs, propriétaire) précédée d'une
       version nommée « Avant restauration », appliquée comme une modification (annulable, partagée en
       direct) ; « Faire une copie » crée un nouveau projet à partir de la version ; essais à deux navigateurs
       - Critère : A restaure, B voit le plan restauré en direct ; Ctrl+Z chez A annule la restauration

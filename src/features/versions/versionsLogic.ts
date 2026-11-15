@@ -10,6 +10,18 @@ import { colorForUser, safeAvatarUrl } from '../collab/presence'
 
 export const MAX_VERSION_NAME = 100
 
+/** Adresse de l'aperçu d'une version (lecture seule). */
+export function versionPath(projectId: string, versionId: string): string {
+  return `/p/${encodeURIComponent(projectId)}/versions/${encodeURIComponent(versionId)}`
+}
+
+/** Version qui précède `versionId` dans le temps (pour montrer ce qui a changé), ou `null`. */
+export function previousVersionOf(versions: readonly ProjectVersion[], versionId: string): ProjectVersion | null {
+  const sorted = [...versions].sort((a, b) => time(b.savedAt) - time(a.savedAt) || time(b.startedAt) - time(a.startedAt))
+  const index = sorted.findIndex((version) => version.id === versionId)
+  return index >= 0 && index + 1 < sorted.length ? sorted[index + 1] : null
+}
+
 /** Une ligne de `project_versions`, sans le document (trop lourd pour la liste). */
 export interface VersionRow {
   id: string

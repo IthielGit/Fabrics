@@ -45,6 +45,18 @@ describe('editorStore et collaboration (M14, lot D)', () => {
     expect(state.remoteRevision).not.toBe(state.revision)
   })
 
+  it('remplacer tout le document (restauration de version) s’annule avec Ctrl+Z (M15)', () => {
+    const store = useEditorStore.getState()
+    store.addElement(wall('A'))
+    const before = useEditorStore.getState().project!.document
+    const version = { ...before, elements: [wall('V')] }
+    store.replaceDocument(version)
+    expect(useEditorStore.getState().project?.document).toBe(version)
+    expect(useEditorStore.getState().selectedIds).toEqual([])
+    useEditorStore.getState().undo()
+    expect(useEditorStore.getState().project?.document).toBe(before)
+  })
+
   it('signale le début et la fin d’un geste, même sans modification', () => {
     const store = useEditorStore.getState()
     store.beginLiveEdit()

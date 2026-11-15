@@ -64,6 +64,7 @@ import {
 } from '../../features/building/chimney'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
+import ChangesLayer from './ChangesLayer'
 import PresenceLayer from './PresenceLayer'
 import { useCollabStore } from '../../stores/collabStore'
 import { useCalibrationTool } from './useCalibrationTool'
@@ -735,6 +736,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
                 strokeWidth={1 / scale}
               />
             )}
+            <ChangesLayer elements={elements} activeLevelId={activeLevelId} scale={scale} />
             <PresenceLayer elements={elements} activeLevelId={activeLevelId} scale={scale} />
           </Layer>
         </Stage>
