@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A, B et C faits et validés ; lot D fait, à essayer à deux navigateurs) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot D · liaison Yjs et éditeur (15/11, à essayer par l'utilisateur à deux comptes)
-- **Prochaine tâche :** M14 · Lot E (présence : curseurs, sélections, avatars), sur feu vert de l'utilisateur
+- **Jalon en cours :** M14 Collaboration temps réel (lots A à D faits et validés ; lot E en attente du feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot D · liaison Yjs et éditeur (15/11, validé par l'utilisateur)
+- **Prochaine tâche :** M14 · Lot E (présence : curseurs, sélections, avatars) : **ne pas lancer sans demande explicite de l'utilisateur**
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -34,7 +34,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
-| M14 Collaboration temps réel | en cours (lots A, B et C faits et validés ; lot D fait, à essayer ; lots E et F à faire) | |
+| M14 Collaboration temps réel | en cours (lots A à D faits et validés ; lots E et F à faire) | |
 
 ## Journal
 
@@ -45,6 +45,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-15 — Correctif · « Dessiner un plan » ne faisait rien une fois connecté
+- Cause : depuis M14 lot B, la règle de lecture de `projects` (`projects_select_member`) passait uniquement par `my_project_role(id)`. Or l'enregistrement (`upsert` = `insert … on conflict do update`) doit aussi satisfaire la règle de lecture **sur la nouvelle ligne** ; à la création, `my_project_role` ne trouve pas encore le projet et renvoie null : la base refusait toute création (nouveau plan, exemples, copie). L'erreur n'était pas affichée, donc le clic semblait sans effet.
+- Fait : règle remplacée par `owner_id = auth.uid() or my_project_role(id) is not null` dans `supabase/schema.sql` (à ré-exécuter dans Supabase). Sans compte (mode local), le clic ouvrait déjà l'éditeur (vérifié dans un navigateur automatique).
+- Fichiers : `supabase/schema.sql`, `docs/PROGRESS.md`.
+- Vérification : build ✓ lint ✓ tests ✓ — essai connecté à faire par l'utilisateur après exécution du SQL.
+- Commit : fix: création de projet refusée par la règle RLS de lecture
 
 ### 2026-11-13 — Hors jalon · Échelle écrite en chiffres dans le cartouche
 
@@ -108,6 +115,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M14 · Lot D : validé
+- L'utilisateur a essayé et validé le lot D. Il demande de ne pas lancer le lot E directement : attendre sa demande.
 
 ### 2026-11-15 — M14 · Lot D : liaison Yjs et éditeur
 - Dépendances : `yjs` et `y-websocket` dans l'application (déjà prévues dans `docs/02-ARCHITECTURE.md` pour ce lot). Nouvelle variable `VITE_COLLAB_URL` (`.env.example`) ; ajoutée au `.env.local` de l'utilisateur avec l'adresse du serveur en ligne.
@@ -1448,6 +1458,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - ~~Joindre des murs (l'inverse de « Séparer les côtés »)~~ : planifié dans M11 bis, lot B (2026-11-12).
 - ~~Outil « couper ici »~~ : fait en M11 quinquies, lot A (2026-11-13).
 - ~~Recherche de projets sur l'accueil~~ (prévue dans la maquette de `docs/01-PRODUIT.md`) : planifié dans M11 bis, lot D.
+- Afficher un message sur l'accueil quand la création d'un projet échoue (aujourd'hui l'erreur est silencieuse : voir le correctif du 2026-11-15).
 - Grille et aimantation sur grille pour les Visuels (réglage en px dans le document).
 - Calcul automatique de la surface intérieure d'une pièce (déduction de l'épaisseur des murs).
 - ~~Aimantation des murs et des sommets sur ceux du niveau de référence~~ : planifié dans M11 bis, lot C (2026-11-12).

@@ -917,7 +917,7 @@ Lots à valider un par un.
       Supabase, refus des écritures d'un lecteur, déploiement (2026-11-15, en ligne sur
       `fabrics-collab.harinosy-tradeco.workers.dev`)
 - [x] **Lot D — Liaison Yjs et éditeur** : `elements` en `Y.Array` / `Y.Map`, synchronisation avec
-      `editorStore`, annuler / rétablir local (`Y.UndoManager`) (2026-11-15, à essayer à deux comptes)
+      `editorStore`, annuler / rétablir local (`Y.UndoManager`) (2026-11-15, validé par l'utilisateur)
 - [ ] **Lot E — Présence** : curseurs et sélections des autres participants (awareness), avatars en en-tête
 - [ ] **Lot F — Persistance dans Supabase** et reprise après coupure, essais à deux navigateurs
 

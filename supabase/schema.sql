@@ -480,9 +480,12 @@ $$;
 -- seul le propriétaire crée (à son nom) et supprime.
 drop policy if exists "projects_select_own" on public.projects;
 drop policy if exists "projects_select_member" on public.projects;
+-- `owner_id = auth.uid()` est indispensable : à la création, l'enregistrement (upsert = insert … on conflict
+-- do update) doit aussi passer cette règle sur la NOUVELLE ligne, alors que `my_project_role` ne la trouve pas
+-- encore dans la table (il renverrait null et la création serait refusée).
 create policy "projects_select_member" on public.projects
   for select to authenticated
-  using (public.my_project_role(id) is not null);
+  using (owner_id = auth.uid() or public.my_project_role(id) is not null);
 
 drop policy if exists "projects_update_own" on public.projects;
 drop policy if exists "projects_update_editor" on public.projects;
