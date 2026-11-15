@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A, B et C faits et validés ; lot D à lancer sur feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot C · serveur temps réel (15/11, mis en ligne par l'utilisateur et vérifié)
-- **Prochaine tâche :** M14 · Lot D (liaison Yjs et éditeur), sur feu vert de l'utilisateur
+- **Jalon en cours :** M14 Collaboration temps réel (lots A, B et C faits et validés ; lot D fait, à essayer à deux navigateurs) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot D · liaison Yjs et éditeur (15/11, à essayer par l'utilisateur à deux comptes)
+- **Prochaine tâche :** M14 · Lot E (présence : curseurs, sélections, avatars), sur feu vert de l'utilisateur
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -34,7 +34,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
-| M14 Collaboration temps réel | en cours (lots A, B et C faits et validés ; lots D à F à faire) | |
+| M14 Collaboration temps réel | en cours (lots A, B et C faits et validés ; lot D fait, à essayer ; lots E et F à faire) | |
 
 ## Journal
 
@@ -108,6 +108,15 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M14 · Lot D : liaison Yjs et éditeur
+- Dépendances : `yjs` et `y-websocket` dans l'application (déjà prévues dans `docs/02-ARCHITECTURE.md` pour ce lot). Nouvelle variable `VITE_COLLAB_URL` (`.env.example`) ; ajoutée au `.env.local` de l'utilisateur avec l'adresse du serveur en ligne.
+- Fait : `src/features/collab/yDocument.ts` (document Fabrics ↔ `Y.Doc` : `order` + `elements`, `levelOrder` + `levels`, `meta`, `page`, `plan` ; écriture des seules propriétés modifiées ; ordre réconcilié par plus longue suite croissante ; doublons ignorés si deux personnes envoient le projet en même temps ; relecture qui garde les objets non modifiés). `collabBinding.ts` : envoi de chaque modification locale, application des modifications reçues sans toucher à l'historique, attente de la fin d'un geste (glisser un mur, une poignée) avant d'envoyer ou d'appliquer, `Y.UndoManager` limité aux modifications de l'éditeur (le premier envoi du projet ne s'annule pas). Store : `liveEditing`, `applyRemoteDocument`, `setCollabHistory` (Ctrl+Z / Ctrl+Maj+Z délégués pendant la collaboration). `useCollaboration` : connexion seulement avec un compte connecté et `VITE_COLLAB_URL`, jeton dans `Sec-WebSocket-Protocol`, renouvelé à chaque rafraîchissement Supabase, reconnexion automatique (attente max. 30 s). En-tête : « Connexion… », « En direct », « Hors ligne ».
+- Règle de départ : projet inconnu du serveur → le premier éditeur l'envoie ; sinon c'est la version du serveur qui s'affiche (une modification faite pendant la toute première seconde de connexion peut alors être remplacée).
+- Limites connues : un geste en cours n'est vu par l'autre personne qu'au lâcher ; si l'un supprime un élément pendant que l'autre le glisse, l'élément revient (le dernier geste l'emporte) ; le nom du projet n'est pas partagé en direct (il est dans la table `projects`) ; les lecteurs gardent leur page sans mise à jour en direct (hors lot, choix de l'utilisateur) ; chaque éditeur continue d'enregistrer le document complet dans Supabase (lot F).
+- Fichiers : `src/features/collab/{yDocument,collabBinding,collabUrl}.ts` (+ 3 fichiers de tests), `src/components/editor/{useCollaboration.ts,CollabIndicator.tsx}`, `src/stores/collabStore.ts`, `src/stores/editorStore.ts` (+ `editorStore.collab.test.ts`), `EditorHeader.tsx`, `EditorPage.tsx`, `fr.ts`, `.env.example`, `package.json`, `docs/02-ARCHITECTURE.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2844, dont deux éditeurs simulés en mémoire : modifications croisées, propriétés différentes du même mur, Ctrl+Z limité à ses modifications, geste en cours). Non fait ici : essai réel à deux comptes contre le serveur en ligne (demande deux sessions connectées).
+- Commit : feat: liaison Yjs et éditeur (collaboration en direct)
 
 ### 2026-11-15 — M14 · Lot C : mise en ligne
 - L'utilisateur a enregistré `SUPABASE_URL` et la clé publique (`sb_publishable_…`, nouveau format Supabase, accepté tel quel) avec `wrangler secret put`, puis déployé : `https://fabrics-collab.harinosy-tradeco.workers.dev`.

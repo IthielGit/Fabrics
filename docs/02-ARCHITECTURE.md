@@ -761,3 +761,11 @@ invitation par lien (D69), annuler / rétablir limité à ses propres modificati
   actuel (documents entiers) est remplacé par celui-ci quand une session de collaboration est ouverte.
 - Un projet sans autre participant reste utilisable sans serveur temps réel : la collaboration ne doit
   jamais être obligatoire pour éditer.
+- Mise en œuvre (lot D) : `src/features/collab/` (`yDocument.ts` = conversion et différence, `collabBinding.ts`
+  = liaison, testés sans réseau) et `src/components/editor/useCollaboration.ts` (`y-websocket`, sans
+  `BroadcastChannel`). Activée seulement avec un compte connecté et `VITE_COLLAB_URL`. L'ordre est un
+  `Y.Array` d'identifiants (réconcilié en gardant la plus longue suite déjà dans l'ordre ; doublons
+  ignorés à la lecture) ; les niveaux suivent le même modèle (`levelOrder` + `levels`). Pendant un geste
+  en direct (`liveEditing`), rien n'est envoyé ni appliqué : tout part et arrive au lâcher. Premier
+  arrivé sur une salle vide : il y envoie son document (origine non annulable) ; sinon la version du
+  serveur remplace celle de l'éditeur.
