@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A à D faits et validés ; lot E en attente du feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot D · liaison Yjs et éditeur (15/11, validé par l'utilisateur)
-- **Prochaine tâche :** M14 · Lot E (présence : curseurs, sélections, avatars) : **ne pas lancer sans demande explicite de l'utilisateur**
+- **Jalon en cours :** M14 Collaboration temps réel (lots A à D faits et validés ; lot E validé ; lot F à faire) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot E · présence : curseurs, sélections, avatars (15/11, validé par l'utilisateur)
+- **Prochaine tâche :** M14 · Lot F (persistance dans Supabase et reprise après coupure) après validation du lot E : **ne pas lancer sans demande explicite de l'utilisateur**
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -34,7 +34,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
-| M14 Collaboration temps réel | en cours (lots A à D faits et validés ; lots E et F à faire) | |
+| M14 Collaboration temps réel | en cours (lots A à D faits et validés ; lot E validé ; lot F à faire) | |
 
 ## Journal
 
@@ -115,6 +115,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M14 · Lot E : présence (curseurs, sélections, avatars) — validé par l'utilisateur
+- Accord de l'utilisateur : le nom et la photo viennent du compte (Google ou autre : `full_name` / `name`, `avatar_url` / `picture`), sinon la partie de l'e-mail avant le `@` ; l'adresse e-mail complète n'est jamais partagée.
+- Fait : `src/features/collab/presence.ts` (couleur stable par compte, initiales, photo acceptée en https seulement, nettoyage et bornes de tout état reçu, liste des autres participants, un compte ouvert dans deux onglets compte une fois). `useCollaboration` publie nom, couleur, curseur, niveau affiché et sélection (au plus ~16 envois par seconde) et range les autres connexions dans `collabStore`. Canevas : `PresenceLayer` (curseur coloré avec le nom ; contour pointillé coloré autour de ce que l'autre sélectionne ; visibles seulement sur le même niveau), dans une couche non cliquable : absente des exports et de la miniature. En-tête : `PresenceAvatars` (photo ou initiales, infobulle avec le nom, « +N » au-delà de 4). Aucun changement côté serveur ni nouvelle dépendance (`provider.awareness` de `y-websocket`).
+- Limites connues : seuls les éditeurs sont connectés au temps réel (les lecteurs n'apparaissent donc pas) ; une personne qui ferme brutalement son navigateur peut rester affichée jusqu'à ~30 s ; si la photo Google ne charge pas, ses initiales s'affichent ; pas de champ « nom » modifiable dans l'application (idée).
+- Fichiers : `src/features/collab/presence.ts` (+ test), `src/components/editor/{PresenceLayer,PresenceAvatars}.tsx`, `useCollaboration.ts`, `EditorStage.tsx`, `EditorHeader.tsx`, `src/stores/collabStore.ts`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2860). Non fait ici : essai réel à deux comptes (voir « comment vérifier » ci-dessous).
 
 ### 2026-11-15 — M14 · Lot D : validé
 - L'utilisateur a essayé et validé le lot D. Il demande de ne pas lancer le lot E directement : attendre sa demande.

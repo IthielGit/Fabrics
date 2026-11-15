@@ -64,6 +64,8 @@ import {
 } from '../../features/building/chimney'
 import TextEditorOverlay from './TextEditorOverlay'
 import { setThumbnailStage } from './thumbnail'
+import PresenceLayer from './PresenceLayer'
+import { useCollabStore } from '../../stores/collabStore'
 import { useCalibrationTool } from './useCalibrationTool'
 import { useContainerSize } from './useContainerSize'
 import { useElementInteractions } from './useElementInteractions'
@@ -419,7 +421,15 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
     }
   }
 
+  /** Publie ma position aux autres participants (lot E) ; sans effet hors collaboration. */
+  const shareCursor = (event: PointerEvent | null) => {
+    if (readOnly || useCollabStore.getState().status !== 'live') return
+    const point = event ? pointerInDocument(event) : null
+    useCollabStore.getState().setLocalCursor(point ? { x: point.x, y: point.y } : null)
+  }
+
   const handlePointerMove = (event: PointerEvent) => {
+    shareCursor(event)
     if (polylineTool) polylineDrawing.onPointerMove(event)
     if (activeTool === 'calibrate') calibration.onPointerMove(event)
     if (activeTool === 'stretch') stretch.onPointerMove(event)
@@ -596,6 +606,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
           onMouseUp={handlePointerUp}
           onTouchEnd={handlePointerUp}
           onMouseLeave={(event) => {
+            shareCursor(null)
             setGhostPoint(null)
             if (activeTool === 'furniture' || activeTool === 'stair' || activeTool === 'chimney') {
               setGuides([])
@@ -724,6 +735,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
                 strokeWidth={1 / scale}
               />
             )}
+            <PresenceLayer elements={elements} activeLevelId={activeLevelId} scale={scale} />
           </Layer>
         </Stage>
       )}

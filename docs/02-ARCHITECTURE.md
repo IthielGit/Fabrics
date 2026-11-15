@@ -769,3 +769,14 @@ invitation par lien (D69), annuler / rétablir limité à ses propres modificati
   en direct (`liveEditing`), rien n'est envoyé ni appliqué : tout part et arrive au lâcher. Premier
   arrivé sur une salle vide : il y envoie son document (origine non annulable) ; sinon la version du
   serveur remplace celle de l'éditeur.
+
+### Présence (lot E)
+
+- Chaque connexion publie dans `awareness` : `user` (identifiant du compte, nom, couleur, photo https), `cursor`
+  (coordonnées du document, `null` hors canevas), `levelId` et `selection`. Nom et photo viennent des
+  métadonnées du compte Supabase (`full_name` / `name`, `avatar_url` / `picture`), sinon la partie de l'e-mail
+  avant le `@` ; **l'adresse e-mail n'est jamais envoyée**. Couleur : fonction stable de l'identifiant du compte.
+- Tout état reçu est nettoyé et borné (`parsePresence`) : couleur `#rrggbb`, photo en https, 200 éléments au
+  plus. Envoi limité à ~16 par seconde. Curseur et sélection ne s'affichent que sur le niveau que l'on regarde.
+- Affichage : couche Konva non cliquable (masquée par les exports et la miniature) et avatars dans l'en-tête.
+  Code : `src/features/collab/presence.ts`, `src/components/editor/{PresenceLayer,PresenceAvatars}.tsx`.
