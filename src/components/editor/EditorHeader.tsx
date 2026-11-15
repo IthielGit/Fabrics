@@ -12,6 +12,7 @@ import Button from '../ui/Button'
 import ExportDialog from './ExportDialog'
 import PlanCheckBadge from './PlanCheckBadge'
 import CollabIndicator from './CollabIndicator'
+import PresenceAvatars from './PresenceAvatars'
 import SaveIndicator from './SaveIndicator'
 import ShareDialog from './ShareDialog'
 
@@ -85,6 +86,7 @@ export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
 
       <SaveIndicator />
       <CollabIndicator />
+      <PresenceAvatars />
       <PlanCheckBadge />
 
       <div className="flex items-center gap-0.5 sm:ml-auto sm:gap-1">

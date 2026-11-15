@@ -918,7 +918,8 @@ Lots à valider un par un.
       `fabrics-collab.harinosy-tradeco.workers.dev`)
 - [x] **Lot D — Liaison Yjs et éditeur** : `elements` en `Y.Array` / `Y.Map`, synchronisation avec
       `editorStore`, annuler / rétablir local (`Y.UndoManager`) (2026-11-15, validé par l'utilisateur)
-- [ ] **Lot E — Présence** : curseurs et sélections des autres participants (awareness), avatars en en-tête
+- [x] **Lot E — Présence** : curseurs et sélections des autres participants (awareness), avatars en en-tête
+      (2026-11-15, validé par l'utilisateur ; nom et photo du compte)
 - [ ] **Lot F — Persistance dans Supabase** et reprise après coupure, essais à deux navigateurs
 
 ---

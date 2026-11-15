@@ -243,6 +243,12 @@ export const fr = {
     saveError: 'Erreur d’enregistrement',
     saveErrorHint: 'Les dernières modifications n’ont pas pu être enregistrées dans ce navigateur.',
   },
+  presence: {
+    anonymous: 'Quelqu’un',
+    others: 'Autres personnes sur ce plan',
+    more: (count: number) => `${count} autre${count > 1 ? 's' : ''} personne${count > 1 ? 's' : ''}`,
+    avatarLabel: (name: string) => `${name} est sur ce plan`,
+  },
   realtime: {
     status: {
       connecting: 'Connexion…',
