@@ -33,6 +33,8 @@ interface CommentsState {
   setComments: (comments: Comment[]) => void
   /** Ajoute un commentaire reçu ou créé (sans doublon). */
   addComment: (comment: Comment) => void
+  /** Ajoute ou remplace un commentaire reçu en direct. */
+  upsertComment: (comment: Comment) => void
   /** Remplace un commentaire connu (texte modifié, fil résolu…). */
   replaceComment: (comment: Comment) => void
   /** Retire un commentaire et ses réponses. */
@@ -57,6 +59,12 @@ export const useCommentsStore = create<CommentsState>((set) => ({
     set((state) =>
       state.comments.some((existing) => existing.id === comment.id)
         ? state
+        : { comments: [...state.comments, comment] },
+    ),
+  upsertComment: (comment) =>
+    set((state) =>
+      state.comments.some((existing) => existing.id === comment.id)
+        ? { comments: state.comments.map((existing) => (existing.id === comment.id ? comment : existing)) }
         : { comments: [...state.comments, comment] },
     ),
   replaceComment: (comment) =>

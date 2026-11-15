@@ -897,3 +897,16 @@ Décision D74 (voir `docs/PROGRESS.md`).
   suivent), répondre (`CommentReplyBox`). Les boutons suivent les mêmes règles que la base, qui reste le garde-fou.
   Après chaque action le store est mis à jour avec la réponse du serveur ; la relecture toutes les 30 s corrige
   le reste. Un fil supprimé par quelqu'un d'autre pendant qu'il est ouvert : retour à la liste.
+- Membres lecteurs (lot D) : la page `SharedProjectPage` (`/p/:id`, rôle lecteur) charge les commentaires
+  (`useComments`) et passe `comments` à `ReadOnlyViewer` : épingles visibles (`EditorStage showComments`), bouton
+  « Commenter » dans l'en-tête, onglet « Commentaires » (`ReadOnlySidePanel comments`, même onglet actif que
+  l'éditeur : `editorStore.sidePanelTab`), bulle de saisie, réponses, résoudre ; modifier et supprimer ses propres
+  commentaires (règles de la base). Avec l'outil actif la scène ne se glisse plus (un clic pose un commentaire) :
+  on le quitte avec le même bouton. Rien de tout cela sur le lien public `/s/…` ni dans l'aperçu d'une version.
+- En direct (lot E) : `useComments` s'abonne à Supabase Realtime (`postgres_changes`, table `project_comments`,
+  filtre `project_id`, règles d'accès de la table appliquées). Ajouts et modifications (nouveau commentaire,
+  réponse, texte modifié, fil résolu ou rouvert) arrivent chez les autres sans recharger : chaque ligne reçue
+  est vérifiée (`parseCommentRow`) puis ajoutée ou remplacée dans le store. **Les suppressions ne sont pas
+  écoutées** (Supabase n'applique pas les règles d'accès aux événements de suppression) : elles apparaissent à la
+  relecture complète. Relecture complète à chaque (re)connexion du direct (reprise après coupure) et toutes les
+  30 s (filet de sécurité). Un auteur encore inconnu déclenche la relecture des noms et photos.

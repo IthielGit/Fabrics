@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M16 Commentaires ancrés en cours (lots A, B et C validés) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M16 · Lot C · fils de discussion et panneau « Commentaires » (15/11, validé par l'utilisateur)
-- **Prochaine tâche :** M16 · Lot D (commentaires des membres lecteurs) : plan à valider par l'utilisateur avant de coder
+- **Jalon en cours :** M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M16 · Lots D et E · commentaires pour les membres lecteurs et en direct (15/11, validés par l'utilisateur) : fin de M16
+- **Prochaine tâche :** à définir avec l'utilisateur (voir « Plus tard » dans `docs/03-ROADMAP.md`) ; M16 est terminé
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -115,6 +115,27 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M16 · Lots D et E : validés (fin du jalon M16)
+- L'utilisateur a fait les essais à deux comptes et validé les lots D et E, donc le jalon M16.
+
+### 2026-11-15 — M16 · Lots D et E : lecteurs et direct (codés, à tester à la fin du jalon)
+- Choix par défaut (l'utilisateur n'a pas tranché) : sur la page d'un lecteur, les épingles sont visibles dès l'ouverture, comme chez les éditeurs.
+- Fait (D) : un membre invité en lecture voit les épingles, a l'onglet « Commentaires » (même liste et mêmes fils), un bouton « Commenter » dans l'en-tête, et peut poser un commentaire, répondre, résoudre, rouvrir, modifier et supprimer les siens. Il ne peut toujours rien modifier dans le plan. Rien sur le lien public de partage ni dans l'aperçu d'une version.
+- Fait (E) : les nouveaux commentaires, réponses, modifications et résolutions arrivent en direct chez les autres (Supabase Realtime). Relecture complète à la (re)connexion du direct et toutes les 30 s.
+- Limites connues : les suppressions n'arrivent pas en direct (au plus 30 s de retard, par la relecture) ; avec l'outil « Commenter » actif, un lecteur ne peut pas déplacer la vue en glissant (il quitte l'outil avec le bouton) ; le direct n'a pas pu être essayé sans deux comptes réels.
+- Fichiers : `src/features/comments/commentsLogic.ts` (+ test : `parseCommentRow`), `src/stores/commentsStore.ts` (`upsertComment`), `src/components/editor/{useComments,EditorStage,ReadOnlyViewer,ReadOnlySidePanel}.tsx`, `src/pages/SharedProjectPage.tsx`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2949). Non fait ici : essais dans le navigateur (deux comptes nécessaires).
+- **Essais à faire** (`npm run dev`, deux fenêtres : une normale pour A propriétaire, une privée pour B invité **en lecture**, même plan) :
+  1. *Lecteur voit* : B ouvre le plan ; il voit les épingles existantes et l'onglet « Commentaires » (ouvert par défaut), avec la même liste que A.
+  2. *Lecteur commente* : B clique « Commenter » dans l'en-tête, clique sur un mur, écrit, Entrée → l'épingle apparaît ; il revient seul à la sélection (bouton non enfoncé). B ne peut pas déplacer ni modifier le plan.
+  3. *Lecteur répond / résout* : B répond au fil de A, le résout, le rouvre. B n'a un crayon et une poubelle que sur ses propres messages.
+  4. *Direct A voit B* : pendant que B commente, A voit apparaître l'épingle et la réponse **sans recharger** (en quelques secondes). Idem pour une résolution (l'épingle s'estompe) et un texte modifié.
+  5. *Direct B voit A* : A pose un commentaire, B le voit apparaître sans recharger ; la pastille de A et le filtre « Ouverts » se mettent à jour.
+  6. *Suppression* : A supprime un commentaire ; chez B il disparaît au plus tard après 30 s.
+  7. *Coupure* : B coupe le réseau (F12 → Réseau → Hors connexion), A commente, B remet le réseau → le commentaire de A apparaît chez B (relecture à la reconnexion).
+  8. *Lien public* : le lien de partage public `/s/…` n'affiche ni épingle, ni onglet, ni bouton « Commenter ».
+  9. *Aperçu de version* : l'aperçu d'une version n'affiche pas de commentaires.
 
 ### 2026-11-15 — M16 · Lot C : validé
 - L'utilisateur a fait les essais et validé le lot C.

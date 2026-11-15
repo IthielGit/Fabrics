@@ -187,3 +187,46 @@ export function canDeleteComment(comment: Comment, userId: string | null, role: 
 export function canEditComment(comment: Comment, userId: string | null): boolean {
   return userId !== null && comment.authorId === userId
 }
+
+function text(value: unknown): string | null {
+  return typeof value === 'string' ? value : null
+}
+
+function finiteOrNull(value: unknown): number | null {
+  return typeof value === 'number' && Number.isFinite(value) ? value : null
+}
+
+/**
+ * Ligne reçue en direct (Supabase Realtime, M16 lot E) : vérifiée champ par champ avant d'être utilisée.
+ * Une ligne incomplète ou de mauvais type est ignorée (`null`) : la relecture régulière la remettra d'aplomb.
+ */
+export function parseCommentRow(value: unknown): CommentRow | null {
+  if (typeof value !== 'object' || value === null) return null
+  const row = value as Record<string, unknown>
+  const id = text(row.id)
+  const projectId = text(row.project_id)
+  const authorId = text(row.author_id)
+  const body = text(row.body)
+  const createdAt = text(row.created_at)
+  if (!id || !projectId || !authorId || body === null || !createdAt) return null
+  const parentId = text(row.parent_id)
+  const x = finiteOrNull(row.x)
+  const y = finiteOrNull(row.y)
+  // Un commentaire de premier niveau a toujours une position.
+  if (parentId === null && (x === null || y === null)) return null
+  return {
+    id,
+    project_id: projectId,
+    author_id: authorId,
+    parent_id: parentId,
+    level_id: text(row.level_id),
+    element_id: text(row.element_id),
+    x,
+    y,
+    body,
+    resolved_by: text(row.resolved_by),
+    resolved_at: text(row.resolved_at),
+    created_at: createdAt,
+    edited_at: text(row.edited_at),
+  }
+}

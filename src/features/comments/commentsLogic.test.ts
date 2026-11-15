@@ -10,6 +10,7 @@ import {
   levelNameOf,
   MAX_COMMENT_LENGTH,
   normalizeCommentBody,
+  parseCommentRow,
   pinPosition,
   rowToComment,
   sortByActivity,
@@ -233,5 +234,48 @@ describe('droits sur un commentaire', () => {
     expect(canDeleteComment(mine, 'bruno', 'editor')).toBe(false)
     expect(canDeleteComment(mine, null, null)).toBe(false)
     expect(canEditComment(mine, null)).toBe(false)
+  })
+})
+
+describe('parseCommentRow (événements en direct)', () => {
+  const valid = {
+    id: 'c1',
+    project_id: 'p1',
+    author_id: 'alice',
+    parent_id: null,
+    level_id: 'n1',
+    element_id: null,
+    x: 10,
+    y: 20,
+    body: 'Bonjour',
+    resolved_by: null,
+    resolved_at: null,
+    created_at: '2026-11-15T10:00:00Z',
+    edited_at: null,
+  }
+
+  it('accepte une ligne complète', () => {
+    expect(parseCommentRow(valid)).toEqual(valid)
+  })
+
+  it('accepte une réponse sans position', () => {
+    const reply = { ...valid, id: 'r1', parent_id: 'c1', x: null, y: null, level_id: null }
+    expect(parseCommentRow(reply)?.parent_id).toBe('c1')
+  })
+
+  it('refuse ce qui n’est pas un objet ou qui manque d’un champ essentiel', () => {
+    expect(parseCommentRow(null)).toBeNull()
+    expect(parseCommentRow('texte')).toBeNull()
+    expect(parseCommentRow({ ...valid, id: undefined })).toBeNull()
+    expect(parseCommentRow({ ...valid, body: 42 })).toBeNull()
+  })
+
+  it('refuse un commentaire de premier niveau sans position valide', () => {
+    expect(parseCommentRow({ ...valid, x: null })).toBeNull()
+    expect(parseCommentRow({ ...valid, y: Number.NaN })).toBeNull()
+  })
+
+  it('ignore les champs inconnus', () => {
+    expect(parseCommentRow({ ...valid, secret: 'x' })).not.toHaveProperty('secret')
   })
 })
