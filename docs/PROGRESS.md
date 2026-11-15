@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M16 Commentaires ancrés en cours (lots A et B validés) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Jalon en cours :** M16 Commentaires ancrés en cours (lots A et B validés) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M16 · Lot B · poser un commentaire sur le plan (15/11, validé par l'utilisateur)
 - **Prochaine tâche :** M16 · Lot C (fils et panneau) : plan à valider par l'utilisateur avant de coder
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
@@ -156,7 +156,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
   ```
   Attendu : 4 règles (DELETE, INSERT, SELECT, UPDATE) et `direct_actif` = true. Le vrai essai (poser un commentaire) se fera avec le lot B.
 
-### 2026-11-15 — M15 bis · Lot D : métrés en direct et onglets en rail (fin du jalon, à valider)
+### 2026-11-15 — M15 bis · Lot D : métrés en direct et onglets en rail (fin du jalon)
+- **Validé par l'utilisateur dans le navigateur : jalon M15 bis terminé.**
 - Lot C validé par l'utilisateur dans le navigateur.
 - Fait : barre « métrés en direct » en bas à droite d'un plan (pièces, surface des pièces, longueur des murs du niveau affiché, lien « Métrés › » vers l'onglet) ; recalcul différé (`useDeferredValue`) pour garder le dessin fluide. La mini-carte se pose au-dessus. Quand le plan fait moins de 768 px de large (requête de conteneur), la barre passe à gauche au-dessus de la barre d'état et la mini-carte reste en bas à droite : aucun chevauchement. Panneau de droite : onglets en colonne d'icônes à droite, nom en infobulle au survol ou au clavier ; largeur portée à 25,25rem pour garder 22rem de contenu.
 - Historique git : le code de ce lot est entré dans `main` avec le commit `7b566c9` (« M16 lot B »), parce qu'une autre session l'a committé en même temps que les commentaires, alors que le lot était encore en cours ; le contenu est identique et complet.

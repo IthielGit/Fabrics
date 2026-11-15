@@ -954,7 +954,7 @@ restauration réservée aux éditeurs et au propriétaire. Lots à valider un pa
 
 ---
 
-## M15 bis — Réorganisation de l'éditeur
+## M15 bis — Réorganisation de l'éditeur (terminé et validé le 2026-11-15)
 
 Décision du 2026-11-15 : l'utilisateur a choisi, parmi trois maquettes, une synthèse (en-tête avec
 « Exporter » en principal, rail d'outils à gauche, barre « Niveau · Cotation », barre d'état en bas à
@@ -975,7 +975,7 @@ Lots à valider un par un.
       boussole disparaît
       - Critère : − et + zooment autour du centre de l'écran ; « N 0° » ouvre la boussole au-dessus de la
         barre, qui se ferme au clic ailleurs ou avec Échap ; tourner la boussole fait tourner la flèche
-- [x] **Lot D — Métrés en direct et onglets en rail** (2026-11-15, à vérifier par l'utilisateur) : pièces,
+- [x] **Lot D — Métrés en direct et onglets en rail** (2026-11-15, validé par l'utilisateur) : pièces,
       surface, murs en bas à droite (plans seulement), mini-carte posée au-dessus sans chevauchement ;
       onglets du panneau en colonne d'icônes avec infobulle
       - Critère : dessiner une pièce de 6000 × 2000 mm affiche « Surface 12,00 m² » sans ouvrir l'onglet ;
