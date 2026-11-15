@@ -22,6 +22,7 @@ import { usePendingRestore } from '../components/editor/usePendingRestore'
 import ZoomControls from '../components/editor/ZoomControls'
 import ViewsScreen from '../components/views/ViewsScreen'
 import Viewer3DPanel from '../components/viewer3d/Viewer3DPanel'
+import { forgetCreated, peekCreated } from '../features/persistence/justCreated'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
 import { useAuthStore } from '../stores/authStore'
@@ -52,8 +53,11 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
   useEffect(() => {
     if (!projectId || !authReady) return
     let cancelled = false
-    repository
-      .get(projectId)
+    // Projet qu'on vient de créer depuis l'accueil : il est déjà en mémoire, pas besoin de le relire.
+    const justCreated = peekCreated(projectId)
+    const load = justCreated ? Promise.resolve(justCreated) : repository.get(projectId)
+    if (justCreated) forgetCreated(projectId)
+    load
       .then((project) => {
         if (cancelled) return
         if (!project) {

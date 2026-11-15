@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router'
+import { peekCreated } from '../features/persistence/justCreated'
 import { fetchMyRole } from '../features/sharing/membersApi'
 import type { ProjectRole } from '../features/sharing/membersLogic'
 import { fr } from '../i18n/fr'
@@ -28,7 +29,11 @@ export default function ProjectPage() {
   useEffect(() => {
     if (!projectId || !authReady) return
     let cancelled = false
-    fetchMyRole(projectId)
+    // Projet qu'on vient de créer : on en est le propriétaire, inutile de le demander au serveur.
+    const roleRequest: Promise<ProjectRole | null> = peekCreated(projectId)
+      ? Promise.resolve('owner')
+      : fetchMyRole(projectId)
+    roleRequest
       .then((role) => {
         if (!cancelled) setFound({ key, role })
       })

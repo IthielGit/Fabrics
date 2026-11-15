@@ -1,4 +1,4 @@
-import { ArrowRight, BookOpen, Building2, ChevronRight, PencilRuler, Ruler, Search } from 'lucide-react'
+import { ArrowRight, BookOpen, Building2, ChevronRight, Loader2, PencilRuler, Ruler, Search } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
@@ -57,20 +57,21 @@ export default function HomePage() {
 
   const closeDialog = () => setDialog(null)
 
-  const handleCreatePlan = async () => {
-    const id = await createPlan()
-    navigate(`/p/${id}`)
+  // Projet en cours de création : le bouton cliqué affiche une roue, les autres attendent (pas de double création).
+  const [opening, setOpening] = useState<string | null>(null)
+  const openNew = async (key: string, create: () => Promise<string>) => {
+    if (opening) return
+    setOpening(key)
+    try {
+      navigate(`/p/${await create()}`)
+    } catch {
+      setOpening(null)
+    }
   }
 
-  const handleCreateExample = async () => {
-    const id = await createExample()
-    navigate(`/p/${id}`)
-  }
-
-  const handleCreateLargeHouse = async () => {
-    const id = await createLargeHouse()
-    navigate(`/p/${id}`)
-  }
+  const handleCreatePlan = () => openNew('plan', createPlan)
+  const handleCreateExample = () => openNew('example', createExample)
+  const handleCreateLargeHouse = () => openNew('largeHouse', createLargeHouse)
 
   const focusRing =
     'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50'
@@ -101,7 +102,9 @@ export default function HomePage() {
           <button
             type="button"
             onClick={() => void handleCreatePlan()}
-            className={`rise group relative flex min-h-64 flex-col items-start justify-end overflow-hidden rounded-3xl bg-indigo-950 p-7 text-left shadow-xl shadow-indigo-950/20 ring-1 ring-indigo-900 transition-shadow duration-300 hover:shadow-2xl hover:shadow-indigo-950/30 lg:col-span-3 ${focusRing}`}
+            disabled={opening !== null}
+            aria-busy={opening === 'plan'}
+            className={`rise group disabled:cursor-wait relative flex min-h-64 flex-col items-start justify-end overflow-hidden rounded-3xl bg-indigo-950 p-7 text-left shadow-xl shadow-indigo-950/20 ring-1 ring-indigo-900 transition-shadow duration-300 hover:shadow-2xl hover:shadow-indigo-950/30 lg:col-span-3 ${focusRing}`}
           >
             <span
               aria-hidden="true"
@@ -126,11 +129,15 @@ export default function HomePage() {
             <Ruler size={22} className="relative text-indigo-300" aria-hidden="true" />
             <span className="relative mt-3 flex w-full items-center justify-between gap-4 text-2xl font-semibold tracking-tight text-white">
               {fr.home.cards.plan.title}
-              <ArrowRight
-                size={22}
-                aria-hidden="true"
-                className="shrink-0 text-indigo-300 transition-transform duration-300 ease-out group-hover:translate-x-1"
-              />
+              {opening === 'plan' ? (
+                <Loader2 size={22} aria-hidden="true" className="shrink-0 animate-spin text-indigo-300" />
+              ) : (
+                <ArrowRight
+                  size={22}
+                  aria-hidden="true"
+                  className="shrink-0 text-indigo-300 transition-transform duration-300 ease-out group-hover:translate-x-1"
+                />
+              )}
             </span>
             <span className="relative mt-2 max-w-sm text-base leading-relaxed text-indigo-200">
               {fr.home.cards.plan.text}
@@ -150,7 +157,9 @@ export default function HomePage() {
                   <button
                     type="button"
                     onClick={() => void onOpen()}
-                    className={`group flex w-full items-start gap-4 rounded-2xl px-4 py-4 text-left transition-colors hover:bg-indigo-50/60 ${focusRing}`}
+                    disabled={opening !== null}
+                    aria-busy={opening === key}
+                    className={`group flex disabled:cursor-wait w-full items-start gap-4 rounded-2xl px-4 py-4 text-left transition-colors hover:bg-indigo-50/60 ${focusRing}`}
                   >
                     <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-colors group-hover:bg-indigo-100">
                       <Icon size={20} aria-hidden="true" />
@@ -159,11 +168,15 @@ export default function HomePage() {
                       <span className="font-semibold text-slate-900">{card.title}</span>
                       <span className="text-sm leading-relaxed text-slate-600">{card.text}</span>
                     </span>
-                    <ChevronRight
-                      size={18}
-                      aria-hidden="true"
-                      className="mt-3 shrink-0 text-slate-300 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-indigo-500"
-                    />
+                    {opening === key ? (
+                      <Loader2 size={18} aria-hidden="true" className="mt-3 shrink-0 animate-spin text-indigo-500" />
+                    ) : (
+                      <ChevronRight
+                        size={18}
+                        aria-hidden="true"
+                        className="mt-3 shrink-0 text-slate-300 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-indigo-500"
+                      />
+                    )}
                   </button>
                 </li>
               ))}

@@ -1634,6 +1634,13 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Correctif global dans `src/index.css` (couche `base`) : main sur `button`, `[role="button"]`, `[role="tab"]`, `summary`, `select`, `label[for]` actifs ; curseur « interdit » sur les boutons désactivés. Les classes `cursor-*` existantes (ex. curseur ↔ du comparateur avant/après) restent prioritaires.
 - Build, lint, 2860 tests OK (un échec intermittent au premier passage, présent aussi sans la modification, vert au passage suivant). **Validé par l'utilisateur dans le navigateur le 2026-11-15.**
 
+### 2026-11-15 — Correctif : ouverture lente depuis « Par où commencer ? »
+
+- Problème : connecté à un compte, un clic sur « Dessiner un plan », « Maison R+1 » ou « Maison R+3 » enchaînait quatre allers-retours avec le serveur, l'un après l'autre : enregistrer le projet, relire toute la liste, demander son rôle, puis retélécharger le projet complet. La création du plan elle-même ne prend que quelques millisecondes.
+- Correctif : seul l'enregistrement est attendu. La liste se relit en arrière-plan ; le projet créé passe directement à l'éditeur (`src/features/persistence/justCreated.ts`), sans demander le rôle (on est propriétaire) ni le relire.
+- Le bouton cliqué affiche une roue pendant l'enregistrement, et les autres sont désactivés : plus de double création par double clic.
+- Build, lint, 2951 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
