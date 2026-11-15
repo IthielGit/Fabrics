@@ -1453,7 +1453,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 
 - Problème : sur l'accueil (onglets du Hero, boutons « Nouveau plan », cartes de projets…), le curseur restait une flèche. Tailwind v4 ne met plus de curseur « main » sur les boutons par défaut.
 - Correctif global dans `src/index.css` (couche `base`) : main sur `button`, `[role="button"]`, `[role="tab"]`, `summary`, `select`, `label[for]` actifs ; curseur « interdit » sur les boutons désactivés. Les classes `cursor-*` existantes (ex. curseur ↔ du comparateur avant/après) restent prioritaires.
-- Build, lint, 2860 tests OK (un échec intermittent au premier passage, présent aussi sans la modification, vert au passage suivant).
+- Build, lint, 2860 tests OK (un échec intermittent au premier passage, présent aussi sans la modification, vert au passage suivant). **Validé par l'utilisateur dans le navigateur le 2026-11-15.**
 
 ## Idées (hors jalon en cours)
 
