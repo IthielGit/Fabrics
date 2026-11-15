@@ -1,38 +1,12 @@
-import { useMemo, useState } from 'react'
-import { initialsOf, uniqueUsers, type PresenceUser } from '../../features/collab/presence'
+import { useMemo } from 'react'
+import { uniqueUsers } from '../../features/collab/presence'
 import { fr } from '../../i18n/fr'
 import { useAuthStore } from '../../stores/authStore'
 import { useCollabStore } from '../../stores/collabStore'
+import UserAvatar from '../ui/UserAvatar'
 
 /** Au-delà, les autres personnes sont regroupées dans une pastille « +N ». */
 const MAX_VISIBLE = 4
-
-function Avatar({ user }: { user: PresenceUser }) {
-  // Photo du compte si elle charge ; sinon les initiales sur la couleur de la personne.
-  const [failed, setFailed] = useState(false)
-  return (
-    <span
-      title={user.name}
-      aria-label={fr.presence.avatarLabel(user.name)}
-      role="img"
-      className="flex size-7 shrink-0 items-center justify-center overflow-hidden rounded-full text-[11px] font-semibold text-white ring-2 ring-white"
-      style={{ backgroundColor: user.color }}
-    >
-      {user.avatarUrl && !failed ? (
-        <img
-          src={user.avatarUrl}
-          alt=""
-          referrerPolicy="no-referrer"
-          draggable={false}
-          onError={() => setFailed(true)}
-          className="size-full object-cover"
-        />
-      ) : (
-        initialsOf(user.name)
-      )}
-    </span>
-  )
-}
 
 /** Avatars des autres personnes qui ont le plan ouvert (M14, lot E) ; rien si personne d'autre. */
 export default function PresenceAvatars() {
@@ -46,7 +20,13 @@ export default function PresenceAvatars() {
   return (
     <div role="group" aria-label={fr.presence.others} className="flex items-center -space-x-2">
       {visible.map((user) => (
-        <Avatar key={user.id} user={user} />
+        <UserAvatar
+          key={user.id}
+          name={user.name}
+          color={user.color}
+          avatarUrl={user.avatarUrl}
+          label={fr.presence.avatarLabel(user.name)}
+        />
       ))}
       {hidden > 0 && (
         <span

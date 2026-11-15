@@ -835,6 +835,11 @@ Décisions D71 à D73 (voir `docs/PROGRESS.md`).
 - Nettoyage (D72) à chaque nouvelle étape, sans tâche planifiée (`prune_project_versions`).
 - Code : `src/features/versions/versionsLogic.ts` (regroupement jours → sessions → étapes, testé) et
   `versionsApi.ts` (lecture, nommer, renommer, personnes ; le document lu passe par `migrateDocument`).
+- Panneau (lot B) : onglet « Historique » du panneau de droite, seulement avec un compte connecté
+  (`HistoryPanel`, `HistorySessionItem`, `VersionNameInput`, `useVersions`). Liste relue à l'ouverture,
+  toutes les 30 s et ~1,5 s après chaque enregistrement (pas de Supabase Realtime ici). « Nommer » attend
+  la fin de l'enregistrement en cours (`waitForSaved`), car la base copie l'état enregistré. Avatars
+  communs à la présence et à l'historique : `src/components/ui/UserAvatar.tsx`.
 - **Restaurer** passe par l'éditeur : version « Avant restauration », puis le document de la version est
   appliqué comme une modification normale (historique d'annulation, collaboration en direct).
 - Les commentaires (M16) ne font pas partie des versions.

@@ -1172,6 +1172,51 @@ export const fr = {
     levels: 'Niveaux',
     layers: 'Calques',
     measurements: 'Métrés',
+    history: 'Historique',
+  },
+  history: {
+    title: 'Historique des versions',
+    intro: 'Une version est gardée automatiquement pendant que vous travaillez. Nommez les étapes importantes pour les retrouver.',
+    create: 'Nommer',
+    nameLabel: 'Nom de la version',
+    namePlaceholder: 'Ex. : Envoyé au client',
+    name: 'Nommer cette version',
+    rename: 'Renommer cette version',
+    namedOnly: 'Versions nommées seulement',
+    today: 'Aujourd’hui',
+    yesterday: 'Hier',
+    day: (key: string) => {
+      const [year, month, day] = key.split('-').map(Number)
+      return new Date(year, month - 1, day).toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      })
+    },
+    time: (iso: string) => new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' }),
+    timeRange: (start: string, end: string) => {
+      const format = (iso: string) => new Date(iso).toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })
+      const from = format(start)
+      const to = format(end)
+      return from === to ? to : `${from} – ${to}`
+    },
+    showSteps: (count: number) => `Voir les ${count} étapes`,
+    hideSteps: 'Masquer les étapes',
+    authors: (names: readonly string[]) => {
+      const unique = [...new Set(names)]
+      if (unique.length <= 2) return unique.join(' et ')
+      return `${unique.slice(0, 2).join(', ')} et ${unique.length - 2} autre${unique.length > 3 ? 's' : ''}`
+    },
+    unknownAuthor: 'Participant',
+    loading: 'Chargement de l’historique…',
+    loadError: 'Impossible de charger l’historique. Vérifiez votre connexion.',
+    retry: 'Réessayer',
+    empty: 'Aucune version pour l’instant : l’historique se remplit tout seul dès que vous modifiez le projet.',
+    emptyNamed: 'Aucune version nommée pour l’instant.',
+    created: (name: string) => `Version « ${name} » créée.`,
+    createError: 'La version n’a pas pu être créée : le projet n’est peut-être pas encore enregistré. Réessayez.',
+    renameError: 'Le nom de la version n’a pas pu être enregistré.',
   },
   dimensioning: {
     label: 'Cotation',

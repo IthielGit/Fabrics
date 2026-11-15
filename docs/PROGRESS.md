@@ -4,11 +4,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot F · persistance dans Supabase et reprise après coupure (15/11, validé par l'utilisateur)
-- **Prochaine tâche :** M15 · Lot A : exécuter `supabase/schema.sql` dans Supabase et vérifier (requêtes dans le journal du 15/11) ; puis lot B (à confirmer : l'utilisateur a validé « A C D »)
+- **Jalon en cours :** M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions en cours (lots A et B validés) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M15 · Lots A et B · historique de versions : base de données et panneau (15/11, validés par l'utilisateur)
+- **Prochaine tâche :** M15 · Lot C (aperçu et changements), puis lot D (feu vert donné le 15/11)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
-- **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
+- **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
 
@@ -115,6 +115,16 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M15 · Lots A et B : validés
+- L'utilisateur a exécuté le SQL dans Supabase et validé le panneau « Historique ».
+
+### 2026-11-15 — M15 · Lot B : panneau « Historique » (codé, à vérifier)
+- Fait : onglet « Historique » dans le panneau de droite (seulement avec un compte connecté). Versions par jour (« Aujourd'hui », « Hier », puis la date), une carte par session (heures de début et de fin, nom s'il y en a un, auteurs avec photo ou initiales et couleur), « Voir les N étapes » pour déplier les étapes d'une session, case « Versions nommées seulement ». Bouton « Nommer » (copie l'état enregistré du projet, après la fin de l'enregistrement en cours), crayon pour nommer ou renommer une version (nom vidé : redevient automatique). Liste relue à l'ouverture, toutes les 30 s et juste après chaque enregistrement.
+- Avatar commun présence / historique : `src/components/ui/UserAvatar.tsx` (`PresenceAvatars` l'utilise).
+- Pas encore : cliquer une version pour l'afficher (lot C), restaurer (lot D) ; historique pour les membres lecteurs (leur page en lecture seule) : à ajouter au lot C.
+- Fichiers : `src/components/editor/{HistoryPanel,HistorySessionItem,VersionNameInput}.tsx`, `useVersions.ts`, `SidePanel.tsx`, `PresenceAvatars.tsx`, `src/components/ui/UserAvatar.tsx`, `src/stores/editorStore.ts` (onglet), `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓ (2893). Non fait ici : essai dans le navigateur (demande le SQL du lot A dans Supabase et un compte connecté).
 
 ### 2026-11-15 — M15 · Lot A : base de données de l'historique (codé, à exécuter dans Supabase)
 - Fait (`supabase/schema.sql`, section « M15 », **à ré-exécuter en entier dans Supabase**, sans risque) : table `project_versions` (une ligne = une étape de ~2 min ; `session_id` ; auteurs ; RLS lecture pour tout membre, aucune écriture directe) ; déclencheur `projects_record_version` (prolonge l'étape, ouvre une nouvelle étape ou session, verrou par projet, nettoyage D72, ne bloque jamais l'enregistrement du projet en cas d'erreur) ; fonctions `create_named_version`, `rename_version` (éditeurs et propriétaire), `project_people` (nom et photo pour tout membre, jamais l'e-mail complet).
