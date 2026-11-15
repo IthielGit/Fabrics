@@ -932,19 +932,19 @@ versions (M15) ») : fonctionnement d'un historique de tableur en ligne (session
 auteurs, versions nommées), avec une interface propre à Fabrics ; historique visible par tous les membres,
 restauration réservée aux éditeurs et au propriétaire. Lots à valider un par un.
 
-- [ ] **Lot A — Base de données** (codé le 2026-11-15 ; à exécuter dans Supabase et vérifier) : table
+- [x] **Lot A — Base de données** (2026-11-15, exécuté dans Supabase et validé par l'utilisateur) : table
       `project_versions` (RLS : membres du projet), déclencheur qui prolonge l'étape en cours (2 min) ou en
       ouvre une nouvelle (session : pause de 5 min ou 30 min de travail continu), auteurs, fonctions
       `create_named_version`, `rename_version`, `project_people`, nettoyage (D72)
       - Critère : modifier un plan pendant 2 min, attendre 5 min, le modifier encore → 2 versions dans la
         table, avec le bon auteur ; un lecteur les lit, un inconnu non
-- [ ] **Lot B — Panneau « Historique »** : liste par jour, sessions repliables (versions détaillées en
-      dessous), auteurs avec leur couleur, filtre « Versions nommées seulement », créer, nommer et renommer
-      une version
+- [x] **Lot B — Panneau « Historique »** (2026-11-15, validé par l'utilisateur) : liste par jour, sessions repliables (versions détaillées en dessous), auteurs avec leur
+      couleur, filtre « Versions nommées seulement », créer, nommer et renommer une version
       - Critère : le panneau liste les versions du lot A, en direct quand une nouvelle version apparaît
 - [ ] **Lot C — Aperçu et changements** : cliquer une version l'affiche en lecture seule (bandeau
       « Restaurer · Faire une copie · Fermer »), éléments ajoutés, modifiés et supprimés mis en évidence
-      depuis la version précédente, métrés de la version dans le panneau
+      depuis la version précédente, métrés de la version dans le panneau ; historique et aperçu aussi sur la
+      page en lecture seule d'un membre lecteur (D73)
       - Critère : on ne peut rien modifier pendant l'aperçu ; un mur ajouté depuis la version précédente
         est mis en évidence
 - [ ] **Lot D — Restaurer et faire une copie** : restauration (éditeurs, propriétaire) précédée d'une

@@ -1,9 +1,12 @@
 import clsx from 'clsx'
-import { BookOpen, Building2, Calculator, Layers, SlidersHorizontal, X, type LucideIcon } from 'lucide-react'
+import { BookOpen, Building2, Calculator, History, Layers, SlidersHorizontal, X, type LucideIcon } from 'lucide-react'
 import { useEffect, useRef } from 'react'
 import LibraryPanel from '../library/LibraryPanel'
+import { versionsAvailable } from '../../features/versions/versionsApi'
 import { fr } from '../../i18n/fr'
+import { useAuthStore } from '../../stores/authStore'
 import { useEditorStore, type SidePanelTab } from '../../stores/editorStore'
+import HistoryPanel from './HistoryPanel'
 import LayersPanel from './LayersPanel'
 import LevelsPanel from './LevelsPanel'
 import MeasurementsPanel from './MeasurementsPanel'
@@ -14,6 +17,8 @@ interface TabDefinition {
   label: string
   icon: LucideIcon
   planOnly?: boolean
+  /** Seulement avec un compte connecté (l'historique est dans Supabase). */
+  cloudOnly?: boolean
 }
 
 const TABS: TabDefinition[] = [
@@ -22,14 +27,17 @@ const TABS: TabDefinition[] = [
   { id: 'levels', label: fr.sidePanel.levels, icon: Building2, planOnly: true },
   { id: 'layers', label: fr.sidePanel.layers, icon: Layers },
   { id: 'measurements', label: fr.sidePanel.measurements, icon: Calculator, planOnly: true },
+  { id: 'history', label: fr.sidePanel.history, icon: History, cloudOnly: true },
 ]
 
 /**
- * Panneau de droite, rangé en onglets : Propriétés, Bibliothèque, Niveaux (plan), Calques, Métrés.
+ * Panneau de droite, rangé en onglets : Propriétés, Bibliothèque, Niveaux (plan), Calques, Métrés,
+ * Historique (avec un compte).
  * Un seul contenu à la fois, au lieu de tous les panneaux empilés.
  */
 export default function SidePanel() {
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
+  const projectId = useEditorStore((state) => state.project?.id)
   const tab = useEditorStore((state) => state.sidePanelTab)
   const setTab = useEditorStore((state) => state.setSidePanelTab)
   const selectedIds = useEditorStore((state) => state.selectedIds)
@@ -37,7 +45,9 @@ export default function SidePanel() {
   const open = useEditorStore((state) => state.sidePanelOpen)
   const setOpen = useEditorStore((state) => state.setSidePanelOpen)
 
-  const tabs = TABS.filter((t) => isPlan || !t.planOnly)
+  const signedIn = useAuthStore((state) => state.user !== null)
+  const cloud = signedIn && versionsAvailable()
+  const tabs = TABS.filter((t) => (isPlan || !t.planOnly) && (cloud || !t.cloudOnly))
   // Un onglet du plan dans un visuel (projet ouvert ensuite) : on revient aux propriétés.
   const current = tabs.some((t) => t.id === tab) ? tab : 'properties'
 
@@ -108,6 +118,7 @@ export default function SidePanel() {
         {current === 'levels' && <LevelsPanel />}
         {current === 'layers' && <LayersPanel />}
         {current === 'measurements' && <MeasurementsPanel />}
+        {current === 'history' && <HistoryPanel key={projectId} />}
       </div>
     </aside>
     </>
