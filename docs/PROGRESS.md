@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A et B faits et validés ; lot C fait, déploiement à faire par l'utilisateur) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M14 · Lot C · serveur temps réel (13/11, essai local complet OK ; mise en ligne Cloudflare à faire par l'utilisateur)
-- **Prochaine tâche :** validation du lot C (déploiement), puis M14 · Lot D (liaison Yjs et éditeur) sur feu vert
+- **Jalon en cours :** M14 Collaboration temps réel (lots A, B et C faits et validés ; lot D à lancer sur feu vert) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M14 · Lot C · serveur temps réel (15/11, mis en ligne par l'utilisateur et vérifié)
+- **Prochaine tâche :** M14 · Lot D (liaison Yjs et éditeur), sur feu vert de l'utilisateur
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -34,7 +34,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
-| M14 Collaboration temps réel | en cours (lots A et B faits et validés ; lot C fait, à déployer ; lots D à F à faire) | |
+| M14 Collaboration temps réel | en cours (lots A, B et C faits et validés ; lots D à F à faire) | |
 
 ## Journal
 
@@ -108,6 +108,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M14 · Lot C : mise en ligne
+- L'utilisateur a enregistré `SUPABASE_URL` et la clé publique (`sb_publishable_…`, nouveau format Supabase, accepté tel quel) avec `wrangler secret put`, puis déployé : `https://fabrics-collab.harinosy-tradeco.workers.dev`.
+- Vérifié en ligne : la racine répond « Fabrics — serveur temps réel » (200) ; salle sans jeton → 401 ; faux jeton → 401 (donc Supabase est bien joint et configuré) ; adresse de salle invalide → 404. Essai avec un vrai compte : au lot D, quand l'éditeur s'y connectera.
 
 ### 2026-11-13 — M14 · Lot C : serveur temps réel (Cloudflare Worker + Durable Object)
 - Dépendances acceptées par l'utilisateur : `y-protocols`, `lib0`, `wrangler` (avec `yjs`, `typescript`, `vitest`), **uniquement dans `collab-server/`** ; ajoutées au tableau de `docs/02-ARCHITECTURE.md`.
