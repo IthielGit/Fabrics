@@ -867,3 +867,14 @@ Décision D74 (voir `docs/PROGRESS.md`).
   élément supprimé → dernière position connue, mention « élément supprimé ».
 - Texte simple (jamais interprété comme HTML), 2000 caractères au plus ; réponses par `parent_id` (un niveau).
 - Direct : Supabase Realtime (`postgres_changes`) sur la table, filtré par projet, RLS appliquée.
+- Table `project_comments` (lot A) : `parent_id` nul = commentaire (avec `x`, `y` obligatoires, `level_id`,
+  `element_id` facultatif) ; réponse = ni position ni ancre (contraintes de la table) ; une réponse répond à un
+  commentaire de premier niveau du même projet (déclencheur). RLS : lecture, création : tout membre (auteur =
+  compte connecté, jamais fourni par le navigateur) ; texte : l'auteur ; suppression : l'auteur ou le
+  propriétaire (les réponses suivent, cascade) ; résoudre ou rouvrir : tout membre, par `set_comment_resolved`
+  (premier niveau seulement). Droits par colonne : seuls `body` se modifie et les colonnes d'ancrage se créent.
+  `project_people` renvoie aussi les auteurs de commentaires.
+- Code : `src/features/comments/commentsLogic.ts` (fils, numéros d'épingles stables à l'ajout, filtres,
+  `pinPosition` : l'épingle suit le centre de l'élément, ou reste à sa dernière position si l'élément a été
+  supprimé) et `commentsApi.ts` (lister, créer, répondre, modifier, supprimer, résoudre). Les numéros suivent
+  l'ordre de création : supprimer un commentaire renumérote ceux qui le suivent.

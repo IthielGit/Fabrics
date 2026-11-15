@@ -1,4 +1,4 @@
--- Fabrics — schéma Supabase (jalons M13 à M15)
+-- Fabrics — schéma Supabase (jalons M13 à M16)
 -- À exécuter une fois dans Supabase : SQL Editor → New query → coller → Run.
 -- Correspond au type `Project` de docs/02-ARCHITECTURE.md (document stocké en JSON).
 
@@ -743,7 +743,8 @@ begin
 end;
 $$;
 
--- Nom et photo des personnes d'un projet (propriétaire, membres, auteurs de versions), pour tout membre.
+-- Nom et photo des personnes d'un projet (propriétaire, membres, auteurs de versions et de commentaires),
+-- pour tout membre.
 -- Comme pour la présence (M14, lot E) : nom du compte, sinon la partie de l'e-mail avant le @ ;
 -- l'adresse complète n'est jamais renvoyée.
 create or replace function public.project_people(p_project_id uuid)
@@ -764,6 +765,8 @@ begin
       select m.user_id from public.project_members m where m.project_id = p_project_id
       union
       select unnest(v.authors) from public.project_versions v where v.project_id = p_project_id
+      union
+      select c.author_id from public.project_comments c where c.project_id = p_project_id
     )
     select u.id,
            left(coalesce(
@@ -784,3 +787,166 @@ revoke all on function public.project_people(uuid) from public, anon;
 grant execute on function public.create_named_version(uuid, text) to authenticated;
 grant execute on function public.rename_version(uuid, text) to authenticated;
 grant execute on function public.project_people(uuid) to authenticated;
+
+
+-- =========================================================
+-- M16 — Commentaires ancrés (décision D74)
+-- =========================================================
+-- Les commentaires vivent HORS du document du plan : ni exports, ni miniature, ni métrés, ni versions.
+-- Un commentaire (parent_id nul) est posé sur un élément (element_id) ou sur un point (x, y en mm), sur un
+-- niveau. Une réponse (parent_id renseigné, un seul niveau) n'a ni position ni ancre : elle suit son parent.
+-- Lecture et écriture : tout membre du projet, lecteurs compris. Texte simple, jamais interprété comme HTML.
+
+create table if not exists public.project_comments (
+  id          uuid primary key default gen_random_uuid(),
+  project_id  uuid not null references public.projects (id) on delete cascade,
+  author_id   uuid not null default auth.uid() references auth.users (id) on delete cascade,
+  parent_id   uuid references public.project_comments (id) on delete cascade,
+  level_id    text check (level_id is null or char_length(level_id) <= 100),
+  element_id  text check (element_id is null or char_length(element_id) <= 100),
+  -- Point du plan (mm) ; pour un commentaire sur un élément : dernière position connue de l'élément.
+  x           double precision check (x is null or abs(x) <= 1e9),
+  y           double precision check (y is null or abs(y) <= 1e9),
+  body        text not null check (char_length(body) between 1 and 2000),
+  resolved_by uuid references auth.users (id) on delete set null,
+  resolved_at timestamptz,
+  created_at  timestamptz not null default now(),
+  edited_at   timestamptz,
+  constraint comments_root_has_position
+    check (parent_id is not null or (x is not null and y is not null)),
+  constraint comments_reply_has_no_anchor
+    check (parent_id is null or (x is null and y is null and element_id is null and level_id is null and resolved_at is null))
+);
+
+create index if not exists project_comments_project_idx
+  on public.project_comments (project_id, created_at);
+create index if not exists project_comments_parent_idx
+  on public.project_comments (parent_id);
+
+alter table public.project_comments enable row level security;
+
+-- Lecture : tout membre du projet (lecteurs compris).
+drop policy if exists "comments_select_member" on public.project_comments;
+create policy "comments_select_member" on public.project_comments
+  for select to authenticated
+  using (public.my_project_role(project_id) is not null);
+
+-- Création : tout membre, et seulement à son propre nom.
+drop policy if exists "comments_insert_member" on public.project_comments;
+create policy "comments_insert_member" on public.project_comments
+  for insert to authenticated
+  with check (author_id = auth.uid() and public.my_project_role(project_id) is not null);
+
+-- Modification du texte : l'auteur (encore membre) seulement.
+drop policy if exists "comments_update_author" on public.project_comments;
+create policy "comments_update_author" on public.project_comments
+  for update to authenticated
+  using (author_id = auth.uid() and public.my_project_role(project_id) is not null)
+  with check (author_id = auth.uid() and public.my_project_role(project_id) is not null);
+
+-- Suppression : l'auteur (encore membre) ou le propriétaire du projet. Les réponses suivent (cascade).
+drop policy if exists "comments_delete_author_or_owner" on public.project_comments;
+create policy "comments_delete_author_or_owner" on public.project_comments
+  for delete to authenticated
+  using (
+    (author_id = auth.uid() and public.my_project_role(project_id) is not null)
+    or public.my_project_role(project_id) = 'owner'
+  );
+
+-- Droits par colonne : l'auteur est toujours le compte connecté (valeur par défaut, jamais fournie), et
+-- seul le texte se modifie directement. Résoudre passe par `set_comment_resolved`.
+revoke all on public.project_comments from anon, authenticated;
+grant select on public.project_comments to authenticated;
+grant insert (project_id, parent_id, level_id, element_id, x, y, body) on public.project_comments to authenticated;
+grant update (body) on public.project_comments to authenticated;
+grant delete on public.project_comments to authenticated;
+
+-- Une réponse répond à un commentaire de premier niveau, du même projet.
+create or replace function public.comments_check_parent()
+returns trigger
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  parent public.project_comments;
+begin
+  if new.parent_id is null then
+    return new;
+  end if;
+  select * into parent from public.project_comments where id = new.parent_id;
+  if not found or parent.project_id <> new.project_id or parent.parent_id is not null then
+    raise exception 'invalid parent comment' using errcode = '22023';
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists comments_check_parent on public.project_comments;
+create trigger comments_check_parent
+  before insert on public.project_comments
+  for each row execute function public.comments_check_parent();
+
+-- Date de modification : posée par la base quand le texte change.
+create or replace function public.comments_touch_edited()
+returns trigger
+language plpgsql
+as $$
+begin
+  if new.body is distinct from old.body then
+    new.edited_at = now();
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists comments_touch_edited on public.project_comments;
+create trigger comments_touch_edited
+  before update on public.project_comments
+  for each row execute function public.comments_touch_edited();
+
+-- Résoudre ou rouvrir un fil : tout membre, commentaires de premier niveau seulement.
+create or replace function public.set_comment_resolved(p_comment_id uuid, p_resolved boolean)
+returns void
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  target public.project_comments;
+begin
+  select * into target from public.project_comments where id = p_comment_id;
+  if not found or public.my_project_role(target.project_id) is null then
+    raise exception 'comment not found' using errcode = '42501';
+  end if;
+  if target.parent_id is not null then
+    raise exception 'only a top-level comment can be resolved' using errcode = '22023';
+  end if;
+  if p_resolved then
+    update public.project_comments
+       set resolved_by = auth.uid(), resolved_at = now()
+     where id = p_comment_id;
+  else
+    update public.project_comments
+       set resolved_by = null, resolved_at = null
+     where id = p_comment_id;
+  end if;
+end;
+$$;
+
+revoke all on function public.comments_check_parent() from public, anon, authenticated;
+revoke all on function public.set_comment_resolved(uuid, boolean) from public, anon;
+grant execute on function public.set_comment_resolved(uuid, boolean) to authenticated;
+
+-- Diffusion en direct (Supabase Realtime) : les règles de lecture ci-dessus s'appliquent aux événements.
+do $$
+begin
+  if exists (select 1 from pg_publication where pubname = 'supabase_realtime')
+     and not exists (
+       select 1 from pg_publication_tables
+        where pubname = 'supabase_realtime' and schemaname = 'public' and tablename = 'project_comments'
+     ) then
+    alter publication supabase_realtime add table public.project_comments;
+  end if;
+end;
+$$;

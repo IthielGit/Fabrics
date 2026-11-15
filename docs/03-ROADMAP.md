@@ -981,7 +981,7 @@ Lots à valider un par un.
 Décision du 2026-11-15 (D74) : tous les membres, lecteurs compris, peuvent commenter. Pas de mentions ni de
 notifications dans ce jalon. Lots à valider un par un, après M15.
 
-- [ ] **Lot A — Base de données** : table `project_comments` (projet, auteur, niveau, élément ou point,
+- [x] **Lot A — Base de données** (2026-11-15, exécuté dans Supabase et validé par l'utilisateur) : table `project_comments` (projet, auteur, niveau, élément ou point,
       texte simple ≤ 2000 caractères, commentaire parent pour les réponses, résolu par / le), RLS (lire et
       écrire : membres ; modifier ou supprimer : l'auteur ; supprimer : aussi le propriétaire ; résoudre :
       tout membre), diffusion Supabase Realtime activée sur la table
