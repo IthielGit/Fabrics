@@ -50,7 +50,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Cause : depuis M14 lot B, la règle de lecture de `projects` (`projects_select_member`) passait uniquement par `my_project_role(id)`. Or l'enregistrement (`upsert` = `insert … on conflict do update`) doit aussi satisfaire la règle de lecture **sur la nouvelle ligne** ; à la création, `my_project_role` ne trouve pas encore le projet et renvoie null : la base refusait toute création (nouveau plan, exemples, copie). L'erreur n'était pas affichée, donc le clic semblait sans effet.
 - Fait : règle remplacée par `owner_id = auth.uid() or my_project_role(id) is not null` dans `supabase/schema.sql` (à ré-exécuter dans Supabase). Sans compte (mode local), le clic ouvrait déjà l'éditeur (vérifié dans un navigateur automatique).
 - Fichiers : `supabase/schema.sql`, `docs/PROGRESS.md`.
-- Vérification : build ✓ lint ✓ tests ✓ — essai connecté à faire par l'utilisateur après exécution du SQL.
+- Vérification : build ✓ lint ✓ tests ✓ — SQL exécuté dans Supabase et création d'un plan connecté **validée par l'utilisateur le 2026-11-15**.
 - Commit : fix: création de projet refusée par la règle RLS de lecture
 
 ### 2026-11-13 — Hors jalon · Échelle écrite en chiffres dans le cartouche
