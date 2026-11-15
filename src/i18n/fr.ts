@@ -243,6 +243,19 @@ export const fr = {
     saveError: 'Erreur d’enregistrement',
     saveErrorHint: 'Les dernières modifications n’ont pas pu être enregistrées dans ce navigateur.',
   },
+  realtime: {
+    status: {
+      connecting: 'Connexion…',
+      live: 'En direct',
+      offline: 'Hors ligne',
+    },
+    hint: {
+      connecting: 'Connexion au serveur temps réel en cours.',
+      live: 'Les personnes qui ont ce plan ouvert voient vos modifications en direct. Annuler ne retire que vos propres modifications.',
+      offline:
+        'Serveur temps réel injoignable : vous pouvez continuer, vos modifications sont enregistrées et partagées dès le retour de la connexion.',
+    },
+  },
   tools: {
     label: 'Outils',
     groups: {

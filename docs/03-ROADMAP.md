@@ -916,8 +916,8 @@ Lots à valider un par un.
 - [x] **Lot C — Serveur temps réel** : Worker + Durable Object (`collab-server/`), authentification par jeton
       Supabase, refus des écritures d'un lecteur, déploiement (2026-11-15, en ligne sur
       `fabrics-collab.harinosy-tradeco.workers.dev`)
-- [ ] **Lot D — Liaison Yjs et éditeur** : `elements` en `Y.Array` / `Y.Map`, synchronisation avec
-      `editorStore`, annuler / rétablir local (`Y.UndoManager`)
+- [x] **Lot D — Liaison Yjs et éditeur** : `elements` en `Y.Array` / `Y.Map`, synchronisation avec
+      `editorStore`, annuler / rétablir local (`Y.UndoManager`) (2026-11-15, à essayer à deux comptes)
 - [ ] **Lot E — Présence** : curseurs et sélections des autres participants (awareness), avatars en en-tête
 - [ ] **Lot F — Persistance dans Supabase** et reprise après coupure, essais à deux navigateurs
 

@@ -15,6 +15,7 @@ import ToolHint from '../components/editor/ToolHint'
 import ToolModeBar from '../components/editor/ToolModeBar'
 import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
+import { useCollaboration } from '../components/editor/useCollaboration'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import ZoomControls from '../components/editor/ZoomControls'
 import CompassWidget from '../components/editor/CompassWidget'
@@ -77,6 +78,9 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
       : result?.projectId === projectId
       ? result.state
       : 'loading'
+
+  // M14 : collaboration temps réel une fois le projet chargé (sans effet en mode local).
+  useCollaboration(projectId, loadState === 'ready')
 
   if (loadState === 'loading') {
     return <p className="p-8 text-slate-500">{fr.common.loading}</p>

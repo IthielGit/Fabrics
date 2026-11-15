@@ -167,12 +167,19 @@ interface EditorState {
   /** Taille de la zone d'affichage du canevas (px), renseignée par le composant Stage. */
   viewportSize: Size
   history: History
+  /** Vrai pendant un geste en direct (entre `beginLiveEdit` et `endLiveEdit`). */
+  liveEditing: boolean
   saveStatus: SaveStatus
   /** Augmente à chaque modification du document (sert à déclencher la sauvegarde). */
   revision: number
 
   loadProject: (project: Project) => void
   closeProject: () => void
+  /**
+   * M14 : affiche un document venu de la collaboration (autre personne, annuler / rétablir
+   * partagé) sans toucher à l'historique local. La sélection ne garde que les éléments existants.
+   */
+  applyRemoteDocument: (document: FabricsDocument) => void
   setTool: (tool: EditorTool) => void
   /** Choisit un objet de la bibliothèque et active l'outil de pose (sans effet dans un visuel). */
   startPlacingFurniture: (symbolId: string) => void
@@ -374,6 +381,21 @@ export function selectSnapElements(state: {
 // Document au début d'un geste en direct (voir `beginLiveEdit`).
 let liveBase: FabricsDocument | null = null
 
+/** Annuler / rétablir d'une session de collaboration (M14, D70) : remplace l'historique local. */
+export interface CollabHistory {
+  undo: () => void
+  redo: () => void
+}
+
+let collabHistory: CollabHistory | null = null
+
+/** Branche (ou débranche, avec `null`) l'annulation limitée à ses propres modifications. */
+export function setCollabHistory(history: CollabHistory | null): void {
+  collabHistory = history
+  // L'historique local ne sert plus pendant la collaboration (et ne doit pas revenir après).
+  if (useEditorStore.getState().history !== EMPTY_HISTORY) useEditorStore.setState({ history: EMPTY_HISTORY })
+}
+
 // Dernier déplacement par les flèches (pour fusionner les appuis rapprochés).
 let lastNudge: { key: string; at: number; revision: number } | null = null
 
@@ -453,6 +475,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     stagePosition: { x: 0, y: 0 },
     viewportSize: { width: 0, height: 0 },
     history: EMPTY_HISTORY,
+    liveEditing: false,
     saveStatus: 'saved',
     revision: 0,
 
@@ -472,20 +495,37 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         zoom: 1,
         stagePosition: { x: 0, y: 0 },
         history: EMPTY_HISTORY,
+        liveEditing: false,
         saveStatus: 'saved',
         revision: 0,
       })
     },
 
-    closeProject: () =>
+    closeProject: () => {
+      liveBase = null
       set({
         project: null,
         selectedIds: [],
         editingTextId: null,
         activeLevelId: null,
         history: EMPTY_HISTORY,
+        liveEditing: false,
         revision: 0,
-      }),
+      })
+    },
+
+    applyRemoteDocument: (document) => {
+      const { project, selectedIds, editingTextId, revision } = get()
+      if (!project || project.document === document) return
+      const existing = new Set(document.elements.map((el) => el.id))
+      set({
+        project: { ...project, document },
+        selectedIds: selectedIds.filter((id) => existing.has(id)),
+        editingTextId: editingTextId !== null && existing.has(editingTextId) ? editingTextId : null,
+        activeLevelId: validActiveLevelId(document.levels, get().activeLevelId),
+        revision: revision + 1,
+      })
+    },
 
     setTool: (activeTool) => {
       // Mur, pièce, cote et calibrage n'existent pas dans un visuel.
@@ -815,6 +855,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
 
     beginLiveEdit: () => {
       liveBase = get().project?.document ?? null
+      if (liveBase) set({ liveEditing: true })
     },
 
     liveReplaceElements: (elements) => {
@@ -845,9 +886,13 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const base = liveBase
       liveBase = null
       const { project, history, revision } = get()
-      if (!base || !project || project.document === base) return
+      if (!base || !project || project.document === base) {
+        if (get().liveEditing) set({ liveEditing: false })
+        return
+      }
       set({
         history: { past: [...history.past, base].slice(-HISTORY_LIMIT), future: [] },
+        liveEditing: false,
         revision: revision + 1,
       })
     },
@@ -966,6 +1011,10 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       }),
 
     undo: () => {
+      if (collabHistory) {
+        collabHistory.undo()
+        return
+      }
       const { project, history } = get()
       if (!project || history.past.length === 0) return
       const previous = history.past[history.past.length - 1]
@@ -976,6 +1025,10 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     },
 
     redo: () => {
+      if (collabHistory) {
+        collabHistory.redo()
+        return
+      }
       const { project, history } = get()
       if (!project || history.future.length === 0) return
       const [next, ...rest] = history.future

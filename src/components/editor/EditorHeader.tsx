@@ -4,12 +4,14 @@ import { useState, type KeyboardEvent } from 'react'
 import { Link } from 'react-router'
 import { fr } from '../../i18n/fr'
 import { useAuthStore } from '../../stores/authStore'
+import { useCollabStore } from '../../stores/collabStore'
 import { useEditorStore } from '../../stores/editorStore'
 import { useViewer3DStore } from '../../stores/viewer3dStore'
 import { useViewsStore } from '../../stores/viewsStore'
 import Button from '../ui/Button'
 import ExportDialog from './ExportDialog'
 import PlanCheckBadge from './PlanCheckBadge'
+import CollabIndicator from './CollabIndicator'
 import SaveIndicator from './SaveIndicator'
 import ShareDialog from './ShareDialog'
 
@@ -23,8 +25,14 @@ interface EditorHeaderProps {
 
 export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
   const projectName = useEditorStore((state) => state.project?.name ?? '')
-  const canUndo = useEditorStore((state) => state.history.past.length > 0)
-  const canRedo = useEditorStore((state) => state.history.future.length > 0)
+  // Collaboration ouverte (M14) : annuler / rétablir ne concernent que ses propres modifications.
+  const collabActive = useCollabStore((state) => state.active)
+  const collabCanUndo = useCollabStore((state) => state.canUndo)
+  const collabCanRedo = useCollabStore((state) => state.canRedo)
+  const localCanUndo = useEditorStore((state) => state.history.past.length > 0)
+  const localCanRedo = useEditorStore((state) => state.history.future.length > 0)
+  const canUndo = collabActive ? collabCanUndo : localCanUndo
+  const canRedo = collabActive ? collabCanRedo : localCanRedo
   const renameProject = useEditorStore((state) => state.renameProject)
   const undo = useEditorStore((state) => state.undo)
   const redo = useEditorStore((state) => state.redo)
@@ -76,6 +84,7 @@ export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
       />
 
       <SaveIndicator />
+      <CollabIndicator />
       <PlanCheckBadge />
 
       <div className="flex items-center gap-0.5 sm:ml-auto sm:gap-1">
