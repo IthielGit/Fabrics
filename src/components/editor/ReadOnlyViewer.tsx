@@ -9,7 +9,7 @@ import { useViewsStore } from '../../stores/viewsStore'
 import ViewsScreen from '../views/ViewsScreen'
 import Viewer3DPanel from '../viewer3d/Viewer3DPanel'
 import EditorStage from './EditorStage'
-import LevelSelector from './LevelSelector'
+import PlanContextBar from './PlanContextBar'
 import Notice from './Notice'
 import ZoomControls from './ZoomControls'
 
@@ -89,7 +89,7 @@ export default function ReadOnlyViewer({ banner, aside }: ReadOnlyViewerProps = 
         <div className="relative min-w-0 flex-1">
           <EditorStage readOnly />
           <div className="pointer-events-none absolute left-3 right-3 top-3 z-10 flex items-start gap-2">
-            <LevelSelector />
+            <PlanContextBar readOnly />
           </div>
           <ZoomControls />
           <Notice />

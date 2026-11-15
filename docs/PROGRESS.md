@@ -116,6 +116,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
 
+### 2026-11-15 — M15 bis · Lot A : en-tête et barre « Niveau · Cotation »
+- Contexte : l'utilisateur a comparé trois maquettes de l'éditeur et retenu une synthèse ; nouveau jalon M15 bis (4 lots) ajouté avant M16.
+- Fait : en-tête réordonné (annuler / rétablir, séparateur, 3D avec libellé, Vues, Partager, **Exporter en bouton principal**). Niveau et cotation réunis dans une seule carte (`PlanContextBar`) ; le niveau devient un menu « Niveau  Rez-de-chaussée ▾ » (niveau le plus haut en premier), les interrupteurs de transparence restent dans la carte. Page en lecture seule : même carte, sans la cotation.
+- Fichiers : `PlanContextBar.tsx`, `useDismiss.ts`, `ui/menuStyles.ts` (nouveaux), `LevelSelector.tsx`, `DimensioningSelector.tsx`, `EditorHeader.tsx`, `ReadOnlyViewer.tsx`, `EditorPage.tsx`, `fr.ts`.
+- Changement d'habitude : changer de niveau demande maintenant deux clics (ouvrir le menu, choisir) au lieu d'un.
+- Vérification : build ✓ lint ✓ tests ✓ (2922). À vérifier par l'utilisateur dans le navigateur.
+
 ### 2026-11-15 — M15 · Lots C et D : validés (fin du jalon M15)
 - L'utilisateur a fait les essais et validé les lots C et D, donc le jalon M15.
 

@@ -3,8 +3,7 @@ import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EmptyPlanCard from '../components/editor/EmptyPlanCard'
 import EditorStage from '../components/editor/EditorStage'
-import DimensioningSelector from '../components/editor/DimensioningSelector'
-import LevelSelector from '../components/editor/LevelSelector'
+import PlanContextBar from '../components/editor/PlanContextBar'
 import MiniMap from '../components/editor/MiniMap'
 import ScrollBars from '../components/editor/ScrollBars'
 import PlanSignals from '../components/editor/PlanSignals'
@@ -114,8 +113,7 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
           {/* En haut du plan : ligne 1 = niveau affiché et cotation ; ligne 2 = options de l'outil en cours (seulement s'il en a). */}
           <div className="pointer-events-none absolute left-[6.5rem] right-3 top-3 z-10 sm:left-48 flex flex-col items-start gap-2">
             <div className="flex w-full flex-wrap items-start gap-2">
-              <LevelSelector />
-              <DimensioningSelector />
+              <PlanContextBar />
             </div>
             <ToolModeBar />
           </div>

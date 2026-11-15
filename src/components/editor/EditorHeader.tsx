@@ -19,6 +19,9 @@ import ShareDialog from './ShareDialog'
 const ICON_BUTTON =
   'rounded-md p-2 text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent'
 
+const TEXT_BUTTON =
+  'flex items-center gap-1.5 rounded-md px-2 py-2 text-sm text-slate-700 hover:bg-slate-100'
+
 interface EditorHeaderProps {
   /** Seul le propriétaire du projet partage et invite ; un éditeur invité n'a pas le bouton. */
   isOwner?: boolean
@@ -99,40 +102,7 @@ export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
         >
           <PanelRight size={18} />
         </button>
-        {isPlan && (
-          <button
-            type="button"
-            onClick={toggleViewer3D}
-            aria-pressed={viewer3DOpen}
-            title={viewer3DOpen ? fr.viewer3d.close : fr.viewer3d.open}
-            aria-label={viewer3DOpen ? fr.viewer3d.close : fr.viewer3d.open}
-            className={clsx(ICON_BUTTON, viewer3DOpen && 'bg-indigo-50 text-indigo-700')}
-          >
-            <Box size={18} />
-          </button>
-        )}
-        {isPlan && (
-          <button
-            type="button"
-            onClick={openViews}
-            title={fr.views.open}
-            aria-label={fr.views.open}
-            className="mr-1 flex items-center gap-1.5 rounded-md px-2 py-2 text-sm text-slate-700 hover:bg-slate-100"
-          >
-            <PanelsTopLeft size={18} aria-hidden="true" />
-            <span className="max-md:sr-only">{fr.views.openLabel}</span>
-          </button>
-        )}
-        {isOwner && signedIn && (
-          <Button onClick={() => setShareOpen(true)} className="mr-1 px-3 py-1.5">
-            <Share2 size={16} aria-hidden="true" />
-            {fr.share.open}
-          </Button>
-        )}
-        <Button onClick={() => setExportOpen(true)} className="mr-1 px-3 py-1.5 sm:mr-2" aria-label={fr.export.open}>
-          <Download size={16} aria-hidden="true" />
-          <span className="max-sm:sr-only">{fr.export.open}</span>
-        </Button>
+        {/* M15 bis : annuler / rétablir d'abord, puis les vues, puis les actions (Exporter en principal). */}
         <button
           type="button"
           onClick={undo}
@@ -153,6 +123,42 @@ export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
         >
           <Redo2 size={18} />
         </button>
+        {isPlan && <span className="mx-1 h-5 w-px bg-slate-200 max-sm:hidden" aria-hidden="true" />}
+        {isPlan && (
+          <button
+            type="button"
+            onClick={toggleViewer3D}
+            aria-pressed={viewer3DOpen}
+            title={viewer3DOpen ? fr.viewer3d.close : fr.viewer3d.open}
+            aria-label={viewer3DOpen ? fr.viewer3d.close : fr.viewer3d.open}
+            className={clsx(TEXT_BUTTON, viewer3DOpen && 'bg-indigo-50 text-indigo-700')}
+          >
+            <Box size={18} aria-hidden="true" />
+            <span className="max-md:sr-only">{fr.viewer3d.shortLabel}</span>
+          </button>
+        )}
+        {isPlan && (
+          <button
+            type="button"
+            onClick={openViews}
+            title={fr.views.open}
+            aria-label={fr.views.open}
+            className={clsx(TEXT_BUTTON, 'mr-1')}
+          >
+            <PanelsTopLeft size={18} aria-hidden="true" />
+            <span className="max-md:sr-only">{fr.views.openLabel}</span>
+          </button>
+        )}
+        {isOwner && signedIn && (
+          <Button onClick={() => setShareOpen(true)} className="mr-1 px-3 py-1.5">
+            <Share2 size={16} aria-hidden="true" />
+            <span className="max-sm:sr-only">{fr.share.open}</span>
+          </Button>
+        )}
+        <Button variant="primary" onClick={() => setExportOpen(true)} className="px-3 py-1.5" aria-label={fr.export.open}>
+          <Download size={16} aria-hidden="true" />
+          <span className="max-sm:sr-only">{fr.export.open}</span>
+        </Button>
       </div>
       {exportOpen && <ExportDialog onClose={() => setExportOpen(false)} />}
       {shareOpen && projectId && (
