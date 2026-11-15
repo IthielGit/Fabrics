@@ -156,6 +156,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
   ```
   Attendu : 4 règles (DELETE, INSERT, SELECT, UPDATE) et `direct_actif` = true. Le vrai essai (poser un commentaire) se fera avec le lot B.
 
+### 2026-11-15 — M15 bis · Lot D : métrés en direct et onglets en rail (fin du jalon, à valider)
+- Lot C validé par l'utilisateur dans le navigateur.
+- Fait : barre « métrés en direct » en bas à droite d'un plan (pièces, surface des pièces, longueur des murs du niveau affiché, lien « Métrés › » vers l'onglet) ; recalcul différé (`useDeferredValue`) pour garder le dessin fluide. La mini-carte se pose au-dessus. Quand le plan fait moins de 768 px de large (requête de conteneur), la barre passe à gauche au-dessus de la barre d'état et la mini-carte reste en bas à droite : aucun chevauchement. Panneau de droite : onglets en colonne d'icônes à droite, nom en infobulle au survol ou au clavier ; largeur portée à 25,25rem pour garder 22rem de contenu.
+- Historique git : le code de ce lot est entré dans `main` avec le commit `7b566c9` (« M16 lot B »), parce qu'une autre session l'a committé en même temps que les commentaires, alors que le lot était encore en cours ; le contenu est identique et complet.
+- Logique pure : `liveMetresSummary` (`features/measurements/liveSummary.ts`, + 3 tests).
+- Fichiers : `LiveMetresBar.tsx` (nouveau), `liveSummary.ts` et `liveSummary.test.ts` (nouveaux), `MiniMap.tsx`, `SidePanel.tsx`, `EditorPage.tsx`, `fr.ts`.
+- Vérification : build ✓ lint ✓ tests ✓ (2937 ; test de durée « 600 murs » instable au passage complet, vert seul). À vérifier par l'utilisateur dans le navigateur.
+
 ### 2026-11-15 — M15 bis · Lot C : barre d'état en bas à gauche
 - Lot B validé par l'utilisateur dans le navigateur.
 - Fait : barre d'état dans le style de la barre « Niveau · Cotation » : boutons − / + (un cran = 25 %, centré sur le milieu de l'écran), pourcentage, ajuster à l'écran, « Impression 1:50 » (plans), nord « ▲ N 0° » (flèche rouge tournée selon le nord du plan), mini-carte. La grande boussole disparaît : un clic sur « N 0° » l'ouvre en petite fenêtre au-dessus de la barre (fermée au clic ailleurs ou avec Échap, et fermée à l'ouverture d'un projet ; elle n'est plus mémorisée dans le navigateur). Page en lecture seule : nord affiché, non réglable.
