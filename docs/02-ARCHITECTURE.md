@@ -878,3 +878,13 @@ Décision D74 (voir `docs/PROGRESS.md`).
   `pinPosition` : l'épingle suit le centre de l'élément, ou reste à sa dernière position si l'élément a été
   supprimé) et `commentsApi.ts` (lister, créer, répondre, modifier, supprimer, résoudre). Les numéros suivent
   l'ordre de création : supprimer un commentaire renumérote ceux qui le suivent.
+- Poser un commentaire (lot B) : outil `comment` (touche C, famille « Commentaire » de la barre d'outils),
+  proposé seulement avec un compte connecté. Le clic est interprété par `commentTargetAt`
+  (`commentTarget.ts`) : l'élément visible du niveau affiché sous le clic (mur : proche de son axe ; autres :
+  leur emprise, avec 8 px de marge ; le plus petit gagne, un mur l'emporte sur une pièce), sinon un point
+  libre. Le commentaire est **attaché à l'élément** (D74 précisée le 2026-11-15). `commentsStore` garde les
+  commentaires, les personnes et le brouillon ; `useComments` les lit à l'ouverture et toutes les 30 s (le
+  direct arrive au lot E). Épingles : `CommentPinsLayer`, une couche Konva après la première (donc masquée par
+  les exports et la miniature) ; bulle de saisie : `CommentComposerOverlay` (HTML). Les commentaires ne passent
+  pas par l'historique d'annulation du plan. Limite : la visée d'un élément utilise sa boîte englobante
+  (sauf les murs), imprécise pour une pièce en L ou un contour en diagonale.

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EmptyPlanCard from '../components/editor/EmptyPlanCard'
+import LiveMetresBar from '../components/editor/LiveMetresBar'
 import EditorStage from '../components/editor/EditorStage'
 import PlanContextBar from '../components/editor/PlanContextBar'
 import MiniMap from '../components/editor/MiniMap'
@@ -15,6 +16,7 @@ import ToolModeBar from '../components/editor/ToolModeBar'
 import Toolbar from '../components/editor/Toolbar'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useCollaboration } from '../components/editor/useCollaboration'
+import { useComments } from '../components/editor/useComments'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import { usePendingRestore } from '../components/editor/usePendingRestore'
 import ZoomControls from '../components/editor/ZoomControls'
@@ -82,6 +84,8 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
   useCollaboration(projectId, loadState === 'ready')
   // M15 : restauration demandée depuis l'aperçu d'une version.
   usePendingRestore(projectId, loadState === 'ready')
+  // M16 : commentaires du projet (avec un compte connecté).
+  useComments(projectId, loadState === 'ready')
 
   if (loadState === 'loading') {
     return <p className="p-8 text-slate-500">{fr.common.loading}</p>
@@ -107,7 +111,8 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
       <div className="flex min-h-0 flex-1">
         {/* M15 bis : rail d'outils collé au bord gauche, hors du canevas. */}
         <Toolbar />
-        <div className="relative min-w-0 flex-1">
+        {/* @container : les barres du bas se rangent selon la largeur du plan (M15 bis, lot D). */}
+        <div className="@container relative min-w-0 flex-1">
           <EditorStage />
           <EmptyPlanCard />
           {/* En haut du plan : ligne 1 = niveau affiché et cotation ; ligne 2 = options de l'outil en cours (seulement s'il en a). */}
@@ -118,6 +123,7 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
             <ToolModeBar />
           </div>
           <ZoomControls />
+          <LiveMetresBar />
           <MiniMap />
           <ScrollBars />
           <PlanSignals />

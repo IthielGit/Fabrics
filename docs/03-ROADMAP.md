@@ -990,7 +990,7 @@ notifications dans ce jalon. Lots à valider un par un, après M15.
       texte simple ≤ 2000 caractères, commentaire parent pour les réponses, résolu par / le), RLS (lire et
       écrire : membres ; modifier ou supprimer : l'auteur ; supprimer : aussi le propriétaire ; résoudre :
       tout membre), diffusion Supabase Realtime activée sur la table
-- [ ] **Lot B — Poser un commentaire** : outil « Commenter », ancrage sur un élément (suit l'élément) ou sur
+- [x] **Lot B — Poser un commentaire** (2026-11-15, validé par l'utilisateur) : outil « Commenter », ancrage sur un élément (suit l'élément) ou sur
       un point, épingles par niveau dans une couche absente des exports et de la miniature ; « élément
       supprimé » quand l'ancre disparaît
 - [ ] **Lot C — Fils et panneau** : onglet « Commentaires » (ouverts / résolus / tous, nombre d'ouverts),

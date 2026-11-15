@@ -75,7 +75,12 @@ describe('resolveShortcut', () => {
   it('ne confond pas une lettre seule avec une commande Ctrl', () => {
     expect(resolveShortcut(key('z'))).toBeNull()
     expect(resolveShortcut(key('q'))).toBeNull()
-    expect(resolveShortcut(key('c'))).toBeNull()
+    expect(resolveShortcut(key('x'))).toBeNull()
+  })
+
+  it('C seul choisit l’outil Commenter (M16), Ctrl + C copie toujours', () => {
+    expect(resolveShortcut(key('c'))).toBe('tool-comment')
+    expect(resolveShortcut(key('c', { ctrlKey: true }))).toBe('copy')
   })
 
   it('copie, colle et sélectionne tout', () => {

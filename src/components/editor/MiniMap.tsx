@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { useMemo, useRef, type PointerEvent as ReactPointerEvent } from 'react'
 import { elementBounds } from '../../features/export/bounds'
 import type { Box } from '../../features/geometry/box'
@@ -20,7 +21,7 @@ const MAP_HEIGHT = 120
 const MAX_DRAWN_ELEMENTS = 2000
 
 /**
- * Mini-carte en bas à droite : la page, les éléments du niveau actif et un cadre qui montre la zone
+ * Mini-carte en bas à droite (au-dessus des métrés en direct sur un plan) : la page, les éléments du niveau actif et un cadre qui montre la zone
  * visible. Un clic ou un glissement déplace la vue à cet endroit.
  */
 export default function MiniMap() {
@@ -69,7 +70,12 @@ export default function MiniMap() {
 
   return (
     <div
-      className="max-md:hidden absolute right-5 bottom-5 rounded-md border border-slate-200 bg-white/95 p-1 shadow"
+      className={clsx(
+        'max-md:hidden absolute bottom-4 right-3 z-10 rounded-xl border border-slate-200 bg-white p-1',
+        'shadow-[0_1px_2px_rgb(15_23_42/0.06),0_4px_12px_-4px_rgb(15_23_42/0.10)]',
+        // M15 bis : sur un plan large, posée au-dessus de la barre des métrés en direct.
+        project.kind === 'plan' && '@3xl:bottom-[4.25rem]',
+      )}
       title={fr.editor.minimapHelp}
     >
       <svg
