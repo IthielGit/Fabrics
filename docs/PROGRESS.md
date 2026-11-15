@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M15 · Lots C et D · aperçu, restauration et copie de versions (15/11, validés par l'utilisateur) : fin de M15
-- **Prochaine tâche :** M16 · Lot A (commentaires : base de données) : plan détaillé à valider ; **ne pas lancer sans demande explicite de l'utilisateur**
+- **Jalon en cours :** M16 Commentaires ancrés en cours (lot A validé) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M16 · Lot A · base de données des commentaires (15/11, exécutée dans Supabase et validée par l'utilisateur)
+- **Prochaine tâche :** M16 · Lot B (poser un commentaire) : plan à valider par l'utilisateur avant de coder
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -115,6 +115,23 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M16 · Lot A : validé
+- L'utilisateur a exécuté le SQL dans Supabase : les 4 règles de sécurité (DELETE, INSERT, SELECT, UPDATE) sont en place et la diffusion en direct est active sur `project_comments`.
+
+### 2026-11-15 — M16 · Lot A : base de données des commentaires (codé, à exécuter dans Supabase)
+- Fait (`supabase/schema.sql`, section « M16 », **à ré-exécuter en entier dans Supabase**, sans risque) : table `project_comments` (commentaire = position obligatoire ; réponse = ni position ni ancre ; texte de 1 à 2000 caractères) ; règles de sécurité (lecture et création pour tout membre, lecteurs compris ; texte modifiable par l'auteur ; suppression par l'auteur ou le propriétaire ; l'auteur est toujours le compte connecté) ; déclencheur qui impose qu'une réponse réponde à un commentaire de premier niveau du même projet ; date de modification posée par la base ; fonction `set_comment_resolved` (tout membre) ; diffusion en direct activée sur la table. `project_people` renvoie aussi les auteurs de commentaires.
+- Fait (application) : `src/features/comments/commentsLogic.ts` (+ test, 18 cas : fils, numéros, filtres, nettoyage du texte, position des épingles, élément supprimé) et `commentsApi.ts`. Rien n'est encore visible dans l'interface (lot B).
+- Non vérifié ici : le SQL n'a pas pu être exécuté sur une vraie base (pas de PostgreSQL local) ; il est relu, à vérifier dans Supabase.
+- Fichiers : `supabase/schema.sql`, `src/features/comments/{commentsLogic,commentsLogic.test,commentsApi}.ts`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓.
+- **Vérification dans Supabase** (SQL Editor, après avoir exécuté `schema.sql`) :
+  ```sql
+  select cmd, policyname from pg_policies where tablename = 'project_comments' order by cmd;
+  select exists (select 1 from pg_publication_tables
+                 where pubname = 'supabase_realtime' and tablename = 'project_comments') as direct_actif;
+  ```
+  Attendu : 4 règles (DELETE, INSERT, SELECT, UPDATE) et `direct_actif` = true. Le vrai essai (poser un commentaire) se fera avec le lot B.
 
 ### 2026-11-15 — M15 bis · Lot A : en-tête et barre « Niveau · Cotation »
 - Contexte : l'utilisateur a comparé trois maquettes de l'éditeur et retenu une synthèse ; nouveau jalon M15 bis (4 lots) ajouté avant M16.
