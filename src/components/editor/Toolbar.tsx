@@ -2,8 +2,8 @@ import clsx from 'clsx'
 import {
   BrickWall,
   BrickWallFire,
-  ChevronRight,
   Circle,
+  CircleHelp,
   Crosshair,
   DoorOpen,
   FileInput,
@@ -28,6 +28,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { ACCEPTED_IMAGE_TYPES } from '../../features/documents/images'
 import { fr } from '../../i18n/fr'
 import { useEditorStore, type EditorTool } from '../../stores/editorStore'
+import { useHelpStore } from '../../stores/helpStore'
 import { importImageFiles } from './importImages'
 
 // Chargée à la demande : la lecture des DXF (`dxf-parser`) n'alourdit pas l'ouverture de l'éditeur.
@@ -139,13 +140,14 @@ const withShortcut = (entry: ToolEntry) =>
   entry.shortcut ? `${entry.label} (${entry.shortcut})` : entry.label
 
 /**
- * Barre d'outils à gauche du canevas, rangée par familles : Sélection, Construction, Ouvertures,
+ * Rail d'outils collé au bord gauche du canevas (M15 bis, lot B), rangé par familles : Sélection, Construction, Ouvertures,
  * Cotation, Dessin, Image (les familles du plan n'apparaissent que dans un plan).
  */
 export default function Toolbar() {
   const activeTool = useEditorStore((state) => state.activeTool)
   const setTool = useEditorStore((state) => state.setTool)
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
+  const openHelp = useHelpStore((state) => state.setOpen)
   const fileInput = useRef<HTMLInputElement>(null)
   const dxfInput = useRef<HTMLInputElement>(null)
   // Fichier DXF choisi, en attente de confirmation dans la fenêtre d'import.
@@ -191,7 +193,7 @@ export default function Toolbar() {
     <nav
       ref={navRef}
       aria-label={fr.tools.label}
-      className="absolute left-3 top-3 z-20 flex w-40 max-sm:w-auto flex-col gap-1 rounded-lg border border-slate-200 bg-white p-1 shadow"
+      className="relative z-20 flex w-16 shrink-0 flex-col items-center gap-1 border-r border-slate-200 bg-white py-2"
     >
       {groups.map((group, index) => {
         const entry = shownEntry(group)
@@ -200,61 +202,61 @@ export default function Toolbar() {
         const several = group.entries.length > 1
         const open = openGroup === group.id
         return (
-          <div key={group.id} className="relative">
+          <div key={group.id} className="flex flex-col items-center">
             {/* Séparateur entre la sélection et les familles d'outils. */}
-            {index === 1 && <hr className="mb-1 border-slate-200" />}
-            <div
+            {index === 1 && <hr className="mb-1 w-10 border-slate-200" />}
+            <div className="relative">
+            <button
+              type="button"
+              title={[withShortcut(entry), fr.tools.explain[entry.id], several ? fr.tools.moreInGroup(group.label) : null]
+                .filter(Boolean)
+                .join(' · ')}
+              aria-label={entry.label}
+              aria-pressed={entry.kind === 'tool' ? activeTool === entry.id : undefined}
+              onClick={() => {
+                // Un second clic sur l'outil déjà actif ouvre la liste de sa famille.
+                if (several && entry.kind === 'tool' && activeTool === entry.id) setOpenGroup(open ? null : group.id)
+                else run(group, entry)
+              }}
+              onContextMenu={(event) => {
+                if (!several) return
+                event.preventDefault()
+                setOpenGroup(open ? null : group.id)
+              }}
               className={clsx(
-                'flex items-stretch rounded-md',
+                'flex w-14 flex-col items-center gap-1 rounded-lg px-0.5 pb-1.5 pt-2 pointer-coarse:py-2.5',
+                'text-[10.5px] font-medium leading-tight transition-colors duration-150 ease-out',
                 active ? 'bg-indigo-600 text-white' : 'text-slate-700 hover:bg-slate-100',
               )}
             >
+              <Icon size={20} className="shrink-0" aria-hidden="true" />
+              <span className="w-full truncate text-center">{entry.short ?? entry.label}</span>
+            </button>
+            {/* Petit coin : la famille contient d'autres outils (clic, ou clic droit sur l'outil). */}
+            {several && (
               <button
                 type="button"
-                title={[withShortcut(entry), fr.tools.explain[entry.id], several ? fr.tools.moreInGroup(group.label) : null]
-                  .filter(Boolean)
-                  .join(' · ')}
-                aria-label={entry.label}
-                aria-pressed={entry.kind === 'tool' ? activeTool === entry.id : undefined}
-                onClick={() => {
-                  // Un second clic sur l'outil déjà actif ouvre la liste de sa famille.
-                  if (several && entry.kind === 'tool' && activeTool === entry.id) setOpenGroup(open ? null : group.id)
-                  else run(group, entry)
-                }}
-                onContextMenu={(event) => {
-                  if (!several) return
-                  event.preventDefault()
-                  setOpenGroup(open ? null : group.id)
-                }}
-                className="flex min-h-9 pointer-coarse:min-h-12 min-w-0 flex-1 items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm"
+                title={fr.tools.moreInGroup(group.label)}
+                aria-label={fr.tools.moreInGroup(group.label)}
+                aria-expanded={open}
+                aria-haspopup="menu"
+                onClick={() => setOpenGroup(open ? null : group.id)}
+                className={clsx(
+                  'absolute right-0.5 top-1.5 flex size-5 items-end justify-end rounded p-[3px] pointer-coarse:size-7',
+                  active ? 'text-indigo-200 hover:bg-indigo-500' : 'text-slate-400 hover:bg-slate-200 hover:text-slate-700',
+                )}
               >
-                <Icon size={20} className="shrink-0" aria-hidden="true" />
-                <span className="truncate max-sm:sr-only">{entry.short ?? entry.label}</span>
+                <span
+                  aria-hidden="true"
+                  className="block size-0 border-b-[5px] border-l-[5px] border-b-current border-l-transparent"
+                />
               </button>
-              {several && (
-                <button
-                  type="button"
-                  title={fr.tools.moreInGroup(group.label)}
-                  aria-label={fr.tools.moreInGroup(group.label)}
-                  aria-expanded={open}
-                  aria-haspopup="menu"
-                  onClick={() => setOpenGroup(open ? null : group.id)}
-                  className={clsx(
-                    'flex w-8 pointer-coarse:w-11 shrink-0 items-center justify-center rounded-md border-l',
-                    active
-                      ? 'border-indigo-400 hover:bg-indigo-500'
-                      : 'border-slate-300 text-slate-600 hover:bg-slate-200 hover:text-slate-900',
-                  )}
-                >
-                  <ChevronRight size={16} strokeWidth={2.5} aria-hidden="true" />
-                </button>
-              )}
-            </div>
+            )}
             {open && (
               <div
                 role="menu"
                 aria-label={group.label}
-                className="absolute left-full top-0 ml-2 w-64 rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
+                className="absolute left-full top-0 z-30 ml-2 w-64 rounded-lg border border-slate-200 bg-white p-1 shadow-lg"
               >
                 <p className="px-2 pb-1 pt-0.5 text-xs font-semibold uppercase tracking-wide text-slate-500">
                   {group.label}
@@ -290,9 +292,20 @@ export default function Toolbar() {
                 })}
               </div>
             )}
+            </div>
           </div>
         )
       })}
+      {/* Aide (raccourcis clavier) en bas du rail. */}
+      <button
+        type="button"
+        onClick={() => openHelp(true)}
+        title={`${fr.shortcuts.open} (?)`}
+        aria-label={fr.shortcuts.open}
+        className="mt-auto rounded-lg p-2 pointer-coarse:p-3 text-slate-500 hover:bg-slate-100 hover:text-slate-900"
+      >
+        <CircleHelp size={20} aria-hidden="true" />
+      </button>
       <input
         ref={fileInput}
         type="file"

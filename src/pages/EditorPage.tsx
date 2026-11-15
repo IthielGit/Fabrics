@@ -106,12 +106,13 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
     <div className="flex h-screen w-screen flex-col overflow-hidden">
       <EditorHeader isOwner={isOwner} />
       <div className="flex min-h-0 flex-1">
+        {/* M15 bis : rail d'outils collé au bord gauche, hors du canevas. */}
+        <Toolbar />
         <div className="relative min-w-0 flex-1">
           <EditorStage />
           <EmptyPlanCard />
-          <Toolbar />
           {/* En haut du plan : ligne 1 = niveau affiché et cotation ; ligne 2 = options de l'outil en cours (seulement s'il en a). */}
-          <div className="pointer-events-none absolute left-[6.5rem] right-3 top-3 z-10 sm:left-48 flex flex-col items-start gap-2">
+          <div className="pointer-events-none absolute left-3 right-3 top-3 z-10 flex flex-col items-start gap-2">
             <div className="flex w-full flex-wrap items-start gap-2">
               <PlanContextBar />
             </div>

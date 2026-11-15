@@ -961,13 +961,15 @@ Décision du 2026-11-15 : l'utilisateur a choisi, parmi trois maquettes, une syn
 gauche, métrés en direct, onglets du panneau en rail d'icônes). Hors roadmap initiale, placé avant M16.
 Lots à valider un par un.
 
-- [x] **Lot A — En-tête et barre « Niveau · Cotation »** (2026-11-15, à vérifier par l'utilisateur) :
+- [x] **Lot A — En-tête et barre « Niveau · Cotation »** (2026-11-15, validé par l'utilisateur) :
       annuler / rétablir avant 3D et Vues, « Exporter » en bouton principal ; niveau et cotation dans une
       seule carte, le niveau devient un menu déroulant (niveau le plus haut en premier)
       - Critère : la barre affiche « Niveau Rez-de-chaussée ▾ | Cotation Aucune ▾ » ; changer de niveau
         par le menu ; les interrupteurs de transparence restent là s'il y a plusieurs niveaux
-- [ ] **Lot B — Rail d'outils à gauche** : outils en colonne étroite (icône + libellé court), petit coin
-      pour les sous-outils, aide en bas du rail
+- [x] **Lot B — Rail d'outils à gauche** (2026-11-15, à vérifier par l'utilisateur) : outils en colonne
+      étroite (icône + libellé court), petit coin pour les sous-outils, aide en bas du rail
+      - Critère : le rail est collé au bord gauche, le plan commence à sa droite ; le petit coin ouvre la
+        liste de la famille ; le bouton « ? » en bas ouvre les raccourcis
 - [ ] **Lot C — Barre d'état** : zoom, plein écran, échelle d'impression, nord (la boussole s'ouvre au
       clic) et mini-carte réunis en bas à gauche ; la grande boussole disparaît
 - [ ] **Lot D — Métrés en direct et onglets en rail** : pièces, surface, murs en bas à droite (plans

@@ -133,6 +133,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
   ```
   Attendu : 4 règles (DELETE, INSERT, SELECT, UPDATE) et `direct_actif` = true. Le vrai essai (poser un commentaire) se fera avec le lot B.
 
+### 2026-11-15 — M15 bis · Lot B : rail d'outils à gauche
+- Lot A validé par l'utilisateur dans le navigateur.
+- Fait : la barre d'outils devient un rail de 64 px collé au bord gauche (hors du canevas, qui commence à sa droite). Chaque famille = une tuile icône + libellé court ; un petit coin en haut à droite de la tuile ouvre la liste de la famille (comme avant : second clic sur l'outil actif ou clic droit). Bouton d'aide (raccourcis) déplacé en bas du rail, retiré de la barre de zoom. La barre « Niveau · Cotation » se cale désormais à 12 px du bord du plan.
+- Fichiers : `Toolbar.tsx`, `EditorPage.tsx`, `ZoomControls.tsx`.
+- Vérification : build ✓ lint ✓ tests ✓ (2922). À vérifier par l'utilisateur dans le navigateur.
+
 ### 2026-11-15 — M15 bis · Lot A : en-tête et barre « Niveau · Cotation »
 - Contexte : l'utilisateur a comparé trois maquettes de l'éditeur et retenu une synthèse ; nouveau jalon M15 bis (4 lots) ajouté avant M16.
 - Fait : en-tête réordonné (annuler / rétablir, séparateur, 3D avec libellé, Vues, Partager, **Exporter en bouton principal**). Niveau et cotation réunis dans une seule carte (`PlanContextBar`) ; le niveau devient un menu « Niveau  Rez-de-chaussée ▾ » (niveau le plus haut en premier), les interrupteurs de transparence restent dans la carte. Page en lecture seule : même carte, sans la cotation.
