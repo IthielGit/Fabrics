@@ -1449,6 +1449,12 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Limites connues : une trémie située dans la partie basse est retirée deux fois (résultat borné à 0) ; une partie de pièce hors de toute toiture compte entière ; hauteur de 1800 mm fixe (pas de réglage par projet, non demandé).
 - Fichiers : `splitWall.ts` (+ tests), `polygonClip.ts` (nouveau), `habitableArea.ts` (nouveau, + tests), `measurements.ts`, `clientView.ts` (+ tests), `editorStore.ts`, `useCutTool.ts` et `CutPreviewLayer.tsx` (nouveaux), `EditorStage.tsx`, `Toolbar.tsx`, `ToolHint.tsx`, `fr.ts`. Build, lint, 2800 tests OK (un test a échoué une seule fois à un premier passage complet, sans qu'on ait pu l'identifier, puis trois passages complets sont revenus verts).
 
+### 2026-11-15 — Correctif : curseur « main » sur les éléments cliquables
+
+- Problème : sur l'accueil (onglets du Hero, boutons « Nouveau plan », cartes de projets…), le curseur restait une flèche. Tailwind v4 ne met plus de curseur « main » sur les boutons par défaut.
+- Correctif global dans `src/index.css` (couche `base`) : main sur `button`, `[role="button"]`, `[role="tab"]`, `summary`, `select`, `label[for]` actifs ; curseur « interdit » sur les boutons désactivés. Les classes `cursor-*` existantes (ex. curseur ↔ du comparateur avant/après) restent prioritaires.
+- Build, lint, 2860 tests OK (un échec intermittent au premier passage, présent aussi sans la modification, vert au passage suivant).
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

@@ -10,6 +10,18 @@ html {
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Tailwind v4 laisse la flèche par défaut sur les boutons : on rétablit la main
+   sur tout élément cliquable actif. En couche « base » pour que les utilitaires
+   cursor-* (ex. cursor-ew-resize) gardent la priorité. */
+@layer base {
+  :where(button, [role="button"], [role="tab"], summary, select, label[for]):not(:disabled, [aria-disabled="true"]) {
+    cursor: pointer;
+  }
+  :where(button, [role="button"], [role="tab"]):is(:disabled, [aria-disabled="true"]) {
+    cursor: not-allowed;
+  }
+}
+
 /* Anneau de focus clavier commun : visible sur fond clair comme sur fond indigo. */
 :where(button, a, input, select, textarea, [role="tab"], summary):focus-visible {
   outline: 2px solid rgb(79 70 229);
