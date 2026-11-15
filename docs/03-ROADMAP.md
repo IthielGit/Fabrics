@@ -921,8 +921,7 @@ Lots à valider un par un.
 - [x] **Lot E — Présence** : curseurs et sélections des autres participants (awareness), avatars en en-tête
       (2026-11-15, validé par l'utilisateur ; nom et photo du compte)
 - [x] **Lot F — Persistance dans Supabase** et reprise après coupure, essais à deux navigateurs
-      (2026-11-15, codé ; essais à deux navigateurs à faire par l'utilisateur à la fin du jalon, liste dans
-      `docs/PROGRESS.md`)
+      (2026-11-15, validé par l'utilisateur après les essais à deux navigateurs)
 
 ---
 
