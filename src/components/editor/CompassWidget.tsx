@@ -20,7 +20,7 @@ const CARDINALS = [
 ]
 
 /**
- * Boussole du plan, en bas à gauche du canevas, affichée à la demande (bouton de la barre d'état).
+ * Boussole du plan, en petite fenêtre au-dessus de « N 0° » dans la barre d'état (M15 bis, lot C).
  * Une seule règle : elle montre et règle l'angle du nord du plan (0° = nord en haut). On tourne
  * la rose à la souris (aimantée tous les 15°, Maj = au degré), aux flèches du clavier, ou on
  * double-clique pour remettre le nord en haut. Pendant le geste l'angle reste local : un seul
@@ -83,7 +83,8 @@ export default function CompassWidget() {
   }
 
   return (
-    <div className="absolute bottom-14 left-3 z-10 flex flex-col items-center rounded-md border border-slate-200 bg-white/95 p-1 text-slate-700 shadow">
+    <div className="absolute bottom-full left-0 z-30 mb-2 flex flex-col items-center gap-1 rounded-xl border border-slate-200 bg-white p-2 text-slate-700 shadow-lg">
+      <span className="text-xs font-medium text-slate-500">{fr.compass.label}</span>
       <svg
         ref={svgRef}
         width={SIZE}

@@ -225,3 +225,19 @@ export function fitBoxView(
     y: container.height / 2 - (box.y + height / 2) * scale,
   }
 }
+
+/** Cran des boutons − / + de la barre d'état : un clic zoome de 25 %. */
+export const BUTTON_ZOOM_STEP = 1.25
+
+/**
+ * Zoom avant (`direction` = 1) ou arrière (−1) d'un cran, centré sur le milieu de la zone visible :
+ * le point du document au centre de l'écran reste au centre.
+ */
+export function zoomStepAtCenter(view: View, container: Size, direction: 1 | -1, pxPerUnit: number): View {
+  const factor = direction === 1 ? BUTTON_ZOOM_STEP : 1 / BUTTON_ZOOM_STEP
+  const center = { x: container.width / 2, y: container.height / 2 }
+  const zoom = clampZoom(view.zoom * factor)
+  const anchor = screenToDocument(center, view, pxPerUnit)
+  const scale = zoom * pxPerUnit
+  return { zoom, x: center.x - anchor.x * scale, y: center.y - anchor.y * scale }
+}

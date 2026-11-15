@@ -133,6 +133,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
   ```
   Attendu : 4 règles (DELETE, INSERT, SELECT, UPDATE) et `direct_actif` = true. Le vrai essai (poser un commentaire) se fera avec le lot B.
 
+### 2026-11-15 — M15 bis · Lot C : barre d'état en bas à gauche
+- Lot B validé par l'utilisateur dans le navigateur.
+- Fait : barre d'état dans le style de la barre « Niveau · Cotation » : boutons − / + (un cran = 25 %, centré sur le milieu de l'écran), pourcentage, ajuster à l'écran, « Impression 1:50 » (plans), nord « ▲ N 0° » (flèche rouge tournée selon le nord du plan), mini-carte. La grande boussole disparaît : un clic sur « N 0° » l'ouvre en petite fenêtre au-dessus de la barre (fermée au clic ailleurs ou avec Échap, et fermée à l'ouverture d'un projet ; elle n'est plus mémorisée dans le navigateur). Page en lecture seule : nord affiché, non réglable.
+- Logique pure : `zoomStepAtCenter` dans `navigation.ts` (+ 3 tests dans `zoomStep.test.ts`).
+- Fichiers : `ZoomControls.tsx`, `CompassWidget.tsx`, `compassStore.ts`, `navigation.ts`, `zoomStep.test.ts`, `EditorPage.tsx`, `ReadOnlyViewer.tsx`, `fr.ts` (anciens libellés « Zoom 19 % · Impression… » et « Afficher la boussole » retirés).
+- Vérification : build ✓ lint ✓ tests ✓ (2933 ; le test de durée « 600 murs » a échoué une fois au passage complet, vert relancé seul : problème connu). À vérifier par l'utilisateur dans le navigateur.
+
 ### 2026-11-15 — M15 bis · Lot B : rail d'outils à gauche
 - Lot A validé par l'utilisateur dans le navigateur.
 - Fait : la barre d'outils devient un rail de 64 px collé au bord gauche (hors du canevas, qui commence à sa droite). Chaque famille = une tuile icône + libellé court ; un petit coin en haut à droite de la tuile ouvre la liste de la famille (comme avant : second clic sur l'outil actif ou clic droit). Bouton d'aide (raccourcis) déplacé en bas du rail, retiré de la barre de zoom. La barre « Niveau · Cotation » se cale désormais à 12 px du bord du plan.

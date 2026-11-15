@@ -91,7 +91,7 @@ export default function ReadOnlyViewer({ banner, aside }: ReadOnlyViewerProps = 
           <div className="pointer-events-none absolute left-3 right-3 top-3 z-10 flex items-start gap-2">
             <PlanContextBar readOnly />
           </div>
-          <ZoomControls />
+          <ZoomControls readOnly />
           <Notice />
         </div>
         <Viewer3DPanel />

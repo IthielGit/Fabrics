@@ -18,7 +18,6 @@ import { useCollaboration } from '../components/editor/useCollaboration'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import { usePendingRestore } from '../components/editor/usePendingRestore'
 import ZoomControls from '../components/editor/ZoomControls'
-import CompassWidget from '../components/editor/CompassWidget'
 import ViewsScreen from '../components/views/ViewsScreen'
 import Viewer3DPanel from '../components/viewer3d/Viewer3DPanel'
 import { repository } from '../features/persistence/repository'
@@ -119,7 +118,6 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
             <ToolModeBar />
           </div>
           <ZoomControls />
-          <CompassWidget />
           <MiniMap />
           <ScrollBars />
           <PlanSignals />
