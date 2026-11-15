@@ -888,3 +888,12 @@ Décision D74 (voir `docs/PROGRESS.md`).
   les exports et la miniature) ; bulle de saisie : `CommentComposerOverlay` (HTML). Les commentaires ne passent
   pas par l'historique d'annulation du plan. Limite : la visée d'un élément utilise sa boîte englobante
   (sauf les murs), imprécise pour une pièce en L ou un contour en diagonale.
+- Fils et panneau (lot C) : onglet « Commentaires » du panneau de droite (avec un compte connecté), pastille =
+  fils ouverts. `CommentsPanel` : filtre Ouverts / Résolus / Tous, fils du plus récemment commenté au plus
+  ancien (`sortByActivity`). Cliquer un fil (liste) ou une épingle (plan) l'ouvre (`commentsStore.selectedThreadId`) :
+  `focusThread` affiche son niveau et centre la vue sur l'épingle sans changer le zoom ; l'épingle ouverte est
+  cerclée. `CommentThreadView` : commentaire et réponses, résoudre / rouvrir (`set_comment_resolved`), modifier
+  (auteur seulement), supprimer (auteur, ou propriétaire : `canDeleteComment`, avec confirmation ; les réponses
+  suivent), répondre (`CommentReplyBox`). Les boutons suivent les mêmes règles que la base, qui reste le garde-fou.
+  Après chaque action le store est mis à jour avec la réponse du serveur ; la relecture toutes les 30 s corrige
+  le reste. Un fil supprimé par quelqu'un d'autre pendant qu'il est ouvert : retour à la liste.

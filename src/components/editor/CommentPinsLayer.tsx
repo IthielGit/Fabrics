@@ -10,6 +10,7 @@ import {
 import type { ProjectPerson } from '../../features/versions/versionsLogic'
 import { fr } from '../../i18n/fr'
 import { useCommentsStore } from '../../stores/commentsStore'
+import { openThreadInPanel } from './focusThread'
 import type { CanvasElement } from '../../types/document'
 
 /** Nom de la forme Konva d'une épingle : l'outil « Commenter » ne pose pas de commentaire par-dessus. */
@@ -38,6 +39,7 @@ function shorten(text: string): string {
  */
 export default function CommentPinsLayer({ elements, activeLevelId, scale, people }: CommentPinsLayerProps) {
   const comments = useCommentsStore((state) => state.comments)
+  const selectedThreadId = useCommentsStore((state) => state.selectedThreadId)
   const [hoveredId, setHoveredId] = useState<string | null>(null)
   const threads = useMemo(() => threadsOnLevel(buildThreads(comments), activeLevelId), [comments, activeLevelId])
   if (threads.length === 0) return null
@@ -53,6 +55,7 @@ export default function CommentPinsLayer({ elements, activeLevelId, scale, peopl
           u={u}
           people={people}
           hovered={hoveredId === thread.root.id}
+          selected={selectedThreadId === thread.root.id}
           onHover={(hover) => setHoveredId(hover ? thread.root.id : null)}
         />
       ))}
@@ -66,10 +69,11 @@ interface PinProps {
   u: number
   people: ReadonlyMap<string, ProjectPerson>
   hovered: boolean
+  selected: boolean
   onHover: (hover: boolean) => void
 }
 
-function Pin({ thread, elements, u, people, hovered, onHover }: PinProps) {
+function Pin({ thread, elements, u, people, hovered, selected, onHover }: PinProps) {
   const position = pinPosition(thread.root, elements)
   if (!position) return null
   const color = people.get(thread.root.authorId)?.color ?? colorForUser(thread.root.authorId)
@@ -84,9 +88,20 @@ function Pin({ thread, elements, u, people, hovered, onHover }: PinProps) {
       scaleX={u}
       scaleY={u}
       opacity={faded ? 0.5 : 1}
-      onMouseEnter={() => onHover(true)}
-      onMouseLeave={() => onHover(false)}
+      onMouseEnter={(event) => {
+        onHover(true)
+        const container = event.target.getStage()?.container()
+        if (container) container.style.cursor = 'pointer'
+      }}
+      onMouseLeave={(event) => {
+        onHover(false)
+        const container = event.target.getStage()?.container()
+        if (container) container.style.cursor = ''
+      }}
+      onClick={() => openThreadInPanel(thread)}
+      onTap={() => openThreadInPanel(thread)}
     >
+      {selected && <Circle radius={PIN_RADIUS + 5} stroke={color} strokeWidth={2} listening={false} />}
       <Circle
         radius={PIN_RADIUS}
         fill={color}

@@ -154,3 +154,36 @@ export function pinPosition(root: Comment, elements: readonly CanvasElement[]): 
 export function threadsOnLevel(threads: readonly CommentThread[], levelId: string | null): CommentThread[] {
   return threads.filter((thread) => (thread.root.levelId ?? null) === levelId)
 }
+
+/** Début d'un texte, sur une seule ligne, pour une liste (`…` si coupé). */
+export function commentExcerpt(body: string, max = 120): string {
+  const flat = body.replace(/\s+/g, ' ').trim()
+  return flat.length > max ? `${flat.slice(0, max - 1).trimEnd()}…` : flat
+}
+
+/** Fils triés par activité : le plus récemment commenté d'abord. */
+export function sortByActivity(threads: readonly CommentThread[]): CommentThread[] {
+  return [...threads].sort(
+    (a, b) => time(b.lastActivityAt) - time(a.lastActivityAt) || b.number - a.number,
+  )
+}
+
+/** Nom du niveau d'un fil, ou `null` s'il n'en a pas (visuel) ou si le niveau n'existe plus. */
+export function levelNameOf(levels: readonly { id: string; name: string }[] | undefined, levelId: string | null): string | null {
+  if (!levelId || !levels) return null
+  return levels.find((level) => level.id === levelId)?.name ?? null
+}
+
+/**
+ * Peut-on supprimer ce commentaire ? Son auteur (membre) ou le propriétaire du projet : la base applique
+ * les mêmes règles, ceci ne sert qu'à montrer ou cacher le bouton.
+ */
+export function canDeleteComment(comment: Comment, userId: string | null, role: string | null): boolean {
+  if (!userId) return false
+  return comment.authorId === userId || role === 'owner'
+}
+
+/** Seul l'auteur modifie le texte de son commentaire. */
+export function canEditComment(comment: Comment, userId: string | null): boolean {
+  return userId !== null && comment.authorId === userId
+}

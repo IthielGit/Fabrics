@@ -995,7 +995,7 @@ notifications dans ce jalon. Lots à valider un par un, après M15.
 - [x] **Lot B — Poser un commentaire** (2026-11-15, validé par l'utilisateur) : outil « Commenter », ancrage sur un élément (suit l'élément) ou sur
       un point, épingles par niveau dans une couche absente des exports et de la miniature ; « élément
       supprimé » quand l'ancre disparaît
-- [ ] **Lot C — Fils et panneau** : onglet « Commentaires » (ouverts / résolus / tous, nombre d'ouverts),
+- [x] **Lot C — Fils et panneau** (2026-11-15, validé par l'utilisateur) : onglet « Commentaires » (ouverts / résolus / tous, nombre d'ouverts),
       fil avec réponses, résoudre, rouvrir, modifier, supprimer
 - [ ] **Lot D — Lecteurs** : la page en lecture seule d'un membre lecteur affiche les épingles et permet de
       commenter et de répondre (le lien public de partage n'affiche jamais les commentaires)
