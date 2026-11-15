@@ -1,8 +1,9 @@
 import clsx from 'clsx'
-import { Box, Eye, History, PanelsTopLeft, PencilRuler } from 'lucide-react'
+import { Box, Eye, History, MessageSquare, PanelsTopLeft, PencilRuler } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { fr } from '../../i18n/fr'
+import { useCommentsStore } from '../../stores/commentsStore'
 import { useEditorStore } from '../../stores/editorStore'
 import { useViewer3DStore } from '../../stores/viewer3dStore'
 import { useViewsStore } from '../../stores/viewsStore'
@@ -11,6 +12,7 @@ import Viewer3DPanel from '../viewer3d/Viewer3DPanel'
 import EditorStage from './EditorStage'
 import PlanContextBar from './PlanContextBar'
 import Notice from './Notice'
+import ToolHint from './ToolHint'
 import ZoomControls from './ZoomControls'
 
 const ICON_BUTTON =
@@ -21,6 +23,11 @@ interface ReadOnlyViewerProps {
   banner?: ReactNode
   /** Panneau de droite (historique et métrés d'un membre) ; jamais sur le lien public. */
   aside?: ReactNode
+  /**
+   * Commentaires (M16, lot D) : pour un membre connecté, épingles visibles et outil « Commenter ».
+   * Jamais sur le lien public de partage ni dans l'aperçu d'une version.
+   */
+  comments?: boolean
 }
 
 /**
@@ -28,8 +35,18 @@ interface ReadOnlyViewerProps {
  * Utilisé par la page de partage public (`/s/…`), par un compte invité en lecture (`/p/…`) et par
  * l'aperçu d'une version (`/p/…/versions/…`).
  */
-export default function ReadOnlyViewer({ banner, aside }: ReadOnlyViewerProps = {}) {
+export default function ReadOnlyViewer({ banner, aside, comments = false }: ReadOnlyViewerProps = {}) {
   const [asideOpen, setAsideOpen] = useState(true)
+  const activeTool = useEditorStore((state) => state.activeTool)
+  const setTool = useEditorStore((state) => state.setTool)
+  // Cliquer l'épingle d'un commentaire rouvre le panneau s'il a été masqué (ajustement d'état pendant le rendu).
+  const selectedThreadId = useCommentsStore((state) => state.selectedThreadId)
+  const [seenThreadId, setSeenThreadId] = useState(selectedThreadId)
+  if (selectedThreadId !== seenThreadId) {
+    setSeenThreadId(selectedThreadId)
+    if (selectedThreadId) setAsideOpen(true)
+  }
+  const commenting = comments && activeTool === 'comment'
   const projectName = useEditorStore((state) => state.project?.name ?? '')
   const viewer3DOpen = useViewer3DStore((state) => state.open)
   const toggleViewer3D = useViewer3DStore((state) => state.toggleOpen)
@@ -70,6 +87,21 @@ export default function ReadOnlyViewer({ banner, aside }: ReadOnlyViewerProps = 
             <PanelsTopLeft size={18} aria-hidden="true" />
             {fr.views.openLabel}
           </button>
+          {comments && (
+            <button
+              type="button"
+              onClick={() => setTool(commenting ? 'select' : 'comment')}
+              aria-pressed={commenting}
+              title={`${fr.tools.comment} (C)`}
+              className={clsx(
+                'flex items-center gap-1.5 rounded-md px-2 py-2 text-sm hover:bg-slate-100',
+                commenting ? 'bg-indigo-50 text-indigo-700' : 'text-slate-700',
+              )}
+            >
+              <MessageSquare size={18} aria-hidden="true" />
+              {fr.tools.comment}
+            </button>
+          )}
           {aside && (
             <button
               type="button"
@@ -87,12 +119,13 @@ export default function ReadOnlyViewer({ banner, aside }: ReadOnlyViewerProps = 
       {banner}
       <div className="flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
-          <EditorStage readOnly />
+          <EditorStage readOnly showComments={comments} />
           <div className="pointer-events-none absolute left-3 right-3 top-3 z-10 flex items-start gap-2">
             <PlanContextBar readOnly />
           </div>
           <ZoomControls readOnly />
           <Notice />
+          {comments && <ToolHint />}
         </div>
         <Viewer3DPanel />
         {aside && asideOpen && aside}

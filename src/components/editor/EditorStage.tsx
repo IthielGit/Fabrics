@@ -110,9 +110,13 @@ interface Gesture {
 interface EditorStageProps {
   /** Lecture seule (page de partage) : on peut déplacer la vue et zoomer, mais rien ne se sélectionne ni ne se modifie. */
   readOnly?: boolean
+  /** Lecture seule d'un membre (M16, lot D) : épingles visibles et outil « Commenter » permis. */
+  showComments?: boolean
 }
 
-export default function EditorStage({ readOnly = false }: EditorStageProps) {
+export default function EditorStage({ readOnly = false, showComments = false }: EditorStageProps) {
+  // Épingles et bulle de saisie : dans l'éditeur, et sur la page en lecture seule d'un membre (pas sur le lien public).
+  const commentsVisible = !readOnly || showComments
   const project = useEditorStore((state) => state.project)
   const zoom = useEditorStore((state) => state.zoom)
   const stagePosition = useEditorStore((state) => state.stagePosition)
@@ -395,8 +399,29 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
     addElement(stair) // l'escalier posé devient la sélection ; l'outil reste actif
   }
 
+  /** Outil « Commenter » (M16) : ouvre la bulle de saisie sur l'élément visé, sinon sur un point libre. */
+  const startComment = (event: PointerEvent, point: Point) => {
+    // Un clic sur l'épingle d'un commentaire n'en pose pas un autre dessus.
+    if (event.target.findAncestor(`.${COMMENT_PIN_NAME}`, true)) return
+    const target = commentTargetAt(elements, point.x, point.y, COMMENT_HIT_TOLERANCE_PX / scale)
+    useCommentsStore.getState().openDraft({
+      elementId: target.elementId,
+      levelId: activeLevelId,
+      x: target.x,
+      y: target.y,
+    })
+  }
+
   const handlePointerDown = (event: PointerEvent) => {
-    if (readOnly) return // la vue se déplace par le glisser de la scène
+    if (readOnly) {
+      // Lecture seule : la vue se déplace par le glisser de la scène ; seul l'outil « Commenter » agit.
+      const leftButton = !(event.evt instanceof MouseEvent) || event.evt.button === 0
+      if (showComments && activeTool === 'comment' && leftButton) {
+        const point = pointerInDocument(event)
+        if (point) startComment(event, point)
+      }
+      return
+    }
     // Clic molette maintenu : déplace la vue, quel que soit l'outil.
     if (event.evt instanceof MouseEvent && event.evt.button === 1) {
       panDrag.start(event.evt)
@@ -418,15 +443,7 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
     } else if (openingKind) {
       openingTool.onPointerDown(event)
     } else if (activeTool === 'comment') {
-      // Outil « Commenter » (M16) : un clic sur l'épingle d'un commentaire n'en pose pas un autre dessus.
-      if (event.target.findAncestor(`.${COMMENT_PIN_NAME}`, true)) return
-      const target = commentTargetAt(elements, point.x, point.y, COMMENT_HIT_TOLERANCE_PX / scale)
-      useCommentsStore.getState().openDraft({
-        elementId: target.elementId,
-        levelId: activeLevelId,
-        x: target.x,
-        y: target.y,
-      })
+      startComment(event, point)
     } else if (activeTool === 'furniture') {
       placeFurniture(point)
     } else if (activeTool === 'stair') {
@@ -620,7 +637,8 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
           y={stagePosition.y}
           scaleX={scale}
           scaleY={scale}
-          draggable={spaceDown || readOnly}
+          // En lecture seule la scène se glisse pour déplacer la vue, sauf avec l'outil « Commenter » (un clic y pose un commentaire).
+          draggable={spaceDown || (readOnly && !(showComments && activeTool === 'comment'))}
           onWheel={handleWheel}
           onDragEnd={handleDragEnd}
           onMouseDown={handlePointerDown}
@@ -762,14 +780,14 @@ export default function EditorStage({ readOnly = false }: EditorStageProps) {
             <ChangesLayer elements={elements} activeLevelId={activeLevelId} scale={scale} />
             <PresenceLayer elements={elements} activeLevelId={activeLevelId} scale={scale} />
           </Layer>
-          {!readOnly && (
+          {commentsVisible && (
             <Layer>
               <CommentPinsLayer elements={project.document.elements} activeLevelId={activeLevelId} scale={scale} people={commentPeople} />
             </Layer>
           )}
         </Stage>
       )}
-      {!readOnly && activeTool === 'comment' && (
+      {commentsVisible && activeTool === 'comment' && (
         <CommentComposerOverlay scale={scale} stagePosition={stagePosition} size={size} />
       )}
       {calibration.state.pending && (

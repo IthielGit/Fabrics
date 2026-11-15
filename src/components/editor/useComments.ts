@@ -1,24 +1,33 @@
 import { useEffect } from 'react'
 import { commentsAvailable, listComments } from '../../features/comments/commentsApi'
+import { parseCommentRow, rowToComment } from '../../features/comments/commentsLogic'
 import { fetchMyRole } from '../../features/sharing/membersApi'
 import { listProjectPeople } from '../../features/versions/versionsApi'
 import { fr } from '../../i18n/fr'
+import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../stores/authStore'
 import { useCommentsStore } from '../../stores/commentsStore'
 
-/** Relecture régulière en attendant la diffusion en direct (M16, lot E). */
+/**
+ * Relecture complète régulière : filet de sécurité du direct (suppressions, événements manqués). Les
+ * suppressions ne sont pas diffusées en direct : Supabase n'applique pas les règles d'accès aux
+ * événements de suppression, on évite donc de les écouter.
+ */
 const REFRESH_INTERVAL_MS = 30_000
 
 /**
- * Charge les commentaires du projet ouvert (M16, lot B) : seulement avec un compte connecté et Supabase.
- * Relus toutes les 30 s ; une réponse arrivée après une plus récente, ou après la fermeture du projet,
- * est ignorée. Une lecture ratée garde la liste déjà affichée.
+ * Charge les commentaires du projet ouvert (M16) : seulement avec un compte connecté et Supabase.
+ * Lot E : nouveaux commentaires, réponses, modifications et résolutions arrivent en direct (Supabase
+ * Realtime, règles d'accès de la table appliquées) ; la liste est relue en entier à chaque (re)connexion
+ * du direct et toutes les 30 s. Une réponse arrivée après une plus récente, ou après la fermeture du
+ * projet, est ignorée. Une lecture ratée garde la liste déjà affichée.
  */
 export function useComments(projectId: string | undefined, ready: boolean) {
   const userId = useAuthStore((state) => state.user?.id ?? null)
 
   useEffect(() => {
-    if (!projectId || !ready || !userId || !commentsAvailable()) return
+    if (!projectId || !ready || !userId || !commentsAvailable() || !supabase) return
+    const client = supabase
     let request = 0
     let active = true
 
@@ -43,13 +52,35 @@ export function useComments(projectId: string | undefined, ready: boolean) {
       })
       .catch(() => {})
 
-    // Première lecture juste après l'affichage (pas d'écriture d'état pendant l'effet lui-même).
+    // Direct : ajouts et modifications (le filtre garde les commentaires de ce projet).
+    const channel = client
+      .channel(`comments:${projectId}`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'project_comments', filter: `project_id=eq.${projectId}` },
+        (payload) => {
+          if (!active || payload.eventType === 'DELETE') return
+          const row = parseCommentRow(payload.new)
+          if (!row || row.project_id !== projectId) return
+          const store = useCommentsStore.getState()
+          store.upsertComment(rowToComment(row))
+          // Un auteur encore inconnu (nom, photo) : on relit les personnes.
+          if (!store.people.has(row.author_id)) refresh()
+        },
+      )
+      .subscribe((status) => {
+        // À chaque (re)connexion du direct : relecture complète, pour rattraper ce qui a pu être manqué.
+        if (status === 'SUBSCRIBED') refresh()
+      })
+
+    // Première lecture juste après l'affichage (et filet si le direct ne démarre pas).
     const first = setTimeout(refresh, 0)
     const interval = setInterval(refresh, REFRESH_INTERVAL_MS)
     return () => {
       active = false
       clearTimeout(first)
       clearInterval(interval)
+      void client.removeChannel(channel)
       useCommentsStore.getState().reset()
     }
   }, [projectId, ready, userId])

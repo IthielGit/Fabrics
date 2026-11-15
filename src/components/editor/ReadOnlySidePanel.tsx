@@ -1,14 +1,15 @@
 import clsx from 'clsx'
-import { Calculator, History, type LucideIcon } from 'lucide-react'
-import { useState } from 'react'
+import { Calculator, History, MessageSquare, type LucideIcon } from 'lucide-react'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
+import CommentsPanel from './CommentsPanel'
 import HistoryPanel from './HistoryPanel'
 import MeasurementsPanel from './MeasurementsPanel'
 
-type Tab = 'history' | 'measurements'
+type Tab = 'comments' | 'history' | 'measurements'
 
-const TABS: { id: Tab; label: string; icon: LucideIcon; planOnly?: boolean }[] = [
+const TABS: { id: Tab; label: string; icon: LucideIcon; planOnly?: boolean; commentsOnly?: boolean }[] = [
+  { id: 'comments', label: fr.sidePanel.comments, icon: MessageSquare, commentsOnly: true },
   { id: 'history', label: fr.history.preview.tabs.history, icon: History },
   { id: 'measurements', label: fr.history.preview.tabs.measurements, icon: Calculator, planOnly: true },
 ]
@@ -18,18 +19,23 @@ interface ReadOnlySidePanelProps {
   canName: boolean
   /** Version affichée dans l'aperçu. */
   selectedVersionId?: string
+  /** Onglet « Commentaires » (M16, lot D) : page d'un membre connecté, pas l'aperçu d'une version. */
+  comments?: boolean
 }
 
 /**
  * Panneau de droite des pages en lecture seule d'un membre (M15, lot C) : historique des versions et
  * métrés du plan affiché (ceux de la version, dans un aperçu).
  */
-export default function ReadOnlySidePanel({ canName, selectedVersionId }: ReadOnlySidePanelProps) {
+export default function ReadOnlySidePanel({ canName, selectedVersionId, comments = false }: ReadOnlySidePanelProps) {
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
   const projectId = useEditorStore((state) => state.project?.id)
-  const [tab, setTab] = useState<Tab>('history')
-  const tabs = TABS.filter((t) => isPlan || !t.planOnly)
-  const current = tabs.some((t) => t.id === tab) ? tab : 'history'
+  // Même onglet que l'éditeur (le clic sur une épingle ouvre « Commentaires » par `openThreadInPanel`).
+  const tab = useEditorStore((state) => state.sidePanelTab)
+  const setTab = useEditorStore((state) => state.setSidePanelTab)
+  const tabs = TABS.filter((t) => (isPlan || !t.planOnly) && (comments || !t.commentsOnly))
+  const fallback: Tab = comments ? 'comments' : 'history'
+  const current: Tab = tabs.find((t) => t.id === tab)?.id ?? fallback
 
   return (
     <aside
@@ -57,6 +63,7 @@ export default function ReadOnlySidePanel({ canName, selectedVersionId }: ReadOn
         ))}
       </div>
       <div role="tabpanel" className="min-h-0 flex-1 overflow-y-auto">
+        {current === 'comments' && <CommentsPanel key={projectId} />}
         {current === 'history' && (
           <HistoryPanel key={projectId} canName={canName} selectedVersionId={selectedVersionId} />
         )}

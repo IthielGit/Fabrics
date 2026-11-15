@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import ReadOnlySidePanel from '../components/editor/ReadOnlySidePanel'
 import ReadOnlyViewer from '../components/editor/ReadOnlyViewer'
+import { useComments } from '../components/editor/useComments'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
 import { useEditorStore } from '../stores/editorStore'
@@ -42,9 +43,14 @@ export default function SharedProjectPage({ projectId }: { projectId: string }) 
 
   const state: LoadState = result?.projectId === projectId ? result.state : 'loading'
 
+  // M16 : un membre lecteur voit et pose des commentaires (D74) ; ni nommer ni restaurer une version.
+  useComments(projectId, state === 'ready')
+
   if (state === 'loading') return <p className="p-8 text-slate-500">{fr.common.loading}</p>
-  // Un membre lecteur voit l'historique (D73), sans pouvoir nommer ni restaurer.
-  if (state === 'ready') return <ReadOnlyViewer aside={<ReadOnlySidePanel canName={false} />} />
+  // Un membre lecteur voit l'historique (D73) et les commentaires (D74), sans pouvoir nommer ni restaurer.
+  if (state === 'ready') {
+    return <ReadOnlyViewer comments aside={<ReadOnlySidePanel canName={false} comments />} />
+  }
   return (
     <main className="p-8">
       <h1 className="text-2xl font-bold">{fr.editor.notFoundTitle}</h1>

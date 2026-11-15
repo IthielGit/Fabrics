@@ -997,9 +997,9 @@ notifications dans ce jalon. Lots à valider un par un, après M15.
       supprimé » quand l'ancre disparaît
 - [x] **Lot C — Fils et panneau** (2026-11-15, validé par l'utilisateur) : onglet « Commentaires » (ouverts / résolus / tous, nombre d'ouverts),
       fil avec réponses, résoudre, rouvrir, modifier, supprimer
-- [ ] **Lot D — Lecteurs** : la page en lecture seule d'un membre lecteur affiche les épingles et permet de
+- [x] **Lot D — Lecteurs** (2026-11-15, validé par l'utilisateur) : la page en lecture seule d'un membre lecteur affiche les épingles et permet de
       commenter et de répondre (le lien public de partage n'affiche jamais les commentaires)
-- [ ] **Lot E — En direct** : nouveaux commentaires, réponses et résolutions visibles chez les autres sans
+- [x] **Lot E — En direct** (2026-11-15, validé par l'utilisateur) : nouveaux commentaires, réponses et résolutions visibles chez les autres sans
       recharger (Supabase Realtime, déjà inclus dans `@supabase/supabase-js`), reprise après coupure,
       essais à deux navigateurs
 
