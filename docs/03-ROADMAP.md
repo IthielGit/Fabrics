@@ -925,14 +925,65 @@ Lots à valider un par un.
 
 ---
 
+## M15 — Historique de versions
+
+Décisions du 2026-11-15 (D71 à D73, voir `docs/PROGRESS.md` et `docs/02-ARCHITECTURE.md`, « Historique de
+versions (M15) ») : fonctionnement d'un historique de tableur en ligne (sessions de travail regroupées,
+auteurs, versions nommées), avec une interface propre à Fabrics ; historique visible par tous les membres,
+restauration réservée aux éditeurs et au propriétaire. Lots à valider un par un.
+
+- [ ] **Lot A — Base de données** (codé le 2026-11-15 ; à exécuter dans Supabase et vérifier) : table
+      `project_versions` (RLS : membres du projet), déclencheur qui prolonge l'étape en cours (2 min) ou en
+      ouvre une nouvelle (session : pause de 5 min ou 30 min de travail continu), auteurs, fonctions
+      `create_named_version`, `rename_version`, `project_people`, nettoyage (D72)
+      - Critère : modifier un plan pendant 2 min, attendre 5 min, le modifier encore → 2 versions dans la
+        table, avec le bon auteur ; un lecteur les lit, un inconnu non
+- [ ] **Lot B — Panneau « Historique »** : liste par jour, sessions repliables (versions détaillées en
+      dessous), auteurs avec leur couleur, filtre « Versions nommées seulement », créer, nommer et renommer
+      une version
+      - Critère : le panneau liste les versions du lot A, en direct quand une nouvelle version apparaît
+- [ ] **Lot C — Aperçu et changements** : cliquer une version l'affiche en lecture seule (bandeau
+      « Restaurer · Faire une copie · Fermer »), éléments ajoutés, modifiés et supprimés mis en évidence
+      depuis la version précédente, métrés de la version dans le panneau
+      - Critère : on ne peut rien modifier pendant l'aperçu ; un mur ajouté depuis la version précédente
+        est mis en évidence
+- [ ] **Lot D — Restaurer et faire une copie** : restauration (éditeurs, propriétaire) précédée d'une
+      version nommée « Avant restauration », appliquée comme une modification (annulable, partagée en
+      direct) ; « Faire une copie » crée un nouveau projet à partir de la version ; essais à deux navigateurs
+      - Critère : A restaure, B voit le plan restauré en direct ; Ctrl+Z chez A annule la restauration
+
+---
+
+## M16 — Commentaires ancrés (sans notifications)
+
+Décision du 2026-11-15 (D74) : tous les membres, lecteurs compris, peuvent commenter. Pas de mentions ni de
+notifications dans ce jalon. Lots à valider un par un, après M15.
+
+- [ ] **Lot A — Base de données** : table `project_comments` (projet, auteur, niveau, élément ou point,
+      texte simple ≤ 2000 caractères, commentaire parent pour les réponses, résolu par / le), RLS (lire et
+      écrire : membres ; modifier ou supprimer : l'auteur ; supprimer : aussi le propriétaire ; résoudre :
+      tout membre), diffusion Supabase Realtime activée sur la table
+- [ ] **Lot B — Poser un commentaire** : outil « Commenter », ancrage sur un élément (suit l'élément) ou sur
+      un point, épingles par niveau dans une couche absente des exports et de la miniature ; « élément
+      supprimé » quand l'ancre disparaît
+- [ ] **Lot C — Fils et panneau** : onglet « Commentaires » (ouverts / résolus / tous, nombre d'ouverts),
+      fil avec réponses, résoudre, rouvrir, modifier, supprimer
+- [ ] **Lot D — Lecteurs** : la page en lecture seule d'un membre lecteur affiche les épingles et permet de
+      commenter et de répondre (le lien public de partage n'affiche jamais les commentaires)
+- [ ] **Lot E — En direct** : nouveaux commentaires, réponses et résolutions visibles chez les autres sans
+      recharger (Supabase Realtime, déjà inclus dans `@supabase/supabase-js`), reprise après coupure,
+      essais à deux navigateurs
+
+---
+
 ## Plus tard (non planifié, à prioriser avec l'utilisateur)
 
 - **Assistant IA « Demander quelque chose »** (plan, mise en page, couleurs, textes) — à
   étudier après M14, à la demande de l'utilisateur
 - Modèles de visuels originaux, bibliothèque de composants, identité de marque
 - QR code pour les liens de partage
-- Commentaires ancrés sur le canevas, mentions, notifications
-- Historique de versions avec restauration
+- Mentions et notifications sur les commentaires (après M16)
+- Comparer deux versions quelconques côte à côte (après M15)
 - Plusieurs pages par projet, mode présentation
 - Espaces de travail, membres et rôles (propriétaire, admin, éditeur, commentateur, lecteur)
 - Traductions anglais et malgache, mode sombre, accessibilité avancée

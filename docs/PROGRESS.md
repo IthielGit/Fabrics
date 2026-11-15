@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M14 · Lot F · persistance dans Supabase et reprise après coupure (15/11, validé par l'utilisateur)
-- **Prochaine tâche :** à définir avec l'utilisateur (voir « Plus tard » dans `docs/03-ROADMAP.md`) ; M14 est terminé
+- **Prochaine tâche :** M15 · Lot A : exécuter `supabase/schema.sql` dans Supabase et vérifier (requêtes dans le journal du 15/11) ; puis lot B (à confirmer : l'utilisateur a validé « A C D »)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -115,6 +115,18 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Fichiers : `src/features/intro/heroModes.ts` (+ test), `src/components/intro/{SketchToPlan,HeroModeTabs,FaultPill,IntroMotion,MeasuresCard,PlanDrawing}.tsx`, `src/pages/IntroPage.tsx`, `src/i18n/fr.ts`, `docs/02-ARCHITECTURE.md`, `package.json`.
 - Vérification : build ✓ lint ✓ tests ✓ (2780) — navigateur : trois modes, 1440 et 390 px, aucun défilement horizontal, sections visibles après défilement. Non testé à la main : « réduire les animations » et le défilement à la molette.
 - Commit : feat: hero animé et interactif (GSAP, Lenis)
+
+### 2026-11-15 — M15 · Lot A : base de données de l'historique (codé, à exécuter dans Supabase)
+- Fait (`supabase/schema.sql`, section « M15 », **à ré-exécuter en entier dans Supabase**, sans risque) : table `project_versions` (une ligne = une étape de ~2 min ; `session_id` ; auteurs ; RLS lecture pour tout membre, aucune écriture directe) ; déclencheur `projects_record_version` (prolonge l'étape, ouvre une nouvelle étape ou session, verrou par projet, nettoyage D72, ne bloque jamais l'enregistrement du projet en cas d'erreur) ; fonctions `create_named_version`, `rename_version` (éditeurs et propriétaire), `project_people` (nom et photo pour tout membre, jamais l'e-mail complet).
+- Fait (application) : `src/features/versions/versionsLogic.ts` (+ test : lignes → versions, regroupement jours → sessions → étapes, auteurs d'une session, filtre « nommées seulement », « Aujourd'hui » / « Hier », nom de version, personnes) et `versionsApi.ts` (lister, lire un document migré, nommer, renommer, personnes). Rien n'est encore visible dans l'interface (lot B).
+- D72 précisée : étapes détaillées 24 h, puis une par session, puis une par jour après 30 jours.
+- Non vérifié ici : le SQL n'a pas pu être exécuté sur une vraie base (pas de PostgreSQL local) ; il est relu, à vérifier dans Supabase.
+- Fichiers : `supabase/schema.sql`, `src/features/versions/{versionsLogic,versionsLogic.test,versionsApi}.ts`, `docs/02-ARCHITECTURE.md`, `docs/03-ROADMAP.md`.
+- Vérification : build ✓ lint ✓ tests ✓.
+
+### 2026-11-15 — Planification · M15 (historique de versions) et M16 (commentaires ancrés)
+- Choix de l'utilisateur parmi « Plus tard » : historique de versions, puis commentaires ancrés sans notifications.
+- Décisions D71 à D74 notées ci-dessous ; roadmap M15 (lots A à D) et M16 (lots A à E) écrite ; principe ajouté à `docs/02-ARCHITECTURE.md`.
 
 ### 2026-11-15 — M14 · Lot F : validé (fin du jalon M14)
 - L'utilisateur a fait les essais à deux navigateurs et validé le lot F, donc le jalon M14.
@@ -1384,6 +1396,10 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D68 | Hébergement du temps réel (M14) | **Choix de l'utilisateur le 2026-11-12** : Cloudflare Workers + Durable Objects, dossier `collab-server/` séparé de l'application ; le Worker ne détient aucun secret (il interroge Supabase avec le jeton de la personne). | Même compte que Cloudflare Pages, offre gratuite, WebSocket avec mise en veille ; pas de `service_role`. |
 | D69 | Invitation à un projet | **Choix de l'utilisateur le 2026-11-12** : par lien (`/i/<jeton>`), jamais par adresse e-mail. | Une recherche par e-mail permettrait de deviner qui a un compte. |
 | D70 | Annuler / rétablir en collaboration | **Choix de l'utilisateur le 2026-11-12** : chaque personne ne défait que ses propres modifications (`Y.UndoManager`). | Un « annuler » ne doit pas effacer le travail des autres. |
+| D71 | Rythme des versions automatiques | **Choix de l'utilisateur le 2026-11-15** : « comme un tableur en ligne » : une version par session de travail (nouvelle version après 5 min de pause ou 30 min de travail continu), avec la liste de ses auteurs ; sessions regroupées par jour et dépliables ; versions nommées. Le fonctionnement est repris, pas l'interface (règle de `CLAUDE.md` : identité visuelle originale). | Un historique lisible sans réglage, qui suit le rythme réel du travail. |
+| D72 | Conservation des versions | Étapes détaillées (toutes les ~2 min de travail) gardées 24 h ; ensuite la dernière étape de chaque session ; après 30 jours, une version automatique par jour ; versions nommées jamais supprimées automatiquement. (Précisé au lot A le 2026-11-15 : « tout garder 30 jours » aurait pu dépasser l'offre gratuite de Supabase sur un plan très modifié.) | Historique fin pour réparer une erreur récente, place limitée sur l'offre gratuite. |
+| D73 | Qui voit et restaure l'historique | **Choix de l'utilisateur le 2026-11-15** : tous les membres voient l'historique (lecteurs compris) ; seuls les éditeurs et le propriétaire restaurent. « Faire une copie » d'une version : tout membre connecté (la copie lui appartient). | Transparence pour tous ; le contenu ne change que par ceux qui peuvent déjà le modifier. |
+| D74 | Qui peut commenter | **Choix de l'utilisateur le 2026-11-15** : tous les membres, lecteurs compris ; pas de commentaires sur le lien public de partage. | Valider un plan sans pouvoir le modifier. |
 | D67 | Miniature dans le cloud | La miniature (image encodée en texte) est stockée telle quelle dans la colonne `thumbnail_path` de `projects`, sans fichier Storage. | Évite une URL signée par carte de l'accueil ; le nom de la colonne est trompeur mais le schéma reste inchangé. À revoir si la base grossit trop. |
 | D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 

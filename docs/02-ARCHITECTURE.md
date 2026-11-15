@@ -812,3 +812,39 @@ invitation par lien (D69), annuler / rétablir limité à ses propres modificati
   l'appareil ; la marque ci-dessus règle la réouverture.
 - Code : `src/features/collab/{saveLeader,collabSession}.ts`, `yDocument.ts` (`readSavedAt`, `writeSavedAt`,
   `isSavedAtOnly`, `isLaterThan`), `collabBinding.ts`, `useAutosave.ts`, `useCollaboration.ts`.
+
+## Historique de versions (M15)
+
+Décisions D71 à D73 (voir `docs/PROGRESS.md`).
+
+- Table `project_versions` : une ligne = une **étape** (état du document à la fin d'une fenêtre de 2 min de
+  travail) : projet, `session_id`, document (copie complète), nom (`null` = automatique), auteurs (comptes
+  qui ont modifié pendant l'étape), `started_at`, `saved_at`. RLS : lecture pour tout membre du projet
+  (`my_project_role` non nul) ; aucune écriture directe depuis le navigateur.
+- **Les versions automatiques sont faites par la base** (déclencheur `projects_record_version`, après chaque
+  insertion ou modification du document) : l'étape en cours est prolongée tant qu'elle a moins de 2 min
+  (document remplacé, auteur ajouté) ; sinon une nouvelle étape commence, dans la même session si la pause
+  fait moins de 5 min et la session moins de 30 min, sinon dans une nouvelle session. Ainsi chaque
+  enregistrement compte, quel que soit l'onglet ou la personne qui enregistre (y compris l'enregistreur
+  désigné du lot F de M14 et la file hors connexion). Verrou par projet (`pg_advisory_xact_lock`) contre
+  les écritures simultanées ; **une erreur dans le déclencheur n'empêche jamais l'enregistrement du projet**.
+- Versions nommées : `create_named_version(projet, nom)` (copie l'état enregistré du projet) ;
+  `rename_version(version, nom)` (nom vide : redevient automatique). Éditeurs et propriétaire seulement.
+- Personnes : `project_people(projet)` renvoie identifiant, nom et photo (jamais l'e-mail complet) du
+  propriétaire, des membres et des auteurs de versions, pour tout membre.
+- Nettoyage (D72) à chaque nouvelle étape, sans tâche planifiée (`prune_project_versions`).
+- Code : `src/features/versions/versionsLogic.ts` (regroupement jours → sessions → étapes, testé) et
+  `versionsApi.ts` (lecture, nommer, renommer, personnes ; le document lu passe par `migrateDocument`).
+- **Restaurer** passe par l'éditeur : version « Avant restauration », puis le document de la version est
+  appliqué comme une modification normale (historique d'annulation, collaboration en direct).
+- Les commentaires (M16) ne font pas partie des versions.
+
+## Commentaires ancrés (M16)
+
+Décision D74 (voir `docs/PROGRESS.md`).
+
+- Table `project_comments`, **hors du document** : rien dans les exports, la miniature, les métrés, l'historique.
+- Ancre : identifiant d'élément (le commentaire suit l'élément) ou point en mm, toujours avec le niveau ;
+  élément supprimé → dernière position connue, mention « élément supprimé ».
+- Texte simple (jamais interprété comme HTML), 2000 caractères au plus ; réponses par `parent_id` (un niveau).
+- Direct : Supabase Realtime (`postgres_changes`) sur la table, filtré par projet, RLS appliquée.
