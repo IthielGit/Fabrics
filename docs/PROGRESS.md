@@ -1659,7 +1659,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Avec plusieurs éléments sélectionnés, le panneau Propriétés montre maintenant les réglages qu'ils ont tous : couleur (remplissage, contour), pour des pièces « Afficher le nom et la surface » et « Faux plafond », pour des murs épaisseur, hauteur et matériau, pour des cotes décalage et version visible. Le changement s'applique à tous en un seul pas d'historique.
 - Valeurs différentes : champ numérique vide, « Différentes » à côté de la couleur, tiret dans la case à cocher (un clic coche tout), choix « Différentes » grisé dans la liste.
 - Le nom n'est jamais modifié en groupe.
-- Fichiers : `commonValues.ts` (nouveau, + tests), `MultiSelectionFields.tsx` et `CheckboxField.tsx` (nouveaux), `ColorField.tsx`, `DimensionVisibilityField.tsx`, `PlanElementFields.tsx`, `PropertiesPanel.tsx`, `fr.ts`. Build, lint, 2964 tests OK (un échec intermittent au premier passage complet, deux passages suivants verts).
+- Fichiers : `commonValues.ts` (nouveau, + tests), `MultiSelectionFields.tsx` et `CheckboxField.tsx` (nouveaux), `ColorField.tsx`, `DimensionVisibilityField.tsx`, `PlanElementFields.tsx`, `PropertiesPanel.tsx`, `fr.ts`. Build, lint, 2964 tests OK (un échec intermittent au premier passage complet, deux passages suivants verts). **Validé par l'utilisateur dans le navigateur le 2026-11-16.**
 
 ## Idées (hors jalon en cours)
 

@@ -983,7 +983,7 @@ Lots à valider un par un.
 
 ---
 
-### Hors jalon — Modifier plusieurs éléments à la fois (demande du 2026-11-16)
+### Hors jalon — Modifier plusieurs éléments à la fois (demande du 2026-11-16, validé le 2026-11-16)
 
 Demande de l'utilisateur : avec plusieurs pièces sélectionnées, changer leur couleur (ou un autre
 réglage) en une fois. Le panneau Propriétés affiche chaque réglage que **tous** les éléments
