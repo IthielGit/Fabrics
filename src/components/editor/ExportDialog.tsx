@@ -165,7 +165,9 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         dxfScope,
       })
       onClose()
-    } catch {
+    } catch (error) {
+      // Gardé dans la console : sans lui, la vraie cause d'un échec est invisible.
+      console.error('Export échoué', error)
       setFailed(true)
     } finally {
       setBusy(false)

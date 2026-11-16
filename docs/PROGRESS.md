@@ -1695,6 +1695,12 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Les autres éléments verrouillés (fond DXF importé) restent non cliquables.
 - Fichiers : `src/features/documents/wallLock.ts` (nouveau, + tests), `WallLockSection.tsx` (nouveau), `PropertiesPanel.tsx`, `WallShape.tsx`, `useElementInteractions.ts`, `useEditorShortcuts.ts`, `editorStore.ts` (`removeElements` renvoie le nombre de murs verrouillés écartés), `fr.ts`. Build, lint, 2978 tests OK (le test chronométré « 600 murs » a échoué une fois sous charge, vert relancé seul). **Validé par l'utilisateur dans le navigateur le 2026-11-16.**
 
+### 2026-11-16 — Correctif : « L'export a échoué » sur un plan avec image (compte en ligne)
+
+- Symptôme : PDF A2 (et tout export image) refusé avec « L'export a échoué… ». Ce n'était pas la taille : jsPDF et Konva passent en A2 (vérifié dans Chromium).
+- Cause : avec un compte, les images viennent du stockage Supabase (autre domaine) et étaient chargées sans `crossOrigin`. Le canevas devenait « contaminé » et le navigateur refusait `toDataURL` (« Tainted canvases may not be exported »). Reproduit avec une image servie depuis un autre port.
+- Correctif : `image.crossOrigin = 'anonymous'` dans `useAssetImage.ts` (Supabase Storage renvoie bien `Access-Control-Allow-Origin: *`). La cause d'un échec est désormais écrite dans la console (`ExportDialog.tsx`). Build, lint, 2978 tests OK.
+
 ## Idées (hors jalon en cours)
 - Saisie de longueur au clavier pour les autres outils de tracé (pièce, cote, plateforme, rectangle largeur × hauteur).
 
