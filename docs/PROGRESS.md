@@ -1661,6 +1661,12 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Le nom n'est jamais modifié en groupe.
 - Fichiers : `commonValues.ts` (nouveau, + tests), `MultiSelectionFields.tsx` et `CheckboxField.tsx` (nouveaux), `ColorField.tsx`, `DimensionVisibilityField.tsx`, `PlanElementFields.tsx`, `PropertiesPanel.tsx`, `fr.ts`. Build, lint, 2964 tests OK (un échec intermittent au premier passage complet, deux passages suivants verts). **Validé par l'utilisateur dans le navigateur le 2026-11-16.**
 
+### 2026-11-16 — Correctif : portes sans battant ni arc sur le plan
+
+- Problème : une pièce tracée après une porte la recouvrait de son sol gris. On ne voyait plus que l'ouverture dans le mur, sans le battant ni l'arc d'ouverture (dessin normalisé d'une porte). Même chose pour les pointillés des coulissants et des portes de garage.
+- Correctif (`src/features/documents/layers.ts`, `drawOrder`, testé) : une porte, une fenêtre ou une baie est toujours dessinée au-dessus de son mur **et** des pièces, quel que soit l'ordre de tracé. La liste des calques n'est pas modifiée.
+- Build, lint, 2966 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->

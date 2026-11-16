@@ -38,23 +38,29 @@ export function stepElement(
 }
 
 /**
- * Ordre de dessin : identique à `elements`, sauf qu'une ouverture placée sous son mur dans les
- * calques est dessinée juste au-dessus de lui (sinon la découpe du mur serait cachée).
+ * Ordre de dessin : identique à `elements`, sauf qu'une ouverture est toujours dessinée au-dessus
+ * de son mur (sinon la découpe du mur serait cachée) et au-dessus des pièces (sinon le sol gris
+ * d'une pièce tracée après elle cacherait le battant et l'arc d'ouverture d'une porte). Elle est
+ * alors dessinée juste après le dernier de ces éléments.
  */
 export function drawOrder(elements: readonly CanvasElement[]): CanvasElement[] {
   const wallIndex = new Map(elements.map((el, index) => [el.id, index]))
-  const late = new Map<string, CanvasElement[]>() // ouvertures à dessiner après leur mur
-  const kept: CanvasElement[] = []
+  let lastRoom = -1
+  for (const [index, el] of elements.entries()) if (el.type === 'room') lastRoom = index
+
+  const late = new Map<number, CanvasElement[]>() // ouvertures à dessiner après l'élément d'indice donné
+  const kept: { el: CanvasElement; index: number }[] = []
   for (const [index, el] of elements.entries()) {
     const wall = el.type === 'opening' ? wallIndex.get(el.wallId) : undefined
-    if (el.type === 'opening' && wall !== undefined && wall > index) {
-      late.set(el.wallId, [...(late.get(el.wallId) ?? []), el])
+    const anchor = wall === undefined ? -1 : Math.max(wall, lastRoom)
+    if (el.type === 'opening' && wall !== undefined && anchor > index) {
+      late.set(anchor, [...(late.get(anchor) ?? []), el])
     } else {
-      kept.push(el)
+      kept.push({ el, index })
     }
   }
   if (late.size === 0) return [...elements]
-  return kept.flatMap((el) => [el, ...(late.get(el.id) ?? [])])
+  return kept.flatMap(({ el, index }) => [el, ...(late.get(index) ?? [])])
 }
 
 /** Vrai si les deux listes contiennent les mêmes éléments dans le même ordre. */
