@@ -1,5 +1,6 @@
 import { Copy, Image, Pencil, Ruler, Trash2 } from 'lucide-react'
 import { Link } from 'react-router'
+import { displayProjectName } from '../../features/documents/projectName'
 import type { ProjectSummary } from '../../features/persistence/types'
 import { fr } from '../../i18n/fr'
 import { formatRelativeTime } from '../../lib/relativeTime'
@@ -40,7 +41,7 @@ export default function ProjectCard({
       </Link>
       <div className="flex items-start justify-between gap-2 p-3">
         <Link to={`/p/${project.id}`} className="min-w-0">
-          <p className="truncate font-medium text-slate-900">{project.name}</p>
+          <p className="truncate font-medium text-slate-900">{displayProjectName(project)}</p>
           <p className="text-sm text-slate-600">
             {isPlan ? fr.projects.kindPlan : fr.projects.kindDesign} ·{' '}
             {formatRelativeTime(project.updatedAt)}

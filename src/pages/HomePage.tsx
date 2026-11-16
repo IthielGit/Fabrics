@@ -19,6 +19,7 @@ import type { SharedProjectSummary } from '../features/sharing/membersLogic'
 import { fr } from '../i18n/fr'
 import { useAuthStore } from '../stores/authStore'
 import { useProjectsStore } from '../stores/projectsStore'
+import { displayProjectName } from '../features/documents/projectName'
 
 type Dialog =
   | { type: 'rename'; project: ProjectSummary }
@@ -279,7 +280,7 @@ export default function HomePage() {
       )}
       {dialog?.type === 'rename' && (
         <RenameDialog
-          currentName={dialog.project.name}
+          currentName={displayProjectName(dialog.project)}
           onClose={closeDialog}
           onSubmit={(name) => {
             void rename(dialog.project.id, name)
@@ -289,7 +290,7 @@ export default function HomePage() {
       )}
       {dialog?.type === 'delete' && (
         <DeleteDialog
-          projectName={dialog.project.name}
+          projectName={displayProjectName(dialog.project)}
           onClose={closeDialog}
           onConfirm={() => {
             void remove(dialog.project.id)
@@ -299,7 +300,7 @@ export default function HomePage() {
       )}
       {dialog?.type === 'leave' && userId && (
         <LeaveDialog
-          projectName={dialog.project.name}
+          projectName={displayProjectName(dialog.project)}
           onClose={closeDialog}
           onConfirm={() => {
             const { id } = dialog.project

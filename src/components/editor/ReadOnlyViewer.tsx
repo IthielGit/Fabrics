@@ -14,6 +14,7 @@ import PlanContextBar from './PlanContextBar'
 import Notice from './Notice'
 import ToolHint from './ToolHint'
 import ZoomControls from './ZoomControls'
+import { displayProjectName } from '../../features/documents/projectName'
 
 const ICON_BUTTON =
   'rounded-md p-2 text-slate-700 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-40'
@@ -47,7 +48,7 @@ export default function ReadOnlyViewer({ banner, aside, comments = false }: Read
     if (selectedThreadId) setAsideOpen(true)
   }
   const commenting = comments && activeTool === 'comment'
-  const projectName = useEditorStore((state) => state.project?.name ?? '')
+  const projectName = useEditorStore((state) => (state.project ? displayProjectName(state.project) : ''))
   const viewer3DOpen = useViewer3DStore((state) => state.open)
   const toggleViewer3D = useViewer3DStore((state) => state.toggleOpen)
   const openViews = useViewsStore((state) => state.openViews)
