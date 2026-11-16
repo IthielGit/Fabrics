@@ -55,6 +55,16 @@ function arrowHead(x: number, y: number, d: 1 | -1, size: number): number[] {
   return [x - d * size, y - size / 2, x, y, x - d * size, y + size / 2]
 }
 
+/** Vitrages de deux vantaux coulissants sur deux rails, qui se croisent au milieu. */
+function slidingGlazing(w: number, t: number): number[][] {
+  const half = w / 2
+  const overlap = w * 0.05
+  return [
+    [-half, -t / 3, overlap, -t / 3],
+    [-overlap, t / 3, half, t / 3],
+  ]
+}
+
 /** Dessin d'une ouverture de largeur `width` dans un mur de `thickness` mm. */
 export function openingSymbol(opening: SymbolInput, thickness: number): OpeningSymbol {
   const w = opening.width
@@ -158,29 +168,18 @@ export function openingSymbol(opening: SymbolInput, thickness: number): OpeningS
     }
     case 'fixed':
       return { cut, lines: [frame, [-half, 0, half, 0]], dashed: [] }
-    case 'sliding': {
-      // Deux rails : les vitrages se croisent au milieu.
-      const overlap = w * 0.05
-      return {
-        cut,
-        lines: [
-          frame,
-          [-half, -t / 3, overlap, -t / 3],
-          [-overlap, t / 3, half, t / 3],
-        ],
-        dashed: [],
-      }
-    }
+    case 'sliding':
+    case 'bay-sliding':
+      // Deux rails : les vitrages se croisent au milieu (même dessin pour une baie coulissante).
+      return { cut, lines: [frame, ...slidingGlazing(w, t)], dashed: [] }
     case 'tilt':
       // Soufflet : le vitrage bascule autour de son axe ; trait pointillé au milieu.
       return { cut, lines: [frame, ...glazing], dashed: [[-half, 0, half, 0]] }
 
     // --- Baies ---
-    case 'bay-sliding':
-      // Baie coulissante : seuls les montants sont tracés.
-      return { cut, lines: jambs, dashed: [] }
     case 'bay-fixed':
-      return { cut, lines: [...jambs, [-half, 0, half, 0]], dashed: [] }
+      // Baie fixe : cadre et un seul vitrage au milieu, comme un châssis fixe.
+      return { cut, lines: [frame, [-half, 0, half, 0]], dashed: [] }
     case 'free':
       // Ouverture libre : seuils en pointillé sur les deux faces du mur.
       return { cut, lines: jambs, dashed: [[-half, -t, half, -t], [-half, t, half, t]] }

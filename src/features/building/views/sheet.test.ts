@@ -83,7 +83,29 @@ describe('levelPlanDrawing', () => {
     expect(walls.length).toBe(2) // les deux trumeaux, le linteau est au-dessus de la coupe
     expect(walls.every((p) => p.edges?.every((e) => !e))).toBe(true)
     const whites = plan?.polygons.filter((p) => p.fill === 'white') ?? []
-    expect(whites.length).toBe(3) // l'allège (sous la coupe) et les deux vitres des deux vantaux
+    // L'allège (sous la coupe), les deux vitres des deux vantaux et la découpe du symbole de fenêtre.
+    expect(whites.length).toBe(4)
+    // Symbole normalisé : cadre sur toute l'épaisseur du mur et deux traits de vitrage.
+    const glazing = plan?.lines.filter((l) => Math.abs(l.y1 - l.y2) < 0.01 && Math.abs(Math.abs(l.x2 - l.x1) - 1200) < 0.01) ?? []
+    expect(glazing.length).toBeGreaterThanOrEqual(4)
+  })
+
+  it('dessine une porte aux normes : battant ouvert et arc d’ouverture', () => {
+    const w = wall(ground, [0, 0, 4000, 0])
+    const door = {
+      ...createOpeningElement('door', 'Porte', { wallId: w.id, segmentIndex: 0, offset: 2000, side: 'left' }),
+      levelId: ground.id,
+      width: 900,
+    }
+    const plan = levelPlanDrawing(buildBuildingModel({ elements: [w, door], levels: [ground] }), ground, 100)
+    const lines = plan?.lines ?? []
+    // Le battant ouvert est perpendiculaire au mur et long de la largeur de la porte.
+    expect(lines.some((l) => Math.abs(l.x1 - l.x2) < 0.01 && Math.abs(Math.abs(l.y2 - l.y1) - 900) < 0.01)).toBe(true)
+    // L'arc : une suite de petits traits ni horizontaux ni verticaux.
+    const curved = lines.filter((l) => Math.abs(l.x1 - l.x2) > 1 && Math.abs(l.y1 - l.y2) > 1)
+    expect(curved.length).toBeGreaterThanOrEqual(20)
+    // Le dessin s'agrandit pour contenir l'arc (900 mm devant le mur).
+    expect(plan?.height ?? 0).toBeGreaterThan(900)
   })
 
   it('un niveau vide ne donne pas de plan', () => {

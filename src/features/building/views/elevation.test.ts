@@ -140,7 +140,7 @@ describe('buildElevation', () => {
 
   it('donne les cotes de niveaux et reste vide sans modèle', () => {
     const empty: BuildingModel = { walls: [], wallMeshes: [], steps: [], chimneys: [],
-    furniture: [], slabs: [], fills: [], marks: [], roofs: [], bounds: null }
+    furniture: [], slabs: [], fills: [], marks: [], planSymbols: [], roofs: [], bounds: null }
     const view = buildElevation(empty, [ground, upper], 'N', 0)
     expect(view.faces).toEqual([])
     expect(view.bounds).toBeNull()
