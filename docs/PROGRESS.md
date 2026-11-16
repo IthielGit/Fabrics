@@ -46,6 +46,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-16 — Mise en ligne · collaboration en direct activée sur le site publié
+- Constat : le code local, GitHub et le site Cloudflare Pages étaient identiques, mais `VITE_COLLAB_URL` n'existait que dans `.env.local`. Le site en ligne n'avait donc pas d'adresse de serveur temps réel : pas d'édition à plusieurs, pas de présence, pas de « En direct ». Supabase (toutes les tables) et le Worker `fabrics-collab` répondaient normalement.
+- Fait (par l'utilisateur) : variable `VITE_COLLAB_URL=https://fabrics-collab.harinosy-tradeco.workers.dev` ajoutée dans Cloudflare Pages (Production, texte simple), puis site redéployé.
+- Vérification : l'adresse du Worker est présente dans le code publié (`index-DaRcZNRl.js`) ; collaboration en direct validée par l'utilisateur sur https://fabrics-8zd.pages.dev.
+- À retenir : toute nouvelle variable `VITE_*` doit être ajoutée **aussi** dans Cloudflare Pages, puis le site redéployé (Vite l'intègre au moment de la construction).
+
 ### 2026-11-15 — Hors jalon · « Commenter » hors de la colonne d'outils, en-tête poli
 - Demande de l'utilisateur : « Commenter » faisait intrus parmi les outils de dessin (libellé coupé « Commen… »). Choix sur maquettes : variante 1 (en-tête + panneau).
 - Fait : outil retiré de la colonne ; bouton bulle dans l'en-tête avec le nombre de fils ouverts (ouvre l'onglet Commentaires, état enfoncé quand l'onglet est affiché) ; bouton « + Nouveau » en haut de l'onglet (lance l'outil, la touche C marche toujours) ; texte d'aide de l'onglet qui change pendant la pose.
