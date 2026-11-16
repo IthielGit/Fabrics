@@ -298,6 +298,17 @@ export function levelPlanDrawing(
       maxY = Math.max(maxY, p.y)
     }
   }
+  // Symboles des portes et fenêtres de ce niveau (battant et arc d'ouverture, vitrage…) : le même
+  // dessin normalisé que sur le plan de travail, par-dessus les murs coupés.
+  const symbols = model.planSymbols.filter((s) => s.levelId === level.id)
+  for (const symbol of symbols) {
+    for (const p of [...symbol.cut, ...symbol.lines.flat(), ...symbol.dashed.flat()]) {
+      minX = Math.min(minX, p.x)
+      maxX = Math.max(maxX, p.x)
+      minY = Math.min(minY, p.y)
+      maxY = Math.max(maxY, p.y)
+    }
+  }
   const font = fontMm ?? autoFontMm(maxX - minX, maxY - minY)
   // Les cotes agrandissent le cadre : elles sont à l'extérieur des murs.
   const extra = overlay?.(font) ?? null
@@ -336,12 +347,29 @@ export function levelPlanDrawing(
   })
   const dx = margin - minX
   const dy = margin - minY
+  const at = (p: { x: number; y: number }): [number, number] => [p.x + dx, p.y + dy]
+  const symbolLines: DrawLine[] = []
+  for (const symbol of symbols) {
+    // Découpe : efface le mur, les cadres et l'allège dans l'ouverture (fond blanc, sans contour).
+    const cut = symbol.cut.map(at)
+    polygons.push({ points: cut, fill: 'white', edges: cut.map(() => false) })
+    const push = (points: readonly { x: number; y: number }[], dashed: boolean) => {
+      for (let i = 0; i + 1 < points.length; i++) {
+        const [x1, y1] = at(points[i])
+        const [x2, y2] = at(points[i + 1])
+        symbolLines.push({ x1, y1, x2, y2, ...(dashed ? { dashed: true, weight: 'hair' as const } : {}) })
+      }
+    }
+    for (const line of symbol.lines) push(line, false)
+    for (const line of symbol.dashed) push(line, true)
+  }
   return {
     width: maxX - minX + margin * 2,
     height: maxY - minY + margin * 2,
     polygons,
     lines: [
       ...hatchedOutline(polygons, cutIndices, hatchedIndices),
+      ...symbolLines,
       ...(extra?.lines ?? []).map((l) => ({ ...l, x1: l.x1 + dx, x2: l.x2 + dx, y1: l.y1 + dy, y2: l.y2 + dy })),
     ],
     texts: (extra?.texts ?? []).map((t) => ({ ...t, x: t.x + dx, y: t.y + dy })),

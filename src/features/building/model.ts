@@ -18,6 +18,7 @@ import type {
   FurniturePiece,
   OpeningFill,
   OpeningMark,
+  PlanSymbol,
   RoofPrism,
   SlabShape,
   WallMesh,
@@ -28,6 +29,7 @@ import { buildFurnitureParts } from './furnitureParts'
 import { collectStairVoids, pointInPolygon, voidsOfRoom, type StairVoid } from '../stairs/voids'
 import { buildStairSteps } from './stairSteps'
 import { buildOpeningDetails } from './openingFills'
+import { buildPlanSymbols } from './planSymbols'
 import { buildWallMesh } from './wallMesh'
 import { buildWallPieces } from './wallPieces'
 
@@ -203,6 +205,7 @@ export function buildBuildingModel(
       slabs: [],
       fills: [],
       marks: [],
+      planSymbols: [],
       roofs: [],
       bounds: null,
     }
@@ -237,6 +240,7 @@ export function buildBuildingModel(
   const slabs: SlabShape[] = []
   const fills: OpeningFill[] = []
   const marks: OpeningMark[] = []
+  const planSymbols: PlanSymbol[] = []
   const roofs: RoofPrism[] = []
   const rooms = doc.elements.filter((el): el is RoomElement => el.type === 'room' && !el.hidden)
   // Toitures dessinées (visibles) et murs de chaque niveau, pour l'épaisseur des pignons.
@@ -276,6 +280,7 @@ export function buildBuildingModel(
       const details = buildOpeningDetails(wall, own, level)
       fills.push(...details.fills)
       marks.push(...details.marks)
+      planSymbols.push(...buildPlanSymbols(wall, own, level))
       const mesh = buildWallMesh(wall, own, level)
       if (mesh) wallMeshes.push(wall.material ? { ...mesh, material: wall.material } : mesh)
     } else if (el.type === 'chimney') {
@@ -314,6 +319,7 @@ export function buildBuildingModel(
     slabs,
     fills,
     marks,
+    planSymbols,
     roofs,
     bounds: extendWithPrisms(modelBounds([...walls, ...steps, ...chimneys], slabs), roofs),
   }

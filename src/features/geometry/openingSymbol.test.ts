@@ -88,11 +88,12 @@ describe('openingSymbol : fenêtre', () => {
 })
 
 describe('openingSymbol : baie', () => {
-  it('ne trace que deux montants', () => {
+  it('trace le cadre et deux vantaux coulissants qui se croisent au milieu', () => {
     const { lines } = make('bay', 'start', 'left', 2400)
-    expect(lines).toEqual([
-      [-1200, -100, -1200, 100],
-      [1200, -100, 1200, 100],
+    expect(lines[0]).toEqual([-1200, -100, 1200, -100, 1200, 100, -1200, 100, -1200, -100])
+    expect(lines.slice(1)).toEqual([
+      [-1200, -100 / 3, 120, -100 / 3],
+      [-120, 100 / 3, 1200, 100 / 3],
     ])
   })
 })

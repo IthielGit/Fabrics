@@ -149,6 +149,20 @@ export interface Bounds3 {
   max: Vec3
 }
 
+/**
+ * Symbole de plan d'une ouverture (dessin normalisé, comme sur le plan de travail), en coordonnées
+ * du plan (mm) : découpe du mur, traits pleins et traits en pointillé.
+ */
+export interface PlanSymbol {
+  /** Ouverture du document. */
+  sourceId: string
+  levelId: string
+  /** Rectangle effacé dans le mur (quatre coins). */
+  cut: Point[]
+  lines: Point[][]
+  dashed: Point[][]
+}
+
 export interface BuildingModel {
   /** Morceaux de mur (boîtes) : façades, coupes, emprise. */
   walls: WallPiece[]
@@ -165,6 +179,8 @@ export interface BuildingModel {
   fills: OpeningFill[]
   /** Traits de façade des ouvertures (triangles d'ouverture, flèches) ; absents de la 3D. */
   marks: OpeningMark[]
+  /** Symboles 2D des ouvertures pour les plans de niveau (planche, vues, PDF). */
+  planSymbols: PlanSymbol[]
   /** Versants et pignons des toitures en pente (un toit plat dessiné est une dalle `roof`). */
   roofs: RoofPrism[]
   /** Emprise de tout le modèle, ou `null` s'il est vide. */

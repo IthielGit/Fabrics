@@ -1667,6 +1667,13 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Correctif (`src/features/documents/layers.ts`, `drawOrder`, testé) : une porte, une fenêtre ou une baie est toujours dessinée au-dessus de son mur **et** des pièces, quel que soit l'ordre de tracé. La liste des calques n'est pas modifiée.
 - Build, lint, 2966 tests OK. **Validé par l'utilisateur dans le navigateur le 2026-11-16.**
 
+### 2026-11-16 — Correctif : portes et fenêtres aux normes dans les exports et les vues
+
+- Problème : la planche, les vues et les PDF (client, métrés) dessinent le plan à partir du modèle 3D coupé à 1 m. Les portes n'y avaient ni battant ni arc d'ouverture, et les fenêtres n'étaient que des cadres 3D coupés.
+- Correctif : le modèle du bâtiment fournit maintenant le symbole 2D de chaque ouverture (`src/features/building/planSymbols.ts`, testé), le même que sur le plan de travail (`openingSymbol`). `levelPlanDrawing` efface le mur dans l'ouverture et trace ce symbole : battant et arc pour une porte, cadre et deux traits de vitrage pour une fenêtre, pointillés des coulissants à galandage et des portes de garage.
+- Baies : la baie coulissante n'avait que ses deux montants (simple trou, aussi sur le plan de travail et dans le DXF). Elle a maintenant le cadre et deux vantaux décalés ; la baie fixe a le cadre et un vitrage au milieu.
+- Vérifié sur une capture de la planche de l'exemple. Build, lint, 2970 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
