@@ -1672,7 +1672,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Problème : la planche, les vues et les PDF (client, métrés) dessinent le plan à partir du modèle 3D coupé à 1 m. Les portes n'y avaient ni battant ni arc d'ouverture, et les fenêtres n'étaient que des cadres 3D coupés.
 - Correctif : le modèle du bâtiment fournit maintenant le symbole 2D de chaque ouverture (`src/features/building/planSymbols.ts`, testé), le même que sur le plan de travail (`openingSymbol`). `levelPlanDrawing` efface le mur dans l'ouverture et trace ce symbole : battant et arc pour une porte, cadre et deux traits de vitrage pour une fenêtre, pointillés des coulissants à galandage et des portes de garage.
 - Baies : la baie coulissante n'avait que ses deux montants (simple trou, aussi sur le plan de travail et dans le DXF). Elle a maintenant le cadre et deux vantaux décalés ; la baie fixe a le cadre et un vitrage au milieu.
-- Vérifié sur une capture de la planche de l'exemple. Build, lint, 2970 tests OK.
+- Vérifié sur une capture de la planche de l'exemple. Build, lint, 2970 tests OK. **Validé par l'utilisateur dans le navigateur le 2026-11-16.**
 
 ## Idées (hors jalon en cours)
 
