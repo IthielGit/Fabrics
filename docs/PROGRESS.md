@@ -1645,7 +1645,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 
 - Problème : sur un plan vide, après un clic sur « Tracer une pièce » ou « Tracer des murs », la carte restait au centre et empêchait de dessiner dessous.
 - Correctif (`src/components/editor/EmptyPlanCard.tsx`) : la carte ne s'affiche plus que lorsque l'outil Sélection est actif. Elle disparaît dès qu'un outil est choisi et revient après Échap tant que le plan est vide.
-- Build, lint, 2951 tests OK (le test chronométré « 600 murs en moins de 200 ms » a échoué une fois sous charge, vert relancé seul).
+- Build, lint, 2951 tests OK (le test chronométré « 600 murs en moins de 200 ms » a échoué une fois sous charge, vert relancé seul). **Validé par l'utilisateur sur la version déployée le 2026-11-16.**
 
 ## Idées (hors jalon en cours)
 
