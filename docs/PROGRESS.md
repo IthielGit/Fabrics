@@ -1674,7 +1674,14 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Baies : la baie coulissante n'avait que ses deux montants (simple trou, aussi sur le plan de travail et dans le DXF). Elle a maintenant le cadre et deux vantaux décalés ; la baie fixe a le cadre et un vitrage au milieu.
 - Vérifié sur une capture de la planche de l'exemple. Build, lint, 2970 tests OK. **Validé par l'utilisateur dans le navigateur le 2026-11-16.**
 
+### 2026-11-16 — Longueur exacte d'un mur au clavier (hors jalon)
+
+- Demande : pendant le tracé d'un mur, taper une valeur (ex. `5000`) pour obtenir une longueur précise.
+- Après le premier point, les chiffres tapés s'affichent sur le segment (« 5000 mm ↵ ») et l'aperçu prend cette longueur dans la direction de la souris (Maj garde les angles de 45°). Entrée pose le point ; en mode « mur droit », le mur est créé. Retour arrière efface un chiffre, Échap efface la saisie (un second Échap annule le tracé).
+- Fichiers : `src/features/geometry/typedLength.ts` (nouveau, + tests), `usePolylineDrawing.ts`, `PolylineDraftLayer.tsx`, `fr.ts` (astuces de l'outil Mur). Build, lint, 2974 tests OK (le test chronométré « 600 murs » a échoué une fois sous charge, vert relancé seul). À valider dans le navigateur.
+
 ## Idées (hors jalon en cours)
+- Saisie de longueur au clavier pour les autres outils de tracé (pièce, cote, plateforme, rectangle largeur × hauteur).
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
 - ~~Signaler les irrégularités de dessin qui faussent cotes et métrés~~ : fait en M11 bis, lot H (2026-11-12) pour les écarts et superpositions de murs. Reste à étudier : objets posés à quelques mm d'un mur, murs plus courts que leur épaisseur, bouts de mur sur la face (et pas l'axe) d'un autre mur dessinés en biais, raccords sur un sommet d'un tracé à plusieurs côtés.

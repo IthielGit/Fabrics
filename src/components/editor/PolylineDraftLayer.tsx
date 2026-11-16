@@ -11,6 +11,7 @@ import {
   polygonCentroid,
 } from '../../features/geometry/polygon'
 import type { SnapKind, VertexKind } from '../../features/geometry/snapping'
+import { pointAtTypedLength } from '../../features/geometry/typedLength'
 import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 import type { PolylineDraft, PolylineTool } from './usePolylineDrawing'
@@ -130,9 +131,13 @@ export default function PolylineDraftLayer({
   const roofShape = useEditorStore((state) => state.roofShape)
   const roofMode = useEditorStore((state) => state.roofMode)
   const polygonTool = tool === 'room' || tool === 'platform' || tool === 'roof'
-  const { points, cursor, fillMode, region } = draft
-  const path = cursor && points.length > 0 ? [...points, cursor] : points
+  const { points, fillMode, region, typed } = draft
   const last = points[points.length - 1]
+  // Longueur tapée (outil Mur) : le segment prend cette longueur dans la direction du curseur.
+  const typedEnd =
+    typed !== '' && last && draft.cursor ? pointAtTypedLength(last, draft.cursor, typed) : null
+  const cursor = typedEnd ?? draft.cursor
+  const path = cursor && points.length > 0 ? [...points, cursor] : points
   const showLength = cursor !== null && last !== undefined
   const lengthMm = showLength ? pointDistance(last, cursor) : 0
   const middle =
@@ -268,11 +273,11 @@ export default function PolylineDraftLayer({
 
       <SnapMarker draft={draft} scale={scale} />
 
-      {showLength && lengthMm > 0 && (
+      {showLength && (lengthMm > 0 || typed !== '') && (
         <Label x={middle.x} y={middle.y - 18 / scale} listening={false}>
-          <Tag fill="#1e293b" cornerRadius={3 / scale} />
+          <Tag fill={typed !== '' ? ACCENT : '#1e293b'} cornerRadius={3 / scale} />
           <Text
-            text={formatLength(lengthMm)}
+            text={typed !== '' ? fr.hints.typedLength(typed) : formatLength(lengthMm)}
             fontSize={12 / scale}
             fill="#ffffff"
             padding={4 / scale}

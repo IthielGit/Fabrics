@@ -1114,7 +1114,7 @@ export const fr = {
     tipsHide: 'Masquer les astuces',
     comment: { main: 'Cliquez sur un élément ou sur le plan pour poser un commentaire', tips: ['Sur un élément, l’épingle le suit s’il bouge', 'Entrée : envoyer · Maj + Entrée : retour à la ligne', 'Échap : annuler'] },
     furniture: { main: 'Cliquez sur le plan pour poser l’objet', tips: ['Autant de fois que voulu', 'Échap : quitter'] },
-    wall: { main: 'Clic : poser un point du mur · double-clic ou Entrée : terminer', tips: ['Sur un mur existant : raccord', 'Maj : angles de 45°', 'Alt : sans alignement', 'Échap : annuler'] },
+    wall: { main: 'Clic : poser un point du mur · double-clic ou Entrée : terminer', tips: ['Taper une longueur (ex. 5000) puis Entrée : segment de longueur exacte, dans la direction de la souris', 'Sur un mur existant : raccord', 'Maj : angles de 45°', 'Alt : sans alignement', 'Échap : annuler'] },
     room: { main: 'Clic : poser un coin · double-clic ou clic sur le 1er point : fermer', tips: ['Maj + survol : remplir une zone fermée par des murs', 'Maj (en traçant) : angles de 45°', 'Alt : sans alignement', 'Entrée : fermer', 'Échap : annuler'] },
     platform: { main: 'Clic : poser un coin · double-clic ou clic sur le 1er point : fermer', tips: ['Maj : angles de 45°', 'Alt : sans alignement', 'Entrée : fermer', 'Échap : annuler'] },
     platformRectangle: { main: 'Clic : premier coin · second clic : coin opposé', tips: ['Alt : sans alignement', 'Échap : annuler'] },
@@ -1122,9 +1122,11 @@ export const fr = {
     roofRectangle: { main: 'Clic : premier coin (nu extérieur des murs) · second clic : coin opposé', tips: ['Alt : sans alignement', 'Échap : annuler'] },
     chimney: { main: 'Cliquez sur le plan pour poser une cheminée', tips: ['Le conduit monte jusqu’au toit', 'Autant de fois que voulu', 'Échap : quitter'] },
     stair: { main: 'Choisissez la forme (droit, L, U) puis cliquez pour poser l’escalier', tips: ['Il relie le niveau affiché au niveau du dessus', 'Échap : quitter'] },
-    wallStraight: { main: 'Clic : début du mur · second clic : fin', tips: ['Alt : sans alignement', 'Échap : annuler'] },
+    wallStraight: { main: 'Clic : début du mur · second clic : fin', tips: ['Après le 1er clic, taper une longueur (ex. 5000) puis Entrée : mur de longueur exacte', 'Alt : sans alignement', 'Échap : annuler'] },
     roomRectangle: { main: 'Clic : premier coin · second clic : coin opposé', tips: ['Maj + survol : remplir une zone fermée par des murs', 'Alt : sans alignement', 'Échap : annuler'] },
     regionNotClosed: 'Zone non fermée par les murs',
+    /** Longueur tapée au clavier pendant le tracé d'un mur, en attente d'Entrée. */
+    typedLength: (typed: string) => `${typed} mm ↵`,
     /** Étiquette près du curseur : quel sommet est attrapé. */
     snapVertex: {
       'wall-axis': 'Axe du mur',

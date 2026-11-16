@@ -38,6 +38,7 @@ import {
 } from '../../features/geometry/snapping'
 import { createRegionFinder, type RegionFinder } from '../../features/geometry/regions'
 import type { Point } from '../../features/geometry/viewport'
+import { isTypedLengthKey, pointAtTypedLength } from '../../features/geometry/typedLength'
 import { GAP_MAX } from '../../features/geometry/wallContacts'
 import { fr } from '../../i18n/fr'
 import { selectActiveElements, selectSnapElements, useEditorStore } from '../../stores/editorStore'
@@ -60,6 +61,11 @@ export interface PolylineDraft {
    */
   fillMode: boolean
   region: Point[] | null
+  /**
+   * Outil Mur : longueur tapée au clavier (chiffres, en mm) pour le segment en cours ; `''` sinon.
+   * Le segment suit la direction du curseur et `Entrée` pose le point à cette longueur.
+   */
+  typed: string
 }
 
 /** Nombre minimal de points pour valider un tracé. */
@@ -85,6 +91,7 @@ const EMPTY: PolylineDraft = {
   vertexKind: null,
   fillMode: false,
   region: null,
+  typed: '',
 }
 
 interface StoredDraft {
@@ -427,6 +434,7 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
         vertexKind: vertexKind ?? null,
         fillMode: false,
         region: null,
+        typed: '',
       })
       // Une cote, un axe, un mur droit et un rectangle n'ont que deux points.
       if (
@@ -465,6 +473,19 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     [tool, readDraft, snap, setDraft, regionAt],
   )
 
+  /** Outil Mur : pose le point à la longueur tapée, dans la direction du curseur. */
+  const placeTyped = useCallback(() => {
+    const current = readDraft()
+    const last = current.points[current.points.length - 1]
+    if (!last || !current.cursor) return
+    const point = pointAtTypedLength(last, current.cursor, current.typed)
+    if (!point) return
+    const points = [...current.points, point]
+    setDraft({ ...current, points, typed: '' })
+    // Mur droit : le second point termine le mur.
+    if (twoClicks && points.length === 2) finish()
+  }, [readDraft, setDraft, twoClicks, finish])
+
   // Les guides d'alignement s'effacent quand on quitte l'outil.
   useEffect(() => {
     return () => setGuidesIfChanged([])
@@ -499,23 +520,34 @@ export function usePolylineDrawing(tool: PolylineTool | null, scale: number) {
     const onKeyDown = (event: KeyboardEvent) => {
       const current = readDraft()
       if (current.points.length === 0 || isTypingTarget(event.target)) return
-      if (event.key === 'Escape') {
+      // Outil Mur : les chiffres tapés donnent la longueur exacte du segment en cours.
+      const typing = tool === 'wall' && current.typed !== ''
+      const modifier = event.ctrlKey || event.metaKey || event.altKey
+      if (tool === 'wall' && !modifier && isTypedLengthKey(event.key)) {
         event.preventDefault()
         event.stopImmediatePropagation()
-        setDraft({ ...EMPTY, cursor: current.cursor })
+        setDraft({ ...current, typed: (current.typed + event.key).replace(/^0+/, '') })
+      } else if (event.key === 'Escape') {
+        event.preventDefault()
+        event.stopImmediatePropagation()
+        // Un premier Échap efface la longueur tapée, le suivant annule le tracé.
+        if (typing) setDraft({ ...current, typed: '' })
+        else setDraft({ ...EMPTY, cursor: current.cursor })
       } else if (event.key === 'Enter') {
         event.preventDefault()
         event.stopImmediatePropagation()
-        finish()
+        if (typing) placeTyped()
+        else finish()
       } else if (event.key === 'Backspace') {
         event.preventDefault()
         event.stopImmediatePropagation()
-        setDraft({ ...current, points: current.points.slice(0, -1) })
+        if (typing) setDraft({ ...current, typed: current.typed.slice(0, -1) })
+        else setDraft({ ...current, points: current.points.slice(0, -1) })
       }
     }
     window.addEventListener('keydown', onKeyDown, true)
     return () => window.removeEventListener('keydown', onKeyDown, true)
-  }, [tool, readDraft, finish, setDraft])
+  }, [tool, readDraft, finish, setDraft, placeTyped])
 
   return useMemo(
     () => ({ draft, isDrawing: draft.points.length > 0, onPointerDown, onPointerMove }),
