@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { createOpeningElement, createRectElement, createWallElement } from './elements'
+import { createOpeningElement, createRectElement, createRoomElement, createWallElement } from './elements'
 import { drawOrder, moveElementToSlot, sameOrder, stepElement } from './layers'
 
 // Ordre du tableau : A (fond) → B → C → D (dessus). Liste affichée : D, C, B, A.
@@ -96,5 +96,16 @@ describe('drawOrder', () => {
   it('range plusieurs ouvertures après leur mur, dans leur ordre', () => {
     const second = { ...door, id: 'second', name: 'Porte 2' }
     expect(drawOrder([door, second, wall]).map((el) => el.name)).toEqual(['Mur', 'Porte', 'Porte 2'])
+  })
+
+  it('dessine une porte au-dessus d’une pièce tracée après elle (arc visible)', () => {
+    const room = createRoomElement('Pièce', [0, 0, 4000, 0, 4000, 3000, 0, 3000])
+    expect(drawOrder([wall, door, rect, room]).map((el) => el.name)).toEqual(['Mur', 'R', 'Pièce', 'Porte'])
+  })
+
+  it('garde une ouverture déjà au-dessus de son mur et des pièces à sa place', () => {
+    const room = createRoomElement('Pièce', [0, 0, 4000, 0, 4000, 3000, 0, 3000])
+    const elements = [room, wall, door, rect]
+    expect(drawOrder(elements)).toEqual(elements)
   })
 })
