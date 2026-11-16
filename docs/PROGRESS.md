@@ -1665,7 +1665,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 
 - Problème : une pièce tracée après une porte la recouvrait de son sol gris. On ne voyait plus que l'ouverture dans le mur, sans le battant ni l'arc d'ouverture (dessin normalisé d'une porte). Même chose pour les pointillés des coulissants et des portes de garage.
 - Correctif (`src/features/documents/layers.ts`, `drawOrder`, testé) : une porte, une fenêtre ou une baie est toujours dessinée au-dessus de son mur **et** des pièces, quel que soit l'ordre de tracé. La liste des calques n'est pas modifiée.
-- Build, lint, 2966 tests OK.
+- Build, lint, 2966 tests OK. **Validé par l'utilisateur dans le navigateur le 2026-11-16.**
 
 ## Idées (hors jalon en cours)
 
