@@ -1693,7 +1693,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Panneau Propriétés : bouton « Verrouiller ce mur / Déverrouiller ce mur » (aussi pour plusieurs murs sélectionnés), avec un encadré « Mur verrouillé ». Quand rien n'est sélectionné, un bloc « Murs du niveau » affiche « Verrouiller tous les murs » / « Déverrouiller tous les murs ».
 - Un mur verrouillé reste cliquable, mais il ne bouge pas : si on le glisse, il reste en place et un message s'affiche. La touche Suppr l'ignore aussi, avec un message. Le reste était déjà bloqué (flèches, rotation, Étirer, poignées, Couper, Joindre).
 - Les autres éléments verrouillés (fond DXF importé) restent non cliquables.
-- Fichiers : `src/features/documents/wallLock.ts` (nouveau, + tests), `WallLockSection.tsx` (nouveau), `PropertiesPanel.tsx`, `WallShape.tsx`, `useElementInteractions.ts`, `useEditorShortcuts.ts`, `editorStore.ts` (`removeElements` renvoie le nombre de murs verrouillés écartés), `fr.ts`. Build, lint, 2978 tests OK (le test chronométré « 600 murs » a échoué une fois sous charge, vert relancé seul).
+- Fichiers : `src/features/documents/wallLock.ts` (nouveau, + tests), `WallLockSection.tsx` (nouveau), `PropertiesPanel.tsx`, `WallShape.tsx`, `useElementInteractions.ts`, `useEditorShortcuts.ts`, `editorStore.ts` (`removeElements` renvoie le nombre de murs verrouillés écartés), `fr.ts`. Build, lint, 2978 tests OK (le test chronométré « 600 murs » a échoué une fois sous charge, vert relancé seul). **Validé par l'utilisateur dans le navigateur le 2026-11-16.**
 
 ## Idées (hors jalon en cours)
 - Saisie de longueur au clavier pour les autres outils de tracé (pièce, cote, plateforme, rectangle largeur × hauteur).
