@@ -143,7 +143,7 @@ export default function PlanElementFields({ element }: { element: PlanElement })
             }
           />
           <DimensionVisibilityField
-            element={element}
+            value={element.visibleIn}
             onChange={(visibleIn) =>
               patch((el) => {
                 if (el.type !== 'dimension') return el

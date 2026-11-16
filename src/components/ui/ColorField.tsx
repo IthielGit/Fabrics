@@ -7,6 +7,8 @@ interface ColorFieldProps {
   value: string
   /** Texte du bouton « pas de couleur » ; absent = la couleur est obligatoire. */
   noneLabel?: string
+  /** Plusieurs éléments sélectionnés aux couleurs différentes : ce texte s'affiche à côté du sélecteur. */
+  mixedLabel?: string
   onCommit: (color: string) => void
 }
 
@@ -16,7 +18,7 @@ const HEX = /^#[0-9a-f]{6}$/i
  * Sélecteur de couleur. Pendant que l'utilisateur déplace le curseur du sélecteur on n'affiche
  * qu'un aperçu ; la couleur n'est enregistrée (un état d'historique) qu'à la fermeture du sélecteur.
  */
-export default function ColorField({ label, value, noneLabel, onCommit }: ColorFieldProps) {
+export default function ColorField({ label, value, noneLabel, mixedLabel, onCommit }: ColorFieldProps) {
   const id = useId()
   const inputRef = useRef<HTMLInputElement>(null)
   const [preview, setPreview] = useState<string | null>(null)
@@ -38,7 +40,8 @@ export default function ColorField({ label, value, noneLabel, onCommit }: ColorF
     return () => input.removeEventListener('change', handleChange)
   }, [])
 
-  const none = isNoColor(value)
+  const mixed = mixedLabel !== undefined
+  const none = !mixed && isNoColor(value)
   const swatch = preview ?? (HEX.test(value) ? value : '#000000')
 
   return (
@@ -47,6 +50,7 @@ export default function ColorField({ label, value, noneLabel, onCommit }: ColorF
         {label}
       </label>
       <div className="flex items-center gap-2">
+        {mixed && preview === null && <span className="text-xs italic text-slate-500">{mixedLabel}</span>}
         {noneLabel && (
           <button
             type="button"
@@ -68,7 +72,7 @@ export default function ColorField({ label, value, noneLabel, onCommit }: ColorF
           type="color"
           value={swatch}
           onChange={(event) => setPreview(event.target.value)}
-          className={clsx('h-8 w-10 cursor-pointer rounded border border-slate-300 bg-white p-0.5', none && 'opacity-40')}
+          className={clsx('h-8 w-10 cursor-pointer rounded border border-slate-300 bg-white p-0.5', (none || (mixed && preview === null)) && 'opacity-40')}
         />
       </div>
     </div>

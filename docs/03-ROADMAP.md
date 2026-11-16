@@ -983,6 +983,19 @@ Lots à valider un par un.
 
 ---
 
+### Hors jalon — Modifier plusieurs éléments à la fois (demande du 2026-11-16)
+
+Demande de l'utilisateur : avec plusieurs pièces sélectionnées, changer leur couleur (ou un autre
+réglage) en une fois. Le panneau Propriétés affiche chaque réglage que **tous** les éléments
+sélectionnés possèdent ; une valeur qui diffère laisse le champ vide (« Différentes », case à tiret).
+Le nom n'est jamais modifié en groupe.
+
+- [x] Couleur (remplissage, contour) dès que tous les éléments l'ont, même de types différents
+- [x] Pièces : afficher le nom et la surface, faux plafond
+- [x] Murs : épaisseur (mm), hauteur (mm), matériau
+- [x] Cotes : décalage (mm), version visible (client / exécution)
+- [x] Un seul pas d'historique : Ctrl+Z annule le changement sur tous les éléments
+
 ## M16 — Commentaires ancrés (sans notifications)
 
 Décision du 2026-11-15 (D74) : tous les membres, lecteurs compris, peuvent commenter. Pas de mentions ni de
