@@ -23,6 +23,10 @@ export function useAssetImage(assetId: string): AssetImageState {
         (url) =>
           new Promise<HTMLImageElement>((resolve, reject) => {
             const image = new window.Image()
+            // Les images d'un compte viennent du stockage Supabase (autre domaine). Sans
+            // « anonymous », le canevas devient « contaminé » et tout export (PNG, JPG, PDF,
+            // miniature) est refusé par le navigateur. Sans effet sur les images locales (blob:).
+            image.crossOrigin = 'anonymous'
             image.onload = () => resolve(image)
             image.onerror = () => reject(new Error('Image illisible'))
             image.src = url
