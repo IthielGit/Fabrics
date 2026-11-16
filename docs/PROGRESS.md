@@ -1641,6 +1641,12 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Le bouton cliqué affiche une roue pendant l'enregistrement, et les autres sont désactivés : plus de double création par double clic.
 - Build, lint, 2951 tests OK. **Validé par l'utilisateur sur la version déployée le 2026-11-15.**
 
+### 2026-11-16 — Correctif : la carte « Commencez votre plan » gênait le tracé
+
+- Problème : sur un plan vide, après un clic sur « Tracer une pièce » ou « Tracer des murs », la carte restait au centre et empêchait de dessiner dessous.
+- Correctif (`src/components/editor/EmptyPlanCard.tsx`) : la carte ne s'affiche plus que lorsque l'outil Sélection est actif. Elle disparaît dès qu'un outil est choisi et revient après Échap tant que le plan est vide.
+- Build, lint, 2951 tests OK (le test chronométré « 600 murs en moins de 200 ms » a échoué une fois sous charge, vert relancé seul).
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
