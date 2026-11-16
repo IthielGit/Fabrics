@@ -5,12 +5,15 @@ import type { DimensionElement } from '../../types/document'
 type Choice = 'both' | 'client' | 'execution'
 const CHOICES: readonly Choice[] = ['both', 'client', 'execution']
 
-/** Champ « Visible en : Les deux / Client / Exécution » d'une cote tracée à la main (M10 ter lot B). */
+/**
+ * Champ « Visible en : Les deux / Client / Exécution » d'une cote tracée à la main (M10 ter lot B).
+ * `'mixed'` : plusieurs cotes sélectionnées aux réglages différents.
+ */
 export default function DimensionVisibilityField({
-  element,
+  value,
   onChange,
 }: {
-  element: DimensionElement
+  value: DimensionElement['visibleIn'] | 'mixed'
   onChange: (visibleIn: DimensionElement['visibleIn']) => void
 }) {
   const id = useId()
@@ -21,13 +24,18 @@ export default function DimensionVisibilityField({
       </label>
       <select
         id={id}
-        value={element.visibleIn ?? 'both'}
+        value={value ?? 'both'}
         onChange={(event) => {
-          const value = event.target.value as Choice
-          onChange(value === 'both' ? undefined : value)
+          const choice = event.target.value as Choice
+          onChange(choice === 'both' ? undefined : choice)
         }}
         className="w-36 rounded-md border border-slate-300 px-2 py-1 text-sm text-slate-900"
       >
+        {value === 'mixed' && (
+          <option value="mixed" disabled>
+            {fr.properties.mixedValues}
+          </option>
+        )}
         {CHOICES.map((choice) => (
           <option key={choice} value={choice}>
             {fr.dimensioning.visibleInOptions[choice]}

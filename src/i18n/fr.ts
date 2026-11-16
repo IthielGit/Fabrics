@@ -1562,6 +1562,9 @@ export const fr = {
     title: 'Propriétés',
     empty: 'Sélectionnez un élément pour modifier ses propriétés.',
     multiple: (count: number) => `${count} éléments sélectionnés`,
+    mixedValues: 'Différentes',
+    multiEditHint:
+      'Les réglages s’appliquent à tous les éléments sélectionnés (un seul Ctrl+Z annule tout). Un champ vide : les valeurs diffèrent.',
     x: 'X',
     y: 'Y',
     width: 'Largeur',
