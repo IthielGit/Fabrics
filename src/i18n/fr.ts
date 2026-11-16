@@ -197,6 +197,9 @@ export const fr = {
   projects: {
     defaultDesignName: 'Visuel sans titre',
     defaultPlanName: 'Plan sans titre',
+    /** Nom d'un nouveau projet, unique et parlant : « Plan du 16 nov. à 14:32 ». */
+    datedName: (isPlan: boolean, day: string, time: string) =>
+      `${isPlan ? 'Plan' : 'Visuel'} du ${day} à ${time}`,
     copySuffix: '(copie)',
     kindDesign: 'Visuel',
     kindPlan: 'Plan',

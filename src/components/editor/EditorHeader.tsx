@@ -29,6 +29,7 @@ import CollabIndicator from './CollabIndicator'
 import PresenceAvatars from './PresenceAvatars'
 import SaveIndicator from './SaveIndicator'
 import ShareDialog from './ShareDialog'
+import { displayProjectName } from '../../features/documents/projectName'
 
 /** Base commune des boutons de l'en-tête : 32 px de haut, même arrondi que les barres du plan. */
 const HEADER_CONTROL =
@@ -54,7 +55,7 @@ interface EditorHeaderProps {
  * Exporter en principal).
  */
 export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
-  const projectName = useEditorStore((state) => state.project?.name ?? '')
+  const projectName = useEditorStore((state) => (state.project ? displayProjectName(state.project) : ''))
   // Collaboration ouverte (M14) : annuler / rétablir ne concernent que ses propres modifications.
   const collabActive = useCollabStore((state) => state.active)
   const collabCanUndo = useCollabStore((state) => state.canUndo)

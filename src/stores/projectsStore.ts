@@ -7,6 +7,7 @@ import {
   duplicateProject,
   type DesignFormatId,
 } from '../features/documents/createProject'
+import { defaultProjectName, displayProjectName, uniqueName } from '../features/documents/projectName'
 import { rememberCreated } from '../features/persistence/justCreated'
 import { repository } from '../features/persistence/repository'
 import type { ProjectRepository, ProjectSummary } from '../features/persistence/types'
@@ -36,7 +37,11 @@ export function createProjectsStore(repo: ProjectRepository) {
      * Enregistre un nouveau projet et rend la main tout de suite : la liste de l'accueil se relit
      * en arrière-plan, et l'éditeur reçoit le projet sans le retélécharger.
      */
-    const saveNew = async (project: Project): Promise<string> => {
+    const takenNames = () => get().projects.map((p) => p.name)
+
+    const saveNew = async (created: Project): Promise<string> => {
+      // Jamais deux projets du même nom sur l'accueil : « Exemple… (2) », « Plan du… (2) ».
+      const project = { ...created, name: uniqueName(created.name, takenNames()) }
       await repo.save(project)
       rememberCreated(project)
       void get().refresh()
@@ -57,12 +62,12 @@ export function createProjectsStore(repo: ProjectRepository) {
       },
 
       createDesign: async (formatId) => {
-        const project = createDesignProject(formatId, fr.projects.defaultDesignName)
+        const project = createDesignProject(formatId, defaultProjectName('design', new Date()))
         return saveNew(project)
       },
 
       createPlan: async () => {
-        const project = createPlanProject(fr.projects.defaultPlanName)
+        const project = createPlanProject(defaultProjectName('plan', new Date()))
         return saveNew(project)
       },
 
@@ -88,7 +93,10 @@ export function createProjectsStore(repo: ProjectRepository) {
       duplicate: async (id) => {
         const source = await repo.get(id)
         if (!source) return null
-        const copy = duplicateProject(source, `${source.name} ${fr.projects.copySuffix}`)
+        const copy = duplicateProject(
+          source,
+          uniqueName(`${displayProjectName(source)} ${fr.projects.copySuffix}`, takenNames()),
+        )
         await repo.save(copy)
         await get().refresh()
         return copy.id

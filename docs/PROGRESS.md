@@ -1647,6 +1647,13 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Correctif (`src/components/editor/EmptyPlanCard.tsx`) : la carte ne s'affiche plus que lorsque l'outil Sélection est actif. Elle disparaît dès qu'un outil est choisi et revient après Échap tant que le plan est vide.
 - Build, lint, 2951 tests OK (le test chronométré « 600 murs en moins de 200 ms » a échoué une fois sous charge, vert relancé seul). **Validé par l'utilisateur sur la version déployée le 2026-11-16.**
 
+### 2026-11-16 — Correctif : fini les « Plan sans titre » en série sur l'accueil
+
+- Problème : chaque nouveau projet s'appelait « Plan sans titre » (ou « Visuel sans titre ») ; l'accueil alignait des cartes identiques, impossibles à distinguer.
+- Correctif (`src/features/documents/projectName.ts`, testé) : un nouveau projet reçoit un nom daté, « Plan du 16 nov. à 14:32 ». Aucun nom en double : un exemple créé deux fois devient « Exemple : maison à étage (2) », de même pour une copie.
+- Les anciens projets « sans titre » s'affichent avec leur date de création (accueil, en-tête de l'éditeur, lecture seule), sans réécrire les données. Le nom est enregistré dès qu'on le modifie.
+- Build, lint, 2956 tests OK.
+
 ## Idées (hors jalon en cours)
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
