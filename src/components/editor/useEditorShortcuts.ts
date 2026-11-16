@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { rotateSelectionQuarterTurn } from '../../features/geometry/rotateSelection'
 import { commentsAvailable } from '../../features/comments/commentsApi'
+import { fr } from '../../i18n/fr'
 import { useAuthStore } from '../../stores/authStore'
 import { useEditorStore } from '../../stores/editorStore'
 import { useHelpStore } from '../../stores/helpStore'
@@ -94,7 +95,7 @@ export function useEditorShortcuts() {
           break
         case 'delete':
           event.preventDefault() // Retour arrière ne doit pas revenir à la page précédente
-          store.removeElements(store.selectedIds)
+          if (store.removeElements(store.selectedIds) > 0) store.setNotice(fr.wallLock.cannotDelete)
           break
         case 'copy':
           store.copySelection()

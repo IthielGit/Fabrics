@@ -50,8 +50,10 @@ export default function WallShape({
       y={element.y}
       opacity={element.opacity}
       visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
+      // Verrouillé : reste cliquable (propriétés, déverrouillage) ; un glissement est refusé avec un
+      // message (voir `onDragStart`), sans bouger le mur.
+      listening={interactive}
+      draggable={interactive}
       onMouseDown={onPointerDown}
       onTouchStart={onPointerDown}
       onDblClick={onDoubleClick}

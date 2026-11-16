@@ -28,6 +28,7 @@ import StairFields from './StairFields'
 import PlanElementFields from './PlanElementFields'
 import PageSizeSection from './PageSizeSection'
 import PlanSettingsSection from './PlanSettingsSection'
+import WallLockSection from './WallLockSection'
 
 const ALIGNMENTS: { align: TextElement['align']; icon: LucideIcon; label: string }[] = [
   { align: 'left', icon: AlignLeft, label: fr.properties.alignLeft },
@@ -114,6 +115,7 @@ export default function PropertiesPanel() {
             {fr.properties.empty}
           </p>
           <PageSizeSection />
+          <WallLockSection />
           <PlanSettingsSection />
         </>
       )}
@@ -129,6 +131,7 @@ export default function PropertiesPanel() {
             onCommit={setNumber('opacity')}
           />
           <MultiSelectionFields elements={selected} />
+          {selectedWalls.length === selected.length && <WallLockSection walls={selectedWalls} />}
           {selectedWalls.length === selected.length && (
             <button
               type="button"
@@ -169,6 +172,7 @@ export default function PropertiesPanel() {
   function renderSingleElementFields(element: CanvasElement) {
     return (
       <div className="mt-3 space-y-3">
+        {element.type === 'wall' && <WallLockSection walls={[element]} />}
         {(element.type === 'wall' ||
           element.type === 'room' ||
           element.type === 'dimension' ||

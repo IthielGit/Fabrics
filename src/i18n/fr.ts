@@ -400,6 +400,23 @@ export const fr = {
       tooLarge: 'Ce fichier est trop lourd pour être affiché comme fond de plan (plus de 20 000 traits ou 50 Mo).',
     },
   },
+  wallLock: {
+    lock: (count: number) => (count > 1 ? `Verrouiller ces ${count} murs` : 'Verrouiller ce mur'),
+    unlock: (count: number) => (count > 1 ? `Déverrouiller ces ${count} murs` : 'Déverrouiller ce mur'),
+    lockedHint: (count: number) =>
+      count > 1
+        ? 'Murs verrouillés : ils ne peuvent être ni déplacés ni supprimés.'
+        : 'Mur verrouillé : il ne peut être ni déplacé ni supprimé.',
+    cannotMove: 'Mur verrouillé : déverrouillez-le (panneau Propriétés) pour le déplacer.',
+    cannotDelete: 'Mur verrouillé : déverrouillez-le (panneau Propriétés) pour le supprimer.',
+    levelTitle: 'Murs du niveau',
+    levelStatus: (locked: number, total: number) =>
+      `${locked} mur${locked > 1 ? 's' : ''} verrouillé${locked > 1 ? 's' : ''} sur ${total}.`,
+    lockLevel: 'Verrouiller tous les murs',
+    unlockLevel: 'Déverrouiller tous les murs',
+    levelLocked: (count: number) =>
+      `${count} mur${count > 1 ? 's' : ''} verrouillé${count > 1 ? 's' : ''} : ils ne bougeront plus par accident.`,
+  },
   layers: {
     title: 'Calques',
     empty: 'Aucun élément pour le moment.',

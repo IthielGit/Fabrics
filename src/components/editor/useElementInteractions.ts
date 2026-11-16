@@ -18,6 +18,8 @@ import { collectWallSides, isWallBacked, placeAgainstWall, type WallSide } from 
 import { pxPerUnit } from '../../features/units/scale'
 import { selectActiveElements, useEditorStore } from '../../stores/editorStore'
 import { connectedWallIds } from '../../features/building/wallChains'
+import { isLockedWall } from '../../features/documents/wallLock'
+import { fr } from '../../i18n/fr'
 import type { CanvasElement, WallElement } from '../../types/document'
 import type { ShapeInteraction } from './shapes/shapeTypes'
 
@@ -157,7 +159,15 @@ export function useElementInteractions(): Handlers {
   const onDragStart = useCallback((event: Konva.KonvaEventObject<DragEvent>) => {
     const stage = event.target.getStage()
     if (!stage) return
-    const { selectedIds, project } = useEditorStore.getState()
+    const { selectedIds, project, setNotice } = useEditorStore.getState()
+    // Mur verrouillé saisi : il reste en place, et on explique pourquoi.
+    const grabbed = project?.document.elements.find((el) => el.id === event.target.id())
+    if (grabbed && isLockedWall(grabbed)) {
+      event.target.stopDrag()
+      session.current = EMPTY_SESSION
+      setNotice(fr.wallLock.cannotMove)
+      return
+    }
     // Verrouillés, et ouvertures (leur place vient de leur mur) : jamais déplacés ici.
     const locked = new Set(
       project?.document.elements
