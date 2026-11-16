@@ -35,6 +35,7 @@ import { joinWallsInDocument, type JoinWallsProblem } from '../features/geometry
 import { moveWallSide } from '../features/geometry/moveWallSide'
 import { stretchZone } from '../features/geometry/stretchZone'
 import { translateElement } from '../features/geometry/transform'
+import { removableIds } from '../features/documents/wallLock'
 import { fitToScreen, type Point, type Size } from '../features/geometry/viewport'
 import { planExportExtent } from '../features/export/bounds'
 import { pxPerUnit } from '../features/units/scale'
@@ -289,7 +290,8 @@ interface EditorState {
     sideIndex: number,
     distance: number,
   ) => { blocked: boolean; removedOpenings: number; distance: number } | null
-  removeElements: (ids: string[]) => void
+  /** Supprime `ids` (et les ouvertures de leurs murs), sauf les murs verrouillés : renvoie leur nombre. */
+  removeElements: (ids: string[]) => number
   duplicateElements: (ids: string[]) => void
   /**
    * Geste en direct (par exemple glisser un sommet) : `beginLiveEdit` mémorise l'état de départ,
@@ -845,9 +847,13 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       }
     },
 
-    removeElements: (ids) => {
+    removeElements: (requested) => {
+      const all = get().project?.document.elements ?? []
+      // Un mur verrouillé ne se supprime pas (ni ses ouvertures).
+      const { ids, lockedWalls } = removableIds(all, requested)
+      if (ids.length === 0) return lockedWalls
       // Supprimer un mur supprime aussi ses ouvertures.
-      const target = withWallOpeningIds(get().project?.document.elements ?? [], ids)
+      const target = withWallOpeningIds(all, ids)
       commit(
         (doc) => {
           const elements = doc.elements.filter((el) => !target.has(el.id))
@@ -855,6 +861,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         },
         get().selectedIds.filter((id) => !target.has(id)),
       )
+      return lockedWalls
     },
 
     duplicateElements: (ids) => {
