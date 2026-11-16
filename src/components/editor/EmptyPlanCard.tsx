@@ -2,10 +2,16 @@ import { BrickWall, Pentagon } from 'lucide-react'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 
-/** Invitation au centre d'un plan vide : elle disparaît dès le premier élément tracé. */
+/**
+ * Invitation au centre d'un plan vide : elle disparaît dès le premier élément tracé,
+ * et aussi dès qu'un outil de tracé est choisi (sinon elle masquerait la zone où l'on dessine).
+ */
 export default function EmptyPlanCard() {
   const isEmptyPlan = useEditorStore(
-    (state) => state.project?.kind === 'plan' && state.project.document.elements.length === 0,
+    (state) =>
+      state.project?.kind === 'plan' &&
+      state.project.document.elements.length === 0 &&
+      state.activeTool === 'select',
   )
   const setTool = useEditorStore((state) => state.setTool)
   const setRoomMode = useEditorStore((state) => state.setRoomMode)
