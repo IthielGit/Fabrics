@@ -58,6 +58,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — Roadmap · effets, navigation et UX de Pascal (D81)
+- Fait : décision D81 ; M19 lot A liste les effets visuels et sonores, modes et options de navigation, gestes et prise en main de Pascal à garder tels quels, avec un critère de comparaison côte à côte.
+- Aucun code modifié.
+- Commit : docs: effets, navigation et UX de Pascal (D81)
+
 ### 2026-11-17 — Roadmap · interface et prise en main de Pascal (D80)
 - Fait : décision D80 (toute l'interface de Pascal, en restant sur Vite) ; `docs/03-ROADMAP.md` : principe mis à jour, carte des écrans ajoutée en M17, M19 devient « Interface Pascal et édition 2D/3D professionnelle » avec un lot A Interface ; doublons `fr.ts` / Lingui et composants d'interface ajoutés ; `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md` alignés.
 - Aucun code modifié.
@@ -1580,6 +1585,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D78 | Paquets Pascal | **Choix de l'utilisateur le 2026-11-17** : tous les paquets de Pascal entrent dans Fabrics (workspaces npm, `packages/pascal/`) ; leurs dépendances sont acceptées en bloc ; toute autre dépendance demande toujours un accord. | Réutiliser le code tel quel au lieu de le recopier, et pouvoir reprendre les mises à jour de Pascal. |
 | D79 | Source de vérité | **Choix de l'utilisateur le 2026-11-17** : la scène Pascal devient l'unique modèle des projets Plan (stockage en mètres, affichage toujours en mm, m², m³) ; migration testée des plans existants en M18 ; les projets Visuel gardent `FabricsDocument`. | Une seule source pour la 2D, la 3D, les métrés, l'IFC et le DQE, sans traduction permanente entre deux modèles. |
 | D80 | Interface et prise en main | **Choix de l'utilisateur le 2026-11-17** (précise D75) : on prend aussi **toute l'interface et la prise en main de Pascal** (accueil, éditeur, réglages, import, connexion, aide). Les fonctions de Fabrics y sont reconstruites (métrés Client / Exécution, commentaires, historique, présence, partage, export, DQE) ; l'éditeur Visuel reste à part, dans le même style. **On reste sur Vite** (composants de `apps/editor` repris sans Next.js). Remplace l'interface choisie en M15 bis et la prise en main de M11 quater : leurs **fonctions** restent exigées par la liste de non-régression. | Une seule interface cohérente, celle du moteur repris, sans perdre ce que fait Fabrics. |
+| D81 | Expérience de Pascal | **Souhait de l'utilisateur le 2026-11-18** (précise D80) : tous les effets visuels et sonores, la navigation, les options de navigation et l'UX de Pascal sont gardés tels quels dans Fabrics ; ils entrent dans la liste de non-régression (comparaison avec Pascal lancé seul). Les sons se coupent dans les réglages. | L'utilisateur apprécie l'expérience de Pascal : elle ne doit pas être appauvrie par l'intégration. |
 | D67 | Miniature dans le cloud | La miniature (image encodée en texte) est stockée telle quelle dans la colonne `thumbnail_path` de `projects`, sans fichier Storage. | Évite une URL signée par carte de l'accueil ; le nom de la colonne est trompeur mais le schéma reste inchangé. À revoir si la base grossit trop. |
 | D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 

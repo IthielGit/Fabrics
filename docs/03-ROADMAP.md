@@ -1215,6 +1215,16 @@ branche dédiée.
       avatars, partage et invitations, Exporter, points à vérifier, cotation Aucune / Client / Exécution
 - [ ] Projets Visuel : leur éditeur reste à part, habillé dans le style de Pascal, accessible depuis
       le même accueil
+- [ ] **Expérience Pascal conservée telle quelle** (D81), reprise sans simplification :
+      - effets visuels : rendu WebGPU (repli WebGL2), occlusion ambiante, bloom, anticrénelage,
+        contours encrés, surlignage de sélection, lumière du jour et atmosphère, environnement HDRI,
+        animation de construction, transitions et animations d'interface (`motion`) ;
+      - effets sonores (`howler`, sons de `public/pascal/audios`), avec un réglage pour les couper ;
+      - navigation : perspective et orthographique, visite à la première personne, suivi de caméra,
+        réalité virtuelle (WebXR), niveaux empilés / éclatés / seuls, coupe 3D ;
+      - options de navigation et gestes : modes d'accrochage visibles (Maj pour changer, Alt pour
+        ignorer), palette de commandes, raccourcis, sélection, un geste = une annulation ;
+      - prise en main : aide et parcours de découverte de Pascal
 - [ ] Tous les textes en français (Lingui) ; unités affichées en mm, m², m³
 - [ ] Anciens composants d'interface de Fabrics retirés une fois remplacés (registre mis à jour)
 
@@ -1223,6 +1233,8 @@ branche dédiée.
   (`docs/regression-checklist.md` passe en entier)
 - Un projet Plan et un projet Visuel existants s'ouvrent depuis le nouvel accueil
 - Aucun texte en anglais visible ; aucune longueur affichée en m
+- Chaque effet visuel et sonore, mode de navigation et option de la liste ci-dessus fonctionne comme
+  dans Pascal lancé seul (comparaison côte à côte, notée dans `docs/regression-checklist.md`)
 
 ### Lot B — Édition 2D/3D professionnelle
 
