@@ -206,5 +206,52 @@ Un écart = gate **FAIL**, sauf écart voulu et documenté (règle du roadmap).
 
 ## 2. Pascal — fonctions natives
 
-Section à compléter au lot 4 à partir de l'inventaire `docs/capabilities.md` (une ligne par
-fonction native de Pascal, vérifiée par `npm run test:pascal` ou dans l'éditeur de Pascal).
+Chemins relatifs à `packages/pascal/`. **Auto** = `npm run test:pascal` (résultats comparés à
+`packages/pascal/.fabrics/known-failures-<système>.json`). **Nav.** = geste dans l'éditeur de Pascal
+(en M17 : Pascal lancé seul, `bun run dev` dans `packages/pascal` ; à partir de M19 : dans Fabrics,
+comparaison côte à côte, D81).
+
+### 2.1 Modèle et données
+| Fonction | Vérification |
+|---|---|
+| Schémas des nœuds (≈ 60 types : murs, dalles, plafonds, toitures, portes, fenêtres, escaliers, pièces, objets, MEP…) | Auto : `packages/core` (schémas), `packages/nodes/src/index.test.ts` (enregistrement) |
+| Anciennes scènes toujours lisibles (E-003, surface au sol à 1 % près) | Auto : `core/src/utils/*corpus*.test.ts`, `frozen-floor-gate.test.ts` |
+| Annuler / rétablir, un geste = une étape (E-007) | Auto : `core/src/store/*`, `packages/editor` (historique) ; Nav. |
+| Copie détachée de la scène, mêmes résultats (E-018) | Auto : `core/src/runtime/fixture-parity.test.ts`, `detached-scene.test.ts` |
+| Pièces d'abord : murs et dalles dérivés des pièces (E-012) | Auto : `core/src/store/derived-writer-allowlist.test.ts` |
+| Dépendances entre paquets (E-001) | Auto : `core/src/architecture.test.ts` ; `npm run lint:pascal` (Biome `noRestrictedImports`) |
+| Contrat des greffons v1 (E-014) | Auto : `core/src/registry/plugin-v1-conformance.test.ts` |
+
+### 2.2 Édition
+| Fonction | Vérification |
+|---|---|
+| Outils de construction (mur, pièce, dalle, plafond, toiture, poteau, trame, escalier, ascenseur, porte, fenêtre, lucarne, fenêtre de toit, cheminée, gouttière, MEP…) | Auto : `packages/nodes` (un dossier par type) ; Nav. : chaque outil du rail |
+| Modes d'accrochage visibles : Maj = changer de mode, Alt = ignorer (E-004) | Nav. |
+| Guides d'alignement, saisie de cote pendant le tracé | Auto : `core/src/services/alignment*`, `editor/src/lib/floorplan/dimension-drive*` ; Nav. |
+| Glisser en direct sans saccade (E-007, E-010) | Nav. (scène complexe) |
+| Peinture des surfaces et matériaux (E-009), types de murs et couches | Auto : `core/src/node-slots`, `schema/assembly` ; Nav. |
+| Terrain : sculpter, limites de parcelle | Auto : `nodes/src/site` ; Nav. |
+| Catalogue d'objets (145 modèles 3D), objets procéduraux, cuisines | Auto : `packages/editor` (catalogue), `core/src/procedural-items` ; Nav. |
+| Palette de commandes, raccourcis | Nav. |
+| Parité 2D ↔ 3D d'un même geste (E-006) | Nav. |
+
+### 2.3 Vues et expérience (D81)
+| Fonction | Vérification |
+|---|---|
+| Rendu WebGPU, repli WebGL2 | Auto : `viewer/src/lib/renderer-capability*` ; Nav. (deux navigateurs) |
+| Effets : occlusion ambiante, bloom, anticrénelage, contours encrés, surlignage, lumière du jour, HDRI, animation de construction | Nav. (comparaison côte à côte) |
+| Sons (`howler`) et réglage pour les couper | Nav. |
+| Navigation : perspective / orthographique, première personne, suivi de caméra, WebXR, niveaux empilés / éclatés / seuls, coupe 3D | Auto : `viewer/src/xr`, `editor/.../first-person*` ; Nav. |
+| Plan 2D en lecture seule (`viewer/ui`) | Auto : `packages/viewer` |
+| Parcours de découverte et aide | Nav. |
+
+### 2.4 Échanges et agents
+| Fonction | Vérification |
+|---|---|
+| Export IFC4 | Auto : `packages/ifc-converter` ; `tools/ifc/validate.py` sur un export (M22) |
+| Import IFC (web-ifc) | Auto : `packages/ifc-converter` (107 tests) |
+| Exports GLB, USDZ, STL, OBJ, 3MF ; PDF des plans avec nomenclatures | Auto : `packages/editor` ; Nav. |
+| Serveur MCP (≈ 80 outils), stockage des scènes | Auto : `packages/mcp` |
+| CLI `pascal` | Auto : `packages/cli` (14 échecs connus sous Windows) |
+| Script de géométrie | Auto : `packages/geometry-script` |
+| Traductions (Lingui, 5 langues dont le français) | Auto : tests `scripts/i18n*.test.ts` de la racine de Pascal |

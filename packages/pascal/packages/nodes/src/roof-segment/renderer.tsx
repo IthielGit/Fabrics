@@ -1,0 +1,257 @@
+'use client'
+
+import {
+  type AnyNodeId,
+  getEffectiveNode,
+  getEffectiveRoofSurfaceMaterial,
+  getEffectiveSegmentSurfaceMaterial,
+  getRoofWallBandMaterial,
+  getSegmentFasciaMaterial,
+  isGlazedRoofSegment,
+  type RoofNode,
+  type RoofSegmentNode,
+  type RoofSegmentSurfaceMaterialRole,
+  useLiveNodeOverrides,
+  useRegistry,
+  useScene,
+} from '@pascal-app/core'
+import {
+  createMaterial,
+  getRoofMaterialArray,
+  levelWallCladdingRef,
+  levelWallFaceRef,
+  resolveMaterialRef,
+  SHADOW_ONLY_LAYER,
+  useNodeEvents,
+  useViewer,
+} from '@pascal-app/viewer'
+import { useEffect, useLayoutEffect, useMemo, useRef } from 'react'
+import * as THREE from 'three'
+import { syncGlazedRoofShadow } from '../roof/glazed-geometry'
+import { createGlazedRoofMaterials } from '../roof/glazed-materials'
+import { getRoofDebugMaterials, getRoofMaterials } from '../roof/roof-materials'
+import { createPlaceholderGeometry } from '../shared/placeholder-geometry'
+
+export const RoofSegmentRenderer = ({ node: storedNode }: { node: RoofSegmentNode }) => {
+  useLiveNodeOverrides((state) => state.overrides.get(storedNode.id))
+  const node = getEffectiveNode(storedNode)
+  const glazed = isGlazedRoofSegment(node)
+  const ref = useRef<THREE.Mesh>(null!)
+  const nodes = useScene((state) => state.nodes)
+  const sceneMaterials = useScene((state) => state.materials)
+
+  useRegistry(node.id, 'roof-segment', ref)
+  // A segment mounted after its roof (one dropping into an assembling roof)
+  // still gets its own build: the roof system dropped its mark while it was unmounted.
+  useLayoutEffect(() => {
+    useScene.getState().markDirty(node.id)
+  }, [node.id])
+  // The renderer loads lazily, so the scene-load dirty mark can be consumed
+  // before this mesh registers. A painted segment is built only from its own
+  // mesh (the merged shell skips it), so it would keep its empty placeholder.
+  useLayoutEffect(() => {
+    useScene.getState().markDirty(node.id)
+  }, [node.id])
+
+  const handlers = useNodeEvents(node, 'roof-segment')
+  const debugColors = useViewer((s) => s.debugColors)
+  const shading = useViewer((s) => s.shading)
+  const textures = useViewer((s) => s.textures)
+  const colorPreset = useViewer((s) => s.colorPreset)
+  const sceneTheme = useViewer((s) => s.sceneTheme)
+  const parentNode = node.parentId
+    ? (nodes[node.parentId as AnyNodeId] as RoofNode | undefined)
+    : undefined
+  // 4 groups map 1:1 to the roof's 4-material array (see getRoofMaterialArray).
+  const placeholderGeometry = useMemo(() => createPlaceholderGeometry(4), [])
+  const shadowPlaceholder = useMemo(() => createPlaceholderGeometry(1), [])
+
+  // Segment material precedence, per-role:
+  //   1. Segment's role-specific override (topMaterial, edgeMaterial, wallMaterial).
+  //   2. Segment's catch-all `material` (legacy single-slot paint).
+  //   3. Parent roof's role-specific material.
+  //   4. Parent roof's catch-all material.
+  //   5. Default `roofMaterials` (handled at the `material =` line below).
+  //
+  // The 4-slot layout matches getRoofMaterialArray:
+  //   slot 0 → 'edge'  (wall/trim & rake bands)
+  //   slot 1 → 'wall'  (deck top & shingle eave bands)
+  //   slot 2 → 'wall'  (interior)
+  //   slot 3 → 'top'   (shingle / roof surface)
+  //   slot 4 → the heel band (its own, the roof's, else the walls' below)
+  //   slot 5 / 6 → the left / right gable (its own, else slot 0's)
+  // The gable band is clad like the walls below it (their assemblies).
+  const wallCladdingRef = useScene((state) =>
+    parentNode ? levelWallCladdingRef(state.nodes, parentNode) : null,
+  )
+  const wallFaceRef = useScene((state) =>
+    parentNode ? levelWallFaceRef(state.nodes, parentNode) : null,
+  )
+  // biome-ignore lint/correctness/useExhaustiveDependencies: deps deliberately list the build inputs; depending on the whole object would rebuild on unrelated field changes.
+  const customMaterial = useMemo(() => {
+    const resolveSlot = (role: RoofSegmentSurfaceMaterialRole): THREE.Material | null => {
+      const parentSpec = parentNode ? getEffectiveRoofSurfaceMaterial(parentNode, role) : undefined
+      const spec = getEffectiveSegmentSurfaceMaterial(node, role, parentSpec)
+      const resolved = resolveMaterialRef(spec.materialPreset, sceneMaterials, shading)
+      if (resolved) return resolved
+      if (spec.material !== undefined) {
+        return createMaterial(spec.material, shading)
+      }
+      return null
+    }
+
+    // Themed parent-roof array (per-role scene-theme colours) — used both as the
+    // full fallback and to fill any individual untextured slot below.
+    const themedArray = parentNode
+      ? getRoofMaterialArray(
+          parentNode,
+          shading,
+          textures,
+          colorPreset,
+          sceneTheme,
+          wallCladdingRef,
+          sceneMaterials,
+          wallFaceRef,
+        )
+      : null
+
+    const resolveSpec = (spec: ReturnType<typeof getRoofWallBandMaterial>) =>
+      spec
+        ? (resolveMaterialRef(spec.materialPreset, sceneMaterials, shading) ??
+          (spec.material !== undefined ? createMaterial(spec.material, shading) : null))
+        : null
+    const heel = resolveSpec(getRoofWallBandMaterial(node, 'heel'))
+    const gableLeft = resolveSpec(getRoofWallBandMaterial(node, 'gable-left'))
+    const gableRight = resolveSpec(getRoofWallBandMaterial(node, 'gable-right'))
+
+    const edge = resolveSlot('edge')
+    const wall = resolveSlot('wall')
+    const top = resolveSlot('top')
+    // Slot 2 holds the fascia and rake boards: their own finish, else the wall role's.
+    const fasciaSpec = getSegmentFasciaMaterial(node)
+    const fascia = fasciaSpec
+      ? (resolveMaterialRef(fasciaSpec.materialPreset, sceneMaterials, shading) ??
+        (fasciaSpec.material !== undefined ? createMaterial(fasciaSpec.material, shading) : null))
+      : null
+
+    if (!(edge || wall || top || fascia || heel || gableLeft || gableRight)) {
+      return themedArray
+    }
+
+    // Some slots have explicit materials; fill the rest from the themed array so
+    // an untextured slot still picks up the scene-theme role colour, not blank white.
+    // Per-role only, then the themed parent slot — no cross-role fallback, so
+    // painting one segment surface never bleeds onto its other surfaces.
+    const slot = (i: number) => themedArray?.[i] ?? new THREE.MeshStandardMaterial()
+    const trim = edge ?? slot(0)
+    return [
+      trim,
+      wall ?? slot(1),
+      fascia ?? wall ?? slot(2),
+      top ?? slot(3),
+      heel ?? slot(4),
+      gableLeft ?? trim,
+      gableRight ?? trim,
+    ] as THREE.Material[]
+  }, [
+    node.material,
+    node.materialPreset,
+    node.topMaterial,
+    node.topMaterialPreset,
+    node.edgeMaterial,
+    wallCladdingRef,
+    node.edgeMaterialPreset,
+    node.wallMaterial,
+    node.wallMaterialPreset,
+    node.fasciaMaterial,
+    node.fasciaMaterialPreset,
+    node.heelMaterial,
+    node.heelMaterialPreset,
+    node.gableLeftMaterial,
+    node.gableLeftMaterialPreset,
+    node.gableRightMaterial,
+    node.gableRightMaterialPreset,
+    wallFaceRef,
+    parentNode,
+    sceneMaterials,
+    shading,
+    textures,
+    colorPreset,
+    sceneTheme,
+  ])
+
+  const { glazing, slots } = node
+  const glazingMaterials = useMemo(
+    () =>
+      glazed
+        ? createGlazedRoofMaterials({ glazing, slots }, shading, sceneMaterials, {
+            textures,
+            colorPreset,
+            sceneTheme,
+            debugColors,
+          })
+        : null,
+    [
+      glazed,
+      glazing,
+      slots,
+      shading,
+      sceneMaterials,
+      textures,
+      colorPreset,
+      sceneTheme,
+      debugColors,
+    ],
+  )
+  useEffect(
+    () => () => {
+      for (const material of glazingMaterials?.owned ?? []) material.dispose()
+    },
+    [glazingMaterials],
+  )
+
+  const material =
+    glazingMaterials?.visible ??
+    (debugColors
+      ? getRoofDebugMaterials(shading)
+      : customMaterial || getRoofMaterials(shading, textures, colorPreset))
+
+  useLayoutEffect(() => {
+    if (glazed && ref.current) syncGlazedRoofShadow(ref.current, material)
+  }, [glazed, material])
+
+  useEffect(() => {
+    return () => {
+      placeholderGeometry.dispose()
+      shadowPlaceholder.dispose()
+    }
+  }, [placeholderGeometry, shadowPlaceholder])
+
+  return (
+    <mesh
+      castShadow={!glazed}
+      receiveShadow
+      geometry={placeholderGeometry}
+      material={material}
+      position={node.position}
+      ref={ref}
+      rotation-y={node.rotation}
+      visible={node.visible}
+      {...handlers}
+    >
+      <mesh
+        name="glazed-roof-shadow"
+        userData={{ pascalExport: 'strip' }}
+        geometry={shadowPlaceholder}
+        layers={SHADOW_ONLY_LAYER}
+        castShadow
+        visible={glazed}
+        raycast={() => {}}
+      >
+        <meshBasicMaterial />
+      </mesh>
+    </mesh>
+  )
+}
+
+export default RoofSegmentRenderer

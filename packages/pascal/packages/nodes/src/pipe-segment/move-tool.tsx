@@ -1,0 +1,395 @@
+'use client'
+
+import {
+  type AlignmentAnchor,
+  type AnyNode,
+  type AnyNodeId,
+  emitter,
+  type GridEvent,
+  PipeSegmentNode,
+  sceneRegistry,
+  usePascalI18n,
+  useScene,
+} from '@pascal-app/core'
+import {
+  copyCollectionIds,
+  DragBoundingBox,
+  EDITOR_LAYER,
+  isAlignmentGuideActive,
+  isGridSnapActive,
+  isMagneticSnapActive,
+  markToolCancelConsumed,
+  stripPlacementMetadataFlags,
+  triggerSFX,
+  useAlignmentGuides,
+  useEditor,
+} from '@pascal-app/editor'
+import { useViewer } from '@pascal-app/viewer'
+import { Html } from '@react-three/drei'
+import { useEffect, useRef, useState } from 'react'
+import { Vector3 } from 'three'
+import {
+  type Aabb2D,
+  collectGhostAlignmentCandidates,
+  resolveGhostAlignment,
+} from '../shared/ghost-alignment'
+import { INVALID_GHOST_COLOR, VALID_GHOST_COLOR } from '../shared/ghost-materials'
+import { type RunMoveConnectivity, startRunMoveConnectivity } from '../shared/run-move-connectivity'
+import { translateWallRun } from '../shared/wall-run-move'
+import { pipeUpdatesPreserveGrades } from './grade-operation'
+
+type Vec3 = [number, number, number]
+
+const GHOST_COLOR = '#818cf8'
+const GHOST_OPACITY = 0.5
+const IN_TO_M = 0.0254
+
+/** Snap a coordinate to the editor's live grid step. */
+function snapToGridStep(value: number): number {
+  const step = isGridSnapActive() ? useEditor.getState().gridSnapStep : 0
+  if (step <= 0) return value
+  return Math.round(value / step) * step
+}
+
+function pathCenterXZ(path: readonly Vec3[]): [number, number] {
+  let x = 0
+  let z = 0
+  for (const p of path) {
+    x += p[0]
+    z += p[2]
+  }
+  const n = path.length || 1
+  return [x / n, z / n]
+}
+
+/** The pipe's radius (meters) — half the nominal diameter, used as the
+ *  box / footprint padding and the ghost cylinder radius. */
+function pipeRadiusM(pipe: PipeSegmentNode): number {
+  return (pipe.diameter * IN_TO_M) / 2
+}
+
+/** XZ bounds of a path padded by the pipe's radius. */
+function pathAabb(path: readonly Vec3[], r: number): Aabb2D {
+  let minX = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let minZ = Number.POSITIVE_INFINITY
+  let maxZ = Number.NEGATIVE_INFINITY
+  for (const p of path) {
+    if (p[0] < minX) minX = p[0]
+    if (p[0] > maxX) maxX = p[0]
+    if (p[2] < minZ) minZ = p[2]
+    if (p[2] > maxZ) maxZ = p[2]
+  }
+  return { minX: minX - r, maxX: maxX + r, minZ: minZ - r, maxZ: maxZ + r }
+}
+
+/**
+ * Ghost-preview duplicate / move tool for DWV pipe runs — the plumbing
+ * sibling of `MoveDuctSegmentTool`. Pipes are always round, so the ghost
+ * is a translucent cylinder per section (no rect branch).
+ *
+ * **Duplicate** (`metadata.isNew`): pure drag-to-place — NOTHING is
+ * inserted into the scene until the commit click. A translucent ghost of
+ * the run rides the cursor inside a footprint bounding box — the same
+ * affordance other items get — and Figma-style alignment guides snap the
+ * box's edges to nearby geometry. The next grid click calls `createNode`;
+ * Esc discards. The run's Y coords (slope) ride along untouched: the move
+ * only shifts XZ.
+ *
+ * **Move** (existing run): the real node's mesh is hidden while the same
+ * ghost + box tracks the cursor; the commit click writes the translated
+ * `path` and reveals it, Esc reveals it unchanged.
+ *
+ * Wired via `def.affordanceTools.move`.
+ */
+export const MovePipeSegmentTool: React.FC<{ node: AnyNode }> = ({ node }) => {
+  const i18n = usePascalI18n()
+  const pipe = node as PipeSegmentNode
+  const originalPathRef = useRef<Vec3[]>(pipe.path.map((p) => [...p] as Vec3))
+
+  const isNew =
+    typeof node.metadata === 'object' &&
+    node.metadata !== null &&
+    !Array.isArray(node.metadata) &&
+    (node.metadata as Record<string, unknown>).isNew === true
+
+  const [previewPath, setPreviewPath] = useState<Vec3[]>(originalPathRef.current)
+  const previewPathRef = useRef<Vec3[]>(originalPathRef.current)
+  const hasMovedRef = useRef(false)
+  const activatedAtRef = useRef<number>(Date.now())
+  const prevSnapRef = useRef<[number, number] | null>(null)
+  const previewAttachmentRef = useRef(pipe.wallAttachment)
+  const [gradeBlocked, setGradeBlocked] = useState(false)
+
+  useEffect(() => {
+    const nodeId = node.id as AnyNodeId
+    const originalPath = originalPathRef.current
+    const [centerX, centerZ] = pathCenterXZ(originalPath)
+    const r = pipeRadiusM(pipe)
+    const baseAabb = pathAabb(originalPath, r)
+
+    useScene.temporal.getState().pause()
+    let committed = false
+
+    const candidates: AlignmentAnchor[] = collectGhostAlignmentCandidates(
+      useScene.getState().nodes,
+      nodeId,
+      useViewer.getState().selection.levelId ?? node.parentId,
+    )
+
+    // Moving an existing run: hide its 3D MESH imperatively (NOT the store
+    // `visible` flag — the 2D floor plan skips `visible:false` nodes, so a
+    // store hide makes the run vanish in 2D / split view). The ghost stands
+    // in until commit; the real mesh is restored on cancel / unmount.
+    const existedAtStart = !isNew && !!useScene.getState().nodes[nodeId]
+    const setMeshHidden = (hidden: boolean) => {
+      const obj = sceneRegistry.nodes.get(nodeId)
+      if (obj) obj.visible = !hidden
+    }
+    if (existedAtStart) setMeshHidden(true)
+
+    // Carry connected fittings (+ their other runs) as the whole run slides.
+    // Snapshot once at drag start; only existing runs are mated to anything.
+    const connectivity: RunMoveConnectivity | null = existedAtStart
+      ? startRunMoveConnectivity(node)
+      : null
+
+    // A frame the connected joints cannot follow is not shown: the ghost holds
+    // its last frame, which is what a click commits.
+    const showFrame = (path: Vec3[]): boolean => {
+      const followers = connectivity ? connectivity.preview({ path }) : []
+      if (!followers) return false
+      hasMovedRef.current = true
+      previewPathRef.current = path
+      setPreviewPath(path)
+      setGradeBlocked(!pipeUpdatesPreserveGrades(useScene.getState().nodes, followers))
+      return true
+    }
+
+    const onMove = (event: GridEvent) => {
+      const attachedWall = pipe.wallAttachment
+        ? (useScene.getState().nodes[pipe.wallAttachment.wallId] as AnyNode | undefined)
+        : undefined
+      if (pipe.wallAttachment && attachedWall?.type === 'wall') {
+        const wallMove = translateWallRun(originalPath, pipe.wallAttachment, attachedWall, event)
+        if (wallMove) {
+          if (showFrame(wallMove.path)) previewAttachmentRef.current = wallMove.attachment
+          return
+        }
+      }
+      const snap = isGridSnapActive() ? snapToGridStep : (v: number) => v
+      let dx = snap(event.localPosition[0] - centerX)
+      let dz = snap(event.localPosition[2] - centerZ)
+
+      // Figma-style magnetic alignment: snap the run's footprint box edges onto
+      // nearby geometry and publish the guides. Grid follows the snapping mode;
+      // lines follow magnetic alignment — the two are independent.
+      if (isAlignmentGuideActive()) {
+        const proposed: Aabb2D = {
+          minX: baseAabb.minX + dx,
+          maxX: baseAabb.maxX + dx,
+          minZ: baseAabb.minZ + dz,
+          maxZ: baseAabb.maxZ + dz,
+        }
+        const { dx: sdx, dz: sdz, guides } = resolveGhostAlignment(nodeId, proposed, candidates)
+        if (isMagneticSnapActive()) {
+          dx += sdx
+          dz += sdz
+        }
+        useAlignmentGuides.getState().set(guides)
+      } else {
+        useAlignmentGuides.getState().clear()
+      }
+
+      const cur: [number, number] = [centerX + dx, centerZ + dz]
+      if (
+        (isGridSnapActive() || isMagneticSnapActive()) &&
+        (!prevSnapRef.current ||
+          prevSnapRef.current[0] !== cur[0] ||
+          prevSnapRef.current[1] !== cur[1])
+      ) {
+        triggerSFX('sfx:grid-snap')
+      }
+      prevSnapRef.current = cur
+      showFrame(originalPath.map(([x, y, z]) => [x + dx, y, z + dz] as Vec3))
+    }
+
+    const commit = (event: GridEvent) => {
+      if (committed) return
+      if (Date.now() - activatedAtRef.current < 150) {
+        event.nativeEvent?.stopPropagation?.()
+        return
+      }
+      if (!hasMovedRef.current) {
+        event.nativeEvent?.stopPropagation?.()
+        return
+      }
+      const finalPath = previewPathRef.current
+      const followUpdates = connectivity ? connectivity.commitUpdates({ path: finalPath }) : []
+      // The drag stays live (history paused, Esc cancels) so the run can be placed elsewhere.
+      if (!followUpdates) {
+        event.nativeEvent?.stopPropagation?.()
+        return
+      }
+      if (!pipeUpdatesPreserveGrades(useScene.getState().nodes, followUpdates)) {
+        setGradeBlocked(true)
+        event.nativeEvent?.stopPropagation?.()
+        return
+      }
+      committed = true
+
+      useScene.temporal.getState().resume()
+      let selectId = nodeId
+      if (isNew && !useScene.getState().nodes[nodeId]) {
+        const created = PipeSegmentNode.parse({
+          ...(node as Record<string, unknown>),
+          path: finalPath,
+          wallAttachment: previewAttachmentRef.current,
+          metadata: stripPlacementMetadataFlags(node.metadata),
+          visible: true,
+        })
+        useScene.getState().createNodes([
+          {
+            node: created as AnyNode,
+            parentId: node.parentId as AnyNodeId,
+            collectionIds: copyCollectionIds(node),
+          },
+        ])
+        selectId = created.id as AnyNodeId
+      } else {
+        // Fold connected-fitting / sibling-run follow-updates into the SAME
+        // batch as the moved run so the whole joint is one undo step.
+        useScene.getState().updateNodes([
+          {
+            id: nodeId,
+            data: {
+              path: finalPath,
+              wallAttachment: previewAttachmentRef.current,
+            } as Partial<AnyNode>,
+          },
+          ...followUpdates,
+        ])
+        useScene.getState().markDirty(nodeId)
+      }
+      useScene.temporal.getState().pause()
+      // Followers are committed to the store — drop their live overrides so
+      // renderers read the canonical path/position.
+      connectivity?.clear()
+      setMeshHidden(false)
+
+      useAlignmentGuides.getState().clear()
+      triggerSFX('sfx:item-place')
+      useViewer.getState().setSelection({ selectedIds: [selectId] })
+      useEditor.getState().setMovingNodeOrigin('3d')
+      useEditor.getState().setMovingNode(null)
+      event.nativeEvent?.stopPropagation?.()
+    }
+
+    const onCancel = () => {
+      connectivity?.clear()
+      if (existedAtStart) {
+        setMeshHidden(false)
+        useViewer.getState().setSelection({ selectedIds: [nodeId] })
+      }
+      useAlignmentGuides.getState().clear()
+      useScene.temporal.getState().resume()
+      markToolCancelConsumed()
+      useEditor.getState().setMovingNodeOrigin('3d')
+      useEditor.getState().setMovingNode(null)
+    }
+
+    emitter.on('grid:move', onMove)
+    emitter.on('grid:click', commit)
+    emitter.on('tool:cancel', onCancel)
+
+    return () => {
+      emitter.off('grid:move', onMove)
+      emitter.off('grid:click', commit)
+      emitter.off('tool:cancel', onCancel)
+      connectivity?.clear()
+      useAlignmentGuides.getState().clear()
+      if (existedAtStart) setMeshHidden(false)
+      useScene.temporal.getState().resume()
+    }
+  }, [pipe, isNew, node])
+
+  const segments: Array<{ a: Vec3; b: Vec3 }> = []
+  for (let i = 0; i < previewPath.length - 1; i++) {
+    segments.push({ a: previewPath[i]!, b: previewPath[i + 1]! })
+  }
+
+  // Footprint box spanning the whole run (axis-aligned), drawn around the
+  // ghost the same way items get one. Recomputed from the live preview path.
+  const r = pipeRadiusM(pipe)
+  const box = pathAabb(previewPath, r)
+  const boxY = previewPath[0]?.[1] ?? 0
+  const boxCenter: Vec3 = [(box.minX + box.maxX) / 2, boxY, (box.minZ + box.maxZ) / 2]
+  const ghostColor = gradeBlocked ? INVALID_GHOST_COLOR : GHOST_COLOR
+
+  return (
+    <group>
+      {segments.map((seg, i) => (
+        <GhostSegment a={seg.a} b={seg.b} color={ghostColor} radius={r} key={`ghost-${i}`} />
+      ))}
+      <DragBoundingBox
+        centerY={0}
+        color={gradeBlocked ? INVALID_GHOST_COLOR : VALID_GHOST_COLOR}
+        nodeId={node.id}
+        position={boxCenter}
+        size={[box.maxX - box.minX, pipe.diameter * IN_TO_M, box.maxZ - box.minZ]}
+      />
+      {gradeBlocked && (
+        <Html center position={boxCenter} style={{ pointerEvents: 'none' }}>
+          <div
+            role="status"
+            className="pointer-events-none w-64 rounded border bg-background p-2 text-xs"
+          >
+            {i18n._({
+              id: 'node.pipeSegment.moveTool.connectedGradeBlocked',
+              message:
+                'This move would change a connected pipe’s grade. Choose another position or press Esc to cancel.',
+            })}
+          </div>
+        </Html>
+      )}
+    </group>
+  )
+}
+
+/** Translucent stand-in for one pipe section — mirrors the draw tool's
+ *  `PreviewPipe` so the ghost matches what actually lands. */
+function GhostSegment({
+  a,
+  b,
+  color,
+  radius,
+}: {
+  a: Vec3
+  b: Vec3
+  color: string | number
+  radius: number
+}) {
+  const start = new Vector3(...a)
+  const end = new Vector3(...b)
+  const dir = new Vector3().subVectors(end, start)
+  const length = dir.length()
+  if (length < 1e-4) return null
+  dir.normalize()
+  const mid = new Vector3().addVectors(start, end).multiplyScalar(0.5)
+
+  return (
+    <mesh
+      layers={EDITOR_LAYER}
+      position={mid.toArray()}
+      ref={(m) => {
+        if (!m) return
+        m.quaternion.setFromUnitVectors(new Vector3(0, 1, 0), dir)
+      }}
+    >
+      <cylinderGeometry args={[radius, radius, length, 24, 1, false]} />
+      <meshBasicMaterial color={color} depthTest={false} opacity={GHOST_OPACITY} transparent />
+    </mesh>
+  )
+}
+
+export default MovePipeSegmentTool

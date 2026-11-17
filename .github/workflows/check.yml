@@ -1,0 +1,42 @@
+# Vérification complète à chaque push (M17, mécanisme anti-régression du roadmap).
+name: check
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-all:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 26.13.1
+          cache: npm
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.4.4
+
+      - name: Installation de Fabrics
+        run: npm ci
+
+      - name: Installation de Pascal (bun.lock gelé)
+        run: npm run install:pascal
+
+      - name: npm run check:all
+        run: npm run check:all
+
+      - name: Contrôle IFC (IfcOpenShell) de la baseline
+        run: |
+          python3 -m venv tools/ifc/.venv
+          tools/ifc/.venv/bin/pip install -q -r tools/ifc/requirements.txt
+          # Rapport seulement : l'export IFC actuel de Fabrics n'est pas strictement valide (risque R14, M22).
+          tools/ifc/.venv/bin/python -I tools/ifc/validate.py baseline/fabrics/example/export.ifc || true

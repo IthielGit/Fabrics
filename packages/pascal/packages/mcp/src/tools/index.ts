@@ -1,0 +1,93 @@
+import type { McpServer } from '@modelcontextprotocol/server'
+import type { ProjectFileReader } from '@pascal-app/core/agent-operations'
+import type { SceneOperations } from '../operations'
+import { registerAddColumn } from './add-column'
+import {
+  compileObjectOnHost,
+  type GeometryScriptHost,
+  type ObjectMakerHost,
+  registerAddObject,
+  registerGetSource,
+} from './add-object'
+import { registerApplyPatch } from './apply-patch'
+import type { AssetCatalog } from './asset-catalog'
+import { registerAuthorScene } from './author-scene'
+import { registerCheckCollisions } from './check-collisions'
+import { registerClearScene } from './clear-scene'
+import { registerConstructionTools } from './construction-tools'
+import { registerExportGlb } from './export-glb'
+import { registerExportJson } from './export-json'
+import { registerGetScene } from './get-scene'
+import { registerMeasure } from './measure'
+import { registerPhotoToSceneTool } from './photo-to-scene'
+import { registerRedo } from './redo'
+import { registerRoomTools } from './room-tools'
+import { registerSceneLifecycleTools } from './scene-lifecycle'
+import { registerSetZone } from './set-zone'
+import { type PlanReadingHosts, registerSharedTools } from './shared-tools'
+import { registerTemplateTools } from './templates'
+import { registerUndo } from './undo'
+import { registerVariantTools } from './variants'
+import { registerViewScene, type SceneViewHost } from './view-scene'
+
+/**
+ * Register every non-vision MCP tool against the given server.
+ * Vision tools (analyze_floorplan_image, analyze_room_photo) are registered
+ * separately via `registerVisionTools` (Agent E).
+ *
+ * Scene-lifecycle tools (save/load/list/delete/rename scene) are registered
+ * when persistence operations are available.
+ */
+/** What the host lends the tools: its item library, script compiles, a view. */
+export type ToolHosts = PlanReadingHosts & {
+  catalog?: AssetCatalog
+  geometryScripts?: GeometryScriptHost
+  /** Makes add_object's pieces from words; without it a piece is refused `pieces_unavailable`. */
+  objectMakers?: ObjectMakerHost
+  /** Reads author_scene's payloadFile; without it the tool refuses one `files_unavailable`. */
+  readFile?: ProjectFileReader
+  sceneViews?: SceneViewHost
+}
+
+export function registerTools(
+  server: McpServer,
+  operations: SceneOperations,
+  {
+    catalog,
+    geometryScripts,
+    objectMakers,
+    readFile,
+    sceneViews,
+    assetViews,
+    betweenSteps,
+  }: ToolHosts = {},
+): void {
+  registerGetScene(server, operations)
+  registerSharedTools(server, operations, catalog, {
+    assetViews,
+    betweenSteps,
+    buildObject: (input) => compileObjectOnHost(geometryScripts, operations, input),
+  })
+  registerAddColumn(server, operations, geometryScripts)
+  registerAddObject(server, operations, geometryScripts, objectMakers)
+  registerAuthorScene(server, operations, geometryScripts, objectMakers, readFile, betweenSteps)
+  registerGetSource(server, operations, geometryScripts)
+  registerMeasure(server, operations)
+  registerViewScene(server, operations, sceneViews)
+  registerConstructionTools(server, operations)
+  registerRoomTools(server, operations, geometryScripts)
+  registerApplyPatch(server, operations)
+  registerClearScene(server, operations)
+  registerSetZone(server, operations)
+  registerUndo(server, operations)
+  registerRedo(server, operations)
+  registerExportJson(server, operations)
+  registerExportGlb(server, operations)
+  registerCheckCollisions(server, operations)
+  registerTemplateTools(server, operations)
+  if (operations.hasStore) {
+    registerSceneLifecycleTools(server, operations)
+    registerVariantTools(server, operations)
+    registerPhotoToSceneTool(server, operations)
+  }
+}

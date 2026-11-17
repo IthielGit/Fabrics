@@ -1,0 +1,187 @@
+import { beforeAll, beforeEach, describe, expect, test } from 'bun:test'
+import {
+  type AnyNode,
+  type AnyNodeDefinition,
+  nodeRegistry,
+  registerNode,
+  useScene,
+} from '@pascal-app/core'
+import { useViewer } from '@pascal-app/viewer'
+import { z } from 'zod'
+import useEditor from '../../../store/use-editor'
+import { collectSelectableCandidateIds } from './select-candidates'
+
+function registerSelectableElevatorTestKind() {
+  if (nodeRegistry.has('elevator')) return
+
+  registerNode({
+    kind: 'elevator',
+    schemaVersion: 1,
+    schema: z.object({ type: z.literal('elevator') }) as never,
+    category: 'structure',
+    defaults: () => ({}),
+    capabilities: { selectable: {} },
+    floorplanScope: 'building',
+    renderer: { kind: 'parametric', module: async () => ({ default: () => null }) },
+  } as AnyNodeDefinition)
+}
+
+describe('selectable candidates', () => {
+  beforeAll(() => {
+    registerSelectableElevatorTestKind()
+  })
+
+  beforeEach(() => {
+    useScene.setState({
+      nodes: {},
+      rootNodeIds: [],
+      dirtyNodes: new Set(),
+      collections: {},
+    } as never)
+    useViewer.setState({
+      selection: {
+        buildingId: 'building_test',
+        levelId: 'level_test',
+        zoneId: null,
+        selectedIds: [],
+      },
+      previewSelectedIds: [],
+    })
+    useEditor.setState({ phase: 'building' })
+  })
+
+  test('includes building-scoped elevators for the active level building', () => {
+    useScene.setState({
+      nodes: {
+        building_test: {
+          id: 'building_test',
+          type: 'building',
+          children: ['level_test', 'elevator_test'],
+        },
+        level_test: {
+          id: 'level_test',
+          type: 'level',
+          parentId: 'building_test',
+          children: [],
+        },
+        elevator_test: {
+          id: 'elevator_test',
+          type: 'elevator',
+          parentId: 'building_test',
+          position: [1, 0, 2],
+          rotation: 0,
+        },
+      } as unknown as Record<string, AnyNode>,
+    } as never)
+
+    expect(collectSelectableCandidateIds()).toContain('elevator_test')
+  })
+
+  test('includes legacy level-parented elevators already loaded in the editor', () => {
+    useScene.setState({
+      nodes: {
+        building_test: {
+          id: 'building_test',
+          type: 'building',
+          children: ['level_test'],
+        },
+        level_test: {
+          id: 'level_test',
+          type: 'level',
+          parentId: 'building_test',
+          children: ['elevator_test'],
+        },
+        elevator_test: {
+          id: 'elevator_test',
+          type: 'elevator',
+          parentId: 'level_test',
+          position: [1, 0, 2],
+          rotation: 0,
+        },
+      } as unknown as Record<string, AnyNode>,
+    } as never)
+
+    expect(collectSelectableCandidateIds()).toContain('elevator_test')
+  })
+
+  test('Building box selection includes structural and furnishing kinds on the active level', () => {
+    for (const category of ['structure', 'furnish'] as const) {
+      const kind = `box-select-test-${category}`
+      if (!nodeRegistry.has(kind)) {
+        registerNode({
+          kind,
+          schemaVersion: 1,
+          schema: z.object({ type: z.literal(kind) }) as never,
+          category,
+          defaults: () => ({}),
+          capabilities: { selectable: {} },
+        } as AnyNodeDefinition)
+      }
+    }
+    useScene.setState({
+      nodes: {
+        level_test: {
+          id: 'level_test',
+          type: 'level',
+          parentId: 'building_test',
+          children: ['wall_pick', 'item_pick', 'item_hidden'],
+        },
+        wall_pick: { id: 'wall_pick', type: 'box-select-test-structure', parentId: 'level_test' },
+        item_pick: { id: 'item_pick', type: 'box-select-test-furnish', parentId: 'level_test' },
+        item_hidden: {
+          id: 'item_hidden',
+          type: 'box-select-test-furnish',
+          parentId: 'level_test',
+          visible: false,
+        },
+        item_other: { id: 'item_other', type: 'box-select-test-furnish', parentId: 'level_other' },
+      } as unknown as Record<string, AnyNode>,
+    })
+    expect(collectSelectableCandidateIds().sort()).toEqual(['item_pick', 'wall_pick'])
+  })
+
+  test("a box leaves a room's automatic floor plate and ceiling to the room, keeping what hangs from it", () => {
+    const restore = nodeRegistry._snapshot()
+    try {
+      for (const kind of ['slab', 'ceiling', 'box-select-test-light'] as const)
+        if (!nodeRegistry.has(kind))
+          registerNode({
+            kind,
+            schemaVersion: 1,
+            schema: z.object({ type: z.literal(kind) }) as never,
+            category: 'structure',
+            defaults: () => ({}),
+            capabilities: { selectable: {} },
+          } as AnyNodeDefinition)
+      useScene.setState({
+        nodes: {
+          level_test: {
+            id: 'level_test',
+            type: 'level',
+            parentId: 'building_test',
+            children: ['slab_shared', 'slab_drawn', 'ceiling_auto'],
+          },
+          slab_shared: {
+            id: 'slab_shared',
+            type: 'slab',
+            parentId: 'level_test',
+            boundary: 'auto',
+            plateRole: 'base',
+          },
+          slab_drawn: { id: 'slab_drawn', type: 'slab', parentId: 'level_test' },
+          ceiling_auto: {
+            id: 'ceiling_auto',
+            type: 'ceiling',
+            parentId: 'level_test',
+            boundary: 'auto',
+            children: ['light_hung'],
+          },
+          light_hung: { id: 'light_hung', type: 'box-select-test-light', parentId: 'ceiling_auto' },
+        } as unknown as Record<string, AnyNode>,
+      })
+      expect(collectSelectableCandidateIds().sort()).toEqual(['light_hung', 'slab_drawn'])
+    } finally {
+      restore()
+    }
+  })
+})

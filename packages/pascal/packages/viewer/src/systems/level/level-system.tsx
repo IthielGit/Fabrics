@@ -1,0 +1,103 @@
+import { getLevelElevations, type LevelNode, sceneRegistry, useScene } from '@pascal-app/core'
+import { useFrame } from '@react-three/fiber'
+import type { Object3D } from 'three'
+import { lerp } from 'three/src/math/MathUtils.js'
+import { getLayoutRevision, isLayoutObserved } from '../../lib/layer-pass'
+import { applyShadowOnly, clearShadowOnly } from '../../lib/shadow-only'
+import useViewer from '../../store/use-viewer'
+import { heldLevelY } from './level-hold'
+import { EXPLODED_GAP, resolveLevelVisibility } from './level-utils'
+import { shadowOnlyLevels } from './shadow-only-levels'
+
+const placed = new WeakSet<object>()
+/** Layout revision right after a level was last made shadow-only (see layer-pass.ts). */
+const shadowOnlyAt = new WeakMap<object, number>()
+
+function sceneRoot(object: Object3D): Object3D {
+  let root = object
+  while (root.parent) root = root.parent
+  return root
+}
+
+export const LevelSystem = () => {
+  useFrame((_, delta) => {
+    const nodes = useScene.getState().nodes
+    const levelMode = useViewer.getState().levelMode
+    const hideAbove = useViewer.getState().hideLevelsAboveSelection
+    const selectedLevel = useViewer.getState().selection.levelId
+    const levelsRevealing = useViewer.getState().levelsRevealing
+
+    const levelElevations = getLevelElevations(nodes)
+    type LevelEntry = {
+      levelId: string
+      index: number
+      obj: NonNullable<ReturnType<typeof sceneRegistry.nodes.get>>
+    }
+    const entries: LevelEntry[] = []
+    sceneRegistry.byType.level!.forEach((levelId) => {
+      const obj = sceneRegistry.nodes.get(levelId)
+      const level = nodes[levelId as LevelNode['id']] as LevelNode | undefined
+      if (obj && level) {
+        entries.push({
+          levelId,
+          index: level.level,
+          obj,
+        })
+      }
+    })
+
+    // A level that has just mounted (a restored floor, a new storey) cuts every level to its height
+    // together: sliding them from where they were would run the floor and the levels above through
+    // each other.
+    const appeared = entries.some(({ obj }) => !placed.has(obj))
+    const selectedIndex = selectedLevel
+      ? entries.find((e) => e.levelId === selectedLevel)?.index
+      : undefined
+    for (const { levelId, index, obj } of entries) {
+      const level = nodes[levelId as LevelNode['id']] as LevelNode | undefined
+      const baseY = levelElevations.get(levelId)?.baseY ?? 0
+      const explodedExtra = levelMode === 'exploded' ? index * EXPLODED_GAP : 0
+      const targetY = baseY + explodedExtra
+
+      // Clamped smoothing. The naive `lerp(y, target, delta*12)` multiplies
+      // the error by |1 - 12*delta| per frame — DIVERGENT once a frame
+      // exceeds ~166 ms (slow machines, headless GL, heavy scenes): levels
+      // oscillated kilometers off-screen and the level-fit camera followed
+      // (blank viewport). Clamping keeps every step a contraction: identical
+      // feel at 60 fps, exact snap instead of overshoot on slow frames.
+      const held = heldLevelY(levelId)
+      if (held !== undefined) obj.position.y = held
+      else if (appeared) obj.position.y = targetY
+      else obj.position.y = lerp(obj.position.y, targetY, Math.min(1, delta * 12))
+      placed.add(obj)
+
+      const { visible, shadowOnly } = resolveLevelVisibility({
+        levelMode,
+        hideAbove,
+        hasSelectedLevel: Boolean(selectedLevel),
+        isSelected: level?.id === selectedLevel,
+        index,
+        selectedIndex,
+        nodeVisible: level?.visible !== false,
+        revealing: levelsRevealing.includes(levelId),
+      })
+      if (shadowOnly) {
+        // Re-applied so meshes rebuilt while hidden are hidden too — a rebuild inserts children
+        // or writes masks, which moves the observed layout revision; without either the level
+        // is as it was left.
+        const observed = isLayoutObserved(sceneRoot(obj))
+        if (!observed || shadowOnlyAt.get(obj) !== getLayoutRevision()) {
+          applyShadowOnly(obj)
+          if (observed) shadowOnlyAt.set(obj, getLayoutRevision())
+        }
+        shadowOnlyLevels.add(obj)
+      } else if (shadowOnlyLevels.has(obj)) {
+        clearShadowOnly(obj)
+        shadowOnlyLevels.delete(obj)
+        shadowOnlyAt.delete(obj)
+      }
+      obj.visible = visible
+    }
+  }, 5) // Using a lower priority so it runs after transforms from other systems have settled
+  return null
+}
