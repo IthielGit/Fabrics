@@ -11,9 +11,11 @@ puis lis les documents de `docs/` dans l'ordre indiqué ci-dessous.
 2. **Plan** (`kind: "plan"`) — plan de pièce ou de bâtiment **à l'échelle réelle** : murs, pièces,
    cotes. L'application calcule automatiquement les **métrés** (surfaces, périmètres, longueurs).
 
-**Depuis le 2026-11-17 (D75 à D79) : Fabrics + Pascal Editor + amélioration.** Fabrics garde son
-interface, ses métrés, Supabase, la collaboration, l'historique et les commentaires ; on y intègre
-**tout ce qu'on peut de Pascal Editor** (open source MIT, clone local
+**Depuis le 2026-11-17 (D75 à D80) : Fabrics + Pascal Editor + amélioration.** Fabrics garde ses
+fonctions (métrés Client / Exécution, Supabase, collaboration, historique, commentaires, partage,
+projets Visuel) ; on y intègre **tout ce qu'on peut de Pascal Editor**, **interface et prise en
+main comprises** (D80 : accueil, éditeur, réglages, import, connexion de Pascal, en restant sur
+Vite) (open source MIT, clone local
 `C:\Users\My PC\Documents\Projects\BIM Project`) pour viser des livrables de qualité comparable à
 Revit : plans professionnels, métrés traçables, IFC, **DQE chiffré** (autorisé depuis D76) et
 assistant IA. La **scène Pascal** est l'unique source de vérité des projets Plan (D79).
@@ -108,7 +110,9 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
 - TypeScript strict. Pas de `any` sauf justification en commentaire.
 - Composants React en fonctions, un composant par fichier, nommage `PascalCase.tsx`.
 - Code (variables, fonctions, fichiers) en **anglais** ; interface utilisateur en **français**.
-  Tous les textes d'interface passent par `src/i18n/fr.ts` (prépare la traduction future).
+  Tous les textes d'interface passent par `src/i18n/fr.ts` (prépare la traduction future). Les
+  composants repris de Pascal passent par Lingui (catalogue français) ; un seul système de
+  traduction est retenu en M17 (doublon à trancher).
 - Logique métier (géométrie, métrés, unités) dans `src/features/*/` en **fonctions pures**,
   testées avec Vitest. Aucun calcul de métré dans un composant React.
 - **Unités : toujours « Métrique architectural » (comme Revit).** Longueurs en `mm` entiers

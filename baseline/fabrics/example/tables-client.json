@@ -1,0 +1,573 @@
+[
+  {
+    "id": "client-rooms",
+    "title": "Vos pièces",
+    "columns": [
+      {
+        "header": "Niveau",
+        "align": "left"
+      },
+      {
+        "header": "Pièce",
+        "align": "left"
+      },
+      {
+        "header": "Dimensions (mm)",
+        "align": "right"
+      },
+      {
+        "header": "Périmètre (mm)",
+        "align": "right"
+      },
+      {
+        "header": "Hauteur sous plafond (mm)",
+        "align": "right"
+      },
+      {
+        "header": "Surface au sol (m²)",
+        "align": "right"
+      }
+    ],
+    "rows": [
+      [
+        "Rez-de-chaussée",
+        "Séjour",
+        "4900 × 6500",
+        {
+          "text": "22800",
+          "value": 22800,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "31,85",
+          "value": 31.85,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Rez-de-chaussée",
+        "Cuisine",
+        "5900 × 3100",
+        {
+          "text": "18000",
+          "value": 18000,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "18,29",
+          "value": 18.29,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Rez-de-chaussée",
+        "Entrée",
+        "4200 × 3200",
+        {
+          "text": "14800",
+          "value": 14800,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "13,44",
+          "value": 13.44,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Rez-de-chaussée",
+        "WC et buanderie",
+        "1500 × 3200",
+        {
+          "text": "9400",
+          "value": 9400,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "4,80",
+          "value": 4.8,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Étage 1",
+        "Chambre parentale",
+        "4900 × 3100",
+        {
+          "text": "16000",
+          "value": 16000,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "15,19",
+          "value": 15.19,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Étage 1",
+        "Chambre 2",
+        "4900 × 3200",
+        {
+          "text": "16200",
+          "value": 16200,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "15,68",
+          "value": 15.68,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Étage 1",
+        "Salle de bains",
+        "2800 × 3100",
+        {
+          "text": "11800",
+          "value": 11800,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "8,68",
+          "value": 8.68,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Étage 1",
+        "Bureau",
+        "2900 × 3100",
+        {
+          "text": "12000",
+          "value": 12000,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "8,99",
+          "value": 8.99,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Étage 1",
+        "Palier",
+        "4200 × 3200",
+        {
+          "text": "14800",
+          "value": 14800,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "8,38",
+          "value": 8.38,
+          "unit": "m2"
+        }
+      ],
+      [
+        "Étage 1",
+        "Dressing",
+        "1500 × 3200",
+        {
+          "text": "9400",
+          "value": 9400,
+          "unit": "mm"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "4,80",
+          "value": 4.8,
+          "unit": "m2"
+        }
+      ]
+    ],
+    "total": [
+      "Total",
+      "",
+      "",
+      "",
+      "",
+      {
+        "text": "130,10",
+        "value": 130.1,
+        "unit": "m2"
+      }
+    ]
+  },
+  {
+    "id": "ceilings",
+    "title": "Plafonds",
+    "note": "Surface de plafond : surface au sol de la pièce, trémies d’escalier retirées. Un faux plafond est listé sur une ligne à part : sa surface n’est pas ajoutée au total.",
+    "columns": [
+      {
+        "header": "Niveau",
+        "align": "left"
+      },
+      {
+        "header": "Pièce",
+        "align": "left"
+      },
+      {
+        "header": "Surface de plafond (m²)",
+        "align": "right"
+      },
+      {
+        "header": "Hauteur sous plafond (mm)",
+        "align": "right"
+      },
+      {
+        "header": "Périmètre (mm)",
+        "align": "right"
+      }
+    ],
+    "rows": [
+      [
+        "Rez-de-chaussée",
+        "Séjour",
+        {
+          "text": "31,85",
+          "value": 31.85,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "22800",
+          "value": 22800,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Rez-de-chaussée",
+        "Cuisine",
+        {
+          "text": "18,29",
+          "value": 18.29,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "18000",
+          "value": 18000,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Rez-de-chaussée",
+        "Entrée",
+        {
+          "text": "13,44",
+          "value": 13.44,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "14800",
+          "value": 14800,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Rez-de-chaussée",
+        "WC et buanderie",
+        {
+          "text": "4,80",
+          "value": 4.8,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "9400",
+          "value": 9400,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Étage 1",
+        "Chambre parentale",
+        {
+          "text": "15,19",
+          "value": 15.19,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "16000",
+          "value": 16000,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Étage 1",
+        "Chambre 2",
+        {
+          "text": "15,68",
+          "value": 15.68,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "16200",
+          "value": 16200,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Étage 1",
+        "Salle de bains",
+        {
+          "text": "8,68",
+          "value": 8.68,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "11800",
+          "value": 11800,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Étage 1",
+        "Bureau",
+        {
+          "text": "8,99",
+          "value": 8.99,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "12000",
+          "value": 12000,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Étage 1",
+        "Palier",
+        {
+          "text": "8,38",
+          "value": 8.38,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "14800",
+          "value": 14800,
+          "unit": "mm"
+        }
+      ],
+      [
+        "Étage 1",
+        "Dressing",
+        {
+          "text": "4,80",
+          "value": 4.8,
+          "unit": "m2"
+        },
+        {
+          "text": "2500",
+          "value": 2500,
+          "unit": "mm"
+        },
+        {
+          "text": "9400",
+          "value": 9400,
+          "unit": "mm"
+        }
+      ]
+    ],
+    "total": [
+      "Total",
+      "",
+      {
+        "text": "130,10",
+        "value": 130.1,
+        "unit": "m2"
+      },
+      "",
+      ""
+    ]
+  },
+  {
+    "id": "client-levels",
+    "title": "Récapitulatif",
+    "columns": [
+      {
+        "header": "Niveau",
+        "align": "left"
+      },
+      {
+        "header": "Surface au sol (m²)",
+        "align": "right"
+      },
+      {
+        "header": "Portes",
+        "align": "right"
+      },
+      {
+        "header": "Fenêtres",
+        "align": "right"
+      },
+      {
+        "header": "Baies vitrées",
+        "align": "right"
+      }
+    ],
+    "rows": [
+      [
+        "Rez-de-chaussée",
+        {
+          "text": "68,38",
+          "value": 68.38,
+          "unit": "m2"
+        },
+        {
+          "text": "5",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "text": "5",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "text": "1",
+          "value": 1,
+          "unit": "count"
+        }
+      ],
+      [
+        "Étage 1",
+        {
+          "text": "61,72",
+          "value": 61.72,
+          "unit": "m2"
+        },
+        {
+          "text": "5",
+          "value": 5,
+          "unit": "count"
+        },
+        {
+          "text": "7",
+          "value": 7,
+          "unit": "count"
+        },
+        {
+          "text": "0",
+          "value": 0,
+          "unit": "count"
+        }
+      ]
+    ],
+    "total": [
+      "Bâtiment",
+      {
+        "text": "130,10",
+        "value": 130.1,
+        "unit": "m2"
+      },
+      {
+        "text": "10",
+        "value": 10,
+        "unit": "count"
+      },
+      {
+        "text": "12",
+        "value": 12,
+        "unit": "count"
+      },
+      {
+        "text": "1",
+        "value": 1,
+        "unit": "count"
+      }
+    ]
+  }
+]

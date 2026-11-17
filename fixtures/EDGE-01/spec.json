@@ -1,0 +1,42 @@
+{
+  "id": "EDGE-01",
+  "status": "Rédigé par Claude le 2026-11-17, à vérifier par l'utilisateur.",
+  "rule": "Chaque cas donne une erreur claire ou une exclusion signalée, jamais un résultat faux en silence.",
+  "cases": [
+    {
+      "id": "window-off-wall",
+      "input": "fenêtre de 1200 mm dont le centre est à 300 mm de l'extrémité d'un mur de 4000 mm (dépasse de 300 mm)",
+      "expected": "ramenée sur le mur ou signalée ; jamais une surface déduite hors du mur"
+    },
+    {
+      "id": "overlapping-openings",
+      "input": "deux fenêtres de 1200 mm dont les centres sont à 800 mm l'une de l'autre sur le même mur",
+      "expected": "chevauchement signalé ; surface déduite une seule fois sur la partie commune ou les deux signalées"
+    },
+    {
+      "id": "zero-height-wall",
+      "input": "mur de 4000 mm, hauteur 0",
+      "expected": "surface et volume 0, avertissement « hauteur nulle » ; aucune ouverture posée"
+    },
+    {
+      "id": "mixed-units",
+      "input": "saisie « 3,5 m » puis « 3500 » puis « 350 cm » dans le même champ de longueur",
+      "expected": "les trois donnent 3500 mm ; un nombre sans unité est en mm"
+    },
+    {
+      "id": "missing-material",
+      "input": "mur sans matériau",
+      "expected": "rendu par défaut, signalé comme « matériau manquant » dans les contrôles (M21, M24)"
+    },
+    {
+      "id": "duplicate-id",
+      "input": "document avec deux éléments au même identifiant",
+      "expected": "erreur claire à l'ouverture (ou à l'import), aucun métré calculé en double"
+    },
+    {
+      "id": "ifc-nested-placements",
+      "input": "IFC dont les murs sont placés dans un repère local imbriqué (IfcLocalPlacement relatif à un étage décalé)",
+      "expected": "coordonnées absolues correctes après import (M22), sinon élément exclu et signalé"
+    }
+  ]
+}

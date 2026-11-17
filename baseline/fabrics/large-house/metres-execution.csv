@@ -1,0 +1,236 @@
+﻿Métrés
+Projet;Exemple : grande maison R+3
+Date;17/11/2026
+Application;Fabrics
+Unités;Longueurs en mm, surfaces en m², volumes en m³
+Remarque;Les totaux sont calculés sur les valeurs exactes, avant arrondi : ils peuvent différer de quelques centièmes de la somme des lignes affichées. Repères valables à la date du document.
+
+Pièces
+Niveau;Nom;Surface au tracé (m²);Périmètre (mm);Trémie (m²);Surface nette (m²)
+Rez-de-chaussée;Séjour;42,24;28000;0,00;42,24
+Rez-de-chaussée;Hall;26,88;24800;0,00;26,88
+Rez-de-chaussée;Cuisine;18,80;17400;0,00;18,80
+Rez-de-chaussée;Buanderie;8,93;13200;0,00;8,93
+Rez-de-chaussée;WC;8,93;13200;0,00;8,93
+Rez-de-chaussée;Garage;36,00;24000;0,00;36,00
+Rez-de-chaussée;Véranda;19,00;17600;0,00;19,00
+Étage 1;Chambre 1;20,68;18200;0,00;20,68
+Étage 1;Chambre 2;20,68;18200;0,00;20,68
+Étage 1;Palier;26,88;24800;6,27;20,61
+Étage 1;Chambre 3;18,80;17400;0,00;18,80
+Étage 1;Salle de bains;18,80;17400;0,00;18,80
+Étage 2;Suite parentale;20,68;18200;0,00;20,68
+Étage 2;Chambre des enfants;20,68;18200;0,00;20,68
+Étage 2;Palier;26,88;24800;6,27;20,61
+Étage 2;Salle de bains parentale;18,80;17400;0,00;18,80
+Étage 2;Chambre 5;18,80;17400;0,00;18,80
+Étage 3;Salle de jeux;42,24;28000;0,00;42,24
+Étage 3;Palier;26,88;24800;6,27;20,61
+Étage 3;Bureau;18,80;17400;0,00;18,80
+Étage 3;Chambre d’amis;18,80;17400;0,00;18,80
+Total;;479,18;417800;18,81;460,37
+
+Plafonds
+Surface de plafond : surface au sol de la pièce, trémies d’escalier retirées. Un faux plafond est listé sur une ligne à part : sa surface n’est pas ajoutée au total.
+Niveau;Pièce;Surface de plafond (m²);Hauteur sous plafond (mm);Périmètre (mm)
+Rez-de-chaussée;Séjour;42,24;2500;28000
+Rez-de-chaussée;Hall;26,88;2500;24800
+Rez-de-chaussée;Cuisine;18,80;2500;17400
+Rez-de-chaussée;Buanderie;8,93;2500;13200
+Rez-de-chaussée;WC;8,93;2500;13200
+Rez-de-chaussée;Garage;36,00;2500;24000
+Rez-de-chaussée;Véranda;19,00;2500;17600
+Étage 1;Chambre 1;20,68;2500;18200
+Étage 1;Chambre 2;20,68;2500;18200
+Étage 1;Palier;20,61;2500;24800
+Étage 1;Chambre 3;18,80;2500;17400
+Étage 1;Salle de bains;18,80;2500;17400
+Étage 2;Suite parentale;20,68;2500;18200
+Étage 2;Chambre des enfants;20,68;2500;18200
+Étage 2;Palier;20,61;2500;24800
+Étage 2;Salle de bains parentale;18,80;2500;17400
+Étage 2;Chambre 5;18,80;2500;17400
+Étage 3;Salle de jeux;42,24;2500;28000
+Étage 3;Palier;20,61;2500;24800
+Étage 3;Bureau;18,80;2500;17400
+Étage 3;Chambre d’amis;18,80;2500;17400
+Total;;460,37;;
+
+Murs
+Surface 1 face : longueur de l’axe × hauteur. Surface 2 faces : les deux faces mesurées sur les faces (onglets compris), ouvertures déduites sur chaque face. Volume : sur l’axe, ouvertures déduites.
+Niveau;Réf.;Nom;Longueur de l’axe (mm);Épaisseur (mm);Hauteur (mm);Surface 1 face sur l’axe, brute (m²);Ouvertures (m²);Surface 1 face sur l’axe, nette (m²);Longueur des faces (mm);Surface 2 faces, brute (m²);Surface 2 faces, nette (m²);Volume des murs (m³)
+Rez-de-chaussée;M03;Mur extérieur;43200;200;2500;108,00;16,50;91,50;84800;212,00;179,00;18,30
+Rez-de-chaussée;M02;Cloison;9800;200;2500;24,50;1,89;22,61;19200;48,00;44,22;4,42
+Rez-de-chaussée;M04;Cloison;9800;200;2500;24,50;3,78;20,72;19000;47,50;39,94;4,04
+Rez-de-chaussée;M05;Cloison;4200;200;2500;10,50;0,00;10,50;7800;19,50;19,50;2,00
+Rez-de-chaussée;M06;Cloison;4900;200;2500;12,25;1,89;10,36;9400;23,50;19,72;1,97
+Rez-de-chaussée;M01;Mur du garage;18600;200;2500;46,50;11,00;35,50;37000;92,50;70,50;7,05
+Rez-de-chaussée;M07;Mur de la véranda;13200;200;2500;33,00;22,36;10,64;26200;65,50;20,78;2,08
+Étage 1;M10;Mur extérieur;43200;200;2500;108,00;10,38;97,62;85200;213,00;192,24;19,52
+Étage 1;M09;Cloison;9800;200;2500;24,50;3,78;20,72;19000;47,50;39,94;4,04
+Étage 1;M11;Cloison;9800;200;2500;24,50;3,78;20,72;19000;47,50;39,94;4,04
+Étage 1;M12;Cloison;4200;200;2500;10,50;0,00;10,50;8000;20,00;20,00;2,00
+Étage 1;M08;Cloison;4600;200;2500;11,50;0,00;11,50;8800;22,00;22,00;2,20
+Étage 2;M15;Mur extérieur;43200;200;2500;108,00;7,62;100,38;85200;213,00;197,76;20,08
+Étage 2;M14;Cloison;9800;200;2500;24,50;3,78;20,72;19000;47,50;39,94;4,04
+Étage 2;M16;Cloison;9800;200;2500;24,50;3,78;20,72;19000;47,50;39,94;4,04
+Étage 2;M17;Cloison;4200;200;2500;10,50;0,00;10,50;8000;20,00;20,00;2,00
+Étage 2;M13;Cloison;4600;200;2500;11,50;0,00;11,50;8800;22,00;22,00;2,20
+Étage 3;M19;Mur extérieur;43200;200;2500;108,00;9,60;98,40;85400;213,50;194,30;19,68
+Étage 3;M18;Cloison;9800;200;2500;24,50;1,89;22,61;19200;48,00;44,22;4,42
+Étage 3;M20;Cloison;9800;200;2500;24,50;3,78;20,72;19000;47,50;39,94;4,04
+Étage 3;M21;Cloison;4200;200;2500;10,50;0,00;10,50;8000;20,00;20,00;2,00
+Total;;;313900;;;784,75;105,81;678,94;615000;1537,50;1325,88;134,19
+
+Ouvertures
+Niveau;Réf.;Nom;Type;Style;Mur;Réf. du mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)
+Rez-de-chaussée;F01;Fenêtre Séjour 1;Fenêtre;Deux vantaux;Mur extérieur;M03;1200;1000;900;1,20
+Rez-de-chaussée;F02;Fenêtre Cuisine 1;Fenêtre;Deux vantaux;Mur extérieur;M03;1200;1000;900;1,20
+Rez-de-chaussée;P03;Porte Cuisine 1;Porte;Battant;Mur extérieur;M03;900;2100;0;1,89
+Rez-de-chaussée;F05;Fenêtre WC 1;Fenêtre;Deux vantaux;Mur extérieur;M03;600;600;1500;0,36
+Rez-de-chaussée;F03;Fenêtre Séjour 2;Fenêtre;Deux vantaux;Mur extérieur;M03;1200;1000;900;1,20
+Rez-de-chaussée;F04;Fenêtre Séjour 3;Fenêtre;Deux vantaux;Mur extérieur;M03;1200;1000;900;1,20
+Rez-de-chaussée;P04;Porte Séjour 1;Porte;Battant;Cloison;M02;900;2100;0;1,89
+Rez-de-chaussée;P02;Porte Hall 1;Porte;Battant;Cloison;M04;900;2100;0;1,89
+Rez-de-chaussée;P05;Porte Hall 2;Porte;Battant;Cloison;M04;900;2100;0;1,89
+Rez-de-chaussée;F06;Baie Séjour 4;Baie;Coulissante;Mur extérieur;M03;2400;2150;0;5,16
+Rez-de-chaussée;P07;Porte Hall 3;Porte;Battant;Mur extérieur;M03;900;2100;0;1,89
+Rez-de-chaussée;F07;Fenêtre Buanderie 1;Fenêtre;Deux vantaux;Mur extérieur;M03;1200;1000;900;1,20
+Rez-de-chaussée;F08;Fenêtre WC 2;Fenêtre;Deux vantaux;Mur extérieur;M03;1200;1000;900;1,20
+Rez-de-chaussée;P06;Porte Buanderie 1;Porte;Battant;Cloison;M06;900;2100;0;1,89
+Rez-de-chaussée;P01;Porte Garage 1;Porte;Garage sectionnelle;Mur du garage;M01;5000;2200;0;11,00
+Rez-de-chaussée;F09;Baie Véranda 1;Baie;Coulissante;Mur de la véranda;M07;3000;2150;0;6,45
+Rez-de-chaussée;F11;Baie Véranda 3;Baie;Coulissante;Mur de la véranda;M07;4400;2150;0;9,46
+Rez-de-chaussée;F10;Baie Véranda 2;Baie;Coulissante;Mur de la véranda;M07;3000;2150;0;6,45
+Étage 1;F12;Fenêtre Chambre 1 – 1;Fenêtre;Deux vantaux;Mur extérieur;M10;900;1000;900;0,90
+Étage 1;F14;Baie Chambre 3 – 1;Baie;Coulissante;Mur extérieur;M10;2400;2150;0;5,16
+Étage 1;F15;Fenêtre Salle de bains 1;Fenêtre;Deux vantaux;Mur extérieur;M10;600;600;1500;0,36
+Étage 1;F13;Fenêtre Chambre 1 – 2;Fenêtre;Deux vantaux;Mur extérieur;M10;1200;1000;900;1,20
+Étage 1;P08;Porte Chambre 1 – 1;Porte;Battant;Cloison;M09;900;2100;0;1,89
+Étage 1;P10;Porte Chambre 2 – 1;Porte;Battant;Cloison;M09;900;2100;0;1,89
+Étage 1;P09;Porte Palier 1;Porte;Battant;Cloison;M11;900;2100;0;1,89
+Étage 1;P11;Porte Palier 2;Porte;Battant;Cloison;M11;900;2100;0;1,89
+Étage 1;F16;Fenêtre Chambre 2 – 1;Fenêtre;Deux vantaux;Mur extérieur;M10;1200;1000;900;1,20
+Étage 1;F17;Fenêtre Palier 1;Fenêtre;Deux vantaux;Mur extérieur;M10;1200;1000;900;1,20
+Étage 1;F18;Fenêtre Salle de bains 2;Fenêtre;Deux vantaux;Mur extérieur;M10;600;600;1500;0,36
+Étage 2;F19;Fenêtre Suite parentale 1;Fenêtre;Deux vantaux;Mur extérieur;M15;900;1000;900;0,90
+Étage 2;F20;Fenêtre Salle de bains parentale 1;Fenêtre;Deux vantaux;Mur extérieur;M15;600;600;1500;0,36
+Étage 2;F22;Fenêtre Salle de bains parentale 2;Fenêtre;Deux vantaux;Mur extérieur;M15;600;600;1500;0,36
+Étage 2;F21;Fenêtre Suite parentale 2;Fenêtre;Deux vantaux;Mur extérieur;M15;1200;1000;900;1,20
+Étage 2;F23;Fenêtre Chambre des enfants 1;Fenêtre;Deux vantaux;Mur extérieur;M15;1200;1000;900;1,20
+Étage 2;P12;Porte Suite parentale 1;Porte;Battant;Cloison;M14;900;2100;0;1,89
+Étage 2;P14;Porte Chambre des enfants 1;Porte;Battant;Cloison;M14;900;2100;0;1,89
+Étage 2;P13;Porte Palier 1;Porte;Battant;Cloison;M16;900;2100;0;1,89
+Étage 2;P15;Porte Palier 2;Porte;Battant;Cloison;M16;900;2100;0;1,89
+Étage 2;F24;Fenêtre Chambre des enfants 2;Fenêtre;Deux vantaux;Mur extérieur;M15;1200;1000;900;1,20
+Étage 2;F25;Fenêtre Palier 1;Fenêtre;Deux vantaux;Mur extérieur;M15;1200;1000;900;1,20
+Étage 2;F26;Fenêtre Chambre 5 – 1;Fenêtre;Deux vantaux;Mur extérieur;M15;1200;1000;900;1,20
+Étage 3;F27;Fenêtre Salle de jeux 1;Fenêtre;Deux vantaux;Mur extérieur;M19;1200;1000;900;1,20
+Étage 3;F28;Fenêtre Bureau 1;Fenêtre;Deux vantaux;Mur extérieur;M19;1200;1000;900;1,20
+Étage 3;F30;Fenêtre Bureau 2;Fenêtre;Deux vantaux;Mur extérieur;M19;1200;1000;900;1,20
+Étage 3;F29;Fenêtre Salle de jeux 2;Fenêtre;Deux vantaux;Mur extérieur;M19;1200;1000;900;1,20
+Étage 3;F31;Fenêtre Salle de jeux 3;Fenêtre;Deux vantaux;Mur extérieur;M19;1200;1000;900;1,20
+Étage 3;P17;Porte Salle de jeux 1;Porte;Battant;Cloison;M18;900;2100;0;1,89
+Étage 3;P16;Porte Palier 1;Porte;Battant;Cloison;M20;900;2100;0;1,89
+Étage 3;P18;Porte Palier 2;Porte;Battant;Cloison;M20;900;2100;0;1,89
+Étage 3;F32;Fenêtre Salle de jeux 4;Fenêtre;Deux vantaux;Mur extérieur;M19;1200;1000;900;1,20
+Étage 3;F33;Fenêtre Palier 1;Fenêtre;Deux vantaux;Mur extérieur;M19;1200;1000;900;1,20
+Étage 3;F34;Fenêtre Chambre d’amis 1;Fenêtre;Deux vantaux;Mur extérieur;M19;1200;1000;900;1,20
+Total;;;;;;;;;;105,81
+
+Escaliers
+Niveau;Nom;Forme;Emmarchement (mm);Nombre de contremarches;Hauteur de contremarche (mm);Nombre de girons;Giron (mm);Remarque
+Rez-de-chaussée;Escalier;En U;1000;15;180;14;250;
+Étage 1;Escalier;En U;1000;15;180;14;250;
+Étage 2;Escalier;En U;1000;15;180;14;250;
+
+Plateformes
+Niveau;Nom;Surface (m²);Hauteur du dessus (mm);Épaisseur (mm);Volume (m³)
+Rez-de-chaussée;Terrasse;49,10;150;150;7,37
+Rez-de-chaussée;Plage de la piscine;24,00;150;150;3,60
+Étage 1;Terrasse de l’étage;36,00;100;100;3,60
+Total;;109,10;;;14,56
+
+Toitures
+Surface réelle = surface au sol (débord compris) ÷ cosinus de la pente. Égouts, faîtage et arêtiers débord compris. Quantités seulement, aucun prix.
+Niveau;Nom;Forme;Pente (°);Débord (mm);Surface au sol (m²);Surface réelle (m²);Faîtage (mm);Égouts (mm);Arêtiers (mm);Pignons;Remarque
+Étage 3;Toiture;Deux pans;35,0;500;143,00;174,57;13000;26000;0;2;
+Total;;;;;143,00;174,57;13000;26000;0;2;
+
+Mobilier et équipements
+Catégorie;Nom;Largeur (mm);Profondeur (mm);Nombre
+Séjour et salon;Fauteuil;850;850;4
+Séjour et salon;Bibliothèque;900;300;2
+Séjour et salon;Table basse rectangulaire;1100;600;1
+Séjour et salon;Table basse ronde;800;800;2
+Séjour et salon;Console;1000;300;1
+Séjour et salon;Plante en pot;400;400;3
+Séjour et salon;Buffet;1600;450;1
+Séjour et salon;Canapé 2 places;1600;900;1
+Séjour et salon;Canapé 3 places;2100;900;3
+Séjour et salon;Meuble TV;2000;450;2
+Salle à manger;Chaise;450;500;10
+Salle à manger;Tabouret de bar;400;400;3
+Salle à manger;Table rectangulaire 6 personnes;1800;900;1
+Salle à manger;Table carrée;900;900;1
+Chambre;Lit 2 personnes;1400;1900;3
+Chambre;Lit 180 × 200;1800;2000;1
+Chambre;Lit 160 × 200;1600;2000;2
+Chambre;Lit 1 personne;900;2000;2
+Chambre;Chiffonnier;800;450;1
+Chambre;Bureau d'enfant;1100;550;1
+Chambre;Chevet;450;400;12
+Chambre;Armoire 2 portes;1000;600;2
+Chambre;Armoire 3 portes;1500;600;2
+Chambre;Armoire à portes coulissantes;2000;650;1
+Bureau et travail;Chaise visiteur;550;550;2
+Bureau et travail;Bureau;1400;700;2
+Bureau et travail;Bureau de direction;1800;900;1
+Bureau et travail;Fauteuil de bureau;600;600;2
+Rangements et entrée;Portemanteau sur pied;400;400;1
+Rangements et entrée;Étagère de garage;1200;500;1
+Rangements et entrée;Meuble à chaussures;800;300;1
+Cuisine;Îlot central;2400;1000;1
+Cuisine;Cuisine linéaire;3600;650;1
+Salle de bain et sanitaires;Baignoire;1700;700;1
+Salle de bain et sanitaires;Baignoire îlot;1700;800;1
+Salle de bain et sanitaires;Douche rectangulaire;1200;800;1
+Salle de bain et sanitaires;Douche à l'italienne;1200;900;1
+Salle de bain et sanitaires;Double vasque;1400;500;2
+Salle de bain et sanitaires;Lave-mains;400;300;1
+Salle de bain et sanitaires;WC;400;700;3
+Buanderie et technique;Sèche-linge;600;650;1
+Buanderie et technique;Bac de buanderie;600;500;1
+Buanderie et technique;Lave-linge;600;600;1
+Buanderie et technique;Chauffe-eau (ballon);500;500;1
+Extérieur et jardin;Chaise de jardin;550;600;8
+Extérieur et jardin;Cuisine d'été;2400;700;1
+Extérieur et jardin;Parasol;3000;3000;1
+Extérieur et jardin;Bac de plantation;1500;500;2
+Extérieur et jardin;Bain de soleil;700;2000;5
+Extérieur et jardin;Piscine rectangulaire;10000;5000;1
+Extérieur et jardin;Table de jardin;1600;900;2
+Véhicules et stationnement;Voiture;1800;4500;1
+Véhicules et stationnement;Voiture haute (SUV);1950;4700;1
+
+Zones de référence
+Catégorie;Nom;Largeur (mm);Profondeur (mm);Nombre
+Séjour et salon;Tapis rectangulaire;1600;2300;1
+Séjour et salon;Tapis rond;2000;2000;1
+
+Totaux par niveau
+Niveau;Altitude (mm);Hauteur d’étage (mm);Surface des pièces (m²);Longueur des murs (mm);Surface 1 face sur l’axe, brute (m²);Ouvertures (m²);Surface 1 face sur l’axe, nette (m²);Surface 2 faces, nette (m²);Volume des murs (m³);Nombre de portes;Nombre de fenêtres;Nombre de baies
+Rez-de-chaussée;0;2700;160,78;103700;259,25;57,42;201,83;393,66;39,87;7;7;4
+Étage 1;2700;2700;105,84;71600;179,00;17,94;161,06;314,12;31,81;4;6;1
+Étage 2;5400;2700;105,84;71600;179,00;15,18;163,82;319,64;32,36;4;8;0
+Étage 3;8100;2700;106,72;67000;167,50;15,27;152,23;298,46;30,15;3;8;0
+Bâtiment;;;479,18;313900;784,75;105,81;678,94;1325,88;134,19;18;29;5
+
+Règles de calcul
+Règle
+Longueurs en mm entiers, surfaces en m², volumes en m³.
+Toutes les ouvertures (portes, fenêtres, baies) sont déduites des surfaces de murs, sans seuil.
+"Surface d’un mur : longueur × hauteur ; une face sur l’axe, ou deux faces mesurées sur les faces."
+Les baies sont en dimensions brutes de maçonnerie (tableau à tableau) : les dimensions des menuiseries sont à confirmer par le menuisier après prise de cotes sur place.
+"Repères : M01 pour les murs, P01 pour les portes, F01 pour les fenêtres et les baies ; les mêmes que sur les plans. Repères valables à la date du document : ils peuvent changer si le plan est modifié."
+Aucun prix ni devis : les quantités s’arrêtent aux mesures.

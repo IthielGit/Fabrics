@@ -1020,14 +1020,16 @@ notifications dans ce jalon. Lots à valider un par un, après M15.
 
 ## Phase « Fabrics + Pascal » (M17 → M25)
 
-Décidée le 2026-11-17 (D75 à D79, voir `docs/PROGRESS.md`). Ce fichier reste le **seul roadmap
+Décidée le 2026-11-17 (D75 à D80, voir `docs/PROGRESS.md`). Ce fichier reste le **seul roadmap
 officiel** : la roadmap Pascal / IfcOpenShell téléchargée par l'utilisateur est intégrée ici et n'a
 plus de valeur de référence.
 
 **Principe : Fabrics + Pascal Editor + amélioration.**
 
-- **Fabrics garde ce qu'il a déjà** : interface et prise en main, métrés Client / Exécution,
-  Supabase, collaboration, historique, commentaires, projets Visuel, déploiement.
+- **Fabrics garde ses fonctions** : métrés Client / Exécution, Supabase (comptes, partage),
+  collaboration, historique, commentaires, projets Visuel, déploiement Vite / Cloudflare.
+- **L'interface et la prise en main viennent de Pascal** (D80) : accueil, éditeur, réglages, import,
+  connexion, aide ; les fonctions de Fabrics y sont reconstruites. On reste sur Vite (pas de Next.js).
 - **On prend tout ce qu'on peut de Pascal Editor** (MIT, clone local
   `C:\Users\My PC\Documents\Projects\BIM Project`, commit `7f30521`) : applications, paquets,
   scripts, configurations, conventions, moteur 3D (Three.js / WebGPU), modèle de scène BIM, objets
@@ -1063,7 +1065,8 @@ ou accord documenté.
    travaille sur la scène Pascal), étendue avec le meilleur de l'autre ; l'autre est retirée dans le
    même jalon. Jamais deux implémentations actives. Doublons déjà repérés, à trancher en M17 :
    `jspdf` / `pdfkit`, oxlint / Biome, `crypto.randomUUID()` / `nanoid`, export IFC de Fabrics /
-   `ifc-converter`, vue 3D de Fabrics / `viewer` de Pascal.
+   `ifc-converter`, vue 3D de Fabrics / `viewer` de Pascal, `src/i18n/fr.ts` / Lingui, composants
+   d'interface de Fabrics / de Pascal (D80).
 3. **Garde des imports** : un test d'architecture (comme `core/src/architecture.test.ts` de Pascal)
    et des règles d'import du lint interdisent d'utiliser un module retiré.
 4. **Détection de copier-coller** (`jscpd`, à faire approuver) dans `npm run check:all`.
@@ -1163,6 +1166,9 @@ branche dédiée.
       CSV / XLSX / IFC
 - [ ] Remplir `docs/capabilities.md` (matrice complète : UI, vues 2D / 3D, moteur, objets, édition,
       annuler, stockage, IFC, API, MCP, IA, quantités, exports) et `docs/regression-checklist.md`
+- [ ] **Carte des écrans** (D80) : pour chaque écran et geste de Fabrics (accueil, éditeur, panneaux,
+      barre d'outils, barre d'état, aide, partage, versions, commentaires…), l'écran Pascal qui le
+      remplace ou le panneau à reconstruire dedans ; aucune fonction de Fabrics sans destination
 - [ ] `docs/adr/0001-source-of-truth.md` (scène Pascal, D79) ; `docs/adr/0002-monorepo.md` (workspaces
       npm, tests Pascal sous bun, lint) ; trancher les doublons repérés
 - [ ] Copier tous les paquets et apps de Pascal dans `packages/pascal/` et `apps/` ; ressources de
@@ -1197,10 +1203,31 @@ branche dédiée.
 - Deux navigateurs modifient le même plan en direct ; un commentaire reste attaché à son élément
 - Changer de vue ne modifie pas le document ; les scénarios natifs de Pascal passent toujours
 
-## M19 — Édition 2D/3D professionnelle (gate G2)
+## M19 — Interface Pascal et édition 2D/3D professionnelle (gate G2)
 
-- [ ] Outils, vue en plan et viewer 3D de Pascal intégrés à l'interface de Fabrics ; fusion outil par
-      outil selon la matrice, sans doublon
+### Lot A — Interface et prise en main de Pascal (D80)
+
+- [ ] Pages de `apps/editor` reprises dans l'app Vite : accueil des projets, éditeur, réglages,
+      import, connexion (Supabase Auth), aide et prise en main ; routes `react-router` (`/`,
+      `/p/:projectId`, `/s/…`, `/i/…`, `/bienvenue` conservées)
+- [ ] Fonctions de Fabrics reconstruites dans ce cadre, d'après la carte des écrans : panneau Métrés
+      (Client / Exécution, en direct), Commentaires, Historique et aperçu de version, présence et
+      avatars, partage et invitations, Exporter, points à vérifier, cotation Aucune / Client / Exécution
+- [ ] Projets Visuel : leur éditeur reste à part, habillé dans le style de Pascal, accessible depuis
+      le même accueil
+- [ ] Tous les textes en français (Lingui) ; unités affichées en mm, m², m³
+- [ ] Anciens composants d'interface de Fabrics retirés une fois remplacés (registre mis à jour)
+
+**Critères d'acceptation (lot A)**
+- Chaque ligne de la carte des écrans est cochée : aucune fonction de Fabrics n'a disparu
+  (`docs/regression-checklist.md` passe en entier)
+- Un projet Plan et un projet Visuel existants s'ouvrent depuis le nouvel accueil
+- Aucun texte en anglais visible ; aucune longueur affichée en m
+
+### Lot B — Édition 2D/3D professionnelle
+
+- [ ] Outils, vue en plan et viewer 3D de Pascal ; fusion outil par outil selon la matrice, sans
+      doublon
 - [ ] Saisie précise des dimensions en mm, accrochages, alignements, modes d'accrochage visibles
 - [ ] Édition directe en 3D : murs, dalles, toitures, escaliers, ouvertures ; jonctions de murs propres ;
       synchronisation 2D ↔ 3D par commandes sur le **même** objet

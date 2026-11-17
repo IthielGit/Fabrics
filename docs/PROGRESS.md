@@ -40,7 +40,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | à faire | |
 | M18 Modèle BIM unifié (G1) | à faire | |
-| M19 Édition 2D/3D professionnelle (G2) | à faire | |
+| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
 | M22 Échanges IFC (G5) | à faire | |
@@ -57,6 +57,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-17 — Roadmap · interface et prise en main de Pascal (D80)
+- Fait : décision D80 (toute l'interface de Pascal, en restant sur Vite) ; `docs/03-ROADMAP.md` : principe mis à jour, carte des écrans ajoutée en M17, M19 devient « Interface Pascal et édition 2D/3D professionnelle » avec un lot A Interface ; doublons `fr.ts` / Lingui et composants d'interface ajoutés ; `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md` alignés.
+- Aucun code modifié.
+- Commit : docs: interface et prise en main de Pascal (D80)
 
 ### 2026-11-17 — Roadmap · phase « Fabrics + Pascal » (M17 → M25)
 - Fait : la roadmap Pascal / IfcOpenShell téléchargée par l'utilisateur est adaptée à Fabrics et intégrée dans `docs/03-ROADMAP.md`, **seul roadmap officiel** : principe « Fabrics + Pascal Editor + amélioration », règle RÉUTILISER → ÉTENDRE → REMPLACER, mécanismes anti-duplication et anti-régression, 17 modules finaux, fixtures HOUSE-01 / HOUSE-02 / EDGE-01 en mm, jalons M17 à M25 avec gates G0 à G8, risques.
@@ -1574,6 +1579,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D77 | Clean room et provenance | **Choix de l'utilisateur le 2026-11-17** : toutes les règles « clean room » et de provenance sont supprimées de `CLAUDE.md` ; on utilise librement les dépôts open source (code, objets, matériaux) en vérifiant les licences avant redistribution commerciale et en gardant les notices (`THIRD_PARTY_NOTICES.md`). | Le projet s'appuie désormais sur des dépôts open source. |
 | D78 | Paquets Pascal | **Choix de l'utilisateur le 2026-11-17** : tous les paquets de Pascal entrent dans Fabrics (workspaces npm, `packages/pascal/`) ; leurs dépendances sont acceptées en bloc ; toute autre dépendance demande toujours un accord. | Réutiliser le code tel quel au lieu de le recopier, et pouvoir reprendre les mises à jour de Pascal. |
 | D79 | Source de vérité | **Choix de l'utilisateur le 2026-11-17** : la scène Pascal devient l'unique modèle des projets Plan (stockage en mètres, affichage toujours en mm, m², m³) ; migration testée des plans existants en M18 ; les projets Visuel gardent `FabricsDocument`. | Une seule source pour la 2D, la 3D, les métrés, l'IFC et le DQE, sans traduction permanente entre deux modèles. |
+| D80 | Interface et prise en main | **Choix de l'utilisateur le 2026-11-17** (précise D75) : on prend aussi **toute l'interface et la prise en main de Pascal** (accueil, éditeur, réglages, import, connexion, aide). Les fonctions de Fabrics y sont reconstruites (métrés Client / Exécution, commentaires, historique, présence, partage, export, DQE) ; l'éditeur Visuel reste à part, dans le même style. **On reste sur Vite** (composants de `apps/editor` repris sans Next.js). Remplace l'interface choisie en M15 bis et la prise en main de M11 quater : leurs **fonctions** restent exigées par la liste de non-régression. | Une seule interface cohérente, celle du moteur repris, sans perdre ce que fait Fabrics. |
 | D67 | Miniature dans le cloud | La miniature (image encodée en texte) est stockée telle quelle dans la colonne `thumbnail_path` de `projects`, sans fichier Storage. | Évite une URL signée par carte de l'accueil ; le nom de la colonne est trompeur mais le schéma reste inchangé. À revoir si la base grossit trop. |
 | D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 

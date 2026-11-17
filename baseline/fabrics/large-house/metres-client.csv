@@ -1,0 +1,65 @@
+﻿Surfaces de votre projet
+Projet;Exemple : grande maison R+3
+Date;17/11/2026
+Application;Fabrics
+Unités;Longueurs en mm, surfaces en m², volumes en m³
+Remarque;Surface au sol : surface de chaque pièce, trémies d’escalier retirées.
+
+Vos pièces
+Niveau;Pièce;Dimensions (mm);Périmètre (mm);Hauteur sous plafond (mm);Surface au sol (m²)
+Rez-de-chaussée;Séjour;4400 × 9600;28000;2500;42,24
+Rez-de-chaussée;Hall;2800 × 9600;24800;2500;26,88
+Rez-de-chaussée;Cuisine;4000 × 4700;17400;2500;18,80
+Rez-de-chaussée;Buanderie;1900 × 4700;13200;2500;8,93
+Rez-de-chaussée;WC;1900 × 4700;13200;2500;8,93
+Rez-de-chaussée;Garage;6000 × 6000;24000;2500;36,00
+Rez-de-chaussée;Véranda;5000 × 3800;17600;2500;19,00
+Étage 1;Chambre 1;4400 × 4700;18200;2500;20,68
+Étage 1;Chambre 2;4400 × 4700;18200;2500;20,68
+Étage 1;Palier;2800 × 9600;24800;2500;20,61
+Étage 1;Chambre 3;4000 × 4700;17400;2500;18,80
+Étage 1;Salle de bains;4000 × 4700;17400;2500;18,80
+Étage 2;Suite parentale;4400 × 4700;18200;2500;20,68
+Étage 2;Chambre des enfants;4400 × 4700;18200;2500;20,68
+Étage 2;Palier;2800 × 9600;24800;2500;20,61
+Étage 2;Salle de bains parentale;4000 × 4700;17400;2500;18,80
+Étage 2;Chambre 5;4000 × 4700;17400;2500;18,80
+Étage 3;Salle de jeux;4400 × 9600;28000;2500;42,24
+Étage 3;Palier;2800 × 9600;24800;2500;20,61
+Étage 3;Bureau;4000 × 4700;17400;2500;18,80
+Étage 3;Chambre d’amis;4000 × 4700;17400;2500;18,80
+Total;;;;;460,37
+
+Plafonds
+Surface de plafond : surface au sol de la pièce, trémies d’escalier retirées. Un faux plafond est listé sur une ligne à part : sa surface n’est pas ajoutée au total.
+Niveau;Pièce;Surface de plafond (m²);Hauteur sous plafond (mm);Périmètre (mm)
+Rez-de-chaussée;Séjour;42,24;2500;28000
+Rez-de-chaussée;Hall;26,88;2500;24800
+Rez-de-chaussée;Cuisine;18,80;2500;17400
+Rez-de-chaussée;Buanderie;8,93;2500;13200
+Rez-de-chaussée;WC;8,93;2500;13200
+Rez-de-chaussée;Garage;36,00;2500;24000
+Rez-de-chaussée;Véranda;19,00;2500;17600
+Étage 1;Chambre 1;20,68;2500;18200
+Étage 1;Chambre 2;20,68;2500;18200
+Étage 1;Palier;20,61;2500;24800
+Étage 1;Chambre 3;18,80;2500;17400
+Étage 1;Salle de bains;18,80;2500;17400
+Étage 2;Suite parentale;20,68;2500;18200
+Étage 2;Chambre des enfants;20,68;2500;18200
+Étage 2;Palier;20,61;2500;24800
+Étage 2;Salle de bains parentale;18,80;2500;17400
+Étage 2;Chambre 5;18,80;2500;17400
+Étage 3;Salle de jeux;42,24;2500;28000
+Étage 3;Palier;20,61;2500;24800
+Étage 3;Bureau;18,80;2500;17400
+Étage 3;Chambre d’amis;18,80;2500;17400
+Total;;460,37;;
+
+Récapitulatif
+Niveau;Surface au sol (m²);Portes;Fenêtres;Baies vitrées
+Rez-de-chaussée;160,78;7;7;4
+Étage 1;99,57;4;6;1
+Étage 2;99,57;4;8;0
+Étage 3;100,45;3;8;0
+Bâtiment;460,37;18;29;5

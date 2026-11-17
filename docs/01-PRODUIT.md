@@ -61,10 +61,12 @@ même export). Seuls les outils disponibles et l'unité changent.
 
 ## Phase « Fabrics + Pascal » (jalons M17 à M25)
 
-Décidée le 2026-11-17 (D75 à D79). Principe : **Fabrics + Pascal Editor + amélioration**. On
+Décidée le 2026-11-17 (D75 à D80). Principe : **Fabrics + Pascal Editor + amélioration**. On
 intègre tout ce qu'on peut du projet open source Pascal Editor (moteur 3D, modèle BIM, outils,
-objets, IFC, MCP, composants) dans Fabrics, qui garde son interface, ses métrés, ses comptes, sa
-collaboration, son historique et ses commentaires. Jalons détaillés : `docs/03-ROADMAP.md`.
+objets, IFC, MCP, composants) dans Fabrics, **y compris son interface et sa prise en main** (D80 :
+accueil, éditeur, réglages, import, connexion). Fabrics garde ses fonctions, reconstruites dans ce
+cadre : métrés Client / Exécution, comptes, partage, collaboration, historique, commentaires, projets
+Visuel (éditeur à part). Les sections « Écrans » ci-dessous décrivent l'état jusqu'à M16. Jalons détaillés : `docs/03-ROADMAP.md`.
 
 **Objectif** : créer ou modifier des plans 2D (niveaux, axes, murs, cloisons, portes, fenêtres,
 dalles, toitures, pièces, annotations, cotes), les voir dans une maquette 3D paramétrique sans

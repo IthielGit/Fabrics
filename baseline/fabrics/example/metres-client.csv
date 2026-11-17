@@ -1,0 +1,41 @@
+﻿Surfaces de votre projet
+Projet;Exemple : maison à étage
+Date;17/11/2026
+Application;Fabrics
+Unités;Longueurs en mm, surfaces en m², volumes en m³
+Remarque;Surface au sol : surface de chaque pièce, trémies d’escalier retirées.
+
+Vos pièces
+Niveau;Pièce;Dimensions (mm);Périmètre (mm);Hauteur sous plafond (mm);Surface au sol (m²)
+Rez-de-chaussée;Séjour;4900 × 6500;22800;2500;31,85
+Rez-de-chaussée;Cuisine;5900 × 3100;18000;2500;18,29
+Rez-de-chaussée;Entrée;4200 × 3200;14800;2500;13,44
+Rez-de-chaussée;WC et buanderie;1500 × 3200;9400;2500;4,80
+Étage 1;Chambre parentale;4900 × 3100;16000;2500;15,19
+Étage 1;Chambre 2;4900 × 3200;16200;2500;15,68
+Étage 1;Salle de bains;2800 × 3100;11800;2500;8,68
+Étage 1;Bureau;2900 × 3100;12000;2500;8,99
+Étage 1;Palier;4200 × 3200;14800;2500;8,38
+Étage 1;Dressing;1500 × 3200;9400;2500;4,80
+Total;;;;;130,10
+
+Plafonds
+Surface de plafond : surface au sol de la pièce, trémies d’escalier retirées. Un faux plafond est listé sur une ligne à part : sa surface n’est pas ajoutée au total.
+Niveau;Pièce;Surface de plafond (m²);Hauteur sous plafond (mm);Périmètre (mm)
+Rez-de-chaussée;Séjour;31,85;2500;22800
+Rez-de-chaussée;Cuisine;18,29;2500;18000
+Rez-de-chaussée;Entrée;13,44;2500;14800
+Rez-de-chaussée;WC et buanderie;4,80;2500;9400
+Étage 1;Chambre parentale;15,19;2500;16000
+Étage 1;Chambre 2;15,68;2500;16200
+Étage 1;Salle de bains;8,68;2500;11800
+Étage 1;Bureau;8,99;2500;12000
+Étage 1;Palier;8,38;2500;14800
+Étage 1;Dressing;4,80;2500;9400
+Total;;130,10;;
+
+Récapitulatif
+Niveau;Surface au sol (m²);Portes;Fenêtres;Baies vitrées
+Rez-de-chaussée;68,38;5;5;1
+Étage 1;61,72;5;7;0
+Bâtiment;130,10;10;12;1
