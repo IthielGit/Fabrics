@@ -1,0 +1,138 @@
+﻿Métrés
+Projet;Exemple : maison à étage
+Date;17/11/2026
+Application;Fabrics
+Unités;Longueurs en mm, surfaces en m², volumes en m³
+Remarque;Les totaux sont calculés sur les valeurs exactes, avant arrondi : ils peuvent différer de quelques centièmes de la somme des lignes affichées. Repères valables à la date du document.
+
+Pièces
+Niveau;Nom;Surface au tracé (m²);Périmètre (mm);Trémie (m²);Surface nette (m²)
+Rez-de-chaussée;Séjour;31,85;22800;0,00;31,85
+Rez-de-chaussée;Cuisine;18,29;18000;0,00;18,29
+Rez-de-chaussée;Entrée;13,44;14800;0,00;13,44
+Rez-de-chaussée;WC et buanderie;4,80;9400;0,00;4,80
+Étage 1;Chambre parentale;15,19;16000;0,00;15,19
+Étage 1;Chambre 2;15,68;16200;0,00;15,68
+Étage 1;Salle de bains;8,68;11800;0,00;8,68
+Étage 1;Bureau;8,99;12000;0,00;8,99
+Étage 1;Palier;13,44;14800;5,06;8,38
+Étage 1;Dressing;4,80;9400;0,00;4,80
+Total;;135,16;145200;5,06;130,10
+
+Plafonds
+Surface de plafond : surface au sol de la pièce, trémies d’escalier retirées. Un faux plafond est listé sur une ligne à part : sa surface n’est pas ajoutée au total.
+Niveau;Pièce;Surface de plafond (m²);Hauteur sous plafond (mm);Périmètre (mm)
+Rez-de-chaussée;Séjour;31,85;2500;22800
+Rez-de-chaussée;Cuisine;18,29;2500;18000
+Rez-de-chaussée;Entrée;13,44;2500;14800
+Rez-de-chaussée;WC et buanderie;4,80;2500;9400
+Étage 1;Chambre parentale;15,19;2500;16000
+Étage 1;Chambre 2;15,68;2500;16200
+Étage 1;Salle de bains;8,68;2500;11800
+Étage 1;Bureau;8,99;2500;12000
+Étage 1;Palier;8,38;2500;14800
+Étage 1;Dressing;4,80;2500;9400
+Total;;130,10;;
+
+Murs
+Surface 1 face : longueur de l’axe × hauteur. Surface 2 faces : les deux faces mesurées sur les faces (onglets compris), ouvertures déduites sur chaque face. Volume : sur l’axe, ouvertures déduites.
+Niveau;Réf.;Nom;Longueur de l’axe (mm);Épaisseur (mm);Hauteur (mm);Surface 1 face sur l’axe, brute (m²);Ouvertures (m²);Surface 1 face sur l’axe, nette (m²);Longueur des faces (mm);Surface 2 faces, brute (m²);Surface 2 faces, nette (m²);Volume des murs (m³)
+Rez-de-chaussée;M02;Mur extérieur;35800;200;2500;89,50;12,21;77,29;70800;177,00;152,58;15,46
+Rez-de-chaussée;M01;Cloison;6700;200;2500;16,75;3,78;12,97;12800;32,00;24,44;2,49
+Rez-de-chaussée;M03;Cloison;6100;200;2500;15,25;1,89;13,36;11600;29,00;25,22;2,57
+Rez-de-chaussée;M04;Cloison;3400;200;2500;8,50;1,89;6,61;6400;16,00;12,22;1,22
+Étage 1;M08;Mur extérieur;35800;200;2500;89,50;8,10;81,40;70400;176,00;159,80;16,28
+Étage 1;M07;Cloison;6700;200;2500;16,75;3,78;12,97;12600;31,50;23,94;2,49
+Étage 1;M06;Cloison;5100;200;2500;12,75;0,00;12,75;9800;24,50;24,50;2,45
+Étage 1;M09;Cloison;6100;200;2500;15,25;3,78;11,47;11400;28,50;20,94;2,19
+Étage 1;M05;Cloison;3300;200;2500;8,25;0,00;8,25;6200;15,50;15,50;1,55
+Étage 1;M10;Cloison;3400;200;2500;8,50;1,89;6,61;6400;16,00;12,22;1,22
+Total;;;112400;;;281,00;37,32;243,68;218400;546,00;471,36;47,94
+
+Ouvertures
+Niveau;Réf.;Nom;Type;Style;Mur;Réf. du mur;Largeur (mm);Hauteur (mm);Allège (mm);Surface (m²)
+Rez-de-chaussée;F01;Fenêtre Séjour 1;Fenêtre;Deux vantaux;Mur extérieur;M02;1200;1000;900;1,20
+Rez-de-chaussée;F02;Fenêtre Cuisine 1;Fenêtre;Deux vantaux;Mur extérieur;M02;1200;1000;900;1,20
+Rez-de-chaussée;F03;Fenêtre Cuisine 2;Fenêtre;Deux vantaux;Mur extérieur;M02;1200;1000;900;1,20
+Rez-de-chaussée;F05;Fenêtre WC et buanderie 1;Fenêtre;Deux vantaux;Mur extérieur;M02;600;600;1500;0,36
+Rez-de-chaussée;F04;Fenêtre Séjour 2;Fenêtre;Deux vantaux;Mur extérieur;M02;1200;1000;900;1,20
+Rez-de-chaussée;F06;Baie Séjour 3;Baie;Coulissante;Mur extérieur;M02;2400;2150;0;5,16
+Rez-de-chaussée;P05;Porte Entrée 3;Porte;Battant;Mur extérieur;M02;900;2100;0;1,89
+Rez-de-chaussée;P01;Porte Séjour 1;Porte;Battant;Cloison;M01;900;2100;0;1,89
+Rez-de-chaussée;P03;Porte Séjour 2;Porte;Battant;Cloison;M01;900;2100;0;1,89
+Rez-de-chaussée;P02;Porte Entrée 1;Porte;Battant;Cloison;M03;900;2100;0;1,89
+Rez-de-chaussée;P04;Porte Entrée 2;Porte;Battant;Cloison;M04;900;2100;0;1,89
+Étage 1;F07;Fenêtre Chambre parentale 1;Fenêtre;Deux vantaux;Mur extérieur;M08;900;1000;900;0,90
+Étage 1;F08;Fenêtre Salle de bains 1;Fenêtre;Deux vantaux;Mur extérieur;M08;1200;1000;900;1,20
+Étage 1;F09;Fenêtre Bureau 1;Fenêtre;Deux vantaux;Mur extérieur;M08;1200;1000;900;1,20
+Étage 1;F11;Fenêtre Bureau 2;Fenêtre;Deux vantaux;Mur extérieur;M08;1200;1000;900;1,20
+Étage 1;F13;Fenêtre Chambre 2 – 2;Fenêtre;Deux vantaux;Mur extérieur;M08;1200;1000;900;1,20
+Étage 1;F12;Fenêtre Chambre 2 – 1;Fenêtre;Deux vantaux;Mur extérieur;M08;1200;1000;900;1,20
+Étage 1;F10;Fenêtre Chambre parentale 2;Fenêtre;Deux vantaux;Mur extérieur;M08;1200;1000;900;1,20
+Étage 1;P06;Porte Chambre parentale 1;Porte;Battant;Cloison;M07;900;2100;0;1,89
+Étage 1;P09;Porte Chambre 2 – 1;Porte;Battant;Cloison;M07;900;2100;0;1,89
+Étage 1;P07;Porte Palier 1;Porte;Battant;Cloison;M09;900;2100;0;1,89
+Étage 1;P08;Porte Palier 2;Porte;Battant;Cloison;M09;900;2100;0;1,89
+Étage 1;P10;Porte Palier 3;Porte;Battant;Cloison;M10;900;2100;0;1,89
+Total;;;;;;;;;;37,32
+
+Escaliers
+Niveau;Nom;Forme;Emmarchement (mm);Nombre de contremarches;Hauteur de contremarche (mm);Nombre de girons;Giron (mm);Remarque
+Rez-de-chaussée;Escalier;En L;1000;15;180;14;250;
+
+Toitures
+Surface réelle = surface au sol (débord compris) ÷ cosinus de la pente. Égouts, faîtage et arêtiers débord compris. Quantités seulement, aucun prix.
+Niveau;Nom;Forme;Pente (°);Débord (mm);Surface au sol (m²);Surface réelle (m²);Faîtage (mm);Égouts (mm);Arêtiers (mm);Pignons;Remarque
+Étage 1;Toiture;Deux pans;35,0;500;97,96;119,59;12400;24800;0;2;
+Total;;;;;97,96;119,59;12400;24800;0;2;
+
+Mobilier et équipements
+Catégorie;Nom;Largeur (mm);Profondeur (mm);Nombre
+Séjour et salon;Fauteuil;850;850;1
+Séjour et salon;Bibliothèque;1200;300;1
+Séjour et salon;Table basse rectangulaire;1100;600;1
+Séjour et salon;Plante en pot;400;400;1
+Séjour et salon;Buffet;1600;450;1
+Séjour et salon;Canapé 3 places;2100;900;1
+Séjour et salon;Meuble TV;2000;450;1
+Salle à manger;Chaise;450;500;6
+Salle à manger;Tabouret de bar;400;400;2
+Salle à manger;Table rectangulaire 6 personnes;1800;900;1
+Chambre;Lit 160 × 200;1600;2000;1
+Chambre;Lit 1 personne;900;2000;1
+Chambre;Dressing ouvert;1800;600;1
+Chambre;Chevet;450;400;2
+Chambre;Armoire 2 portes;1000;600;1
+Chambre;Armoire à portes coulissantes;2000;650;1
+Bureau et travail;Bureau;1400;700;1
+Bureau et travail;Bureau de direction;1800;900;1
+Bureau et travail;Fauteuil de bureau;600;600;2
+Rangements et entrée;Portemanteau sur pied;400;400;1
+Rangements et entrée;Meuble à chaussures;800;300;1
+Cuisine;Réfrigérateur-congélateur;600;650;1
+Cuisine;Îlot central;1800;900;1
+Cuisine;Cuisine linéaire;3000;650;1
+Salle de bain et sanitaires;Baignoire;1700;700;1
+Salle de bain et sanitaires;Meuble vasque;800;460;1
+Salle de bain et sanitaires;Lave-mains;400;300;1
+Salle de bain et sanitaires;WC;400;700;2
+Buanderie et technique;Lave-linge;600;600;1
+
+Zones de référence
+Catégorie;Nom;Largeur (mm);Profondeur (mm);Nombre
+Séjour et salon;Tapis rectangulaire;1600;2300;1
+
+Totaux par niveau
+Niveau;Altitude (mm);Hauteur d’étage (mm);Surface des pièces (m²);Longueur des murs (mm);Surface 1 face sur l’axe, brute (m²);Ouvertures (m²);Surface 1 face sur l’axe, nette (m²);Surface 2 faces, nette (m²);Volume des murs (m³);Nombre de portes;Nombre de fenêtres;Nombre de baies
+Rez-de-chaussée;0;2700;68,38;52000;130,00;19,77;110,23;214,46;21,75;5;5;1
+Étage 1;2700;2700;66,78;60400;151,00;17,55;133,45;256,90;26,19;5;7;0
+Bâtiment;;;135,16;112400;281,00;37,32;243,68;471,36;47,94;10;12;1
+
+Règles de calcul
+Règle
+Longueurs en mm entiers, surfaces en m², volumes en m³.
+Toutes les ouvertures (portes, fenêtres, baies) sont déduites des surfaces de murs, sans seuil.
+"Surface d’un mur : longueur × hauteur ; une face sur l’axe, ou deux faces mesurées sur les faces."
+Les baies sont en dimensions brutes de maçonnerie (tableau à tableau) : les dimensions des menuiseries sont à confirmer par le menuisier après prise de cotes sur place.
+"Repères : M01 pour les murs, P01 pour les portes, F01 pour les fenêtres et les baies ; les mêmes que sur les plans. Repères valables à la date du document : ils peuvent changer si le plan est modifié."
+Aucun prix ni devis : les quantités s’arrêtent aux mesures.

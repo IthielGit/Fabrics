@@ -1,0 +1,286 @@
+﻿Niveau;Catégorie;Élément;Réf.;Grandeur;Valeur;Unité
+Rez-de-chaussée;Pièce;Séjour;;Surface au tracé;31,8500;m²
+Rez-de-chaussée;Pièce;Séjour;;Périmètre;22800;mm
+Rez-de-chaussée;Pièce;Séjour;;Trémie;0,0000;m²
+Rez-de-chaussée;Pièce;Séjour;;Surface nette;31,8500;m²
+Rez-de-chaussée;Pièce;Séjour;;Hauteur sous plafond;2500;mm
+Rez-de-chaussée;Pièce;Cuisine;;Surface au tracé;18,2900;m²
+Rez-de-chaussée;Pièce;Cuisine;;Périmètre;18000;mm
+Rez-de-chaussée;Pièce;Cuisine;;Trémie;0,0000;m²
+Rez-de-chaussée;Pièce;Cuisine;;Surface nette;18,2900;m²
+Rez-de-chaussée;Pièce;Cuisine;;Hauteur sous plafond;2500;mm
+Rez-de-chaussée;Pièce;Entrée;;Surface au tracé;13,4400;m²
+Rez-de-chaussée;Pièce;Entrée;;Périmètre;14800;mm
+Rez-de-chaussée;Pièce;Entrée;;Trémie;0,0000;m²
+Rez-de-chaussée;Pièce;Entrée;;Surface nette;13,4400;m²
+Rez-de-chaussée;Pièce;Entrée;;Hauteur sous plafond;2500;mm
+Rez-de-chaussée;Pièce;WC et buanderie;;Surface au tracé;4,8000;m²
+Rez-de-chaussée;Pièce;WC et buanderie;;Périmètre;9400;mm
+Rez-de-chaussée;Pièce;WC et buanderie;;Trémie;0,0000;m²
+Rez-de-chaussée;Pièce;WC et buanderie;;Surface nette;4,8000;m²
+Rez-de-chaussée;Pièce;WC et buanderie;;Hauteur sous plafond;2500;mm
+Rez-de-chaussée;Mur;Mur extérieur;M02;Longueur de l’axe;35800;mm
+Rez-de-chaussée;Mur;Mur extérieur;M02;Épaisseur;200;mm
+Rez-de-chaussée;Mur;Mur extérieur;M02;Hauteur;2500;mm
+Rez-de-chaussée;Mur;Mur extérieur;M02;Surface 1 face sur l’axe, brute;89,5000;m²
+Rez-de-chaussée;Mur;Mur extérieur;M02;Ouvertures;12,2100;m²
+Rez-de-chaussée;Mur;Mur extérieur;M02;Surface 1 face sur l’axe, nette;77,2900;m²
+Rez-de-chaussée;Mur;Mur extérieur;M02;Longueur des faces;70800;mm
+Rez-de-chaussée;Mur;Mur extérieur;M02;Surface 2 faces, brute;177,0000;m²
+Rez-de-chaussée;Mur;Mur extérieur;M02;Surface 2 faces, nette;152,5800;m²
+Rez-de-chaussée;Mur;Mur extérieur;M02;Volume;15,4580;m³
+Rez-de-chaussée;Mur;Cloison;M01;Longueur de l’axe;6700;mm
+Rez-de-chaussée;Mur;Cloison;M01;Épaisseur;200;mm
+Rez-de-chaussée;Mur;Cloison;M01;Hauteur;2500;mm
+Rez-de-chaussée;Mur;Cloison;M01;Surface 1 face sur l’axe, brute;16,7500;m²
+Rez-de-chaussée;Mur;Cloison;M01;Ouvertures;3,7800;m²
+Rez-de-chaussée;Mur;Cloison;M01;Surface 1 face sur l’axe, nette;12,9700;m²
+Rez-de-chaussée;Mur;Cloison;M01;Longueur des faces;12800;mm
+Rez-de-chaussée;Mur;Cloison;M01;Surface 2 faces, brute;32,0000;m²
+Rez-de-chaussée;Mur;Cloison;M01;Surface 2 faces, nette;24,4400;m²
+Rez-de-chaussée;Mur;Cloison;M01;Volume;2,4940;m³
+Rez-de-chaussée;Mur;Cloison;M03;Longueur de l’axe;6100;mm
+Rez-de-chaussée;Mur;Cloison;M03;Épaisseur;200;mm
+Rez-de-chaussée;Mur;Cloison;M03;Hauteur;2500;mm
+Rez-de-chaussée;Mur;Cloison;M03;Surface 1 face sur l’axe, brute;15,2500;m²
+Rez-de-chaussée;Mur;Cloison;M03;Ouvertures;1,8900;m²
+Rez-de-chaussée;Mur;Cloison;M03;Surface 1 face sur l’axe, nette;13,3600;m²
+Rez-de-chaussée;Mur;Cloison;M03;Longueur des faces;11600;mm
+Rez-de-chaussée;Mur;Cloison;M03;Surface 2 faces, brute;29,0000;m²
+Rez-de-chaussée;Mur;Cloison;M03;Surface 2 faces, nette;25,2200;m²
+Rez-de-chaussée;Mur;Cloison;M03;Volume;2,5720;m³
+Rez-de-chaussée;Mur;Cloison;M04;Longueur de l’axe;3400;mm
+Rez-de-chaussée;Mur;Cloison;M04;Épaisseur;200;mm
+Rez-de-chaussée;Mur;Cloison;M04;Hauteur;2500;mm
+Rez-de-chaussée;Mur;Cloison;M04;Surface 1 face sur l’axe, brute;8,5000;m²
+Rez-de-chaussée;Mur;Cloison;M04;Ouvertures;1,8900;m²
+Rez-de-chaussée;Mur;Cloison;M04;Surface 1 face sur l’axe, nette;6,6100;m²
+Rez-de-chaussée;Mur;Cloison;M04;Longueur des faces;6400;mm
+Rez-de-chaussée;Mur;Cloison;M04;Surface 2 faces, brute;16,0000;m²
+Rez-de-chaussée;Mur;Cloison;M04;Surface 2 faces, nette;12,2200;m²
+Rez-de-chaussée;Mur;Cloison;M04;Volume;1,2220;m³
+Rez-de-chaussée;Ouverture;Fenêtre Séjour 1;F01;Largeur;1200;mm
+Rez-de-chaussée;Ouverture;Fenêtre Séjour 1;F01;Hauteur;1000;mm
+Rez-de-chaussée;Ouverture;Fenêtre Séjour 1;F01;Allège;900;mm
+Rez-de-chaussée;Ouverture;Fenêtre Séjour 1;F01;Surface;1,2000;m²
+Rez-de-chaussée;Ouverture;Fenêtre Cuisine 1;F02;Largeur;1200;mm
+Rez-de-chaussée;Ouverture;Fenêtre Cuisine 1;F02;Hauteur;1000;mm
+Rez-de-chaussée;Ouverture;Fenêtre Cuisine 1;F02;Allège;900;mm
+Rez-de-chaussée;Ouverture;Fenêtre Cuisine 1;F02;Surface;1,2000;m²
+Rez-de-chaussée;Ouverture;Fenêtre Cuisine 2;F03;Largeur;1200;mm
+Rez-de-chaussée;Ouverture;Fenêtre Cuisine 2;F03;Hauteur;1000;mm
+Rez-de-chaussée;Ouverture;Fenêtre Cuisine 2;F03;Allège;900;mm
+Rez-de-chaussée;Ouverture;Fenêtre Cuisine 2;F03;Surface;1,2000;m²
+Rez-de-chaussée;Ouverture;Fenêtre WC et buanderie 1;F05;Largeur;600;mm
+Rez-de-chaussée;Ouverture;Fenêtre WC et buanderie 1;F05;Hauteur;600;mm
+Rez-de-chaussée;Ouverture;Fenêtre WC et buanderie 1;F05;Allège;1500;mm
+Rez-de-chaussée;Ouverture;Fenêtre WC et buanderie 1;F05;Surface;0,3600;m²
+Rez-de-chaussée;Ouverture;Fenêtre Séjour 2;F04;Largeur;1200;mm
+Rez-de-chaussée;Ouverture;Fenêtre Séjour 2;F04;Hauteur;1000;mm
+Rez-de-chaussée;Ouverture;Fenêtre Séjour 2;F04;Allège;900;mm
+Rez-de-chaussée;Ouverture;Fenêtre Séjour 2;F04;Surface;1,2000;m²
+Rez-de-chaussée;Ouverture;Baie Séjour 3;F06;Largeur;2400;mm
+Rez-de-chaussée;Ouverture;Baie Séjour 3;F06;Hauteur;2150;mm
+Rez-de-chaussée;Ouverture;Baie Séjour 3;F06;Allège;0;mm
+Rez-de-chaussée;Ouverture;Baie Séjour 3;F06;Surface;5,1600;m²
+Rez-de-chaussée;Ouverture;Porte Entrée 3;P05;Largeur;900;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 3;P05;Hauteur;2100;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 3;P05;Allège;0;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 3;P05;Surface;1,8900;m²
+Rez-de-chaussée;Ouverture;Porte Séjour 1;P01;Largeur;900;mm
+Rez-de-chaussée;Ouverture;Porte Séjour 1;P01;Hauteur;2100;mm
+Rez-de-chaussée;Ouverture;Porte Séjour 1;P01;Allège;0;mm
+Rez-de-chaussée;Ouverture;Porte Séjour 1;P01;Surface;1,8900;m²
+Rez-de-chaussée;Ouverture;Porte Séjour 2;P03;Largeur;900;mm
+Rez-de-chaussée;Ouverture;Porte Séjour 2;P03;Hauteur;2100;mm
+Rez-de-chaussée;Ouverture;Porte Séjour 2;P03;Allège;0;mm
+Rez-de-chaussée;Ouverture;Porte Séjour 2;P03;Surface;1,8900;m²
+Rez-de-chaussée;Ouverture;Porte Entrée 1;P02;Largeur;900;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 1;P02;Hauteur;2100;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 1;P02;Allège;0;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 1;P02;Surface;1,8900;m²
+Rez-de-chaussée;Ouverture;Porte Entrée 2;P04;Largeur;900;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 2;P04;Hauteur;2100;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 2;P04;Allège;0;mm
+Rez-de-chaussée;Ouverture;Porte Entrée 2;P04;Surface;1,8900;m²
+Rez-de-chaussée;Escalier;Escalier;;Largeur;1000;mm
+Rez-de-chaussée;Escalier;Escalier;;Contremarches;15;nombre
+Rez-de-chaussée;Escalier;Escalier;;Hauteur de contremarche;180;mm
+Rez-de-chaussée;Escalier;Escalier;;Girons;14;nombre
+Rez-de-chaussée;Escalier;Escalier;;Giron;250;mm
+Étage 1;Pièce;Chambre parentale;;Surface au tracé;15,1900;m²
+Étage 1;Pièce;Chambre parentale;;Périmètre;16000;mm
+Étage 1;Pièce;Chambre parentale;;Trémie;0,0000;m²
+Étage 1;Pièce;Chambre parentale;;Surface nette;15,1900;m²
+Étage 1;Pièce;Chambre parentale;;Hauteur sous plafond;2500;mm
+Étage 1;Pièce;Chambre 2;;Surface au tracé;15,6800;m²
+Étage 1;Pièce;Chambre 2;;Périmètre;16200;mm
+Étage 1;Pièce;Chambre 2;;Trémie;0,0000;m²
+Étage 1;Pièce;Chambre 2;;Surface nette;15,6800;m²
+Étage 1;Pièce;Chambre 2;;Hauteur sous plafond;2500;mm
+Étage 1;Pièce;Salle de bains;;Surface au tracé;8,6800;m²
+Étage 1;Pièce;Salle de bains;;Périmètre;11800;mm
+Étage 1;Pièce;Salle de bains;;Trémie;0,0000;m²
+Étage 1;Pièce;Salle de bains;;Surface nette;8,6800;m²
+Étage 1;Pièce;Salle de bains;;Hauteur sous plafond;2500;mm
+Étage 1;Pièce;Bureau;;Surface au tracé;8,9900;m²
+Étage 1;Pièce;Bureau;;Périmètre;12000;mm
+Étage 1;Pièce;Bureau;;Trémie;0,0000;m²
+Étage 1;Pièce;Bureau;;Surface nette;8,9900;m²
+Étage 1;Pièce;Bureau;;Hauteur sous plafond;2500;mm
+Étage 1;Pièce;Palier;;Surface au tracé;13,4400;m²
+Étage 1;Pièce;Palier;;Périmètre;14800;mm
+Étage 1;Pièce;Palier;;Trémie;5,0600;m²
+Étage 1;Pièce;Palier;;Surface nette;8,3800;m²
+Étage 1;Pièce;Palier;;Hauteur sous plafond;2500;mm
+Étage 1;Pièce;Dressing;;Surface au tracé;4,8000;m²
+Étage 1;Pièce;Dressing;;Périmètre;9400;mm
+Étage 1;Pièce;Dressing;;Trémie;0,0000;m²
+Étage 1;Pièce;Dressing;;Surface nette;4,8000;m²
+Étage 1;Pièce;Dressing;;Hauteur sous plafond;2500;mm
+Étage 1;Mur;Mur extérieur;M08;Longueur de l’axe;35800;mm
+Étage 1;Mur;Mur extérieur;M08;Épaisseur;200;mm
+Étage 1;Mur;Mur extérieur;M08;Hauteur;2500;mm
+Étage 1;Mur;Mur extérieur;M08;Surface 1 face sur l’axe, brute;89,5000;m²
+Étage 1;Mur;Mur extérieur;M08;Ouvertures;8,1000;m²
+Étage 1;Mur;Mur extérieur;M08;Surface 1 face sur l’axe, nette;81,4000;m²
+Étage 1;Mur;Mur extérieur;M08;Longueur des faces;70400;mm
+Étage 1;Mur;Mur extérieur;M08;Surface 2 faces, brute;176,0000;m²
+Étage 1;Mur;Mur extérieur;M08;Surface 2 faces, nette;159,8000;m²
+Étage 1;Mur;Mur extérieur;M08;Volume;16,2800;m³
+Étage 1;Mur;Cloison;M07;Longueur de l’axe;6700;mm
+Étage 1;Mur;Cloison;M07;Épaisseur;200;mm
+Étage 1;Mur;Cloison;M07;Hauteur;2500;mm
+Étage 1;Mur;Cloison;M07;Surface 1 face sur l’axe, brute;16,7500;m²
+Étage 1;Mur;Cloison;M07;Ouvertures;3,7800;m²
+Étage 1;Mur;Cloison;M07;Surface 1 face sur l’axe, nette;12,9700;m²
+Étage 1;Mur;Cloison;M07;Longueur des faces;12600;mm
+Étage 1;Mur;Cloison;M07;Surface 2 faces, brute;31,5000;m²
+Étage 1;Mur;Cloison;M07;Surface 2 faces, nette;23,9400;m²
+Étage 1;Mur;Cloison;M07;Volume;2,4940;m³
+Étage 1;Mur;Cloison;M06;Longueur de l’axe;5100;mm
+Étage 1;Mur;Cloison;M06;Épaisseur;200;mm
+Étage 1;Mur;Cloison;M06;Hauteur;2500;mm
+Étage 1;Mur;Cloison;M06;Surface 1 face sur l’axe, brute;12,7500;m²
+Étage 1;Mur;Cloison;M06;Ouvertures;0,0000;m²
+Étage 1;Mur;Cloison;M06;Surface 1 face sur l’axe, nette;12,7500;m²
+Étage 1;Mur;Cloison;M06;Longueur des faces;9800;mm
+Étage 1;Mur;Cloison;M06;Surface 2 faces, brute;24,5000;m²
+Étage 1;Mur;Cloison;M06;Surface 2 faces, nette;24,5000;m²
+Étage 1;Mur;Cloison;M06;Volume;2,4500;m³
+Étage 1;Mur;Cloison;M09;Longueur de l’axe;6100;mm
+Étage 1;Mur;Cloison;M09;Épaisseur;200;mm
+Étage 1;Mur;Cloison;M09;Hauteur;2500;mm
+Étage 1;Mur;Cloison;M09;Surface 1 face sur l’axe, brute;15,2500;m²
+Étage 1;Mur;Cloison;M09;Ouvertures;3,7800;m²
+Étage 1;Mur;Cloison;M09;Surface 1 face sur l’axe, nette;11,4700;m²
+Étage 1;Mur;Cloison;M09;Longueur des faces;11400;mm
+Étage 1;Mur;Cloison;M09;Surface 2 faces, brute;28,5000;m²
+Étage 1;Mur;Cloison;M09;Surface 2 faces, nette;20,9400;m²
+Étage 1;Mur;Cloison;M09;Volume;2,1940;m³
+Étage 1;Mur;Cloison;M05;Longueur de l’axe;3300;mm
+Étage 1;Mur;Cloison;M05;Épaisseur;200;mm
+Étage 1;Mur;Cloison;M05;Hauteur;2500;mm
+Étage 1;Mur;Cloison;M05;Surface 1 face sur l’axe, brute;8,2500;m²
+Étage 1;Mur;Cloison;M05;Ouvertures;0,0000;m²
+Étage 1;Mur;Cloison;M05;Surface 1 face sur l’axe, nette;8,2500;m²
+Étage 1;Mur;Cloison;M05;Longueur des faces;6200;mm
+Étage 1;Mur;Cloison;M05;Surface 2 faces, brute;15,5000;m²
+Étage 1;Mur;Cloison;M05;Surface 2 faces, nette;15,5000;m²
+Étage 1;Mur;Cloison;M05;Volume;1,5500;m³
+Étage 1;Mur;Cloison;M10;Longueur de l’axe;3400;mm
+Étage 1;Mur;Cloison;M10;Épaisseur;200;mm
+Étage 1;Mur;Cloison;M10;Hauteur;2500;mm
+Étage 1;Mur;Cloison;M10;Surface 1 face sur l’axe, brute;8,5000;m²
+Étage 1;Mur;Cloison;M10;Ouvertures;1,8900;m²
+Étage 1;Mur;Cloison;M10;Surface 1 face sur l’axe, nette;6,6100;m²
+Étage 1;Mur;Cloison;M10;Longueur des faces;6400;mm
+Étage 1;Mur;Cloison;M10;Surface 2 faces, brute;16,0000;m²
+Étage 1;Mur;Cloison;M10;Surface 2 faces, nette;12,2200;m²
+Étage 1;Mur;Cloison;M10;Volume;1,2220;m³
+Étage 1;Ouverture;Fenêtre Chambre parentale 1;F07;Largeur;900;mm
+Étage 1;Ouverture;Fenêtre Chambre parentale 1;F07;Hauteur;1000;mm
+Étage 1;Ouverture;Fenêtre Chambre parentale 1;F07;Allège;900;mm
+Étage 1;Ouverture;Fenêtre Chambre parentale 1;F07;Surface;0,9000;m²
+Étage 1;Ouverture;Fenêtre Salle de bains 1;F08;Largeur;1200;mm
+Étage 1;Ouverture;Fenêtre Salle de bains 1;F08;Hauteur;1000;mm
+Étage 1;Ouverture;Fenêtre Salle de bains 1;F08;Allège;900;mm
+Étage 1;Ouverture;Fenêtre Salle de bains 1;F08;Surface;1,2000;m²
+Étage 1;Ouverture;Fenêtre Bureau 1;F09;Largeur;1200;mm
+Étage 1;Ouverture;Fenêtre Bureau 1;F09;Hauteur;1000;mm
+Étage 1;Ouverture;Fenêtre Bureau 1;F09;Allège;900;mm
+Étage 1;Ouverture;Fenêtre Bureau 1;F09;Surface;1,2000;m²
+Étage 1;Ouverture;Fenêtre Bureau 2;F11;Largeur;1200;mm
+Étage 1;Ouverture;Fenêtre Bureau 2;F11;Hauteur;1000;mm
+Étage 1;Ouverture;Fenêtre Bureau 2;F11;Allège;900;mm
+Étage 1;Ouverture;Fenêtre Bureau 2;F11;Surface;1,2000;m²
+Étage 1;Ouverture;Fenêtre Chambre 2 – 2;F13;Largeur;1200;mm
+Étage 1;Ouverture;Fenêtre Chambre 2 – 2;F13;Hauteur;1000;mm
+Étage 1;Ouverture;Fenêtre Chambre 2 – 2;F13;Allège;900;mm
+Étage 1;Ouverture;Fenêtre Chambre 2 – 2;F13;Surface;1,2000;m²
+Étage 1;Ouverture;Fenêtre Chambre 2 – 1;F12;Largeur;1200;mm
+Étage 1;Ouverture;Fenêtre Chambre 2 – 1;F12;Hauteur;1000;mm
+Étage 1;Ouverture;Fenêtre Chambre 2 – 1;F12;Allège;900;mm
+Étage 1;Ouverture;Fenêtre Chambre 2 – 1;F12;Surface;1,2000;m²
+Étage 1;Ouverture;Fenêtre Chambre parentale 2;F10;Largeur;1200;mm
+Étage 1;Ouverture;Fenêtre Chambre parentale 2;F10;Hauteur;1000;mm
+Étage 1;Ouverture;Fenêtre Chambre parentale 2;F10;Allège;900;mm
+Étage 1;Ouverture;Fenêtre Chambre parentale 2;F10;Surface;1,2000;m²
+Étage 1;Ouverture;Porte Chambre parentale 1;P06;Largeur;900;mm
+Étage 1;Ouverture;Porte Chambre parentale 1;P06;Hauteur;2100;mm
+Étage 1;Ouverture;Porte Chambre parentale 1;P06;Allège;0;mm
+Étage 1;Ouverture;Porte Chambre parentale 1;P06;Surface;1,8900;m²
+Étage 1;Ouverture;Porte Chambre 2 – 1;P09;Largeur;900;mm
+Étage 1;Ouverture;Porte Chambre 2 – 1;P09;Hauteur;2100;mm
+Étage 1;Ouverture;Porte Chambre 2 – 1;P09;Allège;0;mm
+Étage 1;Ouverture;Porte Chambre 2 – 1;P09;Surface;1,8900;m²
+Étage 1;Ouverture;Porte Palier 1;P07;Largeur;900;mm
+Étage 1;Ouverture;Porte Palier 1;P07;Hauteur;2100;mm
+Étage 1;Ouverture;Porte Palier 1;P07;Allège;0;mm
+Étage 1;Ouverture;Porte Palier 1;P07;Surface;1,8900;m²
+Étage 1;Ouverture;Porte Palier 2;P08;Largeur;900;mm
+Étage 1;Ouverture;Porte Palier 2;P08;Hauteur;2100;mm
+Étage 1;Ouverture;Porte Palier 2;P08;Allège;0;mm
+Étage 1;Ouverture;Porte Palier 2;P08;Surface;1,8900;m²
+Étage 1;Ouverture;Porte Palier 3;P10;Largeur;900;mm
+Étage 1;Ouverture;Porte Palier 3;P10;Hauteur;2100;mm
+Étage 1;Ouverture;Porte Palier 3;P10;Allège;0;mm
+Étage 1;Ouverture;Porte Palier 3;P10;Surface;1,8900;m²
+Étage 1;Toiture;Toiture;;Pente;35,0;°
+Étage 1;Toiture;Toiture;;Débord;500;mm
+Étage 1;Toiture;Toiture;;Surface au sol (débord compris);97,9600;m²
+Étage 1;Toiture;Toiture;;Surface réelle;119,5871;m²
+Étage 1;Toiture;Toiture;;Faîtage;12400;mm
+Étage 1;Toiture;Toiture;;Égouts;24800;mm
+Étage 1;Toiture;Toiture;;Arêtiers;0;mm
+Étage 1;Toiture;Toiture;;Pignons;2;nombre
+;Mobilier;Fauteuil;850 × 850 mm;Nombre;1;nombre
+;Mobilier;Bibliothèque;1200 × 300 mm;Nombre;1;nombre
+;Mobilier;Table basse rectangulaire;1100 × 600 mm;Nombre;1;nombre
+;Mobilier;Plante en pot;400 × 400 mm;Nombre;1;nombre
+;Mobilier;Tapis rectangulaire;1600 × 2300 mm;Nombre;1;nombre
+;Mobilier;Buffet;1600 × 450 mm;Nombre;1;nombre
+;Mobilier;Canapé 3 places;2100 × 900 mm;Nombre;1;nombre
+;Mobilier;Meuble TV;2000 × 450 mm;Nombre;1;nombre
+;Mobilier;Chaise;450 × 500 mm;Nombre;6;nombre
+;Mobilier;Tabouret de bar;400 × 400 mm;Nombre;2;nombre
+;Mobilier;Table rectangulaire 6 personnes;1800 × 900 mm;Nombre;1;nombre
+;Mobilier;Lit 160 × 200;1600 × 2000 mm;Nombre;1;nombre
+;Mobilier;Lit 1 personne;900 × 2000 mm;Nombre;1;nombre
+;Mobilier;Dressing ouvert;1800 × 600 mm;Nombre;1;nombre
+;Mobilier;Chevet;450 × 400 mm;Nombre;2;nombre
+;Mobilier;Armoire 2 portes;1000 × 600 mm;Nombre;1;nombre
+;Mobilier;Armoire à portes coulissantes;2000 × 650 mm;Nombre;1;nombre
+;Mobilier;Bureau;1400 × 700 mm;Nombre;1;nombre
+;Mobilier;Bureau de direction;1800 × 900 mm;Nombre;1;nombre
+;Mobilier;Fauteuil de bureau;600 × 600 mm;Nombre;2;nombre
+;Mobilier;Portemanteau sur pied;400 × 400 mm;Nombre;1;nombre
+;Mobilier;Meuble à chaussures;800 × 300 mm;Nombre;1;nombre
+;Mobilier;Réfrigérateur-congélateur;600 × 650 mm;Nombre;1;nombre
+;Mobilier;Îlot central;1800 × 900 mm;Nombre;1;nombre
+;Mobilier;Cuisine linéaire;3000 × 650 mm;Nombre;1;nombre
+;Mobilier;Baignoire;1700 × 700 mm;Nombre;1;nombre
+;Mobilier;Meuble vasque;800 × 460 mm;Nombre;1;nombre
+;Mobilier;Lave-mains;400 × 300 mm;Nombre;1;nombre
+;Mobilier;WC;400 × 700 mm;Nombre;2;nombre
+;Mobilier;Lave-linge;600 × 600 mm;Nombre;1;nombre

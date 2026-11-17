@@ -1,0 +1,78 @@
+{
+  "id": "HOUSE-02",
+  "status": "Calcul à la main rédigé par Claude le 2026-11-17, à vérifier par l'utilisateur. Les feuilles numérotées et les métrés par lot seront fixés en M20 et M21, quand leurs règles existeront.",
+  "units": { "length": "mm", "area": "m² (2 décimales)", "volume": "m³ (3 décimales)", "angle": "degrés" },
+  "base": "Chaque niveau reprend l'enveloppe, les cloisons et les pièces de HOUSE-01 (même origine).",
+  "levels": [
+    { "name": "Rez-de-chaussée", "elevation": 0, "height": 3000, "slabThickness": 200 },
+    { "name": "Étage 1", "elevation": 3000, "height": 3000, "slabThickness": 200 }
+  ],
+  "stair": {
+    "level": "Rez-de-chaussée",
+    "shape": "straight",
+    "width": 1000,
+    "length": 4000,
+    "voidMargin": 50,
+    "footprint": "dans le Séjour, x 300 → 1300, y 600 → 4600 (montée vers le nord)"
+  },
+  "throughOpening": {
+    "level": "Étage 1",
+    "kind": "bay",
+    "style": "free",
+    "wall": "C1",
+    "centerX": 2000,
+    "width": 1000,
+    "height": 2100,
+    "sillHeight": 0,
+    "role": "ouverture traversante (passage libre entre Chambre 1 et Séjour de l'étage)"
+  },
+  "roof": {
+    "level": "Étage 1",
+    "shape": "gable",
+    "outline": [0, 0, 8000, 0, 8000, 10000, 0, 10000],
+    "pitch": 35,
+    "overhang": 500,
+    "ridge": "parallèle au grand côté (10000 mm)"
+  },
+  "sections": [
+    { "label": "A", "points": [-1000, 2500, 9000, 2500], "note": "perpendiculaire au faîtage, coupe l'escalier" }
+  ],
+  "expected": {
+    "stair": {
+      "riseHeight_mm": 3000,
+      "risers": 17,
+      "riserHeight_mm": 176.47,
+      "riserCheck": "plus petit n avec 3000 ÷ n ≤ 180 : n = 17 (16 donnerait 187,5)",
+      "treads": 16,
+      "going_mm": 250,
+      "goingCheck": "4000 ÷ 16 = 250, au moins 250 : longueur suffisante",
+      "requiredLength_mm": 4000
+    },
+    "void": {
+      "rect": "1100 × 4100",
+      "area_m2": 4.51,
+      "level": "Étage 1",
+      "roomAboveNet_m2": 15.68,
+      "roomAboveCheck": "Séjour de l'étage 20,1875 − 4,51 = 15,6775 → 15,68 m²"
+    },
+    "roof": {
+      "span_mm": 8000,
+      "ridgeHeightAboveWalls_mm": 2801,
+      "ridgeCheck": "(8000 ÷ 2) × tan 35° = 4000 × 0,700208 = 2800,8 → 2801",
+      "projectedArea_m2": 99.0,
+      "realArea_m2": 120.86,
+      "realAreaCheck": "(9000 × 11000) ÷ cos 35° = 99 ÷ 0,819152 = 120,857",
+      "ridgeLength_mm": 11000,
+      "eaves_mm": 22000,
+      "gables": 2,
+      "ridgeAltitude_mm": 8801,
+      "ridgeAltitudeCheck": "dessus des murs de l'étage 3000 + 3000 = 6000, + 2801"
+    },
+    "perLevel": {
+      "Rez-de-chaussée": { "roomsTotal_m2": 71.25, "openings": { "doors": 1, "windows": 4 } },
+      "Étage 1": { "roomsGross_m2": 71.25, "roomsNet_m2": 66.74, "openings": { "doors": 1, "windows": 4, "bays": 1 } }
+    },
+    "building": { "roomsGross_m2": 142.5, "roomsNet_m2": 137.99 },
+    "dqe": { "total": null, "note": "Aucun prix avant M23." }
+  }
+}

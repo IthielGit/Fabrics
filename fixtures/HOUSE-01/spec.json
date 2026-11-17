@@ -1,0 +1,78 @@
+{
+  "id": "HOUSE-01",
+  "status": "Calcul à la main rédigé par Claude le 2026-11-17, à vérifier par l'utilisateur (M17, point 3.6 du plan).",
+  "units": { "length": "mm", "area": "m² (2 décimales, arrondi au plus proche)", "volume": "m³ (3 décimales)" },
+  "conventions": {
+    "origin": "coin extérieur sud-ouest du bâtiment = (0, 0) ; x vers l'est, y vers le nord",
+    "wallArea": "surface murale brute = longueur à l'axe × hauteur (règle de docs/02-ARCHITECTURE.md) ; surfaces par face données à part",
+    "openingArea": "largeur × hauteur (baie brute de maçonnerie)",
+    "roomArea": "surface au tracé ; les pièces sont tracées sur les faces intérieures des murs"
+  },
+  "level": { "name": "Rez-de-chaussée", "elevation": 0, "height": 3000, "slabThickness": 200 },
+  "walls": [
+    {
+      "ref": "ENV",
+      "role": "enveloppe, mur fermé",
+      "thickness": 200,
+      "height": 3000,
+      "axis": [100, 100, 7900, 100, 7900, 9900, 100, 9900, 100, 100]
+    },
+    { "ref": "C1", "role": "cloison est-ouest", "thickness": 100, "height": 3000, "axis": [200, 5000, 7800, 5000] },
+    { "ref": "C2", "role": "cloison nord-sud, partie sud", "thickness": 100, "height": 3000, "axis": [4500, 200, 4500, 4950] },
+    { "ref": "C3", "role": "cloison nord-sud, partie nord", "thickness": 100, "height": 3000, "axis": [4000, 5050, 4000, 9800] }
+  ],
+  "openings": [
+    { "ref": "P1", "kind": "door", "wall": "ENV", "side": "sud", "centerX": 2200, "width": 1000, "height": 2150, "sillHeight": 0 },
+    { "ref": "F1", "kind": "window", "wall": "ENV", "side": "sud", "centerX": 6200, "width": 1200, "height": 1350, "sillHeight": 900 },
+    { "ref": "F2", "kind": "window", "wall": "ENV", "side": "nord", "centerX": 2000, "width": 1200, "height": 1350, "sillHeight": 900 },
+    { "ref": "F3", "kind": "window", "wall": "ENV", "side": "nord", "centerX": 6000, "width": 1200, "height": 1350, "sillHeight": 900 },
+    { "ref": "F4", "kind": "window", "wall": "ENV", "side": "ouest", "centerY": 2500, "width": 1200, "height": 1350, "sillHeight": 900 }
+  ],
+  "rooms": [
+    { "name": "Séjour", "polygon": [200, 200, 4450, 200, 4450, 4950, 200, 4950] },
+    { "name": "Cuisine", "polygon": [4550, 200, 7800, 200, 7800, 4950, 4550, 4950] },
+    { "name": "Chambre 1", "polygon": [200, 5050, 3950, 5050, 3950, 9800, 200, 9800] },
+    { "name": "Chambre 2", "polygon": [4050, 5050, 7800, 5050, 7800, 9800, 4050, 9800] }
+  ],
+  "slab": { "polygon": [0, 0, 8000, 0, 8000, 10000, 0, 10000], "thickness": 200 },
+  "expected": {
+    "rooms": [
+      { "name": "Séjour", "dims": "4250 × 4750", "area_m2": 20.19, "exact_m2": 20.1875, "perimeter_mm": 18000 },
+      { "name": "Cuisine", "dims": "3250 × 4750", "area_m2": 15.44, "exact_m2": 15.4375, "perimeter_mm": 16000 },
+      { "name": "Chambre 1", "dims": "3750 × 4750", "area_m2": 17.81, "exact_m2": 17.8125, "perimeter_mm": 17000 },
+      { "name": "Chambre 2", "dims": "3750 × 4750", "area_m2": 17.81, "exact_m2": 17.8125, "perimeter_mm": 17000 }
+    ],
+    "roomsTotal_m2": 71.25,
+    "roomsTotalCheck": "intérieur 7600 × 9600 = 72,96 m² − cloisons (7600 + 4750 + 4750) × 100 = 1,71 m² → 71,25 m²",
+    "walls": {
+      "ENV": {
+        "axisLength_mm": 35200,
+        "innerFaceLength_mm": 34400,
+        "outerFaceLength_mm": 36000,
+        "grossArea_m2": 105.6,
+        "innerFaceGross_m2": 103.2,
+        "outerFaceGross_m2": 108.0,
+        "openingsArea_m2": 8.63,
+        "netArea_m2": 96.97,
+        "volumeGross_m3": 21.12,
+        "volumeGrossCheck": "(8000 × 10000 − 7600 × 9600) × 3000 = 7,04 m² × 3 m = 21,12 m³",
+        "volumeNet_m3": 19.394,
+        "volumeNetCheck": "21,12 − 8,63 × 0,2 = 19,394 m³"
+      },
+      "C1": { "axisLength_mm": 7600, "grossArea_m2": 22.8, "volume_m3": 2.28 },
+      "C2": { "axisLength_mm": 4750, "grossArea_m2": 14.25, "volume_m3": 1.425 },
+      "C3": { "axisLength_mm": 4750, "grossArea_m2": 14.25, "volume_m3": 1.425 },
+      "partitionsTotal": { "length_mm": 17100, "grossArea_m2": 51.3, "volume_m3": 5.13 }
+    },
+    "openings": {
+      "doors": 1,
+      "windows": 4,
+      "doorArea_m2": 2.15,
+      "windowArea_m2_each": 1.62,
+      "total_m2": 8.63
+    },
+    "slab": { "area_m2": 80.0, "volume_m3": 16.0 },
+    "building": { "footprint_m2": 80.0, "outerPerimeter_mm": 36000, "wallsAxisLength_mm": 52300 },
+    "dqe": { "total": null, "note": "Aucun prix avant M23 (bibliothèque de prix de l'utilisateur)." }
+  }
+}

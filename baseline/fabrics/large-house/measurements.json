@@ -1,0 +1,2900 @@
+{
+  "levels": [
+    {
+      "level": {
+        "id": "00000000-0000-4000-8000-000000000001",
+        "name": "Rez-de-chaussée",
+        "elevation": 0,
+        "height": 2700,
+        "slabThickness": 200
+      },
+      "measurements": {
+        "rooms": [
+          {
+            "id": "00000000-0000-4000-8000-000000000031",
+            "name": "Séjour",
+            "area": 42240000,
+            "perimeter": 28000,
+            "voidArea": 0,
+            "netArea": 42240000,
+            "dimensions": [
+              4400,
+              9600
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 42240000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000032",
+            "name": "Hall",
+            "area": 26880000,
+            "perimeter": 24800,
+            "voidArea": 0,
+            "netArea": 26880000,
+            "dimensions": [
+              2800,
+              9600
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 26880000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000033",
+            "name": "Cuisine",
+            "area": 18800000,
+            "perimeter": 17400,
+            "voidArea": 0,
+            "netArea": 18800000,
+            "dimensions": [
+              4000,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 18800000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000034",
+            "name": "Buanderie",
+            "area": 8930000,
+            "perimeter": 13200,
+            "voidArea": 0,
+            "netArea": 8930000,
+            "dimensions": [
+              1900,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 8930000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000035",
+            "name": "WC",
+            "area": 8930000,
+            "perimeter": 13200,
+            "voidArea": 0,
+            "netArea": 8930000,
+            "dimensions": [
+              1900,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 8930000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000036",
+            "name": "Garage",
+            "area": 36000000,
+            "perimeter": 24000,
+            "voidArea": 0,
+            "netArea": 36000000,
+            "dimensions": [
+              6000,
+              6000
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 36000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000037",
+            "name": "Véranda",
+            "area": 19000000,
+            "perimeter": 17600,
+            "voidArea": 0,
+            "netArea": 19000000,
+            "dimensions": [
+              5000,
+              3800
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 19000000
+          }
+        ],
+        "walls": [
+          {
+            "id": "00000000-0000-4000-8000-000000000006",
+            "name": "Mur extérieur",
+            "length": 43200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 108000000,
+            "openingsArea": 16500000,
+            "netArea": 91500000,
+            "facesLength": 84800,
+            "facesArea": 212000000,
+            "facesNetArea": 179000000,
+            "volume": 18300000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000007",
+            "name": "Cloison",
+            "length": 9800,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 24500000,
+            "openingsArea": 1890000,
+            "netArea": 22610000,
+            "facesLength": 19200,
+            "facesArea": 48000000,
+            "facesNetArea": 44220000,
+            "volume": 4422000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000008",
+            "name": "Cloison",
+            "length": 9800,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 24500000,
+            "openingsArea": 3780000,
+            "netArea": 20720000,
+            "facesLength": 19000,
+            "facesArea": 47500000,
+            "facesNetArea": 39940000,
+            "volume": 4044000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000009",
+            "name": "Cloison",
+            "length": 4200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 10500000,
+            "openingsArea": 0,
+            "netArea": 10500000,
+            "facesLength": 7800,
+            "facesArea": 19500000,
+            "facesNetArea": 19500000,
+            "volume": 2000000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000010",
+            "name": "Cloison",
+            "length": 4900,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 12250000,
+            "openingsArea": 1890000,
+            "netArea": 10360000,
+            "facesLength": 9400,
+            "facesArea": 23500000,
+            "facesNetArea": 19720000,
+            "volume": 1972000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000011",
+            "name": "Mur du garage",
+            "length": 18600,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 46500000,
+            "openingsArea": 11000000,
+            "netArea": 35500000,
+            "facesLength": 37000,
+            "facesArea": 92500000,
+            "facesNetArea": 70500000,
+            "volume": 7050000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000012",
+            "name": "Mur de la véranda",
+            "length": 13200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 33000000,
+            "openingsArea": 22360000,
+            "netArea": 10640000,
+            "facesLength": 26200,
+            "facesArea": 65500000,
+            "facesNetArea": 20780000,
+            "volume": 2078000000
+          }
+        ],
+        "platforms": [
+          {
+            "id": "00000000-0000-4000-8000-000000000038",
+            "name": "Terrasse",
+            "area": 49100000,
+            "elevation": 150,
+            "thickness": 150,
+            "volume": 7365000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000039",
+            "name": "Plage de la piscine",
+            "area": 24000000,
+            "elevation": 150,
+            "thickness": 150,
+            "volume": 3600000000
+          }
+        ],
+        "stairs": [
+          {
+            "id": "00000000-0000-4000-8000-000000000040",
+            "name": "Escalier",
+            "shape": "u",
+            "width": 1000,
+            "rise": 2700,
+            "risers": 15,
+            "treads": 14,
+            "riserHeight": 180,
+            "treadDepth": 250,
+            "status": "ok",
+            "requiredRun": null
+          }
+        ],
+        "chimneys": [],
+        "roofs": [],
+        "openings": [
+          {
+            "id": "00000000-0000-4000-8000-000000000014",
+            "name": "Fenêtre Séjour 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000015",
+            "name": "Fenêtre Cuisine 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000013",
+            "name": "Porte Cuisine 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000016",
+            "name": "Fenêtre WC 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 600,
+            "height": 600,
+            "sillHeight": 1500,
+            "area": 360000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000017",
+            "name": "Fenêtre Séjour 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000018",
+            "name": "Fenêtre Séjour 3",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000019",
+            "name": "Porte Séjour 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000007",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000020",
+            "name": "Porte Hall 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000008",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000021",
+            "name": "Porte Hall 2",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000008",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000022",
+            "name": "Baie Séjour 4",
+            "kind": "bay",
+            "style": "bay-sliding",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 2400,
+            "height": 2150,
+            "sillHeight": 0,
+            "area": 5160000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000023",
+            "name": "Porte Hall 3",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000024",
+            "name": "Fenêtre Buanderie 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000025",
+            "name": "Fenêtre WC 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000006",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000026",
+            "name": "Porte Buanderie 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000010",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000027",
+            "name": "Porte Garage 1",
+            "kind": "door",
+            "style": "garageSectional",
+            "wallId": "00000000-0000-4000-8000-000000000011",
+            "wallName": "Mur du garage",
+            "width": 5000,
+            "height": 2200,
+            "sillHeight": 0,
+            "area": 11000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000028",
+            "name": "Baie Véranda 1",
+            "kind": "bay",
+            "style": "bay-sliding",
+            "wallId": "00000000-0000-4000-8000-000000000012",
+            "wallName": "Mur de la véranda",
+            "width": 3000,
+            "height": 2150,
+            "sillHeight": 0,
+            "area": 6450000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000029",
+            "name": "Baie Véranda 3",
+            "kind": "bay",
+            "style": "bay-sliding",
+            "wallId": "00000000-0000-4000-8000-000000000012",
+            "wallName": "Mur de la véranda",
+            "width": 4400,
+            "height": 2150,
+            "sillHeight": 0,
+            "area": 9460000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000030",
+            "name": "Baie Véranda 2",
+            "kind": "bay",
+            "style": "bay-sliding",
+            "wallId": "00000000-0000-4000-8000-000000000012",
+            "wallName": "Mur de la véranda",
+            "width": 3000,
+            "height": 2150,
+            "sillHeight": 0,
+            "area": 6450000
+          }
+        ],
+        "totals": {
+          "roofProjectedArea": 0,
+          "roofRealArea": 0,
+          "roofRidgeLength": 0,
+          "roofEaveLength": 0,
+          "roofHipLength": 0,
+          "roofGables": 0,
+          "roomArea": 160780000,
+          "voidArea": 0,
+          "roomNetArea": 160780000,
+          "roomHabitableArea": 160780000,
+          "platformArea": 73100000,
+          "platformVolume": 10965000000,
+          "wallLength": 103700,
+          "wallArea": 259250000,
+          "openingsArea": 57420000,
+          "wallNetArea": 201830000,
+          "wallFacesArea": 508500000,
+          "wallFacesNetArea": 393660000,
+          "wallVolume": 39866000000,
+          "chimneys": 0,
+          "doors": 7,
+          "windows": 7,
+          "bays": 4
+        }
+      }
+    },
+    {
+      "level": {
+        "id": "00000000-0000-4000-8000-000000000003",
+        "name": "Étage 1",
+        "elevation": 2700,
+        "height": 2700,
+        "slabThickness": 200
+      },
+      "measurements": {
+        "rooms": [
+          {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "name": "Chambre 1",
+            "area": 20680000,
+            "perimeter": 18200,
+            "voidArea": 0,
+            "netArea": 20680000,
+            "dimensions": [
+              4400,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 20680000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000107",
+            "name": "Chambre 2",
+            "area": 20680000,
+            "perimeter": 18200,
+            "voidArea": 0,
+            "netArea": 20680000,
+            "dimensions": [
+              4400,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 20680000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000108",
+            "name": "Palier",
+            "area": 26880000,
+            "perimeter": 24800,
+            "voidArea": 6270000,
+            "netArea": 20610000,
+            "dimensions": [
+              2800,
+              9600
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 20610000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000109",
+            "name": "Chambre 3",
+            "area": 18800000,
+            "perimeter": 17400,
+            "voidArea": 0,
+            "netArea": 18800000,
+            "dimensions": [
+              4000,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 18800000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000110",
+            "name": "Salle de bains",
+            "area": 18800000,
+            "perimeter": 17400,
+            "voidArea": 0,
+            "netArea": 18800000,
+            "dimensions": [
+              4000,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 18800000
+          }
+        ],
+        "walls": [
+          {
+            "id": "00000000-0000-4000-8000-000000000090",
+            "name": "Mur extérieur",
+            "length": 43200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 108000000,
+            "openingsArea": 10380000,
+            "netArea": 97620000,
+            "facesLength": 85200,
+            "facesArea": 213000000,
+            "facesNetArea": 192240000,
+            "volume": 19524000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000091",
+            "name": "Cloison",
+            "length": 9800,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 24500000,
+            "openingsArea": 3780000,
+            "netArea": 20720000,
+            "facesLength": 19000,
+            "facesArea": 47500000,
+            "facesNetArea": 39940000,
+            "volume": 4044000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000092",
+            "name": "Cloison",
+            "length": 9800,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 24500000,
+            "openingsArea": 3780000,
+            "netArea": 20720000,
+            "facesLength": 19000,
+            "facesArea": 47500000,
+            "facesNetArea": 39940000,
+            "volume": 4044000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000093",
+            "name": "Cloison",
+            "length": 4200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 10500000,
+            "openingsArea": 0,
+            "netArea": 10500000,
+            "facesLength": 8000,
+            "facesArea": 20000000,
+            "facesNetArea": 20000000,
+            "volume": 2000000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000094",
+            "name": "Cloison",
+            "length": 4600,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 11500000,
+            "openingsArea": 0,
+            "netArea": 11500000,
+            "facesLength": 8800,
+            "facesArea": 22000000,
+            "facesNetArea": 22000000,
+            "volume": 2200000000
+          }
+        ],
+        "platforms": [
+          {
+            "id": "00000000-0000-4000-8000-000000000111",
+            "name": "Terrasse de l’étage",
+            "area": 36000000,
+            "elevation": 100,
+            "thickness": 100,
+            "volume": 3600000000
+          }
+        ],
+        "stairs": [
+          {
+            "id": "00000000-0000-4000-8000-000000000112",
+            "name": "Escalier",
+            "shape": "u",
+            "width": 1000,
+            "rise": 2700,
+            "risers": 15,
+            "treads": 14,
+            "riserHeight": 180,
+            "treadDepth": 250,
+            "status": "ok",
+            "requiredRun": null
+          }
+        ],
+        "chimneys": [],
+        "roofs": [],
+        "openings": [
+          {
+            "id": "00000000-0000-4000-8000-000000000096",
+            "name": "Fenêtre Chambre 1 – 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000090",
+            "wallName": "Mur extérieur",
+            "width": 900,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 900000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000095",
+            "name": "Baie Chambre 3 – 1",
+            "kind": "bay",
+            "style": "bay-sliding",
+            "wallId": "00000000-0000-4000-8000-000000000090",
+            "wallName": "Mur extérieur",
+            "width": 2400,
+            "height": 2150,
+            "sillHeight": 0,
+            "area": 5160000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000097",
+            "name": "Fenêtre Salle de bains 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000090",
+            "wallName": "Mur extérieur",
+            "width": 600,
+            "height": 600,
+            "sillHeight": 1500,
+            "area": 360000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000098",
+            "name": "Fenêtre Chambre 1 – 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000090",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000099",
+            "name": "Porte Chambre 1 – 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000091",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000100",
+            "name": "Porte Chambre 2 – 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000091",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "name": "Porte Palier 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000092",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "name": "Porte Palier 2",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000092",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "name": "Fenêtre Chambre 2 – 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000090",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "name": "Fenêtre Palier 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000090",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "name": "Fenêtre Salle de bains 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000090",
+            "wallName": "Mur extérieur",
+            "width": 600,
+            "height": 600,
+            "sillHeight": 1500,
+            "area": 360000
+          }
+        ],
+        "totals": {
+          "roofProjectedArea": 0,
+          "roofRealArea": 0,
+          "roofRidgeLength": 0,
+          "roofEaveLength": 0,
+          "roofHipLength": 0,
+          "roofGables": 0,
+          "roomArea": 105840000,
+          "voidArea": 6270000,
+          "roomNetArea": 99570000,
+          "roomHabitableArea": 99570000,
+          "platformArea": 36000000,
+          "platformVolume": 3600000000,
+          "wallLength": 71600,
+          "wallArea": 179000000,
+          "openingsArea": 17940000,
+          "wallNetArea": 161060000,
+          "wallFacesArea": 350000000,
+          "wallFacesNetArea": 314120000,
+          "wallVolume": 31812000000,
+          "chimneys": 0,
+          "doors": 4,
+          "windows": 6,
+          "bays": 1
+        }
+      }
+    },
+    {
+      "level": {
+        "id": "00000000-0000-4000-8000-000000000004",
+        "name": "Étage 2",
+        "elevation": 5400,
+        "height": 2700,
+        "slabThickness": 200
+      },
+      "measurements": {
+        "rooms": [
+          {
+            "id": "00000000-0000-4000-8000-000000000159",
+            "name": "Suite parentale",
+            "area": 20680000,
+            "perimeter": 18200,
+            "voidArea": 0,
+            "netArea": 20680000,
+            "dimensions": [
+              4400,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 20680000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000160",
+            "name": "Chambre des enfants",
+            "area": 20680000,
+            "perimeter": 18200,
+            "voidArea": 0,
+            "netArea": 20680000,
+            "dimensions": [
+              4400,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 20680000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000161",
+            "name": "Palier",
+            "area": 26880000,
+            "perimeter": 24800,
+            "voidArea": 6270000,
+            "netArea": 20610000,
+            "dimensions": [
+              2800,
+              9600
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 20610000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000162",
+            "name": "Salle de bains parentale",
+            "area": 18800000,
+            "perimeter": 17400,
+            "voidArea": 0,
+            "netArea": 18800000,
+            "dimensions": [
+              4000,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 18800000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000163",
+            "name": "Chambre 5",
+            "area": 18800000,
+            "perimeter": 17400,
+            "voidArea": 0,
+            "netArea": 18800000,
+            "dimensions": [
+              4000,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 18800000
+          }
+        ],
+        "walls": [
+          {
+            "id": "00000000-0000-4000-8000-000000000142",
+            "name": "Mur extérieur",
+            "length": 43200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 108000000,
+            "openingsArea": 7620000,
+            "netArea": 100380000,
+            "facesLength": 85200,
+            "facesArea": 213000000,
+            "facesNetArea": 197760000,
+            "volume": 20076000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000143",
+            "name": "Cloison",
+            "length": 9800,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 24500000,
+            "openingsArea": 3780000,
+            "netArea": 20720000,
+            "facesLength": 19000,
+            "facesArea": 47500000,
+            "facesNetArea": 39940000,
+            "volume": 4044000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000144",
+            "name": "Cloison",
+            "length": 9800,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 24500000,
+            "openingsArea": 3780000,
+            "netArea": 20720000,
+            "facesLength": 19000,
+            "facesArea": 47500000,
+            "facesNetArea": 39940000,
+            "volume": 4044000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000145",
+            "name": "Cloison",
+            "length": 4200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 10500000,
+            "openingsArea": 0,
+            "netArea": 10500000,
+            "facesLength": 8000,
+            "facesArea": 20000000,
+            "facesNetArea": 20000000,
+            "volume": 2000000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000146",
+            "name": "Cloison",
+            "length": 4600,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 11500000,
+            "openingsArea": 0,
+            "netArea": 11500000,
+            "facesLength": 8800,
+            "facesArea": 22000000,
+            "facesNetArea": 22000000,
+            "volume": 2200000000
+          }
+        ],
+        "platforms": [],
+        "stairs": [
+          {
+            "id": "00000000-0000-4000-8000-000000000164",
+            "name": "Escalier",
+            "shape": "u",
+            "width": 1000,
+            "rise": 2700,
+            "risers": 15,
+            "treads": 14,
+            "riserHeight": 180,
+            "treadDepth": 250,
+            "status": "ok",
+            "requiredRun": null
+          }
+        ],
+        "chimneys": [],
+        "roofs": [],
+        "openings": [
+          {
+            "id": "00000000-0000-4000-8000-000000000148",
+            "name": "Fenêtre Suite parentale 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000142",
+            "wallName": "Mur extérieur",
+            "width": 900,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 900000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000149",
+            "name": "Fenêtre Salle de bains parentale 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000142",
+            "wallName": "Mur extérieur",
+            "width": 600,
+            "height": 600,
+            "sillHeight": 1500,
+            "area": 360000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000147",
+            "name": "Fenêtre Salle de bains parentale 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000142",
+            "wallName": "Mur extérieur",
+            "width": 600,
+            "height": 600,
+            "sillHeight": 1500,
+            "area": 360000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000150",
+            "name": "Fenêtre Suite parentale 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000142",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000151",
+            "name": "Fenêtre Chambre des enfants 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000142",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000152",
+            "name": "Porte Suite parentale 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000143",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000153",
+            "name": "Porte Chambre des enfants 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000143",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000154",
+            "name": "Porte Palier 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000144",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000155",
+            "name": "Porte Palier 2",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000144",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000156",
+            "name": "Fenêtre Chambre des enfants 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000142",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000157",
+            "name": "Fenêtre Palier 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000142",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000158",
+            "name": "Fenêtre Chambre 5 – 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000142",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          }
+        ],
+        "totals": {
+          "roofProjectedArea": 0,
+          "roofRealArea": 0,
+          "roofRidgeLength": 0,
+          "roofEaveLength": 0,
+          "roofHipLength": 0,
+          "roofGables": 0,
+          "roomArea": 105840000,
+          "voidArea": 6270000,
+          "roomNetArea": 99570000,
+          "roomHabitableArea": 99570000,
+          "platformArea": 0,
+          "platformVolume": 0,
+          "wallLength": 71600,
+          "wallArea": 179000000,
+          "openingsArea": 15180000,
+          "wallNetArea": 163820000,
+          "wallFacesArea": 350000000,
+          "wallFacesNetArea": 319640000,
+          "wallVolume": 32364000000,
+          "chimneys": 0,
+          "doors": 4,
+          "windows": 8,
+          "bays": 0
+        }
+      }
+    },
+    {
+      "level": {
+        "id": "00000000-0000-4000-8000-000000000005",
+        "name": "Étage 3",
+        "elevation": 8100,
+        "height": 2700,
+        "slabThickness": 200
+      },
+      "measurements": {
+        "rooms": [
+          {
+            "id": "00000000-0000-4000-8000-000000000196",
+            "name": "Salle de jeux",
+            "area": 42240000,
+            "perimeter": 28000,
+            "voidArea": 0,
+            "netArea": 42240000,
+            "dimensions": [
+              4400,
+              9600
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 42240000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000197",
+            "name": "Palier",
+            "area": 26880000,
+            "perimeter": 24800,
+            "voidArea": 6270000,
+            "netArea": 20610000,
+            "dimensions": [
+              2800,
+              9600
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 20610000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000198",
+            "name": "Bureau",
+            "area": 18800000,
+            "perimeter": 17400,
+            "voidArea": 0,
+            "netArea": 18800000,
+            "dimensions": [
+              4000,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 18800000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000199",
+            "name": "Chambre d’amis",
+            "area": 18800000,
+            "perimeter": 17400,
+            "voidArea": 0,
+            "netArea": 18800000,
+            "dimensions": [
+              4000,
+              4700
+            ],
+            "voidOverflow": false,
+            "ceilingHeight": 2500,
+            "falseCeiling": false,
+            "habitableArea": 18800000
+          }
+        ],
+        "walls": [
+          {
+            "id": "00000000-0000-4000-8000-000000000181",
+            "name": "Mur extérieur",
+            "length": 43200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 108000000,
+            "openingsArea": 9600000,
+            "netArea": 98400000,
+            "facesLength": 85400,
+            "facesArea": 213500000,
+            "facesNetArea": 194300000,
+            "volume": 19680000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000182",
+            "name": "Cloison",
+            "length": 9800,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 24500000,
+            "openingsArea": 1890000,
+            "netArea": 22610000,
+            "facesLength": 19200,
+            "facesArea": 48000000,
+            "facesNetArea": 44220000,
+            "volume": 4422000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000183",
+            "name": "Cloison",
+            "length": 9800,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 24500000,
+            "openingsArea": 3780000,
+            "netArea": 20720000,
+            "facesLength": 19000,
+            "facesArea": 47500000,
+            "facesNetArea": 39940000,
+            "volume": 4044000000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000184",
+            "name": "Cloison",
+            "length": 4200,
+            "thickness": 200,
+            "height": 2500,
+            "wallArea": 10500000,
+            "openingsArea": 0,
+            "netArea": 10500000,
+            "facesLength": 8000,
+            "facesArea": 20000000,
+            "facesNetArea": 20000000,
+            "volume": 2000000000
+          }
+        ],
+        "platforms": [],
+        "stairs": [],
+        "chimneys": [],
+        "roofs": [
+          {
+            "id": "00000000-0000-4000-8000-000000000220",
+            "name": "Toiture",
+            "shape": "gable",
+            "pitch": 35,
+            "overhang": 500,
+            "projectedArea": 143000000,
+            "realArea": 174570766.19288823,
+            "ridgeLength": 13000,
+            "eaveLength": 26000,
+            "hipLength": 0,
+            "gableCount": 2,
+            "problem": null
+          }
+        ],
+        "openings": [
+          {
+            "id": "00000000-0000-4000-8000-000000000186",
+            "name": "Fenêtre Salle de jeux 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000181",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000187",
+            "name": "Fenêtre Bureau 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000181",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000185",
+            "name": "Fenêtre Bureau 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000181",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000188",
+            "name": "Fenêtre Salle de jeux 2",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000181",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000189",
+            "name": "Fenêtre Salle de jeux 3",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000181",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000190",
+            "name": "Porte Salle de jeux 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000182",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000191",
+            "name": "Porte Palier 1",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000183",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000192",
+            "name": "Porte Palier 2",
+            "kind": "door",
+            "style": "swing",
+            "wallId": "00000000-0000-4000-8000-000000000183",
+            "wallName": "Cloison",
+            "width": 900,
+            "height": 2100,
+            "sillHeight": 0,
+            "area": 1890000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000193",
+            "name": "Fenêtre Salle de jeux 4",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000181",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000194",
+            "name": "Fenêtre Palier 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000181",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          },
+          {
+            "id": "00000000-0000-4000-8000-000000000195",
+            "name": "Fenêtre Chambre d’amis 1",
+            "kind": "window",
+            "style": "casement2",
+            "wallId": "00000000-0000-4000-8000-000000000181",
+            "wallName": "Mur extérieur",
+            "width": 1200,
+            "height": 1000,
+            "sillHeight": 900,
+            "area": 1200000
+          }
+        ],
+        "totals": {
+          "roofProjectedArea": 143000000,
+          "roofRealArea": 174570766.19288823,
+          "roofRidgeLength": 13000,
+          "roofEaveLength": 26000,
+          "roofHipLength": 0,
+          "roofGables": 2,
+          "roomArea": 106720000,
+          "voidArea": 6270000,
+          "roomNetArea": 100450000,
+          "roomHabitableArea": 100450000,
+          "platformArea": 0,
+          "platformVolume": 0,
+          "wallLength": 67000,
+          "wallArea": 167500000,
+          "openingsArea": 15270000,
+          "wallNetArea": 152230000,
+          "wallFacesArea": 329000000,
+          "wallFacesNetArea": 298460000,
+          "wallVolume": 30146000000,
+          "chimneys": 0,
+          "doors": 3,
+          "windows": 8,
+          "bays": 0
+        }
+      }
+    }
+  ],
+  "total": {
+    "rooms": [
+      {
+        "id": "00000000-0000-4000-8000-000000000031",
+        "name": "Séjour",
+        "area": 42240000,
+        "perimeter": 28000,
+        "voidArea": 0,
+        "netArea": 42240000,
+        "dimensions": [
+          4400,
+          9600
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 42240000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000032",
+        "name": "Hall",
+        "area": 26880000,
+        "perimeter": 24800,
+        "voidArea": 0,
+        "netArea": 26880000,
+        "dimensions": [
+          2800,
+          9600
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 26880000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000033",
+        "name": "Cuisine",
+        "area": 18800000,
+        "perimeter": 17400,
+        "voidArea": 0,
+        "netArea": 18800000,
+        "dimensions": [
+          4000,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 18800000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000034",
+        "name": "Buanderie",
+        "area": 8930000,
+        "perimeter": 13200,
+        "voidArea": 0,
+        "netArea": 8930000,
+        "dimensions": [
+          1900,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 8930000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000035",
+        "name": "WC",
+        "area": 8930000,
+        "perimeter": 13200,
+        "voidArea": 0,
+        "netArea": 8930000,
+        "dimensions": [
+          1900,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 8930000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000036",
+        "name": "Garage",
+        "area": 36000000,
+        "perimeter": 24000,
+        "voidArea": 0,
+        "netArea": 36000000,
+        "dimensions": [
+          6000,
+          6000
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 36000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000037",
+        "name": "Véranda",
+        "area": 19000000,
+        "perimeter": 17600,
+        "voidArea": 0,
+        "netArea": 19000000,
+        "dimensions": [
+          5000,
+          3800
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 19000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000106",
+        "name": "Chambre 1",
+        "area": 20680000,
+        "perimeter": 18200,
+        "voidArea": 0,
+        "netArea": 20680000,
+        "dimensions": [
+          4400,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 20680000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000107",
+        "name": "Chambre 2",
+        "area": 20680000,
+        "perimeter": 18200,
+        "voidArea": 0,
+        "netArea": 20680000,
+        "dimensions": [
+          4400,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 20680000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000108",
+        "name": "Palier",
+        "area": 26880000,
+        "perimeter": 24800,
+        "voidArea": 6270000,
+        "netArea": 20610000,
+        "dimensions": [
+          2800,
+          9600
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 20610000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000109",
+        "name": "Chambre 3",
+        "area": 18800000,
+        "perimeter": 17400,
+        "voidArea": 0,
+        "netArea": 18800000,
+        "dimensions": [
+          4000,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 18800000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000110",
+        "name": "Salle de bains",
+        "area": 18800000,
+        "perimeter": 17400,
+        "voidArea": 0,
+        "netArea": 18800000,
+        "dimensions": [
+          4000,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 18800000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000159",
+        "name": "Suite parentale",
+        "area": 20680000,
+        "perimeter": 18200,
+        "voidArea": 0,
+        "netArea": 20680000,
+        "dimensions": [
+          4400,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 20680000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000160",
+        "name": "Chambre des enfants",
+        "area": 20680000,
+        "perimeter": 18200,
+        "voidArea": 0,
+        "netArea": 20680000,
+        "dimensions": [
+          4400,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 20680000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000161",
+        "name": "Palier",
+        "area": 26880000,
+        "perimeter": 24800,
+        "voidArea": 6270000,
+        "netArea": 20610000,
+        "dimensions": [
+          2800,
+          9600
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 20610000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000162",
+        "name": "Salle de bains parentale",
+        "area": 18800000,
+        "perimeter": 17400,
+        "voidArea": 0,
+        "netArea": 18800000,
+        "dimensions": [
+          4000,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 18800000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000163",
+        "name": "Chambre 5",
+        "area": 18800000,
+        "perimeter": 17400,
+        "voidArea": 0,
+        "netArea": 18800000,
+        "dimensions": [
+          4000,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 18800000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000196",
+        "name": "Salle de jeux",
+        "area": 42240000,
+        "perimeter": 28000,
+        "voidArea": 0,
+        "netArea": 42240000,
+        "dimensions": [
+          4400,
+          9600
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 42240000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000197",
+        "name": "Palier",
+        "area": 26880000,
+        "perimeter": 24800,
+        "voidArea": 6270000,
+        "netArea": 20610000,
+        "dimensions": [
+          2800,
+          9600
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 20610000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000198",
+        "name": "Bureau",
+        "area": 18800000,
+        "perimeter": 17400,
+        "voidArea": 0,
+        "netArea": 18800000,
+        "dimensions": [
+          4000,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 18800000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000199",
+        "name": "Chambre d’amis",
+        "area": 18800000,
+        "perimeter": 17400,
+        "voidArea": 0,
+        "netArea": 18800000,
+        "dimensions": [
+          4000,
+          4700
+        ],
+        "voidOverflow": false,
+        "ceilingHeight": 2500,
+        "falseCeiling": false,
+        "habitableArea": 18800000
+      }
+    ],
+    "walls": [
+      {
+        "id": "00000000-0000-4000-8000-000000000006",
+        "name": "Mur extérieur",
+        "length": 43200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 108000000,
+        "openingsArea": 16500000,
+        "netArea": 91500000,
+        "facesLength": 84800,
+        "facesArea": 212000000,
+        "facesNetArea": 179000000,
+        "volume": 18300000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000007",
+        "name": "Cloison",
+        "length": 9800,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 24500000,
+        "openingsArea": 1890000,
+        "netArea": 22610000,
+        "facesLength": 19200,
+        "facesArea": 48000000,
+        "facesNetArea": 44220000,
+        "volume": 4422000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000008",
+        "name": "Cloison",
+        "length": 9800,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 24500000,
+        "openingsArea": 3780000,
+        "netArea": 20720000,
+        "facesLength": 19000,
+        "facesArea": 47500000,
+        "facesNetArea": 39940000,
+        "volume": 4044000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000009",
+        "name": "Cloison",
+        "length": 4200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 10500000,
+        "openingsArea": 0,
+        "netArea": 10500000,
+        "facesLength": 7800,
+        "facesArea": 19500000,
+        "facesNetArea": 19500000,
+        "volume": 2000000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000010",
+        "name": "Cloison",
+        "length": 4900,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 12250000,
+        "openingsArea": 1890000,
+        "netArea": 10360000,
+        "facesLength": 9400,
+        "facesArea": 23500000,
+        "facesNetArea": 19720000,
+        "volume": 1972000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000011",
+        "name": "Mur du garage",
+        "length": 18600,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 46500000,
+        "openingsArea": 11000000,
+        "netArea": 35500000,
+        "facesLength": 37000,
+        "facesArea": 92500000,
+        "facesNetArea": 70500000,
+        "volume": 7050000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000012",
+        "name": "Mur de la véranda",
+        "length": 13200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 33000000,
+        "openingsArea": 22360000,
+        "netArea": 10640000,
+        "facesLength": 26200,
+        "facesArea": 65500000,
+        "facesNetArea": 20780000,
+        "volume": 2078000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000090",
+        "name": "Mur extérieur",
+        "length": 43200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 108000000,
+        "openingsArea": 10380000,
+        "netArea": 97620000,
+        "facesLength": 85200,
+        "facesArea": 213000000,
+        "facesNetArea": 192240000,
+        "volume": 19524000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000091",
+        "name": "Cloison",
+        "length": 9800,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 24500000,
+        "openingsArea": 3780000,
+        "netArea": 20720000,
+        "facesLength": 19000,
+        "facesArea": 47500000,
+        "facesNetArea": 39940000,
+        "volume": 4044000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000092",
+        "name": "Cloison",
+        "length": 9800,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 24500000,
+        "openingsArea": 3780000,
+        "netArea": 20720000,
+        "facesLength": 19000,
+        "facesArea": 47500000,
+        "facesNetArea": 39940000,
+        "volume": 4044000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000093",
+        "name": "Cloison",
+        "length": 4200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 10500000,
+        "openingsArea": 0,
+        "netArea": 10500000,
+        "facesLength": 8000,
+        "facesArea": 20000000,
+        "facesNetArea": 20000000,
+        "volume": 2000000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000094",
+        "name": "Cloison",
+        "length": 4600,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 11500000,
+        "openingsArea": 0,
+        "netArea": 11500000,
+        "facesLength": 8800,
+        "facesArea": 22000000,
+        "facesNetArea": 22000000,
+        "volume": 2200000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000142",
+        "name": "Mur extérieur",
+        "length": 43200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 108000000,
+        "openingsArea": 7620000,
+        "netArea": 100380000,
+        "facesLength": 85200,
+        "facesArea": 213000000,
+        "facesNetArea": 197760000,
+        "volume": 20076000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000143",
+        "name": "Cloison",
+        "length": 9800,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 24500000,
+        "openingsArea": 3780000,
+        "netArea": 20720000,
+        "facesLength": 19000,
+        "facesArea": 47500000,
+        "facesNetArea": 39940000,
+        "volume": 4044000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000144",
+        "name": "Cloison",
+        "length": 9800,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 24500000,
+        "openingsArea": 3780000,
+        "netArea": 20720000,
+        "facesLength": 19000,
+        "facesArea": 47500000,
+        "facesNetArea": 39940000,
+        "volume": 4044000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000145",
+        "name": "Cloison",
+        "length": 4200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 10500000,
+        "openingsArea": 0,
+        "netArea": 10500000,
+        "facesLength": 8000,
+        "facesArea": 20000000,
+        "facesNetArea": 20000000,
+        "volume": 2000000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000146",
+        "name": "Cloison",
+        "length": 4600,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 11500000,
+        "openingsArea": 0,
+        "netArea": 11500000,
+        "facesLength": 8800,
+        "facesArea": 22000000,
+        "facesNetArea": 22000000,
+        "volume": 2200000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000181",
+        "name": "Mur extérieur",
+        "length": 43200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 108000000,
+        "openingsArea": 9600000,
+        "netArea": 98400000,
+        "facesLength": 85400,
+        "facesArea": 213500000,
+        "facesNetArea": 194300000,
+        "volume": 19680000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000182",
+        "name": "Cloison",
+        "length": 9800,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 24500000,
+        "openingsArea": 1890000,
+        "netArea": 22610000,
+        "facesLength": 19200,
+        "facesArea": 48000000,
+        "facesNetArea": 44220000,
+        "volume": 4422000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000183",
+        "name": "Cloison",
+        "length": 9800,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 24500000,
+        "openingsArea": 3780000,
+        "netArea": 20720000,
+        "facesLength": 19000,
+        "facesArea": 47500000,
+        "facesNetArea": 39940000,
+        "volume": 4044000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000184",
+        "name": "Cloison",
+        "length": 4200,
+        "thickness": 200,
+        "height": 2500,
+        "wallArea": 10500000,
+        "openingsArea": 0,
+        "netArea": 10500000,
+        "facesLength": 8000,
+        "facesArea": 20000000,
+        "facesNetArea": 20000000,
+        "volume": 2000000000
+      }
+    ],
+    "platforms": [
+      {
+        "id": "00000000-0000-4000-8000-000000000038",
+        "name": "Terrasse",
+        "area": 49100000,
+        "elevation": 150,
+        "thickness": 150,
+        "volume": 7365000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000039",
+        "name": "Plage de la piscine",
+        "area": 24000000,
+        "elevation": 150,
+        "thickness": 150,
+        "volume": 3600000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000111",
+        "name": "Terrasse de l’étage",
+        "area": 36000000,
+        "elevation": 100,
+        "thickness": 100,
+        "volume": 3600000000
+      }
+    ],
+    "stairs": [
+      {
+        "id": "00000000-0000-4000-8000-000000000040",
+        "name": "Escalier",
+        "shape": "u",
+        "width": 1000,
+        "rise": 2700,
+        "risers": 15,
+        "treads": 14,
+        "riserHeight": 180,
+        "treadDepth": 250,
+        "status": "ok",
+        "requiredRun": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000112",
+        "name": "Escalier",
+        "shape": "u",
+        "width": 1000,
+        "rise": 2700,
+        "risers": 15,
+        "treads": 14,
+        "riserHeight": 180,
+        "treadDepth": 250,
+        "status": "ok",
+        "requiredRun": null
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000164",
+        "name": "Escalier",
+        "shape": "u",
+        "width": 1000,
+        "rise": 2700,
+        "risers": 15,
+        "treads": 14,
+        "riserHeight": 180,
+        "treadDepth": 250,
+        "status": "ok",
+        "requiredRun": null
+      }
+    ],
+    "chimneys": [],
+    "roofs": [
+      {
+        "id": "00000000-0000-4000-8000-000000000220",
+        "name": "Toiture",
+        "shape": "gable",
+        "pitch": 35,
+        "overhang": 500,
+        "projectedArea": 143000000,
+        "realArea": 174570766.19288823,
+        "ridgeLength": 13000,
+        "eaveLength": 26000,
+        "hipLength": 0,
+        "gableCount": 2,
+        "problem": null
+      }
+    ],
+    "openings": [
+      {
+        "id": "00000000-0000-4000-8000-000000000014",
+        "name": "Fenêtre Séjour 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000015",
+        "name": "Fenêtre Cuisine 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000013",
+        "name": "Porte Cuisine 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000016",
+        "name": "Fenêtre WC 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 600,
+        "height": 600,
+        "sillHeight": 1500,
+        "area": 360000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000017",
+        "name": "Fenêtre Séjour 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000018",
+        "name": "Fenêtre Séjour 3",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000019",
+        "name": "Porte Séjour 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000007",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000020",
+        "name": "Porte Hall 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000008",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000021",
+        "name": "Porte Hall 2",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000008",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000022",
+        "name": "Baie Séjour 4",
+        "kind": "bay",
+        "style": "bay-sliding",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 2400,
+        "height": 2150,
+        "sillHeight": 0,
+        "area": 5160000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000023",
+        "name": "Porte Hall 3",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000024",
+        "name": "Fenêtre Buanderie 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000025",
+        "name": "Fenêtre WC 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000006",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000026",
+        "name": "Porte Buanderie 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000010",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000027",
+        "name": "Porte Garage 1",
+        "kind": "door",
+        "style": "garageSectional",
+        "wallId": "00000000-0000-4000-8000-000000000011",
+        "wallName": "Mur du garage",
+        "width": 5000,
+        "height": 2200,
+        "sillHeight": 0,
+        "area": 11000000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000028",
+        "name": "Baie Véranda 1",
+        "kind": "bay",
+        "style": "bay-sliding",
+        "wallId": "00000000-0000-4000-8000-000000000012",
+        "wallName": "Mur de la véranda",
+        "width": 3000,
+        "height": 2150,
+        "sillHeight": 0,
+        "area": 6450000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000029",
+        "name": "Baie Véranda 3",
+        "kind": "bay",
+        "style": "bay-sliding",
+        "wallId": "00000000-0000-4000-8000-000000000012",
+        "wallName": "Mur de la véranda",
+        "width": 4400,
+        "height": 2150,
+        "sillHeight": 0,
+        "area": 9460000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000030",
+        "name": "Baie Véranda 2",
+        "kind": "bay",
+        "style": "bay-sliding",
+        "wallId": "00000000-0000-4000-8000-000000000012",
+        "wallName": "Mur de la véranda",
+        "width": 3000,
+        "height": 2150,
+        "sillHeight": 0,
+        "area": 6450000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000096",
+        "name": "Fenêtre Chambre 1 – 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000090",
+        "wallName": "Mur extérieur",
+        "width": 900,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 900000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000095",
+        "name": "Baie Chambre 3 – 1",
+        "kind": "bay",
+        "style": "bay-sliding",
+        "wallId": "00000000-0000-4000-8000-000000000090",
+        "wallName": "Mur extérieur",
+        "width": 2400,
+        "height": 2150,
+        "sillHeight": 0,
+        "area": 5160000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000097",
+        "name": "Fenêtre Salle de bains 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000090",
+        "wallName": "Mur extérieur",
+        "width": 600,
+        "height": 600,
+        "sillHeight": 1500,
+        "area": 360000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000098",
+        "name": "Fenêtre Chambre 1 – 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000090",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000099",
+        "name": "Porte Chambre 1 – 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000091",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000100",
+        "name": "Porte Chambre 2 – 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000091",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000101",
+        "name": "Porte Palier 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000092",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000102",
+        "name": "Porte Palier 2",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000092",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000103",
+        "name": "Fenêtre Chambre 2 – 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000090",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000104",
+        "name": "Fenêtre Palier 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000090",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000105",
+        "name": "Fenêtre Salle de bains 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000090",
+        "wallName": "Mur extérieur",
+        "width": 600,
+        "height": 600,
+        "sillHeight": 1500,
+        "area": 360000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000148",
+        "name": "Fenêtre Suite parentale 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000142",
+        "wallName": "Mur extérieur",
+        "width": 900,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 900000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000149",
+        "name": "Fenêtre Salle de bains parentale 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000142",
+        "wallName": "Mur extérieur",
+        "width": 600,
+        "height": 600,
+        "sillHeight": 1500,
+        "area": 360000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000147",
+        "name": "Fenêtre Salle de bains parentale 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000142",
+        "wallName": "Mur extérieur",
+        "width": 600,
+        "height": 600,
+        "sillHeight": 1500,
+        "area": 360000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000150",
+        "name": "Fenêtre Suite parentale 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000142",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000151",
+        "name": "Fenêtre Chambre des enfants 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000142",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000152",
+        "name": "Porte Suite parentale 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000143",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000153",
+        "name": "Porte Chambre des enfants 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000143",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000154",
+        "name": "Porte Palier 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000144",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000155",
+        "name": "Porte Palier 2",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000144",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000156",
+        "name": "Fenêtre Chambre des enfants 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000142",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000157",
+        "name": "Fenêtre Palier 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000142",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000158",
+        "name": "Fenêtre Chambre 5 – 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000142",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000186",
+        "name": "Fenêtre Salle de jeux 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000181",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000187",
+        "name": "Fenêtre Bureau 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000181",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000185",
+        "name": "Fenêtre Bureau 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000181",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000188",
+        "name": "Fenêtre Salle de jeux 2",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000181",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000189",
+        "name": "Fenêtre Salle de jeux 3",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000181",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000190",
+        "name": "Porte Salle de jeux 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000182",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000191",
+        "name": "Porte Palier 1",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000183",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000192",
+        "name": "Porte Palier 2",
+        "kind": "door",
+        "style": "swing",
+        "wallId": "00000000-0000-4000-8000-000000000183",
+        "wallName": "Cloison",
+        "width": 900,
+        "height": 2100,
+        "sillHeight": 0,
+        "area": 1890000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000193",
+        "name": "Fenêtre Salle de jeux 4",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000181",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000194",
+        "name": "Fenêtre Palier 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000181",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      },
+      {
+        "id": "00000000-0000-4000-8000-000000000195",
+        "name": "Fenêtre Chambre d’amis 1",
+        "kind": "window",
+        "style": "casement2",
+        "wallId": "00000000-0000-4000-8000-000000000181",
+        "wallName": "Mur extérieur",
+        "width": 1200,
+        "height": 1000,
+        "sillHeight": 900,
+        "area": 1200000
+      }
+    ],
+    "totals": {
+      "roofProjectedArea": 143000000,
+      "roofRealArea": 174570766.19288823,
+      "roofRidgeLength": 13000,
+      "roofEaveLength": 26000,
+      "roofHipLength": 0,
+      "roofGables": 2,
+      "roomArea": 479180000,
+      "voidArea": 18810000,
+      "roomNetArea": 460370000,
+      "roomHabitableArea": 460370000,
+      "platformArea": 109100000,
+      "platformVolume": 14565000000,
+      "wallLength": 313900,
+      "wallArea": 784750000,
+      "openingsArea": 105810000,
+      "wallNetArea": 678940000,
+      "wallFacesArea": 1537500000,
+      "wallFacesNetArea": 1325880000,
+      "wallVolume": 134188000000,
+      "chimneys": 0,
+      "doors": 18,
+      "windows": 29,
+      "bays": 5
+    }
+  },
+  "refs": {
+    "walls": {},
+    "openings": {}
+  }
+}
