@@ -1,0 +1,7 @@
+# Fichiers comparés octet par octet ou formatés par Biome : toujours en fins de ligne LF,
+# même sous Windows (core.autocrlf), sinon la baseline et le lint de Pascal échouent.
+# `text=auto` : les fichiers binaires (images, polices, modèles 3D) restent intacts.
+baseline/** text=auto eol=lf
+fixtures/** text=auto eol=lf
+packages/pascal/** text=auto eol=lf
+apps/pascal-*/** text=auto eol=lf
