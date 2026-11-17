@@ -848,6 +848,9 @@ sont remplacées à partir de M18 par la scène Pascal (après migration testée
   Exporter, DQE) ; leurs règles et calculs (`src/features/*`) ne changent pas. L'éditeur des projets
   Visuel reste à part, habillé dans le même style. Les anciens composants d'interface de Fabrics sont
   retirés au fur et à mesure (règle anti-duplication) : jamais deux interfaces actives pour un même écran.
+  **D81** : effets visuels et sonores, navigation, options de navigation et UX de Pascal gardés tels
+  quels (WebGPU et post-traitement, `howler`, `motion`, modes de caméra et de niveaux, WebXR, palette
+  de commandes, modes d'accrochage).
 - **Ce qui n'est pas repris** : persistance SQLite et routes serveur Next de Pascal (Supabase fait ce
   travail) ; la page de connexion de Pascal est reprise mais branchée sur Supabase Auth. Le code
   d'origine reste disponible dans `packages/pascal/` et `apps/`.
