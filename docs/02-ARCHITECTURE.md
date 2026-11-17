@@ -840,12 +840,22 @@ sont remplacées à partir de M18 par la scène Pascal (après migration testée
   versionné (M15), commenté (M16). Stockage en **mètres**, plan XZ, Y vers le haut ; **affichage et
   saisie toujours en mm, m², m³** (`src/features/units/`). Les projets Visuel gardent `FabricsDocument`.
   Jamais deux modèles éditables en même temps.
-- **Ce qui n'est pas repris** : persistance SQLite et routes Next de Pascal (Supabase fait ce travail),
-  connexion de Pascal. Leur code reste disponible dans `packages/pascal/` et `apps/`.
+- **Interface (D80)** : l'interface et la prise en main de Pascal deviennent celles de Fabrics
+  (accueil des projets, éditeur, réglages, import, connexion, aide). Les pages de `apps/editor`
+  (Next.js) sont reprises **dans l'app Vite** : routes `react-router`, alias pour `next/image` et les
+  autres modules `next/*`, textes en français par Lingui. Les fonctions de Fabrics y sont
+  reconstruites (panneaux Métrés Client / Exécution, Commentaires, Historique, présence, partage,
+  Exporter, DQE) ; leurs règles et calculs (`src/features/*`) ne changent pas. L'éditeur des projets
+  Visuel reste à part, habillé dans le même style. Les anciens composants d'interface de Fabrics sont
+  retirés au fur et à mesure (règle anti-duplication) : jamais deux interfaces actives pour un même écran.
+- **Ce qui n'est pas repris** : persistance SQLite et routes serveur Next de Pascal (Supabase fait ce
+  travail) ; la page de connexion de Pascal est reprise mais branchée sur Supabase Auth. Le code
+  d'origine reste disponible dans `packages/pascal/` et `apps/`.
 - **Doublons à trancher en M17** (règle anti-duplication de `docs/03-ROADMAP.md`) : vue 3D Fabrics /
   `viewer` ; export IFC Fabrics / `ifc-converter` ; `jspdf` / `pdfkit` ; oxlint / Biome ;
   `crypto.randomUUID()` / `nanoid` ; historique Fabrics + `Y.UndoManager` / `zundo` ; bibliothèque
-  Fabrics / catalogue Pascal (fusion).
+  Fabrics / catalogue Pascal (fusion) ; `src/i18n/fr.ts` / Lingui ; composants d'interface Fabrics /
+  Pascal (D80).
 - **Contrats de données** (TypeScript, à préciser en M18 et M21) :
   `BuildingElementRef` (projet, révision, `elementId` stable, `ifcGlobalId`, type, niveau, version de
   géométrie, composition) ; `QuantityResult` (éléments sources, code, quantité, unité, règle et
