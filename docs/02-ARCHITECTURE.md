@@ -1,5 +1,7 @@
 # 02 — Architecture
 
+À partir de M17, Fabrics intègre Pascal Editor : voir « Intégration de Pascal Editor » plus bas.
+
 Tout est open source et utilisable gratuitement. Pas de serveur à écrire pour le MVP :
 le navigateur fait le rendu, les calculs et les exports ; Supabase stocke les comptes et les
 projets à partir du jalon M13.
@@ -28,6 +30,10 @@ Installe toujours la **dernière version stable** au moment de l'installation, s
 | DXF (import) | `dxf-parser` | M11 | accord de l'utilisateur le 2026-11-12 (D61) ; l'export DXF est écrit à la main (format texte R12), sans bibliothèque |
 | Temps réel | `yjs`, `y-websocket` | M14 | Cloudflare Workers + Durable Objects (D68) ; `y-websocket` côté navigateur (lot D) |
 | Temps réel (serveur) | `yjs`, `y-protocols`, `lib0` ; dev : `wrangler`, `typescript`, `vitest` | M14 lot C | accord de l'utilisateur le 2026-11-13 ; **uniquement dans `collab-server/`** (son propre `package.json`), jamais dans l'application |
+
+| Paquets Pascal Editor | `@pascal-app/core`, `viewer`, `editor`, `nodes`, `ifc-converter`, `geometry-script`, `mcp`, `cli` et **toutes leurs dépendances** (zod, zundo, mitt, nanoid, polygon-clipping, three-bvh-csg, three-mesh-bvh, manifold-3d, web-ifc, pdfkit, Lingui, Radix, cmdk, dnd-kit, motion, howler, SDK MCP, hono…) | M17 | accord D78 du 2026-11-17 ; workspaces npm sous `packages/pascal/` ; doublons avec Fabrics tranchés en M17 (voir « Intégration de Pascal Editor ») |
+| Outils Pascal | `bun` (tests Pascal), `turbo`, Biome, `patch-package`, Playwright | M17 | accord D78 ; outils de développement uniquement |
+| IfcOpenShell | Python 3.11+ (`ifcopenshell`) | M17, M22 | validation IFC hors application (script local et CI), LGPL ; service hébergé seulement par ADR |
 
 Interdits sans accord : `html2canvas` (inutile, Konva exporte lui-même), `fabric`, bibliothèques
 d'UI complètes (MUI, Ant…), `uuid` (on utilise `crypto.randomUUID()`), `moment`,
@@ -812,6 +818,47 @@ invitation par lien (D69), annuler / rétablir limité à ses propres modificati
   l'appareil ; la marque ci-dessus règle la réouverture.
 - Code : `src/features/collab/{saveLeader,collabSession}.ts`, `yDocument.ts` (`readSavedAt`, `writeSavedAt`,
   `isSavedAtOnly`, `isLaterThan`), `collabBinding.ts`, `useAutosave.ts`, `useCollaboration.ts`.
+
+## Intégration de Pascal Editor (M17 → M25)
+
+Décisions D75 à D79 du 2026-11-17 ; jalons dans `docs/03-ROADMAP.md`. Les sections « Modèle de
+données » et « Mode bâtiment » ci-dessus décrivent l'état jusqu'à M16 ; pour les projets Plan, elles
+sont remplacées à partir de M18 par la scène Pascal (après migration testée).
+
+- **Source** : clone local `C:\Users\My PC\Documents\Projects\BIM Project`, commit `7f30521`, MIT.
+  Copié dans `packages/pascal/` (paquets `@pascal-app/*` et `@repo/*`), `apps/` (apps de Pascal,
+  comme source de fonctions et de composants) et `public/pascal/` (objets, matériaux, HDRI, polices,
+  sons). Modifications de Fabrics notées dans `packages/pascal/FABRICS_CHANGES.md`.
+- **Monorepo** : workspaces npm ; l'application Fabrics reste à la racine (Vite). Correctifs de Pascal
+  (`three`, `three-bvh-csg`, `iwer`) appliqués par `patch-package`. Tests de Pascal sous bun
+  (`npm run test:pascal`), lint de Pascal sous Biome (`npm run lint:pascal`). `next/image` remplacé
+  par un alias Vite ; Lingui reçoit un catalogue français.
+- **Paquets navigateur** : `core`, `viewer`, `nodes`, `ifc-converter`, `editor` (composants).
+  **Paquets Node** (jamais dans le bundle) : `mcp`, `cli`, `geometry-script` (mode Bun).
+- **Source de vérité (D79)** : la scène Pascal (`Record<id, node>` + `parentId`, schémas zod) est le
+  document des projets Plan, enregistré dans Supabase (`projects.document`), synchronisé par Yjs,
+  versionné (M15), commenté (M16). Stockage en **mètres**, plan XZ, Y vers le haut ; **affichage et
+  saisie toujours en mm, m², m³** (`src/features/units/`). Les projets Visuel gardent `FabricsDocument`.
+  Jamais deux modèles éditables en même temps.
+- **Ce qui n'est pas repris** : persistance SQLite et routes Next de Pascal (Supabase fait ce travail),
+  connexion de Pascal. Leur code reste disponible dans `packages/pascal/` et `apps/`.
+- **Doublons à trancher en M17** (règle anti-duplication de `docs/03-ROADMAP.md`) : vue 3D Fabrics /
+  `viewer` ; export IFC Fabrics / `ifc-converter` ; `jspdf` / `pdfkit` ; oxlint / Biome ;
+  `crypto.randomUUID()` / `nanoid` ; historique Fabrics + `Y.UndoManager` / `zundo` ; bibliothèque
+  Fabrics / catalogue Pascal (fusion).
+- **Contrats de données** (TypeScript, à préciser en M18 et M21) :
+  `BuildingElementRef` (projet, révision, `elementId` stable, `ifcGlobalId`, type, niveau, version de
+  géométrie, composition) ; `QuantityResult` (éléments sources, code, quantité, unité, règle et
+  version, empreinte de la géométrie, déductions, avertissements, statut `validated | provisional |
+  unsupported | missing_data`) ; `EstimateLine` (poste, libellé, quantités sources, quantité, unité,
+  prix unitaire, devise, version du bordereau, montant).
+- **Règles numériques** : quantités calculées avant tout arrondi d'affichage ; brut et net distingués ;
+  montants exacts (centimes entiers ou décimal exact, jamais de flottants), arrondis aux seuls points
+  documentés.
+- **IfcOpenShell** : script Python de validation (schéma, IDS, quantités) lancé en local et en CI,
+  hors application. Un service hébergé (par exemple FastAPI) ne vient que par ADR.
+- **IA (M25)** : opérations d'agent de Pascal derrière un Worker Cloudflare qui garde les clés ; aperçu
+  des changements avant écriture ; MCP comme adaptateur facultatif.
 
 ## Historique de versions (M15)
 

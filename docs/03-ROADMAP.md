@@ -1018,10 +1018,355 @@ notifications dans ce jalon. Lots à valider un par un, après M15.
 
 ---
 
+## Phase « Fabrics + Pascal » (M17 → M25)
+
+Décidée le 2026-11-17 (D75 à D79, voir `docs/PROGRESS.md`). Ce fichier reste le **seul roadmap
+officiel** : la roadmap Pascal / IfcOpenShell téléchargée par l'utilisateur est intégrée ici et n'a
+plus de valeur de référence.
+
+**Principe : Fabrics + Pascal Editor + amélioration.**
+
+- **Fabrics garde ce qu'il a déjà** : interface et prise en main, métrés Client / Exécution,
+  Supabase, collaboration, historique, commentaires, projets Visuel, déploiement.
+- **On prend tout ce qu'on peut de Pascal Editor** (MIT, clone local
+  `C:\Users\My PC\Documents\Projects\BIM Project`, commit `7f30521`) : applications, paquets,
+  scripts, configurations, conventions, moteur 3D (Three.js / WebGPU), modèle de scène BIM, objets
+  et opérations, import / export, MCP, composants d'interface.
+- **On ajoute ou améliore**, selon les lacunes constatées : documents professionnels, métrés
+  calculés sur le modèle Pascal et contrôlés avec IfcOpenShell, DQE, IA intégrée (le service IA
+  hébergé de Pascal n'est **pas** dans le dépôt public : l'orchestration manquante est à écrire),
+  améliorations BIM ciblées.
+- **Objectif** : des livrables architecturaux de qualité comparable à Revit sur le périmètre défini
+  (`docs/01-PRODUIT.md`), sans prétendre à la parité Revit.
+
+**Source de vérité unique (D79).** La scène Pascal est le seul modèle des projets Plan. Elle est
+stockée en mètres et **toujours affichée en mm, m², m³**. Vues 2D, 3D, nomenclatures, métrés, IFC et
+DQE en dérivent. Les projets Visuel gardent `FabricsDocument`.
+
+**Règle de décision : RÉUTILISER → ÉTENDRE → REMPLACER (exceptionnel).** Chaque capacité a une
+ligne dans `docs/capabilities.md` :
+`Capacité | Emplacement dans Fabrics | Emplacement dans Pascal | EXISTANT / PARTIEL / ABSENT | Preuve (fichier / test / UI) | Réutiliser / Étendre / Remplacer | Justification | Tests de non-régression`.
+- EXISTANT et fonctionnel : réutiliser tel quel, renforcer les tests si besoin.
+- PARTIEL : étendre le composant existant, sans duplication.
+- ABSENT : ajouter un module intégré aux modèles, états et commandes de Pascal.
+- REMPLACER : seulement après étude de plusieurs options, ADR argumentée et accord de l'utilisateur.
+
+**Règle de compatibilité.** Chaque jalon vérifie que les scénarios préexistants de **Fabrics et de
+Pascal** fonctionnent toujours. Si une capacité disparaît, le gate est **FAIL** jusqu'à correction
+ou accord documenté.
+
+### Mécanisme anti-duplication (chaque jalon)
+
+1. **Registre unique** `docs/capabilities.md` : une capacité = un seul module propriétaire. Claude le
+   consulte avant de coder ; une capacité nouvelle y est inscrite avant d'être codée.
+2. **Doublon Fabrics / Pascal = une décision** : on garde une seule version (en général celle qui
+   travaille sur la scène Pascal), étendue avec le meilleur de l'autre ; l'autre est retirée dans le
+   même jalon. Jamais deux implémentations actives. Doublons déjà repérés, à trancher en M17 :
+   `jspdf` / `pdfkit`, oxlint / Biome, `crypto.randomUUID()` / `nanoid`, export IFC de Fabrics /
+   `ifc-converter`, vue 3D de Fabrics / `viewer` de Pascal.
+3. **Garde des imports** : un test d'architecture (comme `core/src/architecture.test.ts` de Pascal)
+   et des règles d'import du lint interdisent d'utiliser un module retiré.
+4. **Détection de copier-coller** (`jscpd`, à faire approuver) dans `npm run check:all`.
+
+### Mécanisme anti-régression (chaque jalon)
+
+1. **Baseline figée en M17**, avant tout changement : résultats des tests Fabrics et Pascal,
+   **métrés de référence** (JSON) du plan d'exemple et des fixtures, **dessins de référence** (SVG :
+   façades, coupes, plans cotés Client et Exécution), exports de référence (CSV, XLSX, IFC).
+2. **`docs/regression-checklist.md`** : chaque critère d'acceptation de M0 à M16 et chaque fonction
+   native de Pascal, avec sa façon de le vérifier (test automatique ou geste dans le navigateur).
+3. **`npm run check:all`** : build, lint, Vitest, `test:pascal`, `lint:pascal`, comparaison aux
+   références, test d'architecture, détection de doublons. Lancé aussi par GitHub Actions à chaque push.
+4. **Règle du gate** : un écart avec la référence = **FAIL**, sauf s'il est voulu et documenté
+   (raison dans `docs/PROGRESS.md`, référence mise à jour dans un commit séparé, accord de
+   l'utilisateur). La baseline ne fait que grandir : on améliore, on ne recule pas.
+
+### Fonctionnalités finales (définition de terminé de la phase)
+
+En plus de tout ce que Fabrics a déjà :
+
+| Module | Fonctionnalités finales | Jalon |
+|---|---|---|
+| Éditeur 2D | Dessiner et modifier murs, portes, fenêtres, pièces, niveaux ; accrochages, alignements, saisie précise des dimensions | M19 |
+| Maquette 3D BIM | Modéliser murs, dalles, toitures, escaliers, ouvertures ; modifier dimensions, matériaux, propriétés | M19 |
+| Synchronisation 2D/3D | Une modification du bâtiment se répercute en 2D, en 3D et dans les quantités | M18, M19 |
+| Terrain et implantation | Modéliser le terrain, positionner le bâtiment, gérer les altitudes des niveaux | M19 |
+| Matériaux et compositions | Matériaux et couches des ouvrages : maçonnerie, isolation, enduit, revêtement… | M19 |
+| Plans professionnels | Plans d'étage, coupes, façades, avec cotes, annotations, repères, nomenclatures | M20 |
+| Mise en page | Feuilles avec cartouche, échelle, légende, numérotation, indice de révision ; PDF | M20 |
+| Quantitatif automatique | Longueurs, surfaces, volumes, nombres ; brut et net, ouvertures déduites | M21 |
+| Traçabilité des métrés | Éléments à l'origine de chaque quantité, règle de calcul, données manquantes | M21 |
+| Bibliothèque de prix | Postes de travaux, unités, prix des matériaux, main-d'œuvre, compositions de prix | M23 |
+| DQE | Quantités associées aux postes, montants, regroupement par lot, paramètres de chiffrage | M23 |
+| Actualisation du devis | Recalcul des quantités et montants après modification ; comparaison des versions du devis | M23 |
+| Échanges IFC | Import et export des éléments pris en charge, identifiants et propriétés conservés, contrôle IfcOpenShell | M22 |
+| Exports | Plans PDF, quantitatifs et DQE Excel / PDF, IFC, modèles 3D | M20 à M23 |
+| Assistant IA | Créer ou modifier par instruction, interroger le modèle, expliquer les métrés, proposer des postes de prix | M25 |
+| Gestion des projets | Créer, ouvrir, sauvegarder, dupliquer ; annuler / rétablir ; versions | existe, étendu en M18 |
+| Contrôles qualité | Géométrie incohérente, propriétés manquantes, unités incompatibles, postes sans prix | M21, M23, M24 |
+
+### Jeux de tests de référence (fixés dans `fixtures/` avant le code)
+
+- **HOUSE-01** : emprise 8000 × 10000 mm, 1 niveau, hauteur 3000 mm ; murs d'enveloppe, 3 cloisons,
+  1 dalle, 1 porte extérieure, 4 fenêtres, 4 pièces. Valeurs exactes dans `fixtures/HOUSE-01/spec.json`,
+  avec un calcul à la main indépendant (périmètres, surfaces, volumes, total DQE).
+- **HOUSE-02** : 2 niveaux, escalier, toiture simple, ouverture traversante ; coupes, façades,
+  feuilles numérotées, métrés par étage et par lot.
+- **EDGE-01** : fenêtre hors mur, ouvertures qui se chevauchent, mur de hauteur 0, mm mêlés à des m,
+  matériau manquant, identifiant en double, IFC à placements imbriqués. Attendu : erreur claire ou
+  exclusion signalée, **jamais** un résultat faux en silence.
+
+| Domaine | Vérification automatique | Vérification humaine |
+|---|---|---|
+| Modèle | schémas, identifiants, annuler, versions | lisibilité, prise en main |
+| Géométrie | dimensions, intersections, ouvertures | revue des détails |
+| 2D / 3D | projections, régression SVG / images | dessin architectural |
+| Documents | cotes, échelle, cartouche, révisions | qualité des feuilles |
+| Quantités | calcul à la main, traçabilité | validation d'un métreur |
+| DQE | multiplications, totaux, prix manquants | prix et règles locales |
+| IFC | schéma, IDS, aller-retour | ouverture dans des logiciels tiers |
+| IA | droits, aperçu, annulation | pertinence des modifications |
+
+**GO / NO-GO** : l'échec d'un test critique de calcul, d'identité ou de cohérence des documents
+bloque la publication. Un contrôle visuel ne remplace pas la vérification des dimensions.
+
+### Déroulé de chaque jalon (M17 à M25)
+
+1. Lire `CLAUDE.md`, ce roadmap, `docs/PROGRESS.md`, `docs/capabilities.md` et, pour le code de
+   Pascal, ses `AGENTS.md`, `DECISIONS.md`, `CONTRIBUTING.md`.
+2. Écrire `docs/phases/M<n>-plan.md` (existant, modifications, points à confirmer, tests, risques,
+   définition de terminé) et attendre le feu vert.
+3. Coder par petits lots testés ; `npm run check:all` après chaque lot. Demander l'accord avant toute
+   migration destructive ou service payant.
+4. Écrire `docs/phases/M<n>-report.md` (fichiers, tests, preuves, limites, suite) ; mettre à jour la
+   traçabilité exigence → fonction → test → preuve.
+5. S'arrêter au gate : **PASS** ou **FAIL**, avec les écarts restants. Une réussite partielle n'est
+   pas une livraison.
+
+Pour commencer : écrire « Commence le jalon M17 » dans Claude Code. Pour une revue indépendante :
+« Agis comme auditeur BIM / QA indépendant, vérifie le jalon M<n> contre ce roadmap, sans modifier le
+code ; liste les écarts Bloquant / Majeur / Mineur et décide GO / NO-GO. »
+
+---
+
+## M17 — Audit et intégration de Pascal (gate G0)
+
+Prérequis : Git, Node.js, **Bun**, Python 3.11+ (pour IfcOpenShell), Docker facultatif ; WSL2 seulement
+si un script de Pascal l'exige ; navigateur compatible WebGPU, avec repli WebGL2. Travail sur une
+branche dédiée.
+
+- [ ] Vérifier les outils (`node -v`, `npm -v`, `git --version`, `bun --version`, `python --version`) ;
+      guider les installations manquantes
+- [ ] Lancer Pascal tel quel dans son dossier (`bun install`, `bun run test`, `bun run build`) ; noter
+      commit, versions et résultats
+- [ ] Figer la baseline Fabrics : tests, métrés de référence du plan d'exemple, dessins SVG, exports
+      CSV / XLSX / IFC
+- [ ] Remplir `docs/capabilities.md` (matrice complète : UI, vues 2D / 3D, moteur, objets, édition,
+      annuler, stockage, IFC, API, MCP, IA, quantités, exports) et `docs/regression-checklist.md`
+- [ ] `docs/adr/0001-source-of-truth.md` (scène Pascal, D79) ; `docs/adr/0002-monorepo.md` (workspaces
+      npm, tests Pascal sous bun, lint) ; trancher les doublons repérés
+- [ ] Copier tous les paquets et apps de Pascal dans `packages/pascal/` et `apps/` ; ressources de
+      `apps/editor/public` dans `public/pascal/` ; workspaces npm ; `patch-package` pour les correctifs ;
+      alias Vite pour `next/image` ; catalogue Lingui en français
+- [ ] Scripts `test:pascal`, `lint:pascal`, `check:all` ; GitHub Actions
+- [ ] Tester IfcOpenShell (environnement Python isolé) sur un IFC de référence ; noter version et API
+- [ ] `THIRD_PARTY_NOTICES.md` (Pascal MIT, polices OFL, médias CC BY 4.0, IfcOpenShell LGPL) ; fichiers
+      IFC d'exemple de Pascal pour les tests locaux seulement
+- [ ] `docs/risks.md` (risques et parades, voir la fin de cette phase)
+
+**Critères d'acceptation (G0)**
+- `npm install`, `npm run build`, `npm run lint`, `npm test` et `npm run test:pascal` passent ; les
+  résultats de Pascal sont identiques à ceux obtenus dans son propre dossier
+- L'application en ligne reste identique pour l'utilisateur ; aucun nouvel éditeur ni moteur créé
+- Chaque capacité de la matrice a un état, une preuve et une action ; aucune API inventée
+
+## M18 — Modèle BIM unifié (gate G1)
+
+- [ ] La scène Pascal (`@pascal-app/core`) devient le document des projets Plan, enregistré dans Supabase
+- [ ] Migration testée des plans existants vers des nœuds Pascal : niveaux, murs, ouvertures, pièces,
+      dalles, toitures, escaliers, cheminées, plateformes, axes, cotes, coupes, mobilier, fonds DXF
+- [ ] Identifiants stables ; événement `ModelChanged` ; un seul historique annuler / rétablir
+- [ ] Collaboration Yjs, historique de versions et commentaires passés sur les nœuds Pascal
+- [ ] Métrés, cotes Client / Exécution et repères `M01`, `P01`, `F01` branchés sur la scène Pascal
+- [ ] Sauvegarde et restauration ; projets dupliqués
+
+**Critères d'acceptation (G1)**
+- Un plan créé avant M18 se rouvre avec les mêmes métrés (comparaison à la baseline, au mm et au
+  centième de m² près)
+- Créer, modifier, supprimer puis annuler garde identifiants et dimensions ; aucun élément fantôme
+- Deux navigateurs modifient le même plan en direct ; un commentaire reste attaché à son élément
+- Changer de vue ne modifie pas le document ; les scénarios natifs de Pascal passent toujours
+
+## M19 — Édition 2D/3D professionnelle (gate G2)
+
+- [ ] Outils, vue en plan et viewer 3D de Pascal intégrés à l'interface de Fabrics ; fusion outil par
+      outil selon la matrice, sans doublon
+- [ ] Saisie précise des dimensions en mm, accrochages, alignements, modes d'accrochage visibles
+- [ ] Édition directe en 3D : murs, dalles, toitures, escaliers, ouvertures ; jonctions de murs propres ;
+      synchronisation 2D ↔ 3D par commandes sur le **même** objet
+- [ ] **Matériaux et compositions** : couches de mur (maçonnerie, isolation, enduit, revêtement),
+      bibliothèque de matériaux et objets 3D de Pascal
+- [ ] **Terrain et implantation** : terrain, limite de propriété, position du bâtiment, altitudes des niveaux
+- [ ] Cas difficiles : jonctions, collisions, ouvertures, épaisseur nulle ou invalide
+- [ ] Exemple T1 / T2 ; tests 2D → 3D et 3D → 2D ; rapport de précision
+
+**Critères d'acceptation (G2)**
+- Allonger un mur de 4000 à 5000 mm en 3D l'affiche à 5000 mm sur le plan et dans les métrés
+- Un mur de 200 mm composé de 20 + 160 + 20 mm donne ses quantités par couche, sans double comptage
+- Aucune surface ni aucun volume incohérent après la pose ou la suppression d'une ouverture
+
+## M20 — Plans professionnels et mise en page (gate G3)
+
+À décider avec l'utilisateur avant de commencer : normes de représentation (usages retenus en M10
+ter : Madagascar, héritage français), échelles, formats et livrables contractuels.
+
+- [ ] Vues liées au modèle : plans de niveau, coupes, façades, détails ; façades, coupes, planche et
+      cotes Client / Exécution de Fabrics étendues au modèle Pascal
+- [ ] Annotations : cotes chaînées, repères portes et fenêtres, noms et surfaces de pièces, axes,
+      symboles, légendes, **nomenclatures** ; plan de plafond, plan de toiture
+- [ ] Feuilles A4, A3, A2, A1 : cartouche, échelle, unités, orientation, nord, indice, date, émetteur,
+      statut
+- [ ] Styles graphiques : épaisseurs de traits, éléments coupés et vus, hachures, calques, masques,
+      visibilité
+- [ ] PDF et SVG vectoriels à l'échelle, polices intégrées si la licence le permet
+- [ ] Révisions : jeu de feuilles figé par version (M15), numérotation, comparaison avec le jeu précédent
+- [ ] Étude de `ifcopenshell.draw` comme outil complémentaire (limites documentées)
+
+**Critères d'acceptation (G3)**
+- Imprimées à 100 %, les cotes sont justes à 1:50, 1:100 et 1:200
+- Une hauteur d'étage de 2500 mm mesure 50 mm sur une façade à 1:50
+- Modifier un mur met à jour plans, coupes, façades et nomenclatures ; aucun conflit d'annotations critique
+- Revue d'un professionnel du bâtiment réussie (liste de contrôle)
+
+## M21 — Quantitatif automatique et traçabilité (gate G4)
+
+À décider avant de commencer : conventions de métré, seuils de déduction des ouvertures.
+
+- [ ] Quantités géométriques et quantités de métré distinguées
+- [ ] Règles versionnées par catégorie et composition : longueur, surface brute et nette, volume brut
+      et net, nombre, pièces, revêtements, déductions ; volume d'ouvrage et surface de pose
+- [ ] Traçabilité : quantité → éléments sources → dimensions → formule → déductions → règle et version
+- [ ] Statut de chaque quantité : validé, provisoire, non pris en charge, données manquantes ; un
+      quantitatif incomplet n'est jamais présenté comme fiable
+- [ ] Recalcul ciblé après la modification d'un élément
+- [ ] Comparaison avec les quantités IFC (IfcOpenShell) sur un jeu d'échange
+- [ ] Contrôles qualité : géométrie incohérente, propriétés manquantes, unités incompatibles
+
+**Critères d'acceptation (G4)**
+- Mur 5000 × 3000 × 200 mm avec une ouverture 900 × 2100 mm : brut 15,00 m², ouverture 1,89 m², net
+  13,11 m², volume net 2,622 m³
+- Deux ouvertures qui se chevauchent : déduction de leur **union**, pas de la somme
+- Ouverture qui dépasse du mur : seule la partie dans le mur est déduite, l'élément est signalé
+- Écart de ±1 mm au plus sur les longueurs et de moins de 0,1 % sur les quantités simples (tolérances
+  à confirmer par un métreur)
+- 100 % des fixtures passent ; chaque quantité exportée montre ses sources et sa règle
+
+## M22 — Échanges IFC (gate G5)
+
+À décider avant de commencer : IFC4 ou IFC4x3, classification, échange avec Revit.
+
+- [ ] Classes cibles : projet, site, bâtiment, niveau, mur, dalle, porte, fenêtre, ouverture, pièce
+- [ ] Export par l'`ifc-converter` de Pascal : placements, unités, relations spatiales, matériaux et
+      compositions, ouvertures, types, propriétés, quantités
+- [ ] Correspondance `elementId ↔ GlobalId` stable d'un export à l'autre
+- [ ] Import contrôlé avec rapport : objets inconnus et géométries non prises en charge signalés,
+      jamais modifiés en silence
+- [ ] Contrôle de schéma, IDS si applicable, réimport et comparaison géométrique (script IfcOpenShell)
+
+**Critères d'acceptation (G5)**
+- HOUSE-01 exporté s'ouvre dans 2 visionneuses indépendantes avec les mêmes niveaux, hauteurs,
+  ouvertures, matériaux et quantités
+- Exporter deux fois le même plan donne les mêmes `GlobalId`
+- Aucune perte silencieuse : chaque écart figure dans le rapport
+
+## M23 — Bibliothèque de prix et DQE (gate G6)
+
+À décider avant de commencer : nomenclature des postes, base de prix, devise, taxes.
+
+- [ ] Bibliothèque de prix : postes (code, libellé, unité, lot, ouvrage type), prix des matériaux,
+      main-d'œuvre, matériel, compositions de prix, date d'effet, fournisseur, région, version ;
+      tables Supabase avec RLS
+- [ ] Import CSV et XLSX avec contrôle des unités et devises ; **aucun prix inventé ni implicite**
+- [ ] Correspondance élément + matériau + règle → poste ; un élément peut alimenter plusieurs postes
+      (maçonnerie, enduit, peinture) sans double comptage dans un poste
+- [ ] Paramètres de chiffrage : pertes, frais, marge, taxes ; arrondis documentés ; montants exacts
+      (jamais de nombres à virgule flottante)
+- [ ] DQE figé par version du modèle et du bordereau ; recalcul après modification ; comparaison des
+      versions du devis
+- [ ] Panneau DQE : lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements
+- [ ] Exports XLSX et PDF : en-tête, cartouche, synthèse, détail, hypothèses, date des prix
+- [ ] Contrôle : postes sans prix
+
+**Critères d'acceptation (G6)**
+- 13,11 m² × 45,00 €/m² (prix d'exemple) = 589,95 € HT
+- Même révision + même bordereau = même DQE
+- Un poste sans prix empêche de marquer le devis comme définitif
+- Les totaux sont identiques à l'écran, en XLSX et en PDF ; chaque poste affiche sa source et son unité
+
+## M24 — Contrôles qualité, performance et sécurité (gate G7)
+
+- [ ] Panneau unique de contrôles qualité (prolonge la pastille « points à vérifier ») : géométrie,
+      propriétés manquantes, unités incompatibles, postes sans prix
+- [ ] Régression visuelle 2D, 3D et PDF ; tests par propriétés sur la géométrie et les quantités
+- [ ] Épreuves : maison simple, villa à plusieurs niveaux, petit immeuble, modèles invalides, IFC externes
+- [ ] Performance mesurée sur 1 000, 5 000 et 10 000 éléments : chargement, modification, recalcul,
+      export
+- [ ] Imports IFC et fichiers externes sécurisés (taille, validation, aucun contenu exécuté)
+- [ ] Exports atomiques, reprise après plantage, sauvegarde et restauration, journal d'audit
+- [ ] Revue par un architecte ou dessinateur BIM et par un métreur indépendant
+
+**Critères d'acceptation (G7)**
+- Les seuils de performance fixés au début du jalon sont atteints
+- Chaque cas d'EDGE-01 est signalé dans le panneau
+- Revue humaine documentée ; dossiers de référence publiables sous supervision professionnelle
+
+## M25 — Assistant IA (gate G8)
+
+À commencer seulement quand le modèle, les métrés et le DQE sont stables.
+
+- [ ] Panneau assistant dans Fabrics ; modèle au choix ; clés gardées côté serveur (Worker Cloudflare)
+- [ ] Outils typés sur les opérations de Pascal (opérations d'agent, MCP comme adaptateur facultatif) :
+      lire le projet, lister les niveaux, lire les éléments, proposer un mur, modifier un élément,
+      créer une ouverture, prévisualiser les quantités, comparer des devis, publier des documents
+- [ ] L'IA propose un plan d'actions ; Fabrics vérifie paramètres et droits ; **aperçu des changements**
+      avant toute écriture ; une seule étape d'annulation
+- [ ] Expliquer les métrés (traçabilité de M21) ; proposer des postes de prix, validés par l'utilisateur
+- [ ] Refus des demandes impossibles, unités ambiguës, dimensions incompatibles, prix manquants
+- [ ] Journal des demandes et actions (sans secret)
+
+**Critères d'acceptation (G8)**
+- L'IA ne produit jamais de quantité ni de prix : tout vient des calculs déterministes
+- Aucune modification sans accord ; un Ctrl+Z annule toute l'action de l'assistant
+- Taux de réussite, incidents et retours arrière mesurés sur les fixtures
+
+### Risques et parades
+
+| Risque | Parade |
+|---|---|
+| Export IFC de Pascal incomplet | preuve de concept et table de correspondance en M17 et M22 |
+| Écart entre géométrie affichée et métrés | même géométrie source, fixtures, tests d'intersection |
+| Migration des plans Fabrics vers la scène Pascal | migration testée sur tous les types, comparaison à la baseline (M18) |
+| Deux historiques (annuler Pascal / Yjs) | un seul historique décidé par ADR en M18 |
+| Méthodes de métré propres au pays | règles paramétrables, versionnées, validées par un métreur |
+| Licences des dépendances | `THIRD_PARTY_NOTICES.md`, vérification avant diffusion commerciale |
+| Prix périmés | date d'effet, origine, version, avertissements |
+| Paquets Pascal qui évoluent | versions figées, `packages/pascal/FABRICS_CHANGES.md`, CI |
+| Actions IA incorrectes | aperçu, validation, annulation |
+| Performance des grands bâtiments | mesures, tests progressifs, caches ciblés |
+| Documents diffusés sans vérification | statut « brouillon / non validé », revue humaine |
+
+**Règle finale.** Les plans et DQE destinés à une construction réelle restent soumis à la
+vérification d'un professionnel qualifié. On n'annonce jamais « qualité Revit » sans comparaisons
+chiffrées, sorties imprimables, audit des données et revue d'un praticien BIM. Sans les décisions
+métier demandées avant M20, M21 et M23, Claude construit une base générique, marque ses hypothèses
+et interdit de qualifier un devis de définitif.
+
+---
+
 ## Plus tard (non planifié, à prioriser avec l'utilisateur)
 
-- **Assistant IA « Demander quelque chose »** (plan, mise en page, couleurs, textes) — à
-  étudier après M14, à la demande de l'utilisateur
+- Structure calculée, réseaux (MEP) complets, ferraillage, phasage 4D, réglementations par pays
+  (les outils MEP natifs de Pascal restent disponibles sans amélioration)
 - Modèles de visuels originaux, bibliothèque de composants, identité de marque
 - QR code pour les liens de partage
 - Mentions et notifications sur les commentaires (après M16)
@@ -1031,6 +1376,6 @@ notifications dans ce jalon. Lots à valider un par un, après M15.
 - Traductions anglais et malgache, mode sombre, accessibilité avancée
 - Abonnements et paiements, statistiques d'usage, conformité RGPD complète
 - Export DWG
-- Toitures avancées, après M10 bis : demi-croupe, mansarde, sheds, toit courbe, noues (toits
-  en L ou en T d'un seul tenant), lucarnes, fenêtres de toit
-- Fenêtre ronde (œil-de-bœuf) : demande un trou rond dans le mur en 3D et en coupe
+
+Retirés de cette liste le 2026-11-17 car planifiés ou apportés par Pascal : assistant IA (M25),
+toitures avancées et fenêtres de toit, lucarnes, fenêtre ronde (natifs dans Pascal, intégrés en M19).

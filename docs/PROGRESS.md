@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M16 · Lots D et E · commentaires pour les membres lecteurs et en direct (15/11, validés par l'utilisateur) : fin de M16
-- **Prochaine tâche :** à définir avec l'utilisateur (voir « Plus tard » dans `docs/03-ROADMAP.md`) ; M16 est terminé
+- **Prochaine tâche :** M17 Audit et intégration de Pascal (phase « Fabrics + Pascal », M17 → M25, `docs/03-ROADMAP.md`, décisions D75 à D79 du 2026-11-17)
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -34,7 +34,19 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
-| M14 Collaboration temps réel | en cours (lots A à D faits et validés ; lot E validé ; lot F à faire) | |
+| M14 Collaboration temps réel | terminé (lots A à F) | 2026-11-15 |
+| M15 Historique de versions | terminé (lots A à D) | 2026-11-15 |
+| M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
+| M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
+| M17 Audit et intégration de Pascal (G0) | à faire | |
+| M18 Modèle BIM unifié (G1) | à faire | |
+| M19 Édition 2D/3D professionnelle (G2) | à faire | |
+| M20 Plans professionnels et mise en page (G3) | à faire | |
+| M21 Quantitatif automatique et traçabilité (G4) | à faire | |
+| M22 Échanges IFC (G5) | à faire | |
+| M23 Bibliothèque de prix et DQE (G6) | à faire | |
+| M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
+| M25 Assistant IA (G8) | à faire | |
 
 ## Journal
 
@@ -45,6 +57,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-17 — Roadmap · phase « Fabrics + Pascal » (M17 → M25)
+- Fait : la roadmap Pascal / IfcOpenShell téléchargée par l'utilisateur est adaptée à Fabrics et intégrée dans `docs/03-ROADMAP.md`, **seul roadmap officiel** : principe « Fabrics + Pascal Editor + amélioration », règle RÉUTILISER → ÉTENDRE → REMPLACER, mécanismes anti-duplication et anti-régression, 17 modules finaux, fixtures HOUSE-01 / HOUSE-02 / EDGE-01 en mm, jalons M17 à M25 avec gates G0 à G8, risques.
+- Audit de Pascal (clone local, commit `7f30521`, MIT) : monorepo bun avec `core`, `viewer`, `editor`, `nodes`, `ifc-converter`, `geometry-script`, `mcp`, `cli` ; mêmes versions de three (0.187), React (19.3) et R3F (9.8) que Fabrics ; scène en mètres ; rendu WebGPU avec repli WebGL2 ; IFC import (web-ifc) et export IFC4 ; Fabrics est en avance sur les façades, coupes, cotes Client / Exécution, collaboration, versions et commentaires.
+- Décisions D75 à D79 (ci-dessous). Docs mises à jour : `CLAUDE.md` (périmètre, licences, règles globales, commandes), `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md` (dépendances, « Intégration de Pascal Editor »), `docs/06-BIBLIOTHEQUE.md`.
+- Aucun code modifié.
+- Commit : docs: roadmap Fabrics + Pascal (M17 à M25)
 
 ### 2026-11-16 — Mise en ligne · collaboration en direct activée sur le site publié
 - Constat : le code local, GitHub et le site Cloudflare Pages étaient identiques, mais `VITE_COLLAB_URL` n'existait que dans `.env.local`. Le site en ligne n'avait donc pas d'adresse de serveur temps réel : pas d'édition à plusieurs, pas de présence, pas de « En direct ». Supabase (toutes les tables) et le Worker `fabrics-collab` répondaient normalement.
@@ -1550,6 +1569,11 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D72 | Conservation des versions | Étapes détaillées (toutes les ~2 min de travail) gardées 24 h ; ensuite la dernière étape de chaque session ; après 30 jours, une version automatique par jour ; versions nommées jamais supprimées automatiquement. (Précisé au lot A le 2026-11-15 : « tout garder 30 jours » aurait pu dépasser l'offre gratuite de Supabase sur un plan très modifié.) | Historique fin pour réparer une erreur récente, place limitée sur l'offre gratuite. |
 | D73 | Qui voit et restaure l'historique | **Choix de l'utilisateur le 2026-11-15** : tous les membres voient l'historique (lecteurs compris) ; seuls les éditeurs et le propriétaire restaurent. « Faire une copie » d'une version : tout membre connecté (la copie lui appartient). | Transparence pour tous ; le contenu ne change que par ceux qui peuvent déjà le modifier. |
 | D74 | Qui peut commenter | **Choix de l'utilisateur le 2026-11-15** : tous les membres, lecteurs compris ; pas de commentaires sur le lien public de partage. | Valider un plan sans pouvoir le modifier. |
+| D75 | Base de la suite du projet | **Choix de l'utilisateur le 2026-11-17** : Fabrics reste l'application (interface et prise en main, métrés, Supabase, collaboration, historique, commentaires) ; on y intègre tout ce qu'on peut de Pascal Editor (applications, paquets, scripts, configurations, conventions, moteur 3D, modèle de scène BIM, objets et opérations, import / export, MCP, composants d'interface). | Profiter d'un moteur BIM open source complet sans perdre ce que Fabrics fait déjà mieux. |
+| D76 | Prix et devis | **Choix de l'utilisateur le 2026-11-17** : l'interdiction « aucun prix, aucun devis » est levée ; DQE chiffré en M23, prix toujours fournis par l'utilisateur, jamais inventés, montants exacts. | Livrer métrés **et** DQE à partir du même modèle. |
+| D77 | Clean room et provenance | **Choix de l'utilisateur le 2026-11-17** : toutes les règles « clean room » et de provenance sont supprimées de `CLAUDE.md` ; on utilise librement les dépôts open source (code, objets, matériaux) en vérifiant les licences avant redistribution commerciale et en gardant les notices (`THIRD_PARTY_NOTICES.md`). | Le projet s'appuie désormais sur des dépôts open source. |
+| D78 | Paquets Pascal | **Choix de l'utilisateur le 2026-11-17** : tous les paquets de Pascal entrent dans Fabrics (workspaces npm, `packages/pascal/`) ; leurs dépendances sont acceptées en bloc ; toute autre dépendance demande toujours un accord. | Réutiliser le code tel quel au lieu de le recopier, et pouvoir reprendre les mises à jour de Pascal. |
+| D79 | Source de vérité | **Choix de l'utilisateur le 2026-11-17** : la scène Pascal devient l'unique modèle des projets Plan (stockage en mètres, affichage toujours en mm, m², m³) ; migration testée des plans existants en M18 ; les projets Visuel gardent `FabricsDocument`. | Une seule source pour la 2D, la 3D, les métrés, l'IFC et le DQE, sans traduction permanente entre deux modèles. |
 | D67 | Miniature dans le cloud | La miniature (image encodée en texte) est stockée telle quelle dans la colonne `thumbnail_path` de `projects`, sans fichier Storage. | Évite une URL signée par carte de l'accueil ; le nom de la colonne est trompeur mais le schéma reste inchangé. À revoir si la base grossit trop. |
 | D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 
@@ -1724,7 +1748,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - ~~Aimantation des murs et des sommets sur ceux du niveau de référence~~ : planifié dans M11 bis, lot C (2026-11-12).
 - ~~Pivoter un objet de 90° au clavier~~ : fait, `Maj + R` (décidé par l'utilisateur).
 - Régler le nord avec le capteur d'orientation d'un téléphone (boussole réelle) : non fait en M11 ter (autorisations, inutile sur PC), à reprendre si le besoin vient du terrain.
-- Assistant IA « Demander quelque chose » : reporté à la demande de l'utilisateur (après M14, à rediscuter).
+- ~~Assistant IA « Demander quelque chose »~~ : planifié en M25 (2026-11-17).
 - Bibliothèque (voir `docs/06-BIBLIOTHEQUE.md`, section 10), hors M7 : import de symboles SVG / DXF par l'utilisateur, niveau de détail « détaillé », variantes de style. Pose contre un mur, hauteurs 3D, bibliothèque personnelle, étiquettes de cote et annotations de plan sont planifiées dans M11 bis, lot F (2026-11-12).
 - Plafonds : tableau dans les métrés et cote sous plafond (plan Technique) sont planifiés dans M11 bis, lot G (confirmés le 2026-11-12, D63). Faux plafond : confirmé.
 - E-mails Supabase (M13) : l'envoi par défaut est limité à quelques e-mails par heure (atteint pendant les tests). Avant d'ouvrir à de vrais utilisateurs : brancher un service d'envoi (Supabase, Authentication, SMTP Settings). Connexion Google : finalement en place (voir l'entrée « Connexion Google »).
