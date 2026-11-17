@@ -11,7 +11,12 @@ puis lis les documents de `docs/` dans l'ordre indiqué ci-dessous.
 2. **Plan** (`kind: "plan"`) — plan de pièce ou de bâtiment **à l'échelle réelle** : murs, pièces,
    cotes. L'application calcule automatiquement les **métrés** (surfaces, périmètres, longueurs).
 
-Hors périmètre : **aucun devis, aucun prix, aucune quotation**. Les métrés s'arrêtent aux quantités.
+**Depuis le 2026-11-17 (D75 à D79) : Fabrics + Pascal Editor + amélioration.** Fabrics garde son
+interface, ses métrés, Supabase, la collaboration, l'historique et les commentaires ; on y intègre
+**tout ce qu'on peut de Pascal Editor** (open source MIT, clone local
+`C:\Users\My PC\Documents\Projects\BIM Project`) pour viser des livrables de qualité comparable à
+Revit : plans professionnels, métrés traçables, IFC, **DQE chiffré** (autorisé depuis D76) et
+assistant IA. La **scène Pascal** est l'unique source de vérité des projets Plan (D79).
 
 ## Ordre de lecture des documents
 
@@ -20,12 +25,17 @@ Hors périmètre : **aucun devis, aucun prix, aucune quotation**. Les métrés s
 | 1 | `CLAUDE.md` | Règles de travail (ce fichier) |
 | 2 | `docs/01-PRODUIT.md` | Quoi construire et pourquoi, périmètre MVP |
 | 3 | `docs/02-ARCHITECTURE.md` | Comment construire : stack, modèle de données, calculs |
-| 4 | `docs/03-ROADMAP.md` | Jalons M0 → M14 avec critères d'acceptation |
+| 4 | `docs/03-ROADMAP.md` | **Seul roadmap officiel** : jalons M0 → M25, gates, fixtures, anti-régression |
 | 5 | `docs/PROGRESS.md` | Journal : où en est le projet |
 | — | `docs/04-PROMPTS.md` | Messages que l'utilisateur t'enverra (pour info) |
 | — | `docs/05-INSTALLATION.md` | Guide d'installation pour l'utilisateur |
 | — | `docs/06-BIBLIOTHEQUE.md` | Catalogue détaillé de la bibliothèque d'objets (jalon M7 uniquement) |
 | — | `supabase/schema.sql` | Schéma de base de données (jalon M13 uniquement) |
+| — | `docs/capabilities.md` | Registre unique des capacités (à partir de M17) : un module propriétaire par capacité |
+| — | `docs/regression-checklist.md` | Liste de non-régression (à partir de M17) |
+| — | `AGENTS.md`, `DECISIONS.md`, `CONTRIBUTING.md` de Pascal | Règles du code de `packages/pascal/` (à partir de M17) |
+
+Il n'existe **qu'un seul roadmap** : `docs/03-ROADMAP.md`. Aucun autre fichier ne doit en tenir lieu.
 
 **En cas de contradiction**, l'ordre de priorité est :
 `CLAUDE.md` > `docs/02-ARCHITECTURE.md` > `docs/03-ROADMAP.md` > `docs/01-PRODUIT.md`.
@@ -52,28 +62,40 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
    et ajoute une entrée dans `docs/PROGRESS.md`.
 5. **Commits.** Propose un commit git à la fin de chaque tâche réussie, avec un message clair
    (`feat: outil mur`, `fix: zoom molette`…).
-6. **Dépendances.** N'utilise que les bibliothèques listées dans `docs/02-ARCHITECTURE.md`.
-   Pour en ajouter une, demande d'abord en expliquant pourquoi.
+6. **Dépendances.** N'utilise que les bibliothèques listées dans `docs/02-ARCHITECTURE.md`. Les
+   paquets de Pascal et leurs dépendances sont acceptés en bloc (D78). Pour en ajouter une autre,
+   demande d'abord en expliquant pourquoi.
 7. **Pas d'invention de périmètre.** Si une fonctionnalité n'est pas dans le jalon en cours,
    note-la dans la section « Idées » de `docs/PROGRESS.md` au lieu de la coder.
 8. **En cas de blocage** (erreur incompréhensible, choix ambigu) : arrête-toi, explique le
    problème en deux phrases et propose deux options.
 
-## Contraintes légales et de conception
+## Licences (D77 : règles « clean room » supprimées le 2026-11-17)
 
-- N'imite pas l'interface, le nom, le logo, les textes ni les assets d'un produit existant
-  (Canva, Figma, Synaps…). L'identité visuelle de Fabrics est originale.
-- Icônes : uniquement `lucide-react` (licence ISC).
-- Polices : polices système ou Google Fonts / Fontsource sous licence libre (OFL).
-- Aucune image, illustration ou modèle tiers sans licence vérifiée. Les exemples de démo sont
-  créés pour Fabrics.
+- On utilise librement les dépôts et contenus open source (Pascal Editor, IfcOpenShell…), code,
+  objets, matériaux et composants compris.
+- **Vérifier la licence** de chaque dépendance ou contenu repris **avant toute redistribution
+  commerciale** ; conserver les notices dans `THIRD_PARTY_NOTICES.md` ; examiner les obligations des
+  bibliothèques binaires (WASM) et des services externes (IfcOpenShell est en LGPL).
+- Les fichiers IFC d'exemple de Pascal ne servent qu'aux tests locaux (leur README l'exige).
 - Les médias importés par l'utilisateur restent sa propriété : on ne les rend jamais publics.
-- **Bibliothèque d'objets (mobilier, équipements) : principe « clean room ».** Chaque symbole est
-  dessiné de zéro à partir de dimensions génériques (normes et usages courants, ex. lit
-  160 × 200 cm) et de formes géométriques simples. On n'ouvre, ne convertit, ne décalque et ne
-  s'inspire d'aucun fichier ou bibliothèque tiers (familles Revit `.rfa`, catalogues de
-  fabricants, bibliothèques CAO/BIM, packs de symboles). Pas de nom de marque ni de référence
-  commerciale dans les symboles.
+
+## Règles globales Fabrics + Pascal (à partir de M17)
+
+- **Ne pas dupliquer** le moteur, les vues, les outils ni l'interface sans décision documentée (ADR).
+  Suivre RÉUTILISER → ÉTENDRE → REMPLACER et le mécanisme anti-duplication de `docs/03-ROADMAP.md`.
+- **Ne jamais annoncer « qualité Revit »** sur la seule base d'une démo : comparaisons chiffrées,
+  sorties imprimables, audit des données et revue d'un praticien BIM.
+- **Une seule source de vérité** (scène Pascal, D79) et des identifiants stables : vues 2D, 3D,
+  nomenclatures, métrés et DQE en dérivent.
+- **Métrés et montants déterministes et traçables**, jamais estimés par l'IA. **Aucun prix inventé** :
+  les prix viennent de la bibliothèque de prix de l'utilisateur ; montants exacts, pas de flottants.
+- Toute modification par l'IA passe par un aperçu, l'accord de l'utilisateur et une seule étape
+  d'annulation.
+- Documenter les limites des disciplines non prises en charge ; tout document destiné à une
+  construction réelle exige la revue d'un architecte ou d'un ingénieur.
+- Chaque jalon passe `npm run check:all` (dès qu'il existe) et ne doit rien faire reculer
+  (mécanisme anti-régression).
 
 ## Sécurité
 
@@ -92,7 +114,11 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
 - **Unités : toujours « Métrique architectural » (comme Revit).** Longueurs en `mm` entiers
   (`3500 mm`, jamais `3,50 m` ni `20 cm`), surfaces en `m²`, volumes en `m³`. S'applique à tout
   affichage, champ de saisie, export et texte d'interface, présents et futurs. Un nombre saisi
-  sans unité est en mm. Détail dans `docs/02-ARCHITECTURE.md` (« Unités et échelle »).
+  sans unité est en mm. Détail dans `docs/02-ARCHITECTURE.md` (« Unités et échelle »). La scène
+  Pascal stocke en **mètres** (D79) : la conversion se fait à l'affichage et à la saisie, l'utilisateur
+  ne voit jamais de mètres.
+- Code de `packages/pascal/` : on y suit les conventions de Pascal (Biome, Lingui, règles E-001…) ;
+  chaque modification de Fabrics y est notée dans `packages/pascal/FABRICS_CHANGES.md`.
 - Identifiants : `crypto.randomUUID()`.
 - Styles : Tailwind CSS uniquement.
 
@@ -103,6 +129,10 @@ npm run dev      # serveur de développement → http://localhost:5173
 npm run build    # vérification TypeScript + build de production
 npm run lint     # ESLint
 npm test         # Vitest (à partir du jalon M1)
+# À partir de M17 :
+npm run test:pascal   # tests des paquets Pascal (bun)
+npm run lint:pascal   # Biome sur packages/pascal
+npm run check:all     # tout : build, lint, tests, références, doublons
 ```
 
 ## Définition de « terminé » pour une tâche

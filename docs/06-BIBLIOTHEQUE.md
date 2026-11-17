@@ -4,9 +4,12 @@
 emprises des ensembles (section 5.18) sont celles calculées par `src/features/library/catalog/sets.ts`.
 
 Les dimensions sont en **mm** (largeur × profondeur) et viennent de **mesures usuelles et
-génériques** (normes courantes, tailles de marché habituelles). Règle « clean room » de
-`CLAUDE.md` : aucun fichier, catalogue ou bibliothèque tiers n'est ouvert, converti ou décalqué
-(ni Revit `.rfa`, ni fabricants, ni packs de symboles) ; aucune marque dans les noms.
+génériques** (normes courantes, tailles de marché habituelles).
+
+**Depuis le 2026-11-17 (D77)**, la règle « clean room » est supprimée : les objets 2D de ce catalogue
+restent valables, et les objets 3D, matériaux et outils de Pascal Editor (open source MIT) s'y
+ajoutent à partir de M19, selon le registre `docs/capabilities.md` (pas de doublon : un objet existant
+des deux côtés est fusionné en une seule entrée).
 
 **Contenu : 392 objets en 17 catégories + 24 ensembles prêts à poser.**
 

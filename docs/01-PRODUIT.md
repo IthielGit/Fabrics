@@ -50,13 +50,45 @@ même export). Seuls les outils disponibles et l'unité changent.
 - Partage d'un projet par lien en lecture seule (jalon M13).
 
 **Exclus du MVP**
-- Devis, prix, quotations : **jamais** dans ce produit tant que l'utilisateur ne le demande pas.
+- Devis, prix, quotations : exclus du MVP ; **demandés le 2026-11-17** (D76), planifiés en M23
+  (voir « Phase Fabrics + Pascal » ci-dessous).
 - Collaboration temps réel (jalon M14).
 - Espaces de travail multi-membres, rôles, commentaires.
 - Modèles, identité de marque, historique de versions.
 - Abonnements, paiements, statistiques d'administration.
 - Traduction anglais / malgache, mode sombre (préparés mais non livrés).
-- Assistant IA : reporté, à décider plus tard avec l'utilisateur.
+- Assistant IA : exclu du MVP ; planifié en M25.
+
+## Phase « Fabrics + Pascal » (jalons M17 à M25)
+
+Décidée le 2026-11-17 (D75 à D79). Principe : **Fabrics + Pascal Editor + amélioration**. On
+intègre tout ce qu'on peut du projet open source Pascal Editor (moteur 3D, modèle BIM, outils,
+objets, IFC, MCP, composants) dans Fabrics, qui garde son interface, ses métrés, ses comptes, sa
+collaboration, son historique et ses commentaires. Jalons détaillés : `docs/03-ROADMAP.md`.
+
+**Objectif** : créer ou modifier des plans 2D (niveaux, axes, murs, cloisons, portes, fenêtres,
+dalles, toitures, pièces, annotations, cotes), les voir dans une maquette 3D paramétrique sans
+ressaisie, produire des plans imprimables (niveaux, coupes, façades, détails, cartouches, feuilles,
+nomenclatures, indices), un quantitatif mesuré et un **DQE chiffré** (bordereau de prix, règles de
+mesurage, provenance, révisions, Excel et PDF), échanger en **IFC** avec contrôle de fidélité, puis
+travailler avec un **assistant IA** qui utilise les mêmes opérations que l'interface.
+
+**Périmètre initial** : architecture résidentielle et petit tertiaire, un à trois niveaux, murs
+orthogonaux puis quelconques, murs composites simples, portes et fenêtres, dalles, toitures
+simples, pièces. **Hors périmètre initial** : structure calculée, MEP complet, ferraillage,
+phasage 4D industriel, détails de fabrication, conformité réglementaire de tous les pays.
+
+**« Qualité Revit »**, sur ce périmètre, veut dire des livrables :
+1. corrects géométriquement (mesures, ouvertures, coupes sans contradiction) ;
+2. cohérents entre vues (une modification régénère vues et nomenclatures) ;
+3. documentables (échelle, traits lisibles, cotes, repères, cartouches, tableaux) ;
+4. auditables (chaque quantité et chaque prix explicables : formule, sources, méthode, version) ;
+5. échangeables (IFC lu par au moins deux visionneuses indépendantes, Excel et PDF vérifiables) ;
+6. reproductibles (même révision + mêmes prix = même résultat) ;
+7. révisables (index des plans, comparaison des quantités entre révisions).
+
+La parité complète avec Revit n'est pas l'objectif. Les plans et DQE destinés à une construction
+réelle restent soumis à la vérification d'un professionnel qualifié.
 
 ## Phase « Bâtiment » (jalons M5 à M11)
 
