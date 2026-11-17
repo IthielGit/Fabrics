@@ -1158,27 +1158,33 @@ Prérequis : Git, Node.js, **Bun**, Python 3.11+ (pour IfcOpenShell), Docker fac
 si un script de Pascal l'exige ; navigateur compatible WebGPU, avec repli WebGL2. Travail sur une
 branche dédiée.
 
-- [ ] Vérifier les outils (`node -v`, `npm -v`, `git --version`, `bun --version`, `python --version`) ;
-      guider les installations manquantes
-- [ ] Lancer Pascal tel quel dans son dossier (`bun install`, `bun run test`, `bun run build`) ; noter
-      commit, versions et résultats
-- [ ] Figer la baseline Fabrics : tests, métrés de référence du plan d'exemple, dessins SVG, exports
-      CSV / XLSX / IFC
-- [ ] Remplir `docs/capabilities.md` (matrice complète : UI, vues 2D / 3D, moteur, objets, édition,
+- [x] Vérifier les outils (`node -v`, `npm -v`, `git --version`, `bun --version`, `python --version`) ;
+      guider les installations manquantes (2026-11-17 : Node 26.13.1, Bun 1.4.4 installés)
+- [x] Lancer Pascal tel quel dans son dossier (`bun install`, `bun run test`, `bun run build`) ; noter
+      commit, versions et résultats (`docs/phases/M17-pascal-baseline.md`)
+- [x] Figer la baseline Fabrics : tests, métrés de référence du plan d'exemple, dessins SVG, exports
+      CSV / XLSX / IFC (`baseline/fabrics/`, `src/baseline/`)
+- [x] Remplir `docs/capabilities.md` (matrice complète : UI, vues 2D / 3D, moteur, objets, édition,
       annuler, stockage, IFC, API, MCP, IA, quantités, exports) et `docs/regression-checklist.md`
-- [ ] **Carte des écrans** (D80) : pour chaque écran et geste de Fabrics (accueil, éditeur, panneaux,
+- [x] **Carte des écrans** (D80) : pour chaque écran et geste de Fabrics (accueil, éditeur, panneaux,
       barre d'outils, barre d'état, aide, partage, versions, commentaires…), l'écran Pascal qui le
       remplace ou le panneau à reconstruire dedans ; aucune fonction de Fabrics sans destination
-- [ ] `docs/adr/0001-source-of-truth.md` (scène Pascal, D79) ; `docs/adr/0002-monorepo.md` (workspaces
-      npm, tests Pascal sous bun, lint) ; trancher les doublons repérés
-- [ ] Copier tous les paquets et apps de Pascal dans `packages/pascal/` et `apps/` ; ressources de
+      (`docs/screen-map.md`)
+- [x] `docs/adr/0001-source-of-truth.md` (scène Pascal, D79) ; `docs/adr/0002-monorepo.md` (workspaces
+      npm, tests Pascal sous bun, lint) ; trancher les doublons repérés (ADR 0003, Lingui retenu)
+- [x] Copier tous les paquets et apps de Pascal dans `packages/pascal/` et `apps/` ; ressources de
       `apps/editor/public` dans `public/pascal/` ; workspaces npm ; `patch-package` pour les correctifs ;
-      alias Vite pour `next/image` ; catalogue Lingui en français
-- [ ] Scripts `test:pascal`, `lint:pascal`, `check:all` ; GitHub Actions
-- [ ] Tester IfcOpenShell (environnement Python isolé) sur un IFC de référence ; noter version et API
-- [ ] `THIRD_PARTY_NOTICES.md` (Pascal MIT, polices OFL, médias CC BY 4.0, IfcOpenShell LGPL) ; fichiers
+      alias Vite pour `next/image` ; catalogue Lingui en français. **Fait autrement (ADR 0002)** : dépôt
+      copié tel quel dans `packages/pascal/` (apps et ressources comprises), installé par Bun (`bun.lock`
+      gelé, correctifs appliqués par Bun) car npm changeait les résultats ; catalogue `fr` présent mais
+      non traduit (M19)
+- [x] Scripts `test:pascal`, `lint:pascal`, `check:all` ; GitHub Actions (+ `install:pascal`,
+      `check:duplicates` avec jscpd)
+- [x] Tester IfcOpenShell (environnement Python isolé) sur un IFC de référence ; noter version et API
+      (0.9.0.post1, `tools/ifc/validate.py`)
+- [x] `THIRD_PARTY_NOTICES.md` (Pascal MIT, polices OFL, médias CC BY 4.0, IfcOpenShell LGPL) ; fichiers
       IFC d'exemple de Pascal pour les tests locaux seulement
-- [ ] `docs/risks.md` (risques et parades, voir la fin de cette phase)
+- [x] `docs/risks.md` (risques et parades, voir la fin de cette phase)
 
 **Critères d'acceptation (G0)**
 - `npm install`, `npm run build`, `npm run lint`, `npm test` et `npm run test:pascal` passent ; les

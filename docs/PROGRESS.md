@@ -4,9 +4,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Jalon en cours :** M17 Audit et intégration de Pascal (gate G0) : fait sur la branche `feat/m17-pascal` (dossier `Fabrics-m17`), en attente du verdict de l'utilisateur. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M16 · Lots D et E · commentaires pour les membres lecteurs et en direct (15/11, validés par l'utilisateur) : fin de M16
-- **Prochaine tâche :** M17 Audit et intégration de Pascal (phase « Fabrics + Pascal », M17 → M25, `docs/03-ROADMAP.md`, décisions D75 à D79 du 2026-11-17)
+- **Prochaine tâche :** M18 Modèle BIM unifié, après validation du gate G0 par l'utilisateur
+- **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
@@ -38,7 +39,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M15 Historique de versions | terminé (lots A à D) | 2026-11-15 |
 | M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
-| M17 Audit et intégration de Pascal (G0) | à faire | |
+| M17 Audit et intégration de Pascal (G0) | fait, verdict de l'utilisateur attendu | 2026-11-18 |
 | M18 Modèle BIM unifié (G1) | à faire | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
@@ -57,6 +58,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M17 · Audit et intégration de Pascal (gate G0)
+- Fait : outils (Node 26.13.1, Bun 1.4.4) ; Pascal lancé dans son dossier (19 394 réussis, 71 échecs Windows, 8 ignorés) ; baseline Fabrics (`baseline/fabrics/`, 24 fichiers) et fixtures HOUSE-01 / HOUSE-02 / EDGE-01 ; `docs/capabilities.md`, `docs/regression-checklist.md`, `docs/screen-map.md` (D80) ; ADR 0001 à 0003 ; copie de Pascal dans `packages/pascal/` (code inchangé), installée par Bun (`npm run install:pascal`) ; scripts `test:pascal`, `lint:pascal`, `check:duplicates`, `check:all` ; GitHub Actions ; IfcOpenShell (`tools/ifc/`) ; `THIRD_PARTY_NOTICES.md`, `docs/risks.md`.
+- Résultat clé : tests de Pascal intégré **identiques** à ceux de son dossier, paquet par paquet ; lint Biome identique ; `src/` n'importe rien de Pascal (application inchangée).
+- Décisions de l'utilisateur : Lingui retenu pour les traductions (doublon `fr.ts` / Lingui) ; jscpd validé (seuil 1,2 %, mesuré 1,05 %).
+- Constats : workspaces npm abandonnés au profit d'une installation Bun séparée (versions différentes de `bun.lock`, 3 échecs de plus dans `viewer`, ADR 0002) ; export IFC de Fabrics non strictement valide (R14, M22) ; licences des objets 3D, textures et sons de Pascal à vérifier.
+- Détails : `docs/phases/M17-report.md`.
+- Commits : `feat(m17): baseline Fabrics…`, `feat(m17): contrôle IFC…`, `fix(m17): CSV de la baseline…`, `feat(m17): intégration de Pascal Editor…`, `docs(m17): rapport…`
 
 ### 2026-11-18 — Roadmap · effets, navigation et UX de Pascal (D81)
 - Fait : décision D81 ; M19 lot A liste les effets visuels et sonores, modes et options de navigation, gestes et prise en main de Pascal à garder tels quels, avec un critère de comparaison côte à côte.
