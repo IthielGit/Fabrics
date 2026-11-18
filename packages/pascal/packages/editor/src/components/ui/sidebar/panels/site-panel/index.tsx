@@ -60,7 +60,7 @@ import {
 import { addStoreyOnTop } from './../../../../../lib/add-storey'
 import { offerExteriorWallCopy } from './../../../../../components/ui/level-wall-copy-prompt'
 import { deleteLevelWithFallbackSelection } from './../../../../../lib/level-selection'
-import { formatAreaLabel, getAreaUnitLabel, getLinearUnitLabel, linearUnitToMeters, metersToLinearUnit, squareMetersToAreaUnit } from '@pascal-app/core'
+import { formatAreaLabel, getAreaUnitLabel, getLinearUnitLabel, getMeasurementDisplayDefaults, linearUnitToMeters, metersToLinearUnit, squareMetersToAreaUnit } from '@pascal-app/core'
 import { createLocalGuideImage, createLocalScan } from './../../../../../lib/local-guide-image'
 import { editorHostTreeChildrenRegistry } from './../../../../../lib/host-tree-children'
 import { requestRoomDeletion } from './../../../../../lib/room-structure-commands'
@@ -141,9 +141,15 @@ const PropertyLineSection = memo(function PropertyLineSection() {
 
   // Property-line coordinates and readouts follow the metric/imperial toggle.
   const isImperial = viewerUnit === 'imperial'
-  const linearLabel = getLinearUnitLabel(viewerUnit)
-  const toDisplayLinear = (meters: number) => metersToLinearUnit(meters, viewerUnit)
-  const toStoredLinear = (display: number) => linearUnitToMeters(display, viewerUnit)
+  // Host pinned millimetres (Fabrics): coordinates and perimeter in whole mm, area to 2 decimals.
+  const millimeters =
+    !isImperial && getMeasurementDisplayDefaults().metricNotation === 'millimeters'
+  const linearLabel = millimeters ? 'mm' : getLinearUnitLabel(viewerUnit)
+  const linearDigits = millimeters ? 0 : 2
+  const toDisplayLinear = (meters: number) =>
+    millimeters ? meters * 1000 : metersToLinearUnit(meters, viewerUnit)
+  const toStoredLinear = (display: number) =>
+    millimeters ? display / 1000 : linearUnitToMeters(display, viewerUnit)
   const displayArea = squareMetersToAreaUnit(area, viewerUnit)
   const displayPerimeter = toDisplayLinear(perimeter)
 
@@ -214,13 +220,13 @@ const PropertyLineSection = memo(function PropertyLineSection() {
         <div className="text-muted-foreground text-xs">
           {i18n._({ id: 'editor.sidebar.panels.sitePanel.area', message: 'Area:' })}{' '}
           <span className="text-foreground">
-            {displayArea.toFixed(1)} {getAreaUnitLabel(viewerUnit)}
+            {displayArea.toFixed(millimeters ? 2 : 1)} {getAreaUnitLabel(viewerUnit)}
           </span>
         </div>
         <div className="text-muted-foreground text-xs">
           {i18n._({ id: 'editor.sidebar.panels.sitePanel.perimeter', message: 'Perimeter:' })}{' '}
           <span className="text-foreground">
-            {displayPerimeter.toFixed(1)} {linearLabel}
+            {displayPerimeter.toFixed(millimeters ? 0 : 1)} {linearLabel}
           </span>
         </div>
       </div>
@@ -238,9 +244,9 @@ const PropertyLineSection = memo(function PropertyLineSection() {
                   onChange={(e) =>
                     handlePointChange(index, 0, toStoredLinear(Number.parseFloat(e.target.value) || 0))
                   }
-                  step={0.5}
+                  step={millimeters ? 100 : 0.5}
                   type="number"
-                  value={Number(toDisplayLinear(point[0]).toFixed(2))}
+                  value={Number(toDisplayLinear(point[0]).toFixed(linearDigits))}
                 />
                 <label className="shrink-0 text-muted-foreground">Z</label>
                 <input
@@ -248,9 +254,9 @@ const PropertyLineSection = memo(function PropertyLineSection() {
                   onChange={(e) =>
                     handlePointChange(index, 1, toStoredLinear(Number.parseFloat(e.target.value) || 0))
                   }
-                  step={0.5}
+                  step={millimeters ? 100 : 0.5}
                   type="number"
-                  value={Number(toDisplayLinear(point[1]).toFixed(2))}
+                  value={Number(toDisplayLinear(point[1]).toFixed(linearDigits))}
                 />
                 <button
                   className={cn(

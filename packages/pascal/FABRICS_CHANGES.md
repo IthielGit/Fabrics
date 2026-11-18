@@ -32,6 +32,12 @@ Le code est installé par Bun dans ce dossier (`npm run install:pascal`, `bun.lo
 lui-même ses correctifs (`patches/`). Un essai d'intégration par workspaces npm a été abandonné le
 2026-11-18 (ADR 0002). Après une modification ici : `npm run build:pascal`, puis `npx vite --force`.
 
+### 2026-11-18 — M19 B4 : limite de propriété en mm
+
+- `packages/editor/src/components/ui/sidebar/panels/site-panel/index.tsx` : quand l'hôte impose les
+  millimètres, coordonnées et périmètre de la limite de propriété en mm entiers (pas de 100 mm), surface
+  à 2 décimales. Sans réglage de l'hôte : inchangé.
+
 ### 2026-11-18 — M19 B1 : unités d'affichage réglables par l'application hôte
 
 Fabrics affiche toujours les longueurs en mm et les surfaces en m² à 2 décimales. Sans réglage de

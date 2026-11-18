@@ -1257,7 +1257,7 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 | B1 Outils 2D — **fait le 2026-11-18**, test par l'utilisateur à la fin de B5 (son choix) | Outils, vue en plan et accrochages de Pascal, saisie précise en mm, alignements, fusion sans doublon | `/model opus` |
 | B2 Édition 3D — **fait en partie le 2026-11-18** (voir la case du lot B), test à la fin de B5 | Murs, dalles, toitures, escaliers, ouvertures en 3D ; jonctions propres ; synchronisation 2D ↔ 3D sur le même objet | `/model opus` |
 | B3 Matériaux — **fait le 2026-11-18**, test à la fin de B5 | Couches de mur, bibliothèque de matériaux, quantités par couche sans double comptage | `/model opus` |
-| B4 Terrain | Terrain, limite de propriété, implantation du bâtiment, altitudes des niveaux | `/model opus` |
+| B4 Terrain — **fait le 2026-11-18**, test à la fin de B5 | Terrain, limite de propriété, implantation du bâtiment, altitudes des niveaux | `/model opus` |
 | B5 Cas difficiles et preuves | Jonctions, collisions, ouvertures, épaisseur nulle ou invalide ; exemples T1 / T2 ; tests 2D → 3D et 3D → 2D ; rapport de précision ; gate G2 | `/model opus` |
 
 ### Lot A — Interface et prise en main de Pascal (D80)
@@ -1305,7 +1305,9 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 - [x] **Matériaux et compositions** : couches de mur (maçonnerie, isolation, enduit, revêtement),
       bibliothèque de matériaux et objets 3D de Pascal (B3, 2026-11-18 : quantités par couche dans
       les métrés Technique, `measurements/wallLayers.ts` ; couches des toitures et dalles : M21)
-- [ ] **Terrain et implantation** : terrain, limite de propriété, position du bâtiment, altitudes des niveaux
+- [x] **Terrain et implantation** : terrain, limite de propriété, position du bâtiment, altitudes des niveaux
+      (B4, 2026-11-18 : outils de Pascal ; parcelle, emprise, coefficient d'emprise, recul, altitudes
+      dans les métrés Technique, `scene/siteMeasures.ts`)
 - [ ] Cas difficiles : jonctions, collisions, ouvertures, épaisseur nulle ou invalide
 - [ ] Exemple T1 / T2 ; tests 2D → 3D et 3D → 2D ; rapport de précision
 

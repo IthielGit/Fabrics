@@ -35,6 +35,7 @@ apportent les outils de Pascal.
 | Mur allongé de 4000 à 5000 mm en 3D (glisser son extrémité) → 5000 mm sur le plan et dans Métrés ; le mur raccordé suit | Auto : `scene/edit3d.test.ts` ; Nav. (M19 B2) |
 | Porte élargie puis supprimée en 3D → surfaces nettes recalculées, aucune incohérence | Auto : `scene/edit3d.test.ts` ; Nav. (M19 B2) |
 | Mur de 200 mm composé 20 + 160 + 20 mm (panneau du mur, Composition) → Métrés Technique, « Couches des murs » : 3 couches, somme des volumes = volume du mur | Auto : `measurements/wallLayers.test.ts` ; Nav. (M19 B3) |
+| Limite de propriété 20 × 30 m (Scène, Limite de propriété, crayon), maison 8000 × 10000 mm → parcelle 600,00 m², emprise 80,00 m², 13,3 %, recul 6000 mm ; bâtiment déplacé hors limite → « dépasse la limite » ; altitudes des niveaux en mm | Auto : `scene/siteMeasures.test.ts` ; Nav. (M19 B4) |
 | Mur, porte, pièce, niveau dessinés avec Construire → présents dans Métrés (« Mur 1 »…), gardés après un changement de cotation | Auto : `scene/edit3d.test.ts` ; Nav. (M19 B2) |
 
 ## 0. Référence figée (baseline M17)

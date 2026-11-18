@@ -478,6 +478,24 @@ export const fr = {
     openingCounts: (doors: number, windows: number, bays: number) =>
       `${doors} porte${doors > 1 ? 's' : ''} · ${windows} fenêtre${windows > 1 ? 's' : ''} · ${bays} baie${bays > 1 ? 's' : ''}`,
     netAreaNote: 'Surface nette = surface brute moins les ouvertures.',
+    // Terrain et implantation (M19 B4) : réglés dans Pascal (Scène → Site, Construire → Terrain).
+    site: {
+      title: 'Terrain et implantation',
+      parcelArea: 'Surface de la parcelle',
+      parcelPerimeter: 'Limite de propriété (périmètre)',
+      noParcel: 'Limite de propriété non réglée (onglet Scène, « Limite de propriété », crayon).',
+      footprint: 'Emprise au sol',
+      coverage: 'Coefficient d’emprise au sol',
+      setback: 'Recul minimal à la limite',
+      outside: 'Le bâtiment dépasse la limite de propriété.',
+      terrain: 'Terrain',
+      sculpted: 'Relief modelé',
+      flat: 'Plat',
+      levels: 'Altitudes des niveaux',
+      elevation: 'Altitude',
+      height: 'Hauteur d’étage',
+      note: 'Emprise = contour extérieur des murs du niveau du sol.',
+    },
     // Couches des murs (M19 B3) : composition donnée au mur dans Pascal.
     wallLayers: 'Couches des murs',
     layer: 'Couche',

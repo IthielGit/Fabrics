@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M19 · B3 (2026-11-18). A1 à A7 validés par l'utilisateur le 2026-11-18. **B1 à B5 enchaînés à la demande de l'utilisateur, test dans le navigateur à la fin de B5**, un commit par sous-lot.
+- **Dernière tâche terminée :** M19 · B4 (2026-11-18). A1 à A7 validés par l'utilisateur le 2026-11-18. **B1 à B5 enchaînés à la demande de l'utilisateur, test dans le navigateur à la fin de B5**, un commit par sous-lot.
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »). **Prochaine tâche :** M19 · B1 Outils 2D (`/model opus`) ; en attente de décision de l'utilisateur : traduire les 660 textes de Pascal écrits en dur en anglais (sous-lot dédié). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
@@ -54,6 +54,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## Journal
 
 <!-- Format d'une entrée (la plus récente en haut) :
+### 2026-11-18 — M19 · B4 Terrain et implantation (test par l'utilisateur à la fin de B5)
+- **Outils de Pascal réutilisés** : relief du terrain (Construire → Terrain), limite de propriété (onglet Scène, « Limite de propriété », crayon), position et rotation du bâtiment, altitude de base des niveaux. Le panneau de la limite de propriété affiche maintenant ses coordonnées et son périmètre en mm (modification de Pascal notée dans `FABRICS_CHANGES.md`).
+- **Métrés, version Technique : bloc « Terrain et implantation »** (`src/features/scene/siteMeasures.ts`, testé ; `SiteMeasuresTable.tsx`) : surface et périmètre de la parcelle, emprise au sol (contour extérieur des murs du niveau du sol, calculé par Pascal et placé par la position du bâtiment), coefficient d'emprise, recul minimal à la limite, alerte si le bâtiment dépasse la limite, relief modelé ou plat, altitudes et hauteurs des niveaux en mm. Tant que la limite est le carré par défaut de Pascal (30 × 30 m), elle n'est pas comptée comme une parcelle.
+- Tests : maison 8000 × 10000 mm sur une parcelle de 20 × 30 m → 600,00 m², emprise 80,00 m², recul 6000 mm ; déplacée de 5000 mm → recul 1000 mm ; de 8000 mm → hors de la parcelle ; altitudes 0 et +3000 mm.
+- Vérifié dans Chromium (Maison R+1) : emprise 78,66 m², « Limite de propriété non réglée », altitudes 0 et +2700 mm.
+- Limites : reculs réglementaires par côté (avant, latéral, arrière) et altitude du terrain sous chaque niveau non calculés ; le bloc n'est pas encore dans les exports Excel / CSV (M21).
+- Vérification : build ✓ lint ✓ 3 094 tests ✓.
+
 ### 2026-11-18 — M19 · B3 Matériaux (test par l'utilisateur à la fin de B5)
 - **Composition et matériaux : ceux de Pascal**, réutilisés tels quels : couches d'un mur dans son panneau (section composition), matériaux dans l'onglet Peinture, objets 3D dans l'onglet Objets.
 - **Couches lues par Fabrics** : `WallElement.layers` (rôle, matériau, épaisseur en mm), lu dans la composition du mur de la scène (`scene/view/toFabricsView.ts`) ; Fabrics ne l'écrit jamais. Quand Fabrics réécrit la scène, chaque nœud garde les propriétés que seul Pascal connaît (composition, matériaux par face…) (`scene/nativeNodes.ts`).

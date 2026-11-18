@@ -14,6 +14,7 @@ import Button from '../ui/Button'
 import { SEGMENTED_BAR, segmentClass } from '../ui/segmented'
 import { exportMetres } from './exportMetres'
 import MetresWarningList from './MetresWarningList'
+import SiteMeasuresTable from './SiteMeasuresTable'
 import WallLayersTable from './WallLayersTable'
 
 /** À corriger (manque, débord : bloque l'export) en rouge, puis le reste à vérifier en orange. */
@@ -373,6 +374,7 @@ export default function MeasurementsPanel() {
         <p className="mt-1 text-xs text-slate-500">{fr.measurements.netAreaNote}</p>
       )}
       <WallLayersTable walls={walls} />
+      <SiteMeasuresTable />
 
       {stairs.length > 0 && (
         <table className="mt-4 w-full text-sm">
