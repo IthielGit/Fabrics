@@ -21,3 +21,6 @@ export declare const bathSpacePlugin: Plugin
 export declare const bathSpaceHostPanel: HostPanel
 export declare const streetscapePlugin: Plugin
 export declare const streetscapeHostPanel: HostPanel
+// `@mint/pascal-plugin` (génération d'objets 3D par Mint, choix de l'utilisateur du 2026-11-18).
+export declare const mintPlugin: Plugin
+export declare const mintHostPanel: HostPanel

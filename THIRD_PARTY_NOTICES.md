@@ -43,7 +43,7 @@ Vérifié le 2026-11-18 (M19 A5) dans leur `package.json` : **tous sous licence 
 | `@pascal-app/plugin-bath-space` (salle de bain) | Oui (A5) | Liens vers des fiches de fabricants (simples liens) |
 | `@pascal-app/plugin-streetscape` (rues) | Oui (A5) | Fonds de carte CARTO (`basemaps.cartocdn.com`) |
 | `@webxr/plugin` (réalité virtuelle) | Prévu en A6 | — |
-| `@mint/pascal-plugin` (génération d'objets 3D) | **Non** : service externe (compte, envoi de données), **à décider par l'utilisateur** | `api.mint.gg` |
+| `@mint/pascal-plugin` (génération d'objets 3D) | Oui (A5, choix de l'utilisateur du 2026-11-18) : désactivé par défaut, compte Mint requis | Connexion `mcp.mint.gg`, API `api.mint.gg`, modèles `cdn.mint.gg` ; descriptions et images envoyées à Mint pour générer un objet |
 
 Le moteur de Pascal charge aussi les objets de son catalogue depuis son CDN (`editor.pascal.app`,
 adresse par défaut de `configureViewer`) et les décodeurs Draco / Basis depuis `gstatic.com` et

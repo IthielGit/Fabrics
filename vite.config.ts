@@ -39,9 +39,59 @@ function pascalPublicFiles() {
   }
 }
 
+// Route de connexion de Mint (`/api/plugins/mint/…`, choix de l'utilisateur du 2026-11-18) : l'adaptateur
+// serveur fourni par Mint fait la connexion OAuth et relaie les appels à `api.mint.gg` ; les jetons restent
+// dans des cookies HttpOnly, jamais lisibles par le navigateur. En développement seulement : en
+// production (Cloudflare Pages), il faudra une fonction équivalente.
+type NodeRequest = AsyncIterable<Uint8Array> & { url?: string; method?: string; headers: Record<string, string | string[] | undefined> }
+type NodeResponse = { statusCode: number; setHeader: (key: string, value: string | string[]) => void; end: (body?: Uint8Array) => void }
+type MintHandler = (request: Request, options: { origin: string; clientId?: string }) => Promise<Response>
+function mintRoute() {
+  return {
+    name: 'fabrics-mint-route',
+    configureServer(server: {
+      config: { server: { port?: number } }
+      ssrLoadModule: (id: string) => Promise<Record<string, unknown>>
+      middlewares: { use: (fn: (req: NodeRequest, res: NodeResponse, next: () => void) => void) => void }
+    }) {
+      server.middlewares.use((req, res, next) => {
+        if (!(req.url ?? '').startsWith('/api/plugins/mint/')) return next()
+        void (async () => {
+          const origin = process.env.MINT_PASCAL_HOST_ORIGIN ?? `http://localhost:${server.config.server.port ?? 5173}`
+          const headers = new Headers()
+          for (const [key, value] of Object.entries(req.headers)) {
+            if (value !== undefined) headers.set(key, Array.isArray(value) ? value.join(', ') : value)
+          }
+          const chunks: Uint8Array[] = []
+          if (req.method === 'POST') for await (const chunk of req) chunks.push(chunk)
+          const request = new Request(new URL(req.url ?? '/', origin), {
+            method: req.method,
+            headers,
+            body: chunks.length > 0 ? Buffer.concat(chunks) : undefined,
+          })
+          const { handleMintPascalRequest } = (await server.ssrLoadModule('@mint/pascal-plugin/server')) as {
+            handleMintPascalRequest: MintHandler
+          }
+          const response = await handleMintPascalRequest(request, { origin, clientId: process.env.MINT_PASCAL_CLIENT_ID })
+          res.statusCode = response.status
+          response.headers.forEach((value, key) => {
+            if (key !== 'set-cookie') res.setHeader(key, value)
+          })
+          const cookies = response.headers.getSetCookie()
+          if (cookies.length > 0) res.setHeader('Set-Cookie', cookies)
+          res.end(new Uint8Array(await response.arrayBuffer()))
+        })().catch(() => {
+          res.statusCode = 502
+          res.end()
+        })
+      })
+    },
+  }
+}
+
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tailwindcss(), pascalPublicFiles()],
+  plugins: [react(), tailwindcss(), pascalPublicFiles(), mintRoute()],
   resolve: {
     // Paquets de Pascal (M17, ADR 0002) : `next/image` → simple <img>, sans serveur Next.js.
     // `@pascal-app/core` (M18, ADR 0002 § 5) : version compilée du paquet (`npm run build:pascal`),
@@ -78,6 +128,11 @@ export default defineConfig({
       {
         find: /^@pascal-app\/plugin-([a-z-]+)$/,
         replacement: `${fileURLToPath(new URL('./packages/pascal/node_modules/@pascal-app/', import.meta.url))}plugin-$1/src/index.ts`,
+      },
+      // Mint (objets 3D générés) : partie navigateur et adaptateur serveur, fournis en source.
+      {
+        find: /^@mint\/pascal-plugin(\/server)?$/,
+        replacement: `${fileURLToPath(new URL('./packages/pascal/node_modules/@mint/pascal-plugin/src', import.meta.url))}$1/index.ts`,
       },
       // `@pascal-app/editor` (M19 A2) : fourni en source TypeScript, compilé par Vite avec le reste.
       {

@@ -1,6 +1,16 @@
 // Démarrage de l'éditeur de Pascal dans Fabrics, d'après `apps/editor/lib/bootstrap.ts` de Pascal :
 // nœuds intégrés, modules d'extension, réglages du moteur de rendu, catalogues de langues.
-import { type AnyNodeDefinition, discoverPlugins, extendPluginDiscovery, loadPlugin, nodeRegistry, registerNode } from '@pascal-app/core'
+import {
+  type AnyNodeDefinition,
+  type CompiledTranslationMessages,
+  discoverPlugins,
+  extendPluginDiscovery,
+  loadPlugin,
+  nodeRegistry,
+  registerCompiledMessages,
+  registerNode,
+} from '@pascal-app/core'
+import { mintHostPanel, mintPlugin } from '@mint/pascal-plugin'
 import { registerEditorHostPanel } from '@pascal-app/editor'
 import { registerBundledLocales } from '@pascal-app/editor/locales'
 import { builtinPlugin } from '@pascal-app/nodes'
@@ -8,6 +18,7 @@ import { bonesHostPanel, bonesPlugin } from '@pascal-app/plugin-bones'
 import { environmentHostPanel, environmentPlugin, environmentPresentation } from '@pascal-app/plugin-environment'
 import { treesHostPanel, treesPlugin } from '@pascal-app/plugin-trees'
 import { configureViewer, registerViewerPresentation } from '@pascal-app/viewer'
+import { pascalFrReview } from '../i18n/pascalFrReview'
 
 // Fichiers du moteur (sons, icônes) servis par Fabrics (`vite.config.ts`). Les objets du catalogue
 // viennent du CDN de Pascal (adresse par défaut du moteur).
@@ -32,8 +43,12 @@ async function loadExternalPlugins(): Promise<void> {
   for (const plugin of await discoverPlugins()) await loadPlugin(plugin)
 }
 
-// Modules de Pascal, comme dans Pascal lancé seul (D81). Non repris ici : Mint (service externe
-// `api.mint.gg`, à décider par l'utilisateur) et WebXR (réalité virtuelle, sous-lot A6).
+// Modules de Pascal, comme dans Pascal lancé seul (D81). WebXR (réalité virtuelle) arrive en A6.
+// Mint (objets 3D générés, service externe `api.mint.gg`, choix de l'utilisateur du 2026-11-18) :
+// désactivé par défaut, à installer par projet ; sa connexion passe par `/api/plugins/mint`
+// (`vite.config.ts`).
+extendPluginDiscovery(async () => [mintPlugin])
+registerEditorHostPanel(mintHostPanel)
 extendPluginDiscovery(async () => [treesPlugin])
 registerEditorHostPanel(treesHostPanel)
 extendPluginDiscovery(async () => [environmentPlugin])
@@ -69,5 +84,8 @@ extendPluginDiscovery(async () => {
 loadBuiltins()
 void loadExternalPlugins()
 
+// Traductions françaises de Pascal pas encore relues (choix de l'utilisateur du 2026-11-18),
+// chargées d'abord : les traductions relues du catalogue officiel passent par-dessus.
+registerCompiledMessages('fr', '', pascalFrReview as CompiledTranslationMessages)
 // Catalogues de Pascal (dont le français) ; la langue active est celle de `src/i18n/runtime.tsx`.
 registerBundledLocales()

@@ -30,6 +30,7 @@
       "@pascal-app/editor/locales": ["./src/pascal/editor-locales-types.d.ts"],
       "@pascal-app-host/*": ["./src/pascal/host-types.d.ts"],
       "@pascal-app/plugin-*": ["./src/pascal/plugin-types.d.ts"],
+      "@mint/pascal-plugin": ["./src/pascal/plugin-types.d.ts"],
       "@pascal-app/viewer": ["./packages/pascal/packages/viewer/dist/index.d.ts"],
       "@pascal-app/nodes": ["./packages/pascal/packages/nodes/dist/index.d.ts"],
       "zod": ["./packages/pascal/node_modules/zod/index.d.ts"]
