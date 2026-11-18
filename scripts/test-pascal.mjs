@@ -84,9 +84,31 @@ function run(label, cwd, bunArgs) {
 }
 
 const results = []
+// Fichiers IFC d'exemple de Pascal : tests locaux seulement (licences non vérifiées, CLAUDE.md), donc
+// absents de Git et de la CI. Sans eux, on lance les tests de ifc-converter sauf ceux qui les lisent.
+const IFC_SAMPLES = join(ROOT, 'apps', 'ifc-converter', 'public', 'test-ifc-files')
+const IFC_SAMPLES_PRESENT = existsSync(join(IFC_SAMPLES, '01-duplex.ifc'))
+
+/** Arguments bun pour ifc-converter sans les fichiers de tests qui lisent les IFC d'exemple. */
+function ifcConverterArgsWithoutSamples(path) {
+  const testsDir = join(path, 'tests')
+  const files = readdirSync(testsDir).filter((f) => /\.test\.tsx?$/.test(f))
+  const needSamples = files.filter((f) => readFileSync(join(testsDir, f), 'utf8').includes('test-ifc-files'))
+  console.log(
+    `@pascal-app/ifc-converter : fichiers IFC d'exemple absents (tests locaux seulement) ; ` +
+      `${needSamples.length} fichiers de tests sautés : ${needSamples.join(', ')}`,
+  )
+  // `./` devant chaque chemin : bun le traite comme un fichier et non comme un filtre de nom.
+  return ['test', ...files.filter((f) => !needSamples.includes(f)).map((f) => `./tests/${f}`)]
+}
+
 for (const w of workspaces()) {
   if (only && w.name !== only) continue
-  results.push(run(w.name, w.path, ['run', 'test']))
+  const bunArgs =
+    w.name === '@pascal-app/ifc-converter' && !IFC_SAMPLES_PRESENT
+      ? ifcConverterArgsWithoutSamples(w.path)
+      : ['run', 'test']
+  results.push(run(w.name, w.path, bunArgs))
 }
 if (!only) results.push(run('pascal (scripts racine)', ROOT, ['test', ...ROOT_TESTS]))
 
