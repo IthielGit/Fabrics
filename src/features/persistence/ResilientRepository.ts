@@ -1,6 +1,6 @@
 import { del, get, keys, set } from 'idb-keyval'
 import type { Project } from '../../types/document'
-import { migrateProject, type StoredProject } from '../documents/migrations'
+import { migrateProject, toStoredProject, type StoredProject } from '../documents/migrations'
 import { isNetworkError } from './networkError'
 import type { ProjectRepository, ProjectSummary, SaveResult } from './types'
 
@@ -14,7 +14,7 @@ export interface ResilientOptions {
 const DEFAULT_RETRY_MS = 30_000
 
 function toSummary(project: Project): ProjectSummary {
-  const { document: _document, ...summary } = project
+  const { document: _document, scene: _scene, ...summary } = project
   return summary
 }
 
@@ -97,7 +97,7 @@ export class ResilientRepository implements ProjectRepository {
       result = await this.inner.save(project)
     } catch (error) {
       if (!isNetworkError(error)) throw error
-      await set(this.projectKey(project.id), project)
+      await set(this.projectKey(project.id), toStoredProject(project))
       this.pendingProjects.add(project.id)
       this.changed()
       return { updatedAt: null } // gardé sur cet appareil : le serveur ne l'a pas encore reçu

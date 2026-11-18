@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
+import { undoDepth, useEditorStore } from '../../stores/editorStore'
 import type { OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { createPlanProject } from '../documents/createProject'
 import { rotateSelectionQuarterTurn } from '../geometry/rotateSelection'
@@ -161,7 +161,7 @@ describe('poser une pièce préfabriquée dans le plan', () => {
     store().addElements(placed)
     expect(store().project!.document.elements).toHaveLength(placed.length)
     expect(store().selectedIds).toHaveLength(placed.length)
-    expect(store().history.past).toHaveLength(1)
+    expect(undoDepth()).toBe(1)
     store().undo()
     expect(store().project!.document.elements).toHaveLength(0)
     store().redo()
@@ -191,6 +191,6 @@ describe('poser une pièce préfabriquée dans le plan', () => {
     }
     // Les meubles ont tourné d'un quart de tour.
     for (const el of after) if (el.type === 'furniture') expect(el.rotation % 90).toBe(0)
-    expect(store().history.past).toHaveLength(2) // la pose, puis la rotation : un seul pas chacune
+    expect(undoDepth()).toBe(2) // la pose, puis la rotation : un seul pas chacune
   })
 })

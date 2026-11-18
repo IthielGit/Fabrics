@@ -31,8 +31,8 @@ function fakeClient() {
           maybeSingle: async () => ({ data: rows.get(wanted ?? '') ?? null, error: null }),
           overrideTypes: async () => {
             const all = [...rows.values()]
-            if (columns.startsWith('elements')) {
-              return { data: all.map((row) => ({ elements: row.document.elements })), error: null }
+            if (columns === 'document') {
+              return { data: all.map((row) => ({ document: row.document })), error: null }
             }
             const sorted = all.sort((a, b) => String(b.updated_at).localeCompare(String(a.updated_at)))
             return {
@@ -199,5 +199,13 @@ describe('cloudMapping', () => {
   it('assetPath et unusedAssetIds', () => {
     expect(assetPath('u1', 'x')).toBe('u1/x')
     expect(unusedAssetIds([image('a'), image('b')], [{ elements: [image('b')] }])).toEqual(['a'])
+    // M18 : une image utilisée par un plan enregistré en scène Pascal est aussi gardée.
+    const scene = {
+      format: 'pascal-scene' as const,
+      version: 5 as const,
+      sceneFormat: 1,
+      scene: { rootNodeIds: [], nodes: { fxannotation_x: { id: 'fxannotation_x', type: 'fabrics:annotation', parentId: null, metadata: {}, element: { type: 'image', assetId: 'a' } } } },
+    }
+    expect(unusedAssetIds([image('a'), image('b')], [scene])).toEqual(['b'])
   })
 })

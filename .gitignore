@@ -32,3 +32,7 @@ packages/pascal/apps/ifc-converter/public/test-ifc-files/*.ifc
 
 # Cache de Turborepo (construction des paquets de Pascal) : généré automatiquement
 .turbo/
+
+# M18 : script de conversion des plans (bundle et rapports avec des noms de projets : jamais versionnés)
+scripts/.build/
+scripts/.reports/

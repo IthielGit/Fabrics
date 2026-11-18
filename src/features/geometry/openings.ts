@@ -94,6 +94,20 @@ export function openingInterval(opening: Pick<OpeningElement, 'offset' | 'width'
   return { from: opening.offset - opening.width / 2, to: opening.offset + opening.width / 2 }
 }
 
+/** Tolérance (mm) : une ouverture qui dépasse de moins que cela est tenue pour dans son mur. */
+export const OPENING_TOLERANCE = 1
+
+/** L'ouverture dépasse de son segment de mur, ou son segment n'existe plus (EDGE-01, M18). */
+export function isOpeningOutside(
+  opening: Pick<OpeningElement, 'segmentIndex' | 'offset' | 'width'>,
+  wall: Pick<WallElement, 'points'>,
+): boolean {
+  const segment = wallSegment(wall, opening.segmentIndex)
+  if (!segment) return true
+  const interval = openingInterval(opening)
+  return interval.from < -OPENING_TOLERANCE || interval.to > segment.length + OPENING_TOLERANCE
+}
+
 /** Ouvertures posées sur un segment donné d'un mur (en excluant éventuellement l'une d'elles). */
 export function openingsOnSegment(
   openings: readonly OpeningElement[],

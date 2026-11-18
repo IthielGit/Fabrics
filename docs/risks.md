@@ -6,9 +6,9 @@ constaté pendant M17. Mis à jour à chaque jalon.
 | # | Risque | Gravité | Parade | Jalon | État |
 |---|---|---|---|---|---|
 | R1 | Export IFC de Pascal incomplet | Majeure | Preuve de concept et table de correspondance (M17, M22) ; IfcOpenShell en contrôle | M17, M22 | Ouvert |
-| R2 | Écart entre géométrie affichée et métrés | Bloquante | Même géométrie source (D79), fixtures HOUSE-01/02, tests d'intersection | M18, M21 | Ouvert |
-| R3 | Migration des plans Fabrics vers la scène Pascal | Bloquante | Migration testée sur tous les types, comparaison à la baseline M17 (`baseline/fabrics/`) | M18 | Ouvert |
-| R4 | Deux historiques (annuler Pascal / Yjs) | Majeure | Un seul historique, décidé par ADR | M18 | Ouvert |
+| R2 | Écart entre géométrie affichée et métrés | Bloquante | Même géométrie source (D79), fixtures HOUSE-01/02, tests d'intersection | M18, M21 | Ouvert (M18 : baseline identique à travers la scène, EDGE-01 corrigé ; reste M21) |
+| R3 | Migration des plans Fabrics vers la scène Pascal | Bloquante | Migration testée sur tous les types, comparaison à la baseline M17 (`baseline/fabrics/`) | M18 | Parade en place (M18, gate G1 : migration de la base à faire à la mise en ligne) |
+| R4 | Deux historiques (annuler Pascal / Yjs) | Majeure | Un seul historique, décidé par ADR | M18 | Traité (ADR 0005, `Y.UndoManager`) |
 | R5 | Méthodes de métré propres au pays | Majeure | Règles paramétrables, versionnées, validées par un métreur | M21 | Ouvert |
 | R6 | Licences des dépendances | Majeure | `THIRD_PARTY_NOTICES.md`, vérification avant diffusion commerciale ; IfcOpenShell (LGPL) reste hors de l'application | M17 → | Suivi |
 | R7 | Prix périmés | Majeure | Date d'effet, origine, version, avertissements | M23 | Ouvert |

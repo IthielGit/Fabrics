@@ -7,6 +7,9 @@
 import { spawnSync } from 'node:child_process'
 
 const STEPS = [
+  // M18 : `src/features/scene/` importe la version compilée de `@pascal-app/core` (ADR 0002 § 5) ;
+  // les tests de Pascal ont besoin de tous ses paquets compilés (comme la CI).
+  ['Compilation des paquets de Pascal', ['run', 'build:pascal']],
   ['Build', ['run', 'build']],
   ['Lint Fabrics (oxlint)', ['run', 'lint']],
   ['Tests Fabrics (Vitest, baseline, architecture)', ['test']],

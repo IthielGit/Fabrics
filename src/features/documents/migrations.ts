@@ -1,14 +1,22 @@
 import { fr } from '../../i18n/fr'
 import type { FabricsDocument, PlanSettings, Project } from '../../types/document'
+import { isSceneDocument, toStoredDocument, viewOfStoredScene, type SceneDocument } from '../scene/storedScene'
 import { createLevel, DEFAULT_LEVEL_HEIGHT } from './levels'
 
 /** Version actuelle du format de document (voir `FabricsDocument.version`). */
 export const CURRENT_DOCUMENT_VERSION: FabricsDocument['version'] = 4
 
-/** Document tel qu'il peut être lu depuis le stockage : version quelconque. */
+/** Document Fabrics tel qu'il peut être lu depuis le stockage : version quelconque. */
 export type StoredDocument = Omit<FabricsDocument, 'version'> & { version: number }
 
-export type StoredProject = Omit<Project, 'document'> & { document: StoredDocument }
+/** Projet tel qu'enregistré : document Fabrics (Visuel, ancien plan) ou scène Pascal (plan, M18). */
+export type StoredProject = Omit<Project, 'document' | 'scene'> & { document: StoredDocument | SceneDocument }
+
+/** Projet à enregistrer : un projet Plan l'est par sa scène Pascal (M18, ADR 0001), jamais par sa vue. */
+export function toStoredProject(project: Project): StoredProject {
+  const { scene: _scene, ...rest } = project
+  return { ...rest, document: toStoredDocument(project) }
+}
 
 /** Erreur levée quand un document vient d'une version plus récente de Fabrics. */
 export class UnsupportedDocumentVersionError extends Error {
@@ -25,7 +33,9 @@ export class UnsupportedDocumentVersionError extends Error {
  * Met un document au format actuel, une version après l'autre.
  * Ne modifie pas le document reçu : renvoie une copie si une migration est nécessaire.
  */
-export function migrateDocument(document: StoredDocument): FabricsDocument {
+export function migrateDocument(document: StoredDocument | SceneDocument): FabricsDocument {
+  // M18 : un plan enregistré en scène Pascal s'affiche par sa vue calculée (ADR 0004).
+  if (isSceneDocument(document)) return viewOfStoredScene(document)
   const { version } = document
   if (!Number.isInteger(version) || version < 1 || version > CURRENT_DOCUMENT_VERSION) {
     throw new UnsupportedDocumentVersionError(version)
@@ -74,6 +84,9 @@ function migrateV3ToV4(document: StoredDocument): StoredDocument {
 
 /** Met le document d'un projet au format actuel (même objet si rien ne change). */
 export function migrateProject(project: StoredProject): Project {
+  if (isSceneDocument(project.document)) {
+    return { ...project, document: viewOfStoredScene(project.document), scene: project.document.scene }
+  }
   const document = migrateDocument(project.document)
   if (document === project.document) return project as Project
   return { ...project, document }

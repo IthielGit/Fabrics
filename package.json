@@ -9,12 +9,14 @@
     "lint": "oxlint",
     "test": "vitest run",
     "install:pascal": "bun install --cwd packages/pascal --frozen-lockfile",
+    "build:pascal": "bunx --cwd packages/pascal turbo run build --filter=@pascal-app/*",
     "test:pascal": "node scripts/test-pascal.mjs",
     "lint:pascal": "bun run --cwd packages/pascal lint",
     "check:duplicates": "jscpd",
     "check:all": "node scripts/check-all.mjs",
     "preview": "vite preview",
-    "check:security": "node --env-file=.env.local scripts/check-security.mjs"
+    "check:security": "node --env-file=.env.local scripts/check-security.mjs",
+    "migrate:plans": "vite build --ssr scripts/migrate-plans-m18.ts --outDir scripts/.build --emptyOutDir --logLevel warn && node --env-file=.env.local scripts/.build/migrate-plans-m18.js"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.9",

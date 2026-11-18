@@ -197,7 +197,7 @@ describe('ouvertures et surface murale nette', () => {
     const { walls, totals } = computeMeasurements([
       m,
       opening('P', 'M'),
-      opening('F', 'M', { kind: 'window', width: 1200, height: 1000, sillHeight: 900, offset: 3000 }),
+      opening('F', 'M', { kind: 'window', width: 1200, height: 1000, sillHeight: 900, offset: 3100 }),
       opening('B', 'M', { kind: 'bay', width: 800, height: 2000, offset: 600 }),
     ])
     expect(walls[0].openingsArea).toBe(900 * 2100 + 1200 * 1000 + 800 * 2000)
@@ -220,8 +220,30 @@ describe('ouvertures et surface murale nette', () => {
 
   it('la surface nette ne devient jamais négative', () => {
     const tiny = wall('T', [0, 0, 1000, 0], 200, 2500)
+    const full = opening('P', 'T', { offset: 500, width: 1000, height: 2500 })
+    expect(computeMeasurements([tiny, full]).walls[0].netArea).toBe(0)
+  })
+
+  it('une ouverture qui dépasse de son mur n’est pas déduite (EDGE-01)', () => {
+    const tiny = wall('T', [0, 0, 1000, 0], 200, 2500)
     const wide = opening('P', 'T', { width: 5000, height: 2500 })
-    expect(computeMeasurements([tiny, wide]).walls[0].netArea).toBe(0)
+    const { walls, openings } = computeMeasurements([tiny, wide])
+    expect(walls[0].openingsArea).toBe(0)
+    expect(walls[0].netArea).toBe(1000 * 2500)
+    expect(openings[0].area).toBe(0)
+  })
+
+  it('deux ouvertures qui se chevauchent ne sont déduites qu’une fois (EDGE-01)', () => {
+    const a = opening('A', 'M', { kind: 'window', offset: 1500, width: 1000, height: 1000, sillHeight: 900 })
+    const b = opening('B', 'M', { kind: 'window', offset: 2000, width: 1000, height: 1000, sillHeight: 900 })
+    // Union : 1500 de large (1000 + 1000 − 500 de recouvrement) sur 1000 de haut.
+    expect(computeMeasurements([m, a, b]).walls[0].openingsArea).toBe(1500 * 1000)
+  })
+
+  it('un recouvrement en hauteur seulement compte une fois (porte et fenêtre superposées)', () => {
+    const door = opening('P', 'M', { offset: 2000, width: 1000, height: 2100, sillHeight: 0 })
+    const win = opening('F', 'M', { kind: 'window', offset: 2000, width: 1000, height: 1000, sillHeight: 900 })
+    expect(computeMeasurements([m, door, win]).walls[0].openingsArea).toBe(1000 * 2100)
   })
 
   it('ignore une ouverture dont le mur n’existe pas', () => {

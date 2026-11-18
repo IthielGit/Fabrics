@@ -54,7 +54,8 @@ describe('editorStore et collaboration (M14, lot D)', () => {
     expect(useEditorStore.getState().project?.document).toBe(version)
     expect(useEditorStore.getState().selectedIds).toEqual([])
     useEditorStore.getState().undo()
-    expect(useEditorStore.getState().project?.document).toBe(before)
+    // Projet Plan (M18) : le document est recalculé depuis la scène (même contenu, nouvel objet).
+    expect(useEditorStore.getState().project?.document).toStrictEqual(before)
   })
 
   it('signale le début et la fin d’un geste, même sans modification', () => {

@@ -5,12 +5,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M17 · gate G0 (18/11, validé par l'utilisateur)
-- **Prochaine tâche :** M18 Modèle BIM unifié (plan à présenter avant de coder)
+- **Dernière tâche terminée :** M18 · lot F, métrés sur la scène et corrections EDGE-01 (18/11)
+- **Prochaine tâche :** M19 (plan à présenter, feu vert de l'utilisateur avant de coder). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
+- **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
-- **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
+- **Problèmes connus :** sur une machine chargée, quelques tests de Pascal dépassent leur délai de 5 s ou Bun s'arrête sans résultat (vu le 2026-11-18, passent seuls) ; le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
 
@@ -41,7 +42,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
-| M18 Modèle BIM unifié (G1) | à faire | |
+| M18 Modèle BIM unifié (G1) | en cours (lots A à E faits) | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
@@ -71,6 +72,56 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Chaque sous-lot porte la commande `/model sonnet` ou `/model opus` à taper avant de le commencer. Claude ne peut pas changer de modèle tout seul : il rappelle la commande au début du sous-lot.
 - Fichier : `docs/03-ROADMAP.md` (section M19). Aucun code ; M19 commence après le gate G1 de M18.
 - Commit : docs(m19): sous-lots et modèle par sous-lot
+
+### 2026-11-18 — M18 · Mise en ligne : base de données et commande de build
+- Fait : sauvegarde `supabase/m18-backup.sql` exécutée (10 projets et 40 versions copiés, nombres égaux). Plan refusé à l'essai à blanc (plan « 16 nov. à 22:10 », écart de 9 mm² sur une surface, lié à l'arrondi du millimètre) : sans objet, car l'utilisateur a choisi de supprimer les projets tests (liste complète : 10 projets, dont 2 « Exemple »). Suppression faite par l'utilisateur dans Supabase (`delete from public.projects`, cascade sur les versions) ; contrôle : 0 projet, 0 version, 10 projets sauvegardés. Aucune conversion lancée (`migrate:plans --apply` non utilisé). Clé `service_role` retirée de `.env.local`.
+- Fait : `docs/05-INSTALLATION.md` décrit la nouvelle commande de build Cloudflare Pages (Bun 1.4.4, `install:pascal`, `build:pascal`, Node 26.13.1) et la section de conversion, devenue sans objet, est remplacée.
+- Fait (par l'utilisateur) : commande réglée dans Cloudflare ; build d'aperçu de la branche `feat/m18-bim-model` sans erreur, vérifié en ligne et validé le 2026-11-18. Branche mergée dans `main`.
+- Commit : docs(m18): commande de build Cloudflare et suivi de la mise en ligne
+
+### 2026-11-18 — M18 · Lot F : métrés sur la scène et corrections EDGE-01
+- Fait : les trois écarts d'EDGE-01 décidés par l'utilisateur sont corrigés dans les métrés. (1) Une ouverture qui dépasse de son mur n'est plus déduite (`isOpeningOutside`, `geometry/openings.ts`, partagé avec l'avertissement existant ; sa surface affichée est 0). (2) Les ouvertures d'un même côté de mur qui se chevauchent sont déduites une seule fois : surface de l'union de leurs rectangles dans l'élévation (`unionArea`, `measurements.ts`). (3) Un mur de hauteur nulle déclenche l'avertissement `wallZeroHeight` (« hauteur nulle », non bloquant) avec texte et conseil français.
+- Écarts voulus : seuls les plans où une ouverture dépasse de son mur ou en chevauche une autre changent de métré (jamais ceux de la baseline M17 : référence inchangée, aucun fichier de référence modifié). Deux anciens tests avaient des ouvertures qui se chevauchaient de 50 mm sans le vouloir : elles sont écartées, valeurs attendues inchangées.
+- Preuves : les trois `it.todo` d'EDGE-01 deviennent des tests (`fixtures.test.ts`) ; 4 tests de `measurements.test.ts` (dépassement, union, recouvrement en hauteur seule, surface jamais négative). Baseline M17 (28 tests : métrés, tableaux Client / Exécution, CSV, XLSX, IFC, SVG, repères `M01` / `P01` / `F01`) identique à travers la scène.
+- Rapport : `docs/phases/M18-report.md` (critères G1, décisions, limites, mise en ligne).
+- Commit : feat(m18): métrés sur la scène et corrections EDGE-01 (lot F)
+
+### 2026-11-18 — M18 · Lot E : collaboration et commentaires sur la scène Pascal
+- Fait : `useCollaboration.ts` : un projet Plan partage sa scène Pascal (`SceneBinding` sur le `Y.Doc` de la salle, clés `sceneMeta` / `sceneNodes`, distinctes de l'ancien format) ; une fois synchronisée, elle remplace la scène locale de l'éditeur (`setSharedPlanBinding`) : un seul historique ; à la fin de la collaboration, retour à une scène locale. Projets Visuel : inchangés (`CollabBinding`).
+- Commentaires (point 5 A) : `src/features/scene/commentAnchors.ts`, `src/features/comments/commentAnchoring.ts` : un commentaire posé sur un élément d'un plan est enregistré sur le nœud qui le porte (premier côté d'un mur à plusieurs côtés), relu sur l'élément affiché ; les commentaires d'avant M18 restent valables.
+- Correctif trouvé par les tests : au retour en scène locale, la scène gardée avec le projet n'est reprise que si elle correspond exactement à l'affichage (sinon le dernier geste aurait été perdu).
+- Preuves : `commentAnchors.test.ts` (ancres, anciens commentaires, épingle qui suit son mur déplacé par un autre éditeur), `editorStore.scene.test.ts` (geste reçu par l'autre personne, annuler ne défait que ses gestes, retour en local sans perte) ; 3063 tests Fabrics OK.
+- À vérifier dans deux navigateurs (serveur temps réel local) à la fin de M18.
+- Commit : feat(m18): collaboration et commentaires sur la scène Pascal (lot E)
+
+### 2026-11-18 — M18 · Lot D : enregistrement de la scène, versions, duplication
+- Fait : `src/features/scene/storedScene.ts` (format enregistré `{ format: 'pascal-scene', version: 5, sceneFormat, scene }`) ; `Project.scene` (scène du projet ouvert, tenue à jour par la liaison) ; lecture : `migrateProject` / `migrateDocument` reconnaissent les deux formats (anciens plans, versions, liens de partage) ; écriture : `toStoredProject` dans `LocalRepository`, `ResilientRepository` et `projectToRow` (Supabase) : un plan n'est enregistré que par sa scène ; suppression d'images : les images d'un plan en scène sont protégées (requête sur le document entier).
+- Version 5 : une ancienne version de Fabrics refuse proprement un plan converti (« version plus récente »), sans l'écraser.
+- Conversion de la base (point 3 B) : `src/features/scene/migrate/bulkMigration.ts` (pure, testée : métrés comparés avant / après, projet laissé intact au moindre écart), `scripts/migrate-plans-m18.ts` (`npm run migrate:plans`, essai à blanc par défaut, `--apply` exige les tables de sauvegarde de `supabase/m18-backup.sql` ; écrit seulement si le projet n'a pas changé depuis sa lecture) ; vérifié dans Node sur la grande maison. **Non lancé** : à faire à la mise en ligne de M18, avec l'accord de l'utilisateur. Les versions déjà enregistrées gardent leur ancien format (lues telles quelles).
+- Preuves : `storedScene.test.ts` (plan enregistré par sa scène, rouvert avec les mêmes métrés, ancien plan rouvert puis réenregistré, duplication, versions des deux formats, refus d'une version plus récente) ; `bulkMigration.test.ts` (une pièce tracée sur une partie d'un espace est refusée et signalée).
+- Vérification : build, lint, 3056 tests Fabrics OK. Tests de Pascal : un premier passage a planté (`nodes` arrêté sans résultat), le second a donné 3 tests du cœur au-delà de 5 s (`architecture.test.ts`, `cut-intent.test.ts`, `registry-isolation.test.ts`) ; relancés seuls : 15 réussis, 0 échec. Machine chargée, aucun fichier de Pascal modifié.
+- Commit : feat(m18): enregistrement des plans en scène Pascal (lot D)
+
+### 2026-11-18 — M18 · Lot C : la scène Pascal devient le document de l'éditeur
+- Fait : `src/features/scene/yScene.ts` (scène dans un `Y.Doc`, une entrée par nœud et par propriété ; fonctions partagées avec `collab/yDocument.ts`) ; `sceneBinding.ts` (`SceneBinding` : chaque geste de l'éditeur → scène chargée par Pascal → seuls les nœuds modifiés écrits ; vue recalculée en gardant les objets inchangés) ; `modelEvents.ts` (« modèle changé ») ; `editorStore.ts` : un projet Plan ouvre sa scène dans un `Y.Doc` local, son historique (`Y.UndoManager`) remplace l'historique local (ADR 0005), les appuis rapides sur les flèches restent une seule étape ; `EditorHeader.tsx` (boutons annuler / rétablir).
+- Comportement nouveau : une pièce fermée par des murs suit un mur déplacé (modèle de Pascal, ADR 0006), à la fin du geste.
+- Preuves : `sceneBinding.test.ts` (créer, modifier, supprimer puis annuler : mêmes identifiants et dimensions, aucun élément fantôme ; geste en direct = une étape ; pièce qui suit son mur ; deux éditeurs : annuler ne défait que ses gestes) ; tests de l'éditeur repris (5 tests comptaient l'ancien historique : ils comptent maintenant les étapes réelles avec `undoDepth()`).
+- Mesures : ~30 ms par geste sur le plan d'exemple, 70 à 90 ms sur la grande maison (machine chargée). Taille : le fichier principal de l'application passe de 1,6 à 2,7 Mo (cœur de Pascal) : chargement à part de l'éditeur de plan à prévoir (risque noté).
+- Transitoire jusqu'au lot E : en collaboration, un plan passe encore par l'ancienne liaison (`CollabBinding`).
+- Commit : feat(m18): la scène Pascal devient le document de l'éditeur (lot C)
+
+### 2026-11-18 — M18 · Lot B : conversion plan Fabrics ↔ scène Pascal
+- Fait : `src/features/scene/` : `migrate/fromFabrics.ts` (plan → scène, fonction pure : niveaux empilés comme Pascal, mur à N côtés → N `wall`, portes / fenêtres / baies → `door` / `window` sur leur côté, pièces → `zone`, mobilier → `item`, axes → `structural-grid`, cotes → `construction-dimension`) ; `nodes/fabricsNodes.ts` (coupe, toiture, escalier, cheminée, plateforme, textes, formes, images, fonds DXF : types déclarés par `registerNode`, sans modifier Pascal) ; `view/toFabricsView.ts` (vue calculée) ; `settle.ts` (chargement par Pascal) ; `view/roomClearFloor.ts`.
+- Une seule conversion m ↔ mm : `mToMm` / `mmToM` de `src/features/units/format.ts` (arrondi au millionième de mm). `zod` lu dans la copie de Pascal (alias).
+- Découvertes : (1) au chargement, Pascal reprend toute pièce fermée par des murs et la redessine à l'axe des murs ; **choix de l'utilisateur : modèle de pièces de Pascal** (ADR 0006), les métrés mesurent le sol intérieur calculé par Pascal ; (2) une dalle Pascal remonte les portes posées dessus (+150 mm sur la terrasse de la grande maison) : les plateformes restent des nœuds Fabrics.
+- Preuves : aller-retour exact (plan de test avec chaque type, exemple, grande maison) ; scène validée par `validateBuildJson` ; 31 pièces sur 31 identiques (surface, périmètre, dimensions) après chargement par Pascal ; **baseline M17 complète identique par la scène** (28 tests) ; HOUSE-01 et HOUSE-02 conformes au calcul à la main pour ce que Fabrics calcule (pièces, murs, ouvertures, trémie ; volumes et dalles en M21) ; EDGE-01 exécuté : identifiants en double refusés avec une erreur claire, unités mêlées OK, 3 écarts de métrés (fenêtre hors du mur déduite, chevauchement non réduit à l'union, pas d'avertissement « hauteur nulle ») **à corriger dans M18, lot F** (choix de l'utilisateur).
+- Commit : feat(m18): conversion plan Fabrics ↔ scène Pascal (lot B)
+
+### 2026-11-18 — M18 · Lot A : branchement technique de Pascal
+- Plan validé par l'utilisateur (`docs/phases/M18-plan.md`) : vue calculée (1 A), `Y.UndoManager` seul historique (2 A), **script de migration de la base Supabase (3 B)**, types de nœuds Fabrics par `registerNode` (4 A), repère du mur d'origine (5 A). Travail dans le dossier séparé `Fabrics-m18`, branche `feat/m18-bim-model`.
+- Fait : `@pascal-app/core` résolu vers sa version compilée (`vite.config.ts`, `paths` dans `tsconfig.app.json`) ; script `npm run build:pascal`, ajouté en tête de `check:all` ; test d'architecture : seul `src/features/scene/` importe `@pascal-app/core` ; premier test (`src/features/scene/smoke.test.ts`) : un mur Pascal validé depuis Fabrics ; ADR 0004 (vue calculée) et 0005 (un seul historique) ; `docs/05-INSTALLATION.md`.
+- À noter : dès que l'application elle-même importera Pascal (lot C), Cloudflare Pages devra aussi installer et compiler Pascal (commande de build à changer, avec l'accord de l'utilisateur).
+- Commit : feat(m18): branchement de @pascal-app/core (lot A)
 
 ### 2026-11-18 — M17 · Fixtures : murs pleine hauteur, dalle découpée
 - Décision de l'utilisateur : les murs passent sur toute la hauteur et la dalle est découpée autour (remplace « la dalle prime »).

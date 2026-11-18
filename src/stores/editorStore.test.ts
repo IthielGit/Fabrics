@@ -530,7 +530,17 @@ describe('ouvertures et murs', () => {
     expect(openings()).toHaveLength(1)
     expect(openings()[0].offset).toBe(2000)
     store().endLiveEdit()
-    expect(store().history.past).toHaveLength(3) // ajout du mur, ajout de la porte, puis le geste entier
+    // Projet Plan (M18, ADR 0005) : historique de la scène. Trois étapes : ajout du mur, ajout de
+    // la porte, puis le geste entier.
+    const elementsAt = () => store().project!.document.elements.map((el) => el.id)
+    store().undo()
+    expect(store().project!.document.elements.find((el) => el.id === wall.id)).toMatchObject({ points: wall.points })
+    expect(openings()).toHaveLength(1)
+    store().undo()
+    expect(openings()).toHaveLength(0)
+    store().undo()
+    expect(elementsAt()).not.toContain(wall.id)
+    expect(store().sceneHistory.canUndo).toBe(false)
   })
 
   it('faire glisser une ouverture seule ne touche pas aux murs', () => {

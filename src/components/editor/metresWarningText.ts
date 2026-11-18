@@ -20,6 +20,8 @@ export function metresWarningText(warning: MetresWarning): string {
       return t.noLevel(t.types[warning.elementType] ?? t.otherType, warning.elementName)
     case 'openingOutside':
       return t.openingOutside(warning.openingRef, warning.wallRef)
+    case 'wallZeroHeight':
+      return t.wallZeroHeight(warning.wallRef)
     case 'openingOverlap':
       return t.openingOverlap(warning.openingRefs[0], warning.openingRefs[1])
     case 'wallGap':
@@ -46,6 +48,7 @@ export function metresWarningTargets(warning: MetresWarning): string[] {
     case 'openingOverlap':
       return [...warning.openingIds]
     case 'wallGap':
+    case 'wallZeroHeight':
       return [warning.wallId]
     case 'wallOverlap':
       return [...warning.wallIds]

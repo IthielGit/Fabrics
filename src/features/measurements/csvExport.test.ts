@@ -178,7 +178,7 @@ describe('ouvertures', () => {
       width: 1200,
       height: 1000,
       sillHeight: 900,
-      offset: 3000,
+      offset: 3100,
     }),
   ]
   const lines = linesOf(measurementsToCsv(oneLevel(elements), LABELS))

@@ -1,13 +1,17 @@
 // Modèle de données de Fabrics — source de vérité des types.
 // Copie exacte de docs/02-ARCHITECTURE.md (section « Modèle de données »).
 
+import type { PlanScene } from '../features/scene/sceneTypes';
+
 export type ProjectKind = 'design' | 'plan';
 
 export interface Project {
   id: string;
   name: string;
   kind: ProjectKind;
-  document: FabricsDocument;
+  document: FabricsDocument; // projet Plan (M18, ADR 0004) : vue calculée de `scene`, jamais enregistrée
+  // M18 (ADR 0001) : scène Pascal d'un projet Plan, seule source de vérité, seule enregistrée.
+  scene?: PlanScene;
   thumbnail?: string;        // data URL (local) ou chemin Storage (cloud)
   createdAt: string;         // ISO 8601
   updatedAt: string;

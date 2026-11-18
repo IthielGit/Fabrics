@@ -4,14 +4,24 @@
  * - surfaces : mètres carrés, 2 décimales (`12,40 m²`) ;
  * - volumes (plus tard) : mètres cubes.
  * Le stockage reste en mm / mm². Le centimètre et le mètre ne servent qu'à la saisie (`parseLength`).
+ * Exception (M18, D79) : la scène Pascal des projets Plan est en mètres ; `mmToM` / `mToMm` sont les
+ * seules conversions entre elle et Fabrics.
  */
 const MM_PER_M = 1000
 const MM_PER_CM = 10
 const MM2_PER_M2 = 1_000_000
 const MM3_PER_M3 = 1_000_000_000
 
+/** m → mm. Arrondi au millionième de mm : efface les écarts de virgule flottante (`0.1 * 3`), et
+ * l'aller-retour avec `mmToM` rend exactement la valeur de départ (scène Pascal en m, M18, ADR 0001). */
 export function mToMm(m: number): number {
-  return m * MM_PER_M
+  const mm = Math.round(m * MM_PER_M * 1e6) / 1e6
+  return mm === 0 ? 0 : mm
+}
+
+/** mm → m (scène Pascal, M18). */
+export function mmToM(mm: number): number {
+  return mm / MM_PER_M
 }
 
 export function cmToMm(cm: number): number {

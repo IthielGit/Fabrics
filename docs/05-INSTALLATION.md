@@ -84,6 +84,7 @@ reconnues. Ensuite, à la racine du projet :
 ```bash
 npm install              # Fabrics
 npm run install:pascal   # Pascal, avec Bun, aux versions exactes de son bun.lock (~2 min)
+npm run build:pascal     # compile les paquets de Pascal (Fabrics lit @pascal-app/core depuis M18) ; ~5 min la première fois
 npm run check:all        # tout vérifier : build, lint, tests Fabrics, tests Pascal, lint Pascal, doublons
 ```
 
@@ -94,6 +95,33 @@ python -m venv tools/ifc/.venv
 tools/ifc/.venv/Scripts/python.exe -m pip install -r tools/ifc/requirements.txt
 tools/ifc/.venv/Scripts/python.exe -I tools/ifc/validate.py baseline/fabrics/example/export.ifc
 ```
+
+## Mise en ligne de M18 : base de données et Cloudflare Pages
+
+À partir de M18, un projet Plan est enregistré sous forme de scène Pascal. Le 2026-11-18, les
+projets tests de la base ont été supprimés avant la mise en ligne ; il n'y a donc **pas de
+conversion à lancer**. Le script `npm run migrate:plans` reste dans le dépôt, mais il ne doit pas
+être lancé tant qu'il existe des projets à convertir.
+
+Les tables de sauvegarde `projects_backup_m18` et `project_versions_backup_m18` restent dans
+Supabase tant que M18 n'est pas validé. Ne les supprime qu'avec l'accord de l'utilisateur.
+
+### Commande de build de Cloudflare Pages
+
+Depuis M18, l'application importe Pascal. Cloudflare Pages doit donc installer Bun et compiler
+Pascal avant le build de l'application. Dans Cloudflare → Workers & Pages → fabrics → Settings →
+Builds, règle (le projet Pages est celui de `https://fabrics-8zd.pages.dev`) :
+
+| Réglage | Valeur |
+|---|---|
+| Build command | `npm install -g bun@1.4.4 && npm run install:pascal && npm run build:pascal && npm run build` |
+| Build output directory | `dist` |
+| Variable `NODE_VERSION` | `26.13.1` |
+
+Cette commande n'a pas encore été essayée sur Cloudflare. Le premier déploiement doit être
+surveillé : la compilation de Pascal est lourde (environ 5 min, et la construction du paquet
+`nodes` demande environ 6 Go de mémoire). Si le build échoue pour cette raison, le signaler et ne
+pas le relancer en boucle.
 
 ## Problèmes fréquents
 

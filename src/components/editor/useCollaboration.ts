@@ -1,7 +1,8 @@
 import { useEffect } from 'react'
 import * as Y from 'yjs'
 import { WebsocketProvider } from 'y-websocket'
-import { CollabBinding } from '../../features/collab/collabBinding'
+import { CollabBinding, type CollabHost } from '../../features/collab/collabBinding'
+import { SceneBinding } from '../../features/scene/sceneBinding'
 import { collabProtocols, collabRoomBase } from '../../features/collab/collabUrl'
 import { setCollabSession } from '../../features/collab/collabSession'
 import { listPeers, MAX_SELECTION, userFromAccount } from '../../features/collab/presence'
@@ -10,7 +11,7 @@ import { fr } from '../../i18n/fr'
 import { supabase } from '../../lib/supabase'
 import { useAuthStore } from '../../stores/authStore'
 import { useCollabStore } from '../../stores/collabStore'
-import { setCollabHistory, useEditorStore } from '../../stores/editorStore'
+import { setCollabHistory, setSharedPlanBinding, useEditorStore } from '../../stores/editorStore'
 
 const ROOM_BASE = collabRoomBase(import.meta.env.VITE_COLLAB_URL as string | undefined)
 
@@ -39,7 +40,7 @@ export function useCollaboration(projectId: string | undefined, ready: boolean) 
     const collab = useCollabStore.getState()
     let disposed = false
     let provider: WebsocketProvider | null = null
-    let binding: CollabBinding | null = null
+    let binding: CollabBinding | SceneBinding | null = null
     let unsubscribeEditor: (() => void) | null = null
     let stopPresence: (() => void) | null = null
     const ydoc = new Y.Doc()
@@ -59,21 +60,36 @@ export function useCollaboration(projectId: string | undefined, ready: boolean) 
       }
 
       const editor = useEditorStore
-      const current = new CollabBinding(ydoc, {
+      const host: CollabHost = {
         getDocument: () => editor.getState().project?.document ?? null,
         isLiveEditing: () => editor.getState().liveEditing,
         applyRemoteDocument: (document, fromPeer) => editor.getState().applyRemoteDocument(document, fromPeer),
         getSavedAt: () => editor.getState().project?.updatedAt ?? null,
         onHistoryChange: (canUndo, canRedo) => useCollabStore.getState().setHistory(canUndo, canRedo),
-      })
+      }
+      // M18 (lot E) : un projet Plan partage sa scène Pascal ; un projet Visuel, son document.
+      const isPlan = editor.getState().project?.kind === 'plan'
+      const current = isPlan
+        ? new SceneBinding(ydoc, {
+            ...host,
+            getScene: () => editor.getState().project?.scene ?? null,
+            onSceneChanged: (scene) => {
+              const project = editor.getState().project
+              if (project && project.scene !== scene) editor.setState({ project: { ...project, scene } })
+            },
+          })
+        : new CollabBinding(ydoc, host)
       binding = current
 
-      // Chaque modification de l'éditeur (ou la fin d'un geste) part vers le document partagé.
-      unsubscribeEditor = editor.subscribe((state, previous) => {
-        if (state.project?.document !== previous.project?.document || state.liveEditing !== previous.liveEditing) {
-          current.localChanged()
-        }
-      })
+      // Chaque modification de l'éditeur (ou la fin d'un geste) part vers le document partagé. Projet
+      // Plan : c'est l'éditeur qui envoie à sa scène (`setSharedPlanBinding`, une seule étape par geste).
+      if (!isPlan) {
+        unsubscribeEditor = editor.subscribe((state, previous) => {
+          if (state.project?.document !== previous.project?.document || state.liveEditing !== previous.liveEditing) {
+            current.localChanged()
+          }
+        })
+      }
 
       const ws = new WebsocketProvider(roomBase, projectId, ydoc, {
         protocols: collabProtocols(token),
@@ -101,6 +117,7 @@ export function useCollaboration(projectId: string | undefined, ready: boolean) 
         if (!current.started) {
           current.start()
           if (!current.started) return
+          if (current instanceof SceneBinding) setSharedPlanBinding(current)
           setCollabHistory({ undo: () => current.undo(), redo: () => current.redo() })
           setCollabSession({ projectId, markSaved: (savedAt) => current.markSaved(savedAt) })
           useCollabStore.getState().setActive(true)
@@ -118,9 +135,12 @@ export function useCollaboration(projectId: string | undefined, ready: boolean) 
       authListener.subscription.unsubscribe()
       unsubscribeEditor?.()
       stopPresence?.()
+      const wasShared = binding instanceof SceneBinding && binding.started
       if (binding?.started) setCollabHistory(null)
       setCollabSession(null)
       binding?.destroy()
+      // Projet Plan : retour à une scène locale (le projet reste ouvert ou va se fermer).
+      if (wasShared && useEditorStore.getState().project) setSharedPlanBinding(null)
       provider?.destroy()
       ydoc.destroy()
       useCollabStore.getState().reset()

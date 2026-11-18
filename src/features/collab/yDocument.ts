@@ -130,8 +130,9 @@ export function applyDocumentDiff(
   }, origin)
 }
 
-/** Écrit les clés d'un objet « plat » (une valeur JSON par clé) qui diffèrent de `previous`. */
-function syncFlatMap(map: Y.Map<Json>, previous: object | undefined, next: object | undefined): void {
+/** Écrit les clés d'un objet « plat » (une valeur JSON par clé) qui diffèrent de `previous`.
+ * Partagée avec la scène Pascal (`scene/yScene.ts`, M18). */
+export function syncFlatMap(map: Y.Map<Json>, previous: object | undefined, next: object | undefined): void {
   const before = (previous ?? {}) as Record<string, Json>
   const after = (next ?? {}) as Record<string, Json>
   for (const [key, value] of Object.entries(after)) {
@@ -146,7 +147,7 @@ function syncFlatMap(map: Y.Map<Json>, previous: object | undefined, next: objec
   }
 }
 
-function sameValue(a: Json, b: Json): boolean {
+export function sameValue(a: Json, b: Json): boolean {
   if (a === b) return true
   if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false
   return JSON.stringify(a) === JSON.stringify(b)

@@ -27,18 +27,18 @@ codée. Rempli en M17 (2026-11-17) à partir du code de Fabrics et de Pascal (co
 | Niveaux | `Level` (mm), `src/features/documents/levels.ts` | `LevelNode`, `services/level-height.ts` (E-011) | EXISTANT | `level.ts`, wiki `vertical-model.md` | Réutiliser | — | `documents/levels.test.ts` | Pascal |
 | Murs | `WallElement` (polyligne) | `wall` (`nodes/src/wall/`), types de murs `schema/wall-type.ts` | EXISTANT | dossiers cités | Réutiliser | Plus riche (couches, types) | `geometry/walls.test.ts`, baseline | Pascal |
 | Ouvertures (portes, fenêtres, baies, 16 styles) | `OpeningElement`, `src/features/openings/styles.ts` | `door`, `window` (`nodes/src/door`, `window`) | PARTIEL | dossiers cités | Étendre (styles Fabrics manquants : galandage, garage, va-et-vient…, à vérifier en M19) | Garder les styles validés par l'utilisateur | `openings/styles.test.ts`, `openingSymbolStyles.test.ts` | Pascal étendu |
-| Pièces | `RoomElement` | `zone` (E-012, pièces « room-first ») | EXISTANT | `nodes/src/zone/` | Réutiliser | — | `measurements.test.ts` | Pascal |
+| Pièces | `RoomElement` | `zone` (E-012, pièces « room-first ») | EXISTANT | `nodes/src/zone/`, `src/features/scene/view/roomClearFloor.ts` | Réutiliser (M18, ADR 0006 : contour à l'axe des murs, sol intérieur par `roomClearPolygon`) | Modèle de Pascal adopté par l'utilisateur le 2026-11-18 | `measurements.test.ts`, baseline par la scène, `scene/migrate/pascalLoad.test.ts` | Pascal |
 | Dalles, plafonds, faux plafonds | dalles calculées, `falseCeiling` | `slab`, `ceiling` | EXISTANT | `nodes/src/slab`, `ceiling` | Réutiliser | — | `measurements.test.ts` (plafonds) | Pascal |
 | Toitures | `RoofElement` (4 formes), `src/features/building/roof.ts` | `roof`, `roof-segment`, `dormer`, `skylight`, `gutter`… | EXISTANT | `nodes/src/roof*` | Réutiliser ; vérifier formules (M19) | Pascal plus complet (lucarnes, fenêtres de toit) | `building/roof.test.ts` (valeurs de référence) | Pascal |
 | Escaliers et trémies | `StairElement`, `src/features/stairs/` | `stair`, `stair-segment`, `floor-opening`, `fit_stair` | EXISTANT | `nodes/src/stair/` | Réutiliser ; garder règles de calcul Fabrics comme contrôle (M19) | Règles de contremarches validées | `stairs/stairs.test.ts`, `voids.test.ts` | Pascal |
 | Cheminées | `ChimneyElement` | `chimney` | EXISTANT | `nodes/src/chimney` | Réutiliser | — | `building/chimney.test.ts` | Pascal |
-| Plateformes | `PlatformElement` | `slab` surélevée / mezzanine (`create_mezzanine`) | PARTIEL | `commands/structure` | Étendre (M18 : correspondance à vérifier) | — | `measurements/platform.test.ts` | Pascal |
+| Plateformes | `PlatformElement` | `slab` surélevée / mezzanine (`create_mezzanine`) | PARTIEL | `src/features/scene/nodes/fabricsNodes.ts` | M18 : nœud Fabrics `fabrics:platform` (une dalle Pascal porte les murs et remonte les portes) ; Pascal en M19 | Constaté sur la grande maison (portes +150 mm) | `measurements/platform.test.ts`, baseline par la scène | Fabrics (nœud de scène) |
 | Axes de construction | `AxisElement`, `geometry/axes.ts` | `structural-grid` | PARTIEL | `nodes/src/structural-grid` | Étendre (étiquettes A/B, 1/2) | — | `geometry/axes.test.ts` | Pascal étendu |
 | Cotes manuelles | `DimensionElement` | `construction-dimension`, `measurement` | EXISTANT | `nodes/src/construction-dimension` | Réutiliser + champ « Visible en » | — | `dimensioning/visibility.test.ts` | Pascal étendu |
 | Lignes de coupe | `SectionLineElement` | `section-group.tsx` (viewer) | PARTIEL | `viewer/src/...section-group.tsx` | Étendre (M20) | — | `geometry/sections.test.ts` | à décider M20 |
 | Mobilier et bibliothèque (392 objets 2D) | `src/features/library/` | `item` + 145 GLB, `procedural-item`, `cabinet` | EXISTANT | `apps/editor/public/items/`, `core/src/procedural-items` | Étendre : catalogue Fabrics (symboles 2D) + objets 3D Pascal | Licences des GLB à vérifier (`THIRD_PARTY_NOTICES.md`) | `library/*.test.ts` | Pascal + catalogue Fabrics |
 | Pièces préfabriquées | `library/prefabs` | `create_from_template`, `furnish_room` | PARTIEL | outils MCP | Garder Fabrics, branché sur la scène | — | `library/prefabs.test.ts` | Fabrics |
-| Fonds DXF importés | `LineElement` + `groupId` | `guide`, `scan` | PARTIEL | `nodes/src/guide`, `scan` | Étendre (M18) | — | `export/dxfImport.test.ts` | à décider M18 |
+| Fonds DXF importés | `LineElement` + `groupId` | `guide`, `scan` | PARTIEL | `src/features/scene/nodes/fabricsNodes.ts` | M18 : nœud Fabrics `fabrics:annotation` (traits vectoriels ; `guide` = image) | `guide` n'est qu'une image | `export/dxfImport.test.ts`, `scene/migrate/roundTrip.test.ts` | Fabrics (nœud de scène) |
 | Matériaux, couches | `src/features/building/materials.ts` | `core/src/material-library.ts`, `node-slots/*`, `schema/assembly.ts` (15 rôles de couches) | EXISTANT | fichiers cités | Réutiliser | Couches d'ouvrage nécessaires aux métrés par lot (M21) | `building/materials.test.ts` | Pascal |
 | Terrain et implantation | — | `schema/terrain.ts`, `nodes/src/site/*`, mode `terrain-sculpt` | EXISTANT | fichiers cités | Réutiliser (M19) | — | tests Pascal | Pascal |
 | MEP (gaines, tuyaux) | — | `duct-*`, `pipe-*`, `hvac-equipment` | EXISTANT | `nodes/src/` | Réutiliser sans amélioration | Hors périmètre (roadmap « Plus tard ») | tests Pascal | Pascal |
@@ -67,7 +67,7 @@ codée. Rempli en M17 (2026-11-17) à partir du code de Fabrics et de Pascal (co
 
 | Capacité | Fabrics | Pascal | État | Preuve | Action | Justification | Non-régression | Propriétaire |
 |---|---|---|---|---|---|---|---|---|
-| Métrés (surfaces, longueurs, volumes, brut / net) | `src/features/measurements/` | `core/src/lib/zone-quantities.ts` (par pièce) | PARTIEL | fichier cité | Garder Fabrics, branché sur la scène (M18), étendu en M21 | Métrés Client / Exécution validés | baseline JSON, HOUSE-01 | Fabrics |
+| Métrés (surfaces, longueurs, volumes, brut / net) | `src/features/measurements/` | `core/src/lib/zone-quantities.ts` (par pièce) | PARTIEL | fichier cité | Garder Fabrics, branché sur la scène (fait en M18 : `scene/view`, baseline identique ; EDGE-01 corrigé), étendu en M21 | Métrés Client / Exécution validés | baseline JSON, HOUSE-01 | Fabrics |
 | Nomenclatures (portes, fenêtres, pièces) | tableaux des métrés | `editor/src/lib/floorplan/schedules.ts` | PARTIEL | fichier cité | Étendre en M20 (une seule implémentation à choisir) | Doublon à trancher en M20 | baseline tables | à décider M20 |
 | Contrôles du plan (manques, chevauchements) | `measurements/warnings.ts`, `roomCoverage.ts` | `validate_design`, `validate_scene`, `verify_scene`, `check_collisions` | PARTIEL | outils MCP | Étendre (M21, M24) | — | `warnings.test.ts` | à décider M21 |
 | Traçabilité des métrés | — | — | ABSENT | — | Ajouter (M21) | — | — | Fabrics (nouveau) |
@@ -87,9 +87,9 @@ codée. Rempli en M17 (2026-11-17) à partir du code de Fabrics et de Pascal (co
 |---|---|---|---|---|---|---|---|---|
 | Stockage des projets | `src/features/persistence/` (IndexedDB, Supabase) | `useAutoSave`, `onLoad` / `onSave` ; SQLite côté serveur (MCP) | EXISTANT | `editor/src/hooks/use-auto-save.ts` | Garder Fabrics (Supabase), branché via `onLoad` / `onSave` | D75 : Fabrics garde Supabase | `persistence/*.test.ts` | Fabrics |
 | Comptes, partage, membres | `src/features/auth`, `sharing` | — | ABSENT | — | Garder Fabrics | — | `sharing/*.test.ts`, `check:security` | Fabrics |
-| Collaboration temps réel | Yjs + `collab-server/` | SSE simple (`apps/editor/app/api/scenes/[id]/events`) | PARTIEL | fichier cité | Garder Fabrics, sur les nœuds Pascal (M18) | CRDT absent de Pascal | `collab/*.test.ts` | Fabrics |
+| Collaboration temps réel | Yjs + `collab-server/` | SSE simple (`apps/editor/app/api/scenes/[id]/events`) | PARTIEL | fichier cité | Garder Fabrics, sur les nœuds Pascal (fait en M18, lot E : `scene/sceneBinding.ts`) | CRDT absent de Pascal | `collab/*.test.ts` | Fabrics |
 | Historique de versions | `src/features/versions/` | `SceneMeta.version`, `saveMode` draft/checkpoint | PARTIEL | MCP `set_checkpoint` | Garder Fabrics | — | `versions/*.test.ts` | Fabrics |
-| Commentaires ancrés | `src/features/comments/` | — | ABSENT | — | Garder Fabrics, ancrés sur les nœuds (M18) | — | `comments/*.test.ts` | Fabrics |
+| Commentaires ancrés | `src/features/comments/` | — | ABSENT | — | Garder Fabrics, ancrés sur les nœuds (fait en M18, lot E : `scene/commentAnchors.ts`) | — | `comments/*.test.ts` | Fabrics |
 
 ## 5. API, MCP, IA
 

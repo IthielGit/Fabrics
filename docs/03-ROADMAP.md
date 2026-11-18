@@ -1199,13 +1199,37 @@ branche dédiée.
 
 ## M18 — Modèle BIM unifié (gate G1)
 
-- [ ] La scène Pascal (`@pascal-app/core`) devient le document des projets Plan, enregistré dans Supabase
-- [ ] Migration testée des plans existants vers des nœuds Pascal : niveaux, murs, ouvertures, pièces,
+Plan validé le 2026-11-18 (`docs/phases/M18-plan.md`, lots A à F ; décisions 1 A, 2 A, 3 B, 4 A, 5 A).
+**Lot A (branchement technique) fait le 2026-11-18** : `@pascal-app/core` lu par `src/features/scene/`
+(alias Vite, `paths` TypeScript, `npm run build:pascal`), ADR 0004 et 0005, test d'architecture.
+**Lot B (conversion plan ↔ scène) fait le 2026-11-18** : `src/features/scene/` (migration pure, vue
+calculée, nœuds Fabrics, chargement par Pascal) ; modèle de pièces de Pascal (ADR 0006) ; baseline M17,
+HOUSE-01, HOUSE-02 et EDGE-01 vérifiés par la scène.
+**Lot C (la scène devient le document de l'éditeur) fait le 2026-11-18** : `SceneBinding` (scène dans un
+`Y.Doc`, local quand on travaille seul), un seul historique `Y.UndoManager` pour les plans, événement
+« modèle changé », pièces qui suivent leurs murs.
+**Lot D (enregistrement, versions, duplication) fait le 2026-11-18** : un plan est enregistré par sa
+scène (format `pascal-scene`, version 5), localement et dans Supabase ; script `npm run migrate:plans`
+(essai à blanc, sauvegarde exigée, métrés comparés) prêt, **à lancer à la mise en ligne de M18**.
+**Lot E (collaboration et commentaires) fait le 2026-11-18** : en collaboration, un plan partage sa scène
+(`SceneBinding` sur la salle, seul historique) ; commentaires ancrés sur les nœuds (`wall_<id>__0` pour un
+mur à plusieurs côtés), anciens commentaires gardés.
+**Lot F (métrés et gate G1) fait le 2026-11-18** : métrés, cotes Client / Exécution et repères lus à travers la
+scène (baseline M17 identique) ; EDGE-01 corrigé (fenêtre hors du mur non déduite, union des ouvertures
+qui se chevauchent, avertissement « hauteur nulle ») ; rapport `docs/phases/M18-report.md`.
+
+- [x] La scène Pascal (`@pascal-app/core`) devient le document des projets Plan, enregistré dans Supabase
+      (lots C et D, 2026-11-18 ; conversion des plans de la base : à la mise en ligne de M18)
+- [x] Migration testée des plans existants vers des nœuds Pascal : niveaux, murs, ouvertures, pièces,
       dalles, toitures, escaliers, cheminées, plateformes, axes, cotes, coupes, mobilier, fonds DXF
-- [ ] Identifiants stables ; événement `ModelChanged` ; un seul historique annuler / rétablir
-- [ ] Collaboration Yjs, historique de versions et commentaires passés sur les nœuds Pascal
-- [ ] Métrés, cotes Client / Exécution et repères `M01`, `P01`, `F01` branchés sur la scène Pascal
-- [ ] Sauvegarde et restauration ; projets dupliqués
+      (lot B, 2026-11-18 ; migration de la base elle-même : lot D)
+- [x] Identifiants stables ; événement `ModelChanged` ; un seul historique annuler / rétablir
+      (lot C, 2026-11-18 ; les projets Visuel gardent leur historique local, sans scène)
+- [x] Collaboration Yjs, historique de versions et commentaires passés sur les nœuds Pascal
+      (lots D et E, 2026-11-18)
+- [x] Métrés, cotes Client / Exécution et repères `M01`, `P01`, `F01` branchés sur la scène Pascal
+      (lot F, 2026-11-18 ; baseline M17 identique à travers la scène ; EDGE-01 corrigé)
+- [x] Sauvegarde et restauration ; projets dupliqués (lot D, 2026-11-18)
 
 **Critères d'acceptation (G1)**
 - Un plan créé avant M18 se rouvre avec les mêmes métrés (comparaison à la baseline, au mm et au

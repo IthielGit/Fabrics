@@ -16,6 +16,7 @@ import { elementsOfLevel } from '../documents/levels'
 import { openingStyle } from '../openings/styles'
 import { polygonArea, polygonPerimeter, polylineLength } from '../geometry/polygon'
 import { tJunctionAdjustments } from '../geometry/wallContacts'
+import { isOpeningOutside, openingInterval } from '../geometry/openings'
 import { wallFaces } from '../geometry/walls'
 import { habitableArea } from './habitableArea'
 import { buildReferences, type References } from './references'
@@ -280,8 +281,8 @@ export function axisAlignedRectangle(points: readonly number[]): [number, number
 }
 
 /** Surface d'une ouverture dans son mur : sa hauteur est limitée à ce qui reste au-dessus de l'allège. */
-function openingMeasure(opening: OpeningElement, wall: WallElement): OpeningMeasure {
-  const visibleHeight = Math.max(0, Math.min(opening.height, wall.height - opening.sillHeight))
+function openingMeasure(opening: OpeningElement, wall: WallElement, outside = false): OpeningMeasure {
+  const visibleHeight = outside ? 0 : Math.max(0, Math.min(opening.height, wall.height - opening.sillHeight))
   return {
     id: opening.id,
     name: opening.name,
@@ -294,6 +295,36 @@ function openingMeasure(opening: OpeningElement, wall: WallElement): OpeningMeas
     sillHeight: opening.sillHeight,
     area: opening.width * visibleHeight,
   }
+}
+
+/** Rectangle d'une ouverture dans l'élévation du mur : de `from` à `to` en long, de `bottom` à `top` en hauteur. */
+interface Rectangle {
+  from: number
+  to: number
+  bottom: number
+  top: number
+}
+
+/** Surface de l'union de rectangles (mm²) : on découpe en bandes verticales aux abscisses des bords. */
+function unionArea(rectangles: readonly Rectangle[]): number {
+  const xs = [...new Set(rectangles.flatMap((r) => [r.from, r.to]))].sort((a, b) => a - b)
+  let area = 0
+  for (let i = 0; i + 1 < xs.length; i++) {
+    const [x0, x1] = [xs[i], xs[i + 1]]
+    const spans = rectangles
+      .filter((r) => r.from <= x0 && r.to >= x1)
+      .map((r) => [r.bottom, r.top] as const)
+      .sort((a, b) => a[0] - b[0])
+    let covered = 0
+    let end = -Infinity
+    for (const [bottom, top] of spans) {
+      const start = Math.max(bottom, end)
+      if (top > start) covered += top - start
+      end = Math.max(end, top)
+    }
+    area += covered * (x1 - x0)
+  }
+  return area
 }
 
 /**
@@ -321,13 +352,24 @@ export function computeMeasurements(
   )
   const tJunctions = tJunctionAdjustments([...wallById.values()])
   const openingsArea = new Map<string, number>()
+  const rectanglesBySegment = new Map<string, { wallId: string; rectangles: Rectangle[] }>()
   for (const element of elements) {
     if (element.type !== 'opening') continue
     const wall = wallById.get(element.wallId)
     if (!wall) continue // ouverture orpheline : rien à mesurer
-    const measure = openingMeasure(element, wall)
+    // EDGE-01 (M18) : une ouverture hors de son mur n'est pas déduite (elle est signalée par ailleurs).
+    const measure = openingMeasure(element, wall, isOpeningOutside(element, wall))
     openings.push(measure)
-    openingsArea.set(wall.id, (openingsArea.get(wall.id) ?? 0) + measure.area)
+    if (measure.area > 0) {
+      const key = `${wall.id} ${element.segmentIndex}`
+      const list = rectanglesBySegment.get(key) ?? { wallId: wall.id, rectangles: [] }
+      list.rectangles.push({ ...openingInterval(element), bottom: element.sillHeight, top: element.sillHeight + measure.area / element.width })
+      rectanglesBySegment.set(key, list)
+    }
+  }
+  // Deux ouvertures qui se chevauchent ne sont déduites qu'une fois : surface de leur union.
+  for (const { wallId, rectangles } of rectanglesBySegment.values()) {
+    openingsArea.set(wallId, (openingsArea.get(wallId) ?? 0) + unionArea(rectangles))
   }
 
   const roofElements = elements.filter((el): el is RoofElement => el.type === 'roof')

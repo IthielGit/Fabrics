@@ -60,8 +60,9 @@ export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
   const collabActive = useCollabStore((state) => state.active)
   const collabCanUndo = useCollabStore((state) => state.canUndo)
   const collabCanRedo = useCollabStore((state) => state.canRedo)
-  const localCanUndo = useEditorStore((state) => state.history.past.length > 0)
-  const localCanRedo = useEditorStore((state) => state.history.future.length > 0)
+  // Projet Plan (M18) : historique de la scène ; projet Visuel : historique local.
+  const localCanUndo = useEditorStore((state) => state.history.past.length > 0 || state.sceneHistory.canUndo)
+  const localCanRedo = useEditorStore((state) => state.history.future.length > 0 || state.sceneHistory.canRedo)
   const canUndo = collabActive ? collabCanUndo : localCanUndo
   const canRedo = collabActive ? collabCanRedo : localCanRedo
   const renameProject = useEditorStore((state) => state.renameProject)
