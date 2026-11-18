@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M18 · lot F, métrés sur la scène et corrections EDGE-01 (18/11)
-- **Prochaine tâche :** décision de l'utilisateur sur le gate G1 (rapport `docs/phases/M18-report.md`), puis mise en ligne de M18
+- **Prochaine tâche :** mise en ligne de M18 (accord de l'utilisateur à chaque étape) ; ensuite M19 après validation. **Gate G1 validé PASS par l'utilisateur le 2026-11-18.**
 - **À la mise en ligne de M18 (accord de l'utilisateur) :** sauvegarde `supabase/m18-backup.sql`, puis `npm run migrate:plans` (essai à blanc) et `-- --apply` (`docs/05-INSTALLATION.md`) ; commande de build de Cloudflare Pages à changer (Bun + `build:pascal`)
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`

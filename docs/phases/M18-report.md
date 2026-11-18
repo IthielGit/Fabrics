@@ -52,4 +52,4 @@ Aucun plan de la baseline M17 n'est touché ; seuls changent les plans qui conti
 
 ## 6. Proposition
 
-**G1 : PASS**, sous réserve de la décision de l'utilisateur.
+**G1 : PASS, validé par l'utilisateur le 2026-11-18.**
