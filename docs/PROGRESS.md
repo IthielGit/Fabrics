@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M19 · A5 (18/11, à tester dans le navigateur). A1 à A4 validés par l'utilisateur le 2026-11-18.
-- **En cours :** lot Performance (lot 1 fait, lots 2 et 3 à faire). **Prochaine tâche :** validation d’A5 (comparaison côte à côte), puis M19 · A6 Navigation, sons et aide (`/model sonnet`). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
+- **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »). **Prochaine tâche :** validation d’A5 (comparaison côte à côte), puis M19 · A6 Navigation, sons et aide (`/model sonnet`). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -1917,6 +1917,8 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Correctif : `image.crossOrigin = 'anonymous'` dans `useAssetImage.ts` (Supabase Storage renvoie bien `Access-Control-Allow-Origin: *`). La cause d'un échec est désormais écrite dans la console (`ExportDialog.tsx`). Build, lint, 2978 tests OK.
 
 ## Idées (hors jalon en cours)
+- **Performance, lot 2 Alléger (remis à plus tard le 2026-11-18)** : l'accueil charge encore le moteur de Pascal (1,7 Mo) par le chemin enregistrement → conversion des scènes (`storedScene` → `sceneBinding` / `toFabricsView`) ; modules arbres, environnement et ossature chargés même quand le projet ne les utilise pas ; regrouper les ~1 100 petits fichiers JavaScript ; budget de poids dans `npm run check:all`.
+- **Performance, lot 3 Fluidité (remis à plus tard le 2026-11-18)** : mesurer avec le profileur de React ce que Fabrics refait à chaque modification dans Pascal (métrés, enregistrement, collaboration), regrouper les calculs, supprimer les rendus inutiles ; mesures sur une machine avec carte graphique.
 - Saisie de longueur au clavier pour les autres outils de tracé (pièce, cote, plateforme, rectangle largeur × hauteur).
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
