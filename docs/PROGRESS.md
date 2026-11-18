@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M19 · A1 Routes et accueil (18/11, à tester dans le navigateur)
-- **Prochaine tâche :** M19 · A2 Éditeur et panneaux (après validation d'A1). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
+- **Dernière tâche terminée :** M19 · A2a ouverture des vrais projets Plan dans l'éditeur de Pascal (18/11, à tester dans le navigateur ; A1 validé et fusionné)
+- **Prochaine tâche :** M19 · A2b panneau Métrés, puis A2c Commentaires, A2d Historique (A2 découpé en 4 étapes, choix de l'utilisateur du 2026-11-18). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -60,6 +60,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M19 · A2a Les vrais projets Plan s'ouvrent dans l'éditeur de Pascal (à tester dans le navigateur)
+- Fait : page `src/pages/PascalEditorPage.tsx`, route `/p/:projectId/pascal` ; elle charge la scène du projet (`project.scene`, ou celle calculée depuis l'ancien document) dans `<Editor>` de Pascal et enregistre chaque modification dans le projet (`repository.save`, scène + vue recalculée). Entrée « Ouvrir dans l'éditeur Pascal (essai) » dans le menu « ⋯ » des cartes Plan de l'accueil. L'essai `/pascal-test` est retiré.
+- L'ancien éditeur reste l'éditeur par défaut de `/p/:id` : collaboration, commentaires, historique et métrés n'existent pas encore dans l'éditeur de Pascal (A2b à A2d), on ne bascule qu'à la fin d'A2.
+- Vérifié dans Chromium : la Maison R+1 s'ouvre avec ses murs, portes, fenêtres, 2 niveaux et ses pièces (Entrée 15,0 m², Cuisine 20,1 m², Séjour 34,2 m²), sans erreur bloquante. Constats : le mobilier de Fabrics apparaît en fils rouges (nœuds sans modèle 3D Pascal) ; Pascal affiche des mètres (« 2,7 m »), à passer en mm (B1) ; une partie de l'interface reste en anglais ; avertissement React « unmount a root » venu du code de Pascal (sans effet visible) ; pas de miniature, ni de renommage dans cette page.
+- Vérification : build ✓ lint ✓ tests ✓.
 
 ### 2026-11-18 — M19 · A2 (étape 1) : l'éditeur de Pascal tourne dans Vite (essai `/pascal-test`)
 - Fait : `<Editor layoutVersion="v2">` de `@pascal-app/editor` se monte dans l'application Vite, avec la vue 3D, la vue en plan, la barre d'outils et les panneaux de Pascal. Aucune erreur dans la console (Chromium).

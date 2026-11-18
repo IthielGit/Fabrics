@@ -1,5 +1,5 @@
-import { Copy, Image, Pencil, Ruler, Trash2 } from 'lucide-react'
-import { Link } from 'react-router'
+import { Copy, Image, Pencil, Ruler, SquareDashedMousePointer, Trash2 } from 'lucide-react'
+import { Link, useNavigate } from 'react-router'
 import { displayProjectName } from '../../features/documents/projectName'
 import type { ProjectSummary } from '../../features/persistence/types'
 import { useT } from '../../i18n/useT'
@@ -16,6 +16,7 @@ interface ProjectCardProps {
 /** Carte d'un projet, d'après `scene-card.tsx` de Pascal : miniature en 16/9, nom, date, menu. */
 export default function ProjectCard({ project, onRename, onDuplicate, onDelete }: ProjectCardProps) {
   const t = useT()
+  const navigate = useNavigate()
   const isPlan = project.kind === 'plan'
   const KindIcon = isPlan ? Ruler : Image
 
@@ -41,6 +42,15 @@ export default function ProjectCard({ project, onRename, onDuplicate, onDelete }
         <Menu
           label={t('projects.menuLabel')}
           items={[
+            ...(isPlan
+              ? [
+                  {
+                    label: t('projects.openInPascal'),
+                    icon: <SquareDashedMousePointer size={16} />,
+                    onSelect: () => navigate(`/p/${project.id}/pascal`),
+                  },
+                ]
+              : []),
             { label: t('projects.rename'), icon: <Pencil size={16} />, onSelect: onRename },
             { label: t('projects.duplicate'), icon: <Copy size={16} />, onSelect: onDuplicate },
             { label: t('projects.delete'), icon: <Trash2 size={16} />, danger: true, onSelect: onDelete },

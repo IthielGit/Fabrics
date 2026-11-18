@@ -110,6 +110,11 @@ export const fabricsFr = {
   'settings.title': ['Réglages'],
   'settings.sounds': ['Sons de l’interface'],
   'settings.soundsHelp': ['Coupez les effets sonores de l’éditeur. Ce réglage est mémorisé dans ce navigateur.'],
+  'pascalEditor.unavailableTitle': ['Éditeur indisponible'],
+  'pascalEditor.notFound': ['Ce projet n’existe pas ou n’est plus accessible.'],
+  'pascalEditor.notPlan': ['L’éditeur de Pascal ouvre seulement les projets Plan, pas les Visuels.'],
+  'pascalEditor.loadError': ['Impossible de charger ce projet.'],
+  'projects.openInPascal': ['Ouvrir dans l’éditeur Pascal (essai)'],
 } as const
 
 export type FabricsMessageId = keyof typeof fabricsFr
