@@ -7,7 +7,7 @@
     "wallArea": "surface murale brute = longueur à l'axe × hauteur (règle de docs/02-ARCHITECTURE.md) ; surfaces par face données à part",
     "openingArea": "largeur × hauteur (baie brute de maçonnerie)",
     "roomArea": "surface au tracé ; les pièces sont tracées sur les faces intérieures des murs",
-    "slabAltitude": "dessus de la dalle = altitude du niveau ; l'épaisseur descend (solide de altitude − épaisseur à altitude), comme la scène Pascal. Une dalle prime sur les murs qu'elle recouvre : un mur s'arrête sous la dalle du niveau au-dessus (hauteur mesurée = hauteur du niveau − épaisseur de cette dalle). Décision de l'utilisateur du 2026-11-18. Ici, pas de dalle au-dessus : murs sur toute la hauteur (3000 mm)."
+    "slabAltitude": "dessus de la dalle = altitude du niveau ; l'épaisseur descend (solide de altitude − épaisseur à altitude), comme la scène Pascal. Les murs sont pleine hauteur (hauteur du niveau) et priment : une dalle traversée par un mur est découpée autour de lui (l'emprise du mur est retirée de la dalle). Décision de l'utilisateur du 2026-11-18. Ici, la dalle (-200 → 0) est sous les murs, aucun mur ne la traverse : dalle entière, murs sur 3000 mm."
   },
   "level": { "name": "Rez-de-chaussée", "elevation": 0, "height": 3000, "slabThickness": 200 },
   "walls": [

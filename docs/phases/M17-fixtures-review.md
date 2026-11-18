@@ -13,19 +13,19 @@ Relecteur : l'utilisateur, qui a fourni le rapport ci-dessous (texte repris tel 
 
 1. **window-off-wall** : **rejet** avec message clair, jamais de déplacement silencieux, aucune surface déduite.
 2. **overlapping-openings** : chevauchement **signalé**, surface déduite = **union**. Hauteur 1 350 mm et allège 900 mm ajoutées au cas : union 2 000 × 1 350 = **2,70 m²**.
-3. **Altitude des dalles** : comme la scène Pascal, le dessus de la dalle est à l'altitude du niveau et l'épaisseur descend. Une dalle **prime** sur les murs qu'elle recouvre : les murs s'arrêtent sous la dalle du niveau au-dessus. Conséquence pour HOUSE-02 : murs du rez-de-chaussée mesurés sur 2 800 mm (au lieu de 3 000), ce qui change les totaux du § 9 :
+3. **Altitude des dalles** : comme la scène Pascal, le dessus de la dalle est à l'altitude du niveau et l'épaisseur descend. **Les murs sont pleine hauteur et la dalle est découpée autour** (choix de l'utilisateur, 2026-11-18, après une première version où la dalle primait). Pour HOUSE-02 : la dalle de l'étage (2 800 → 3 000 mm) est traversée par les murs du rez-de-chaussée (0 → 3 000 mm) ; on retire leur emprise, 8,75 m². La dalle du rez-de-chaussée est sous les murs : entière.
 
 | Indicateur | RdC | Étage 1 | Total |
 |---|---:|---:|---:|
-| Surface murale brute à l'axe | 146,44 m² | 156,90 m² | 303,34 m² |
-| Surface murale nette à l'axe | 137,81 m² | 146,17 m² | **283,98 m²** |
-| Volume net des murs | 22,774 m³ | 24,314 m³ | **47,088 m³** |
-| Dalles | 16,000 m³ | 15,098 m³ | 31,098 m³ |
+| Surface murale brute à l'axe | 156,90 m² | 156,90 m² | 313,80 m² |
+| Surface murale nette à l'axe | 148,27 m² | 146,17 m² | **294,44 m²** |
+| Volume net des murs | 24,524 m³ | 24,314 m³ | **48,838 m³** |
+| Dalles | 80,00 m², 16,000 m³ | 66,74 m², 13,348 m³ | 146,74 m², 29,348 m³ |
 | **Murs + dalles** (sans recouvrement) | | | **78,186 m³** |
 
-Contrôle : 24,524 − 8,75 m² (emprise des murs) × 0,20 = 22,774 m³. HOUSE-01 (un seul niveau, pas de dalle au-dessus) ne change pas.
+Contrôle : dalle de l'étage 80 − 8,75 − 4,51 = 66,74 m². Les murs gardent les valeurs du § 9 ; seule la dalle de l'étage change. Le total murs + dalles est le même qu'avec la règle « la dalle prime » (78,186 m³), ce qui confirme qu'il n'y a plus de recouvrement. HOUSE-01 ne change pas.
 
-Les valeurs du § 9 ci-dessous (294,44 m², 48,838 m³, 79,936 m³) sont celles **d'avant** cette décision.
+Le total du § 9 ci-dessous (79,936 m³) comptait deux fois les 1,750 m³ où murs et dalle de l'étage se recouvrent.
 
 ## 1. Méthode
 

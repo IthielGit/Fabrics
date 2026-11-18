@@ -60,6 +60,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M17 · Fixtures : murs pleine hauteur, dalle découpée
+- Décision de l'utilisateur : les murs passent sur toute la hauteur et la dalle est découpée autour (remplace « la dalle prime »).
+- Fait : HOUSE-02 : murs sur 3000 mm aux deux niveaux (nets 294,44 m², 48,838 m³) ; dalle de l'étage 80 − 8,75 (emprise des murs du RdC) − 4,51 (trémie) = 66,74 m², 13,348 m³ ; total murs + dalles 78,186 m³ (inchangé, sans recouvrement). HOUSE-01 inchangé.
+- Commit : docs(m17): fixtures avec murs pleine hauteur et dalle découpée
+
 ### 2026-11-18 — M17 · Décisions sur les fixtures
 - Décisions de l'utilisateur : baie hors du mur **rejetée** (jamais déplacée en silence) ; baies qui se chevauchent : chevauchement **signalé**, surface de l'**union** déduite ; dalles placées comme dans Pascal (dessus à l'altitude du niveau, épaisseur vers le bas) et la **dalle prime** sur les murs (murs arrêtés sous la dalle du dessus).
 - Fait : `fixtures/*/spec.json` mis à jour. HOUSE-02 : murs du rez-de-chaussée mesurés sur 2800 mm ; murs et dalles ajoutés aux résultats attendus (murs nets 283,98 m², 47,088 m³ ; dalles 31,098 m³ ; total 78,186 m³ sans recouvrement). EDGE-01 : cas 1 et 2 précisés (hauteur 1350 mm, allège 900 mm ; union 2,70 m²). HOUSE-01 inchangé.
