@@ -60,6 +60,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M17 · CI GitHub verte sur Linux
+- Fait : premier passage de la CI en échec (929 puis 23 échecs). Causes : paquets de Pascal non compilés (étape turbo build ajoutée) ; tests IFC qui lisent des fichiers d'exemple absents de Git (6 fichiers sautés en CI, uniquement quand les fichiers manquent). Diagnostic des échecs ajouté dans `scripts/test-pascal.mjs`.
+- Résultat : `check:all` vert sur Linux (run `a89a7f0`). Pas de fichier de référence Linux : tout échec est bloquant.
+- Détails : `docs/phases/M17-report.md` § 8.
+- Commits : `f5dc4e4`, `edcefca`, `a89a7f0`
+
 ### 2026-11-18 — M17 · Audit et intégration de Pascal (gate G0)
 - Fait : outils (Node 26.13.1, Bun 1.4.4) ; Pascal lancé dans son dossier (19 394 réussis, 71 échecs Windows, 8 ignorés) ; baseline Fabrics (`baseline/fabrics/`, 24 fichiers) et fixtures HOUSE-01 / HOUSE-02 / EDGE-01 ; `docs/capabilities.md`, `docs/regression-checklist.md`, `docs/screen-map.md` (D80) ; ADR 0001 à 0003 ; copie de Pascal dans `packages/pascal/` (code inchangé), installée par Bun (`npm run install:pascal`) ; scripts `test:pascal`, `lint:pascal`, `check:duplicates`, `check:all` ; GitHub Actions ; IfcOpenShell (`tools/ifc/`) ; `THIRD_PARTY_NOTICES.md`, `docs/risks.md`.
 - Résultat clé : tests de Pascal intégré **identiques** à ceux de son dossier, paquet par paquet ; lint Biome identique ; `src/` n'importe rien de Pascal (application inchangée).

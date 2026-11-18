@@ -58,3 +58,6 @@ Une installation npm de tout Pascal a été faite et mesurée :
 - La CI de Pascal (`packages/pascal/.github/`) est inactive (dossier imbriqué) ; la CI de Fabrics
   (`.github/workflows/check.yml`) lance `check:all`.
 - Les scripts de Pascal écrits pour Linux / macOS ne sont pas lancés sous Windows (risque R12).
+- En CI (Linux), deux étapes sont nécessaires avant les tests : compiler les paquets de Pascal
+  (`dist/`, sinon « Cannot find module »), et sauter les tests d'import IFC si les fichiers d'exemple
+  sont absents (ils ne sont pas dans Git). Constat du 2026-11-18, corrigé dans `check.yml` et `test-pascal.mjs`.
