@@ -61,6 +61,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — Nettoyage des branches : on travaille sur `main`
+- Demande de l'utilisateur : trop de branches polluaient le dépôt. A2a validé et fusionné dans `main`.
+- Fait : les 45 branches locales et les 2 branches distantes restantes (toutes déjà contenues dans `main`) et les worktrees `Fabrics-m17` et `Fabrics-m19` sont supprimés. Il ne reste que `main`, en local et sur `origin`.
+- Règle : dorénavant, commit puis push directement sur `main` (`CLAUDE.md`, règle 5). Les mentions de branches `feat/…` plus haut dans ce journal sont historiques.
+- Il faut refaire `npm run install:pascal` puis `npm run build:pascal` dans le dossier principal (les paquets de Pascal n'y étaient pas installés).
+
 ### 2026-11-18 — M19 · A2a Les vrais projets Plan s'ouvrent dans l'éditeur de Pascal (à tester dans le navigateur)
 - Fait : page `src/pages/PascalEditorPage.tsx`, route `/p/:projectId/pascal` ; elle charge la scène du projet (`project.scene`, ou celle calculée depuis l'ancien document) dans `<Editor>` de Pascal et enregistre chaque modification dans le projet (`repository.save`, scène + vue recalculée). Entrée « Ouvrir dans l'éditeur Pascal (essai) » dans le menu « ⋯ » des cartes Plan de l'accueil. L'essai `/pascal-test` est retiré.
 - L'ancien éditeur reste l'éditeur par défaut de `/p/:id` : collaboration, commentaires, historique et métrés n'existent pas encore dans l'éditeur de Pascal (A2b à A2d), on ne bascule qu'à la fin d'A2.

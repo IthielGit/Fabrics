@@ -64,6 +64,8 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
    et ajoute une entrée dans `docs/PROGRESS.md`.
 5. **Commits.** Propose un commit git à la fin de chaque tâche réussie, avec un message clair
    (`feat: outil mur`, `fix: zoom molette`…).
+   **Depuis le 2026-11-18, on travaille directement sur `main`** : ni branche de fonctionnalité ni
+   worktree. Commit puis `git push origin main` à la fin de chaque tâche réussie.
 6. **Dépendances.** N'utilise que les bibliothèques listées dans `docs/02-ARCHITECTURE.md`. Les
    paquets de Pascal et leurs dépendances sont acceptés en bloc (D78). Pour en ajouter une autre,
    demande d'abord en expliquant pourquoi.
