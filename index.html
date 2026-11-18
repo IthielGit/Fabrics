@@ -7,6 +7,8 @@
     <title>Fabrics</title>
   </head>
   <body>
+    <!-- Le code de Pascal lit process.env (Next.js l'injecte au build) : objet vide côté navigateur. -->
+    <script>window.process = window.process || { env: {} }</script>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
   </body>

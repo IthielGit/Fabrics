@@ -26,6 +26,10 @@
     /* Pascal (M18, ADR 0002 § 5) : types du paquet compilé */
     "paths": {
       "@pascal-app/core": ["./packages/pascal/packages/core/dist/index.d.ts"],
+      "@pascal-app/editor": ["./src/pascal/editor-types.d.ts"],
+      "@pascal-app/editor/locales": ["./src/pascal/editor-locales-types.d.ts"],
+      "@pascal-app/viewer": ["./packages/pascal/packages/viewer/dist/index.d.ts"],
+      "@pascal-app/nodes": ["./packages/pascal/packages/nodes/dist/index.d.ts"],
       "zod": ["./packages/pascal/node_modules/zod/index.d.ts"]
     }
   },

@@ -61,6 +61,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M19 · A2 (étape 1) : l'éditeur de Pascal tourne dans Vite (essai `/pascal-test`)
+- Fait : `<Editor layoutVersion="v2">` de `@pascal-app/editor` se monte dans l'application Vite, avec la vue 3D, la vue en plan, la barre d'outils et les panneaux de Pascal. Aucune erreur dans la console (Chromium).
+- Branchement : alias Vite `@pascal-app/editor`, `viewer`, `nodes` (`vite.config.ts`) ; types redirigés vers `src/pascal/editor-types.d.ts` pour que `tsc` ne parcoure pas le code de Pascal (`tsconfig.app.json`) ; remplaçant des modules internes de Next (`src/pascal/NextInternalsShim.ts`) ; `process.env` vide côté navigateur (`index.html`) ; fichiers publics de Pascal (icônes, objets, matières, sons, HDRI : 29 Mo) servis depuis `packages/pascal/apps/editor/public` puis copiés dans `dist` au build, sans doublon dans le dépôt ; thème et sources Tailwind de l'éditeur (`src/index.css`, `src/pascal-theme.css`) ; enregistrement des nœuds et des catalogues de langues (`src/pascal/bootstrap.ts`).
+- Constats pour la suite : (1) le français de Pascal est partiel (« Rez-de-chaussée » traduit, « Plugins » non) : relevé des textes manquants à faire ; (2) Pascal affiche des mètres (« 2,5 m ») : à passer en mm (règle des unités, sous-lot B1) ; (3) les modules d'extension de Pascal (arbres, piscine, WebXR…) ne sont pas encore branchés (A5/A6) ; (4) la route `/pascal-test` est un essai, à retirer quand l'éditeur ouvre les vrais projets.
+- Vérification : build ✓ lint ✓ tests ✓.
+- Branche `feat/m19-a2-editor`.
+
 ### 2026-11-18 — M19 · A1 Routes et accueil (à tester dans le navigateur)
 - Fait : thème de Pascal repris dans `src/pascal-theme.css` (jetons clairs par défaut, sombres dans `.pascal-shell` ; police Geist) ; coque `src/components/shell/AppShell.tsx` (en-tête, carte centrée, boutons) ; accueil refait d'après `app/page.tsx` de Pascal (`HomePage.tsx`, cartes, menu compte, boîtes Renommer / Supprimer / Quitter / Importer) ; connexion et nouveau mot de passe en carte centrée sur la coque sombre ; page Réglages (`/reglages`) avec l'interrupteur des sons, mémorisé dans ce navigateur (`features/settings/soundSetting.ts`, testé) ; `Button`, `Modal`, `Menu` suivent le thème (clair dans l'éditeur actuel, sombre sur l'accueil).
 - Textes : système de traduction de Pascal (Lingui, sans macro) branché dans `src/main.tsx` ; textes de l'accueil, des cartes, des boîtes de dialogue, du compte, de la connexion et des réglages versés dans `src/i18n/fabricsMessages.ts` (`useT()`), testés. Restent dans `fr.ts` : messages d'erreur de connexion, boîte « Importer vos projets », éditeur.

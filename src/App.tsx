@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { lazy, Suspense, useEffect } from 'react'
 import { BrowserRouter, Link, Route, Routes } from 'react-router'
 import RequireAuth from './components/auth/RequireAuth'
 import { fr } from './i18n/fr'
@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage'
 import ProjectPage from './pages/ProjectPage'
 import VersionPreviewPage from './pages/VersionPreviewPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+const PascalSpikePage = lazy(() => import('./pages/PascalSpikePage'))
 import SettingsPage from './pages/SettingsPage'
 import SharePage from './pages/SharePage'
 import { useAuthStore } from './stores/authStore'
@@ -27,6 +28,7 @@ export default function App() {
           <Route path="/p/:projectId/versions/:versionId" element={<VersionPreviewPage />} />
           <Route path="/i/:token" element={<InvitePage />} />
         </Route>
+        <Route path="/pascal-test" element={<Suspense fallback={null}><PascalSpikePage /></Suspense>} />
         <Route path="/bienvenue" element={<IntroPage />} />
         <Route path="/s/:token" element={<SharePage />} />
         <Route path="/connexion" element={<LoginPage />} />
