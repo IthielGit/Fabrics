@@ -1,4 +1,9 @@
 @import "tailwindcss";
+/* Éditeur de Pascal (M19 A2) : thème de ses composants et sources où Tailwind cherche ses classes. */
+@import "../packages/pascal/packages/viewer/dist/ui/theme.css";
+@source "../packages/pascal/packages/editor/src";
+@source "../packages/pascal/packages/viewer/dist";
+@source "../packages/pascal/packages/nodes/dist";
 @import "./pascal-theme.css";
 
 @theme {
