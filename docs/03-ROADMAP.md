@@ -1139,6 +1139,9 @@ bloque la publication. Un contrôle visuel ne remplace pas la vérification des 
    Pascal, ses `AGENTS.md`, `DECISIONS.md`, `CONTRIBUTING.md`.
 2. Écrire `docs/phases/M<n>-plan.md` (existant, modifications, points à confirmer, tests, risques,
    définition de terminé) et attendre le feu vert.
+   Chaque jalon est découpé en sous-lots, chacun avec la commande `/model` à taper avant de le
+   commencer (`/model opus` : architecture, géométrie, calculs, sécurité ; `/model sonnet` : interface,
+   imports, exports, tests de routine). Claude ne change pas de modèle lui-même : il rappelle la commande.
 3. Coder par petits lots testés ; `npm run check:all` après chaque lot. Demander l'accord avant toute
    migration destructive ou service payant.
 4. Écrire `docs/phases/M<n>-report.md` (fichiers, tests, preuves, limites, suite) ; mettre à jour la
@@ -1287,6 +1290,23 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 À décider avec l'utilisateur avant de commencer : normes de représentation (usages retenus en M10
 ter : Madagascar, héritage français), échelles, formats et livrables contractuels.
 
+**Découpage en sous-lots proposé le 2026-11-18, à confirmer au plan du jalon.** Ordre : 20.0 → 20.9 ; test par
+l'utilisateur après chaque sous-lot. Taper la commande `/model` indiquée avant le sous-lot (Claude la
+rappelle s'il tourne sur un autre modèle).
+
+| Sous-lot | Contenu | Modèle |
+|---|---|---|
+| 20.0 Décisions | Normes de représentation, échelles, formats et livrables contractuels proposés en options, choisis par l'utilisateur | `/model opus` |
+| 20.1 Vues liées au modèle | Plans de niveau, coupes, façades, détails ; planche et cotes Client / Exécution étendues au modèle Pascal | `/model opus` |
+| 20.2 Annotations | Cotes chaînées, repères portes et fenêtres, noms et surfaces de pièces, axes, symboles, légendes | `/model opus` |
+| 20.3 Nomenclatures et plans dérivés | Nomenclatures, plan de plafond, plan de toiture | `/model sonnet` |
+| 20.4 Feuilles | Formats A4 à A1, cartouche, échelle, unités, orientation, nord, indice, date, émetteur, statut | `/model sonnet` |
+| 20.5 Styles graphiques | Épaisseurs de traits, éléments coupés et vus, hachures, calques, masques, visibilité | `/model sonnet` |
+| 20.6 PDF et SVG à l'échelle | Sorties vectorielles exactes à 1:50, 1:100, 1:200 ; polices intégrées si la licence le permet | `/model opus` |
+| 20.7 Révisions | Jeu de feuilles figé par version (M15), numérotation, comparaison avec le jeu précédent | `/model opus` |
+| 20.8 Étude `ifcopenshell.draw` | Essai comme outil complémentaire, limites documentées | `/model sonnet` |
+| 20.9 Vérification et gate G3 | Impression à 100 %, mise à jour des vues après modification d'un mur, liste de contrôle pour la revue d'un professionnel, rapport | `/model opus` |
+
 - [ ] Vues liées au modèle : plans de niveau, coupes, façades, détails ; façades, coupes, planche et
       cotes Client / Exécution de Fabrics étendues au modèle Pascal
 - [ ] Annotations : cotes chaînées, repères portes et fenêtres, noms et surfaces de pièces, axes,
@@ -1308,6 +1328,22 @@ ter : Madagascar, héritage français), échelles, formats et livrables contract
 ## M21 — Quantitatif automatique et traçabilité (gate G4)
 
 À décider avant de commencer : conventions de métré, seuils de déduction des ouvertures.
+
+**Découpage en sous-lots proposé le 2026-11-18, à confirmer au plan du jalon.** Ordre : 21.0 → 21.8 ; test par
+l'utilisateur après chaque sous-lot. Taper la commande `/model` indiquée avant le sous-lot (Claude la
+rappelle s'il tourne sur un autre modèle).
+
+| Sous-lot | Contenu | Modèle |
+|---|---|---|
+| 21.0 Décisions | Conventions de métré et seuils de déduction des ouvertures, en options, choisis par l'utilisateur | `/model opus` |
+| 21.1 Deux familles de quantités | Quantités géométriques et quantités de métré distinguées dans le modèle de données | `/model opus` |
+| 21.2 Règles versionnées | Par catégorie et composition : longueurs, surfaces brutes et nettes, volumes, nombres, revêtements, déductions (union des ouvertures) | `/model opus` |
+| 21.3 Traçabilité | Quantité → éléments sources → dimensions → formule → déductions → règle et version | `/model opus` |
+| 21.4 Statut des quantités | Validé, provisoire, non pris en charge, données manquantes ; un quantitatif incomplet n'est jamais présenté comme fiable | `/model sonnet` |
+| 21.5 Recalcul ciblé | Seules les quantités touchées par un élément modifié sont recalculées | `/model opus` |
+| 21.6 Comparaison IFC | Quantités comparées avec IfcOpenShell sur un jeu d'échange | `/model sonnet` |
+| 21.7 Contrôles qualité | Géométrie incohérente, propriétés manquantes, unités incompatibles | `/model sonnet` |
+| 21.8 Vérification et gate G4 | Toutes les fixtures (HOUSE-01, HOUSE-02, EDGE-01), tolérances, sources visibles dans les exports, rapport | `/model opus` |
 
 - [ ] Quantités géométriques et quantités de métré distinguées
 - [ ] Règles versionnées par catégorie et composition : longueur, surface brute et nette, volume brut
@@ -1332,6 +1368,19 @@ ter : Madagascar, héritage français), échelles, formats et livrables contract
 
 À décider avant de commencer : IFC4 ou IFC4x3, classification, échange avec Revit.
 
+**Découpage en sous-lots proposé le 2026-11-18, à confirmer au plan du jalon.** Ordre : 22.0 → 22.5 ; test par
+l'utilisateur après chaque sous-lot. Taper la commande `/model` indiquée avant le sous-lot (Claude la
+rappelle s'il tourne sur un autre modèle).
+
+| Sous-lot | Contenu | Modèle |
+|---|---|---|
+| 22.0 Décisions | IFC4 ou IFC4x3, classification, échange avec Revit, en options, choisis par l'utilisateur | `/model opus` |
+| 22.1 Classes et correspondances | Projet, site, bâtiment, niveau, mur, dalle, porte, fenêtre, ouverture, pièce ; table nœud Pascal → classe IFC | `/model opus` |
+| 22.2 Export | Par l'`ifc-converter` de Pascal : placements, unités, relations spatiales, matériaux et compositions, types, propriétés, quantités | `/model opus` |
+| 22.3 Identifiants stables | Correspondance `elementId ↔ GlobalId` identique d'un export à l'autre | `/model sonnet` |
+| 22.4 Import contrôlé | Rapport d'import : objets inconnus et géométries non prises en charge signalés, jamais modifiés en silence | `/model opus` |
+| 22.5 Contrôles et gate G5 | Schéma, IDS si applicable, réimport et comparaison géométrique (IfcOpenShell), ouverture dans 2 visionneuses, rapport | `/model opus` |
+
 - [ ] Classes cibles : projet, site, bâtiment, niveau, mur, dalle, porte, fenêtre, ouverture, pièce
 - [ ] Export par l'`ifc-converter` de Pascal : placements, unités, relations spatiales, matériaux et
       compositions, ouvertures, types, propriétés, quantités
@@ -1349,6 +1398,22 @@ ter : Madagascar, héritage français), échelles, formats et livrables contract
 ## M23 — Bibliothèque de prix et DQE (gate G6)
 
 À décider avant de commencer : nomenclature des postes, base de prix, devise, taxes.
+
+**Découpage en sous-lots proposé le 2026-11-18, à confirmer au plan du jalon.** Ordre : 23.0 → 23.8 ; test par
+l'utilisateur après chaque sous-lot. Taper la commande `/model` indiquée avant le sous-lot (Claude la
+rappelle s'il tourne sur un autre modèle).
+
+| Sous-lot | Contenu | Modèle |
+|---|---|---|
+| 23.0 Décisions | Nomenclature des postes, base de prix, devise, taxes, en options, choisies par l'utilisateur | `/model opus` |
+| 23.1 Bibliothèque de prix | Postes, prix des matériaux, main-d'œuvre, matériel, compositions, date d'effet, fournisseur, région, version ; tables Supabase avec RLS | `/model opus` |
+| 23.2 Import des prix | CSV et XLSX avec contrôle des unités et des devises ; aucun prix inventé ni implicite | `/model sonnet` |
+| 23.3 Correspondance vers les postes | Élément + matériau + règle → poste ; plusieurs postes par élément sans double comptage | `/model opus` |
+| 23.4 Calcul des montants | Pertes, frais, marge, taxes ; arrondis documentés ; montants exacts, sans nombres à virgule flottante | `/model opus` |
+| 23.5 Versions du DQE | DQE figé par version du modèle et du bordereau ; recalcul après modification ; comparaison des versions | `/model opus` |
+| 23.6 Panneau DQE | Lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements | `/model sonnet` |
+| 23.7 Exports | XLSX et PDF : en-tête, cartouche, synthèse, détail, hypothèses, date des prix | `/model sonnet` |
+| 23.8 Contrôles et gate G6 | Postes sans prix bloquants, totaux identiques à l'écran, en XLSX et en PDF, rapport | `/model opus` |
 
 - [ ] Bibliothèque de prix : postes (code, libellé, unité, lot, ouvrage type), prix des matériaux,
       main-d'œuvre, matériel, compositions de prix, date d'effet, fournisseur, région, version ;
@@ -1372,6 +1437,20 @@ ter : Madagascar, héritage français), échelles, formats et livrables contract
 
 ## M24 — Contrôles qualité, performance et sécurité (gate G7)
 
+**Découpage en sous-lots proposé le 2026-11-18, à confirmer au plan du jalon.** Ordre : 24.1 → 24.7 ; test par
+l'utilisateur après chaque sous-lot. Taper la commande `/model` indiquée avant le sous-lot (Claude la
+rappelle s'il tourne sur un autre modèle).
+
+| Sous-lot | Contenu | Modèle |
+|---|---|---|
+| 24.1 Panneau de contrôles qualité | Un seul panneau (suite des « points à vérifier ») : géométrie, propriétés manquantes, unités, postes sans prix, cas EDGE-01 | `/model sonnet` |
+| 24.2 Régression visuelle | Comparaisons 2D, 3D et PDF ; tests par propriétés sur la géométrie et les quantités | `/model sonnet` |
+| 24.3 Épreuves | Maison simple, villa à plusieurs niveaux, petit immeuble, modèles invalides, IFC externes | `/model sonnet` |
+| 24.4 Performance | Seuils fixés avec l'utilisateur, puis mesures sur 1 000, 5 000 et 10 000 éléments : chargement, modification, recalcul, export | `/model opus` |
+| 24.5 Sécurité des imports | IFC et fichiers externes : taille, validation, aucun contenu exécuté | `/model opus` |
+| 24.6 Fiabilité | Exports atomiques, reprise après plantage, sauvegarde et restauration, journal d'audit | `/model opus` |
+| 24.7 Revue humaine et gate G7 | Dossiers pour un architecte ou dessinateur BIM et un métreur indépendant, revue documentée, rapport | `/model sonnet` |
+
 - [ ] Panneau unique de contrôles qualité (prolonge la pastille « points à vérifier ») : géométrie,
       propriétés manquantes, unités incompatibles, postes sans prix
 - [ ] Régression visuelle 2D, 3D et PDF ; tests par propriétés sur la géométrie et les quantités
@@ -1390,6 +1469,20 @@ ter : Madagascar, héritage français), échelles, formats et livrables contract
 ## M25 — Assistant IA (gate G8)
 
 À commencer seulement quand le modèle, les métrés et le DQE sont stables.
+
+**Découpage en sous-lots proposé le 2026-11-18, à confirmer au plan du jalon.** Ordre : 25.1 → 25.6 ; test par
+l'utilisateur après chaque sous-lot. Taper la commande `/model` indiquée avant le sous-lot (Claude la
+rappelle s'il tourne sur un autre modèle). Ces commandes choisissent le modèle de Claude Code
+pour développer ; le modèle de l'assistant dans l'application reste un choix séparé (25.1).
+
+| Sous-lot | Contenu | Modèle |
+|---|---|---|
+| 25.1 Serveur et panneau | Worker Cloudflare qui garde les clés ; panneau assistant dans Fabrics ; choix du modèle de l'assistant | `/model opus` |
+| 25.2 Outils typés | Opérations de Pascal (MCP en adaptateur facultatif) : lire le projet, les niveaux, les éléments, proposer un mur, modifier un élément, créer une ouverture, prévisualiser les quantités, comparer des devis, publier | `/model opus` |
+| 25.3 Aperçu et annulation | Plan d'actions proposé, paramètres et droits vérifiés, aperçu avant écriture, un seul Ctrl+Z pour toute l'action | `/model opus` |
+| 25.4 Explications | Expliquer les métrés (traçabilité de M21) ; proposer des postes de prix, validés par l'utilisateur | `/model sonnet` |
+| 25.5 Refus et journal | Refus des demandes impossibles, unités ambiguës, dimensions incompatibles, prix manquants ; journal sans secret | `/model sonnet` |
+| 25.6 Mesures et gate G8 | Taux de réussite, incidents et retours arrière sur les fixtures, rapport | `/model opus` |
 
 - [ ] Panneau assistant dans Fabrics ; modèle au choix ; clés gardées côté serveur (Worker Cloudflare)
 - [ ] Outils typés sur les opérations de Pascal (opérations d'agent, MCP comme adaptateur facultatif) :

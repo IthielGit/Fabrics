@@ -60,6 +60,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M20 à M25 · Sous-lots et modèle par sous-lot (plan seulement)
+- Demande de l'utilisateur : appliquer à tous les jalons suivants le découpage en sous-lots avec la commande `/model` de chacun, comme pour M19.
+- Fait : `docs/03-ROADMAP.md` : un tableau de sous-lots pour M20 (20.0 à 20.9), M21 (21.0 à 21.8), M22 (22.0 à 22.5), M23 (23.0 à 23.8), M24 (24.1 à 24.7) et M25 (25.1 à 25.6), avec `/model opus` ou `/model sonnet` ; un sous-lot « Décisions » ouvre M20 à M23 (questions métier du roadmap) ; règle ajoutée au déroulé de chaque jalon.
+- Statut : **proposition**, à confirmer dans le plan de chaque jalon. M18 garde son découpage A à F (`docs/phases/M18-plan.md`, branche `feat/m18-bim-model`).
+- Commit : docs(roadmap): sous-lots et modèle par sous-lot de M20 à M25
+
 ### 2026-11-18 — M19 · Découpage en sous-lots validé (plan seulement)
 - Décision de l'utilisateur : M19 découpé en 12 sous-lots (A1 à A7 pour l'interface, B1 à B5 pour l'édition 2D/3D), dans cet ordre, avec un test dans le navigateur après chaque sous-lot.
 - Chaque sous-lot porte la commande `/model sonnet` ou `/model opus` à taper avant de le commencer. Claude ne peut pas changer de modèle tout seul : il rappelle la commande au début du sous-lot.
