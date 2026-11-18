@@ -60,6 +60,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M17 · Décisions sur les fixtures
+- Décisions de l'utilisateur : baie hors du mur **rejetée** (jamais déplacée en silence) ; baies qui se chevauchent : chevauchement **signalé**, surface de l'**union** déduite ; dalles placées comme dans Pascal (dessus à l'altitude du niveau, épaisseur vers le bas) et la **dalle prime** sur les murs (murs arrêtés sous la dalle du dessus).
+- Fait : `fixtures/*/spec.json` mis à jour. HOUSE-02 : murs du rez-de-chaussée mesurés sur 2800 mm ; murs et dalles ajoutés aux résultats attendus (murs nets 283,98 m², 47,088 m³ ; dalles 31,098 m³ ; total 78,186 m³ sans recouvrement). EDGE-01 : cas 1 et 2 précisés (hauteur 1350 mm, allège 900 mm ; union 2,70 m²). HOUSE-01 inchangé.
+- Commit : docs(m17): décisions sur les fixtures (rejet, union, altitude des dalles)
+
 ### 2026-11-18 — M17 · Relecture des fixtures HOUSE-01, HOUSE-02, EDGE-01
 - Fait : rapport de relecture de l'utilisateur enregistré (`docs/phases/M17-fixtures-review.md`). HOUSE-01 et HOUSE-02 : calculs confirmés, aucune erreur arithmétique. EDGE-01 : sept cas analysés, **aucun test exécuté** (à faire en M18).
 - Décisions à prendre : rejet ou décalage d'une baie hors mur ; déduction des chevauchements de baies ; altitudes des dalles pour éviter le double comptage murs + dalles.

@@ -1,17 +1,17 @@
 {
   "id": "EDGE-01",
-  "status": "Rédigé par Claude le 2026-11-17, à vérifier par l'utilisateur.",
+  "status": "Rédigé par Claude le 2026-11-17, relu par l'utilisateur le 2026-11-18 (docs/phases/M17-fixtures-review.md) ; cas 1 et 2 fixés par ses décisions du 2026-11-18. Aucun test exécuté : à écrire en M18 et dans les jalons cités.",
   "rule": "Chaque cas donne une erreur claire ou une exclusion signalée, jamais un résultat faux en silence.",
   "cases": [
     {
       "id": "window-off-wall",
-      "input": "fenêtre de 1200 mm dont le centre est à 300 mm de l'extrémité d'un mur de 4000 mm (dépasse de 300 mm)",
-      "expected": "ramenée sur le mur ou signalée ; jamais une surface déduite hors du mur"
+      "input": "fenêtre de 1200 × 1350 mm (allège 900 mm) dont le centre est à 300 mm de l'extrémité d'un mur de 4000 mm (occupe -300 → 900 : dépasse de 300 mm)",
+      "expected": "rejetée avec un message clair (dépassement de 300 mm) ; jamais déplacée en silence ; aucune surface déduite"
     },
     {
       "id": "overlapping-openings",
-      "input": "deux fenêtres de 1200 mm dont les centres sont à 800 mm l'une de l'autre sur le même mur",
-      "expected": "chevauchement signalé ; surface déduite une seule fois sur la partie commune ou les deux signalées"
+      "input": "deux fenêtres de 1200 × 1350 mm (allège 900 mm) dont les centres sont à 800 mm l'une de l'autre sur le même mur",
+      "expected": "chevauchement de 400 mm signalé ; surface déduite = union, 2000 × 1350 = 2,70 m² (jamais 2 × 1,62 = 3,24 m²)"
     },
     {
       "id": "zero-height-wall",

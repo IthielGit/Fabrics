@@ -9,11 +9,23 @@ Relecteur : l'utilisateur, qui a fourni le rapport ci-dessous (texte repris tel 
 - **EDGE-01 : sept cas analysés, aucun test logiciel exécuté.** Ils ne sont pas « réussis ». Ils deviennent des tests en M18 (ou au plus tard quand le module concerné est écrit).
 - Deux réserves de convention : les surfaces de murs à l'axe ne sont pas des surfaces de finition ; les volumes cumulés murs + dalles supposent une convention altimétrique sans recouvrement.
 
-## Décisions à prendre (ouvertes)
+## Décisions de l'utilisateur (2026-11-18), reportées dans les `spec.json`
 
-1. **window-off-wall** : rejeter la fenêtre mal placée, ou la décaler à 600 mm minimum ? Proposition de Claude : **rejet avec message clair** (jamais de déplacement silencieux) ; si la baie est coupée par la limite du mur, ne déduire que la partie contenue.
-2. **overlapping-openings** : signaler le chevauchement ; déduire l'union (2,00 × h m² si hauteurs et allèges identiques). Hauteurs et allèges manquent dans le cas : à compléter.
-3. **Volumes murs + dalles (HOUSE-02)** : il faut fixer les altitudes des dalles par rapport aux niveaux, sinon le total peut compter deux fois une intersection.
+1. **window-off-wall** : **rejet** avec message clair, jamais de déplacement silencieux, aucune surface déduite.
+2. **overlapping-openings** : chevauchement **signalé**, surface déduite = **union**. Hauteur 1 350 mm et allège 900 mm ajoutées au cas : union 2 000 × 1 350 = **2,70 m²**.
+3. **Altitude des dalles** : comme la scène Pascal, le dessus de la dalle est à l'altitude du niveau et l'épaisseur descend. Une dalle **prime** sur les murs qu'elle recouvre : les murs s'arrêtent sous la dalle du niveau au-dessus. Conséquence pour HOUSE-02 : murs du rez-de-chaussée mesurés sur 2 800 mm (au lieu de 3 000), ce qui change les totaux du § 9 :
+
+| Indicateur | RdC | Étage 1 | Total |
+|---|---:|---:|---:|
+| Surface murale brute à l'axe | 146,44 m² | 156,90 m² | 303,34 m² |
+| Surface murale nette à l'axe | 137,81 m² | 146,17 m² | **283,98 m²** |
+| Volume net des murs | 22,774 m³ | 24,314 m³ | **47,088 m³** |
+| Dalles | 16,000 m³ | 15,098 m³ | 31,098 m³ |
+| **Murs + dalles** (sans recouvrement) | | | **78,186 m³** |
+
+Contrôle : 24,524 − 8,75 m² (emprise des murs) × 0,20 = 22,774 m³. HOUSE-01 (un seul niveau, pas de dalle au-dessus) ne change pas.
+
+Les valeurs du § 9 ci-dessous (294,44 m², 48,838 m³, 79,936 m³) sont celles **d'avant** cette décision.
 
 ## 1. Méthode
 

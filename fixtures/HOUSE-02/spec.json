@@ -1,8 +1,14 @@
 {
   "id": "HOUSE-02",
-  "status": "Calcul à la main rédigé par Claude le 2026-11-17, à vérifier par l'utilisateur. Les feuilles numérotées et les métrés par lot seront fixés en M20 et M21, quand leurs règles existeront.",
+  "status": "Calcul à la main rédigé par Claude le 2026-11-17, vérifié par l'utilisateur le 2026-11-18 (docs/phases/M17-fixtures-review.md) ; murs et dalles ajoutés le 2026-11-18 après la décision sur l'altitude des dalles. Les feuilles numérotées et les métrés par lot seront fixés en M20 et M21, quand leurs règles existeront.",
   "units": { "length": "mm", "area": "m² (2 décimales)", "volume": "m³ (3 décimales)", "angle": "degrés" },
-  "base": "Chaque niveau reprend l'enveloppe, les cloisons et les pièces de HOUSE-01 (même origine).",
+  "base": "Chaque niveau reprend l'enveloppe, les cloisons, les ouvertures extérieures et les pièces de HOUSE-01 (même origine).",
+  "conventions": {
+    "slabAltitude": "dessus de la dalle = altitude du niveau ; l'épaisseur descend (solide de altitude − épaisseur à altitude), comme la scène Pascal. Une dalle prime sur les murs qu'elle recouvre : un mur s'arrête sous la dalle du niveau au-dessus (hauteur mesurée = hauteur du niveau − épaisseur de cette dalle). Décision de l'utilisateur du 2026-11-18.",
+    "slabs": "une dalle de 8000 × 10000 × 200 mm par niveau : RdC de -200 à 0 mm, étage de 2800 à 3000 mm (percée par la trémie)",
+    "wallHeights": "murs du RdC mesurés sur 2800 mm (sous la dalle de l'étage) ; murs de l'étage sur 3000 mm (pas de dalle au-dessus, la toiture n'est pas une dalle)",
+    "union": "avec cette règle, murs et dalles ne se recouvrent plus : la somme des volumes nets est le volume réel de l'ensemble"
+  },
   "levels": [
     { "name": "Rez-de-chaussée", "elevation": 0, "height": 3000, "slabThickness": 200 },
     { "name": "Étage 1", "elevation": 3000, "height": 3000, "slabThickness": 200 }
@@ -69,10 +75,43 @@
       "ridgeAltitudeCheck": "dessus des murs de l'étage 3000 + 3000 = 6000, + 2801"
     },
     "perLevel": {
-      "Rez-de-chaussée": { "roomsTotal_m2": 71.25, "openings": { "doors": 1, "windows": 4 } },
-      "Étage 1": { "roomsGross_m2": 71.25, "roomsNet_m2": 66.74, "openings": { "doors": 1, "windows": 4, "bays": 1 } }
+      "Rez-de-chaussée": {
+        "roomsTotal_m2": 71.25,
+        "openings": { "doors": 1, "windows": 4, "area_m2": 8.63 },
+        "walls": {
+          "measuredHeight_mm": 2800,
+          "grossArea_m2": 146.44,
+          "netArea_m2": 137.81,
+          "netVolume_m3": 22.774,
+          "check": "axe 52,30 m × 2,80 = 146,44 m² ; − 8,63 = 137,81 m² ; volume : ENV 7,04 m² × 2,80 = 19,712 − 1,726 = 17,986 ; cloisons 1,71 × 2,80 = 4,788 ; total 22,774 m³ (= 24,524 − 8,75 m² d'emprise des murs × 0,20)"
+        },
+        "slab": { "area_m2": 80.0, "volume_m3": 16.0 }
+      },
+      "Étage 1": {
+        "roomsGross_m2": 71.25,
+        "roomsNet_m2": 66.74,
+        "openings": { "doors": 1, "windows": 4, "bays": 1, "area_m2": 10.73 },
+        "walls": {
+          "measuredHeight_mm": 3000,
+          "grossArea_m2": 156.9,
+          "netArea_m2": 146.17,
+          "netVolume_m3": 24.314,
+          "check": "52,30 × 3 = 156,90 m² ; − 10,73 = 146,17 m² ; 24,524 − 0,210 (passage dans C1, 2,10 m² × 0,10) = 24,314 m³"
+        },
+        "slab": { "area_m2": 75.49, "volume_m3": 15.098, "check": "80 − 4,51 (trémie) = 75,49 m² ; × 0,20 = 15,098 m³" }
+      }
     },
-    "building": { "roomsGross_m2": 142.5, "roomsNet_m2": 137.99 },
+    "building": {
+      "roomsGross_m2": 142.5,
+      "roomsNet_m2": 137.99,
+      "wallsGrossArea_m2": 303.34,
+      "wallsNetArea_m2": 283.98,
+      "wallsNetVolume_m3": 47.088,
+      "slabsArea_m2": 155.49,
+      "slabsVolume_m3": 31.098,
+      "wallsAndSlabsVolume_m3": 78.186,
+      "excluded": "escalier, toiture et pignons (géométrie ou épaisseur non définies)"
+    },
     "dqe": { "total": null, "note": "Aucun prix avant M23." }
   }
 }
