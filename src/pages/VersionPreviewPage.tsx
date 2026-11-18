@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router'
 import ReadOnlySidePanel from '../components/editor/ReadOnlySidePanel'
 import ReadOnlyViewer from '../components/editor/ReadOnlyViewer'
@@ -14,6 +14,9 @@ import { previousVersionOf, type ProjectPerson, type ProjectVersion } from '../f
 import { fr } from '../i18n/fr'
 import { useEditorStore } from '../stores/editorStore'
 import { useVersionPreviewStore } from '../stores/versionPreviewStore'
+
+// M19 A2d : un projet Plan s'affiche dans l'éditeur de Pascal (chargé à la demande, il est lourd).
+const PascalVersionPreview = lazy(() => import('../pascal/PascalVersionPreview'))
 
 interface Loaded {
   key: string
@@ -130,6 +133,26 @@ export default function VersionPreviewPage() {
       useEditorStore.getState().setNotice(fr.history.preview.copyError, 'error')
       setBusy(null)
     }
+  }
+
+  const banner = (
+    <VersionBanner
+      projectId={projectId}
+      version={version}
+      changes={loaded.changes ?? null}
+      people={loaded.people ?? new Map()}
+      canRestore={loaded.canName ?? false}
+      busy={busy}
+      onRestore={restore}
+      onCopy={() => void copy()}
+    />
+  )
+  if (useEditorStore.getState().project?.kind === 'plan') {
+    return (
+      <Suspense fallback={<p className="pascal-shell p-8 text-muted-foreground">{fr.common.loading}</p>}>
+        <PascalVersionPreview banner={banner} canName={loaded.canName ?? false} versionId={versionId} />
+      </Suspense>
+    )
   }
 
   return (

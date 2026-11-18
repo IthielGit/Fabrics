@@ -61,6 +61,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M19 · A2d Historique et aperçu de version dans l'éditeur de Pascal
+- Onglet « Historique » de la barre de Pascal (avec un compte) : versions, noms, sessions, comme avant ; restaurer passe par `usePendingRestore`, monté dans la page Pascal, et la scène restaurée est appliquée à Pascal.
+- Aperçu d'une version d'un projet Plan (`/p/:id/versions/:versionId`) : éditeur de Pascal en mode aperçu (`previewScene`, `isVersionPreviewMode` : aucune modification possible), bandeau de Fabrics (Restaurer, Faire une copie) en barre du haut, onglets Historique et Métrés de la version (`src/pascal/PascalVersionPreview.tsx`). Un projet Visuel garde l'ancien aperçu.
+- Non vérifié dans le navigateur (il faut un compte Supabase) : à tester par l'utilisateur à la fin d'A3. Limite : les changements depuis la version précédente ne sont pas surlignés dans Pascal (ils l'étaient sur l'ancien plan).
+- Vérification : build ✓ lint ✓ tests ✓.
+
 ### 2026-11-18 — M19 · A2b Métrés et A2c Commentaires dans l'éditeur de Pascal
 - Pont entre les deux éditeurs : la page `/p/:id/pascal` ouvre maintenant le projet dans `editorStore`, comme l'ancien éditeur. Chaque enregistrement de Pascal (`onSave`) écrit sa scène dans la scène du projet (`SceneBinding.pushScene`, une étape d'annulation, testé) ; une scène venue d'ailleurs (autre personne, version restaurée) est appliquée à Pascal (`applySceneGraphToEditor`). Enregistrement automatique, collaboration (`useCollaboration`), restauration de version et commentaires suivent sans être réécrits.
 - Correctif `useAutosave` : la scène d'un plan est mise à jour juste après sa vue ; l'enregistrement est reprogrammé avec la scène à jour (sinon l'ancienne scène était enregistrée). Vérifié dans Chromium : mur allongé de 1000 mm dans Pascal → 2900 mm dans la vue de Fabrics, retrouvé après rechargement.
