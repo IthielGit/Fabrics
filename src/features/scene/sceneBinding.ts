@@ -190,6 +190,19 @@ export class SceneBinding {
     if (this.pending) this.applyShared(this.pending)
   }
 
+  /**
+   * Scène venue de l'éditeur de Pascal (M19 A2) : écrite dans le `Y.Doc` comme un geste de cet
+   * éditeur (une étape d'annulation), puis sa vue est affichée. Sans effet si rien n'a changé.
+   */
+  pushScene(next: PlanScene): void {
+    if (!this.synced || !this.scene || deepEqual(next, this.scene)) return
+    const shown = this.host.getDocument()
+    if (!shown) return
+    this.undoManager.stopCapturing()
+    applySceneDiff(this.ydoc, this.scene, next, SCENE_LOCAL_ORIGIN)
+    this.adopt(next, shown, false)
+  }
+
   undo(): void {
     if (!this.synced) return
     this.undoManager.stopCapturing()

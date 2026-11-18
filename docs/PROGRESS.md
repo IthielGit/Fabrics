@@ -61,6 +61,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M19 · A2b Métrés et A2c Commentaires dans l'éditeur de Pascal
+- Pont entre les deux éditeurs : la page `/p/:id/pascal` ouvre maintenant le projet dans `editorStore`, comme l'ancien éditeur. Chaque enregistrement de Pascal (`onSave`) écrit sa scène dans la scène du projet (`SceneBinding.pushScene`, une étape d'annulation, testé) ; une scène venue d'ailleurs (autre personne, version restaurée) est appliquée à Pascal (`applySceneGraphToEditor`). Enregistrement automatique, collaboration (`useCollaboration`), restauration de version et commentaires suivent sans être réécrits.
+- Correctif `useAutosave` : la scène d'un plan est mise à jour juste après sa vue ; l'enregistrement est reprogrammé avec la scène à jour (sinon l'ancienne scène était enregistrée). Vérifié dans Chromium : mur allongé de 1000 mm dans Pascal → 2900 mm dans la vue de Fabrics, retrouvé après rechargement.
+- A2b : onglet « Métrés » dans la barre latérale de Pascal (panneau Fabrics complet : Client / Technique, Excel, CSV, pièces, plafonds, murs). Les couleurs claires des panneaux Fabrics passent en sombre par la classe `fabrics-on-dark` (variables de couleur de Tailwind réassignées, `src/pascal-theme.css`), sans réécrire les panneaux.
+- A2c : onglet « Commentaires » (avec un compte) : liste, fils, réponses ; « Nouveau » ouvre une bulle dans le panneau, posée sur l'objet sélectionné dans Pascal ou au milieu du plan (`features/scene/commentDraft.ts`, testé ; `src/pascal/PascalCommentsTab.tsx`). Messages de Fabrics (`Notice`) affichés par-dessus l'éditeur.
+- Constats : Pascal étiquette le Séjour à 34,2 m² et les métrés Fabrics donnent 31,85 m² (axe des murs / contour tracé) : règles à trancher en M21 ; épingles de commentaires pas encore affichées dans la vue 3D / 2D de Pascal ; cliquer un fil ne recentre pas la vue de Pascal.
+- Vérification : build ✓ lint ✓ 3 082 tests ✓ ; essai Chromium en mode local (sans compte : commentaires non testés).
+
 ### 2026-11-18 — Nettoyage des branches : on travaille sur `main`
 - Demande de l'utilisateur : trop de branches polluaient le dépôt. A2a validé et fusionné dans `main`.
 - Fait : les 45 branches locales et les 2 branches distantes restantes (toutes déjà contenues dans `main`) et les worktrees `Fabrics-m17` et `Fabrics-m19` sont supprimés. Il ne reste que `main`, en local et sur `origin`.

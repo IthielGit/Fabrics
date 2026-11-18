@@ -115,6 +115,9 @@ export const fabricsFr = {
   'pascalEditor.notPlan': ['L’éditeur de Pascal ouvre seulement les projets Plan, pas les Visuels.'],
   'pascalEditor.loadError': ['Impossible de charger ce projet.'],
   'projects.openInPascal': ['Ouvrir dans l’éditeur Pascal (essai)'],
+  'pascalEditor.tabMetres': ['Métrés'],
+  'pascalEditor.tabComments': ['Commentaires'],
+  'pascalEditor.tabHistory': ['Historique'],
 } as const
 
 export type FabricsMessageId = keyof typeof fabricsFr

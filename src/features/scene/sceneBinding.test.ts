@@ -171,3 +171,47 @@ describe('SceneBinding : deux éditeurs sur la même scène', () => {
     expect(firstWall(b.document).points[0]).toBe(wall.points[0])
   })
 })
+
+describe('SceneBinding.pushScene : scène venue de l’éditeur de Pascal (M19 A2)', () => {
+  /** Même scène, premier mur déplacé de `dx` m (comme un geste dans Pascal). */
+  function movedScene(binding: SceneBinding, wallId: string, dx: number) {
+    const scene = binding.getScene()!
+    const id = `wall_${wallId}__0`
+    const node = scene.nodes[id]
+    const start = node.start as number[]
+    return { ...scene, nodes: { ...scene.nodes, [id]: { ...node, start: [start[0] + dx, start[1]] } } }
+  }
+
+  it('écrit la scène dans le Y.Doc et met à jour la vue de l’éditeur (métrés, cotes)', () => {
+    const { editor, binding } = solo()
+    const wall = firstWall(editor.document)
+    const next = movedScene(binding, wall.id, 0.1)
+    binding.pushScene(next)
+    expect(binding.getScene()).toBe(next)
+    expect((readScene(binding.ydoc)!.nodes[`wall_${wall.id}__0`].start as number[])[0]).toBeCloseTo(
+      (next.nodes[`wall_${wall.id}__0`].start as number[])[0],
+      9,
+    )
+    expect(firstWall(editor.document).points[0]).toBeCloseTo(wall.points[0] + 100, 6)
+    expect(editor.remote.at(-1)?.fromPeer).toBe(false)
+  })
+
+  it('une scène identique ne change rien', () => {
+    const { editor, binding } = solo()
+    const shown = editor.document
+    binding.pushScene({ ...binding.getScene()! })
+    expect(editor.document).toBe(shown)
+    expect(binding.canUndo()).toBe(false)
+  })
+
+  it('chaque scène reçue est une étape d’annulation', () => {
+    const { editor, binding } = solo()
+    const wall = firstWall(editor.document)
+    binding.pushScene(movedScene(binding, wall.id, 0.1))
+    binding.pushScene(movedScene(binding, wall.id, 0.1))
+    binding.undo()
+    expect(firstWall(editor.document).points[0]).toBeCloseTo(wall.points[0] + 100, 6)
+    binding.undo()
+    expect(firstWall(editor.document).points[0]).toBeCloseTo(wall.points[0], 6)
+  })
+})

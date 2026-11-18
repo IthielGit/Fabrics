@@ -13,6 +13,13 @@ interface CommentComposerOverlayProps {
   stagePosition: { x: number; y: number }
   /** Taille de la zone du canevas (la bulle reste dedans). */
   size: { width: number; height: number }
+  /** Éditeur de Pascal (M19 A2c) : bulle dans le panneau Commentaires, pas sur le plan. */
+  inline?: boolean
+}
+
+/** Bulle de saisie dans le panneau Commentaires (éditeur de Pascal, M19 A2c). */
+export function InlineCommentComposer() {
+  return <CommentComposerOverlay inline scale={1} stagePosition={{ x: 0, y: 0 }} size={{ width: 0, height: 0 }} />
 }
 
 const WIDTH = 288
@@ -26,14 +33,14 @@ const COUNTER_FROM = MAX_COMMENT_LENGTH - 200
  * Bulle de saisie d'un commentaire, posée au point cliqué (M16, lot B). Entrée envoie, Maj+Entrée fait
  * un retour à la ligne, Échap annule. Le commentaire n'entre pas dans l'historique d'annulation du plan.
  */
-export default function CommentComposerOverlay({ scale, stagePosition, size }: CommentComposerOverlayProps) {
+export default function CommentComposerOverlay({ scale, stagePosition, size, inline = false }: CommentComposerOverlayProps) {
   const draft = useCommentsStore((state) => state.draft)
   const projectId = useEditorStore((state) => state.project?.id)
   if (!draft || !projectId) return null
   // Un autre clic = une nouvelle bulle, avec un texte vide (composant recréé).
   const key = `${draft.x}|${draft.y}|${draft.elementId ?? ''}`
   return (
-    <Composer key={key} draft={draft} projectId={projectId} scale={scale} stagePosition={stagePosition} size={size} />
+    <Composer key={key} draft={draft} projectId={projectId} scale={scale} stagePosition={stagePosition} size={size} inline={inline} />
   )
 }
 
@@ -42,7 +49,7 @@ interface ComposerProps extends CommentComposerOverlayProps {
   projectId: string
 }
 
-function Composer({ draft, projectId, scale, stagePosition, size }: ComposerProps) {
+function Composer({ draft, projectId, scale, stagePosition, size, inline }: ComposerProps) {
   const closeDraft = useCommentsStore((state) => state.closeDraft)
   const targetName = useEditorStore((state) =>
     draft.elementId ? (state.project?.document.elements.find((el) => el.id === draft.elementId)?.name ?? null) : null,
@@ -96,8 +103,12 @@ function Composer({ draft, projectId, scale, stagePosition, size }: ComposerProp
         event.preventDefault()
         void send()
       }}
-      className="absolute z-20 flex flex-col gap-2 rounded-lg border border-slate-300 bg-white p-3 shadow-xl"
-      style={{ left, top, width: WIDTH }}
+      className={
+        inline
+          ? 'mt-3 flex flex-col gap-2 rounded-lg border border-slate-300 bg-white p-3'
+          : 'absolute z-20 flex flex-col gap-2 rounded-lg border border-slate-300 bg-white p-3 shadow-xl'
+      }
+      style={inline ? undefined : { left, top, width: WIDTH }}
     >
       {targetName && <p className="truncate text-xs text-slate-600">{fr.comments.onElement(targetName)}</p>}
       <textarea

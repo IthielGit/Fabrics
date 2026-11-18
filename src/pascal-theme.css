@@ -108,3 +108,47 @@
   background: oklch(0.488 0.243 264.376 / 60%);
   color: oklch(0.985 0 0);
 }
+
+/*
+ * Panneaux de Fabrics (Métrés, Commentaires, Historique…) montés dans la barre latérale sombre de
+ * l'éditeur de Pascal (M19 A2). Ils sont écrits avec les couleurs claires de Tailwind (`slate`,
+ * `white`, teintes `-50` / `-100`) ; Tailwind v4 lit chaque couleur dans une variable CSS : on
+ * les réassigne ici pour que ces panneaux s'affichent en sombre sans être réécrits un par un.
+ */
+.fabrics-on-dark {
+  --color-white: oklch(0.205 0 0);
+  --color-black: oklch(0.985 0 0);
+  --color-slate-50: oklch(0.235 0 0);
+  --color-slate-100: oklch(0.269 0 0);
+  --color-slate-200: oklch(0.32 0 0);
+  --color-slate-300: oklch(0.4 0 0);
+  --color-slate-400: oklch(0.55 0 0);
+  --color-slate-500: oklch(0.65 0 0);
+  --color-slate-600: oklch(0.72 0 0);
+  --color-slate-700: oklch(0.82 0 0);
+  --color-slate-800: oklch(0.9 0 0);
+  --color-slate-900: oklch(0.95 0 0);
+  --color-slate-950: oklch(0.985 0 0);
+  --color-indigo-50: oklch(0.3 0.06 277);
+  --color-indigo-100: oklch(0.34 0.08 277);
+  --color-indigo-200: oklch(0.42 0.1 277);
+  --color-indigo-700: oklch(0.8 0.1 277);
+  --color-indigo-800: oklch(0.85 0.08 277);
+  --color-indigo-900: oklch(0.9 0.06 277);
+  --color-red-50: oklch(0.3 0.06 25);
+  --color-red-100: oklch(0.34 0.08 25);
+  --color-red-200: oklch(0.42 0.1 25);
+  --color-red-700: oklch(0.78 0.12 25);
+  --color-red-800: oklch(0.84 0.1 25);
+  --color-amber-50: oklch(0.3 0.05 80);
+  --color-amber-100: oklch(0.34 0.06 80);
+  --color-amber-200: oklch(0.42 0.08 80);
+  --color-amber-700: oklch(0.82 0.12 80);
+  --color-amber-800: oklch(0.86 0.1 80);
+  --color-emerald-50: oklch(0.3 0.05 160);
+  --color-emerald-100: oklch(0.34 0.06 160);
+  --color-emerald-700: oklch(0.8 0.12 160);
+  --color-emerald-800: oklch(0.85 0.1 160);
+  color: var(--color-slate-900);
+  color-scheme: dark;
+}

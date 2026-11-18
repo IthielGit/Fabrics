@@ -3,6 +3,7 @@ import { create } from 'zustand'
 import { setCommentAnchorResolver } from '../features/comments/commentAnchoring'
 import { anchorOfElement } from '../features/scene/commentAnchors'
 import { SceneBinding } from '../features/scene/sceneBinding'
+import type { PlanScene } from '../features/scene/sceneTypes'
 import type { DimensioningMode } from '../features/dimensioning/types'
 import type { MetresVersion } from '../features/measurements/tables'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
@@ -447,6 +448,14 @@ export function setSharedPlanBinding(binding: SceneBinding | null): void {
   } else {
     reopenLocalPlanBinding?.()
   }
+}
+
+/**
+ * Scène modifiée dans l'éditeur de Pascal (M19 A2) : écrite dans la scène du projet ouvert (locale ou
+ * partagée en collaboration). L'enregistrement, les métrés, les commentaires et les versions suivent.
+ */
+export function pushPascalScene(scene: PlanScene): void {
+  planBinding?.pushScene(scene)
 }
 
 /** Nombre d'étapes qu'« annuler » peut défaire : historique de la scène (Plan) ou local (Visuel). */

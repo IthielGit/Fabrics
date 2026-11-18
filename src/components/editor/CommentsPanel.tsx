@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { MessageSquare, Plus } from 'lucide-react'
-import { useMemo, useState } from 'react'
+import { useMemo, useState, type ReactNode } from 'react'
 import { colorForUser } from '../../features/collab/presence'
 import {
   buildThreads,
@@ -24,7 +24,14 @@ const FILTERS: ThreadFilter[] = ['open', 'resolved', 'all']
  * Panneau « Commentaires » (M16, lot C) : fils du projet, filtrés ouverts / résolus / tous, du plus
  * récemment commenté au plus ancien. Cliquer un fil l'ouvre et centre le plan sur son épingle.
  */
-export default function CommentsPanel() {
+interface CommentsPanelProps {
+  /** Éditeur de Pascal (M19 A2c) : « Nouveau » ouvre un brouillon ici au lieu de l'outil de pose. */
+  onNew?: () => void
+  /** Bulle de saisie affichée en tête du panneau (éditeur de Pascal). */
+  composer?: ReactNode
+}
+
+export default function CommentsPanel({ onNew, composer }: CommentsPanelProps = {}) {
   const comments = useCommentsStore((state) => state.comments)
   const loaded = useCommentsStore((state) => state.loaded)
   const people = useCommentsStore((state) => state.people)
@@ -52,7 +59,7 @@ export default function CommentsPanel() {
         {/* L'outil « Commenter » se lance ici (ou avec C), et plus depuis la colonne d'outils. */}
         <Button
           variant="primary"
-          onClick={() => setTool('comment')}
+          onClick={() => (onNew ? onNew() : setTool('comment'))}
           aria-pressed={activeTool === 'comment'}
           title={`${fr.comments.newTitle} (C)`}
           className="h-8 rounded-lg px-2.5 py-0 text-xs"
@@ -64,6 +71,7 @@ export default function CommentsPanel() {
       <p className="mt-1 text-xs text-slate-600">
         {activeTool === 'comment' ? fr.comments.placing : fr.comments.panelIntro}
       </p>
+      {composer}
 
       <div role="group" aria-label={fr.comments.filterLabel} className="mt-3 flex rounded-md border border-slate-300 p-0.5">
         {FILTERS.map((value) => (

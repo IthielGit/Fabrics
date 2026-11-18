@@ -33,7 +33,10 @@ export function useAutosave() {
 
     // `revision` repasse à 0 à l'ouverture d'un projet : seules les vraies modifications comptent.
     const unsubscribe = useEditorStore.subscribe((state, previous) => {
-      if (state.revision !== previous.revision && state.revision > 0 && state.project) {
+      // Projet Plan : la scène (seule enregistrée) est mise à jour juste après la vue, sans nouvelle
+      // révision ; on reprogramme alors avec la scène à jour (M19 A2, éditeur de Pascal).
+      const changed = state.revision !== previous.revision || state.project?.scene !== previous.project?.scene
+      if (changed && state.revision > 0 && state.project) {
         const fromPeer = state.remoteRevision === state.revision
         if (fromPeer && !useCollabStore.getState().saveLeader) {
           skippedForLeader = true
