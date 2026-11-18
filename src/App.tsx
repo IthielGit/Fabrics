@@ -9,6 +9,7 @@ import LoginPage from './pages/LoginPage'
 import ProjectPage from './pages/ProjectPage'
 import VersionPreviewPage from './pages/VersionPreviewPage'
 import ResetPasswordPage from './pages/ResetPasswordPage'
+import SettingsPage from './pages/SettingsPage'
 import SharePage from './pages/SharePage'
 import { useAuthStore } from './stores/authStore'
 
@@ -21,6 +22,7 @@ export default function App() {
       <Routes>
         <Route element={<RequireAuth />}>
           <Route path="/" element={<HomePage />} />
+          <Route path="/reglages" element={<SettingsPage />} />
           <Route path="/p/:projectId" element={<ProjectPage />} />
           <Route path="/p/:projectId/versions/:versionId" element={<VersionPreviewPage />} />
           <Route path="/i/:token" element={<InvitePage />} />

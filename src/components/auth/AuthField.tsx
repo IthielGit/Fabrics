@@ -17,7 +17,7 @@ interface AuthFieldProps {
 }
 
 const INPUT_BASE =
-  'w-full rounded-lg border bg-white px-3.5 py-2.5 text-base text-slate-900 caret-indigo-600 placeholder:text-slate-400 outline-none transition-[border-color,box-shadow] duration-150 ease-out focus:ring-4'
+  'w-full rounded-lg border bg-transparent px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground outline-none transition-[border-color,box-shadow] duration-150 ease-out focus:ring-2'
 
 export default function AuthField({
   label,
@@ -38,7 +38,7 @@ export default function AuthField({
   return (
     <div className="flex flex-col gap-1.5">
       <div className="flex items-baseline justify-between gap-3">
-        <label htmlFor={id} className="text-sm font-medium text-slate-800">
+        <label htmlFor={id} className="text-sm font-medium text-foreground">
           {label}
         </label>
         {labelAction}
@@ -55,8 +55,8 @@ export default function AuthField({
           onChange={(event) => onChange(event.target.value)}
           className={`${INPUT_BASE} ${isPassword ? 'pr-12' : ''} ${
             invalid
-              ? 'border-red-500 focus:border-red-500 focus:ring-red-100'
-              : 'border-slate-300 focus:border-indigo-600 focus:ring-indigo-100'
+              ? 'border-destructive focus:border-destructive focus:ring-destructive/30'
+              : 'border-input focus:border-ring focus:ring-ring/30'
           }`}
         />
         {isPassword && (
@@ -65,14 +65,14 @@ export default function AuthField({
             onClick={() => setRevealed((shown) => !shown)}
             aria-label={revealed ? fr.auth.hidePassword : fr.auth.showPassword}
             aria-pressed={revealed}
-            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-slate-500 transition-colors duration-150 hover:text-slate-800 focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-indigo-600"
+            className="absolute inset-y-0 right-0 flex w-11 items-center justify-center rounded-r-lg text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-ring"
           >
             {revealed ? <EyeOff size={18} aria-hidden="true" /> : <Eye size={18} aria-hidden="true" />}
           </button>
         )}
       </div>
       {hint && (
-        <span id={`${id}-hint`} className="text-xs text-slate-500">
+        <span id={`${id}-hint`} className="text-xs text-muted-foreground">
           {hint}
         </span>
       )}

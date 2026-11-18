@@ -1,6 +1,6 @@
-import { ArrowRight, BookOpen, Building2, ChevronRight, Loader2, PencilRuler, Ruler, Search } from 'lucide-react'
+import { BookOpen, Building2, ChevronRight, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
 import DeleteDialog from '../components/home/DeleteDialog'
 import ImportLocalDialog from '../components/home/ImportLocalDialog'
@@ -9,24 +9,26 @@ import ProjectCard from '../components/home/ProjectCard'
 import RenameDialog from '../components/home/RenameDialog'
 import SharedProjectCard from '../components/home/SharedProjectCard'
 import { useSharedProjects } from '../components/home/useSharedProjects'
-import Button from '../components/ui/Button'
+import { AppHeader, AppShell, ICON_BUTTON, PRIMARY_PILL, SECONDARY_PILL } from '../components/shell/AppShell'
+import { displayProjectName } from '../features/documents/projectName'
 import { filterProjectsByName } from '../features/persistence/filterProjects'
 import { wasImportAsked } from '../features/persistence/importPrompt'
 import { localRepository } from '../features/persistence/repository'
 import type { ProjectSummary } from '../features/persistence/types'
 import { removeMember } from '../features/sharing/membersApi'
 import type { SharedProjectSummary } from '../features/sharing/membersLogic'
-import { fr } from '../i18n/fr'
+import { useT } from '../i18n/useT'
 import { useAuthStore } from '../stores/authStore'
 import { useProjectsStore } from '../stores/projectsStore'
-import { displayProjectName } from '../features/documents/projectName'
 
 type Dialog =
   | { type: 'rename'; project: ProjectSummary }
   | { type: 'delete'; project: ProjectSummary }
   | { type: 'leave'; project: SharedProjectSummary }
 
+/** Accueil des projets, d'après `app/page.tsx` de Pascal (M19 A1) : en-tête, création, grille de cartes. */
 export default function HomePage() {
+  const t = useT()
   const navigate = useNavigate()
   const { projects, status, refresh, createPlan, createExample, createLargeHouse, rename, duplicate, remove } =
     useProjectsStore()
@@ -70,187 +72,114 @@ export default function HomePage() {
     }
   }
 
-  const handleCreatePlan = () => openNew('plan', createPlan)
-  const handleCreateExample = () => openNew('example', createExample)
-  const handleCreateLargeHouse = () => openNew('largeHouse', createLargeHouse)
-
-  const focusRing =
-    'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-50'
-
   const examples = [
-    { key: 'example', Icon: BookOpen, card: fr.home.cards.example, onOpen: handleCreateExample },
-    { key: 'largeHouse', Icon: Building2, card: fr.home.cards.largeHouse, onOpen: handleCreateLargeHouse },
+    { key: 'example', Icon: BookOpen, title: t('home.example.title'), text: t('home.example.text'), create: createExample },
+    {
+      key: 'largeHouse',
+      Icon: Building2,
+      title: t('home.largeHouse.title'),
+      text: t('home.largeHouse.text'),
+      create: createLargeHouse,
+    },
   ]
 
+  const focusRing = 'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring'
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-900">
-      <header className="border-b border-slate-200/80 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center gap-3 px-6 py-4">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-indigo-950 text-indigo-200 shadow-sm shadow-indigo-950/20">
-            <PencilRuler size={18} aria-hidden="true" />
-          </span>
-          <h1 className="text-xl font-bold tracking-tight text-indigo-950">{fr.app.name}</h1>
-          <AccountButton />
-        </div>
-      </header>
+    <AppShell>
+      <AppHeader>
+        <button
+          type="button"
+          className={PRIMARY_PILL}
+          disabled={opening !== null}
+          aria-busy={opening === 'plan'}
+          onClick={() => void openNew('plan', createPlan)}
+        >
+          {opening === 'plan' ? <Loader2 size={16} aria-hidden="true" className="animate-spin" /> : <Plus size={16} aria-hidden="true" />}
+          {t('home.newPlan')}
+        </button>
+        <Link to="/reglages" aria-label={t('home.settings')} title={t('home.settings')} className={ICON_BUTTON}>
+          <Settings size={16} aria-hidden="true" />
+        </Link>
+        <AccountButton />
+      </AppHeader>
 
-      <main className="mx-auto max-w-5xl px-6 pb-16 pt-12">
-        <h2 className="text-2xl font-semibold tracking-tight text-balance text-slate-950">
-          {fr.home.startTitle}
-        </h2>
-
-        <div className="mt-6 grid grid-cols-1 gap-5 lg:grid-cols-5">
-          <button
-            type="button"
-            onClick={() => void handleCreatePlan()}
-            disabled={opening !== null}
-            aria-busy={opening === 'plan'}
-            className={`rise group disabled:cursor-wait relative flex min-h-64 flex-col items-start justify-end overflow-hidden rounded-3xl bg-indigo-950 p-7 text-left shadow-xl shadow-indigo-950/20 ring-1 ring-indigo-900 transition-shadow duration-300 hover:shadow-2xl hover:shadow-indigo-950/30 lg:col-span-3 ${focusRing}`}
-          >
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgb(165_180_252/0.14)_1px,transparent_1px),linear-gradient(to_bottom,rgb(165_180_252/0.14)_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_at_top_right,black,transparent_70%)]"
-            />
-            <svg
-              aria-hidden="true"
-              viewBox="0 0 220 150"
-              fill="none"
-              className="pointer-events-none absolute right-6 top-6 w-44 text-indigo-300/70 transition-transform duration-500 ease-out group-hover:-translate-y-0.5 group-hover:scale-[1.03] sm:w-56"
+      <main className="mx-auto max-w-6xl px-6 pb-16 pt-10">
+        {status === 'ready' && projects.length === 0 && (
+          <div className="flex flex-col items-center justify-center gap-4 py-16 text-center">
+            <Ruler size={40} aria-hidden="true" className="text-muted-foreground/60" />
+            <p className="font-medium">{t('home.emptyTitle')}</p>
+            <p className="max-w-sm text-sm text-muted-foreground">{t('home.emptyText')}</p>
+            <button
+              type="button"
+              className={PRIMARY_PILL}
+              disabled={opening !== null}
+              onClick={() => void openNew('plan', createPlan)}
             >
-              <path
-                d="M8 8h204v134H8z M8 78h96 M140 8v70 M104 78v64"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinejoin="round"
-              />
-              <path d="M104 100a22 22 0 0 0 22-22" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M104 78h22" stroke="currentColor" strokeWidth="1.5" />
-              <path d="M8 156h204 M8 152v8 M212 152v8" stroke="currentColor" strokeWidth="1" opacity="0.6" />
-            </svg>
-            <Ruler size={22} className="relative text-indigo-300" aria-hidden="true" />
-            <span className="relative mt-3 flex w-full items-center justify-between gap-4 text-2xl font-semibold tracking-tight text-white">
-              {fr.home.cards.plan.title}
-              {opening === 'plan' ? (
-                <Loader2 size={22} aria-hidden="true" className="shrink-0 animate-spin text-indigo-300" />
-              ) : (
-                <ArrowRight
-                  size={22}
-                  aria-hidden="true"
-                  className="shrink-0 text-indigo-300 transition-transform duration-300 ease-out group-hover:translate-x-1"
-                />
-              )}
-            </span>
-            <span className="relative mt-2 max-w-sm text-base leading-relaxed text-indigo-200">
-              {fr.home.cards.plan.text}
-            </span>
-          </button>
-
-          <section
-            aria-labelledby="examples-family"
-            className="rise flex flex-col rounded-3xl border border-slate-200 bg-white p-2 shadow-sm [animation-delay:90ms] lg:col-span-2"
-          >
-            <h3 id="examples-family" className="px-4 pb-1 pt-4 text-base font-semibold text-slate-900">
-              {fr.home.examplesFamily}
-            </h3>
-            <ul className="flex flex-1 flex-col divide-y divide-slate-100">
-              {examples.map(({ key, Icon, card, onOpen }) => (
-                <li key={key} className="flex flex-1">
-                  <button
-                    type="button"
-                    onClick={() => void onOpen()}
-                    disabled={opening !== null}
-                    aria-busy={opening === key}
-                    className={`group flex disabled:cursor-wait w-full items-start gap-4 rounded-2xl px-4 py-4 text-left transition-colors hover:bg-indigo-50/60 ${focusRing}`}
-                  >
-                    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 transition-colors group-hover:bg-indigo-100">
-                      <Icon size={20} aria-hidden="true" />
-                    </span>
-                    <span className="flex min-w-0 flex-1 flex-col gap-1">
-                      <span className="font-semibold text-slate-900">{card.title}</span>
-                      <span className="text-sm leading-relaxed text-slate-600">{card.text}</span>
-                    </span>
-                    {opening === key ? (
-                      <Loader2 size={18} aria-hidden="true" className="mt-3 shrink-0 animate-spin text-indigo-500" />
-                    ) : (
-                      <ChevronRight
-                        size={18}
-                        aria-hidden="true"
-                        className="mt-3 shrink-0 text-slate-300 transition-all duration-200 group-hover:translate-x-0.5 group-hover:text-indigo-500"
-                      />
-                    )}
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
-        <p className="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600">
-          {fr.home.storageReminder}
-        </p>
-
-        <h2 className="mt-16 text-2xl font-semibold tracking-tight text-slate-950">{fr.home.title}</h2>
-
-        {(status === 'idle' || status === 'loading') && projects.length === 0 && (
-          <p className="mt-4 text-slate-500">{fr.common.loading}</p>
-        )}
-
-        {status === 'error' && (
-          <div className="mt-4 rounded-lg border border-red-200 bg-red-50 p-4 text-red-700">
-            <p>{fr.home.loadError}</p>
-            <Button className="mt-3" onClick={() => void refresh()}>
-              {fr.common.retry}
-            </Button>
+              <Plus size={16} aria-hidden="true" />
+              {t('home.plan.title')}
+            </button>
           </div>
         )}
 
-        {status === 'ready' && projects.length === 0 && (
-          <div className="mt-4 rounded-2xl border border-dashed border-slate-300 bg-white/60 p-10 text-center">
-            <p className="font-medium">{fr.home.emptyTitle}</p>
-            <p className="mx-auto mt-2 max-w-md text-sm text-slate-600">{fr.home.emptyText}</p>
+        {(status === 'idle' || status === 'loading') && projects.length === 0 && (
+          <p className="py-10 text-muted-foreground">{t('common.loading')}</p>
+        )}
+
+        {status === 'error' && (
+          <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-4 text-destructive">
+            <p>{t('home.loadError')}</p>
+            <button type="button" className={`${SECONDARY_PILL} mt-3`} onClick={() => void refresh()}>
+              {t('common.retry')}
+            </button>
           </div>
         )}
 
         {projects.length > 0 && (
-          <div className="relative mt-4 max-w-md">
-            <Search
-              size={16}
-              aria-hidden="true"
-              className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
-            />
-            <input
-              type="search"
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={fr.home.searchPlaceholder}
-              aria-label={fr.home.searchLabel}
-              className="w-full rounded-xl border border-slate-200 bg-white py-2.5 pl-9 pr-3 text-sm shadow-sm placeholder:text-slate-500 focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-200"
-            />
-          </div>
+          <>
+            <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
+              <h1 className="text-lg font-semibold">{t('home.title')}</h1>
+              <div className="relative w-full max-w-xs">
+                <Search
+                  size={16}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
+                />
+                <input
+                  type="search"
+                  value={query}
+                  onChange={(event) => setQuery(event.target.value)}
+                  placeholder={t('home.searchPlaceholder')}
+                  aria-label={t('home.searchLabel')}
+                  className="w-full rounded-lg border border-input bg-transparent py-1.5 pl-9 pr-3 text-sm placeholder:text-muted-foreground focus:border-ring focus:outline-none"
+                />
+              </div>
+            </div>
+            {shown.length === 0 && (
+              <p className="text-sm text-muted-foreground">{t('home.noSearchResult', { query: query.trim() })}</p>
+            )}
+            {shown.length > 0 && (
+              <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {shown.map((project) => (
+                  <ProjectCard
+                    key={project.id}
+                    project={project}
+                    onRename={() => setDialog({ type: 'rename', project })}
+                    onDuplicate={() => void duplicate(project.id)}
+                    onDelete={() => setDialog({ type: 'delete', project })}
+                  />
+                ))}
+              </ul>
+            )}
+          </>
         )}
 
-        {projects.length > 0 && shown.length === 0 && (
-          <p className="mt-4 text-sm text-slate-500">{fr.home.noSearchResult(query.trim())}</p>
-        )}
-
-        {shown.length > 0 && (
-          <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {shown.map((project) => (
-              <ProjectCard
-                key={project.id}
-                project={project}
-                onRename={() => setDialog({ type: 'rename', project })}
-                onDuplicate={() => void duplicate(project.id)}
-                onDelete={() => setDialog({ type: 'delete', project })}
-              />
-            ))}
-          </ul>
-        )}
         {shared.projects.length > 0 && (
-          <section aria-labelledby="shared-with-me">
-            <h2 id="shared-with-me" className="mt-16 text-2xl font-semibold tracking-tight text-slate-950">
-              {fr.sharedWithMe.title}
+          <section aria-labelledby="shared-with-me" className="mt-12">
+            <h2 id="shared-with-me" className="mb-6 text-lg font-semibold">
+              {t('shared.title')}
             </h2>
-            <ul className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {shared.projects.map((project) => (
                 <SharedProjectCard
                   key={project.id}
@@ -262,10 +191,47 @@ export default function HomePage() {
           </section>
         )}
         {shared.failed && (
-          <p role="alert" className="mt-8 text-sm text-red-700">
-            {fr.sharedWithMe.loadError}
+          <p role="alert" className="mt-8 text-sm text-destructive">
+            {t('shared.loadError')}
           </p>
         )}
+
+        <section aria-labelledby="examples-family" className="mt-12">
+          <h2 id="examples-family" className="mb-4 text-lg font-semibold">
+            {t('home.examplesFamily')}
+          </h2>
+          <ul className="grid grid-cols-1 gap-4 md:grid-cols-2">
+            {examples.map(({ key, Icon, title, text, create }) => (
+              <li key={key}>
+                <button
+                  type="button"
+                  onClick={() => void openNew(key, create)}
+                  disabled={opening !== null}
+                  aria-busy={opening === key}
+                  className={`group flex h-full w-full items-start gap-4 rounded-xl border border-border/60 bg-background p-4 text-left transition-colors hover:border-border hover:bg-accent disabled:cursor-wait ${focusRing}`}
+                >
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-secondary text-muted-foreground">
+                    <Icon size={20} aria-hidden="true" />
+                  </span>
+                  <span className="flex min-w-0 flex-1 flex-col gap-1">
+                    <span className="text-sm font-medium">{title}</span>
+                    <span className="text-xs leading-relaxed text-muted-foreground">{text}</span>
+                  </span>
+                  {opening === key ? (
+                    <Loader2 size={18} aria-hidden="true" className="mt-2 shrink-0 animate-spin text-muted-foreground" />
+                  ) : (
+                    <ChevronRight
+                      size={18}
+                      aria-hidden="true"
+                      className="mt-2 shrink-0 text-muted-foreground/60 transition-transform group-hover:translate-x-0.5"
+                    />
+                  )}
+                </button>
+              </li>
+            ))}
+          </ul>
+          <p className="mt-4 max-w-2xl text-xs leading-relaxed text-muted-foreground">{t('home.storageReminder')}</p>
+        </section>
       </main>
 
       {localToImport > 0 && userId && (
@@ -311,6 +277,6 @@ export default function HomePage() {
           }}
         />
       )}
-    </div>
+    </AppShell>
   )
 }

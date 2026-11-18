@@ -1,0 +1,115 @@
+/**
+ * Textes français de Fabrics versés dans le système de traduction de Pascal (Lingui, M19 lot A).
+ * Format « compilé » de Lingui : une liste où un texte est une chaîne et une variable `["nom"]`.
+ * Les identifiants sont préfixés `fabrics.` à l'enregistrement (voir `runtime.tsx`).
+ * Les écrans y sont versés un par un ; `fr.ts` disparaît quand le dernier l'est (M19, A7).
+ */
+export const fabricsFr = {
+  'app.name': ['Fabrics'],
+  'common.loading': ['Chargement…'],
+  'common.retry': ['Réessayer'],
+  'common.cancel': ['Annuler'],
+
+  'home.title': ['Projets récents'],
+  'home.startTitle': ['Par où commencer ?'],
+  'home.newPlan': ['Nouveau plan'],
+  'home.newDesign': ['Nouveau visuel'],
+  'home.examplesFamily': ['Maisons d’exemple à ouvrir'],
+  'home.plan.title': ['Dessiner un plan'],
+  'home.plan.text': ['Murs, pièces, portes : les surfaces se calculent toutes seules.'],
+  'home.example.title': ['Maison R+1'],
+  'home.example.text': [
+    'Une maison à étage déjà dessinée (meubles, escalier, toit, cotes), à explorer et à modifier.',
+  ],
+  'home.largeHouse.title': ['Maison R+3'],
+  'home.largeHouse.text': [
+    'Une maison R+3 de 120 m² au sol avec garage, véranda, terrasses et piscine : 21 pièces, escalier sur quatre niveaux, toit en pente.',
+  ],
+  'home.storageReminder': [
+    'Vos projets restent dans ce navigateur, sur cet appareil : ils ne sont envoyés nulle part. Pensez à exporter ceux qui comptent.',
+  ],
+  'home.emptyTitle': ['Aucun projet pour le moment'],
+  'home.emptyText': [
+    'Dessinez un plan à l’échelle pour commencer. Vos projets sont enregistrés automatiquement dans ce navigateur.',
+  ],
+  'home.loadError': ['Impossible de charger vos projets.'],
+  'home.searchLabel': ['Rechercher un projet'],
+  'home.searchPlaceholder': ['Rechercher un projet par son nom'],
+  'home.noSearchResult': ['Aucun projet ne correspond à « ', ['query'], ' ».'],
+  'home.settings': ['Réglages'],
+
+  'common.close': ['Fermer'],
+  'common.save': ['Enregistrer'],
+
+  'projects.kindPlan': ['Plan'],
+  'projects.kindDesign': ['Visuel'],
+  'projects.menuLabel': ['Actions du projet'],
+  'projects.rename': ['Renommer'],
+  'projects.duplicate': ['Dupliquer'],
+  'projects.delete': ['Supprimer'],
+  'projects.renameTitle': ['Renommer le projet'],
+  'projects.nameLabel': ['Nom du projet'],
+  'projects.deleteTitle': ['Supprimer ce projet ?'],
+  'projects.deleteMessage': ['« ', ['name'], ' » sera supprimé définitivement. Cette action est irréversible.'],
+
+  'shared.title': ['Partagés avec moi'],
+  'shared.roleViewer': ['Lecture seule'],
+  'shared.roleEditor': ['Peut modifier'],
+  'shared.leave': ['Quitter le projet'],
+  'shared.leaveTitle': ['Quitter ce projet ?'],
+  'shared.leaveMessage': [
+    '« ',
+    ['name'],
+    ' » disparaîtra de votre accueil. Vous pourrez le rejoindre de nouveau avec un lien d’invitation.',
+  ],
+  'shared.leaveConfirm': ['Quitter'],
+  'shared.loadError': ['Impossible de charger les projets partagés avec vous.'],
+
+  'account.signIn': ['Se connecter'],
+  'account.signOut': ['Se déconnecter'],
+  'account.signOutTitle': ['Se déconnecter de Fabrics ?'],
+  'account.signOutMessage': ['Vous pourrez vous reconnecter à tout moment pour retrouver vos projets.'],
+  'account.label': ['Compte'],
+  'auth.backToHome': ['Retour à l’accueil'],
+  'auth.email': ['Adresse e-mail'],
+  'auth.password': ['Mot de passe'],
+  'auth.passwordHint': ['8 caractères au moins.'],
+  'auth.confirmPassword': ['Confirmer le mot de passe'],
+  'auth.signInTitle': ['Connexion'],
+  'auth.signInIntro': ['Retrouvez vos projets sur tous vos appareils.'],
+  'auth.signInSubmit': ['Me connecter'],
+  'auth.signUpTitle': ['Créer un compte'],
+  'auth.signUpIntro': ['Un e-mail de confirmation vous sera envoyé.'],
+  'auth.signUpSubmit': ['Créer mon compte'],
+  'auth.forgotLink': ['Mot de passe oublié ?'],
+  'auth.toSignUp': ['Pas encore de compte ? Créer un compte'],
+  'auth.toSignIn': ['Déjà un compte ? Me connecter'],
+  'auth.forgotTitle': ['Mot de passe oublié'],
+  'auth.forgotIntro': ['Saisissez votre adresse : nous vous envoyons un lien pour choisir un nouveau mot de passe.'],
+  'auth.forgotSubmit': ['Envoyer le lien'],
+  'auth.backToSignIn': ['Retour à la connexion'],
+  'auth.working': ['Un instant…'],
+  'auth.withGoogle': ['Continuer avec Google'],
+  'auth.orDivider': ['ou'],
+  'auth.checkEmailTitle': ['Vérifiez votre boîte mail'],
+  'auth.checkEmailSignUp': [
+    'Si ',
+    ['email'],
+    ' peut recevoir un compte, un e-mail de confirmation vient de partir. Cliquez sur le lien qu’il contient, puis connectez-vous. Pensez à regarder dans les courriers indésirables.',
+  ],
+  'auth.checkEmailReset': [
+    'Si un compte existe pour ',
+    ['email'],
+    ', un e-mail avec un lien de réinitialisation vient de partir.',
+  ],
+  'auth.resetTitle': ['Nouveau mot de passe'],
+  'auth.resetIntro': ['Choisissez un nouveau mot de passe pour votre compte.'],
+  'auth.resetSubmit': ['Enregistrer le mot de passe'],
+  'auth.resetDone': ['Mot de passe modifié. Vous êtes connecté.'],
+  'auth.resetNoLink': ['Ce lien n’est plus valable. Demandez un nouveau lien depuis la page de connexion.'],
+  'settings.title': ['Réglages'],
+  'settings.sounds': ['Sons de l’interface'],
+  'settings.soundsHelp': ['Coupez les effets sonores de l’éditeur. Ce réglage est mémorisé dans ce navigateur.'],
+} as const
+
+export type FabricsMessageId = keyof typeof fabricsFr

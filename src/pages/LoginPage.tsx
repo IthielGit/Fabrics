@@ -7,16 +7,17 @@ import Button from '../components/ui/Button'
 import type { AuthErrorKey } from '../features/auth/authErrors'
 import { isValidEmail, signUpProblems, type FieldProblem } from '../features/auth/authValidation'
 import { safeRedirectPath } from '../features/auth/redirect'
-import { fr } from '../i18n/fr'
+import { useT } from '../i18n/useT'
 import { useAuthStore } from '../stores/authStore'
 
 type Mode = 'signIn' | 'signUp' | 'forgot'
 
 const LINK_CLASS =
-  'rounded-sm text-sm font-medium text-indigo-700 underline decoration-indigo-300 underline-offset-4 transition-colors hover:text-indigo-900 hover:decoration-indigo-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600'
-const SUBMIT_CLASS = 'h-11 w-full justify-center text-[0.9375rem]'
+  'rounded-sm text-sm font-medium text-foreground underline decoration-muted-foreground underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring'
+const SUBMIT_CLASS = 'h-10 w-full justify-center'
 
 export default function LoginPage() {
+  const t = useT()
   const status = useAuthStore((state) => state.status)
   const signIn = useAuthStore((state) => state.signIn)
   const signUp = useAuthStore((state) => state.signUp)
@@ -90,22 +91,22 @@ export default function LoginPage() {
   }
 
   const texts: Record<Mode, { title: string; intro: string; submit: string }> = {
-    signIn: { title: fr.auth.signInTitle, intro: fr.auth.signInIntro, submit: fr.auth.signInSubmit },
-    signUp: { title: fr.auth.signUpTitle, intro: fr.auth.signUpIntro, submit: fr.auth.signUpSubmit },
-    forgot: { title: fr.auth.forgotTitle, intro: fr.auth.forgotIntro, submit: fr.auth.forgotSubmit },
+    signIn: { title: t('auth.signInTitle'), intro: t('auth.signInIntro'), submit: t('auth.signInSubmit') },
+    signUp: { title: t('auth.signUpTitle'), intro: t('auth.signUpIntro'), submit: t('auth.signUpSubmit') },
+    forgot: { title: t('auth.forgotTitle'), intro: t('auth.forgotIntro'), submit: t('auth.forgotSubmit') },
   }
   const current = texts[mode]
 
   if (sentTo) {
     return (
-      <AuthLayout title={fr.auth.checkEmailTitle}>
-        <p role="status" className="text-sm leading-relaxed text-slate-700">
+      <AuthLayout title={t('auth.checkEmailTitle')}>
+        <p role="status" className="text-sm leading-relaxed text-foreground">
           {sentTo.kind === 'signUp'
-            ? fr.auth.checkEmailSignUp(sentTo.email)
-            : fr.auth.checkEmailReset(sentTo.email)}
+            ? t('auth.checkEmailSignUp', { email: sentTo.email })
+            : t('auth.checkEmailReset', { email: sentTo.email })}
         </p>
         <Button className="mt-5" onClick={() => switchMode('signIn')}>
-          {fr.auth.backToSignIn}
+          {t('auth.backToSignIn')}
         </Button>
       </AuthLayout>
     )
@@ -115,7 +116,7 @@ export default function LoginPage() {
     <AuthLayout title={current.title} intro={current.intro}>
       <form onSubmit={(event) => void handleSubmit(event)} noValidate className="flex flex-col gap-5">
         <AuthField
-          label={fr.auth.email}
+          label={t('auth.email')}
           type="email"
           value={email}
           autoComplete="email"
@@ -125,16 +126,16 @@ export default function LoginPage() {
         />
         {mode !== 'forgot' && (
           <AuthField
-            label={fr.auth.password}
+            label={t('auth.password')}
             type="password"
             value={password}
             autoComplete={mode === 'signUp' ? 'new-password' : 'current-password'}
-            hint={mode === 'signUp' ? fr.auth.passwordHint : undefined}
+            hint={mode === 'signUp' ? t('auth.passwordHint') : undefined}
             invalid={problems.includes('passwordTooShort')}
             labelAction={
               mode === 'signIn' ? (
                 <button type="button" className={LINK_CLASS} onClick={() => switchMode('forgot')}>
-                  {fr.auth.forgotLink}
+                  {t('auth.forgotLink')}
                 </button>
               ) : undefined
             }
@@ -143,7 +144,7 @@ export default function LoginPage() {
         )}
         {mode === 'signUp' && (
           <AuthField
-            label={fr.auth.confirmPassword}
+            label={t('auth.confirmPassword')}
             type="password"
             value={confirm}
             autoComplete="new-password"
@@ -153,19 +154,19 @@ export default function LoginPage() {
         )}
         <AuthMessages problems={problems} error={error} />
         <Button type="submit" variant="primary" disabled={pending} className={SUBMIT_CLASS}>
-          {pending ? fr.auth.working : current.submit}
+          {pending ? t('auth.working') : current.submit}
         </Button>
       </form>
 
       {mode !== 'forgot' && (
         <>
-          <div className="my-6 flex items-center gap-3 text-xs text-slate-500" aria-hidden="true">
-            <span className="h-px flex-1 bg-slate-200" />
-            {fr.auth.orDivider}
-            <span className="h-px flex-1 bg-slate-200" />
+          <div className="my-6 flex items-center gap-3 text-xs text-muted-foreground" aria-hidden="true">
+            <span className="h-px flex-1 bg-border" />
+            {t('auth.orDivider')}
+            <span className="h-px flex-1 bg-border" />
           </div>
           <Button type="button" disabled={pending} className={SUBMIT_CLASS} onClick={() => void handleGoogle()}>
-            {fr.auth.withGoogle}
+            {t('auth.withGoogle')}
           </Button>
         </>
       )}
@@ -173,17 +174,17 @@ export default function LoginPage() {
       <div className="mt-8 text-sm">
         {mode === 'signIn' && (
           <button type="button" className={LINK_CLASS} onClick={() => switchMode('signUp')}>
-            {fr.auth.toSignUp}
+            {t('auth.toSignUp')}
           </button>
         )}
         {mode === 'signUp' && (
           <button type="button" className={LINK_CLASS} onClick={() => switchMode('signIn')}>
-            {fr.auth.toSignIn}
+            {t('auth.toSignIn')}
           </button>
         )}
         {mode === 'forgot' && (
           <button type="button" className={LINK_CLASS} onClick={() => switchMode('signIn')}>
-            {fr.auth.backToSignIn}
+            {t('auth.backToSignIn')}
           </button>
         )}
       </div>

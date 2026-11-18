@@ -1,4 +1,4 @@
-import { fr } from '../../i18n/fr'
+import { useT } from '../../i18n/useT'
 import Button from '../ui/Button'
 import Modal from '../ui/Modal'
 
@@ -10,14 +10,14 @@ interface LeaveDialogProps {
 
 /** Confirmation avant de quitter un projet partagé (le projet n'est pas supprimé pour son propriétaire). */
 export default function LeaveDialog({ projectName, onConfirm, onClose }: LeaveDialogProps) {
-  const t = fr.sharedWithMe
+  const t = useT()
   return (
-    <Modal title={t.leaveTitle} onClose={onClose}>
-      <p className="text-sm text-slate-600">{t.leaveMessage(projectName)}</p>
+    <Modal title={t('shared.leaveTitle')} onClose={onClose}>
+      <p className="text-sm text-muted-foreground">{t('shared.leaveMessage', { name: projectName })}</p>
       <div className="mt-6 flex justify-end gap-2">
-        <Button onClick={onClose}>{fr.common.cancel}</Button>
+        <Button onClick={onClose}>{t('common.cancel')}</Button>
         <Button variant="danger" onClick={onConfirm}>
-          {t.leaveConfirm}
+          {t('shared.leaveConfirm')}
         </Button>
       </div>
     </Modal>
