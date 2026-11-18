@@ -129,6 +129,10 @@ export const fabricsFr = {
   'formats.banner': ['Bannière'],
   'formats.size': [['width'], ' × ', ['height'], ' px'],
   'home.design.title': ['Créer un visuel'],
+  'pascalEditor.tabScene': ['Scène'],
+  'pascalEditor.tabPaint': ['Peinture'],
+  'pascalEditor.tabItems': ['Objets'],
+  'pascalEditor.tabSettings': ['Paramètres'],
 } as const
 
 export type FabricsMessageId = keyof typeof fabricsFr

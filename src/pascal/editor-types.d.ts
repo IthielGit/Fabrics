@@ -21,3 +21,14 @@ export interface EditorProps {
 export declare const Editor: ComponentType<EditorProps>
 export declare function applySceneGraphToEditor(graph: SceneGraph): void
 export declare function showSidebarPanel(id: string): void
+export declare function registerEditorHostPanel(panel: { id: string; [key: string]: unknown }): void
+export declare const ItemsPanel: ComponentType<{ showSourceFilter?: boolean; showTagFilters?: boolean }>
+export declare const MaterialPaintPanel: ComponentType
+export declare const useEditor: {
+  getState(): {
+    mode: string
+    setMode(mode: string): void
+    setPhase(phase: string): void
+    armMaterialPaint(): void
+  }
+}

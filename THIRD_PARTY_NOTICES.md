@@ -30,7 +30,24 @@ Relevé du 2026-11-17 (M17), à partir du clone de Pascal Editor au commit `7f30
 
 `packages/pascal/apps/editor` installe des greffons depuis GitHub, épinglés par commit (mint,
 plugin-bones, plugin-environment, bath-space, landscape, pool, streetscape, trees, webxr).
-Licences **à vérifier** avant de les intégrer à Fabrics (M19).
+
+Vérifié le 2026-11-18 (M19 A5) dans leur `package.json` : **tous sous licence MIT**.
+
+| Greffon | Dans Fabrics | Services externes appelés (seulement quand on l'utilise) |
+|---|---|---|
+| `@pascal-app/plugin-trees` (arbres) | Oui (A5) | — |
+| `@pascal-app/plugin-environment` (sol, eau, ciel) | Oui (A5) | Décodeur Draco de Google (`gstatic.com`) pour certains modèles |
+| `@pascal-app/plugin-bones` (ossature, non installé par défaut) | Oui (A5) | Un modèle 3D sur le stockage Supabase de Pascal |
+| `@pascal-app/plugin-pool` (piscine) | Oui (A5) | Icônes `api.iconify.design` |
+| `@pascal-app/plugin-landscape` (paysage) | Oui (A5) | — (modèles inclus dans le greffon) |
+| `@pascal-app/plugin-bath-space` (salle de bain) | Oui (A5) | Liens vers des fiches de fabricants (simples liens) |
+| `@pascal-app/plugin-streetscape` (rues) | Oui (A5) | Fonds de carte CARTO (`basemaps.cartocdn.com`) |
+| `@webxr/plugin` (réalité virtuelle) | Prévu en A6 | — |
+| `@mint/pascal-plugin` (génération d'objets 3D) | **Non** : service externe (compte, envoi de données), **à décider par l'utilisateur** | `api.mint.gg` |
+
+Le moteur de Pascal charge aussi les objets de son catalogue depuis son CDN (`editor.pascal.app`,
+adresse par défaut de `configureViewer`) et les décodeurs Draco / Basis depuis `gstatic.com` et
+`cdn.jsdelivr.net`.
 
 ## Outils hors application
 

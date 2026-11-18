@@ -4,6 +4,14 @@
 @source "../packages/pascal/packages/editor/src";
 @source "../packages/pascal/packages/viewer/dist";
 @source "../packages/pascal/packages/nodes/dist";
+@source "../packages/pascal/apps/editor/components";
+@source "../packages/pascal/node_modules/@pascal-app/plugin-trees/src";
+@source "../packages/pascal/node_modules/@pascal-app/plugin-environment/src";
+@source "../packages/pascal/node_modules/@pascal-app/plugin-pool/src";
+@source "../packages/pascal/node_modules/@pascal-app/plugin-landscape/src";
+@source "../packages/pascal/node_modules/@pascal-app/plugin-bath-space/src";
+@source "../packages/pascal/node_modules/@pascal-app/plugin-streetscape/src";
+@source "../packages/pascal/node_modules/@pascal-app/plugin-bones/src";
 @import "./pascal-theme.css";
 
 @theme {

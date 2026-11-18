@@ -1,6 +1,7 @@
 import { applySceneGraphToEditor, Editor, type SceneGraph } from '@pascal-app/editor'
+import { EditorViewerToolbarLeft, EditorViewerToolbarRight } from '@pascal-app-host/viewer-toolbar'
 import { Calculator, History, MessageSquare } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import { Link, useParams } from 'react-router'
 import HistoryPanel from '../components/editor/HistoryPanel'
 import EditorStage from '../components/editor/EditorStage'
@@ -21,6 +22,7 @@ import { useT } from '../i18n/useT'
 import '../pascal/bootstrap'
 import PascalCommentsTab from '../pascal/PascalCommentsTab'
 import PascalNavbar, { METRES_TAB_ID } from '../pascal/PascalNavbar'
+import { pascalTabs, type PascalTab } from '../pascal/pascalTabs'
 import { usePascalLevelSync } from '../pascal/usePascalLevelSync'
 import EditorPage from './EditorPage'
 import { useAuthStore } from '../stores/authStore'
@@ -28,13 +30,6 @@ import { pushPascalScene, useEditorStore } from '../stores/editorStore'
 
 type LoadState = 'loading' | 'ready' | 'notFound' | 'notPlan' | 'error'
 
-interface PascalTab {
-  id: string
-  label: string
-  icon: ReactNode
-  mobileIcon: ReactNode
-  component: ComponentType
-}
 
 /** Panneau de Fabrics dans la barre latérale de Pascal, ses couleurs claires passées en sombre. */
 function fabricsPanel(Panel: ComponentType): ComponentType {
@@ -172,7 +167,8 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
         },
       )
     }
-    return tabs
+    const { leading, trailing } = pascalTabs(t)
+    return [...leading, ...tabs, ...trailing]
   }, [t, cloud])
 
   const projectName = useEditorStore((state) => state.project?.name ?? '')
@@ -204,6 +200,8 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
         projectId={projectId}
         projectName={projectName}
         sidebarTabs={sidebarTabs}
+        viewerToolbarLeft={<EditorViewerToolbarLeft />}
+        viewerToolbarRight={<EditorViewerToolbarRight />}
         onLoad={handleLoad}
         onSave={handleSave}
       />

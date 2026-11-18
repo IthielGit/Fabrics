@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M19 · A4 (18/11, à tester dans le navigateur). A1, A2 (a à d) et A3 validés par l'utilisateur le 2026-11-18.
-- **Prochaine tâche :** validation d'A4 par l'utilisateur, puis M19 · A5 Rendu (`/model opus`). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
+- **Dernière tâche terminée :** M19 · A5 (18/11, à tester dans le navigateur). A1 à A4 validés par l'utilisateur le 2026-11-18.
+- **Prochaine tâche :** validation d'A5 (comparaison côte à côte), puis M19 · A6 Navigation, sons et aide (`/model sonnet`). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -61,7 +61,16 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
-### 2026-11-18 — M19 · A4 Projets Visuel dans le style de Pascal (à tester dans le navigateur)
+### 2026-11-18 — M19 · A5 Rendu : réglages et barre de vue de Pascal (à tester dans le navigateur)
+- Les effets de rendu sont ceux du moteur de Pascal, actif dans Fabrics depuis A2 : WebGPU avec repli WebGL2 (`three/webgpu`), occlusion ambiante, bloom, anticrénelage (selon la qualité de rendu), contours, surlignage, lumière du jour et atmosphère, HDRI, animation de construction. Il manquait leurs **réglages**, fournis par l'application Pascal :
+  - barre de vue de Pascal (en haut à droite de la 3D : niveaux empilés / pleine hauteur, menu **Affichage** avec qualité, ombres, caméra, couleurs, heure et météo, accrochage ; visite ; aperçu), reprise **telle quelle** depuis `packages/pascal/apps/editor/components/viewer-toolbar.tsx` par l'alias `@pascal-app-host/*` (et `@/` pour ses propres imports), sans copie ni modification de Pascal ;
+  - onglets de Pascal dans la barre latérale : **Scène** (arbre du bâtiment, niveaux, pièces, éléments ; ouvert par défaut), **Peinture**, **Objets** (catalogue), **Paramètres** (rendu, exports 3D, animation de construction, sons, raccourcis) ; « Construire » viendra avec les outils (B1) ;
+  - modules d'extension de Pascal enregistrés comme dans Pascal lancé seul (`src/pascal/bootstrap.ts`) : arbres, environnement, ossature (non installée par défaut), piscine, paysage, salle de bain, rues. Non branchés : Mint (service externe `api.mint.gg`, à décider) et WebXR (A6). Licences vérifiées (MIT) et services externes listés dans `THIRD_PARTY_NOTICES.md`.
+- Liste de comparaison côte à côte des effets avec Pascal lancé seul : `docs/regression-checklist.md` § 2.3 (sur un vrai GPU : le navigateur de test dessine en logiciel, qualité détectée « basse »).
+- Constats : (1) le catalogue français de Pascal a 3 962 messages, dont **3 890 traduits automatiquement et marqués « à relire »**, écartés à la compilation : seuls 72 sont chargés, d'où l'interface de Pascal surtout en anglais ; (2) le menu Affichage règle les unités sur « Meters » (mm en B1).
+- Vérification : build ✓ lint ✓ 3 082 tests ✓ ; essai Chromium (WebGL2 logiciel) : onglets, panneau Paramètres, barre de vue et menu Affichage, sans erreur de console.
+
+### 2026-11-18 — M19 · A4 Projets Visuel dans le style de Pascal (validé le 2026-11-18)
 - Accueil : bouton « Nouveau visuel » dans l'en-tête (et dans l'écran « Aucun projet »), qui ouvre le choix du format (post carré, A4, affiche A3, bannière) dans le style de Pascal (`NewDesignDialog`, textes Lingui). Les Visuels s'affichent parmi les projets, avec miniature. Ils étaient devenus impossibles à créer depuis l'accueil refait en A1.
 - Éditeur Visuel (Konva, reste à part, conforme à la carte des écrans) : thème sombre de Pascal sur toute la page et sur `<body>` pour les menus et fenêtres (`EditorPage`, classes `pascal-tokens` et `fabrics-on-dark`) ; écrans de chargement et d'erreur dans la coque sombre.
 - `ProjectPage` choisit l'éditeur d'après le type du projet (connu par la création, la liste de l'accueil ou le dépôt) : un Visuel ne charge plus l'éditeur de Pascal (lourd).

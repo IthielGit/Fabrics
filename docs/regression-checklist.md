@@ -246,6 +246,28 @@ comparaison côte à côte, D81).
 | Plan 2D en lecture seule (`viewer/ui`) | Auto : `packages/viewer` |
 | Parcours de découverte et aide | Nav. |
 
+#### Comparaison côte à côte du rendu (M19 A5)
+
+Dans le même navigateur, sur le même projet (Maison R+1), avec Pascal lancé seul (dossier
+`Projects/BIM Project`, `bun dev`) et Fabrics (`npm run dev`). Cocher quand l'effet est identique.
+Les réglages sont au même endroit dans les deux : menu **Affichage** de la barre de vue (en haut à
+droite de la 3D) et onglet **Paramètres**.
+
+| Effet | Où le régler | Fabrics = Pascal |
+|---|---|---|
+| Rendu WebGPU (Chrome, Edge récents), repli WebGL2 (autre navigateur) | automatique | [ ] |
+| Qualité Auto / Basse / Moyenne / Haute | Affichage → Qualité | [ ] |
+| Occlusion ambiante (qualité moyenne ou haute) | Affichage → Qualité | [ ] |
+| Bloom (qualité haute, lumière du jour) | Affichage → Qualité | [ ] |
+| Anticrénelage (TAA, ou FXAA en qualité basse) | Affichage → Qualité | [ ] |
+| Contours encrés, thèmes de couleurs | Affichage → Couleurs | [ ] |
+| Surlignage de la sélection | clic sur un mur | [ ] |
+| Lumière du jour, heure et météo, atmosphère | Affichage → Heure et météo ; pastille de l'heure en bas | [ ] |
+| Environnement HDRI | Affichage → Heure et météo | [ ] |
+| Ombres | Affichage → Ombres ; Paramètres → Viewer | [ ] |
+| Animation de construction | Paramètres → Préférences | [ ] |
+| Transitions et animations d'interface | ouverture des panneaux et menus | [ ] |
+
 ### 2.4 Échanges et agents
 | Fonction | Vérification |
 |---|---|

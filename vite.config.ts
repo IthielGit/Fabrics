@@ -64,6 +64,21 @@ export default defineConfig({
         find: /^@pascal-app\/nodes$/,
         replacement: fileURLToPath(new URL('./packages/pascal/packages/nodes/dist/index.js', import.meta.url)),
       },
+      // Composants de l'application Pascal repris tels quels (barre de vue, M19 A5) ; leurs imports
+      // `@/…` désignent cette application (Fabrics n'utilise pas `@/`).
+      {
+        find: /^@pascal-app-host\/(.*)$/,
+        replacement: `${fileURLToPath(new URL('./packages/pascal/apps/editor/components/', import.meta.url))}$1`,
+      },
+      {
+        find: /^@\/(.*)$/,
+        replacement: `${fileURLToPath(new URL('./packages/pascal/apps/editor/', import.meta.url))}$1`,
+      },
+      // Modules d'extension de Pascal (arbres, environnement, piscine…, M19 A5) : fournis en source.
+      {
+        find: /^@pascal-app\/plugin-([a-z-]+)$/,
+        replacement: `${fileURLToPath(new URL('./packages/pascal/node_modules/@pascal-app/', import.meta.url))}plugin-$1/src/index.ts`,
+      },
       // `@pascal-app/editor` (M19 A2) : fourni en source TypeScript, compilé par Vite avec le reste.
       {
         find: /^@pascal-app\/editor$/,

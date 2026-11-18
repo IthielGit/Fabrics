@@ -1250,8 +1250,8 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 | A1 Routes et accueil — **validé le 2026-11-18** | Accueil des projets, routes `react-router`, connexion Supabase, textes en Lingui | `/model sonnet` |
 | A2 Éditeur et panneaux — **découpé le 2026-11-18** en A2a (ouvrir et enregistrer les vrais projets), A2b (Métrés), A2c (Commentaires), A2d (Historique et aperçu de version) — **validés le 2026-11-18** | Mise en page de l'éditeur Pascal, barre d'outils, panneaux ; panneaux Fabrics reconstruits (Métrés Client / Exécution, Commentaires, Historique et aperçu de version) | `/model opus` |
 | A3 Collaboration et partage — **validé le 2026-11-18** | Présence et avatars, partage et invitations, Exporter, points à vérifier, cotation Aucune / Client / Exécution | `/model opus` |
-| A4 Projets Visuel — **fait le 2026-11-18, à valider** | Éditeur Visuel habillé dans le style de Pascal, accessible depuis le même accueil | `/model sonnet` |
-| A5 Rendu | WebGPU (repli WebGL2), occlusion ambiante, bloom, anticrénelage, contours encrés, surlignage, lumière du jour, HDRI, animation de construction | `/model opus` |
+| A4 Projets Visuel — **validé le 2026-11-18** | Éditeur Visuel habillé dans le style de Pascal, accessible depuis le même accueil | `/model sonnet` |
+| A5 Rendu — **fait le 2026-11-18, à valider** | WebGPU (repli WebGL2), occlusion ambiante, bloom, anticrénelage, contours encrés, surlignage, lumière du jour, HDRI, animation de construction | `/model opus` |
 | A6 Navigation, sons et aide | Perspective / orthographique, première personne, suivi de caméra, WebXR, niveaux empilés / éclatés / seuls, coupe 3D, sons (`howler`) avec réglage, accrochages visibles, palette de commandes, aide et parcours de découverte | `/model sonnet` |
 | A7 Nettoyage | Anciens composants Fabrics remplacés retirés, registre mis à jour, `docs/regression-checklist.md` passé en entier | `/model sonnet` |
 | B1 Outils 2D | Outils, vue en plan et accrochages de Pascal, saisie précise en mm, alignements, fusion sans doublon | `/model opus` |
