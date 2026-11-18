@@ -16,3 +16,8 @@ export declare const EditorViewerToolbarRight: ComponentType<{
   vrDisabled?: boolean
   vrLabel?: string
 }>
+
+// Réalité virtuelle (M19 A6) : modules de l'application Pascal et du module WebXR.
+export declare function WebXRFeatureRuntime(props: { enabled: boolean; children: ReactNode }): ReactNode
+export declare function useWebXRFeature(): { session?: unknown; immersive?: unknown } | null
+export declare function useWebXRInstalled(): boolean

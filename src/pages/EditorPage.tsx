@@ -1,13 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
-import EmptyPlanCard from '../components/editor/EmptyPlanCard'
-import LiveMetresBar from '../components/editor/LiveMetresBar'
 import EditorStage from '../components/editor/EditorStage'
-import PlanContextBar from '../components/editor/PlanContextBar'
 import MiniMap from '../components/editor/MiniMap'
 import ScrollBars from '../components/editor/ScrollBars'
-import PlanSignals from '../components/editor/PlanSignals'
 import Notice from '../components/editor/Notice'
 import ShortcutsDialog from '../components/editor/ShortcutsDialog'
 import SidePanel from '../components/editor/SidePanel'
@@ -20,8 +16,6 @@ import { useComments } from '../components/editor/useComments'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import { usePendingRestore } from '../components/editor/usePendingRestore'
 import ZoomControls from '../components/editor/ZoomControls'
-import ViewsScreen from '../components/views/ViewsScreen'
-import Viewer3DPanel from '../components/viewer3d/Viewer3DPanel'
 import { forgetCreated, peekCreated } from '../features/persistence/justCreated'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
@@ -125,26 +119,18 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
         {/* @container : les barres du bas se rangent selon la largeur du plan (M15 bis, lot D). */}
         <div className="@container relative min-w-0 flex-1">
           <EditorStage />
-          <EmptyPlanCard />
-          {/* En haut du plan : ligne 1 = niveau affiché et cotation ; ligne 2 = options de l'outil en cours (seulement s'il en a). */}
+          {/* En haut de la page : options de l'outil en cours (seulement s'il en a). */}
           <div className="pointer-events-none absolute left-3 right-3 top-3 z-10 flex flex-col items-start gap-2">
-            <div className="flex w-full flex-wrap items-start gap-2">
-              <PlanContextBar />
-            </div>
             <ToolModeBar />
           </div>
           <ZoomControls />
-          <LiveMetresBar />
           <MiniMap />
           <ScrollBars />
-          <PlanSignals />
           <Notice />
           <ToolHint />
         </div>
-        <Viewer3DPanel />
         <SidePanel />
       </div>
-      <ViewsScreen />
       <ShortcutsDialog />
     </div>
   )

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState, type FormEvent } from 'react'
 import { useParams } from 'react-router'
 import ReadOnlyViewer from '../components/editor/ReadOnlyViewer'
 import Button from '../components/ui/Button'
@@ -6,7 +6,11 @@ import type { SharedResult } from '../features/sharing/shareLogic'
 import { fetchSharedProject } from '../features/sharing/sharesApi'
 import { fr } from '../i18n/fr'
 import { cloudEnabled } from '../lib/supabase'
+import PascalReadOnlyBar from '../pascal/PascalReadOnlyBar'
 import { useEditorStore } from '../stores/editorStore'
+
+// Un plan partagé s'ouvre en lecture seule dans l'éditeur de Pascal (M19 A7).
+const PascalReadOnly = lazy(() => import('../pascal/PascalReadOnly'))
 
 type View =
   | { type: 'loading' }
@@ -141,5 +145,12 @@ export default function SharePage() {
     )
   }
 
+  if (useEditorStore.getState().project?.kind === 'plan') {
+    return (
+      <Suspense fallback={<p className="pascal-shell p-8 text-muted-foreground">{t.loading}</p>}>
+        <PascalReadOnly banner={<PascalReadOnlyBar />} />
+      </Suspense>
+    )
+  }
   return <ReadOnlyViewer />
 }

@@ -84,6 +84,15 @@ export default defineConfig({
         find: /^@pascal-app\/plugin-([a-z-]+)$/,
         replacement: `${fileURLToPath(new URL('./packages/pascal/node_modules/@pascal-app/', import.meta.url))}plugin-$1/src/index.ts`,
       },
+      // Module WebXR (réalité virtuelle, M19 A6) : fourni en source, chargé seulement s'il est installé.
+      {
+        find: /^@webxr\/plugin$/,
+        replacement: fileURLToPath(new URL('./packages/pascal/node_modules/@webxr/plugin/src/index.ts', import.meta.url)),
+      },
+      {
+        find: /^@webxr\/plugin\/pascal-editor$/,
+        replacement: fileURLToPath(new URL('./packages/pascal/node_modules/@webxr/plugin/src/integrations/pascal-editor/index.ts', import.meta.url)),
+      },
       // `@pascal-app/editor` (M19 A2) : fourni en source TypeScript, compilé par Vite avec le reste.
       {
         find: /^@pascal-app\/editor$/,

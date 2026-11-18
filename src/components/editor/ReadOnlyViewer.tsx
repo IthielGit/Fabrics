@@ -1,16 +1,11 @@
 import clsx from 'clsx'
-import { Box, Eye, History, MessageSquare, PanelsTopLeft, PencilRuler } from 'lucide-react'
+import { Eye, History, MessageSquare, PencilRuler } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { fr } from '../../i18n/fr'
 import { useCommentsStore } from '../../stores/commentsStore'
 import { useEditorStore } from '../../stores/editorStore'
-import { useViewer3DStore } from '../../stores/viewer3dStore'
-import { useViewsStore } from '../../stores/viewsStore'
-import ViewsScreen from '../views/ViewsScreen'
-import Viewer3DPanel from '../viewer3d/Viewer3DPanel'
 import EditorStage from './EditorStage'
-import PlanContextBar from './PlanContextBar'
 import Notice from './Notice'
 import ToolHint from './ToolHint'
 import ZoomControls from './ZoomControls'
@@ -32,9 +27,9 @@ interface ReadOnlyViewerProps {
 }
 
 /**
- * Plan, 3D et planche d'un projet déjà chargé dans l'éditeur, sans aucun outil de modification.
- * Utilisé par la page de partage public (`/s/…`), par un compte invité en lecture (`/p/…`) et par
- * l'aperçu d'une version (`/p/…/versions/…`).
+ * Page d'un projet Visuel déjà chargé dans l'éditeur, sans aucun outil de modification. Utilisée par
+ * la page de partage public (`/s/…`), par un compte invité en lecture (`/p/…`) et par l'aperçu d'une
+ * version (`/p/…/versions/…`). Les plans passent par `src/pascal/PascalReadOnly.tsx` (M19 A7).
  */
 export default function ReadOnlyViewer({ banner, aside, comments = false }: ReadOnlyViewerProps = {}) {
   const [asideOpen, setAsideOpen] = useState(true)
@@ -49,9 +44,6 @@ export default function ReadOnlyViewer({ banner, aside, comments = false }: Read
   }
   const commenting = comments && activeTool === 'comment'
   const projectName = useEditorStore((state) => (state.project ? displayProjectName(state.project) : ''))
-  const viewer3DOpen = useViewer3DStore((state) => state.open)
-  const toggleViewer3D = useViewer3DStore((state) => state.toggleOpen)
-  const openViews = useViewsStore((state) => state.openViews)
 
   return (
     <div className="flex h-screen w-screen flex-col overflow-hidden">
@@ -68,26 +60,6 @@ export default function ReadOnlyViewer({ banner, aside, comments = false }: Read
           {fr.sharedView.badge}
         </span>
         <div className="ml-auto flex items-center gap-1">
-          <button
-            type="button"
-            onClick={toggleViewer3D}
-            aria-pressed={viewer3DOpen}
-            title={viewer3DOpen ? fr.viewer3d.close : fr.viewer3d.open}
-            aria-label={viewer3DOpen ? fr.viewer3d.close : fr.viewer3d.open}
-            className={clsx(ICON_BUTTON, viewer3DOpen && 'bg-indigo-50 text-indigo-700')}
-          >
-            <Box size={18} />
-          </button>
-          <button
-            type="button"
-            onClick={openViews}
-            title={fr.views.open}
-            aria-label={fr.views.open}
-            className="flex items-center gap-1.5 rounded-md px-2 py-2 text-sm text-slate-700 hover:bg-slate-100"
-          >
-            <PanelsTopLeft size={18} aria-hidden="true" />
-            {fr.views.openLabel}
-          </button>
           {comments && (
             <button
               type="button"
@@ -121,17 +93,12 @@ export default function ReadOnlyViewer({ banner, aside, comments = false }: Read
       <div className="flex min-h-0 flex-1">
         <div className="relative min-w-0 flex-1">
           <EditorStage readOnly showComments={comments} />
-          <div className="pointer-events-none absolute left-3 right-3 top-3 z-10 flex items-start gap-2">
-            <PlanContextBar readOnly />
-          </div>
           <ZoomControls readOnly />
           <Notice />
           {comments && <ToolHint />}
         </div>
-        <Viewer3DPanel />
         {aside && asideOpen && aside}
       </div>
-      <ViewsScreen />
     </div>
   )
 }

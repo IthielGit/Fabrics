@@ -16,7 +16,7 @@ import { useEditorStore } from '../stores/editorStore'
 import { useVersionPreviewStore } from '../stores/versionPreviewStore'
 
 // M19 A2d : un projet Plan s'affiche dans l'éditeur de Pascal (chargé à la demande, il est lourd).
-const PascalVersionPreview = lazy(() => import('../pascal/PascalVersionPreview'))
+const PascalReadOnly = lazy(() => import('../pascal/PascalReadOnly'))
 
 interface Loaded {
   key: string
@@ -150,7 +150,7 @@ export default function VersionPreviewPage() {
   if (useEditorStore.getState().project?.kind === 'plan') {
     return (
       <Suspense fallback={<p className="pascal-shell p-8 text-muted-foreground">{fr.common.loading}</p>}>
-        <PascalVersionPreview banner={banner} canName={loaded.canName ?? false} versionId={versionId} />
+        <PascalReadOnly banner={banner} history canName={loaded.canName ?? false} versionId={versionId} />
       </Suspense>
     )
   }

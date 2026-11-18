@@ -21,3 +21,7 @@ export declare const bathSpacePlugin: Plugin
 export declare const bathSpaceHostPanel: HostPanel
 export declare const streetscapePlugin: Plugin
 export declare const streetscapeHostPanel: HostPanel
+export declare const webXRPlugin: Plugin
+export declare const webXRHostPanel: HostPanel
+export declare const WEBXR_PLUGIN_ID: string
+export declare const PascalWebXRButton: import('react').ComponentType<{ className?: string; feature: unknown }>

@@ -1,11 +1,15 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import ReadOnlySidePanel from '../components/editor/ReadOnlySidePanel'
 import ReadOnlyViewer from '../components/editor/ReadOnlyViewer'
 import { useComments } from '../components/editor/useComments'
 import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
+import PascalReadOnlyBar from '../pascal/PascalReadOnlyBar'
 import { useEditorStore } from '../stores/editorStore'
+
+// Un plan s'ouvre en lecture seule dans l'éditeur de Pascal (M19 A7) ; un Visuel garde sa page.
+const PascalReadOnly = lazy(() => import('../pascal/PascalReadOnly'))
 
 type LoadState = 'loading' | 'ready' | 'not-found' | 'error'
 
@@ -48,6 +52,13 @@ export default function SharedProjectPage({ projectId }: { projectId: string }) 
 
   if (state === 'loading') return <p className="p-8 text-slate-500">{fr.common.loading}</p>
   // Un membre lecteur voit l'historique (D73) et les commentaires (D74), sans pouvoir nommer ni restaurer.
+  if (state === 'ready' && useEditorStore.getState().project?.kind === 'plan') {
+    return (
+      <Suspense fallback={<p className="pascal-shell p-8 text-muted-foreground">{fr.common.loading}</p>}>
+        <PascalReadOnly banner={<PascalReadOnlyBar />} history comments />
+      </Suspense>
+    )
+  }
   if (state === 'ready') {
     return <ReadOnlyViewer comments aside={<ReadOnlySidePanel canName={false} comments />} />
   }

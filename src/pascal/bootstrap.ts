@@ -41,8 +41,15 @@ async function loadExternalPlugins(): Promise<void> {
   for (const plugin of await discoverPlugins()) await loadPlugin(plugin)
 }
 
-// Modules de Pascal, comme dans Pascal lancé seul (D81). WebXR (réalité virtuelle) arrive en A6.
+// Modules de Pascal, comme dans Pascal lancé seul (D81).
 // Mint (objets 3D générés, service externe) : retiré à la demande de l'utilisateur le 2026-11-18.
+// Réalité virtuelle (A6) : module chargé à la découverte des modules, son environnement seulement
+// quand il est installé dans le projet (`PascalEditorPage`).
+extendPluginDiscovery(async () => {
+  const { webXRHostPanel, webXRPlugin } = await import('@webxr/plugin')
+  registerEditorHostPanel(webXRHostPanel)
+  return [webXRPlugin]
+})
 extendPluginDiscovery(async () => [treesPlugin])
 registerEditorHostPanel(treesHostPanel)
 extendPluginDiscovery(async () => [environmentPlugin])

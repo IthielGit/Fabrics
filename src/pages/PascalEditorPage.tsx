@@ -18,11 +18,13 @@ import type { PlanScene } from '../features/scene/sceneTypes'
 import { versionsAvailable } from '../features/versions/versionsApi'
 import { useT } from '../i18n/useT'
 import '../pascal/bootstrap'
+import type { WebXRFeature } from '../pascal/PascalWebXR'
 import PascalCommentsTab from '../pascal/PascalCommentsTab'
 import PascalNavbar, { METRES_TAB_ID } from '../pascal/PascalNavbar'
 import { pascalTabs, type PascalTab } from '../pascal/pascalTabs'
 import { usePascalLevelSync } from '../pascal/usePascalLevelSync'
 import { usePascalThumbnail } from '../pascal/usePascalThumbnail'
+import { useWebXRInstalled } from '../pascal/useWebXRInstalled'
 import { EditorPage } from './lazyPages'
 import { useAuthStore } from '../stores/authStore'
 import { pushPascalScene, useEditorStore } from '../stores/editorStore'
@@ -30,6 +32,10 @@ import { useViewsStore } from '../stores/viewsStore'
 
 // Façades, coupes et planche : chargées quand on ouvre les Vues (lot Performance).
 const ViewsScreen = lazy(() => import('../components/views/ViewsScreen'))
+
+// Réalité virtuelle (A6) : chargée seulement quand le module WebXR est installé dans le projet.
+const PascalWebXRRuntime = lazy(() => import('../pascal/PascalWebXR'))
+const PascalVrButton = lazy(() => import('../pascal/PascalWebXR').then((m) => ({ default: m.PascalVrButton })))
 
 type LoadState = 'loading' | 'ready' | 'notFound' | 'notPlan' | 'error'
 
@@ -113,6 +119,8 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
   usePascalLevelSync(ready)
   const handleThumbnail = usePascalThumbnail(projectId, ready)
   const viewsOpen = useViewsStore((state) => state.open)
+  const webXRInstalled = useWebXRInstalled()
+  const [vr, setVr] = useState<WebXRFeature | null>(null)
 
   // Scène venue d'ailleurs (autre personne, version restaurée, annuler) → éditeur de Pascal.
   // Celles qui viennent de Pascal lui-même sont reconnues à leur identité et ignorées.
@@ -206,7 +214,19 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
         projectName={projectName}
         sidebarTabs={sidebarTabs}
         viewerToolbarLeft={<EditorViewerToolbarLeft />}
-        viewerToolbarRight={<EditorViewerToolbarRight />}
+        viewerToolbarRight={
+          <EditorViewerToolbarRight
+            vrLabel={t('pascalEditor.enterVr')}
+            vrButton={
+              vr ? (
+                <Suspense fallback={null}>
+                  <PascalVrButton feature={vr} />
+                </Suspense>
+              ) : null
+            }
+          />
+        }
+        immersive={vr?.session ? vr.immersive : undefined}
         onLoad={handleLoad}
         onSave={handleSave}
         onThumbnailCapture={handleThumbnail}
@@ -215,6 +235,11 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
       <div className="fabrics-on-dark pointer-events-none absolute inset-x-0 bottom-0 top-14 z-40 [&_*]:pointer-events-auto">
         <PlanSignals />
       </div>
+      {webXRInstalled && (
+        <Suspense fallback={null}>
+          <PascalWebXRRuntime onFeature={setVr} />
+        </Suspense>
+      )}
       {viewsOpen && (
         <Suspense fallback={null}>
           <ViewsScreen />

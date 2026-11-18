@@ -1,11 +1,9 @@
 import clsx from 'clsx'
 import {
   ArrowLeft,
-  Box,
   Download,
   MessageSquare,
   PanelRight,
-  PanelsTopLeft,
   Redo2,
   Share2,
   Undo2,
@@ -20,8 +18,6 @@ import { useAuthStore } from '../../stores/authStore'
 import { useCollabStore } from '../../stores/collabStore'
 import { useCommentsStore } from '../../stores/commentsStore'
 import { useEditorStore } from '../../stores/editorStore'
-import { useViewer3DStore } from '../../stores/viewer3dStore'
-import { useViewsStore } from '../../stores/viewsStore'
 import Button from '../ui/Button'
 import ExportDialog from './ExportDialog'
 import PlanCheckBadge from './PlanCheckBadge'
@@ -38,7 +34,6 @@ const HEADER_CONTROL =
   'focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-indigo-600 ' +
   'disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent'
 const ICON_BUTTON = clsx(HEADER_CONTROL, 'w-8 pointer-coarse:w-11')
-const TEXT_BUTTON = clsx(HEADER_CONTROL, 'px-2.5')
 const PRESSED = 'bg-indigo-50 text-indigo-700 hover:bg-indigo-100 hover:text-indigo-800'
 const DIVIDER = 'mx-1.5 h-5 w-px shrink-0 bg-slate-200'
 /** Partager et Exporter : boutons pleins ou bordés, à la même hauteur que le reste. */
@@ -69,9 +64,6 @@ export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
   const undo = useEditorStore((state) => state.undo)
   const redo = useEditorStore((state) => state.redo)
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
-  const viewer3DOpen = useViewer3DStore((state) => state.open)
-  const toggleViewer3D = useViewer3DStore((state) => state.toggleOpen)
-  const openViews = useViewsStore((state) => state.openViews)
   const setSidePanelOpen = useEditorStore((state) => state.setSidePanelOpen)
   const sidePanelTab = useEditorStore((state) => state.sidePanelTab)
   const setSidePanelTab = useEditorStore((state) => state.setSidePanelTab)
@@ -160,34 +152,6 @@ export default function EditorHeader({ isOwner = true }: EditorHeaderProps) {
         >
           <Redo2 size={18} aria-hidden="true" />
         </button>
-
-        {/* Vues du plan. */}
-        {isPlan && <span className={clsx(DIVIDER, 'max-sm:hidden')} aria-hidden="true" />}
-        {isPlan && (
-          <button
-            type="button"
-            onClick={toggleViewer3D}
-            aria-pressed={viewer3DOpen}
-            title={viewer3DOpen ? fr.viewer3d.close : fr.viewer3d.open}
-            aria-label={viewer3DOpen ? fr.viewer3d.close : fr.viewer3d.open}
-            className={clsx(TEXT_BUTTON, 'max-md:w-8 max-md:px-0', viewer3DOpen && PRESSED)}
-          >
-            <Box size={18} aria-hidden="true" />
-            <span className="max-md:sr-only">{fr.viewer3d.shortLabel}</span>
-          </button>
-        )}
-        {isPlan && (
-          <button
-            type="button"
-            onClick={openViews}
-            title={fr.views.open}
-            aria-label={fr.views.open}
-            className={clsx(TEXT_BUTTON, 'max-md:w-8 max-md:px-0')}
-          >
-            <PanelsTopLeft size={18} aria-hidden="true" />
-            <span className="max-md:sr-only">{fr.views.openLabel}</span>
-          </button>
-        )}
 
         {/* Actions sur le projet. */}
         <span className={clsx(DIVIDER, 'max-sm:hidden')} aria-hidden="true" />
