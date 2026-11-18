@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M19 · B2 (2026-11-18). A1 à A7 validés par l'utilisateur le 2026-11-18. **B1 à B5 enchaînés à la demande de l'utilisateur, test dans le navigateur à la fin de B5**, un commit par sous-lot.
+- **Dernière tâche terminée :** M19 · B3 (2026-11-18). A1 à A7 validés par l'utilisateur le 2026-11-18. **B1 à B5 enchaînés à la demande de l'utilisateur, test dans le navigateur à la fin de B5**, un commit par sous-lot.
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »). **Prochaine tâche :** M19 · B1 Outils 2D (`/model opus`) ; en attente de décision de l'utilisateur : traduire les 660 textes de Pascal écrits en dur en anglais (sous-lot dédié). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
@@ -54,13 +54,21 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## Journal
 
 <!-- Format d'une entrée (la plus récente en haut) :
+### 2026-11-18 — M19 · B3 Matériaux (test par l'utilisateur à la fin de B5)
+- **Composition et matériaux : ceux de Pascal**, réutilisés tels quels : couches d'un mur dans son panneau (section composition), matériaux dans l'onglet Peinture, objets 3D dans l'onglet Objets.
+- **Couches lues par Fabrics** : `WallElement.layers` (rôle, matériau, épaisseur en mm), lu dans la composition du mur de la scène (`scene/view/toFabricsView.ts`) ; Fabrics ne l'écrit jamais. Quand Fabrics réécrit la scène, chaque nœud garde les propriétés que seul Pascal connaît (composition, matériaux par face…) (`scene/nativeNodes.ts`).
+- **Quantités par couche, sans double comptage** (`src/features/measurements/wallLayers.ts`, testé) : surface d'une couche = surface nette du mur à l'axe ; volume = volume net du mur × épaisseur de la couche / somme des épaisseurs (la somme des couches redonne exactement le volume du mur, ouvertures et raccords en T déduits). Critère G2 vérifié : mur de 200 mm = 20 + 160 + 20 mm avec une fenêtre → 3 couches, volumes 20 / 160 / 20 mm de la surface nette.
+- **Métrés, version Technique** : tableau « Couches des murs » (`WallLayersTable.tsx`), regroupé par couche identique (rôle, matériau, épaisseur), rôles et matériaux de Pascal en français (`fr.ts`).
+- Limites : couches des toitures et dalles, et colonnes « couches » dans les exports Excel / CSV : M21 (quantitatif par lot). Un mur tracé par défaut dans Pascal n'a pas de composition : le tableau n'apparaît qu'une fois la composition donnée.
+- Vérification : build ✓ lint ✓ 3 087 tests ✓ ; Chromium : mur tracé dans Pascal nommé « Mur isolé » dans les métrés.
+
 ### 2026-11-18 — M19 · B2 Édition 3D (en partie ; test par l'utilisateur à la fin de B5)
 - **Objets dessinés dans Pascal pris en compte par Fabrics** (`src/features/scene/view/toFabricsView.ts`) : jusqu'ici, la vue de Fabrics (métrés, cotes, repères, exports) ne lisait que les nœuds venus de Fabrics ; un mur tracé avec Construire n'existait pas pour les métrés. Murs, portes, fenêtres, pièces (`zone` de rôle pièce) et niveaux créés dans Pascal sont maintenant lus : identifiant du nœud, épaisseur et hauteur par défaut de Pascal (hauteur du niveau), noms anglais par défaut de Pascal (« Wall 1 ») remplacés par les noms automatiques de Fabrics (« Mur 1 »).
 - **Rien n'est effacé quand Fabrics réécrit la scène** (`src/features/scene/nativeNodes.ts`, `rebuildScene` dans `sceneBinding.ts`) : changer la cotation ou la version des métrés reconstruisait la scène depuis la vue de Fabrics et aurait supprimé dalles, plafonds, objets, toitures et escaliers de Pascal, et retiré aux murs leurs propriétés propres. Ils sont remis tels quels (ou avec leur nouvelle position si Fabrics les a déplacés). `nodeIdOf` garde l'identifiant d'un nœud natif (`migrate/nodeIds.ts`).
 - **Critères G2 vérifiés par les commandes de Pascal** (`src/features/scene/edit3d.test.ts`, 9 tests) : mur allongé de 4000 à 5000 mm en glissant son extrémité (geste de Pascal en 2D comme en 3D) → 5000 mm sur le plan et dans les métrés, le mur raccordé suit le coin ; même chose par le panneau « Longueur » ; identifiants inchangés, aucun élément fantôme ; porte élargie puis supprimée → surfaces nettes et volume cohérents.
 - Vérifié dans Chromium : nouveau plan, mur tracé avec Construire en tapant `4000` → onglet Métrés : 4000 mm, 10,80 m².
 - **Reste à faire (non fait en B2)** : toitures, escaliers et dalles **natifs** de Pascal dans les métrés (leur géométrie par segments demande une conversion dédiée) ; les toitures et escaliers des anciens plans restent des nœuds Fabrics, invisibles et non modifiables dans la 3D de Pascal. Constat : la commande `setWallGeometry` de Pascal ajoute un mur « pont » quand on prolonge un mur dans son axe depuis un coin (mur en double) ; le geste de l'interface, lui, déplace le coin proprement.
-- Vérification : build ✓ lint ✓ 3 082 tests ✓.
+- Vérification : build ✓ lint ✓ 3 081 tests ✓.
 
 ### AAAA-MM-JJ — M1 · Outil rectangle
 - Fait : …
@@ -103,7 +111,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - **Français de Pascal** : les 3 888 traductions automatiques « à relire » du catalogue français de Pascal sont chargées par Fabrics (2 écartées : variables différentes de l'anglais). Script `scripts/compile-pascal-fr.mjs` → fichier généré `src/i18n/pascalFrReview.ts`, chargé par `src/pascal/bootstrap.ts` avant le catalogue officiel (les traductions relues gardent la main). Pascal n'est pas modifié. À relancer après une mise à jour de Pascal. Des tournures maladroites sont possibles : à corriger au fil de l'eau.
 - **Mint** (objets 3D générés) : module branché (`bootstrap.ts`, désactivé par défaut, à installer par projet dans Plugins → Parcourir), route de connexion `/api/plugins/mint/…` montée dans le serveur de développement (`vite.config.ts`, adaptateur serveur fourni par Mint, jetons en cookies HttpOnly). **La connexion ne marchera qu'après que Mint a autorisé l'adresse de retour de Fabrics** (`http://localhost:5173/api/plugins/mint/oauth/callback`, puis celle du site en ligne) : Mint enregistre ces adresses une par une, aujourd'hui seulement celles de Pascal. En ligne (Cloudflare Pages), il faudra en plus une fonction serveur équivalente.
 - Vérifié dans Chromium : interface de Pascal en français (Empilé, Affichage, Aperçu, Panoramique…) ; Mint listé dans « Parcourir les plugins » ; `/api/plugins/mint/session` répond `{"connected":false}` et `oauth/start` redirige vers `mcp.mint.gg`. Les avertissements React « unmount a root » de la console existaient déjà avant (mêmes 5).
-- Vérification : build ✓ lint ✓ 3 082 tests ✓.
+- Vérification : build ✓ lint ✓ 3 081 tests ✓.
 
 ### 2026-11-18 — M19 · A5 Rendu : réglages et barre de vue de Pascal (à tester dans le navigateur)
 - Les effets de rendu sont ceux du moteur de Pascal, actif dans Fabrics depuis A2 : WebGPU avec repli WebGL2 (`three/webgpu`), occlusion ambiante, bloom, anticrénelage (selon la qualité de rendu), contours, surlignage, lumière du jour et atmosphère, HDRI, animation de construction. Il manquait leurs **réglages**, fournis par l'application Pascal :
@@ -119,7 +127,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Éditeur Visuel (Konva, reste à part, conforme à la carte des écrans) : thème sombre de Pascal sur toute la page et sur `<body>` pour les menus et fenêtres (`EditorPage`, classes `pascal-tokens` et `fabrics-on-dark`) ; écrans de chargement et d'erreur dans la coque sombre.
 - `ProjectPage` choisit l'éditeur d'après le type du projet (connu par la création, la liste de l'accueil ou le dépôt) : un Visuel ne charge plus l'éditeur de Pascal (lourd).
 - Vérifié dans Chromium : création d'un Visuel (affiche), ajout d'un texte, enregistrement (`kind: design`, élément `text`), miniature sur l'accueil, aucune erreur de console. Non vérifié : images importées, export PDF d'un Visuel, partage / lien d'un Visuel avec un compte.
-- Vérification : build ✓ lint ✓ 3 082 tests ✓.
+- Vérification : build ✓ lint ✓ 3 081 tests ✓.
 
 ### 2026-11-18 — M19 · A3 Collaboration, partage, Exporter, points à vérifier, cotation (validé avec A2 le 2026-11-18)
 - **`/p/:id` ouvre maintenant un projet Plan dans l'éditeur de Pascal** (`ProjectPage` → `PascalEditorPage`, chargé à la demande). Un projet Visuel y retrouve son éditeur. L'ancien éditeur reste en secours à `/p/:id/ancien` (entrée « Ouvrir dans l'ancien éditeur » du menu « ⋯ » des cartes Plan) jusqu'au nettoyage d'A7 ; `/p/:id/pascal` renvoie vers `/p/:id`.
@@ -128,7 +136,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Niveau affiché dans Pascal → niveau actif de Fabrics (`usePascalLevelSync`) : métrés, points à vérifier et exports suivent le niveau regardé.
 - Vérifié dans Chromium (mode local) : éditeur de Pascal à `/p/:id`, miniature enregistrée, export PNG téléchargé, fenêtre Exporter et écran Vues. Non vérifiable sans compte : Partager, invitations, présence à deux, commentaires, historique.
 - Limites connues : les cotes Client / Exécution et les curseurs des autres personnes ne sont pas dessinés dans la vue 2D / 3D de Pascal (seulement dans les exports et les Vues) ; épingles de commentaires absentes de Pascal ; un lecteur invité (rôle « lecture ») garde l'ancienne page de lecture seule ; annuler / rétablir passent par Pascal (Ctrl+Z), pas par l'historique de la scène Fabrics.
-- Vérification : build ✓ lint ✓ 3 082 tests ✓. `check:all` (tests de Pascal sous Bun, ~11 min) non relancé pour A3.
+- Vérification : build ✓ lint ✓ 3 081 tests ✓. `check:all` (tests de Pascal sous Bun, ~11 min) non relancé pour A3.
 
 ### 2026-11-18 — M19 · A2d Historique et aperçu de version dans l'éditeur de Pascal
 - Onglet « Historique » de la barre de Pascal (avec un compte) : versions, noms, sessions, comme avant ; restaurer passe par `usePendingRestore`, monté dans la page Pascal, et la scène restaurée est appliquée à Pascal.

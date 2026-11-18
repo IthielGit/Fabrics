@@ -72,6 +72,15 @@ export function keepNativeNodes(
     nodes[node.id] = { ...node, ...pick(rebuilt, keys), metadata: node.metadata, children: node.children }
   }
 
+  // Nœuds venus de Fabrics : ils gardent les propriétés que seul Pascal connaît (composition du mur,
+  // matériaux par face, réglages de rendu…), que la vue Fabrics ne peut pas réécrire.
+  for (const [id, node] of Object.entries(nodes)) {
+    const before = previous.nodes[id]
+    if (!before || isNative(node) || before === node) continue
+    const extra = Object.keys(before).filter((key) => !(key in node))
+    if (extra.length > 0) nodes[id] = { ...node, ...pick(before, extra) }
+  }
+
   // Nœuds que la vue ne représente pas : gardés si leur parent est toujours là (un parent gardé peut
   // venir après son enfant dans la liste : on répète jusqu'à ne plus rien ajouter).
   let pending = carried

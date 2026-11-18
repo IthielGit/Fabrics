@@ -22,6 +22,7 @@ import { habitableArea } from './habitableArea'
 import { buildReferences, type References } from './references'
 import { levelAboveOf, stairStatus } from '../stairs/stairs'
 import { collectStairVoids, voidsOfRoom, type StairVoid } from '../stairs/voids'
+import { type WallLayerMeasure, wallLayerMeasures } from './wallLayers'
 
 export interface RoomMeasure {
   id: string
@@ -140,6 +141,8 @@ export interface WallMeasure {
   facesNetArea: number
   /** Volume du mur sur l'axe, ouvertures déduites : longueur × épaisseur × hauteur, moins la part comptée dans un autre mur à un raccord en T, en mm³. */
   volume: number
+  /** Quantités par couche (M19 B3), si le mur a une composition. */
+  layers?: WallLayerMeasure[]
 }
 
 export interface ChimneyMeasure {
@@ -457,6 +460,8 @@ export function computeMeasurements(
             (tJoin ? tJoin.overlapArea * element.height : 0),
         ),
       })
+      const measure = walls[walls.length - 1]
+      if (element.layers?.length) measure.layers = wallLayerMeasures(element.layers, measure)
     }
   }
 

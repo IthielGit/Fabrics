@@ -64,8 +64,11 @@ export function planToScene(document: FabricsDocument): PlanScene {
  */
 export function rebuildScene(previous: PlanScene, previousView: FabricsDocument, current: FabricsDocument): PlanScene {
   const rebuilt = planToScene(current)
-  const hasNative = Object.values(previous.nodes).some((node) => node.metadata?.fabrics === undefined && node.type !== 'site')
-  return hasNative ? settleScene(keepNativeNodes(previous, previousView, current, rebuilt)) : rebuilt
+  const kept = keepNativeNodes(previous, previousView, current, rebuilt)
+  const same =
+    Object.keys(kept.nodes).length === Object.keys(rebuilt.nodes).length &&
+    Object.entries(kept.nodes).every(([id, node]) => rebuilt.nodes[id] === node)
+  return same ? rebuilt : settleScene(kept)
 }
 
 /** Vue recalculée, en gardant les objets de `previous` qui n'ont pas changé (affichage rapide). */

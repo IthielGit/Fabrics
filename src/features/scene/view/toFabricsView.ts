@@ -11,6 +11,7 @@ import type {
   OpeningElement,
   PlanSettings,
   WallElement,
+  WallLayer,
 } from '../../../types/document'
 import { dimensionOffset, furnitureCorner, roundMm } from '../migrate/geometry'
 import { LENGTH_FIELDS, lengthsToMillimetres } from '../migrate/lengthFields'
@@ -49,6 +50,17 @@ const PASCAL_DEFAULT_NAME = /^(Wall|Door|Window|Room|Zone|Level) \d+$/
 export function nativeElementName(node: SceneNodeData): string {
   const name = node.name ?? ''
   return PASCAL_DEFAULT_NAME.test(name) ? '' : name
+}
+
+/** Couches du corps d'un mur (composition de Pascal, m) en mm ; rien si le mur n'a pas de composition. */
+function wallLayersOf(node: SceneNodeData): { layers?: WallLayer[] } {
+  const assembly = node.assembly as { layers?: { id: string; role: string; material?: string; thickness: number }[] } | undefined
+  if (!assembly?.layers?.length) return {}
+  return {
+    layers: assembly.layers.map((layer) =>
+      defined({ id: layer.id, role: layer.role, material: layer.material, thickness: mToMm(layer.thickness) }) as WallLayer,
+    ),
+  }
 }
 
 /** Rang des éléments natifs : après tous ceux de Fabrics (dont le rang est leur place dans le plan). */
@@ -238,6 +250,7 @@ export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
           ? (levelHeights.get(levelNodeOf(first)?.id ?? '') ?? mToMm(PASCAL_LEVEL_HEIGHT))
           : mToMm(first.height as number),
       ...(meta.props as { fill: string; material?: WallElement['material'] }),
+      ...wallLayersOf(first),
     }
     elements.push({ order: meta.order, element: wall })
   }

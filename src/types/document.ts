@@ -123,6 +123,17 @@ export interface WallElement extends BaseElement {
   fill: string;
   // Matériau (M10 bis lot C) : hachure en coupe, texture de façade, couleur 3D. Absent : rendu neutre.
   material?: WallMaterial;
+  // Couches (M19 B3) : composition du mur dans Pascal, de la face de référence vers l'intérieur. Lues
+  // dans la scène, jamais écrites par Fabrics (la scène garde la composition, `nativeNodes.ts`).
+  layers?: WallLayer[];
+}
+
+// Couche d'un mur (M19 B3), d'après `AssemblyLayer` de Pascal ; épaisseur en mm.
+export interface WallLayer {
+  id: string;
+  role: string;              // rôle de Pascal : finish, insulation, structure…
+  material?: string;         // matériau de construction de Pascal (cmu, drywall, plaster…)
+  thickness: number;         // mm
 }
 
 // Matériau d'un mur (M10 bis lot C). Voir `src/features/building/materials.ts`.
