@@ -122,6 +122,13 @@ export const fabricsFr = {
   'pascalEditor.viewsHint': ['Façades, coupes et planche du plan'],
   'pascalEditor.share': ['Partager'],
   'pascalEditor.export': ['Exporter'],
+  'formats.title': ['Choisir un format'],
+  'formats.post-square': ['Post carré'],
+  'formats.a4': ['A4'],
+  'formats.a3': ['Affiche A3'],
+  'formats.banner': ['Bannière'],
+  'formats.size': [['width'], ' × ', ['height'], ' px'],
+  'home.design.title': ['Créer un visuel'],
 } as const
 
 export type FabricsMessageId = keyof typeof fabricsFr

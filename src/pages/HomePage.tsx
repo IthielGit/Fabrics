@@ -1,10 +1,11 @@
-import { BookOpen, Building2, ChevronRight, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
+import { BookOpen, Building2, ChevronRight, Image, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
 import DeleteDialog from '../components/home/DeleteDialog'
 import ImportLocalDialog from '../components/home/ImportLocalDialog'
 import LeaveDialog from '../components/home/LeaveDialog'
+import NewDesignDialog from '../components/home/NewDesignDialog'
 import ProjectCard from '../components/home/ProjectCard'
 import RenameDialog from '../components/home/RenameDialog'
 import SharedProjectCard from '../components/home/SharedProjectCard'
@@ -25,12 +26,13 @@ type Dialog =
   | { type: 'rename'; project: ProjectSummary }
   | { type: 'delete'; project: ProjectSummary }
   | { type: 'leave'; project: SharedProjectSummary }
+  | { type: 'newDesign' }
 
 /** Accueil des projets, d'après `app/page.tsx` de Pascal (M19 A1) : en-tête, création, grille de cartes. */
 export default function HomePage() {
   const t = useT()
   const navigate = useNavigate()
-  const { projects, status, refresh, createPlan, createExample, createLargeHouse, rename, duplicate, remove } =
+  const { projects, status, refresh, createPlan, createDesign, createExample, createLargeHouse, rename, duplicate, remove } =
     useProjectsStore()
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const [query, setQuery] = useState('')
@@ -98,6 +100,16 @@ export default function HomePage() {
           {opening === 'plan' ? <Loader2 size={16} aria-hidden="true" className="animate-spin" /> : <Plus size={16} aria-hidden="true" />}
           {t('home.newPlan')}
         </button>
+        <button
+          type="button"
+          className={SECONDARY_PILL}
+          disabled={opening !== null}
+          aria-busy={opening === 'design'}
+          onClick={() => setDialog({ type: 'newDesign' })}
+        >
+          {opening === 'design' ? <Loader2 size={16} aria-hidden="true" className="animate-spin" /> : <Image size={16} aria-hidden="true" />}
+          {t('home.newDesign')}
+        </button>
         <Link to="/reglages" aria-label={t('home.settings')} title={t('home.settings')} className={ICON_BUTTON}>
           <Settings size={16} aria-hidden="true" />
         </Link>
@@ -110,15 +122,26 @@ export default function HomePage() {
             <Ruler size={40} aria-hidden="true" className="text-muted-foreground/60" />
             <p className="font-medium">{t('home.emptyTitle')}</p>
             <p className="max-w-sm text-sm text-muted-foreground">{t('home.emptyText')}</p>
+            <div className="flex flex-wrap justify-center gap-2">
             <button
-              type="button"
-              className={PRIMARY_PILL}
-              disabled={opening !== null}
-              onClick={() => void openNew('plan', createPlan)}
+                type="button"
+                className={PRIMARY_PILL}
+                disabled={opening !== null}
+                onClick={() => void openNew('plan', createPlan)}
             >
-              <Plus size={16} aria-hidden="true" />
-              {t('home.plan.title')}
-            </button>
+                <Plus size={16} aria-hidden="true" />
+                {t('home.plan.title')}
+                </button>
+                <button
+                type="button"
+                className={SECONDARY_PILL}
+                disabled={opening !== null}
+                onClick={() => setDialog({ type: 'newDesign' })}
+            >
+                <Image size={16} aria-hidden="true" />
+                {t('home.design.title')}
+                </button>
+</div>
           </div>
         )}
 
@@ -241,6 +264,15 @@ export default function HomePage() {
           onClose={(imported) => {
             setLocalToImport(0)
             if (imported) void refresh()
+          }}
+        />
+      )}
+      {dialog?.type === 'newDesign' && (
+        <NewDesignDialog
+          onClose={closeDialog}
+          onSelect={(formatId) => {
+            closeDialog()
+            void openNew('design', () => createDesign(formatId))
           }}
         />
       )}

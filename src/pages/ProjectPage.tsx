@@ -1,6 +1,9 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { peekCreated } from '../features/persistence/justCreated'
+import { repository } from '../features/persistence/repository'
+import type { ProjectKind } from '../types/document'
+import { useProjectsStore } from '../stores/projectsStore'
 import { fetchMyRole } from '../features/sharing/membersApi'
 import type { ProjectRole } from '../features/sharing/membersLogic'
 import { fr } from '../i18n/fr'
@@ -27,7 +30,7 @@ export default function ProjectPage() {
   const authReady = authStatus !== 'loading'
 
   // Résultat associé au projet et au compte demandés : sinon, on est en « chargement ».
-  const [found, setFound] = useState<{ key: string; role: ProjectRole | null } | null>(null)
+  const [found, setFound] = useState<{ key: string; role: ProjectRole | null; kind: ProjectKind } | null>(null)
   const key = `${projectId ?? ''}|${userId ?? ''}`
 
   useEffect(() => {
@@ -37,13 +40,16 @@ export default function ProjectPage() {
     const roleRequest: Promise<ProjectRole | null> = peekCreated(projectId)
       ? Promise.resolve('owner')
       : fetchMyRole(projectId)
-    roleRequest
-      .then((role) => {
-        if (!cancelled) setFound({ key, role })
-      })
-      .catch(() => {
-        if (!cancelled) setFound({ key, role: null })
-      })
+    // Type du projet (plan → éditeur de Pascal, visuel → son éditeur) : connu par la création ou la
+    // liste de l'accueil, sinon lu dans le dépôt. Évite de charger l'éditeur de Pascal pour un visuel.
+    const knownKind: ProjectKind | undefined =
+      peekCreated(projectId)?.kind ?? useProjectsStore.getState().projects.find((p) => p.id === projectId)?.kind
+    const kindRequest: Promise<ProjectKind> = knownKind
+      ? Promise.resolve(knownKind)
+      : repository.get(projectId).then((project) => project?.kind ?? 'plan')
+    Promise.all([roleRequest.catch(() => null), kindRequest.catch((): ProjectKind => 'plan')]).then(([role, kind]) => {
+      if (!cancelled) setFound({ key, role, kind })
+    })
     return () => {
       cancelled = true
     }
@@ -54,6 +60,7 @@ export default function ProjectPage() {
     return <p className="p-8 text-slate-500">{fr.common.loading}</p>
   }
   if (found.role === 'viewer') return <SharedProjectPage projectId={projectId} />
+  if (found.kind === 'design') return <EditorPage isOwner={found.role !== 'editor'} />
   return (
     <Suspense fallback={<p className="p-8 text-slate-500">{fr.common.loading}</p>}>
       <PascalEditorPage isOwner={found.role !== 'editor'} />

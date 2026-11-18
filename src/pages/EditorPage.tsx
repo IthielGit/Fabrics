@@ -41,6 +41,13 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
   const closeProject = useEditorStore((state) => state.closeProject)
   useEditorShortcuts()
   useAutosave()
+  // M19 A4 : l'éditeur Visuel porte les couleurs de Pascal (thème sombre) ; sur <body> aussi, pour les
+  // menus et fenêtres affichés hors de la page.
+  useEffect(() => {
+    const classes = ['dark', 'pascal-tokens', 'fabrics-on-dark']
+    document.body.classList.add(...classes)
+    return () => document.body.classList.remove(...classes)
+  }, [])
   // Résultat du chargement, associé au projet demandé : tant qu'il ne correspond pas
   // à l'adresse courante, on est en « chargement » (rien à remettre à zéro dans l'effet).
   const [result, setResult] = useState<{ projectId: string; state: LoadState } | null>(null)
@@ -92,17 +99,17 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
   useComments(projectId, loadState === 'ready')
 
   if (loadState === 'loading') {
-    return <p className="p-8 text-slate-500">{fr.common.loading}</p>
+    return <p className="pascal-shell p-8 text-muted-foreground">{fr.common.loading}</p>
   }
 
   if (loadState !== 'ready') {
     return (
-      <main className="p-8">
+      <main className="pascal-shell p-8">
         <h1 className="text-2xl font-bold">{fr.editor.notFoundTitle}</h1>
-        <p className="mt-2 text-slate-600">
+        <p className="mt-2 text-muted-foreground">
           {loadState === 'error' ? fr.editor.loadError : fr.editor.notFoundText}
         </p>
-        <Link to="/" className="mt-4 inline-block text-indigo-600 underline">
+        <Link to="/" className="mt-4 inline-block underline">
           {fr.editor.backToHome}
         </Link>
       </main>
@@ -110,7 +117,7 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
   }
 
   return (
-    <div className="flex h-screen w-screen flex-col overflow-hidden">
+    <div className="fabrics-on-dark pascal-tokens dark flex h-screen w-screen flex-col overflow-hidden bg-white text-slate-900">
       <EditorHeader isOwner={isOwner} />
       <div className="flex min-h-0 flex-1">
         {/* M15 bis : rail d'outils collé au bord gauche, hors du canevas. */}
