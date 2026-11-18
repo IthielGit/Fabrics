@@ -6,8 +6,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M18 · lot F, métrés sur la scène et corrections EDGE-01 (18/11)
-- **Prochaine tâche :** mise en ligne de M18 (accord de l'utilisateur à chaque étape) ; ensuite M19 après validation. **Gate G1 validé PASS par l'utilisateur le 2026-11-18.**
-- **À la mise en ligne de M18 (accord de l'utilisateur) :** sauvegarde `supabase/m18-backup.sql`, puis `npm run migrate:plans` (essai à blanc) et `-- --apply` (`docs/05-INSTALLATION.md`) ; commande de build de Cloudflare Pages à changer (Bun + `build:pascal`)
+- **Prochaine tâche :** merge de `feat/m18-bim-model` dans `main` et mise en ligne (accord de l'utilisateur à chaque étape) ; ensuite M19 après validation. **Gate G1 validé PASS par l'utilisateur le 2026-11-18.** M18 vérifié dans le navigateur par l'utilisateur (2026-11-18).
+- **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Reste : nouvelle commande de build Cloudflare Pages (`docs/05-INSTALLATION.md`, à régler par l'utilisateur, pas encore essayée) ; ne pas merger dans `main` avant d'avoir confirmé cette commande (`main` est déployé automatiquement)
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
@@ -60,6 +60,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M18 · Mise en ligne : base de données et commande de build
+- Fait : sauvegarde `supabase/m18-backup.sql` exécutée (10 projets et 40 versions copiés, nombres égaux). Plan refusé à l'essai à blanc (plan « 16 nov. à 22:10 », écart de 9 mm² sur une surface, lié à l'arrondi du millimètre) : sans objet, car l'utilisateur a choisi de supprimer les projets tests (liste complète : 10 projets, dont 2 « Exemple »). Suppression faite par l'utilisateur dans Supabase (`delete from public.projects`, cascade sur les versions) ; contrôle : 0 projet, 0 version, 10 projets sauvegardés. Aucune conversion lancée (`migrate:plans --apply` non utilisé). Clé `service_role` retirée de `.env.local`.
+- Fait : `docs/05-INSTALLATION.md` décrit la nouvelle commande de build Cloudflare Pages (Bun 1.4.4, `install:pascal`, `build:pascal`, Node 26.13.1) et la section de conversion, devenue sans objet, est remplacée.
+- Reste : régler cette commande dans Cloudflare (par l'utilisateur), vérifier le premier déploiement sur une branche ou après merge, puis merger dans `main`. Commande non essayée sur Cloudflare à ce stade.
+- Commit : à faire après accord de l'utilisateur.
 
 ### 2026-11-18 — M18 · Lot F : métrés sur la scène et corrections EDGE-01
 - Fait : les trois écarts d'EDGE-01 décidés par l'utilisateur sont corrigés dans les métrés. (1) Une ouverture qui dépasse de son mur n'est plus déduite (`isOpeningOutside`, `geometry/openings.ts`, partagé avec l'avertissement existant ; sa surface affichée est 0). (2) Les ouvertures d'un même côté de mur qui se chevauchent sont déduites une seule fois : surface de l'union de leurs rectangles dans l'élévation (`unionArea`, `measurements.ts`). (3) Un mur de hauteur nulle déclenche l'avertissement `wallZeroHeight` (« hauteur nulle », non bloquant) avec texte et conseil français.

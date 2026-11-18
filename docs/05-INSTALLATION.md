@@ -96,23 +96,32 @@ tools/ifc/.venv/Scripts/python.exe -m pip install -r tools/ifc/requirements.txt
 tools/ifc/.venv/Scripts/python.exe -I tools/ifc/validate.py baseline/fabrics/example/export.ifc
 ```
 
-## Conversion des plans de la base (M18, une seule fois, à la mise en ligne de M18)
+## Mise en ligne de M18 : base de données et Cloudflare Pages
 
-À partir de M18, un projet Plan est enregistré sous forme de scène Pascal. Les plans déjà dans
-Supabase sont convertis une fois par un script, **seulement quand M18 est mis en ligne** (l'ancienne
-version de Fabrics refuserait d'ouvrir un plan converti). Claude te demandera ton accord avant.
+À partir de M18, un projet Plan est enregistré sous forme de scène Pascal. Le 2026-11-18, les
+projets tests de la base ont été supprimés avant la mise en ligne ; il n'y a donc **pas de
+conversion à lancer**. Le script `npm run migrate:plans` reste dans le dépôt, mais il ne doit pas
+être lancé tant qu'il existe des projets à convertir.
 
-1. Dans Supabase (Project Settings → API), copie la clé **service_role** et ajoute-la à `.env.local` :
-   `SUPABASE_SERVICE_ROLE_KEY=...` (ce fichier n'est jamais envoyé sur GitHub ; ne donne cette clé à
-   personne, elle ouvre toute la base).
-2. Dans Supabase → SQL Editor, colle et lance `supabase/m18-backup.sql` : il copie les tables
-   `projects` et `project_versions`. Les deux nombres de chaque ligne du résultat doivent être égaux.
-3. Essai à blanc (n'écrit rien) dans le terminal de VS Code : `npm run migrate:plans`
-   Il affiche le nombre de plans prêts et de plans « laissés intacts et signalés », et écrit un
-   rapport dans `scripts/.reports/`.
-4. Seulement après accord : `npm run migrate:plans -- --apply`
-5. Vérifier : ouvrir deux ou trois plans dans le navigateur et comparer leurs métrés à ceux d'avant.
-6. Retirer la clé `SUPABASE_SERVICE_ROLE_KEY` de `.env.local` une fois la conversion terminée.
+Les tables de sauvegarde `projects_backup_m18` et `project_versions_backup_m18` restent dans
+Supabase tant que M18 n'est pas validé. Ne les supprime qu'avec l'accord de l'utilisateur.
+
+### Commande de build de Cloudflare Pages
+
+Depuis M18, l'application importe Pascal. Cloudflare Pages doit donc installer Bun et compiler
+Pascal avant le build de l'application. Dans Cloudflare → Workers & Pages → fabrics → Settings →
+Builds, règle (le projet Pages est celui de `https://fabrics-8zd.pages.dev`) :
+
+| Réglage | Valeur |
+|---|---|
+| Build command | `npm install -g bun@1.4.4 && npm run install:pascal && npm run build:pascal && npm run build` |
+| Build output directory | `dist` |
+| Variable `NODE_VERSION` | `26.13.1` |
+
+Cette commande n'a pas encore été essayée sur Cloudflare. Le premier déploiement doit être
+surveillé : la compilation de Pascal est lourde (environ 5 min, et la construction du paquet
+`nodes` demande environ 6 Go de mémoire). Si le build échoue pour cette raison, le signaler et ne
+pas le relancer en boucle.
 
 ## Problèmes fréquents
 
