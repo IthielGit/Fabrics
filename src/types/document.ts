@@ -24,6 +24,45 @@ export interface FabricsDocument {
   elements: CanvasElement[]; // ordre du tableau = ordre d'affichage (dernier = au-dessus)
   plan?: PlanSettings;       // présent seulement si kind = 'plan'
   levels?: Level[];          // M6 : projets Plan uniquement, au moins un niveau, triés par altitude croissante
+  // M19 B6 : toitures et escaliers dessinés dans Pascal, quantifiés à la lecture de la scène (vue
+  // calculée, jamais écrite dans la scène). Ajoutés aux métrés de leur niveau.
+  pascalQuantities?: PascalQuantities;
+}
+
+export interface PascalQuantities {
+  roofs: NativeRoofQuantity[];
+  stairs: NativeStairQuantity[];
+}
+
+// Pan de toiture de Pascal (M19 B6) ; longueurs en mm, surfaces en mm².
+export interface NativeRoofQuantity {
+  id: string;
+  name: string;
+  levelId: string | null;
+  kind: 'flat' | 'shed' | 'gable' | 'hip' | 'gambrel' | 'mansard' | 'dutch' | 'conical' | 'barrel';
+  pitch: number | null;      // degrés ; null pour un toit plat ou une voûte
+  overhang: number;          // débord en plan au droit des égouts, au-delà de l'axe des murs
+  projectedArea: number;
+  realArea: number;
+  ridgeLength: number;
+  eaveLength: number;
+  hipLength: number;
+  gableCount: number;
+  trimmed: boolean;          // pan découpé dans Pascal : quantités du pan entier
+}
+
+// Escalier de Pascal (M19 B6) ; longueurs en mm.
+export interface NativeStairQuantity {
+  id: string;
+  name: string;
+  levelId: string | null;
+  shape: 'straight' | 'l' | 'u' | 'curved' | 'spiral';
+  width: number;
+  rise: number;
+  risers: number;
+  treads: number;
+  riserHeight: number;
+  treadDepth: number;
 }
 
 // Niveau (étage) d'un plan (M6).

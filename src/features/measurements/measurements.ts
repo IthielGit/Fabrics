@@ -4,7 +4,10 @@ import type {
   ChimneyElement,
   FabricsDocument,
   Level,
+  NativeRoofQuantity,
+  NativeStairQuantity,
   OpeningElement,
+  PascalQuantities,
   OpeningStyle,
   RoofElement,
   RoofShape,
@@ -80,7 +83,8 @@ export interface PlatformMeasure {
 export interface RoofMeasure {
   id: string
   name: string
-  shape: RoofShape
+  /** Forme de Fabrics, ou type d'un pan dessiné dans Pascal (M19 B6). */
+  shape: RoofShape | NativeRoofQuantity['kind']
   /** Pente en degrés ; `null` pour un toit plat. */
   pitch: number | null
   /** Débord, en mm. */
@@ -95,13 +99,14 @@ export interface RoofMeasure {
   hipLength: number
   gableCount: number
   /** Toiture non valable (quantités à 0) : pourquoi. */
-  problem: RoofProblem | null
+  /** `trimmed` (M19 B6) : pan découpé dans Pascal, quantités du pan entier. */
+  problem: RoofProblem | 'trimmed' | null
 }
 
 export interface StairMeasure {
   id: string
   name: string
-  shape: StairElement['shape']
+  shape: StairElement['shape'] | NativeStairQuantity['shape']
   /** Emmarchement, en mm. */
   width: number
   /** Hauteur à monter, en mm (`null` sans niveau au-dessus). */
@@ -560,18 +565,69 @@ export function sumMeasurements(list: readonly Measurements[]): Measurements {
  * Métrés par niveau et pour tout le bâtiment. Chaque niveau ne compte que ses propres éléments
  * (ceux dont `levelId` est le sien) ; les totaux du bâtiment sont la somme des niveaux.
  */
+/** Toitures et escaliers de Pascal d'un niveau ajoutés à ses métrés (listes et totaux, M19 B6). */
+function withPascalQuantities(measurements: Measurements, quantities: PascalQuantities | undefined, levelId: string): Measurements {
+  const roofs = quantities?.roofs.filter((roof) => roof.levelId === levelId) ?? []
+  const stairs = quantities?.stairs.filter((stair) => stair.levelId === levelId) ?? []
+  if (roofs.length === 0 && stairs.length === 0) return measurements
+  const roofMeasures: RoofMeasure[] = roofs.map((roof) => ({
+    id: roof.id,
+    name: roof.name,
+    shape: roof.kind,
+    pitch: roof.pitch,
+    overhang: roof.overhang,
+    projectedArea: roof.projectedArea,
+    realArea: roof.realArea,
+    ridgeLength: roof.ridgeLength,
+    eaveLength: roof.eaveLength,
+    hipLength: roof.hipLength,
+    gableCount: roof.gableCount,
+    problem: roof.trimmed ? 'trimmed' : null,
+  }))
+  const stairMeasures: StairMeasure[] = stairs.map((stair) => ({
+    id: stair.id,
+    name: stair.name,
+    shape: stair.shape,
+    width: stair.width,
+    rise: stair.rise,
+    risers: stair.risers,
+    treads: stair.treads,
+    riserHeight: stair.riserHeight,
+    treadDepth: stair.treadDepth,
+    status: 'ok',
+    requiredRun: null,
+  }))
+  const add = (key: keyof Pick<RoofMeasure, 'projectedArea' | 'realArea' | 'ridgeLength' | 'eaveLength' | 'hipLength' | 'gableCount'>) =>
+    roofMeasures.reduce((sum, roof) => sum + roof[key], 0)
+  const t = measurements.totals
+  return {
+    ...measurements,
+    roofs: [...measurements.roofs, ...roofMeasures],
+    stairs: [...measurements.stairs, ...stairMeasures],
+    totals: {
+      ...t,
+      roofProjectedArea: t.roofProjectedArea + add('projectedArea'),
+      roofRealArea: t.roofRealArea + add('realArea'),
+      roofRidgeLength: t.roofRidgeLength + add('ridgeLength'),
+      roofEaveLength: t.roofEaveLength + add('eaveLength'),
+      roofHipLength: t.roofHipLength + add('hipLength'),
+      roofGables: t.roofGables + add('gableCount'),
+    },
+  }
+}
+
 export function computeBuildingMeasurements(
-  document: Pick<FabricsDocument, 'elements' | 'levels'>,
+  document: Pick<FabricsDocument, 'elements' | 'levels' | 'pascalQuantities'>,
 ): BuildingMeasurements {
   const voids = collectStairVoids(document.elements, document.levels)
   // Murs et ouvertures sous leur nom affiché (automatique ou tapé) : les mêmes que dans les calques.
   const elements = withDisplayNames(document.elements)
   const levels = (document.levels ?? []).map((level) => ({
     level,
-    measurements: computeMeasurements(
-      elementsOfLevel(elements, level.id),
-      document.levels,
-      voids.filter((v) => v.levelId === level.id),
+    measurements: withPascalQuantities(
+      computeMeasurements(elementsOfLevel(elements, level.id), document.levels, voids.filter((v) => v.levelId === level.id)),
+      document.pascalQuantities,
+      level.id,
     ),
   }))
   return { levels, total: sumMeasurements(levels.map((l) => l.measurements)), refs: buildReferences(document) }

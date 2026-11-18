@@ -15,6 +15,7 @@ import { SEGMENTED_BAR, segmentClass } from '../ui/segmented'
 import { exportMetres } from './exportMetres'
 import MetresWarningList from './MetresWarningList'
 import SiteMeasuresTable from './SiteMeasuresTable'
+import SlabsTable from './SlabsTable'
 import WallLayersTable from './WallLayersTable'
 
 /** À corriger (manque, débord : bloque l'export) en rouge, puis le reste à vérifier en orange. */
@@ -52,6 +53,7 @@ export default function MeasurementsPanel() {
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
   const elements = useEditorStore((state) => state.project?.document.elements)
   const levels = useEditorStore((state) => state.project?.document.levels)
+  const pascalQuantities = useEditorStore((state) => state.project?.document.pascalQuantities)
   const activeLevelId = useEditorStore((state) => state.activeLevelId)
   const selectedIds = useEditorStore((state) => state.selectedIds)
   const setSelection = useEditorStore((state) => state.setSelection)
@@ -62,8 +64,8 @@ export default function MeasurementsPanel() {
   const setVersion = useEditorStore((state) => state.setMetresVersion)
   // Recalculé à chaque modification du document : le panneau est toujours à jour.
   const building = useMemo(
-    () => computeBuildingMeasurements({ elements: elements ?? [], levels }),
-    [elements, levels],
+    () => computeBuildingMeasurements({ elements: elements ?? [], levels, pascalQuantities }),
+    [elements, levels, pascalQuantities],
   )
   // Surfaces douteuses (superpositions, trémies, espace non couvert entre les murs) : signalées, jamais corrigées.
   const surfaceWarnings = useMemo(
@@ -374,6 +376,7 @@ export default function MeasurementsPanel() {
         <p className="mt-1 text-xs text-slate-500">{fr.measurements.netAreaNote}</p>
       )}
       <WallLayersTable walls={walls} />
+      <SlabsTable levelId={active?.level.id ?? null} />
       <SiteMeasuresTable />
 
       {stairs.length > 0 && (

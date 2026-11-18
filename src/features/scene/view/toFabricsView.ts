@@ -16,6 +16,7 @@ import type {
 import { dimensionOffset, furnitureCorner, roundMm } from '../migrate/geometry'
 import { LENGTH_FIELDS, lengthsToMillimetres } from '../migrate/lengthFields'
 import { FABRICS_NODE_PREFIX } from '../nodes/fabricsNodes'
+import { pascalQuantitiesOf } from './pascalQuantities'
 import { roomClearOutlines } from './roomClearFloor'
 import { BUILDING_ID, type FabricsNodeMeta, type PlanScene, type SceneNodeData } from '../sceneTypes'
 import { mToMm, pascalRotationToDegrees, planPointsToFlat } from '../units'
@@ -271,6 +272,8 @@ export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
     elements: elements.map((e) => e.element),
     plan,
     levels: settings.levelsAbsent ? undefined : levels,
+    // Toitures et escaliers dessinés dans Pascal (M19 B6) : leurs quantités, pour les métrés.
+    pascalQuantities: pascalQuantitiesOf(scene),
   }) as FabricsDocument
 
   function openingOf(node: SceneNodeData, meta: FabricsNodeMeta): OpeningElement {

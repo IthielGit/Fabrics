@@ -46,8 +46,8 @@ function ExportForm({ onClose }: { onClose: () => void }) {
     [isPlan, elements],
   )
   const measurements = useMemo(
-    () => computeBuildingMeasurements({ elements: document?.elements ?? [], levels: document?.levels }),
-    [document?.elements, document?.levels],
+    () => computeBuildingMeasurements({ elements: document?.elements ?? [], levels: document?.levels, pascalQuantities: document?.pascalQuantities }),
+    [document?.elements, document?.levels, document?.pascalQuantities],
   )
   const hasMeasures = measurements.total.rooms.length > 0 || measurements.total.walls.length > 0
 

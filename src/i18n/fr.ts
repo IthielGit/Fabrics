@@ -496,6 +496,14 @@ export const fr = {
       height: 'Hauteur d’étage',
       note: 'Emprise = contour extérieur des murs du niveau du sol.',
     },
+    // Dalles de Pascal (M19 B6), à part des murs.
+    slabs: {
+      title: 'Dalles',
+      elevation: 'Dessus',
+      note: 'Surface = contour moins trémies ; volume = surface × épaisseur (la dalle descend de son dessus).',
+      roles: { base: 'Dalle de base', platform: 'Estrade', sunken: 'Dalle en creux' } as Record<string, string>,
+      unnamed: 'Dalle',
+    },
     // Couches des murs (M19 B3) : composition donnée au mur dans Pascal.
     wallLayers: 'Couches des murs',
     layer: 'Couche',
@@ -675,7 +683,7 @@ export const fr = {
       stairs: {
         title: 'Escaliers',
         shape: 'Forme',
-        shapes: { straight: 'Droit', l: 'En L', u: 'En U' },
+        shapes: { straight: 'Droit', l: 'En L', u: 'En U', curved: 'Balancé', spiral: 'Hélicoïdal' },
         width: 'Emmarchement (mm)',
         risers: 'Nombre de contremarches',
         riserHeight: 'Hauteur de contremarche (mm)',
@@ -710,7 +718,7 @@ export const fr = {
         title: 'Toitures',
         note: 'Surface réelle = surface au sol (débord compris) ÷ cosinus de la pente. Égouts, faîtage et arêtiers débord compris. Quantités seulement, aucun prix.',
         shape: 'Forme',
-        shapes: { flat: 'Plat', shed: 'Un pan', gable: 'Deux pans', hip: 'Croupe' },
+        shapes: { flat: 'Plat', shed: 'Un pan', gable: 'Deux pans', hip: 'Croupe', gambrel: 'Comble brisé', mansard: 'Mansarde', dutch: 'Croupe à pignon', conical: 'Conique', barrel: 'Voûte' },
         pitch: 'Pente (°)',
         overhang: 'Débord (mm)',
         projectedArea: 'Surface au sol (m²)',
@@ -724,6 +732,7 @@ export const fr = {
           'too-few-points': 'Contour de moins de trois points : non compté',
           'not-rectangle': 'Toit en pente sur un contour non rectangulaire : non compté',
           'bad-pitch': 'Pente hors de 1° à 75° : non comptée',
+          trimmed: 'Pan découpé dans Pascal : quantités du pan entier',
         },
       },
       meta: {
@@ -1468,7 +1477,7 @@ export const fr = {
     hint: 'Le conduit monte du plancher de son niveau jusqu’au dessus du dernier niveau ; il apparaît en fantôme sur les niveaux traversés.',
   },
   stairs: {
-    shapes: { straight: 'Droit', l: 'En L', u: 'En U' },
+    shapes: { straight: 'Droit', l: 'En L', u: 'En U', curved: 'Balancé', spiral: 'Hélicoïdal' },
     shape: 'Forme',
     noLevelAbove: 'Aucun niveau au-dessus',
     tooShort: (millimeters: number) => `Trop court : ${millimeters} mm nécessaires`,
@@ -1501,7 +1510,7 @@ export const fr = {
   },
   roof: {
     shape: 'Forme',
-    shapes: { flat: 'Plat', shed: 'Un pan', gable: 'Deux pans', hip: 'Croupe' },
+    shapes: { flat: 'Plat', shed: 'Un pan', gable: 'Deux pans', hip: 'Croupe', gambrel: 'Comble brisé', mansard: 'Mansarde', dutch: 'Croupe à pignon', conical: 'Conique', barrel: 'Voûte' },
     pitch: 'Pente',
     unitDegrees: '°',
     overhang: 'Débord',
@@ -1524,6 +1533,7 @@ export const fr = {
       'not-rectangle':
         'Un toit en pente demande un contour rectangulaire : choisissez « Plat » ou redessinez la toiture en rectangle.',
       'bad-pitch': 'La pente doit être comprise entre 1° et 75°.',
+      trimmed: 'Pan découpé dans Pascal : les quantités sont celles du pan entier.',
     },
     slopeLabel: (pitch: number) => `${pitch}°`,
   },

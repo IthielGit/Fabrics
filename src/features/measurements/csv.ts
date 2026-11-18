@@ -1,8 +1,7 @@
-import type { OpeningStyle, RoofShape } from '../../types/document'
-import type { RoofProblem } from '../building/roof'
+import type { OpeningStyle } from '../../types/document'
 import { sanitizeFileName } from '../export/fileName'
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../units/format'
-import type { BuildingMeasurements } from './measurements'
+import type { BuildingMeasurements, RoofMeasure, StairMeasure } from './measurements'
 import { buildMetresTables, cellText, mm, wallRefs, type CeilingLabels, type MetresTable } from './tables'
 
 /** Intitulés du fichier (français, fournis par `src/i18n/fr.ts`). */
@@ -63,7 +62,7 @@ export interface CsvLabels {
   stairs?: {
     title: string
     shape: string
-    shapes: Record<'straight' | 'l' | 'u', string>
+    shapes: Record<StairMeasure['shape'], string>
     width: string
     risers: string
     riserHeight: string
@@ -87,7 +86,7 @@ export interface CsvLabels {
     title: string
     note: string
     shape: string
-    shapes: Record<RoofShape, string>
+    shapes: Record<RoofMeasure['shape'], string>
     pitch: string
     overhang: string
     projectedArea: string
@@ -97,7 +96,7 @@ export interface CsvLabels {
     hips: string
     gables: string
     remark: string
-    problems: Record<RoofProblem, string>
+    problems: Record<NonNullable<RoofMeasure['problem']>, string>
   }
   /** Intitulés du tableau des cheminées (absent : pas de tableau). */
   chimneys?: {
