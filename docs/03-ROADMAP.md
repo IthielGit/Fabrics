@@ -1249,7 +1249,7 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 |---|---|---|
 | A1 Routes et accueil — **fait le 2026-11-18, à valider** | Accueil des projets, routes `react-router`, connexion Supabase, textes en Lingui | `/model sonnet` |
 | A2 Éditeur et panneaux — **découpé le 2026-11-18** en A2a (ouvrir et enregistrer les vrais projets), A2b (Métrés), A2c (Commentaires), A2d (Historique et aperçu de version) — **faits le 2026-11-18, à valider avec A3** | Mise en page de l'éditeur Pascal, barre d'outils, panneaux ; panneaux Fabrics reconstruits (Métrés Client / Exécution, Commentaires, Historique et aperçu de version) | `/model opus` |
-| A3 Collaboration et partage | Présence et avatars, partage et invitations, Exporter, points à vérifier, cotation Aucune / Client / Exécution | `/model opus` |
+| A3 Collaboration et partage — **fait le 2026-11-18, à valider** | Présence et avatars, partage et invitations, Exporter, points à vérifier, cotation Aucune / Client / Exécution | `/model opus` |
 | A4 Projets Visuel | Éditeur Visuel habillé dans le style de Pascal, accessible depuis le même accueil | `/model sonnet` |
 | A5 Rendu | WebGPU (repli WebGL2), occlusion ambiante, bloom, anticrénelage, contours encrés, surlignage, lumière du jour, HDRI, animation de construction | `/model opus` |
 | A6 Navigation, sons et aide | Perspective / orthographique, première personne, suivi de caméra, WebXR, niveaux empilés / éclatés / seuls, coupe 3D, sons (`howler`) avec réglage, accrochages visibles, palette de commandes, aide et parcours de découverte | `/model sonnet` |

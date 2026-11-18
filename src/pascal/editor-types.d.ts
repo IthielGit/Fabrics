@@ -20,3 +20,4 @@ export interface EditorProps {
 
 export declare const Editor: ComponentType<EditorProps>
 export declare function applySceneGraphToEditor(graph: SceneGraph): void
+export declare function showSidebarPanel(id: string): void

@@ -1,4 +1,4 @@
-import { Copy, Image, Pencil, Ruler, SquareDashedMousePointer, Trash2 } from 'lucide-react'
+import { Copy, History, Image, Pencil, Ruler, Trash2 } from 'lucide-react'
 import { Link, useNavigate } from 'react-router'
 import { displayProjectName } from '../../features/documents/projectName'
 import type { ProjectSummary } from '../../features/persistence/types'
@@ -45,9 +45,9 @@ export default function ProjectCard({ project, onRename, onDuplicate, onDelete }
             ...(isPlan
               ? [
                   {
-                    label: t('projects.openInPascal'),
-                    icon: <SquareDashedMousePointer size={16} />,
-                    onSelect: () => navigate(`/p/${project.id}/pascal`),
+                    label: t('projects.openInOldEditor'),
+                    icon: <History size={16} />,
+                    onSelect: () => navigate(`/p/${project.id}/ancien`),
                   },
                 ]
               : []),

@@ -112,12 +112,16 @@ export const fabricsFr = {
   'settings.soundsHelp': ['Coupez les effets sonores de l’éditeur. Ce réglage est mémorisé dans ce navigateur.'],
   'pascalEditor.unavailableTitle': ['Éditeur indisponible'],
   'pascalEditor.notFound': ['Ce projet n’existe pas ou n’est plus accessible.'],
-  'pascalEditor.notPlan': ['L’éditeur de Pascal ouvre seulement les projets Plan, pas les Visuels.'],
   'pascalEditor.loadError': ['Impossible de charger ce projet.'],
-  'projects.openInPascal': ['Ouvrir dans l’éditeur Pascal (essai)'],
+  'projects.openInOldEditor': ['Ouvrir dans l’ancien éditeur'],
   'pascalEditor.tabMetres': ['Métrés'],
   'pascalEditor.tabComments': ['Commentaires'],
   'pascalEditor.tabHistory': ['Historique'],
+  'pascalEditor.renameHint': ['Cliquez pour renommer le projet'],
+  'pascalEditor.views': ['Vues'],
+  'pascalEditor.viewsHint': ['Façades, coupes et planche du plan'],
+  'pascalEditor.share': ['Partager'],
+  'pascalEditor.export': ['Exporter'],
 } as const
 
 export type FabricsMessageId = keyof typeof fabricsFr

@@ -3,12 +3,15 @@ import { Calculator, History, MessageSquare } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType, type ReactNode } from 'react'
 import { Link, useParams } from 'react-router'
 import HistoryPanel from '../components/editor/HistoryPanel'
+import EditorStage from '../components/editor/EditorStage'
 import MeasurementsPanel from '../components/editor/MeasurementsPanel'
 import Notice from '../components/editor/Notice'
+import PlanSignals from '../components/editor/PlanSignals'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useCollaboration } from '../components/editor/useCollaboration'
 import { useComments } from '../components/editor/useComments'
 import { usePendingRestore } from '../components/editor/usePendingRestore'
+import ViewsScreen from '../components/views/ViewsScreen'
 import { commentsAvailable } from '../features/comments/commentsApi'
 import { forgetCreated, peekCreated } from '../features/persistence/justCreated'
 import { repository } from '../features/persistence/repository'
@@ -17,6 +20,9 @@ import { versionsAvailable } from '../features/versions/versionsApi'
 import { useT } from '../i18n/useT'
 import '../pascal/bootstrap'
 import PascalCommentsTab from '../pascal/PascalCommentsTab'
+import PascalNavbar, { METRES_TAB_ID } from '../pascal/PascalNavbar'
+import { usePascalLevelSync } from '../pascal/usePascalLevelSync'
+import EditorPage from './EditorPage'
 import { useAuthStore } from '../stores/authStore'
 import { pushPascalScene, useEditorStore } from '../stores/editorStore'
 
@@ -106,6 +112,7 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
   useCollaboration(projectId, ready)
   usePendingRestore(projectId, ready)
   useComments(projectId, ready)
+  usePascalLevelSync(ready)
 
   // Scène venue d'ailleurs (autre personne, version restaurée, annuler) → éditeur de Pascal.
   // Celles qui viennent de Pascal lui-même sont reconnues à leur identité et ignorées.
@@ -140,7 +147,7 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
   const sidebarTabs = useMemo<PascalTab[]>(() => {
     const tabs: PascalTab[] = [
       {
-        id: 'fabrics-metres',
+        id: METRES_TAB_ID,
         label: t('pascalEditor.tabMetres'),
         icon: <Calculator className="h-5 w-5" />,
         mobileIcon: <Calculator className="h-5 w-5" />,
@@ -173,16 +180,14 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
   if (loadState === 'loading') {
     return <p className="pascal-shell p-8 text-muted-foreground">{t('common.loading')}</p>
   }
+  // Un projet Visuel garde son éditeur (Konva) : même adresse `/p/:id` pour tous les projets.
+  if (loadState === 'notPlan') return <EditorPage isOwner={isOwner} />
   if (loadState !== 'ready') {
     return (
       <main className="pascal-shell p-8">
         <h1 className="text-lg font-semibold">{t('pascalEditor.unavailableTitle')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {loadState === 'notPlan'
-            ? t('pascalEditor.notPlan')
-            : loadState === 'error'
-              ? t('pascalEditor.loadError')
-              : t('pascalEditor.notFound')}
+          {loadState === 'error' ? t('pascalEditor.loadError') : t('pascalEditor.notFound')}
         </p>
         <Link to="/" className="mt-4 inline-block text-sm underline">
           {t('auth.backToHome')}
@@ -192,15 +197,28 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
   }
 
   return (
-    <div className="dark pascal-tokens relative h-screen w-screen" data-owner={isOwner ? 'true' : 'false'}>
+    <div className="dark pascal-tokens relative h-screen w-screen">
       <Editor
         layoutVersion="v2"
+        navbarSlot={<PascalNavbar isOwner={isOwner} />}
         projectId={projectId}
         projectName={projectName}
         sidebarTabs={sidebarTabs}
         onLoad={handleLoad}
         onSave={handleSave}
       />
+      {/*
+        Plan de l'ancien éditeur, hors de l'écran et en lecture seule : il sert aux exports PNG, JPG et
+        PDF (cotes Client / Exécution comprises) et à la miniature, que Fabrics photographie sur ce plan.
+      */}
+      <div aria-hidden="true" inert className="pointer-events-none fixed top-0 h-[900px] w-[1400px]" style={{ left: -20000 }}>
+        <EditorStage readOnly />
+      </div>
+      {/* Signaux du plan (export bloqué, surfaces à corriger…), en haut à droite, sous le bouton Split. */}
+      <div className="fabrics-on-dark pointer-events-none absolute inset-x-0 bottom-0 top-14 z-40 [&_*]:pointer-events-auto">
+        <PlanSignals />
+      </div>
+      <ViewsScreen />
       {/* Messages de Fabrics (enregistrement, export, versions) par-dessus l'éditeur. */}
       <div className="pointer-events-none absolute inset-x-0 top-14 z-50 [&>*]:pointer-events-auto">
         <Notice />

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useEffect, useState } from 'react'
 import { useParams } from 'react-router'
 import { peekCreated } from '../features/persistence/justCreated'
 import { fetchMyRole } from '../features/sharing/membersApi'
@@ -8,9 +8,13 @@ import { useAuthStore } from '../stores/authStore'
 import EditorPage from './EditorPage'
 import SharedProjectPage from './SharedProjectPage'
 
+// M19 A3 : un projet Plan s'ouvre dans l'éditeur de Pascal (un Visuel y retrouve son propre éditeur).
+const PascalEditorPage = lazy(() => import('./PascalEditorPage'))
+
 /**
  * Porte d'entrée de `/p/:projectId` : cherche le rôle de la personne sur le projet, puis ouvre
- * l'éditeur (propriétaire ou éditeur invité) ou la lecture seule (lecteur invité).
+ * l'éditeur (propriétaire ou éditeur invité) ou la lecture seule (lecteur invité). Depuis M19 A3,
+ * l'éditeur est celui de Pascal pour un plan ; l'ancien reste à `/p/:projectId/ancien` jusqu'en A7.
  *
  * Si le rôle est inconnu (projet pas encore envoyé au compte, réseau coupé), on ouvre l'éditeur :
  * c'est le cas d'un projet créé hors connexion, qui n'existe encore que dans la file d'attente
@@ -50,5 +54,9 @@ export default function ProjectPage() {
     return <p className="p-8 text-slate-500">{fr.common.loading}</p>
   }
   if (found.role === 'viewer') return <SharedProjectPage projectId={projectId} />
-  return <EditorPage isOwner={found.role !== 'editor'} />
+  return (
+    <Suspense fallback={<p className="p-8 text-slate-500">{fr.common.loading}</p>}>
+      <PascalEditorPage isOwner={found.role !== 'editor'} />
+    </Suspense>
+  )
 }
