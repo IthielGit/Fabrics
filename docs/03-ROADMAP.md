@@ -1202,12 +1202,16 @@ Plan validé le 2026-11-18 (`docs/phases/M18-plan.md`, lots A à F ; décisions 
 **Lot B (conversion plan ↔ scène) fait le 2026-11-18** : `src/features/scene/` (migration pure, vue
 calculée, nœuds Fabrics, chargement par Pascal) ; modèle de pièces de Pascal (ADR 0006) ; baseline M17,
 HOUSE-01, HOUSE-02 et EDGE-01 vérifiés par la scène.
+**Lot C (la scène devient le document de l'éditeur) fait le 2026-11-18** : `SceneBinding` (scène dans un
+`Y.Doc`, local quand on travaille seul), un seul historique `Y.UndoManager` pour les plans, événement
+« modèle changé », pièces qui suivent leurs murs.
 
 - [ ] La scène Pascal (`@pascal-app/core`) devient le document des projets Plan, enregistré dans Supabase
 - [x] Migration testée des plans existants vers des nœuds Pascal : niveaux, murs, ouvertures, pièces,
       dalles, toitures, escaliers, cheminées, plateformes, axes, cotes, coupes, mobilier, fonds DXF
       (lot B, 2026-11-18 ; migration de la base elle-même : lot D)
-- [ ] Identifiants stables ; événement `ModelChanged` ; un seul historique annuler / rétablir
+- [x] Identifiants stables ; événement `ModelChanged` ; un seul historique annuler / rétablir
+      (lot C, 2026-11-18 ; les projets Visuel gardent leur historique local, sans scène)
 - [ ] Collaboration Yjs, historique de versions et commentaires passés sur les nœuds Pascal
 - [ ] Métrés, cotes Client / Exécution et repères `M01`, `P01`, `F01` branchés sur la scène Pascal
 - [ ] Sauvegarde et restauration ; projets dupliqués

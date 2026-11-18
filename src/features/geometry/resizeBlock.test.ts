@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { getPlaceable } from '../library/catalog/prefabs'
 import { elementsForPrefab } from '../library/placeSet'
-import { useEditorStore } from '../../stores/editorStore'
+import { undoDepth, useEditorStore } from '../../stores/editorStore'
 import type { FurnitureElement, OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { createPlanProject } from '../documents/createProject'
 import { createFurnitureElement, createOpeningElement, createRoomElement, createWallElement } from '../documents/elements'
@@ -146,9 +146,9 @@ describe('dans l’éditeur', () => {
   it('un seul pas d’historique, annulable ; les ouvertures restent sur le mur', () => {
     store().addElements(bedroom())
     const original = structuredClone(store().project!.document.elements)
-    const historyBefore = store().history.past.length
+    const historyBefore = undoDepth()
     expect(store().resizeSelectionBlock(5000, 4000)).toBe(0)
-    expect(store().history.past.length).toBe(historyBefore + 1)
+    expect(undoDepth()).toBe(historyBefore + 1)
 
     const resized = store().project!.document.elements
     const room = resized.find((el): el is RoomElement => el.type === 'room')!
@@ -167,6 +167,6 @@ describe('dans l’éditeur', () => {
   it('sans mur ni pièce dans la sélection : rien ne se passe', () => {
     store().addElement(createFurnitureElement('L', 'bed-queen', 0, 0, 1600, 2000))
     expect(store().resizeSelectionBlock(5000, 4000)).toBeNull()
-    expect(store().history.past).toHaveLength(1)
+    expect(undoDepth()).toBe(1)
   })
 })

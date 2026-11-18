@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M18 · lot B, conversion plan Fabrics ↔ scène Pascal (18/11)
-- **Prochaine tâche :** M18 · lot C, la scène devient le document en mémoire de l'éditeur
+- **Dernière tâche terminée :** M18 · lot C, la scène Pascal devient le document de l'éditeur (18/11)
+- **Prochaine tâche :** M18 · lot D, enregistrement de la scène, versions, duplication, migration de la base
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
@@ -41,7 +41,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
-| M18 Modèle BIM unifié (G1) | en cours (lots A et B faits) | |
+| M18 Modèle BIM unifié (G1) | en cours (lots A, B et C faits) | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
@@ -59,6 +59,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M18 · Lot C : la scène Pascal devient le document de l'éditeur
+- Fait : `src/features/scene/yScene.ts` (scène dans un `Y.Doc`, une entrée par nœud et par propriété ; fonctions partagées avec `collab/yDocument.ts`) ; `sceneBinding.ts` (`SceneBinding` : chaque geste de l'éditeur → scène chargée par Pascal → seuls les nœuds modifiés écrits ; vue recalculée en gardant les objets inchangés) ; `modelEvents.ts` (« modèle changé ») ; `editorStore.ts` : un projet Plan ouvre sa scène dans un `Y.Doc` local, son historique (`Y.UndoManager`) remplace l'historique local (ADR 0005), les appuis rapides sur les flèches restent une seule étape ; `EditorHeader.tsx` (boutons annuler / rétablir).
+- Comportement nouveau : une pièce fermée par des murs suit un mur déplacé (modèle de Pascal, ADR 0006), à la fin du geste.
+- Preuves : `sceneBinding.test.ts` (créer, modifier, supprimer puis annuler : mêmes identifiants et dimensions, aucun élément fantôme ; geste en direct = une étape ; pièce qui suit son mur ; deux éditeurs : annuler ne défait que ses gestes) ; tests de l'éditeur repris (5 tests comptaient l'ancien historique : ils comptent maintenant les étapes réelles avec `undoDepth()`).
+- Mesures : ~30 ms par geste sur le plan d'exemple, 70 à 90 ms sur la grande maison (machine chargée). Taille : le fichier principal de l'application passe de 1,6 à 2,7 Mo (cœur de Pascal) : chargement à part de l'éditeur de plan à prévoir (risque noté).
+- Transitoire jusqu'au lot E : en collaboration, un plan passe encore par l'ancienne liaison (`CollabBinding`).
+- Commit : feat(m18): la scène Pascal devient le document de l'éditeur (lot C)
 
 ### 2026-11-18 — M18 · Lot B : conversion plan Fabrics ↔ scène Pascal
 - Fait : `src/features/scene/` : `migrate/fromFabrics.ts` (plan → scène, fonction pure : niveaux empilés comme Pascal, mur à N côtés → N `wall`, portes / fenêtres / baies → `door` / `window` sur leur côté, pièces → `zone`, mobilier → `item`, axes → `structural-grid`, cotes → `construction-dimension`) ; `nodes/fabricsNodes.ts` (coupe, toiture, escalier, cheminée, plateforme, textes, formes, images, fonds DXF : types déclarés par `registerNode`, sans modifier Pascal) ; `view/toFabricsView.ts` (vue calculée) ; `settle.ts` (chargement par Pascal) ; `view/roomClearFloor.ts`.

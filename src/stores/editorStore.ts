@@ -1,4 +1,6 @@
+import * as Y from 'yjs'
 import { create } from 'zustand'
+import { SceneBinding } from '../features/scene/sceneBinding'
 import type { DimensioningMode } from '../features/dimensioning/types'
 import type { MetresVersion } from '../features/measurements/tables'
 import { cloneElements, duplicateOffset } from '../features/documents/elements'
@@ -177,6 +179,8 @@ interface EditorState {
   /** Taille de la zone d'affichage du canevas (px), renseignée par le composant Stage. */
   viewportSize: Size
   history: History
+  /** Projet Plan (M18, ADR 0005) : annuler / rétablir possibles dans l'historique de la scène. */
+  sceneHistory: { canUndo: boolean; canRedo: boolean }
   /** Vrai pendant un geste en direct (entre `beginLiveEdit` et `endLiveEdit`). */
   liveEditing: boolean
   saveStatus: SaveStatus
@@ -412,6 +416,25 @@ export function setCollabHistory(history: CollabHistory | null): void {
   if (useEditorStore.getState().history !== EMPTY_HISTORY) useEditorStore.setState({ history: EMPTY_HISTORY })
 }
 
+/**
+ * Scène Pascal du projet Plan ouvert (M18, lot C ; ADR 0004, 0005). Elle est le document : l'éditeur
+ * affiche sa vue calculée, chaque modification lui est envoyée, et son historique (`Y.UndoManager`)
+ * remplace l'historique local. `null` pour un projet Visuel.
+ */
+let planBinding: SceneBinding | null = null
+/** Le prochain envoi à la scène prolonge le geste précédent (appuis rapides sur les flèches). */
+let mergeNextSceneStep = false
+
+/** Liaison de la scène du projet Plan ouvert (tests, collaboration). */
+export function getPlanBinding(): SceneBinding | null {
+  return planBinding
+}
+
+/** Nombre d'étapes qu'« annuler » peut défaire : historique de la scène (Plan) ou local (Visuel). */
+export function undoDepth(): number {
+  return planBinding ? planBinding.undoDepth() : useEditorStore.getState().history.past.length
+}
+
 // Dernier déplacement par les flèches (pour fusionner les appuis rapprochés).
 let lastNudge: { key: string; at: number; revision: number } | null = null
 
@@ -435,10 +458,9 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     const next = elements === changed.elements ? changed : { ...changed, elements: [...elements] }
     set({
       project: { ...project, document: next },
-      history: {
-        past: [...history.past, project.document].slice(-HISTORY_LIMIT),
-        future: [],
-      },
+      history: planBinding
+        ? EMPTY_HISTORY
+        : { past: [...history.past, project.document].slice(-HISTORY_LIMIT), future: [] },
       revision: revision + 1,
       // Le niveau actif doit toujours exister (par exemple après la suppression d'un niveau).
       activeLevelId: validActiveLevelId(next.levels, get().activeLevelId),
@@ -460,6 +482,26 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       activeLevelId: validActiveLevelId(document.levels, get().activeLevelId),
       revision: revision + 1,
     })
+  }
+
+  /** Projet Plan : ouvre sa scène (Y.Doc local tant que personne d'autre n'est connecté). */
+  function openPlanBinding() {
+    planBinding?.destroy()
+    planBinding = null
+    if (get().project?.kind !== 'plan') return
+    const binding = new SceneBinding(new Y.Doc(), {
+      getDocument: () => get().project?.document ?? null,
+      isLiveEditing: () => get().liveEditing,
+      applyRemoteDocument: (document, fromPeer) => get().applyRemoteDocument(document, fromPeer),
+      getScene: () => get().project?.scene ?? null,
+      onSceneChanged: (scene) => {
+        const project = get().project
+        if (project && project.scene !== scene) set({ project: { ...project, scene } })
+      },
+      onHistoryChange: (canUndo, canRedo) => set({ sceneHistory: { canUndo, canRedo } }),
+    })
+    planBinding = binding
+    binding.start()
   }
 
   return {
@@ -491,6 +533,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     stagePosition: { x: 0, y: 0 },
     viewportSize: { width: 0, height: 0 },
     history: EMPTY_HISTORY,
+    sceneHistory: { canUndo: false, canRedo: false },
     liveEditing: false,
     saveStatus: 'saved',
     revision: 0,
@@ -517,9 +560,12 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         revision: 0,
         remoteRevision: 0,
       })
+      openPlanBinding()
     },
 
     closeProject: () => {
+      planBinding?.destroy()
+      planBinding = null
       liveBase = null
       set({
         project: null,
@@ -918,7 +964,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         return
       }
       set({
-        history: { past: [...history.past, base].slice(-HISTORY_LIMIT), future: [] },
+        history: planBinding ? EMPTY_HISTORY : { past: [...history.past, base].slice(-HISTORY_LIMIT), future: [] },
         liveEditing: false,
         revision: revision + 1,
       })
@@ -1008,10 +1054,11 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         lastNudge.key === key &&
         lastNudge.revision === revision &&
         now - lastNudge.at < NUDGE_MERGE_MS &&
-        history.past.length > 0
+        (planBinding ? get().sceneHistory.canUndo : history.past.length > 0)
 
       if (merge) {
         // Même geste que le précédent : on met à jour sans empiler de nouvel état.
+        mergeNextSceneStep = true
         set({ project: { ...project, document: next }, revision: revision + 1 })
       } else {
         commit(() => next)
@@ -1042,6 +1089,10 @@ export const useEditorStore = create<EditorState>()((set, get) => {
         collabHistory.undo()
         return
       }
+      if (planBinding) {
+        planBinding.undo()
+        return
+      }
       const { project, history } = get()
       if (!project || history.past.length === 0) return
       const previous = history.past[history.past.length - 1]
@@ -1054,6 +1105,10 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     redo: () => {
       if (collabHistory) {
         collabHistory.redo()
+        return
+      }
+      if (planBinding) {
+        planBinding.redo()
         return
       }
       const { project, history } = get()
@@ -1083,3 +1138,13 @@ function reorderOnLevel(
   let next = 0
   return elements.map((el) => (visibleIds.has(el.id) ? reordered[next++] : el))
 }
+
+// M18 : toute modification du document d'un projet Plan (ou la fin d'un geste en direct) part dans
+// sa scène Pascal.
+useEditorStore.subscribe((state, previous) => {
+  if (!planBinding) return
+  if (state.project?.document === previous.project?.document && state.liveEditing === previous.liveEditing) return
+  const merge = mergeNextSceneStep
+  mergeNextSceneStep = false
+  planBinding.localChanged({ merge })
+})

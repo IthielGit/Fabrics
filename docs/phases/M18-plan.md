@@ -173,7 +173,7 @@ Chaque lot : `npm run check:all` vert, case cochée, journal, commit.
 | Vue recalculée trop lente sur les gros plans | recalcul limité aux nœuds changés ; test « 600 murs » |
 | Pascal « répare » la scène au chargement (`loadScene`, migrations) et change des valeurs | tests sur la scène après `loadScene`, pas seulement sur la sortie de la migration |
 | Cloudflare Pages construit avec `npm run build` seul : il lui faudra Bun et `build:pascal` dès que l'application importe Pascal | commande de build changée au lot C, avec l'accord de l'utilisateur, avant tout merge dans `main` |
-| Taille du bundle (core de Pascal, three) | mesurée au lot A ; chargement différé de l'éditeur Plan si besoin |
+| Taille du bundle (core de Pascal, three) | mesurée au lot C : fichier principal 1,6 → 2,7 Mo ; chargement à part de l'éditeur Plan (au plus tard M19) |
 | Plan enregistré au nouveau format ouvert par un onglet resté sur l'ancienne version | numéro de format refusé proprement par l'ancienne version (message, pas d'écrasement) |
 | Projet partagé en cours de migration pendant une collaboration | migration faite par le seul « leader » d'enregistrement (`saveLeader`) |
 

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { useEditorStore } from '../../stores/editorStore'
+import { undoDepth, useEditorStore } from '../../stores/editorStore'
 import { createPlanProject } from '../documents/createProject'
 import type { CanvasElement, OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { createFurnitureElement, createOpeningElement, createRoomElement, createWallElement } from '../documents/elements'
@@ -156,9 +156,9 @@ describe('dans l’éditeur', () => {
   it('un seul pas d’historique, annulable ; la pièce suit', () => {
     store().addElements(plan.map((el) => structuredClone(el)))
     const original = structuredClone(store().project!.document.elements)
-    const before = store().history.past.length
+    const before = undoDepth()
     expect(store().stretchZoneBy(eastZone, { x: 1000, y: 0 })).toBe(0)
-    expect(store().history.past.length).toBe(before + 1)
+    expect(undoDepth()).toBe(before + 1)
     const stretched = store().project!.document.elements.find((el): el is RoomElement => el.type === 'room')!
     expect(polygonArea(stretched.points)).toBeCloseTo(5000 * 3000)
     store().undo()
@@ -167,8 +167,8 @@ describe('dans l’éditeur', () => {
 
   it('rien à étirer : aucun pas d’historique', () => {
     store().addElements(plan.map((el) => structuredClone(el)))
-    const before = store().history.past.length
+    const before = undoDepth()
     expect(store().stretchZoneBy({ x: 1000, y: 1000, width: 100, height: 100 }, { x: 500, y: 0 })).toBeNull()
-    expect(store().history.past.length).toBe(before)
+    expect(undoDepth()).toBe(before)
   })
 })
