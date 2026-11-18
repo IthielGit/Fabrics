@@ -1,17 +1,19 @@
-import { useEffect } from 'react'
+import { Suspense, useEffect } from 'react'
 import { BrowserRouter, Link, Navigate, Route, Routes, useParams } from 'react-router'
 import RequireAuth from './components/auth/RequireAuth'
 import { fr } from './i18n/fr'
-import EditorPage from './pages/EditorPage'
 import HomePage from './pages/HomePage'
-import IntroPage from './pages/IntroPage'
-import InvitePage from './pages/InvitePage'
+import {
+  EditorPage,
+  IntroPage,
+  InvitePage,
+  ProjectPage,
+  ResetPasswordPage,
+  SettingsPage,
+  SharePage,
+  VersionPreviewPage,
+} from './pages/lazyPages'
 import LoginPage from './pages/LoginPage'
-import ProjectPage from './pages/ProjectPage'
-import VersionPreviewPage from './pages/VersionPreviewPage'
-import ResetPasswordPage from './pages/ResetPasswordPage'
-import SettingsPage from './pages/SettingsPage'
-import SharePage from './pages/SharePage'
 import { useAuthStore } from './stores/authStore'
 
 /** Ancienne adresse d'essai de l'éditeur de Pascal (A2) : c'est désormais `/p/:projectId`. */
@@ -26,6 +28,7 @@ export default function App() {
 
   return (
     <BrowserRouter>
+      <Suspense fallback={<p className="p-8 text-slate-500">{fr.common.loading}</p>}>
       <Routes>
         <Route element={<RequireAuth />}>
           <Route path="/" element={<HomePage />} />
@@ -53,6 +56,7 @@ export default function App() {
           }
         />
       </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

@@ -11,9 +11,7 @@
 @source "../packages/pascal/node_modules/@pascal-app/plugin-landscape/src";
 @source "../packages/pascal/node_modules/@pascal-app/plugin-bath-space/src";
 @source "../packages/pascal/node_modules/@pascal-app/plugin-streetscape/src";
-@source "../packages/pascal/node_modules/@pascal-app/plugin-bones/src";
-@source "../packages/pascal/node_modules/@mint/pascal-plugin/src";
-@import "./pascal-theme.css";
+@source "../packages/pascal/node_modules/@pascal-app/plugin-bones/src";@import "./pascal-theme.css";
 
 @theme {
   --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);

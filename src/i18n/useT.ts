@@ -1,4 +1,4 @@
-import { usePascalI18n } from '@pascal-app/core'
+import { usePascalI18n } from '@pascal-app/core/i18n'
 import { useMemo } from 'react'
 import type { FabricsMessageId } from './fabricsMessages'
 

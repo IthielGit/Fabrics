@@ -1,4 +1,4 @@
-import { createI18n, PascalI18nProvider, registerCompiledMessages } from '@pascal-app/core'
+import { createI18n, PascalI18nProvider, registerCompiledMessages } from '@pascal-app/core/i18n'
 import type { ReactNode } from 'react'
 import { fabricsFr } from './fabricsMessages'
 

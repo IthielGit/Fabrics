@@ -1,0 +1,18 @@
+# Cache du site sur Cloudflare Pages (lot Performance, 2026-11-18).
+# Fichiers de /assets : leur nom change à chaque version (empreinte), on peut les garder un an.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Fichiers de Pascal (icônes, objets, matières, sons, ciel) : stables, gardés un jour puis revérifiés en arrière-plan.
+/icons/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/items/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/material/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/audios/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/hdri/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+/fonts/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

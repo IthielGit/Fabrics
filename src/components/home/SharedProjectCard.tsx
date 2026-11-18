@@ -3,6 +3,7 @@ import { Link } from 'react-router'
 import { displayProjectName } from '../../features/documents/projectName'
 import type { SharedProjectSummary } from '../../features/sharing/membersLogic'
 import { useT } from '../../i18n/useT'
+import { preloadEditor } from '../../pages/lazyPages'
 import { formatRelativeTime } from '../../lib/relativeTime'
 import Menu from '../ui/Menu'
 
@@ -20,7 +21,11 @@ export default function SharedProjectCard({ project, onLeave }: SharedProjectCar
   const RoleIcon = canEdit ? Pencil : Eye
 
   return (
-    <li className="group relative rounded-xl border border-border/60 bg-background p-2 transition-colors hover:border-border hover:bg-accent">
+    // Survol ou focus : l'éditeur se télécharge déjà, l'ouverture est plus rapide (lot Performance).
+    <li
+      onPointerEnter={() => preloadEditor(project.kind)}
+      onFocus={() => preloadEditor(project.kind)}
+      className="group relative rounded-xl border border-border/60 bg-background p-2 transition-colors hover:border-border hover:bg-accent">
       <Link
         to={`/p/${project.id}`}
         className="flex aspect-video items-center justify-center overflow-hidden rounded-lg bg-accent text-muted-foreground/40 focus-visible:outline-2 focus-visible:outline-ring"

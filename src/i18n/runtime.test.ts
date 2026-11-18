@@ -1,4 +1,4 @@
-import { createI18n } from '@pascal-app/core'
+import { createI18n } from '@pascal-app/core/i18n'
 import { describe, expect, it } from 'vitest'
 import { fabricsFr } from './fabricsMessages'
 import './runtime' // enregistre le paquet « fabrics » en français

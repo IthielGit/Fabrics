@@ -10,7 +10,6 @@ import {
   registerCompiledMessages,
   registerNode,
 } from '@pascal-app/core'
-import { mintHostPanel, mintPlugin } from '@mint/pascal-plugin'
 import { registerEditorHostPanel } from '@pascal-app/editor'
 import { registerBundledLocales } from '@pascal-app/editor/locales'
 import { builtinPlugin } from '@pascal-app/nodes'
@@ -44,11 +43,7 @@ async function loadExternalPlugins(): Promise<void> {
 }
 
 // Modules de Pascal, comme dans Pascal lancé seul (D81). WebXR (réalité virtuelle) arrive en A6.
-// Mint (objets 3D générés, service externe `api.mint.gg`, choix de l'utilisateur du 2026-11-18) :
-// désactivé par défaut, à installer par projet ; sa connexion passe par `/api/plugins/mint`
-// (`vite.config.ts`).
-extendPluginDiscovery(async () => [mintPlugin])
-registerEditorHostPanel(mintHostPanel)
+// Mint (objets 3D générés, service externe) : retiré à la demande de l'utilisateur le 2026-11-18.
 extendPluginDiscovery(async () => [treesPlugin])
 registerEditorHostPanel(treesHostPanel)
 extendPluginDiscovery(async () => [environmentPlugin])
