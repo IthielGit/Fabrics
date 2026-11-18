@@ -149,6 +149,14 @@ export default defineConfig({
     // Une seule copie de React et de three, comme l'impose Pascal (next.config.ts de son application).
     dedupe: ['react', 'react-dom', 'three', '@react-three/fiber'],
   },
+  // Développement : Pascal (≈ 2 200 fichiers source) regroupé en quelques fichiers mis en cache, au lieu
+  // d'un fichier par module à chaque chargement de page. Après une modification du code de Pascal,
+  // relancer avec `npx vite --force` pour refaire ce regroupement.
+  optimizeDeps: {
+    // `@pascal-app/editor` est en source TypeScript : il faut autoriser ces extensions.
+    extensions: ['.ts', '.tsx'],
+    include: ['@pascal-app/editor', '@pascal-app/editor/locales', '@pascal-app/core', '@pascal-app/viewer', '@pascal-app/nodes'],
+  },
   // collab-server/ a ses propres dépendances et ses propres tests (npm test dans ce dossier).
   // packages/pascal/ : tests de Pascal sous bun (npm run test:pascal), jamais sous Vitest (ADR 0002).
   test: { exclude: [...configDefaults.exclude, 'collab-server/**', 'packages/pascal/**'] },

@@ -61,6 +61,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — Hors jalon : lenteur du chargement en développement (demande de l'utilisateur)
+- Mesures (Chromium sans carte graphique, `npm run dev`) : ouverture de l'éditeur 35 s, rafraîchissement 18 s, environ 3 300 fichiers servis un par un (dont 2 235 de Pascal, en source TypeScript). Version compilée (`vite preview`, comme en ligne) : accueil 1,6 s, éditeur 8,6 s.
+- Correctif : Pascal (éditeur, moteur, rendu, nœuds) regroupé en quelques fichiers mis en cache par Vite en développement (`optimizeDeps` dans `vite.config.ts`). Après : accueil 2,5 s, éditeur 5,6 à 8,7 s, rafraîchissement 11 s, environ 1 100 fichiers. Après une modification du code de Pascal : `npx vite --force`.
+- Reste (aussi en ligne) : environ 12,5 Mo de JavaScript à exécuter pour l'éditeur (Pascal, three.js WebGPU, modules, ancien éditeur monté hors écran pour les exports) et le démarrage de la 3D. À alléger plus tard (Idées).
+- Vérification : build ✓ lint ✓ tests ✓ ; onglets, Plugins (Mint), menu Affichage vérifiés dans Chromium.
+
 ### 2026-11-18 — M19 · A5 suite : Mint et français complet de Pascal (choix de l'utilisateur)
 - **Français de Pascal** : les 3 888 traductions automatiques « à relire » du catalogue français de Pascal sont chargées par Fabrics (2 écartées : variables différentes de l'anglais). Script `scripts/compile-pascal-fr.mjs` → fichier généré `src/i18n/pascalFrReview.ts`, chargé par `src/pascal/bootstrap.ts` avant le catalogue officiel (les traductions relues gardent la main). Pascal n'est pas modifié. À relancer après une mise à jour de Pascal. Des tournures maladroites sont possibles : à corriger au fil de l'eau.
 - **Mint** (objets 3D générés) : module branché (`bootstrap.ts`, désactivé par défaut, à installer par projet dans Plugins → Parcourir), route de connexion `/api/plugins/mint/…` montée dans le serveur de développement (`vite.config.ts`, adaptateur serveur fourni par Mint, jetons en cookies HttpOnly). **La connexion ne marchera qu'après que Mint a autorisé l'adresse de retour de Fabrics** (`http://localhost:5173/api/plugins/mint/oauth/callback`, puis celle du site en ligne) : Mint enregistre ces adresses une par une, aujourd'hui seulement celles de Pascal. En ligne (Cloudflare Pages), il faudra en plus une fonction serveur équivalente.
