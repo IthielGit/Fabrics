@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M18 · lot F, métrés sur la scène et corrections EDGE-01 (18/11)
-- **Prochaine tâche :** M19 (plan à présenter, feu vert de l'utilisateur avant de coder). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
+- **Dernière tâche terminée :** M19 · A1 Routes et accueil (18/11, à tester dans le navigateur)
+- **Prochaine tâche :** M19 · A2 Éditeur et panneaux (après validation d'A1). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -60,6 +60,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M19 · A1 Routes et accueil (à tester dans le navigateur)
+- Fait : thème de Pascal repris dans `src/pascal-theme.css` (jetons clairs par défaut, sombres dans `.pascal-shell` ; police Geist) ; coque `src/components/shell/AppShell.tsx` (en-tête, carte centrée, boutons) ; accueil refait d'après `app/page.tsx` de Pascal (`HomePage.tsx`, cartes, menu compte, boîtes Renommer / Supprimer / Quitter / Importer) ; connexion et nouveau mot de passe en carte centrée sur la coque sombre ; page Réglages (`/reglages`) avec l'interrupteur des sons, mémorisé dans ce navigateur (`features/settings/soundSetting.ts`, testé) ; `Button`, `Modal`, `Menu` suivent le thème (clair dans l'éditeur actuel, sombre sur l'accueil).
+- Textes : système de traduction de Pascal (Lingui, sans macro) branché dans `src/main.tsx` ; textes de l'accueil, des cartes, des boîtes de dialogue, du compte, de la connexion et des réglages versés dans `src/i18n/fabricsMessages.ts` (`useT()`), testés. Restent dans `fr.ts` : messages d'erreur de connexion, boîte « Importer vos projets », éditeur.
+- Test d'architecture : `@pascal-app/core` peut aussi être importé depuis `src/i18n/` (ADR 0004, point 4).
+- Les routes `/`, `/p/:id`, `/s/…`, `/i/…`, `/bienvenue` existaient déjà et sont conservées. **Pas fait en A1** : la route d'import de scène (elle dépend de l'éditeur Pascal, A2) et la création d'un projet Visuel depuis l'accueil (A4 ; `NewDesignDialog` n'était déjà plus branché).
+- Vérification : build ✓ lint ✓ 3 075 tests ✓ ; `check:all` : 3 tests de Pascal en échec en suite complète (machine chargée, erreurs EPERM de liens symboliques sous Windows), verts relancés seuls, aucun fichier de `packages/pascal/` modifié ; accueil, réglages vérifiés dans Chromium sans erreur de console. Connexion : à voir avec Supabase (compte en ligne).
+- Branche `feat/m19-pascal-ui` (dossier `Fabrics-m19`).
 
 ### 2026-11-18 — M20 à M25 · Sous-lots et modèle par sous-lot (plan seulement)
 - Demande de l'utilisateur : appliquer à tous les jalons suivants le découpage en sous-lots avec la commande `/model` de chacun, comme pour M19.

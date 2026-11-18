@@ -6,13 +6,14 @@ import AuthMessages from '../components/auth/AuthMessages'
 import Button from '../components/ui/Button'
 import type { AuthErrorKey } from '../features/auth/authErrors'
 import { newPasswordProblems, type FieldProblem } from '../features/auth/authValidation'
-import { fr } from '../i18n/fr'
+import { useT } from '../i18n/useT'
 import { useAuthStore } from '../stores/authStore'
 
-const LINK_CLASS = 'mt-4 inline-block text-sm text-indigo-700 underline underline-offset-2'
+const LINK_CLASS = 'mt-4 inline-block text-sm text-foreground underline underline-offset-2'
 
 /** Page ouverte par le lien « mot de passe oublié » reçu par e-mail. */
 export default function ResetPasswordPage() {
+  const t = useT()
   const status = useAuthStore((state) => state.status)
   const recovery = useAuthStore((state) => state.recovery)
   const updatePassword = useAuthStore((state) => state.updatePassword)
@@ -27,20 +28,20 @@ export default function ResetPasswordPage() {
   if (status === 'disabled') return <Navigate to="/" replace />
   if (status === 'loading') {
     return (
-      <AuthLayout title={fr.auth.resetTitle}>
-        <p className="text-sm text-slate-600">{fr.common.loading}</p>
+      <AuthLayout title={t('auth.resetTitle')}>
+        <p className="text-sm text-muted-foreground">{t('common.loading')}</p>
       </AuthLayout>
     )
   }
 
   if (done) {
     return (
-      <AuthLayout title={fr.auth.resetTitle}>
-        <p role="status" className="text-sm text-slate-700">
-          {fr.auth.resetDone}
+      <AuthLayout title={t('auth.resetTitle')}>
+        <p role="status" className="text-sm text-foreground">
+          {t('auth.resetDone')}
         </p>
         <Link to="/" className={LINK_CLASS}>
-          {fr.auth.backToHome}
+          {t('auth.backToHome')}
         </Link>
       </AuthLayout>
     )
@@ -48,12 +49,12 @@ export default function ResetPasswordPage() {
 
   if (!recovery) {
     return (
-      <AuthLayout title={fr.auth.resetTitle}>
-        <p role="alert" className="text-sm text-slate-700">
-          {fr.auth.resetNoLink}
+      <AuthLayout title={t('auth.resetTitle')}>
+        <p role="alert" className="text-sm text-foreground">
+          {t('auth.resetNoLink')}
         </p>
         <Link to="/connexion" className={LINK_CLASS}>
-          {fr.auth.backToSignIn}
+          {t('auth.backToSignIn')}
         </Link>
       </AuthLayout>
     )
@@ -74,18 +75,18 @@ export default function ResetPasswordPage() {
   }
 
   return (
-    <AuthLayout title={fr.auth.resetTitle} intro={fr.auth.resetIntro}>
+    <AuthLayout title={t('auth.resetTitle')} intro={t('auth.resetIntro')}>
       <form onSubmit={(event) => void handleSubmit(event)} noValidate className="flex flex-col gap-4">
         <AuthField
-          label={fr.auth.password}
+          label={t('auth.password')}
           type="password"
           value={password}
           autoComplete="new-password"
-          hint={fr.auth.passwordHint}
+          hint={t('auth.passwordHint')}
           onChange={setPassword}
         />
         <AuthField
-          label={fr.auth.confirmPassword}
+          label={t('auth.confirmPassword')}
           type="password"
           value={confirm}
           autoComplete="new-password"
@@ -93,7 +94,7 @@ export default function ResetPasswordPage() {
         />
         <AuthMessages problems={problems} error={error} />
         <Button type="submit" variant="primary" disabled={pending} className="justify-center">
-          {pending ? fr.auth.working : fr.auth.resetSubmit}
+          {pending ? t('auth.working') : t('auth.resetSubmit')}
         </Button>
       </form>
     </AuthLayout>

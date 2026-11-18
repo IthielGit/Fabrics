@@ -38,7 +38,7 @@ export default function ImportLocalDialog({ userId, count, onClose }: ImportLoca
   if (step.type === 'working') {
     return (
       <Modal title={t.title} onClose={() => {}}>
-        <p role="status" className="text-sm text-slate-600">
+        <p role="status" className="text-sm text-muted-foreground">
           {t.progress(step.done, step.total)}
         </p>
       </Modal>
@@ -49,10 +49,10 @@ export default function ImportLocalDialog({ userId, count, onClose }: ImportLoca
     const { imported, skipped, failed } = step.result
     return (
       <Modal title={t.resultTitle} onClose={() => onClose(imported > 0)}>
-        <div role="status" className="space-y-1 text-sm text-slate-700">
+        <div role="status" className="space-y-1 text-sm text-foreground">
           {imported > 0 && <p>{t.imported(imported)}</p>}
           {skipped > 0 && <p>{t.skipped(skipped)}</p>}
-          {failed > 0 && <p className="text-red-700">{t.failed(failed)}</p>}
+          {failed > 0 && <p className="text-destructive">{t.failed(failed)}</p>}
         </div>
         <div className="mt-6 flex justify-end">
           <Button variant="primary" onClick={() => onClose(imported > 0)}>
@@ -65,7 +65,7 @@ export default function ImportLocalDialog({ userId, count, onClose }: ImportLoca
 
   return (
     <Modal title={t.title} onClose={() => onClose(false)}>
-      <p className="text-sm text-slate-600">{t.message(count)}</p>
+      <p className="text-sm text-muted-foreground">{t.message(count)}</p>
       <div className="mt-6 flex justify-end gap-2">
         <Button onClick={handleDecline}>{t.decline}</Button>
         <Button variant="primary" onClick={() => void handleImport()}>

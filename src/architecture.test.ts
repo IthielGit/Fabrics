@@ -41,10 +41,11 @@ describe('architecture de Fabrics', () => {
   })
 
   // M18 (ADR 0004) : un seul point d'entrée vers la scène Pascal, `src/features/scene/`.
-  it("n'importe @pascal-app/core que depuis src/features/scene/", () => {
+  // M19 A1 : `src/i18n/` aussi, pour le système de traduction de Pascal (Lingui).
+  it("n'importe @pascal-app/core que depuis src/features/scene/ et src/i18n/", () => {
     const offenders = files.flatMap(([file, text]) =>
       importsOf(text)
-        .filter((spec) => spec.startsWith('@pascal-app/core') && !file.startsWith('./features/scene/'))
+        .filter((spec) => spec.startsWith('@pascal-app/core') && !file.startsWith('./features/scene/') && !file.startsWith('./i18n/'))
         .map((spec) => `${file} → ${spec}`),
     )
     expect(offenders).toEqual([])

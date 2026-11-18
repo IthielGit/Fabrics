@@ -70,7 +70,7 @@ export default function Menu({ label, items }: MenuProps) {
           setPosition(null)
           setOpen((value) => !value)
         }}
-        className="rounded p-1.5 text-slate-500 hover:bg-slate-100"
+        className="rounded p-1.5 text-muted-foreground hover:bg-accent hover:text-foreground"
       >
         <MoreHorizontal size={18} />
       </button>
@@ -84,7 +84,7 @@ export default function Menu({ label, items }: MenuProps) {
               right: position?.right ?? 0,
               visibility: position ? 'visible' : 'hidden',
             }}
-            className="fixed z-50 w-44 rounded-md border border-slate-200 bg-white py-1 shadow-lg"
+            className="fixed z-50 w-44 rounded-lg border border-border bg-popover py-1 text-popover-foreground shadow-lg"
           >
             {items.map((item) => (
               <li key={item.label} role="none">
@@ -96,8 +96,8 @@ export default function Menu({ label, items }: MenuProps) {
                     item.onSelect()
                   }}
                   className={clsx(
-                    'flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-slate-50',
-                    item.danger ? 'text-red-600' : 'text-slate-700',
+                    'flex w-full items-center gap-2 px-3 py-2 text-left text-sm hover:bg-accent',
+                    item.danger ? 'text-destructive' : 'text-popover-foreground',
                   )}
                 >
                   {item.icon}
@@ -106,7 +106,8 @@ export default function Menu({ label, items }: MenuProps) {
               </li>
             ))}
           </ul>,
-          document.body,
+          // Dans la coque de Pascal quand il y en a une, pour garder son thème sombre.
+          document.querySelector('.pascal-shell') ?? document.body,
         )}
     </div>
   )
