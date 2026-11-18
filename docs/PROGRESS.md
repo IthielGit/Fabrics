@@ -60,6 +60,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M19 · Découpage en sous-lots validé (plan seulement)
+- Décision de l'utilisateur : M19 découpé en 12 sous-lots (A1 à A7 pour l'interface, B1 à B5 pour l'édition 2D/3D), dans cet ordre, avec un test dans le navigateur après chaque sous-lot.
+- Chaque sous-lot porte la commande `/model sonnet` ou `/model opus` à taper avant de le commencer. Claude ne peut pas changer de modèle tout seul : il rappelle la commande au début du sous-lot.
+- Fichier : `docs/03-ROADMAP.md` (section M19). Aucun code ; M19 commence après le gate G1 de M18.
+- Commit : docs(m19): sous-lots et modèle par sous-lot
+
 ### 2026-11-18 — M17 · Fixtures : murs pleine hauteur, dalle découpée
 - Décision de l'utilisateur : les murs passent sur toute la hauteur et la dalle est découpée autour (remplace « la dalle prime »).
 - Fait : HOUSE-02 : murs sur 3000 mm aux deux niveaux (nets 294,44 m², 48,838 m³) ; dalle de l'étage 80 − 8,75 (emprise des murs du RdC) − 4,51 (trémie) = 66,74 m², 13,348 m³ ; total murs + dalles 78,186 m³ (inchangé, sans recouvrement). HOUSE-01 inchangé.

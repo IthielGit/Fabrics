@@ -1213,6 +1213,26 @@ branche dédiée.
 
 ## M19 — Interface Pascal et édition 2D/3D professionnelle (gate G2)
 
+**Découpage en sous-lots validé par l'utilisateur le 2026-11-18.** Ordre : A1 → A7, puis B1 → B5 ;
+test dans le navigateur par l'utilisateur après chaque sous-lot (indispensable après A2 et B1).
+Avant chaque sous-lot, taper dans Claude Code la commande `/model` indiquée (Claude ne peut pas
+changer de modèle lui-même : il la rappelle au début du sous-lot si le modèle actif ne correspond pas).
+
+| Sous-lot | Contenu | Modèle |
+|---|---|---|
+| A1 Routes et accueil | Accueil des projets, routes `react-router`, connexion Supabase, textes en Lingui | `/model sonnet` |
+| A2 Éditeur et panneaux | Mise en page de l'éditeur Pascal, barre d'outils, panneaux ; panneaux Fabrics reconstruits (Métrés Client / Exécution, Commentaires, Historique et aperçu de version) | `/model opus` |
+| A3 Collaboration et partage | Présence et avatars, partage et invitations, Exporter, points à vérifier, cotation Aucune / Client / Exécution | `/model opus` |
+| A4 Projets Visuel | Éditeur Visuel habillé dans le style de Pascal, accessible depuis le même accueil | `/model sonnet` |
+| A5 Rendu | WebGPU (repli WebGL2), occlusion ambiante, bloom, anticrénelage, contours encrés, surlignage, lumière du jour, HDRI, animation de construction | `/model opus` |
+| A6 Navigation, sons et aide | Perspective / orthographique, première personne, suivi de caméra, WebXR, niveaux empilés / éclatés / seuls, coupe 3D, sons (`howler`) avec réglage, accrochages visibles, palette de commandes, aide et parcours de découverte | `/model sonnet` |
+| A7 Nettoyage | Anciens composants Fabrics remplacés retirés, registre mis à jour, `docs/regression-checklist.md` passé en entier | `/model sonnet` |
+| B1 Outils 2D | Outils, vue en plan et accrochages de Pascal, saisie précise en mm, alignements, fusion sans doublon | `/model opus` |
+| B2 Édition 3D | Murs, dalles, toitures, escaliers, ouvertures en 3D ; jonctions propres ; synchronisation 2D ↔ 3D sur le même objet | `/model opus` |
+| B3 Matériaux | Couches de mur, bibliothèque de matériaux, quantités par couche sans double comptage | `/model opus` |
+| B4 Terrain | Terrain, limite de propriété, implantation du bâtiment, altitudes des niveaux | `/model opus` |
+| B5 Cas difficiles et preuves | Jonctions, collisions, ouvertures, épaisseur nulle ou invalide ; exemples T1 / T2 ; tests 2D → 3D et 3D → 2D ; rapport de précision ; gate G2 | `/model opus` |
+
 ### Lot A — Interface et prise en main de Pascal (D80)
 
 - [ ] Pages de `apps/editor` reprises dans l'app Vite : accueil des projets, éditeur, réglages,
