@@ -1,0 +1,131 @@
+# Contributing to Pascal Editor
+
+Thanks for your interest in contributing! We welcome all kinds of contributions — bug fixes, new features, documentation, and ideas.
+
+## Getting started
+
+### Prerequisites
+
+- [Bun](https://bun.sh/) 1.3+
+- Node.js 22.23.4 or later on 22.x, 24.22.1 or later on 24.x, or 26.12.1 or later
+  (Node 23 and 25 are not supported)
+
+### Setup
+
+```bash
+git clone https://github.com/pascalorg/editor.git
+cd editor
+bun install
+bun dev
+```
+
+The editor will be running at **http://localhost:3002**. That's it!
+
+### Optional
+
+Copy `.env.example` to `.env` and add a Google Maps API key if you want address search functionality. The editor works fully without it.
+
+## Making changes
+
+### Code style
+
+We use [Biome](https://biomejs.dev/) for linting and formatting. Before submitting a PR:
+
+```bash
+bun check        # Check for issues
+bun check:fix    # Auto-fix issues
+bun run ci       # Everything the CI quality job runs: lint, skills, types, tests, build
+```
+
+`bun install` points git at `.githooks/`: the pre-commit hook runs Biome on staged files (and fixes what it can), and the pre-push hook lints and runs `check-types` and tests for the packages your branch changes. Skip once with `--no-verify`.
+
+### Tests
+
+Run the whole suite from the repo root:
+
+```bash
+bun run test     # every package, via Turborepo
+```
+
+Run one package while you work on it:
+
+```bash
+bun --cwd packages/core run test
+```
+
+Use `bun run test`, not bare `bun test`. `test` is one of Bun's own
+subcommands, so `bun test` never reaches the package script — it runs Bun's
+collector over every file it can find, including compiled copies under `dist/`,
+and reports inflated counts. `bun run test` goes through Turborepo, which
+builds workspace dependencies first (several packages import theirs from
+`dist/`) and runs each package's own scoped test script.
+
+### User-visible text
+
+Every string a person reads in the editor (labels, tooltips, `aria-label`,
+`title`, placeholders, menus, dialogs, errors) goes through the i18n catalog:
+
+```tsx
+const i18n = usePascalI18n()
+<button title={i18n._({ id: 'app.editorNavbar.share', message: 'Share' })} />
+```
+
+`bun run i18n:check` (part of `bun run ci`) fails when a file gains a
+hardcoded user-visible literal. Run `bun run i18n:extract` after changing copy.
+Scene data, MCP/agent text and developer errors stay English. See
+[`i18n/README.md`](i18n/README.md) for catalogs, translation review, the
+migration codemod and the pseudo-locale screenshot audit.
+
+### Project structure
+
+| Package | What it does |
+|---------|-------------|
+| `packages/core` | Scene schema, state management, systems — no UI |
+| `packages/viewer` | 3D rendering with React Three Fiber |
+| `apps/editor` | The full editor app (Next.js) |
+
+A key rule: **`packages/viewer` must never import from `apps/editor`**. The viewer is a standalone component; editor-specific behavior is injected via props/children.
+
+### Building a plugin
+
+New node kinds and sidebar panels can ship as a plugin instead of editing the built-ins. Read [Create a plugin](https://editor.pascal.app/docs/developers/plugins) for the contract, and clone [`pascalorg/plugin-trees`](https://github.com/pascalorg/plugin-trees) as a worked example.
+
+## Submitting a PR
+
+1. **Fork the repo** and create a branch from `main`
+2. **Make your changes** and test locally with `bun dev`
+3. **Run `bun run ci`** to make sure linting, types, tests and the build pass
+4. **Open a PR** with a clear description of what changed and why
+5. **Link related issues** if applicable (e.g., "Fixes #42")
+
+### PR tips
+
+- Keep PRs focused — one feature or fix per PR
+- Include screenshots or recordings for visual changes
+- If you're unsure about an approach, open an issue or discussion first
+
+## Releases
+
+Maintainers release every `@pascal-app/*` package together from the **Release** workflow; contributors never bump versions in a PR. Two things a PR can change need a maintainer before the next release:
+
+- **A new package.** Add it to `PACKAGES` in `.github/workflows/release.yml`, then a maintainer publishes it to npm once by hand and adds its trusted publisher. Until then the workflow fails at its first step, before anything is published:
+
+  ```bash
+  cd packages/<pkg> && bun run build && npm publish --access public --tag latest --ignore-scripts
+  ```
+
+- **The release push.** The release commit and tags go to `main` with the `RELEASE_DEPLOY_KEY` deploy key, the one identity besides admins that the `main` ruleset lets through. Keep it in the ruleset's bypass list when the ruleset changes.
+
+[Releasing to npm](wiki/npm-release.md) has the trusted-publisher settings, key rotation and recovery steps.
+
+## Reporting bugs
+
+Use the [Bug Report](https://github.com/pascalorg/editor/issues/new?template=bug_report.yml) template. Include steps to reproduce — this helps us fix things faster.
+
+## Suggesting features
+
+Use the [Feature Request](https://github.com/pascalorg/editor/issues/new?template=feature_request.yml) template, or start a [Discussion](https://github.com/pascalorg/editor/discussions) if you want to brainstorm first.
+
+## Questions?
+
+Head to [Discussions](https://github.com/pascalorg/editor/discussions) — we're happy to help!

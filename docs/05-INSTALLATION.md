@@ -68,6 +68,33 @@ Ne colle jamais une clé secrète dans la conversation ni dans un fichier versio
 uniquement dans `.env.local` (et dans les réglages de Cloudflare). Seule la clé **anon** de
 Supabase est utilisée par l'application.
 
+## Outils Pascal (à partir de M17)
+
+Depuis M17, le dépôt contient Pascal Editor (`packages/pascal/`). Il faut en plus :
+
+| Outil | Version | Installation (terminal de VS Code, PowerShell) | Vérifier |
+|---|---|---|---|
+| Node.js | **≥ 26.12.1** (ou 24.22.1) : Pascal refuse les versions plus anciennes | `winget upgrade --id OpenJS.NodeJS.LTS` | `node -v` → `v26.13.1` |
+| Bun | **1.4.4** (sert aux tests de Pascal) | `powershell -c "irm bun.sh/install.ps1 \| iex"` | `bun --version` → `1.4.4` |
+| Python | 3.11 ou plus (contrôle des fichiers IFC) | https://www.python.org/downloads/ | `python --version` |
+
+Après une installation, **fermer puis rouvrir VS Code** pour que les nouvelles commandes soient
+reconnues. Ensuite, à la racine du projet :
+
+```bash
+npm install              # Fabrics
+npm run install:pascal   # Pascal, avec Bun, aux versions exactes de son bun.lock (~2 min)
+npm run check:all        # tout vérifier : build, lint, tests Fabrics, tests Pascal, lint Pascal, doublons
+```
+
+Contrôle IFC avec IfcOpenShell (facultatif, environnement Python séparé) :
+
+```bash
+python -m venv tools/ifc/.venv
+tools/ifc/.venv/Scripts/python.exe -m pip install -r tools/ifc/requirements.txt
+tools/ifc/.venv/Scripts/python.exe -I tools/ifc/validate.py baseline/fabrics/example/export.ifc
+```
+
 ## Problèmes fréquents
 
 | Symptôme | Solution |

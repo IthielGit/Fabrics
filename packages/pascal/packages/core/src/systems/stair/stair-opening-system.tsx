@@ -1,0 +1,169 @@
+'use client'
+
+import { useEffect } from 'react'
+import { structureChangeBatch } from '../../commands/structure/shared'
+import type { AnyNode, AnyNodeId } from '../../schema'
+import { isSettlingDocument } from '../../store/document-settling'
+import { pauseSceneHistory, resumeSceneHistory } from '../../store/history-control'
+import { isHydrationNormalization, queueSceneNormalization } from '../../store/scene-hydration'
+import useLiveNodeOverrides from '../../store/use-live-node-overrides'
+import useLiveTransforms from '../../store/use-live-transforms'
+import useScene from '../../store/use-scene'
+import { ensureSceneOpenings } from '../../utils/ensure-scene-openings'
+import { changedInputs, isStairOpeningInput } from '../document-reconcile'
+import { planOwnedFloorOpenings } from '../owned-floor-openings'
+import { reconcileOwnedFloorOpeningChanges } from '../reconcile-owned-floor-openings'
+import {
+  createSurfaceOpeningPreviewController,
+  getNodesWithLiveStairOpeningInputs,
+  hasLiveStairOpeningInputs,
+} from './stair-opening-preview'
+import { changedStairOpeningOwners, syncAutoStairOpenings } from './stair-opening-sync'
+import { syncStairRises } from './stair-rise'
+
+export function initializeStairOpeningSync() {
+  let syncingAutoOpenings = false
+  let syncingPreviewOpenings = false
+  const previewController = createSurfaceOpeningPreviewController()
+  const applyUpdates = (updates: Array<{ id: AnyNodeId; data: Partial<AnyNode> }>) => {
+    if (updates.length === 0) return
+    syncingAutoOpenings = true
+    pauseSceneHistory(useScene)
+    try {
+      useScene.getState().updateNodes(updates)
+    } finally {
+      resumeSceneHistory(useScene)
+      syncingAutoOpenings = false
+    }
+  }
+
+  // The guard only stops the preview's own override writes from re-entering the refresh. Held
+  // past them (to a microtask), it swallowed the refresh a drop asks for in the same tick, and
+  // the dragged stair's preview cuts stayed drawn on the floor and ceiling until a reload.
+  const writePreview = (write: () => void) => {
+    syncingPreviewOpenings = true
+    try {
+      write()
+    } finally {
+      syncingPreviewOpenings = false
+    }
+  }
+
+  const applyPreviewUpdates = (updates: ReturnType<typeof syncAutoStairOpenings>) =>
+    writePreview(() => previewController.apply(updates))
+
+  const applyOpeningChanges = (skipExistingSurfaces = false, ownerIds?: ReadonlySet<string>) => {
+    const changes = planOwnedFloorOpenings(useScene.getState().nodes, {
+      skipExistingSurfaces,
+      ownerIds,
+    })
+    if (!changes.length) return
+    syncingAutoOpenings = true
+    pauseSceneHistory(useScene)
+    try {
+      const before = useScene.getState().nodes
+      useScene.getState().applyNodeChanges(structureChangeBatch(changes))
+      reconcileOwnedFloorOpeningChanges(useScene, before, changes)
+    } finally {
+      resumeSceneHistory(useScene)
+      syncingAutoOpenings = false
+    }
+  }
+
+  const clearPreviewUpdates = () => {
+    if (previewController.previewSurfaceIds.size === 0) return
+    writePreview(() => previewController.clear())
+  }
+
+  const refreshLivePreview = () => {
+    if (syncingPreviewOpenings) return
+
+    const nodes = useScene.getState().nodes
+    const liveTransforms = useLiveTransforms.getState().transforms
+    const liveOverrides = useLiveNodeOverrides.getState().overrides
+    const previewSurfaceIds = previewController.previewSurfaceIds
+
+    if (!hasLiveStairOpeningInputs(nodes, liveTransforms, liveOverrides, previewSurfaceIds)) {
+      clearPreviewUpdates()
+      return
+    }
+
+    applyPreviewUpdates(
+      syncAutoStairOpenings(
+        getNodesWithLiveStairOpeningInputs(nodes, liveTransforms, liveOverrides, previewSurfaceIds),
+      ),
+    )
+  }
+
+  const runAutoSync = (preserveSlabs: boolean, before: Record<string, AnyNode>) => {
+    if (preserveSlabs) {
+      applyUpdates(ensureSceneOpenings(useScene.getState().nodes).updates)
+      applyOpeningChanges(true)
+      return
+    }
+    // Rise first: straight stairs converge their flight heights to the
+    // resolved rise (level height or deck elevation), and the opening pass
+    // reads those segment heights — so it must run against the post-rise
+    // nodes.
+    applyUpdates(syncStairRises(useScene.getState().nodes))
+    applyOpeningChanges(false, changedStairOpeningOwners(before, useScene.getState().nodes))
+  }
+
+  let disposed = false
+  let syncGeneration = 0
+  let pendingBefore: Record<string, AnyNode> | undefined
+  const scheduleAutoSync = (preserveSlabs = false, before = useScene.getState().nodes) => {
+    pendingBefore ??= before
+    const generation = ++syncGeneration
+    // One microtask later so every other scene-store listener for the
+    // triggering transition (and, at mount, the editor's spatial-grid
+    // init) runs first — the spatial-grid sync in particular. The
+    // deck-attached rise elects the stair's floor-stack base elevation
+    // through the spatial grid; syncing before the grid listener would
+    // rescale flights against the pre-transition slab state.
+    queueSceneNormalization(() => {
+      if (disposed || generation !== syncGeneration) return
+      const previous = pendingBefore!
+      pendingBefore = undefined
+      runAutoSync(preserveSlabs, previous)
+      refreshLivePreview()
+    })
+  }
+
+  scheduleAutoSync(true)
+
+  const unsubscribeScene = useScene.subscribe((state, prevState) => {
+    if (syncingAutoOpenings || isSettlingDocument(useScene)) return
+    // A level's child list is bookkeeping (furniture re-parenting under it): what joined or left
+    // is an input of its own, as the document reconcile reads it.
+    if (
+      !changedInputs(prevState.nodes, state.nodes, isStairOpeningInput, { ignoreChildLists: true })
+    )
+      return
+    scheduleAutoSync(
+      isHydrationNormalization() || state.hydrationId !== prevState.hydrationId,
+      prevState.nodes,
+    )
+  })
+
+  const unsubscribeLiveTransforms = useLiveTransforms.subscribe(() => {
+    refreshLivePreview()
+  })
+
+  const unsubscribeLiveOverrides = useLiveNodeOverrides.subscribe(() => {
+    refreshLivePreview()
+  })
+
+  return () => {
+    disposed = true
+    unsubscribeScene()
+    unsubscribeLiveTransforms()
+    unsubscribeLiveOverrides()
+    previewController.clear()
+  }
+}
+
+export const StairOpeningSystem = () => {
+  useEffect(() => initializeStairOpeningSync(), [])
+  return null
+}

@@ -1,0 +1,588 @@
+// `NodeRenderer` is the recursive dispatch component used by parent
+// renderers (wall renders doors/windows, slab renders hosted items).
+// Public so registry-driven kinds can compose children without reaching
+// into viewer's internal paths.
+
+export type { SurfaceRole } from '@pascal-app/core'
+export { ErrorBoundary } from './components/error-boundary'
+// Stage A wrap-exports for the rest of the kinds — `@pascal-app/nodes`
+// registers each via `def.renderer` (and `def.system` when present)
+// Generic dispatch component used by recursive renderers (e.g. level →
+// children, building → children). The per-kind renderers live in
+// `@pascal-app/nodes/<kind>/renderer.tsx` and are loaded by the registry
+// — no per-kind re-exports needed.
+export { NodeRenderer } from './components/renderers/node-renderer'
+// The generic renderer of a kind that ships `def.geometry`, for a kind's renderer that draws
+// something beside its built group.
+export { ParametricNodeRenderer } from './components/renderers/parametric-node-renderer'
+export {
+  default as Viewer,
+  pendingSceneBuildCount,
+  type ViewerHandle,
+  type ViewerImmersiveSession,
+} from './components/viewer'
+export {
+  type BVHEcctrlApi,
+  default as BVHEcctrl,
+  type MovementInput,
+} from './components/viewer/bvh-ecctrl'
+export {
+  DroneController,
+  type DroneControllerProps,
+} from './components/viewer/drone-controller'
+export {
+  buildGlbInteractiveItems,
+  GlbInteractive,
+  type GlbInteractiveItem,
+} from './components/viewer/glb-interactive'
+export {
+  buildGlbReferenceNodes,
+  buildGlbReplaceNodes,
+} from './components/viewer/glb-reference-nodes'
+export {
+  type GlbPickEvent,
+  GlbScene,
+  type GlbWalkthrough,
+  resolveGlbPick,
+} from './components/viewer/glb-scene'
+export {
+  CROUCH_CAPSULE,
+  CROUCH_EYE_OFFSET,
+  CROUCH_FLOAT_HEIGHT,
+  CROUCH_RUN_SPEED,
+  CROUCH_WALK_SPEED,
+  EYE_LERP_SPEED,
+  GlbWalkthroughController,
+  type GlbWalkthroughControllerProps,
+  STAND_CAPSULE,
+  STAND_CLEARANCE,
+  STAND_FLOAT_HEIGHT,
+  WALKTHROUGH_FOV,
+} from './components/viewer/glb-walkthrough-controller'
+export {
+  LiveWalkthroughController,
+  type LiveWalkthroughControllerProps,
+} from './components/viewer/live-walkthrough-controller'
+export type { HoverStyle, HoverStyles } from './components/viewer/post-processing'
+export {
+  DEFAULT_HOVER_STYLES,
+  SSGI_PARAMS,
+} from './components/viewer/post-processing'
+export {
+  SceneAtmosphere,
+  type SceneAtmosphereSource,
+  useSceneAtmosphere,
+} from './components/viewer/scene-atmosphere'
+export { SceneEnvironment } from './components/viewer/scene-environment'
+export {
+  claimSceneGround,
+  SceneGroundReplacement,
+  useSceneGroundReplacement,
+} from './components/viewer/scene-ground-replacement'
+export { isSectionObject, SectionGroup } from './components/viewer/section-group'
+export {
+  type CalloutAction,
+  type CalloutText,
+  SelectionCallout,
+  type SelectionCalloutProps,
+} from './components/viewer/selection-callout'
+export { SiteSurfaceScope } from './components/viewer/site-surface-scope'
+export { applyWalkthroughCameraClipping } from './components/viewer/viewer-camera'
+export {
+  isViewerPresentationTextureBorrowed,
+  markViewerPresentationTextureBorrowed,
+  registerViewerPresentation,
+  type ViewerPresentationConfiguration,
+  type ViewerPresentationContribution,
+  type ViewerPresentationExportContext,
+  type ViewerPresentationStaticExport,
+  ViewerPresentations,
+  viewerPresentationRegistry,
+} from './components/viewer/viewer-presentations'
+export { useAssetUrl } from './hooks/use-asset-url'
+export { useGLTFKTX2 } from './hooks/use-gltf-ktx2'
+export { useLibraryMaterialsVersion } from './hooks/use-library-materials-version'
+export { useNodeEvents } from './hooks/use-node-events'
+export { resolveAssetUrl, resolveCdnUrl } from './lib/asset-url'
+export { backdropColors, backdropGradient, deepSkyColor, horizonHazeColor } from './lib/backdrop'
+export { applyWorldScaleBoxUVs } from './lib/box-uv'
+// CSG primitives — used by chimney's roof-trim and other kinds whose
+// geometry subtracts pieces against their host. Lives in viewer
+// because three-bvh-csg / three-mesh-bvh are viewer-only deps.
+export {
+  ADDITION,
+  Brush,
+  computeGeometryBoundsTree,
+  csgEvaluator,
+  csgGeometry,
+  csgMaterials,
+  Evaluator,
+  ensureRenderableGeometryAttributes,
+  INTERSECTION,
+  prepareBrushForCSG,
+  SUBTRACTION,
+} from './lib/csg-utils'
+export {
+  createDaylightGroundMaterial,
+  DAYLIGHT_GROUND,
+  DAYLIGHT_PARCEL,
+  daylightGroundColor,
+} from './lib/daylight/ground'
+export {
+  type DaylightSite,
+  type LatLng,
+  type LocationSource,
+  requestDeviceLocation,
+  resolveLocation,
+} from './lib/daylight/location'
+export { type DaylightAtmosphereSource, isDaylightAtmosphere } from './lib/daylight/look'
+export { WEATHER_COVER, type Weather } from './lib/daylight/sky'
+export {
+  presetInstant,
+  type SkyPhase,
+  skyPhase,
+  solarClockInstant,
+  solarClockMinutes,
+  solarPosition,
+  sunEvents,
+  type TimeOfDay,
+  type TimeTarget,
+} from './lib/daylight/solar'
+export {
+  type TimeTransitionOptions,
+  timeTargetMinutes,
+  transitionTimeOfDay,
+} from './lib/daylight/time-transition'
+export type { DisplayState } from './lib/display-state'
+export { disposeObject3DResources } from './lib/dispose-object3d'
+export {
+  createDroneInput,
+  DRONE_SLOW_MULTIPLIER,
+  type DroneInput,
+  type DroneLook,
+  seedDroneLook,
+  stepDroneFlight,
+  turnFirstPersonLook,
+} from './lib/drone-flight'
+export type { EdgeMode } from './lib/edge-style'
+export { markHighlight, tintEmissive } from './lib/editor-highlight'
+export {
+  BLOCK_MASONRY,
+  concreteMaterial,
+  type Masonry,
+  masonryMaterial,
+  STRUCTURE_COLORS,
+} from './lib/foundation-materials'
+export { preserveGltfUnlit } from './lib/gltf-unlit'
+export { PERF_OVERLAY_ENABLED } from './lib/gpu-perf'
+export {
+  groundWindowBoxNow,
+  groundWindowContains,
+  groundWindowEnabledNode,
+  groundWindowMaskNode,
+  inGroundWindowNode,
+  setGroundWindow,
+  temporarilyGroundWindowForCapture,
+} from './lib/ground-window'
+export {
+  computeHeroFraming,
+  DEFAULT_FRAMING_EXCLUDED_TYPES,
+  type HeroFraming,
+  heroCameraPose,
+  temporarilyHideNodeTypes,
+  unionRegisteredNodeBounds,
+} from './lib/hero-pose'
+export {
+  applyIsolation,
+  clearIsolation,
+  collectIsolationSubtree,
+  isIsolationActive,
+  refreshIsolation,
+} from './lib/isolation'
+export { setKeyLightDirectionOverride } from './lib/key-light-override'
+export { configureKtx2Support, ensureKtx2Support, ktx2TextureLoadState } from './lib/ktx2-loader'
+export { LayerPassIndex } from './lib/layer-pass'
+export {
+  BATCHED_LAYER,
+  GRID_LAYER,
+  OVERLAY_LAYER,
+  SCENE_LAYER,
+  SHADOW_ONLY_LAYER,
+  setSurfaceRaycastLayers,
+  ZONE_LAYER,
+} from './lib/layers'
+export { holdLiveFrame } from './lib/live-frame-hold'
+export {
+  applyMaterialPresetToMaterials,
+  BLUEPRINT_PALETTE,
+  baseMaterial,
+  CLAY_PALETTE,
+  type ColorPreset,
+  clearMaterialCache,
+  createDefaultMaterial,
+  createMaterial,
+  createMaterialFromPreset,
+  createMaterialFromPresetRef,
+  createSurfaceRoleMaterial,
+  DEFAULT_CEILING_MATERIAL,
+  DEFAULT_DOOR_MATERIAL,
+  DEFAULT_ROOF_MATERIAL,
+  DEFAULT_SHELF_MATERIAL,
+  DEFAULT_SLAB_MATERIAL,
+  DEFAULT_STAIR_MATERIAL,
+  DEFAULT_WALL_MATERIAL,
+  DEFAULT_WINDOW_MATERIAL,
+  disposeMaterial,
+  getMaterialTextureVersion,
+  glassMaterial,
+  MONO_PALETTE,
+  materialCastsShadow,
+  materialTextureLoadState,
+  PRESET_PALETTES,
+  type RenderShading,
+  registerMaterialCacheCleanup,
+  resolveMaterialRef,
+  resolveSlotDefaultMaterial,
+  resolveSurfaceColor,
+  setSlotDefaultOverrides,
+  WHITE_PALETTE,
+} from './lib/materials'
+export * from './lib/measurement-label'
+export * from './lib/measurement-presentation'
+export { mergedOutline } from './lib/merged-outline-node'
+export { createNodeTopSurfaceHeightSampler } from './lib/node-top-surface-height'
+export * from './lib/perf-actions'
+export { type PerfBatchStats, publishPerfBatchStats } from './lib/perf-panel-store'
+export * from './lib/perf-tracks'
+export {
+  hasMaterialsForGroups,
+  markPureRaycast,
+  type ViewerBreadcrumb,
+  type ViewerBreadcrumbHandler,
+} from './lib/pointer-events'
+export {
+  cloneWithProceduralEmission,
+  decorateProceduralEmission,
+  proceduralSlotMeshes,
+  setProceduralEmission,
+} from './lib/procedural-emission'
+export {
+  detectRendererCapability,
+  initializeGpuRenderer,
+  type RendererBackendParameters,
+  type RendererCapability,
+  type RendererCapabilityCanvas,
+  type RendererInitializationResult,
+  type RendererPowerPreference,
+} from './lib/renderer-capability'
+export { commitEditCandidates, commitRevealCandidates } from './lib/reveal-candidates'
+export {
+  ANIMATION_SPEEDS,
+  type AnimationSpeed,
+  DEFAULT_ANIMATION_SPEED,
+  FRAMING_PACE,
+  LAZY_REVEAL_BASE_TIMING,
+  LAZY_REVEAL_TIMING,
+  type LazyRevealTiming,
+  lazyTimingAt,
+  normalizeAnimationSpeed,
+  type PlannedReveal,
+  pacedLazyTiming,
+  planLazyReveal,
+  type RevealCandidate,
+  retractTimingAt,
+  revealTimingAt,
+} from './lib/reveal-schedule'
+export { planRevealWindows, type RevealWindow } from './lib/reveal-windows'
+export {
+  familyForNode,
+  sceneFamilies,
+  VIEWER_FAMILIES,
+} from './lib/scene-families'
+export { createSceneSupportHeightSampler } from './lib/scene-support-height'
+export {
+  getSceneTheme,
+  SCENE_THEME_IDS,
+  SCENE_THEMES,
+  type SceneTheme,
+} from './lib/scene-themes'
+export {
+  type HiddenReason,
+  heldReasons,
+  hideFromScene,
+  showInScene,
+  temporarilyShowPresentation,
+  temporarilyShowShadowOnly,
+} from './lib/scene-visibility'
+export { SCRIPTED_MODEL_FLAG } from './lib/scripted-opening'
+export { filterSectionHits, type SectionAxis, type SectionShadows } from './lib/section'
+export { sectionBounds } from './lib/section-bounds'
+export {
+  SITE_GROUND,
+  SITE_HORIZON,
+  type SiteGroundRole,
+  siteGround,
+  siteSurfaces,
+  temporarilyHideSiteSurfaces,
+  temporarilyVeilGround,
+} from './lib/site-surfaces'
+export {
+  createPlainSnapshotPipeline,
+  createSnapshotPipeline,
+  SNAPSHOT_MAX_EDGE,
+  SNAPSHOT_MIME,
+  SNAPSHOT_QUALITY,
+  type SnapshotCaptureMode,
+  type SnapshotCaptureResult,
+  type SnapshotCropRegion,
+  type SnapshotPipeline,
+  type SnapshotSize,
+  type StudioBackdrop,
+  THUMBNAIL_HEIGHT,
+  THUMBNAIL_WIDTH,
+} from './lib/snapshot-pipeline'
+export {
+  buildTerrainPerimeterFillGeometry,
+  type TerrainPerimeterPoint,
+} from './lib/terrain-perimeter-fill'
+export {
+  getPascalTextureRef,
+  type PascalTextureColorSpace,
+  type PascalTextureMap,
+  type PascalTextureRef,
+  stampPascalTextureRef,
+  textureMapForSlot,
+} from './lib/texture-reference'
+export { packNormalToRGB, unpackRGBToNormal } from './lib/tsl-compat'
+export { isTypingTarget } from './lib/typing-target'
+export {
+  AMBIANCE_SECONDS,
+  ambianceNow,
+  ambianceTarget,
+  easeAmbiance,
+  eyeUnderTheGround,
+  FADE_SECONDS,
+  groundHoleOpenNode,
+  groundHoleOpenNow,
+  stepAmbianceProgress,
+  temporarilyWithoutAmbiance,
+  UNDERGROUND_RIM,
+  undergroundAmbianceNode,
+} from './lib/underground-ambiance'
+export {
+  ASSETS_CDN_URL,
+  configureViewer,
+  getViewerConfig,
+  type ViewerConfig,
+} from './lib/viewer-config'
+export { createWalkthroughInput, type WalkthroughInput } from './lib/walkthrough-input'
+export {
+  WALKTHROUGH_DEFAULT_SPEEDS,
+  WALKTHROUGH_SEE_DISTANCE,
+  type WalkthroughSpeeds,
+} from './lib/walkthrough-settings'
+export { filterXrayHits, xrayActive } from './lib/xray'
+export { createZoneShape, createZoneWallGeometry } from './lib/zone-geometry'
+export {
+  type FirstPersonHudState,
+  useFirstPersonHud,
+  type WalkthroughInteract,
+  type WalkthroughSeenInteract,
+} from './store/use-first-person-hud'
+export type { LightSource } from './store/use-item-light-pool'
+export { catalogLightSource, useItemLightPool } from './store/use-item-light-pool'
+export {
+  applyCountryUnitDefault,
+  DEFAULT_UNDERGROUND_LOOK,
+  default as useViewer,
+  type GroundMode,
+  groundVeiled,
+  type MetricNotation,
+  type RenderQuality,
+  type RenderQualityChoice,
+  siteGroundShown,
+  type UndergroundEdge,
+  type UndergroundLook,
+  type UndergroundTransition,
+  type WalkthroughMovement,
+  type WallMode,
+} from './store/use-viewer'
+export {
+  CEILING_CAP_MESH,
+  CEILING_REGION_MESH,
+  type CeilingRegionMaterial,
+  CeilingSystem,
+} from './systems/ceiling/ceiling-system'
+export {
+  createColumnBoxGeometry,
+  createColumnCylinderGeometry,
+  createColumnSphereGeometry,
+  createColumnTorusGeometry,
+} from './systems/column/column-geometry'
+export {
+  ConstructionReveal,
+  type ConstructionRevealDriver,
+  type ConstructionRevealLevel,
+  type ConstructionRevealOptions,
+  emitRevealPuff,
+  getRetractTurn,
+  getRevealPlanSpeed,
+  getRevealPlanState,
+  getRevealTurn,
+  isNodeRevealing,
+  isRevealAssembling,
+  type RetractResult,
+  type RevealCompleteEvent,
+  type RevealEvent,
+  type RevealFinaleEvent,
+  type RevealGroupEvent,
+  type RevealNodeStartEvent,
+  type RevealPhaseEvent,
+  type RevealPlanState,
+  type RevealPreroll,
+  type RevealRetractEvent,
+  retractNodes,
+  revealChangedNodeIds,
+  revealClockMs,
+  revealMotionOff,
+  seatLiftedNow,
+  setRevealPreroll,
+  startConstructionReveal,
+  subscribeRevealAssembling,
+  subscribeRevealEvents,
+  subscribeRevealPhases,
+  subscribeRevealTicks,
+  useRevealPending,
+  useRevealPlanActive,
+  useRevealWaiting,
+} from './systems/construction-reveal/construction-reveal'
+export { DoorAnimationSystem } from './systems/door/door-animation-system'
+export { buildDoorPreviewMesh, DoorSystem, poseDoorMovingParts } from './systems/door/door-system'
+export { ElevatorInteractionSystem } from './systems/elevator/elevator-interaction-system'
+// Generic floor-elevation system. Lifts the rendered mesh of any kind
+// whose definition declares `capabilities.floorPlaced` by the slab
+// elevation under its footprint. Replaces the per-kind elevation block
+// that used to live inside `ItemSystem`.
+export { FloorElevationSystem } from './systems/floor-elevation/floor-elevation-system'
+export {
+  type GeometryFailure,
+  setGeometryFailure,
+  useGeometryStatus,
+} from './systems/geometry/geometry-status'
+export { GuideSystem } from './systems/guide/guide-system'
+export {
+  InteractiveSystem,
+  type InteractiveSystemProps,
+} from './systems/interactive/interactive-system'
+export { openingSettled, proceduralSettled } from './systems/interactive/opening-settled'
+export {
+  type ScriptedClipActions,
+  ScriptedClips,
+  useClipActions,
+} from './systems/interactive/scripted-clips'
+// Item systems for the registry-driven item definition. ItemSystem
+// applies attachTo-driven transforms each frame; ItemLightSystem
+// manages item-mounted light sources.
+export { ItemSystem } from './systems/item/item-system'
+export { ItemLightSystem } from './systems/item-light/item-light-system'
+export { itemLightsForCapture } from './systems/item-light/pooled-lights'
+export { LevelSystem } from './systems/level/level-system'
+export {
+  EXPLODED_GAP,
+  getLevelPresentationY,
+  presentLevelsForCapture,
+  snapLevelsToTruePositions,
+} from './systems/level/level-utils'
+export {
+  ROOF_GABLE_LEFT_MATERIAL_INDEX,
+  ROOF_GABLE_RIGHT_MATERIAL_INDEX,
+  ROOF_HEEL_MATERIAL_INDEX,
+  ROOF_RENDER_MATERIAL_COUNT,
+} from './systems/roof/roof-material-slots'
+export {
+  getRoofMaterialArray,
+  levelWallCladdingRef,
+  levelWallFaceRef,
+} from './systems/roof/roof-materials'
+// Generic roof-segment primitives. Kinds that compose CSG against
+// the roof shell (chimney's self-trim, dormer's virtual-segment cut)
+// read these through the public surface. No kind-specific helpers
+// belong here — those live in `@pascal-app/nodes/<kind>/`.
+export {
+  clipDirectRoofGeometryAgainstSiblings,
+  clipGeometryBySegmentTrim,
+  generateRoofSegmentGeometry,
+  getPendingRoofMergeCount,
+  getRoofOuterSurfaceFrameAtPoint,
+  getRoofSegmentBrushes,
+  mapRoofGroupMaterialIndex,
+  ROOF_MATERIAL_SLOT_COUNT,
+  type RoofGeometryAdapter,
+  RoofSystem,
+  remapRoofShellFaces,
+  roofCsgDummyMats,
+  type SurfaceFrame,
+  splitRoofWallBandFaces,
+} from './systems/roof/roof-system'
+export { ScanSystem } from './systems/scan/scan-system'
+// Pure slab geometry generator — composed into the registry-driven slab
+// definition's `def.geometry` in `@pascal-app/nodes`.
+export { generateSlabGeometry } from './systems/slab/slab-system'
+export {
+  getStairBodyMaterials,
+  getStairRailingMaterial,
+  getStraightStairSegmentBodyMaterials,
+  type StairBodyMaterials,
+} from './systems/stair/stair-materials'
+export { StairSystem } from './systems/stair/stair-system'
+// Pure opening-cutout profile math shared by the wall CSG pipeline and
+// roof-wall opening cuts in `@pascal-app/nodes` — keeps shaped holes
+// (arch / rounded / frameless opening) identical across both hosts.
+export {
+  buildOpeningCutoutGeometry,
+  buildOpeningCutoutShape,
+  getOpeningCutoutBottomPadding,
+  hasFlatOpeningCutoutBottom,
+} from './systems/wall/opening-cutout-geometry'
+export { getWallHideState, WallCutout } from './systems/wall/wall-cutout'
+export {
+  WallCutoutCache,
+  type WallCutoutViewerState,
+  type WallCutoutViewerStore,
+} from './systems/wall/wall-cutout-cache'
+export {
+  getWallFaceBaseAt,
+  getWallFinishData,
+  getWallFinishRefs,
+  type WallFinishGeometryData,
+} from './systems/wall/wall-finish-data'
+export {
+  getMaterialsForWall,
+  getVisibleWallMaterials,
+  type WallMaterialOverride,
+  type WallMaterials,
+  type WallMaterialsResolver,
+} from './systems/wall/wall-materials'
+// Wall internals re-exported so `@pascal-app/nodes`' registry-driven wall
+// definition can compose them into `def.system` without duplicating the
+// 800+ lines of CSG / mitering logic during Phase 3. These exports are
+// removed in Phase 6 when the legacy mount points are deleted.
+export {
+  drainRebuiltWalls,
+  generateExtrudedWall,
+  getPendingWallRebuildCount,
+  isWallInitialBuildActive,
+  runWallBuildFrame,
+  type WallGeometryAdapter,
+  type WallGeometryAdapterContext,
+  WallSystem,
+} from './systems/wall/wall-system'
+export {
+  advanceWindowAnimations,
+  poseWindowMovingParts,
+  WindowAnimationSystem,
+} from './systems/window/window-animation-system'
+export { restoreWindowRollerShutter } from './systems/window/window-roller-shutter'
+export { buildWindowPreviewMesh, WindowSystem } from './systems/window/window-system'
+export { ZoneSystem } from './systems/zone/zone-system'
+export { useImmersiveXRPresentation } from './xr/presentation-context'

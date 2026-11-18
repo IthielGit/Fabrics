@@ -1,0 +1,1427 @@
+import { liftedManualSlab } from '../../lib/floor-construction-lift'
+import { selectSlabSupportForItem, slabSupportsItemFootprint } from '../../lib/item-slab-support'
+import { type PlanAabb, planFootprintAABB, planFootprintCorners } from '../../lib/plan-footprint'
+import { getRenderableSlabPolygon } from '../../lib/slab-polygon'
+import { levelBaseElevationAt } from '../../lib/terrain-support'
+import { floorPlacedCollides, nodeRegistry } from '../../registry'
+import type { AnyNode, AnyNodeId, CeilingNode, ItemNode, SlabNode, WallNode } from '../../schema'
+import { getScaledDimensions, isLowProfileItemSurface } from '../../schema'
+import { getWallTop } from '../../services/storey'
+import useLiveNodeOverrides, { getEffectiveNode } from '../../store/use-live-node-overrides'
+import useLiveTerrain from '../../store/use-live-terrain'
+import useLiveTransforms, { type LiveTransform } from '../../store/use-live-transforms'
+import useScene from '../../store/use-scene'
+import {
+  computeWallSlabSupport,
+  pointInPolygon,
+  type WallSlabSupport,
+  wallOverlapsPolygon,
+} from '../../systems/slab/slab-support'
+import { DEFAULT_WALL_THICKNESS } from '../../systems/wall/wall-footprint'
+import type { WallJustification } from '../../systems/wall/wall-frame'
+import { getFloorPlacedFootprints } from './floor-placed-elevation'
+import { SpatialGrid } from './spatial-grid'
+import { WallSpatialGrid } from './wall-spatial-grid'
+
+export { itemOverlapsPolygon } from '../../lib/item-polygon-overlap'
+
+export {
+  computeWallSlabElevation,
+  computeWallSlabSupport,
+  pointInPolygon,
+  SUPPORT_ELEVATION_EPSILON,
+  type WallOverlapInput,
+  type WallSlabSupport,
+  type WallSlabSupportSegment,
+  wallOverlapsPolygon,
+} from '../../systems/slab/slab-support'
+
+// ============================================================================
+// GEOMETRY HELPERS (delegate to pure plan-footprint — one source with MCP/editor)
+// ============================================================================
+
+export {
+  type PlanAabb,
+  type PlanVec2,
+  planFootprintAABB,
+  planFootprintCorners,
+} from '../../lib/plan-footprint'
+
+/**
+ * Compute the 4 XZ footprint corners of an item given its position, dimensions, and Y rotation.
+ */
+function getItemFootprint(
+  position: [number, number, number],
+  dimensions: [number, number, number],
+  rotation: [number, number, number],
+  inset = 0,
+): Array<[number, number]> {
+  return planFootprintCorners(position, dimensions, rotation[1], inset)
+}
+
+/**
+ * Axis-aligned XZ extent of a footprint at `position`, rotated by `yRot`. The
+ * rotated width/depth is the same conservative bound the floor-placement draft
+ * uses, so a draft and an existing node are compared with identical math.
+ */
+function footprintBoundsXZ(
+  position: [number, number, number],
+  dimensions: [number, number, number],
+  yRot: number,
+): PlanAabb {
+  return planFootprintAABB(position, dimensions, yRot)
+}
+
+type ItemLocalBounds = {
+  min: [number, number, number]
+  max: [number, number, number]
+}
+
+type ItemParentAabb = {
+  minX: number
+  maxX: number
+  minY: number
+  maxY: number
+  minZ: number
+  maxZ: number
+}
+
+function getItemLocalBounds(item: ItemNode): ItemLocalBounds {
+  const [width, height, depth] = getScaledDimensions(item)
+  const minZ = item.asset.attachTo === 'wall-side' ? -depth : -depth / 2
+  const maxZ = item.asset.attachTo === 'wall-side' ? 0 : depth / 2
+  return {
+    min: [-width / 2, 0, minZ],
+    max: [width / 2, height, maxZ],
+  }
+}
+
+function getItemParentAabb(item: ItemNode): ItemParentAabb {
+  const bounds = getItemLocalBounds(item)
+  const corners: Array<[number, number, number]> = [
+    [bounds.min[0], bounds.min[1], bounds.min[2]],
+    [bounds.min[0], bounds.min[1], bounds.max[2]],
+    [bounds.min[0], bounds.max[1], bounds.min[2]],
+    [bounds.min[0], bounds.max[1], bounds.max[2]],
+    [bounds.max[0], bounds.min[1], bounds.min[2]],
+    [bounds.max[0], bounds.min[1], bounds.max[2]],
+    [bounds.max[0], bounds.max[1], bounds.min[2]],
+    [bounds.max[0], bounds.max[1], bounds.max[2]],
+  ]
+  const yRot = item.rotation[1] ?? 0
+  const cos = Math.cos(yRot)
+  const sin = Math.sin(yRot)
+
+  let minX = Number.POSITIVE_INFINITY
+  let minY = Number.POSITIVE_INFINITY
+  let minZ = Number.POSITIVE_INFINITY
+  let maxX = Number.NEGATIVE_INFINITY
+  let maxY = Number.NEGATIVE_INFINITY
+  let maxZ = Number.NEGATIVE_INFINITY
+
+  for (const [cx, cy, cz] of corners) {
+    const rotatedX = cx * cos + cz * sin
+    const rotatedZ = -cx * sin + cz * cos
+    const worldX = rotatedX + item.position[0]
+    const worldY = cy + item.position[1]
+    const worldZ = rotatedZ + item.position[2]
+    minX = Math.min(minX, worldX)
+    minY = Math.min(minY, worldY)
+    minZ = Math.min(minZ, worldZ)
+    maxX = Math.max(maxX, worldX)
+    maxY = Math.max(maxY, worldY)
+    maxZ = Math.max(maxZ, worldZ)
+  }
+
+  return { minX, maxX, minY, maxY, minZ, maxZ }
+}
+
+function intervalsOverlap(minA: number, maxA: number, minB: number, maxB: number, epsilon = 1e-4) {
+  return minA < maxB - epsilon && maxA > minB + epsilon
+}
+
+function resolveNodeLevelId(node: AnyNode, nodes: Record<string, AnyNode>): string {
+  if (node.type === 'level') return node.id
+
+  let current: AnyNode | undefined = node
+  while (current) {
+    if (current.type === 'level') return current.id
+    current = current.parentId ? nodes[current.parentId] : undefined
+  }
+
+  return 'default'
+}
+
+function expandIgnoredNodeIds(
+  ignoreIds: readonly string[] | undefined,
+  nodes: Record<string, AnyNode>,
+): Set<string> {
+  const ignored = new Set(ignoreIds ?? [])
+  const queue = [...ignored]
+
+  while (queue.length > 0) {
+    const id = queue.pop()!
+    const node = nodes[id]
+    const children = (node as { children?: unknown } | undefined)?.children
+    if (!Array.isArray(children)) continue
+    for (const childId of children) {
+      if (typeof childId !== 'string' || ignored.has(childId)) continue
+      ignored.add(childId)
+      queue.push(childId)
+    }
+  }
+
+  return ignored
+}
+
+/** One slab overlapping a queried footprint, as seen by support election. */
+export type SlabSupportCandidate = {
+  slabId: string
+  elevation: number
+}
+
+export type ItemSlabSupport = {
+  elevation: number
+  /** The winning slab, or null when no slab overlaps the footprint. */
+  slabId: string | null
+}
+
+export type PointedSupportSurface = ItemSlabSupport & {
+  /**
+   * Level-local XZ where the ray meets the pointed surface's plane, or
+   * null when the ray never reaches it (grazing / aimed above the base).
+   * This is the plan point the pointer actually indicates: unlike a grid
+   * event-plane hit — whose XZ shifts with whatever height the event
+   * plane currently rides at — it depends only on the ray and the
+   * aimed-at surface, so election/preview at this point cannot flip when
+   * the event plane changes storey.
+   */
+  point: [number, number] | null
+}
+
+/**
+ * What a manager reads besides its own index: the scene's nodes and the live previews (field
+ * overrides, translation deltas, terrain sculpting) that support queries honour mid-drag.
+ */
+export type SpatialGridSource = {
+  nodes(): Record<string, AnyNode>
+  overrides(): ReadonlyMap<string, unknown>
+  transforms(): ReadonlyMap<string, LiveTransform>
+  effective<T extends { id: string }>(node: T): T
+  terrain(): ReturnType<typeof useLiveTerrain.getState> | undefined
+}
+
+/** The editor's store and its live previews: the singleton manager's source. */
+export const liveSpatialGridSource: SpatialGridSource = {
+  nodes: () => useScene.getState().nodes,
+  overrides: () => useLiveNodeOverrides.getState().overrides,
+  transforms: () => useLiveTransforms.getState().transforms,
+  effective: getEffectiveNode,
+  terrain: () => useLiveTerrain.getState(),
+}
+
+const NO_PREVIEWS = new Map<string, never>()
+
+/** A fixed set of nodes, without previews: what a detached scene's support queries read. */
+export function snapshotSpatialGridSource(nodes: () => Record<string, AnyNode>): SpatialGridSource {
+  return {
+    nodes,
+    overrides: () => NO_PREVIEWS,
+    transforms: () => NO_PREVIEWS,
+    effective: (node) => node,
+    terrain: () => undefined,
+  }
+}
+
+export class SpatialGridManager {
+  private readonly floorGrids = new Map<string, SpatialGrid>() // levelId -> grid
+  private readonly wallGrids = new Map<string, WallSpatialGrid>() // levelId -> wall grid
+  private readonly walls = new Map<string, WallNode>() // wallId -> wall data (for length calculations)
+  private readonly slabsByLevel = new Map<string, Map<string, SlabNode>>() // levelId -> (slabId -> slab)
+  private readonly ceilingGrids = new Map<string, SpatialGrid>() // ceilingId -> grid
+  private readonly ceilings = new Map<string, CeilingNode>() // ceilingId -> ceiling data
+  private readonly itemCeilingMap = new Map<string, string>() // itemId -> ceilingId (reverse lookup)
+
+  private readonly cellSize: number
+  private readonly source: SpatialGridSource
+  /**
+   * Item collision cells (floor, wall, ceiling) are only built when a placement query needs
+   * them: support queries read slabs, walls and ceilings. The editor's manager keeps them live.
+   */
+  private itemsIndexed: boolean
+  private readonly levelIdOf: ((node: AnyNode, nodes: Record<string, AnyNode>) => string) | null
+
+  constructor(
+    cellSize = 0.5,
+    source: SpatialGridSource = liveSpatialGridSource,
+    options: { lazyItems?: (node: AnyNode, nodes: Record<string, AnyNode>) => string } = {},
+  ) {
+    this.cellSize = cellSize
+    this.source = source
+    this.levelIdOf = options.lazyItems ?? null
+    this.itemsIndexed = !options.lazyItems
+  }
+
+  private ensureItemIndex() {
+    if (this.itemsIndexed || !this.levelIdOf) return
+    this.itemsIndexed = true
+    const nodes = this.source.nodes()
+    for (const node of Object.values(nodes))
+      if (node.type === 'item') this.handleNodeCreated(node, this.levelIdOf(node, nodes))
+  }
+
+  private dropItemIndex() {
+    if (!this.levelIdOf || !this.itemsIndexed) return
+    this.itemsIndexed = false
+    this.floorGrids.clear()
+    this.wallGrids.clear()
+    this.ceilingGrids.clear()
+    this.itemCeilingMap.clear()
+  }
+
+  /** Indexes `nodes` at once: support structures only, caches dropped once rather than per node. */
+  bulkLoad(nodes: Record<string, AnyNode>) {
+    const levelIdOf = this.levelIdOf
+    if (!levelIdOf) throw new Error('bulkLoad is for snapshot managers')
+    for (const node of Object.values(nodes)) {
+      if (node.type === 'slab')
+        this.getSlabMap(levelIdOf(node, nodes)).set(node.id, node as SlabNode)
+      else if (node.type === 'wall') this.walls.set(node.id, node as WallNode)
+      else if (node.type === 'ceiling') this.ceilings.set(node.id, node as CeilingNode)
+    }
+    this.renderedSlabPolygons.clear()
+    this.supportInputsRevision += 1
+  }
+
+  /**
+   * Brings a snapshot manager from `before` to `after` in place. Returns false, changing nothing,
+   * when a rebuild is simpler and exact: many changes, or a node changing kind or level.
+   */
+  syncSnapshot(before: Record<string, AnyNode>, after: Record<string, AnyNode>): boolean {
+    const levelIdOf = this.levelIdOf
+    if (!levelIdOf) return false
+    const changed: string[] = []
+    for (const id in after) if (after[id] !== before[id]) changed.push(id)
+    for (const id in before) if (!(id in after)) changed.push(id)
+    if (changed.length > 256) return false
+    for (const id of changed) {
+      const previous = before[id]
+      const next = after[id]
+      if (
+        previous &&
+        next &&
+        (previous.type !== next.type || levelIdOf(previous, before) !== levelIdOf(next, after))
+      )
+        return false
+    }
+    for (const id of changed) {
+      const previous = before[id]
+      const next = after[id]
+      if (previous?.type === 'wall' || previous?.type === 'item' || previous?.type === 'ceiling')
+        this.dropItemIndex()
+      if (next?.type === 'wall' || next?.type === 'item' || next?.type === 'ceiling')
+        this.dropItemIndex()
+      if (previous && !next) this.handleNodeDeleted(id, previous.type, levelIdOf(previous, before))
+      else if (!previous && next) this.handleNodeCreated(next, levelIdOf(next, after))
+      else if (next) this.handleNodeUpdated(next, levelIdOf(next, after))
+    }
+    return true
+  }
+
+  private getFloorGrid(levelId: string): SpatialGrid {
+    if (!this.floorGrids.has(levelId)) {
+      this.floorGrids.set(levelId, new SpatialGrid({ cellSize: this.cellSize }))
+    }
+    return this.floorGrids.get(levelId)!
+  }
+
+  private getWallGrid(levelId: string): WallSpatialGrid {
+    if (!this.wallGrids.has(levelId)) {
+      this.wallGrids.set(levelId, new WallSpatialGrid())
+    }
+    return this.wallGrids.get(levelId)!
+  }
+
+  private getWall(wallId: string): WallNode | undefined {
+    const fromScene = this.source.nodes()[wallId as AnyNodeId]
+    if (fromScene && fromScene.type === 'wall') {
+      this.walls.set(wallId, fromScene as WallNode)
+      return fromScene as WallNode
+    }
+    return this.walls.get(wallId)
+  }
+
+  private getWallLength(wallId: string): number {
+    const wall = this.getWall(wallId)
+    if (!wall) return 0
+    const dx = wall.end[0] - wall.start[0]
+    const dy = wall.end[1] - wall.start[1]
+    return Math.hypot(dx, dy)
+  }
+
+  private getWallHeight(wallId: string, t: number): number {
+    const wall = this.getWall(wallId)
+    if (!wall) return 0
+    const nodes = this.source.nodes()
+    const levelId = resolveNodeLevelId(wall, nodes)
+    const support = this.getSlabSupportForWall(
+      levelId,
+      wall.start,
+      wall.end,
+      wall.curveOffset ?? 0,
+      wall.thickness,
+      wall.supportSlabId ?? null,
+      undefined,
+      wall.supportOffset,
+      wall.justification,
+    )
+    return getWallTop(wall, levelId, nodes, support.elevation, t) - support.elevation
+  }
+
+  private getCeilingGrid(ceilingId: string): SpatialGrid {
+    if (!this.ceilingGrids.has(ceilingId)) {
+      this.ceilingGrids.set(ceilingId, new SpatialGrid({ cellSize: this.cellSize }))
+    }
+    return this.ceilingGrids.get(ceilingId)!
+  }
+
+  private getSlabMap(levelId: string): Map<string, SlabNode> {
+    if (!this.slabsByLevel.has(levelId)) {
+      this.slabsByLevel.set(levelId, new Map())
+    }
+    return this.slabsByLevel.get(levelId)!
+  }
+
+  /**
+   * Per-slab RENDERED polygon cache (`getRenderableSlabPolygon`). Item
+   * support queries run per frame and the projection scans the level's
+   * walls + sibling slabs, so the result is cached per slab id and
+   * dropped for the whole level whenever a slab or wall on that level
+   * flows through the manager's create/update/delete handlers.
+   */
+  private readonly renderedSlabPolygons = new Map<string, Array<[number, number]>>()
+
+  private invalidateRenderedSlabPolygons(levelId: string) {
+    this.supportInputsRevision += 1
+    const slabMap = this.slabsByLevel.get(levelId)
+    if (!slabMap) return
+    for (const slabId of slabMap.keys()) this.renderedSlabPolygons.delete(slabId)
+  }
+
+  /**
+   * True while a slab or wall on `levelId` has a live preview: group drags
+   * publish translated slab polygons and wall endpoints to
+   * `useLiveNodeOverrides`, and the slab move tool / room-preset stamp
+   * publish a translation DELTA to `useLiveTransforms` — either way the
+   * scene store commits only on release, so the committed cache and index
+   * would elect support against pre-drag footprints (items and walls
+   * visibly drop to ground mid-preview). Support queries then read
+   * live-effective records and skip the rendered-polygon cache.
+   */
+  private levelHasLivePreview(levelId: string): boolean {
+    const nodes = this.source.nodes()
+    const structuralOnLevel = (id: string) => {
+      const node = nodes[id as AnyNodeId]
+      if (!node || (node.type !== 'slab' && node.type !== 'wall')) return false
+      return resolveNodeLevelId(node, nodes) === levelId
+    }
+    const overrides = this.source.overrides()
+    for (const id of overrides.keys()) {
+      if (structuralOnLevel(id)) return true
+    }
+    const transforms = this.source.transforms()
+    for (const id of transforms.keys()) {
+      if (structuralOnLevel(id)) return true
+    }
+    return false
+  }
+
+  /**
+   * The live-effective slab record: field overrides merged, then the
+   * `useLiveTransforms` DELTA (slab publishers — move tool, room-preset
+   * stamp — store a translation, not an absolute position) applied to the
+   * polygon, holes, and elevation. Mapping happens exactly ONCE at each
+   * public query's loop entry: `slabSupportsFootprint` /
+   * `getRenderedSlabPolygon` take the already-effective record and must
+   * never re-map, or the delta would apply twice.
+   */
+  private effectiveSlabRecord(slab: SlabNode): SlabNode {
+    let effective = this.source.effective(slab)
+    const live = this.source.transforms().get(slab.id)
+    if (live) {
+      const [dx, dy, dz] = live.position
+      if (dx !== 0 || dy !== 0 || dz !== 0) {
+        effective = {
+          ...effective,
+          polygon: effective.polygon.map(([x, z]) => [x + dx, z + dz] as [number, number]),
+          holes: (effective.holes || []).map((hole) =>
+            hole.map(([x, z]) => [x + dx, z + dz] as [number, number]),
+          ),
+          elevation: (effective.elevation ?? 0.05) + dy,
+        }
+      }
+    }
+    return liftedManualSlab(this.source.nodes(), effective)
+  }
+
+  private getRenderedSlabPolygon(levelId: string, slab: SlabNode): Array<[number, number]> {
+    const live = this.levelHasLivePreview(levelId)
+    if (!live) {
+      const cached = this.renderedSlabPolygons.get(slab.id)
+      if (cached) return cached
+    }
+
+    const siblingSlabs: SlabNode[] = []
+    for (const other of this.getSlabMap(levelId).values()) {
+      if (other.id !== slab.id) siblingSlabs.push(live ? this.effectiveSlabRecord(other) : other)
+    }
+    const walls = this.getLevelWallNodes(levelId)
+    const polygon = getRenderableSlabPolygon(slab, {
+      walls: live ? walls.map((wall) => this.source.effective(wall)) : walls,
+      siblingSlabs,
+    })
+    if (!live) this.renderedSlabPolygons.set(slab.id, polygon)
+    return polygon
+  }
+
+  /**
+   * Support test shared by election, candidate listing, and persisted-host
+   * validation: the footprint overlaps the slab's RENDERED polygon (what
+   * users see — matching the wall election in `computeWallSlabSupport`),
+   * with the center-point hole veto kept against the stored holes (holes
+   * are data, never render-offset).
+   */
+  private slabSupportsFootprint(
+    levelId: string,
+    slab: SlabNode,
+    position: [number, number, number],
+    dimensions: [number, number, number],
+    rotation: [number, number, number],
+  ): boolean {
+    return slabSupportsItemFootprint(
+      slab,
+      { position, dimensions, rotation },
+      this.getRenderedSlabPolygon(levelId, slab),
+    )
+  }
+
+  // Called when nodes change
+  handleNodeCreated(node: AnyNode, levelId: string) {
+    if (node.type === 'slab') {
+      this.getSlabMap(levelId).set(node.id, node as SlabNode)
+      this.invalidateRenderedSlabPolygons(levelId)
+    } else if (node.type === 'ceiling') {
+      this.ceilings.set(node.id, node as CeilingNode)
+    } else if (node.type === 'wall') {
+      const wall = node as WallNode
+      this.walls.set(wall.id, wall)
+      // Rendered slab polygons adopt wall bands — a new wall can extend them.
+      this.invalidateRenderedSlabPolygons(levelId)
+    } else if (node.type === 'item' && this.itemsIndexed) {
+      const item = node as ItemNode
+      if (item.asset.attachTo === 'wall' || item.asset.attachTo === 'wall-side') {
+        // Wall-attached item - use parentId as the wall ID
+        const wallId = item.parentId
+        if (wallId && this.walls.has(wallId)) {
+          const wallLength = this.getWallLength(wallId)
+          if (wallLength > 0) {
+            const [width, height] = getScaledDimensions(item)
+            const halfW = width / wallLength / 2
+            // Calculate t from local X position (position[0] is distance along wall)
+            const t = item.position[0] / wallLength
+            // position[1] is the bottom of the item
+            this.getWallGrid(levelId).insert({
+              itemId: item.id,
+              wallId,
+              tStart: t - halfW,
+              tEnd: t + halfW,
+              yStart: item.position[1],
+              yEnd: item.position[1] + height,
+              attachType: item.asset.attachTo as 'wall' | 'wall-side',
+              side: item.side,
+            })
+          }
+        }
+      } else if (item.asset.attachTo === 'ceiling') {
+        // Ceiling item - use parentId as the ceiling ID
+        const ceilingId = item.parentId
+        if (ceilingId && this.ceilings.has(ceilingId)) {
+          this.getCeilingGrid(ceilingId).insert(
+            item.id,
+            item.position,
+            getScaledDimensions(item),
+            item.rotation,
+          )
+          this.itemCeilingMap.set(item.id, ceilingId)
+        }
+      } else if (!item.asset.attachTo) {
+        // Floor item
+        this.getFloorGrid(levelId).insert(
+          item.id,
+          item.position,
+          getScaledDimensions(item),
+          item.rotation,
+        )
+      }
+    }
+  }
+
+  handleNodeUpdated(node: AnyNode, levelId: string) {
+    if (node.type === 'slab') {
+      this.getSlabMap(levelId).set(node.id, node as SlabNode)
+      this.invalidateRenderedSlabPolygons(levelId)
+    } else if (node.type === 'ceiling') {
+      this.ceilings.set(node.id, node as CeilingNode)
+    } else if (node.type === 'wall') {
+      const wall = node as WallNode
+      this.walls.set(wall.id, wall)
+      this.invalidateRenderedSlabPolygons(levelId)
+    } else if (node.type === 'item' && this.itemsIndexed) {
+      const item = node as ItemNode
+      if (item.asset.attachTo === 'wall' || item.asset.attachTo === 'wall-side') {
+        // Remove old placement and re-insert
+        this.getWallGrid(levelId).removeByItemId(item.id)
+        const wallId = item.parentId
+        if (wallId && this.walls.has(wallId)) {
+          const wallLength = this.getWallLength(wallId)
+          if (wallLength > 0) {
+            const [width, height] = getScaledDimensions(item)
+            const halfW = width / wallLength / 2
+            // Calculate t from local X position (position[0] is distance along wall)
+            const t = item.position[0] / wallLength
+            // position[1] is the bottom of the item
+            this.getWallGrid(levelId).insert({
+              itemId: item.id,
+              wallId,
+              tStart: t - halfW,
+              tEnd: t + halfW,
+              yStart: item.position[1],
+              yEnd: item.position[1] + height,
+              attachType: item.asset.attachTo as 'wall' | 'wall-side',
+              side: item.side,
+            })
+          }
+        }
+      } else if (item.asset.attachTo === 'ceiling') {
+        // Remove from old ceiling grid
+        const oldCeilingId = this.itemCeilingMap.get(item.id)
+        if (oldCeilingId) {
+          this.getCeilingGrid(oldCeilingId).remove(item.id)
+          this.itemCeilingMap.delete(item.id)
+        }
+        // Insert into new ceiling grid
+        const ceilingId = item.parentId
+        if (ceilingId && this.ceilings.has(ceilingId)) {
+          this.getCeilingGrid(ceilingId).insert(
+            item.id,
+            item.position,
+            getScaledDimensions(item),
+            item.rotation,
+          )
+          this.itemCeilingMap.set(item.id, ceilingId)
+        }
+      } else if (!item.asset.attachTo) {
+        this.getFloorGrid(levelId).update(
+          item.id,
+          item.position,
+          getScaledDimensions(item),
+          item.rotation,
+        )
+      }
+    }
+  }
+
+  handleNodeDeleted(nodeId: string, nodeType: string, levelId: string) {
+    if (nodeType === 'slab') {
+      // Invalidate before removal so the deleted slab's own cache entry
+      // (still keyed in the level map here) is dropped with its siblings'.
+      this.invalidateRenderedSlabPolygons(levelId)
+      this.getSlabMap(levelId).delete(nodeId)
+    } else if (nodeType === 'ceiling') {
+      this.ceilings.delete(nodeId)
+      this.ceilingGrids.delete(nodeId)
+    } else if (nodeType === 'wall') {
+      this.walls.delete(nodeId)
+      this.invalidateRenderedSlabPolygons(levelId)
+      // Remove all items attached to this wall from the spatial grid
+      const removedItemIds = this.getWallGrid(levelId).removeWall(nodeId)
+      return removedItemIds // Caller can use this to delete the items from scene
+    } else if (nodeType === 'item' && this.itemsIndexed) {
+      this.getFloorGrid(levelId).remove(nodeId)
+      this.getWallGrid(levelId).removeByItemId(nodeId)
+      // Also clean up ceiling grid
+      const oldCeilingId = this.itemCeilingMap.get(nodeId)
+      if (oldCeilingId) {
+        this.getCeilingGrid(oldCeilingId).remove(nodeId)
+        this.itemCeilingMap.delete(nodeId)
+      }
+    }
+    return []
+  }
+
+  // Query methods
+  canPlaceOnFloor(
+    levelId: string,
+    position: [number, number, number],
+    dimensions: [number, number, number],
+    rotation: [number, number, number],
+    ignoreIds?: string[],
+  ) {
+    return this.canPlaceOnFloorFootprints(levelId, [{ position, dimensions, rotation }], ignoreIds)
+  }
+
+  canPlaceOnFloorFootprints(
+    levelId: string,
+    footprints: readonly {
+      position: [number, number, number]
+      dimensions: [number, number, number]
+      rotation: [number, number, number]
+    }[],
+    ignoreIds?: string[],
+  ) {
+    const nodes = this.source.nodes()
+    const ignoreSet = expandIgnoredNodeIds(ignoreIds, nodes)
+    const draftBounds = footprints.map((footprint) =>
+      footprintBoundsXZ(footprint.position, footprint.dimensions, footprint.rotation[1] ?? 0),
+    )
+    for (let i = 0; i < draftBounds.length; i += 1) {
+      const a = draftBounds[i]!
+      for (let j = i + 1; j < draftBounds.length; j += 1) {
+        const b = draftBounds[j]!
+        if (
+          intervalsOverlap(a.minX, a.maxX, b.minX, b.maxX) &&
+          intervalsOverlap(a.minZ, a.maxZ, b.minZ, b.maxZ)
+        ) {
+          return { valid: false, conflictIds: [] }
+        }
+      }
+    }
+
+    // A floor placement conflicts with any other COLLIDING floor-resting node,
+    // not just items — every kind whose `floorPlaced.collides` is set (item /
+    // shelf / column / cabinet / stair) contributes its footprint(s) as an
+    // obstacle. Each candidate's XZ extent is read from the same declarative
+    // footprint the elevation + sync paths use, so adding a colliding kind
+    // needs no change here.
+    const conflicts: string[] = []
+    for (const node of Object.values(nodes)) {
+      if (ignoreSet.has(node.id)) continue
+      const floorPlaced = nodeRegistry.get(node.type)?.capabilities?.floorPlaced
+      if (!floorPlaced || !floorPlacedCollides(floorPlaced, node)) continue
+      if (floorPlaced.applies && !floorPlaced.applies(node)) continue
+      // Low-profile item surfaces (rugs, mats) are stack-on targets, not
+      // obstacles — keep the long-standing item-only exemption.
+      if (node.type === 'item' && isLowProfileItemSurface(node as ItemNode)) continue
+      if (resolveNodeLevelId(node, nodes) !== levelId) continue
+
+      for (const footprint of getFloorPlacedFootprints(floorPlaced, node, { nodes })) {
+        const fpRotation = Array.isArray(footprint.rotation) ? (footprint.rotation[1] ?? 0) : 0
+        const bounds = footprintBoundsXZ(
+          footprint.position ?? (node as { position: [number, number, number] }).position,
+          footprint.dimensions,
+          fpRotation,
+        )
+        if (
+          draftBounds.some(
+            (draft) =>
+              intervalsOverlap(draft.minX, draft.maxX, bounds.minX, bounds.maxX) &&
+              intervalsOverlap(draft.minZ, draft.maxZ, bounds.minZ, bounds.maxZ),
+          )
+        ) {
+          conflicts.push(node.id)
+          break
+        }
+      }
+    }
+
+    return { valid: conflicts.length === 0, conflictIds: conflicts }
+  }
+
+  /**
+   * Check if an item can be placed on a wall
+   * @param levelId - the level containing the wall
+   * @param wallId - the wall to check
+   * @param localX - X position in wall-local space (distance from wall start)
+   * @param localY - Y position (height from floor)
+   * @param dimensions - item dimensions [width, height, depth]
+   * @param attachType - 'wall' (needs both sides) or 'wall-side' (needs one side)
+   * @param side - which side for 'wall-side' items
+   * @param ignoreIds - item IDs to ignore in collision check
+   */
+  canPlaceOnWall(
+    levelId: string,
+    wallId: string,
+    localX: number,
+    localY: number,
+    dimensions: [number, number, number],
+    attachType: 'wall' | 'wall-side' = 'wall',
+    side?: 'front' | 'back',
+    ignoreIds?: string[],
+  ) {
+    this.ensureItemIndex()
+    const wallLength = this.getWallLength(wallId)
+    if (wallLength === 0) {
+      return { valid: false, conflictIds: [] }
+    }
+    const [itemWidth, itemHeight] = dimensions
+    // Convert local X position to parametric t (0-1)
+    const tCenter = localX / wallLength
+    const halfW = itemWidth / wallLength / 2
+    const tStart = Math.max(0, Math.min(1, tCenter - halfW))
+    const tEnd = Math.max(0, Math.min(1, tCenter + halfW))
+    const hStart = this.getWallHeight(wallId, tStart)
+    const hEnd = this.getWallHeight(wallId, tEnd)
+    const hCenter = this.getWallHeight(wallId, tCenter)
+    const wallHeight = Math.min(hStart, hEnd, hCenter)
+
+    const baseResult = this.getWallGrid(levelId).canPlaceOnWall(
+      wallId,
+      wallLength,
+      wallHeight,
+      tCenter,
+      itemWidth,
+      localY,
+      itemHeight,
+      attachType,
+      side,
+      ignoreIds,
+    )
+
+    if (!baseResult.valid) return baseResult
+
+    const nodes = this.source.nodes()
+    const ignoreSet = new Set(ignoreIds ?? [])
+    const draftBounds = {
+      minX: localX - itemWidth / 2,
+      maxX: localX + itemWidth / 2,
+      minY: baseResult.adjustedY,
+      maxY: baseResult.adjustedY + itemHeight,
+    }
+
+    const conflicts: string[] = []
+    for (const node of Object.values(nodes)) {
+      if (node.type !== 'item') continue
+      const item = node as ItemNode
+      if (!(item.asset.attachTo === 'wall' || item.asset.attachTo === 'wall-side')) continue
+      if (ignoreSet.has(item.id)) continue
+      if (item.parentId !== wallId) continue
+
+      if (attachType === 'wall-side' && item.asset.attachTo === 'wall-side' && side && item.side) {
+        if (side !== item.side) continue
+      }
+
+      const bounds = getItemParentAabb(item)
+      if (
+        intervalsOverlap(draftBounds.minX, draftBounds.maxX, bounds.minX, bounds.maxX) &&
+        intervalsOverlap(draftBounds.minY, draftBounds.maxY, bounds.minY, bounds.maxY)
+      ) {
+        conflicts.push(item.id)
+      }
+    }
+
+    return {
+      ...baseResult,
+      valid: conflicts.length === 0,
+      conflictIds: conflicts,
+    }
+  }
+
+  getWallForItem(levelId: string, itemId: string): string | undefined {
+    this.ensureItemIndex()
+    return this.getWallGrid(levelId).getWallForItem(itemId)
+  }
+
+  /**
+   * Get the total slab elevation at a given (x, z) position on a level.
+   * Returns the highest slab elevation if the point is inside any slab polygon (but not in any holes), otherwise 0.
+   */
+  getSlabElevationAt(levelId: string, x: number, z: number): number {
+    const slabMap = this.slabsByLevel.get(levelId)
+    if (!slabMap) return 0
+
+    let maxElevation = 0
+    for (const stored of slabMap.values()) {
+      const slab = this.effectiveSlabRecord(stored)
+      if (slab.polygon.length >= 3 && pointInPolygon(x, z, slab.polygon)) {
+        // Check if point is in any hole
+        let inHole = false
+        const holes = slab.holes || []
+        for (const hole of holes) {
+          if (hole.length >= 3 && pointInPolygon(x, z, hole)) {
+            inHole = true
+            break
+          }
+        }
+
+        if (!inHole) {
+          const elevation = slab.elevation ?? 0.05
+          if (elevation > maxElevation) {
+            maxElevation = elevation
+          }
+        }
+      }
+    }
+    return maxElevation
+  }
+
+  /**
+   * Get the slab elevation for an item using its full footprint (bounding box).
+   * Thin wrapper over {@link getSlabSupportForItem} for callers (and tests)
+   * that only need the number.
+   */
+  getSlabElevationForItem(
+    levelId: string,
+    position: [number, number, number],
+    dimensions: [number, number, number],
+    rotation: [number, number, number],
+    maxElevation?: number | null,
+  ): number {
+    return this.getSlabSupportForItem(levelId, position, dimensions, rotation, maxElevation)
+      .elevation
+  }
+
+  /**
+   * Elect the supporting slab for a footprint: the highest-elevation slab
+   * whose RENDERED polygon the footprint overlaps (center-point hole veto
+   * applies). Returns `{ elevation: 0, slabId: null }` when nothing
+   * overlaps.
+   *
+   * `maxElevation` is the pointer-decided cap: when set, only slabs whose
+   * walking surface sits at or below `maxElevation +
+   * SUPPORT_ELEVATION_EPSILON` may win — a deck hanging above the surface
+   * the cursor ray actually hit never captures the election.
+   */
+  getSlabSupportForItem(
+    levelId: string,
+    position: [number, number, number],
+    dimensions: [number, number, number],
+    rotation: [number, number, number],
+    maxElevation?: number | null,
+  ): ItemSlabSupport {
+    const slabMap = this.slabsByLevel.get(levelId)
+    if (!slabMap) return { elevation: 0, slabId: null }
+
+    const winner = selectSlabSupportForItem(
+      Array.from(slabMap.values(), (slab) => this.effectiveSlabRecord(slab)),
+      { position, dimensions, rotation },
+      (slab) => this.getRenderedSlabPolygon(levelId, slab),
+      { maxElevation },
+    )
+    return winner
+      ? { elevation: winner.elevation ?? 0.05, slabId: winner.id }
+      : { elevation: 0, slabId: null }
+  }
+
+  /**
+   * The walking surface the pointer actually points at: the nearest slab
+   * plane the ray crosses INSIDE that slab's rendered polygon (hole veto
+   * applies), or the level base (`elevation: 0, slabId: null`) when it
+   * crosses none. Ray origin/direction are level-local. Deliberately a
+   * point test, not a footprint test — it answers "which surface is under
+   * the cursor", which then caps the footprint election so a deck hanging
+   * above the aimed-at floor never lifts the placement. `point` is the
+   * ray's crossing of that surface's plane — the stable plan point
+   * callers should elect/preview at (see {@link PointedSupportSurface}).
+   */
+  getPointedSupportSurface(
+    levelId: string,
+    rayOrigin: [number, number, number],
+    rayDirection: [number, number, number],
+  ): PointedSupportSurface {
+    const slabMap = this.slabsByLevel.get(levelId)
+    const [ox, oy, oz] = rayOrigin
+    const [dx, dy, dz] = rayDirection
+    if (Math.abs(dy) < 1e-9) return { elevation: 0, slabId: null, point: null }
+
+    let best: { t: number; elevation: number; slabId: string } | null = null
+    if (slabMap) {
+      for (const stored of slabMap.values()) {
+        const slab = this.effectiveSlabRecord(stored)
+        if (slab.polygon.length < 3) continue
+        const elevation = slab.elevation ?? 0.05
+        const t = (elevation - oy) / dy
+        if (t <= 0) continue
+        if (best && t >= best.t) continue
+        const x = ox + dx * t
+        const z = oz + dz * t
+        const rendered = this.getRenderedSlabPolygon(levelId, slab)
+        if (rendered.length < 3 || !pointInPolygon(x, z, rendered)) continue
+        let inHole = false
+        for (const hole of slab.holes || []) {
+          if (hole.length >= 3 && pointInPolygon(x, z, hole)) {
+            inHole = true
+            break
+          }
+        }
+        if (inHole) continue
+        best = { t, elevation, slabId: slab.id }
+      }
+    }
+    if (best) {
+      return {
+        elevation: best.elevation,
+        slabId: best.slabId,
+        point: [ox + dx * best.t, oz + dz * best.t],
+      }
+    }
+    const tBase = -oy / dy
+    return {
+      elevation: 0,
+      slabId: null,
+      point: tBase > 0 ? [ox + dx * tBase, oz + dz * tBase] : null,
+    }
+  }
+
+  /**
+   * All slabs supporting a footprint, one entry per overlapping slab
+   * (highest elevation first; slab id breaks ties deterministically).
+   * Commit-side ambiguity check: persist a `supportSlabId` only when the
+   * candidates carry ≥ 2 distinct elevations.
+   */
+  getSupportCandidatesForFootprint(
+    levelId: string,
+    position: [number, number, number],
+    dimensions: [number, number, number],
+    rotation: [number, number, number],
+  ): SlabSupportCandidate[] {
+    const slabMap = this.slabsByLevel.get(levelId)
+    if (!slabMap) return []
+
+    const candidates: SlabSupportCandidate[] = []
+    for (const stored of slabMap.values()) {
+      const slab = this.effectiveSlabRecord(stored)
+      if (!this.slabSupportsFootprint(levelId, slab, position, dimensions, rotation)) continue
+      candidates.push({ slabId: slab.id, elevation: slab.elevation ?? 0.05 })
+    }
+    candidates.sort(
+      (a, b) =>
+        b.elevation - a.elevation || (a.slabId < b.slabId ? -1 : a.slabId > b.slabId ? 1 : 0),
+    )
+    return candidates
+  }
+
+  /**
+   * Elevation of a persisted support host for a footprint, or null when
+   * the slab no longer exists on the level or no longer overlaps the
+   * footprint (same overlap test as election). Deliberately read-only: a
+   * host reshaped away is NOT cleared — callers fall back to election and
+   * the stale reference resumes hosting if the slab's polygon returns.
+   * Slab deletion is the only writer (`deleteNodesAction` strips it).
+   */
+  getHostSlabElevationForFootprint(
+    levelId: string,
+    slabId: string,
+    position: [number, number, number],
+    dimensions: [number, number, number],
+    rotation: [number, number, number],
+  ): number | null {
+    const stored = this.slabsByLevel.get(levelId)?.get(slabId)
+    if (!stored) return null
+    const slab = this.effectiveSlabRecord(stored)
+    if (!this.slabSupportsFootprint(levelId, slab, position, dimensions, rotation)) return null
+    return slab.elevation ?? 0.05
+  }
+
+  /**
+   * Get the slab elevation for a wall by checking if it overlaps with any slab polygon (excluding holes).
+   * Returns the highest slab elevation found, or 0 if none.
+   *
+   * Accepts an optional `curveOffset` so curved walls evaluate overlap
+   * against their actual centerline samples, not just the chord.
+   */
+  getSlabElevationForWall(
+    levelId: string,
+    start: [number, number],
+    end: [number, number],
+    curveOffset = 0,
+    thickness = DEFAULT_WALL_THICKNESS,
+    preferredSlabId?: string | null,
+    justification?: WallJustification,
+  ): number {
+    return this.getSlabSupportForWall(
+      levelId,
+      start,
+      end,
+      curveOffset,
+      thickness,
+      preferredSlabId,
+      undefined,
+      0,
+      justification,
+    ).elevation
+  }
+
+  getSlabSupportForWall(
+    levelId: string,
+    start: [number, number],
+    end: [number, number],
+    curveOffset = 0,
+    thickness = DEFAULT_WALL_THICKNESS,
+    preferredSlabId?: string | null,
+    maxElevation?: number | null,
+    supportOffset = 0,
+    justification?: WallJustification,
+  ): WallSlabSupport {
+    // Sampled at the wall's own start point — the same anchor the mesh is
+    // positioned at, so the resolver and the renderer cannot disagree about
+    // where the ground is under this wall.
+    const levelBase = levelBaseElevationAt(this.source.nodes(), levelId, start[0], start[1])
+
+    const slabMap = this.slabsByLevel.get(levelId)
+    if (!slabMap) {
+      const elevation = levelBase + supportOffset
+      return {
+        elevation,
+        electedSlabId: null,
+        baseElevation: elevation,
+        baseSegments: [{ start: 0, end: 1, elevation }],
+        faceDatum: { a: [{ start: 0, end: 1, elevation }], b: [{ start: 0, end: 1, elevation }] },
+        faceBottom: { a: [{ start: 0, end: 1, elevation }], b: [{ start: 0, end: 1, elevation }] },
+      }
+    }
+
+    const inputs = this.getSupportInputs(levelId, slabMap)
+
+    const support = computeWallSlabSupport(
+      { start, end, curveOffset, thickness, justification, supportOffset },
+      inputs.slabs,
+      inputs.walls,
+      preferredSlabId,
+      maxElevation,
+      levelBase,
+      inputs.supportNodes,
+      inputs.baseAt,
+      inputs.terrainPlates.some((slab) =>
+        wallOverlapsPolygon({ start, end, curveOffset, thickness, justification }, slab.polygon),
+      )
+        ? this.source.terrain()
+        : undefined,
+    )
+    return support
+  }
+
+  /**
+   * Effective slab and wall records for a level, held BY IDENTITY. A single
+   * viewer pass queries support once per wall, and each query used to derive
+   * both arrays afresh — mapping every wall on the level through
+   * `getEffectiveNode` — which also defeated the rendered-polygon memo
+   * downstream in `computeWallSlabSupport`. Rebuilt only when the scene
+   * nodes, either live-preview store, or the manager's own slab/wall
+   * bookkeeping changes.
+   */
+  private supportInputsRevision = 0
+  private readonly supportInputs = new Map<
+    string,
+    {
+      revision: number
+      nodes: object
+      overrides: object
+      transforms: object
+      terrainPlates: SlabNode[]
+      baseAt: (x: number, z: number) => number
+      slabs: SlabNode[]
+      walls: WallNode[]
+      supportNodes: Record<string, AnyNode>
+    }
+  >()
+
+  private getSupportInputs(levelId: string, slabMap: Map<string, SlabNode>) {
+    const nodes = this.source.nodes()
+    const overrides = this.source.overrides()
+    const transforms = this.source.transforms()
+    const cached = this.supportInputs.get(levelId)
+    if (
+      cached &&
+      cached.revision === this.supportInputsRevision &&
+      cached.nodes === nodes &&
+      cached.overrides === overrides &&
+      cached.transforms === transforms
+    ) {
+      return cached
+    }
+
+    const slabs = [...slabMap.values()].map((slab) => {
+      const effective = this.effectiveSlabRecord(slab)
+      const lifted = liftedManualSlab(nodes, slab)
+      return lifted === slab
+        ? effective
+        : { ...effective, elevation: effective.elevation - (lifted.elevation - slab.elevation) }
+    })
+    const supportNodes: Record<string, AnyNode> = slabs.some(
+      (slab) => slab.plateRole === 'base' && slab.floorHeight !== undefined,
+    )
+      ? { ...nodes }
+      : {}
+    for (const slab of slabs)
+      for (const id of slab.zoneIds ?? []) {
+        const zone = nodes[id as AnyNodeId]
+        if (zone?.type === 'zone') supportNodes[id] = this.source.effective(zone)
+      }
+    for (const node of Object.values(nodes))
+      if (node.parentId === levelId && (node.type === 'separator' || node.type === 'zone'))
+        supportNodes[node.id] = this.source.effective(node)
+    for (const node of Object.values(nodes))
+      if (node.type === 'site' || node.type === 'building' || node.type === 'level')
+        supportNodes[node.id] = node
+    const next = {
+      revision: this.supportInputsRevision,
+      nodes,
+      overrides,
+      transforms,
+      terrainPlates: slabs.filter(
+        (slab) =>
+          slab.boundary === 'auto' &&
+          !slab.recessed &&
+          (slab.elevation - slab.thickness > 1e-4 || slab.elevation < -1e-4),
+      ),
+      baseAt: (x: number, z: number) => levelBaseElevationAt(nodes, levelId, x, z),
+      slabs,
+      supportNodes,
+      walls: this.getLevelWallNodes(levelId).map((wall) => this.source.effective(wall)),
+    }
+    this.supportInputs.set(levelId, next)
+    return next
+  }
+
+  /**
+   * Walls on a level, resolved fresh from the scene store (the manager's
+   * own wall map is only maintained on create/delete, not on updates).
+   * Cached per scene `nodes` record so per-pointer-tick callers
+   * (door/window move) don't rescan the node map.
+   */
+  private readonly levelWallsCache = new WeakMap<object, Map<string, WallNode[]>>()
+
+  private getLevelWallNodes(levelId: string): WallNode[] {
+    const nodes = this.source.nodes()
+    let byLevel = this.levelWallsCache.get(nodes)
+    if (!byLevel) {
+      byLevel = new Map()
+      this.levelWallsCache.set(nodes, byLevel)
+    }
+    const cached = byLevel.get(levelId)
+    if (cached) return cached
+
+    const walls: WallNode[] = []
+    for (const node of Object.values(nodes)) {
+      if (node.type !== 'wall') continue
+      // Walk the parent chain to the owning level (guarded against cycles).
+      let current: AnyNode | undefined = node
+      let guard = 0
+      while (current && current.type !== 'level' && guard < 16) {
+        current = current.parentId ? nodes[current.parentId as AnyNode['id']] : undefined
+        guard += 1
+      }
+      if (current?.type === 'level' && current.id === levelId) {
+        walls.push(node as WallNode)
+      }
+    }
+    byLevel.set(levelId, walls)
+    return walls
+  }
+
+  /**
+   * Check if an item can be placed on a ceiling.
+   * Validates that the footprint is within the ceiling polygon (but not in any holes) and doesn't overlap other ceiling items.
+   */
+  canPlaceOnCeiling(
+    ceilingId: string,
+    position: [number, number, number],
+    dimensions: [number, number, number],
+    rotation: [number, number, number],
+    ignoreIds?: string[],
+  ): { valid: boolean; conflictIds: string[] } {
+    this.ensureItemIndex()
+    const ceiling = this.ceilings.get(ceilingId)
+    if (!ceiling || ceiling.polygon.length < 3) {
+      return { valid: false, conflictIds: [] }
+    }
+
+    // Check that the item footprint is entirely within the ceiling polygon
+    const corners = getItemFootprint(position, dimensions, rotation)
+    for (const [cx, cz] of corners) {
+      if (!pointInPolygon(cx, cz, ceiling.polygon)) {
+        return { valid: false, conflictIds: [] }
+      }
+    }
+
+    // Check if item center is in any hole (if so, it cannot be placed)
+    const [centerX, , centerZ] = position
+    const holes = ceiling.holes || []
+    for (const hole of holes) {
+      if (hole.length >= 3 && pointInPolygon(centerX, centerZ, hole)) {
+        return { valid: false, conflictIds: [] }
+      }
+    }
+
+    const nodes = this.source.nodes()
+    const ignoreSet = new Set(ignoreIds ?? [])
+    const [width, , depth] = dimensions
+    const yRot = rotation[1]
+    const cos = Math.abs(Math.cos(yRot))
+    const sin = Math.abs(Math.sin(yRot))
+    const rotatedW = width * cos + depth * sin
+    const rotatedD = width * sin + depth * cos
+    const draftBounds = {
+      minX: position[0] - rotatedW / 2,
+      maxX: position[0] + rotatedW / 2,
+      minZ: position[2] - rotatedD / 2,
+      maxZ: position[2] + rotatedD / 2,
+    }
+
+    const conflicts: string[] = []
+    for (const node of Object.values(nodes)) {
+      if (node.type !== 'item') continue
+      const item = node as ItemNode
+      if (item.asset.attachTo !== 'ceiling') continue
+      if (ignoreSet.has(item.id)) continue
+      if (item.parentId !== ceilingId) continue
+
+      const bounds = getItemParentAabb(item)
+      if (
+        intervalsOverlap(draftBounds.minX, draftBounds.maxX, bounds.minX, bounds.maxX) &&
+        intervalsOverlap(draftBounds.minZ, draftBounds.maxZ, bounds.minZ, bounds.maxZ)
+      ) {
+        conflicts.push(item.id)
+      }
+    }
+
+    return { valid: conflicts.length === 0, conflictIds: conflicts }
+  }
+
+  clearLevel(levelId: string) {
+    this.invalidateRenderedSlabPolygons(levelId)
+    this.floorGrids.delete(levelId)
+    this.wallGrids.delete(levelId)
+    this.slabsByLevel.delete(levelId)
+  }
+
+  clear() {
+    this.floorGrids.clear()
+    this.wallGrids.clear()
+    this.walls.clear()
+    this.slabsByLevel.clear()
+    this.ceilingGrids.clear()
+    this.ceilings.clear()
+    this.itemCeilingMap.clear()
+    this.renderedSlabPolygons.clear()
+    this.supportInputs.clear()
+    this.supportInputsRevision += 1
+  }
+}
+
+// Singleton instance
+export const spatialGridManager = new SpatialGridManager()
+
+const activeGrids: Array<() => SpatialGridManager> = []
+
+/**
+ * The manager support queries read: the editor's singleton, or, inside `withSpatialGrid`, the one
+ * a detached scene builds from its own nodes (scene runtime).
+ */
+export function activeSpatialGrid(): SpatialGridManager {
+  return activeGrids.at(-1)?.() ?? spatialGridManager
+}
+
+export function withSpatialGrid<T>(grid: () => SpatialGridManager, run: () => T): T {
+  activeGrids.push(grid)
+  try {
+    return run()
+  } finally {
+    activeGrids.pop()
+  }
+}
+
+/** A manager indexed over `nodes()` as they are now, without previews. */
+export function createSnapshotSpatialGrid(
+  nodes: () => Record<string, AnyNode>,
+  levelIdOf: (node: AnyNode, nodes: Record<string, AnyNode>) => string,
+): SpatialGridManager {
+  const grid = new SpatialGridManager(0.5, snapshotSpatialGridSource(nodes), {
+    lazyItems: levelIdOf,
+  })
+  grid.bulkLoad(nodes())
+  return grid
+}
+
+type NodesStore = { getState(): { nodes: Record<string, AnyNode> } }
+const supportIndexes = new WeakMap<
+  object,
+  { nodes: Record<string, AnyNode>; grid: SpatialGridManager }
+>()
+
+/**
+ * The support index of a store's saved nodes, kept per store and brought up to date in place on
+ * each use (`syncSnapshot`), rebuilt only when that is simpler: what reconciliation queries.
+ */
+export function supportIndexOf(
+  store: NodesStore,
+  levelIdOf: (node: AnyNode, nodes: Record<string, AnyNode>) => string,
+): SpatialGridManager {
+  const nodes = store.getState().nodes
+  const cached = supportIndexes.get(store)
+  if (cached?.nodes === nodes) return cached.grid
+  if (cached?.grid.syncSnapshot(cached.nodes, nodes)) {
+    cached.nodes = nodes
+    return cached.grid
+  }
+  const grid = createSnapshotSpatialGrid(() => store.getState().nodes, levelIdOf)
+  supportIndexes.set(store, { nodes, grid })
+  return grid
+}
+
+/** Level-local Y where the rendered wall mesh begins. */
+export function getWallBaseElevationForNodes(
+  wall: WallNode,
+  nodes: Record<string, AnyNode>,
+): number {
+  const levelId = resolveNodeLevelId(wall, nodes)
+  return activeSpatialGrid().getSlabSupportForWall(
+    levelId,
+    wall.start,
+    wall.end,
+    wall.curveOffset ?? 0,
+    wall.thickness,
+    wall.supportSlabId ?? null,
+    undefined,
+    wall.supportOffset,
+    wall.justification,
+  ).elevation
+}
+
+/**
+ * Effective (extruded) height of a wall resolved from a nodes record:
+ * {@link getWallTop} minus the singleton manager's slab election — so the
+ * value always agrees with the rendered wall. One shared resolver for the
+ * editor overlays (measurement label, action menu, side handles) that used
+ * to copy this derivation locally.
+ *
+ * `t` (0 at the start, 1 at the end) picks a point on a sloped top. Without it
+ * the lower end answers: the height the whole wall clears, which is what
+ * plugins pinned to the public API (written before sloped tops) test against.
+ */
+export function getWallEffectiveHeightForNodes(
+  wall: WallNode,
+  nodes: Record<string, AnyNode>,
+  t?: number,
+): number {
+  const levelId = resolveNodeLevelId(wall, nodes)
+  const support = activeSpatialGrid().getSlabSupportForWall(
+    levelId,
+    wall.start,
+    wall.end,
+    wall.curveOffset ?? 0,
+    wall.thickness,
+    wall.supportSlabId ?? null,
+    undefined,
+    wall.supportOffset,
+    wall.justification,
+  )
+  const top =
+    t === undefined
+      ? Math.min(
+          getWallTop(wall, levelId, nodes, support.elevation, 0),
+          getWallTop(wall, levelId, nodes, support.elevation, 1),
+        )
+      : getWallTop(wall, levelId, nodes, support.elevation, t)
+  return top - support.elevation
+}

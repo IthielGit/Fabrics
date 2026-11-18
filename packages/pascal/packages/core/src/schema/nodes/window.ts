@@ -1,0 +1,177 @@
+import dedent from 'dedent'
+import { z } from 'zod'
+import { BaseNode, nodeType, objectId } from '../base'
+import { GeometryScriptSource } from '../geometry-source'
+import { MaterialSchema } from '../material'
+import { WindowType } from './opening-types'
+
+export { WindowType } from './opening-types'
+
+export const WindowConstructionType = z.enum(['framed', 'masonry'])
+export const WindowDimensionReference = z.enum([
+  'nominal',
+  'rough-opening',
+  'masonry-opening',
+  'finish-opening',
+])
+export type WindowConstructionType = z.infer<typeof WindowConstructionType>
+export type WindowDimensionReference = z.infer<typeof WindowDimensionReference>
+
+export const WindowNode = BaseNode.extend({
+  id: objectId('window'),
+  type: nodeType('window'),
+  material: MaterialSchema.optional(),
+  // Per-slot material overrides on the unified slot model. Keys: `frame`,
+  // `glass`, `hardware`, `shutters`, `sill`, `casing-a`, `casing-b`. Value = a
+  // `MaterialRef` (`library:<id>` / `scene:<id>`) or a plain
+  // `#rrggbb` colour. Hardware follows the frame unless painted.
+  slots: z.record(z.string(), z.string()).optional(),
+  /**
+   * A three.js script the window is built from instead of its parametric frame, as on an item:
+   * width and height are the compiled bounds and the wall cuts the script's `cutout` mesh.
+   */
+  source: GeometryScriptSource.optional(),
+
+  position: z.tuple([z.number(), z.number(), z.number()]).default([0, 0, 0]),
+  rotation: z.tuple([z.number(), z.number(), z.number()]).default([0, 0, 0]),
+  side: z.enum(['front', 'back']).optional(),
+  verticalAnchor: z.enum(['wall', 'floor']).optional(),
+  floorThresholdVersion: z.union([z.literal(0), z.literal(1)]).default(1),
+
+  // Wall reference
+  wallId: z.string().optional(),
+  // Alternative host: a dormer's generated wall face. When set, `position`
+  // is FACE-LOCAL — [u along the face, v height, z from the wall mid-plane].
+  dormerId: z.string().optional(),
+  dormerFace: z.enum(['front', 'back', 'right', 'left']).optional(),
+  // Alternative host: a roof-segment's generated wall face (base wall
+  // under the roof or a coplanar gable end). When set, `position` is
+  // FACE-LOCAL — [u along the face, v height, z from the wall mid-plane]
+  // — exactly the wall-child convention; the renderer mounts the node
+  // inside the face frame (`getRoofWallFaceFrame`), which is what makes
+  // hosted children track segment resizes live.
+  roofSegmentId: z.string().optional(),
+  roofFace: z.enum(['front', 'back', 'right', 'left']).optional(),
+
+  // Overall dimensions
+  width: z.number().default(1.5),
+  height: z.number().default(1.5),
+
+  // Construction-document identity and optional manufacturer rough opening.
+  // Legacy scenes omit these fields and continue to parse unchanged.
+  mark: z.string().trim().max(16).optional(),
+  constructionType: WindowConstructionType.default('framed'),
+  dimensionReference: WindowDimensionReference.default('nominal'),
+  roughOpeningWidth: z.number().positive().optional(),
+  roughOpeningHeight: z.number().positive().optional(),
+  masonryOpeningWidth: z.number().positive().optional(),
+  masonryOpeningHeight: z.number().positive().optional(),
+  finishOpeningWidth: z.number().positive().optional(),
+  finishOpeningHeight: z.number().positive().optional(),
+
+  // Opening mode - when set to "opening", the window is only a shaped cutout
+  openingKind: z.enum(['window', 'opening']).default('window'),
+
+  // Window family
+  windowType: WindowType.default('fixed'),
+  operationState: z.number().min(0).max(1).default(0),
+  openingDirection: z.enum(['outward', 'inward']).optional(),
+  tiltTurnMode: z.enum(['tilt', 'turn']).optional(),
+  awningDirection: z.enum(['up', 'down']).default('up'),
+  casementStyle: z.enum(['single', 'french']).default('single'),
+  hingesSide: z.enum(['left', 'right']).default('left'),
+  openingShape: z.enum(['rectangle', 'rounded', 'arch']).default('rectangle'),
+  openingRadiusMode: z.enum(['all', 'individual']).default('all'),
+  openingCornerRadii: z
+    .tuple([z.number(), z.number(), z.number(), z.number()])
+    .default([0.15, 0.15, 0.15, 0.15]),
+  cornerRadius: z.number().default(0.15),
+  archHeight: z.number().default(0.35),
+  openingRevealRadius: z.number().default(0.025),
+
+  // Frame
+  frameThickness: z.number().default(0.05),
+  frameDepth: z
+    .number()
+    .optional()
+    .describe(
+      "Frame depth through the wall; left out, the frame is exactly the host wall's thickness.",
+    ),
+
+  windowHandle: z.boolean().optional().describe('Show the operable sash handle (absent = true).'),
+  sashGrid: z
+    .boolean()
+    .optional()
+    .describe('Apply pane divisions per operable sash (absent = false).'),
+
+  // Divisions — ratios allow non-uniform panes
+  // [0.5, 0.5] = two equal panes
+  // [0.6, 0.4] = one larger, one smaller
+  // [1] = single pane (no division)
+  columnRatios: z.array(z.number()).default([1]),
+  rowRatios: z.array(z.number()).default([1]),
+  columnDividerThickness: z.number().default(0.03),
+  rowDividerThickness: z.number().default(0.03),
+
+  // A corner window: this window runs to its wall's `end` and is joined there to `partnerId` on the
+  // other wall, the glass fused at the corner (`none`) or meeting at a thin post.
+  corner: z
+    .object({
+      end: z.enum(['start', 'end']),
+      partnerId: z.string(),
+      post: z.enum(['none', 'post']).default('none'),
+    })
+    .optional(),
+
+  // Sill
+  sill: z.boolean().default(true),
+  sillDepth: z.number().default(0.08),
+  sillThickness: z.number().default(0.03),
+
+  sillOverhang: z.number().nonnegative().optional(),
+  sillInterior: z.boolean().optional(),
+  sillInteriorDepth: z.number().positive().optional(),
+  sillInteriorThickness: z.number().positive().optional(),
+  sillInteriorOverhang: z.number().nonnegative().optional(),
+  shutters: z.enum(['none', 'louvered', 'panel', 'board-batten']).optional(),
+  shutterWidth: z.number().positive().optional(),
+  shutterOpen: z.number().min(0).max(1).optional(),
+  shutterSides: z.enum(['both', 'left', 'right']).optional(),
+  rollerShutter: z.enum(['none', 'box', 'concealed']).optional(),
+  rollerShutterBoxHeight: z.number().positive().optional(),
+  rollerShutterOpen: z.number().min(0).max(1).optional(),
+
+  // Casing: flat boards on the finished faces of the host wall around the
+  // opening, never inside it, so the wall cutout stays width × height. The
+  // faces are the host's `a` / `b` (WallFace), not the unit's own front and
+  // back, so flipping the window leaves its casing where it is. Optional, never
+  // defaulted, so loading a saved opening adds no fields: absent faces are
+  // uncased, an absent width is 2 in.
+  casingFaceA: z.boolean().optional(),
+  casingFaceB: z.boolean().optional(),
+  casingWidth: z.number().positive().optional(),
+}).describe(dedent`Window node - a parametric window placed on a wall
+  - position: center of the window in wall-local coordinate system
+  - width/height: overall outer dimensions, which are also the wall cutout
+  - windowType: explicit window family, defaulting old windows to fixed
+  - frameThickness: width of the frame members (new windows use 0.020 m; absent in saved windows keeps 0.05 m)
+  - frameDepth: how deep the frame sits within the wall
+  - columnRatios/rowRatios: pane division ratios
+  - windowHandle: show the interior handle on casement, awning, hopper and tilt-turn sashes (absent = true)
+  - sashGrid: pane divisions per operable sash (absent = false; saved windows keep no bars)
+  - openingDirection: casement/awning swing toward exterior or interior; absent preserves placement-face motion
+  - tiltTurnMode: tilt inward up to 15 degrees (default), or turn inward up to 90 degrees
+  - sillInterior: room-side stool board (absent = false); depth/thickness/overhang default to 0.06/0.03/0.015 m
+  - sillOverhang: exterior sill extension on each side (absent = 0.4 times sillDepth)
+  - shutterOpen/shutterSides: 0 closed to 1 open (default 1), both/left/right (default both); leaves over 0.75 m bifold and stack when open
+  - rollerShutter/rollerShutterOpen: none (default), box on the exterior wall, or concealed inside the reveal; curtain fraction up (default 1)
+  - rollerShutterBoxHeight: exterior box height in metres (default 0.18), box mount only
+  - concealed roller: 0.03 m lintel strip, 0.025 x 0.03 m jamb guides inside the reveal; curtain 0.02 m outside the frame plane, width minus 0.05 m
+  - shutters/shutterWidth: exterior shutters (absent = none); width per side defaults to width / 2 for both sides or full width for left/right only, uncapped; paired shutters meet with a 0.01 m overlap lip
+  - sill: whether to show a window sill
+  - casingFaceA/casingFaceB: picture-frame casing on the host wall's face a / b, around the cutout (absent means off; new openings enable both)
+  - casingWidth: face width of the casing boards (2 in by default)
+  - corner: joined to a window on the other wall at this wall's start or end (a corner window)
+`)
+
+export type WindowNode = z.infer<typeof WindowNode>

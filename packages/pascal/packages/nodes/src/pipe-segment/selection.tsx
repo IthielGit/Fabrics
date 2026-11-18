@@ -1,0 +1,1045 @@
+'use client'
+
+import {
+  type AnyNode,
+  type AnyNodeId,
+  analyzePortConnectivity,
+  type Cursor,
+  findLevelAncestorId,
+  type PipeSegmentNode,
+  type PortConnectivity,
+  pauseSceneHistory,
+  resolveConnectivityUpdates,
+  resumeSceneHistory,
+  sceneRegistry,
+  useLiveNodeOverrides,
+  usePascalI18n,
+  useScene,
+} from '@pascal-app/core'
+import {
+  AXIS_MOVE_DRAG_LABEL,
+  clearPlacementSurface,
+  DimensionPill,
+  isGridSnapActive,
+  PATH_POINT_DRAG_LABEL,
+  swallowNextClick,
+  triggerSFX,
+  useEditor,
+} from '@pascal-app/editor'
+import { collectScenePorts, findNearestPortXZ } from '@pascal-app/editor/distribution'
+import { useViewer } from '@pascal-app/viewer'
+import { Html } from '@react-three/drei'
+import { createPortal, type ThreeEvent, useFrame, useThree } from '@react-three/fiber'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { type Group, type Object3D, Plane, Raycaster, Vector2, Vector3 } from 'three'
+import { planRunEndCapFollowUpdates } from '../shared/automatic-run-end-cap'
+import {
+  detectFittingEndpoint,
+  type FittingEndpoint,
+  planFittingEndpointReaim,
+} from '../shared/fitting-endpoint-reaim'
+import { useHandleDragScope } from '../shared/handle-drag-scope'
+import { PipeFittingGhost, PipeSegmentGhost } from '../shared/mep-ghost'
+import { DWV_PORT_SYSTEMS } from '../shared/port-systems'
+import { ContinuePlusHandle, HandleCube, MoveChevron } from '../shared/selection-handles'
+import { refreshWallRunAttachment } from '../shared/wall-run-move'
+import { activatePipeContinuation } from './continuation'
+import { type PipeEndpoint, pipeContinuationHandlePlan } from './continuation-handle'
+import { pipeGradeBlockedNotice } from './grade-affordance'
+import { pipeUpdatesPreserveGrades } from './grade-operation'
+import { type PipeRunMoveGhost, type PipeRunMoveKind, startPipeRunMove } from './run-move'
+import { pipeGradesMatch, preservePipeGrades } from './slope'
+
+/** Port-snap radius for dragged run endpoints (meters, XZ). */
+const PORT_SNAP_RADIUS_M = 0.4
+const CENTER_ARROW_GAP = 0.28
+const CENTER_ARROW_MIN_OFFSET = 0.4
+const INCHES_TO_METERS = 0.0254
+
+const UP = new Vector3(0, 1, 0)
+
+function snap(value: number, step: number): number {
+  if (step <= 0) return value
+  return Math.round(value / step) * step
+}
+
+type Point = [number, number, number]
+type DragKind =
+  | { axis: 'y'; along?: boolean }
+  | { axis: 'horizontal'; dir: [number, number]; along: boolean }
+type CornerArrow = {
+  key: string
+  index: number
+  kind: DragKind
+  position: Point
+  rotationY: number
+  vertical?: 'up' | 'down'
+  cursor: Cursor
+}
+
+function pipeRadiusM(pipe: PipeSegmentNode): number {
+  return (pipe.diameter * INCHES_TO_METERS) / 2
+}
+
+/**
+ * Selection-time editing for committed DWV pipe runs: every path point gets
+ * the same click-to-open directional cube used by duct runs, with DWV port
+ * snapping and pipe elbow re-aim.
+ *
+ * Handles are PORTALED into the pipe's registered scene group so they
+ * share its exact frame — path coords are node-local, and the level /
+ * building transform above the group applies to the handles for free.
+ * Drag raycasts run in world space and convert hits back into the
+ * group's local frame before writing the path.
+ *
+ * Drag model: along-run arrows lengthen / shorten; across-run and vertical
+ * arrows swing endpoint vertices around their neighbour at a fixed radius,
+ * matching duct corner UX. Dragged endpoints still snap onto nearby typed DWV
+ * ports, and a straight run whose other end sits on a pipe elbow collar
+ * re-aims that elbow to follow the drag.
+ *
+ * Modifiers (mirroring the duct corner drag):
+ * - **Alt** detaches: the joint breaks for this drag — the elbow does NOT
+ *   re-aim and mated fittings / runs do NOT follow; the endpoint moves on its
+ *   own (port re-mate still allowed so it can be reattached elsewhere).
+ * - Snapping follows the active editor snapping mode.
+ *
+ * History is paused during the drag while live overrides drive the preview.
+ * On release, history resumes and the final path is applied as one tracked
+ * change.
+ */
+const PipeSegmentSelectionAffordance = () => {
+  const selectedIds = useViewer((s) => s.selection.selectedIds)
+  const pipe = useScene((s) => {
+    if (selectedIds.length !== 1) return null
+    const node = s.nodes[selectedIds[0] as AnyNodeId]
+    return node?.type === 'pipe-segment' ? (node as PipeSegmentNode) : null
+  })
+
+  // Portal target: the pipe's registered group. Resolved with a rAF
+  // retry because registration happens on the renderer's mount, which
+  // can land a frame after selection.
+  const pipeId = pipe?.id ?? null
+  const [target, setTarget] = useState<Object3D | null>(null)
+  useEffect(() => {
+    if (!pipeId) {
+      setTarget(null)
+      return
+    }
+    let frameId = 0
+    const resolve = () => {
+      const next = sceneRegistry.nodes.get(pipeId as AnyNodeId) ?? null
+      setTarget((cur) => (cur === next ? cur : next))
+      if (!next) frameId = window.requestAnimationFrame(resolve)
+    }
+    resolve()
+    return () => window.cancelAnimationFrame(frameId)
+  }, [pipeId])
+
+  if (!pipe || !target) return null
+  const mount = target.parent ?? target
+  return createPortal(<PipePointHandles pipe={pipe} target={target} />, mount, undefined)
+}
+
+const PipePointHandles = ({ pipe, target }: { pipe: PipeSegmentNode; target: Object3D }) => {
+  const i18n = usePascalI18n()
+  const { camera, gl } = useThree()
+  const liveOverride = useLiveNodeOverrides((state) => state.overrides.get(pipe.id))
+  const displayPipe = liveOverride ? ({ ...pipe, ...liveOverride } as PipeSegmentNode) : pipe
+  const outerRef = useRef<Group>(null)
+  useFrame(() => {
+    const outer = outerRef.current
+    if (!outer) return
+    outer.position.copy(target.position)
+    outer.quaternion.copy(target.quaternion)
+    outer.scale.copy(target.scale)
+  })
+  const unit = useViewer((s) => s.unit)
+  const [draggingIndex, setDraggingIndex] = useState<number | null>(null)
+  const claimHandleDrag = useHandleDragScope()
+  const [gradeNotice, setGradeNotice] = useState('')
+  const [runMoving, setRunMoving] = useState(false)
+  const [moveGhost, setMoveGhost] = useState<PipeRunMoveGhost | null>(null)
+  type OpenCluster = number | 'center' | null
+  const [openCluster, setOpenCluster] = useState<OpenCluster>(null)
+  const toggleCluster = (key: Exclude<OpenCluster, null>) =>
+    setOpenCluster((cur) => (cur === key ? null : key))
+  // Set while a drag is live; null otherwise. Holds everything the window
+  // pointer handlers need so they never read stale React state.
+  const dragRef = useRef<{
+    index: number
+    initialPath: Point[]
+    current: Point
+    cleanup: () => void
+    // Connectivity snapshot taken at pointer-down: which fittings / pipes are
+    // mated to this run's endpoints, so they follow as the endpoint moves.
+    connectivity: PortConnectivity | null
+    // Set when the run's OTHER end sits on an elbow collar: the elbow re-aims
+    // to follow this drag instead of translating rigidly (mutually exclusive
+    // with `connectivity`-driven follow for this endpoint).
+    fittingEndpoint: FittingEndpoint | null
+    jointPartner?: { id: AnyNodeId; startPath: Point[] }
+    // True while Alt is held: the joint is detached for this drag, so the
+    // final commit must omit elbow / connectivity updates. Tracked live so
+    // `onUp` knows what the last frame did.
+    detached: boolean
+  } | null>(null)
+
+  const makeRay = (clientX: number, clientY: number) => {
+    const rect = gl.domElement.getBoundingClientRect()
+    const ndc = new Vector2(
+      ((clientX - rect.left) / rect.width) * 2 - 1,
+      -((clientY - rect.top) / rect.height) * 2 + 1,
+    )
+    const raycaster = new Raycaster()
+    raycaster.setFromCamera(ndc, camera)
+    return raycaster.ray
+  }
+
+  const intersect = (clientX: number, clientY: number, plane: Plane): Vector3 | null => {
+    const hit = new Vector3()
+    return makeRay(clientX, clientY).intersectPlane(plane, hit) ? hit : null
+  }
+
+  /**
+   * Local-frame Y where the cursor ray meets a vertical plane through
+   * `anchorWorld` that faces the camera — drives Cmd/Ctrl-vertical (riser) drag.
+   * Null when the ray is parallel to the plane.
+   */
+  const intersectVerticalY = (
+    clientX: number,
+    clientY: number,
+    anchorWorld: Vector3,
+  ): number | null => {
+    // Plane normal: camera forward flattened onto the horizontal plane, so
+    // the plane stands upright through the point and faces the viewer.
+    const forward = camera.getWorldDirection(new Vector3())
+    forward.y = 0
+    if (forward.lengthSq() < 1e-6) forward.set(0, 0, 1)
+    forward.normalize()
+    const plane = new Plane().setFromNormalAndCoplanarPoint(forward, anchorWorld)
+    const hit = intersect(clientX, clientY, plane)
+    return hit ? toLocal(hit)[1] : null
+  }
+
+  const swingHorizontal = (event: PointerEvent, pivot: Point, startPoint: Point): Point | null => {
+    const r = Math.hypot(
+      startPoint[0] - pivot[0],
+      startPoint[1] - pivot[1],
+      startPoint[2] - pivot[2],
+    )
+    if (r < 1e-6) return null
+    const verticalN = (startPoint[1] - pivot[1]) / r
+    const horizN = Math.sqrt(Math.max(0, 1 - verticalN * verticalN))
+    const plane = new Plane().setFromNormalAndCoplanarPoint(UP, toWorld(pivot))
+    const hit = intersect(event.clientX, event.clientY, plane)
+    if (!hit) return null
+    const local = toLocal(hit)
+    const bx = local[0] - pivot[0]
+    const bz = local[2] - pivot[2]
+    const blen = Math.hypot(bx, bz)
+    if (blen < 1e-6) return null
+    return [(bx / blen) * horizN, verticalN, (bz / blen) * horizN]
+  }
+
+  const swingVertical = (event: PointerEvent, pivot: Point, startPoint: Point): Point | null => {
+    let hx = startPoint[0] - pivot[0]
+    let hz = startPoint[2] - pivot[2]
+    let hlen = Math.hypot(hx, hz)
+    if (hlen < 1e-6) {
+      const forward = camera.getWorldDirection(new Vector3())
+      hx = forward.x
+      hz = forward.z
+      hlen = Math.hypot(hx, hz)
+      if (hlen < 1e-6) {
+        hx = 0
+        hz = 1
+        hlen = 1
+      }
+    }
+    const headingWorld = new Vector3(hx / hlen, 0, hz / hlen)
+    const normal = new Vector3().crossVectors(UP, headingWorld).normalize()
+    const plane = new Plane().setFromNormalAndCoplanarPoint(normal, toWorld(pivot))
+    const hit = intersect(event.clientX, event.clientY, plane)
+    if (!hit) return null
+    const local = toLocal(hit)
+    const ax = local[0] - pivot[0]
+    const ay = local[1] - pivot[1]
+    const az = local[2] - pivot[2]
+    const len = Math.hypot(ax, ay, az)
+    if (len < 1e-6) return null
+    return [ax / len, ay / len, az / len]
+  }
+
+  // Build the per-frame update batch for the dragged endpoint at `next`.
+  // Detached (Alt): only the pipe path moves — no elbow re-aim, no
+  // connectivity follow. Elbow mode: the run rides the elbow's re-aimed
+  // collar and the elbow swings to fit. Otherwise: the dragged point moves
+  // and any mated fittings / runs translate via connectivity.
+  const buildDragBatch = (
+    drag: NonNullable<typeof dragRef.current>,
+    next: Point,
+    detached: boolean,
+  ): { id: AnyNodeId; data: Partial<AnyNode> }[] | null => {
+    const constrained = preservePipeGrades(
+      drag.initialPath,
+      drag.initialPath.map((point, index) => (index === drag.index ? next : point)),
+      drag.index,
+    )
+    if (!constrained) return null
+    next = constrained[drag.index]!
+    const checked = (updates: { id: AnyNodeId; data: Partial<AnyNode> }[]) =>
+      pipeUpdatesPreserveGrades(useScene.getState().nodes, updates) ? updates : null
+    const wall = pipe.wallAttachment
+      ? useScene.getState().nodes[pipe.wallAttachment.wallId]
+      : undefined
+    const attachmentFor = (path: Point[]) =>
+      pipe.wallAttachment && wall?.type === 'wall'
+        ? refreshWallRunAttachment(path, pipe.wallAttachment, wall)
+        : pipe.wallAttachment
+    const withEndCapFollow = (
+      path: Point[],
+      updates: { id: AnyNodeId; data: Partial<AnyNode> }[],
+    ) => {
+      const nextPipe = { ...pipe, path } as PipeSegmentNode
+      const capUpdates = (['start', 'end'] as const).flatMap((endpoint) =>
+        planRunEndCapFollowUpdates(pipe, nextPipe, endpoint, useScene.getState().nodes),
+      )
+      const capIds = new Set(capUpdates.map((update) => update.id))
+      return [...updates.filter((update) => !capIds.has(update.id)), ...capUpdates]
+    }
+    if (!detached && drag.fittingEndpoint) {
+      const plan = planFittingEndpointReaim(drag.fittingEndpoint, drag.index, next)
+      // Out of the elbow's buildable turn range — hold this frame.
+      if (!plan || !pipeGradesMatch(drag.initialPath, plan.path)) return null
+      return checked(
+        withEndCapFollow(plan.path, [
+          {
+            id: pipe.id as AnyNodeId,
+            data: { path: plan.path, wallAttachment: attachmentFor(plan.path) },
+          },
+          { id: plan.fittingUpdate.id, data: plan.fittingUpdate.data },
+          ...(drag.jointPartner
+            ? [
+                {
+                  id: drag.jointPartner!.id,
+                  data: {
+                    path: drag.jointPartner!.startPath.map((p, i) =>
+                      i === (drag.index === 0 ? drag.jointPartner!.startPath.length - 1 : 0)
+                        ? drag.index === 0
+                          ? plan.path[plan.path.length - 1]!
+                          : plan.path[0]!
+                        : p,
+                    ),
+                  } as Partial<AnyNode>,
+                },
+              ]
+            : []),
+        ]),
+      )
+    }
+    const path = constrained
+    const followers = detached ? [] : connectivityUpdatesForPath(drag.connectivity, path)
+    if (!followers) return null
+    const updates = [
+      { id: pipe.id as AnyNodeId, data: { path, wallAttachment: attachmentFor(path) } },
+      ...followers,
+    ]
+    return checked(detached ? updates : withEndCapFollow(path, updates))
+  }
+
+  /** World-space position of a local path point. */
+  const toWorld = (p: Point): Vector3 => target.localToWorld(new Vector3(p[0], p[1], p[2]))
+  /** Convert a world-space hit back into the pipe group's local frame. */
+  const toLocal = (world: Vector3): Point => {
+    const local = target.worldToLocal(world.clone())
+    return [local.x, local.y, local.z]
+  }
+
+  // Follow-updates for fittings / pipes mated to this run's endpoints, given
+  // the run's live path. Endpoints whose position didn't change resolve to a
+  // zero delta, so only the dragged endpoint's partner actually moves. Null
+  // when the mated joints cannot follow the path.
+  const connectivityUpdatesForPath = (
+    connectivity: PortConnectivity | null,
+    path: Point[],
+  ): { id: AnyNodeId; data: Partial<AnyNode> }[] | null => {
+    if (!connectivity) return []
+    const preview = { ...(pipe as Record<string, unknown>), path } as AnyNode
+    return (
+      resolveConnectivityUpdates(connectivity, preview)?.filter(
+        (u) => useScene.getState().nodes[u.id],
+      ) ?? null
+    )
+  }
+
+  const onHandleDown = (index: number, kind: DragKind) => (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation()
+    const initialPath = pipe.path.map((p) => [...p] as Point)
+    const startPoint = initialPath[index]!
+    const connectivity = analyzePortConnectivity(pipe as AnyNode, useScene.getState().nodes)
+    pauseSceneHistory(useScene)
+    const livePreviewIds = new Set<AnyNodeId>()
+    const publishLivePreview = (updates: { id: AnyNodeId; data: Partial<AnyNode> }[]) => {
+      const scene = useScene.getState()
+      const overrides = useLiveNodeOverrides.getState()
+      const entries = updates
+        .filter((update) => scene.nodes[update.id])
+        .map((update) => [update.id, update.data as Record<string, unknown>] as const)
+      const previewed = new Set(entries.map(([id]) => id))
+      for (const id of livePreviewIds) {
+        if (previewed.has(id)) continue
+        overrides.clear(id)
+        if (scene.nodes[id]) scene.markDirty(id)
+        livePreviewIds.delete(id)
+      }
+      overrides.setMany(entries)
+      for (const [id] of entries) {
+        livePreviewIds.add(id)
+        scene.markDirty(id)
+      }
+    }
+    const clearLivePreview = () => {
+      const scene = useScene.getState()
+      const overrides = useLiveNodeOverrides.getState()
+      for (const id of livePreviewIds) {
+        overrides.clear(id)
+        if (scene.nodes[id]) scene.markDirty(id)
+      }
+    }
+    useViewer.getState().setInputDragging(true)
+    document.body.style.cursor = kind.axis === 'y' ? 'ns-resize' : 'grabbing'
+    setDraggingIndex(index)
+    const releaseScope = claimHandleDrag(pipe.id, PATH_POINT_DRAG_LABEL, () => {
+      swallowNextClick()
+      finish(false)
+    })
+
+    const isEndpoint = index === 0 || index === initialPath.length - 1
+    const swings =
+      kind.axis === 'y' ? kind.along !== true : kind.axis === 'horizontal' && !kind.along
+    const neighborIndex = index === 0 ? 1 : index === initialPath.length - 1 ? index - 1 : null
+    const pivot = neighborIndex !== null ? initialPath[neighborIndex]! : null
+    const radius = pivot
+      ? Math.hypot(startPoint[0] - pivot[0], startPoint[1] - pivot[1], startPoint[2] - pivot[2])
+      : 0
+    const canSwing = swings && isEndpoint && pivot !== null && radius > 1e-6
+
+    // Elbow re-aim: if this is a straight run whose OTHER end sits on an
+    // elbow collar, the elbow swings to follow the drag (junction + far
+    // collar fixed, bend angle adapts) — so the dragged end moves freely in
+    // any direction instead of being locked to the segment's own axis, the
+    // way a wall corner drags. Detected once against a drag-start snapshot.
+    const fittingEndpoint: FittingEndpoint | null = isEndpoint
+      ? detectFittingEndpoint('pipe-segment', initialPath, index, useScene.getState().nodes)
+      : null
+    const partnerId = fittingEndpoint?.fitting.metadata?.altJoint
+      ? ((fittingEndpoint.fitting.metadata.partnerIds as string[] | undefined)?.find(
+          (id) => id !== pipe.id,
+        ) as AnyNodeId | undefined)
+      : undefined
+    const partner = partnerId ? useScene.getState().nodes[partnerId] : undefined
+    const onMove = (event: PointerEvent) => {
+      const drag = dragRef.current
+      if (!drag) return
+      // Follow the active snapping mode; Shift cycles that mode globally.
+      const step = isGridSnapActive() ? useEditor.getState().gridSnapStep : 0
+      // Alt = detach: break the joint for this drag — the endpoint moves on
+      // its own, no elbow re-aim and no connectivity follow (it can still
+      // port-snap to re-mate elsewhere). Mirrors the wall corner drag.
+      const detached = event.altKey && !drag.jointPartner
+      let next: Point | null = null
+      if (canSwing && pivot) {
+        const aim =
+          kind.axis === 'y'
+            ? swingVertical(event, pivot, startPoint)
+            : swingHorizontal(event, pivot, startPoint)
+        if (aim) {
+          next = [
+            snap(pivot[0] + aim[0] * radius, step),
+            snap(pivot[1] + aim[1] * radius, step),
+            snap(pivot[2] + aim[2] * radius, step),
+          ]
+        }
+      } else if (kind.axis === 'y') {
+        const y = intersectVerticalY(event.clientX, event.clientY, toWorld(startPoint))
+        if (y !== null) next = [startPoint[0], snap(y, step), startPoint[2]]
+      } else {
+        const plane = new Plane().setFromNormalAndCoplanarPoint(UP, toWorld(startPoint))
+        const hit = intersect(event.clientX, event.clientY, plane)
+        if (hit) {
+          const local = toLocal(hit)
+          const [dx, dz] = kind.dir
+          const t = snap((local[0] - startPoint[0]) * dx + (local[2] - startPoint[2]) * dz, step)
+          next = [startPoint[0] + t * dx, startPoint[1], startPoint[2] + t * dz]
+        }
+      }
+      if (!next) return
+      if (isEndpoint && (detached || !drag.fittingEndpoint)) {
+        const port = findNearestPortXZ(
+          [next[0], next[1], next[2]],
+          collectScenePorts({
+            excludeNodeId: pipe.id,
+            levelId: (findLevelAncestorId(pipe.id, useScene.getState().nodes) ?? undefined) as
+              | AnyNodeId
+              | undefined,
+            systems: DWV_PORT_SYSTEMS,
+          }),
+          PORT_SNAP_RADIUS_M,
+        )
+        if (port) next = [port.position[0], port.position[1], port.position[2]]
+      }
+      if (next[0] === drag.current[0] && next[1] === drag.current[1] && next[2] === drag.current[2])
+        return
+      const batch = buildDragBatch(drag, next, detached)
+      if (!batch) {
+        setGradeNotice(i18n._(pipeGradeBlockedNotice))
+        return
+      }
+      setGradeNotice('')
+      drag.current = next
+      drag.detached = detached
+      if (step > 0) triggerSFX('sfx:grid-snap')
+      publishLivePreview(batch)
+    }
+
+    const finish = (commit: boolean) => {
+      const drag = dragRef.current
+      if (!drag) return
+      drag.cleanup()
+      dragRef.current = null
+      setDraggingIndex(null)
+      setGradeNotice('')
+      clearLivePreview()
+      // Resume history and apply the final batch as one tracked change. The
+      // final batch is built the same way as
+      // each live frame (elbow re-aim, rigid connectivity follow, or — when
+      // detached — just the pipe path).
+      const detached = drag.detached
+      const moved = drag.current.some((v, axis) => v !== drag.initialPath[drag.index]![axis])
+      const finalBatch = commit ? buildDragBatch(drag, drag.current, detached) : null
+      resumeSceneHistory(useScene)
+      if (moved && finalBatch) {
+        useScene.getState().updateNodes(finalBatch)
+      }
+    }
+
+    const onUp = () => {
+      if (!dragRef.current) return
+      swallowNextClick()
+      finish(true)
+    }
+    const onCancel = () => finish(false)
+
+    const cleanup = () => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onCancel)
+      releaseScope()
+      useViewer.getState().setInputDragging(false)
+      document.body.style.cursor = ''
+    }
+
+    dragRef.current = {
+      index,
+      initialPath,
+      current: startPoint,
+      cleanup,
+      connectivity,
+      fittingEndpoint,
+      jointPartner:
+        partner?.type === 'pipe-segment'
+          ? { id: partner.id as AnyNodeId, startPath: partner.path.map((p) => [...p] as Point) }
+          : undefined,
+      detached: false,
+    }
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onCancel)
+  }
+
+  const onRunMoveDown = (kind: PipeRunMoveKind) => (e: ThreeEvent<PointerEvent>) => {
+    e.stopPropagation()
+    const parentId = (pipe.parentId ?? undefined) as AnyNodeId | undefined
+    const center = runAxisAndCenter(pipe)?.center ?? pipe.path[0]!
+    const anchorWorld = toWorld(center)
+    const nodesById: Record<string, AnyNode> = {
+      ...useScene.getState().nodes,
+    }
+    const move = startPipeRunMove({
+      pipe,
+      kind,
+      connectivity: analyzePortConnectivity(pipe as AnyNode, nodesById),
+      scenePorts: collectScenePorts({
+        excludeNodeId: pipe.id as AnyNodeId,
+        systems: DWV_PORT_SYSTEMS,
+      }),
+      nodesById,
+    })
+    const previewHiddenIds = new Set<AnyNodeId>()
+
+    pauseSceneHistory(useScene)
+
+    const ensureSceneObjectsVisible = (ids: Iterable<AnyNodeId>) => {
+      const scene = useScene.getState()
+      for (const id of ids) {
+        const obj = sceneRegistry.nodes.get(id)
+        if (obj) {
+          obj.visible = true
+          obj.traverse((child) => {
+            child.visible = true
+          })
+        }
+        if (scene.nodes[id]) scene.markDirty(id)
+      }
+    }
+    const livePreviewIds = new Set<AnyNodeId>()
+    const publishLivePreview = (updates: { id: AnyNodeId; data: Partial<AnyNode> }[]) => {
+      const scene = useScene.getState()
+      const overrides = useLiveNodeOverrides.getState()
+      const entries = updates
+        .filter((update) => scene.nodes[update.id])
+        .map((update) => [update.id, update.data as Record<string, unknown>] as const)
+      const previewed = new Set(entries.map(([id]) => id))
+      for (const id of livePreviewIds) {
+        if (previewed.has(id)) continue
+        overrides.clear(id)
+        scene.markDirty(id)
+        livePreviewIds.delete(id)
+      }
+      if (entries.length === 0) return
+      overrides.setMany(entries)
+      for (const [id] of entries) {
+        livePreviewIds.add(id)
+        scene.markDirty(id)
+      }
+    }
+    const clearLivePreview = () => {
+      const scene = useScene.getState()
+      const overrides = useLiveNodeOverrides.getState()
+      for (const id of livePreviewIds) {
+        overrides.clear(id)
+        if (scene.nodes[id]) scene.markDirty(id)
+      }
+      livePreviewIds.clear()
+    }
+    const setPreviewHidden = (ids: readonly AnyNodeId[]) => {
+      const next = new Set(ids)
+      for (const id of previewHiddenIds) {
+        if (next.has(id)) continue
+        const object = sceneRegistry.nodes.get(id)
+        if (object) object.visible = true
+        previewHiddenIds.delete(id)
+      }
+      for (const id of next) {
+        const object = sceneRegistry.nodes.get(id)
+        if (object) object.visible = false
+        previewHiddenIds.add(id)
+      }
+    }
+
+    const sample = (clientX: number, clientY: number): number | null => {
+      if (kind.axis === 'y') return intersectVerticalY(clientX, clientY, anchorWorld)
+      const plane = new Plane().setFromNormalAndCoplanarPoint(UP, anchorWorld)
+      const hit = intersect(clientX, clientY, plane)
+      if (!hit) return null
+      const local = toLocal(hit)
+      return local[0] * kind.dir[0] + local[2] * kind.dir[1]
+    }
+    const startSample = sample(e.nativeEvent.clientX, e.nativeEvent.clientY)
+    useViewer.getState().setInputDragging(true)
+    document.body.style.cursor = kind.axis === 'y' ? 'ns-resize' : 'grabbing'
+    setRunMoving(true)
+    const releaseScope = claimHandleDrag(pipe.id, AXIS_MOVE_DRAG_LABEL, () => {
+      swallowNextClick()
+      finish(false)
+    })
+    let delta = 0
+
+    const onMove = (event: PointerEvent) => {
+      if (startSample === null) return
+      const s = sample(event.clientX, event.clientY)
+      if (s === null) return
+      const step = !event.altKey && isGridSnapActive() ? useEditor.getState().gridSnapStep : 0
+      const next = snap(s - startSample, step)
+      if (next === delta) return
+      delta = next
+      if (step > 0) triggerSFX('sfx:grid-snap')
+      const frame = move.update(next)
+      if (frame.status === 'blocked') {
+        setGradeNotice(i18n._(pipeGradeBlockedNotice))
+        return
+      }
+      setGradeNotice('')
+      setMoveGhost(frame.ghost)
+      if (frame.status === 'invalid') {
+        setPreviewHidden([])
+        clearLivePreview()
+        return
+      }
+      setPreviewHidden(frame.hidden)
+      publishLivePreview(frame.preview)
+    }
+
+    const finish = (commit: boolean) => {
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onCancel)
+      releaseScope()
+      useViewer.getState().setInputDragging(false)
+      clearPlacementSurface()
+      document.body.style.cursor = ''
+      setRunMoving(false)
+      setMoveGhost(null)
+      setGradeNotice('')
+      clearLivePreview()
+      setPreviewHidden([])
+      resumeSceneHistory(useScene)
+      const change = commit ? move.release() : null
+      if (!change) return
+      const scene = useScene.getState()
+      if (change.create.length > 0 || change.delete.length > 0) {
+        scene.applyNodeChanges({
+          create: change.create.map((node) => ({ node, parentId })),
+          delete: change.delete.filter((id) => scene.nodes[id]),
+          update: change.update,
+        })
+      } else {
+        scene.updateNodes(change.update)
+      }
+      ensureSceneObjectsVisible([
+        ...change.create.map((node) => node.id as AnyNodeId),
+        ...change.update.map((update) => update.id),
+      ])
+    }
+
+    const onUp = () => {
+      swallowNextClick()
+      finish(true)
+    }
+    const onCancel = () => finish(false)
+
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onCancel)
+  }
+
+  const cornerArrows = useMemo(() => getCornerArrows(displayPipe), [displayPipe])
+  const runCenter = useMemo<Point | null>(
+    () => runAxisAndCenter(displayPipe)?.center ?? null,
+    [displayPipe],
+  )
+  const runCenterYaw = useMemo<number>(() => {
+    const axis = runAxisAndCenter(displayPipe)
+    if (!axis || Math.hypot(axis.dir[0], axis.dir[2]) < 1e-6) return 0
+    return Math.atan2(-axis.dir[2], axis.dir[0])
+  }, [displayPipe])
+  const centerArrows = useMemo(() => {
+    if (!runCenter) return []
+    const base = Math.max(pipeRadiusM(displayPipe) + CENTER_ARROW_GAP, CENTER_ARROW_MIN_OFFSET)
+    const axis = runAxisAndCenter(displayPipe)
+    const t: [number, number] =
+      axis && Math.hypot(axis.dir[0], axis.dir[2]) > 1e-6
+        ? (() => {
+            const len = Math.hypot(axis.dir[0], axis.dir[2])
+            return [axis.dir[0] / len, axis.dir[2] / len]
+          })()
+        : [1, 0]
+    const runYaw = Math.atan2(-t[1], t[0])
+    const horiz: { key: string; dir: [number, number] }[] = [
+      { key: 'along+', dir: [t[0], t[1]] },
+      { key: 'along-', dir: [-t[0], -t[1]] },
+      { key: 'across+', dir: [-t[1], t[0]] },
+      { key: 'across-', dir: [t[1], -t[0]] },
+    ]
+    const arrows: {
+      key: string
+      kind: PipeRunMoveKind
+      position: Point
+      rotationY: number
+      vertical?: 'up' | 'down'
+      cursor: Cursor
+    }[] = horiz.map(({ key, dir }) => ({
+      key,
+      kind: { axis: 'horizontal', dir },
+      position: [runCenter[0] + dir[0] * base, runCenter[1], runCenter[2] + dir[1] * base],
+      rotationY: Math.atan2(-dir[1], dir[0]),
+      cursor: 'grab',
+    }))
+    arrows.push(
+      {
+        key: '+y',
+        kind: { axis: 'y' },
+        position: [runCenter[0], runCenter[1] + base, runCenter[2]],
+        rotationY: runYaw,
+        vertical: 'up',
+        cursor: 'ns-resize',
+      },
+      {
+        key: '-y',
+        kind: { axis: 'y' },
+        position: [runCenter[0], runCenter[1] - base, runCenter[2]],
+        rotationY: runYaw,
+        vertical: 'down',
+        cursor: 'ns-resize',
+      },
+    )
+    return arrows
+  }, [displayPipe, runCenter])
+
+  return (
+    <group ref={outerRef}>
+      {gradeNotice && runCenter && (
+        <Html center position={runCenter} style={{ pointerEvents: 'none' }}>
+          <div
+            role="status"
+            className="pointer-events-none w-64 rounded border bg-background p-2 text-xs"
+          >
+            {gradeNotice}
+          </div>
+        </Html>
+      )}
+      {moveGhost?.fittings.map((f) => (
+        <PipeFittingGhost fitting={f} key={`pipe-vghost-fit-${f.id}`} tint={moveGhost.tint} />
+      ))}
+      {moveGhost?.risers.map((r) => (
+        <PipeSegmentGhost key={`pipe-vghost-riser-${r.id}`} pipe={r} tint={moveGhost.tint} />
+      ))}
+      {draggingIndex === null &&
+        !runMoving &&
+        openCluster === null &&
+        (['start', 'end'] as const).map((endpoint) => (
+          <PipeContinuationHandle endpoint={endpoint} key={endpoint} pipe={displayPipe} />
+        ))}
+      {draggingIndex === null &&
+        !runMoving &&
+        displayPipe.path.map((p, i) => (
+          <group key={`pipe-vtx${i}`}>
+            <HandleCube
+              active={openCluster === i}
+              onClick={() => toggleCluster(i)}
+              position={p as Point}
+              rotationY={vertexYaw(displayPipe, i)}
+            />
+            {openCluster === i &&
+              cornerArrows
+                .filter((a) => a.index === i)
+                .map((a) => (
+                  <MoveChevron
+                    cursor={a.cursor}
+                    key={a.key}
+                    onPointerDown={onHandleDown(a.index, a.kind)}
+                    position={a.position}
+                    rotationY={a.rotationY}
+                    vertical={a.vertical}
+                  />
+                ))}
+          </group>
+        ))}
+      {draggingIndex === null && !runMoving && runCenter && (
+        <group>
+          <HandleCube
+            active={openCluster === 'center'}
+            onClick={() => toggleCluster('center')}
+            position={runCenter}
+            rotationY={runCenterYaw}
+          />
+          {openCluster === 'center' &&
+            centerArrows.map((a) => (
+              <MoveChevron
+                cursor={a.cursor}
+                key={a.key}
+                onPointerDown={onRunMoveDown(a.kind)}
+                position={a.position}
+                rotationY={a.rotationY}
+                vertical={a.vertical}
+              />
+            ))}
+        </group>
+      )}
+      {draggingIndex !== null &&
+        displayPipe.path[draggingIndex] &&
+        (() => {
+          // Same pill as the draw tool: signed per-axis deltas from the
+          // drag-start position, dominant axis emphasised.
+          const point = displayPipe.path[draggingIndex]!
+          const origin = dragRef.current?.initialPath[draggingIndex] ?? point
+          const deltas = [point[0] - origin[0], point[1] - origin[1], point[2] - origin[2]]
+          const axes = ['x', 'y', 'z'] as const
+          const primary = axes.reduce((best, axis, i) =>
+            Math.abs(deltas[i]!) > Math.abs(deltas[axes.indexOf(best)]!) ? axis : best,
+          )
+          return (
+            <Html
+              center
+              position={[point[0], point[1] + 0.35, point[2]]}
+              style={{ pointerEvents: 'none', userSelect: 'none' }}
+              zIndexRange={[100, 0]}
+            >
+              <DimensionPill
+                parts={axes.map((axis, i) => ({
+                  key: axis,
+                  prefix: axis.toUpperCase(),
+                  value: deltas[i]!,
+                  signed: true,
+                }))}
+                primary={primary}
+                unit={unit}
+              />
+            </Html>
+          )
+        })()}
+    </group>
+  )
+}
+
+function PipeContinuationHandle({
+  pipe,
+  endpoint,
+}: {
+  pipe: PipeSegmentNode
+  endpoint: PipeEndpoint
+}) {
+  const nodes = useScene((state) => state.nodes)
+  const plan = pipeContinuationHandlePlan(pipe, endpoint, nodes)
+  if (!plan) return null
+  return (
+    <ContinuePlusHandle
+      onActivate={() => {
+        triggerSFX('sfx:item-pick')
+        activatePipeContinuation(pipe, endpoint, plan.fittingId)
+      }}
+      position={plan.position}
+    />
+  )
+}
+
+function getCornerArrows(pipe: PipeSegmentNode): CornerArrow[] {
+  const arrows: CornerArrow[] = []
+  const base = Math.max(pipeRadiusM(pipe) + CENTER_ARROW_GAP, CENTER_ARROW_MIN_OFFSET)
+  const last = pipe.path.length - 1
+  pipe.path.forEach((p, i) => {
+    const tangentXZ = vertexTangentXZ(pipe, i)
+    const verticalTangentY = tangentXZ ? null : vertexTangentY(pipe, i)
+    const t = tangentXZ ?? ([1, 0] as [number, number])
+    const runYaw = Math.atan2(-t[1], t[0])
+    const dirs: { dir: [number, number]; along: boolean }[] = tangentXZ
+      ? [
+          { dir: [t[0], t[1]], along: true },
+          { dir: [-t[0], -t[1]], along: true },
+          { dir: [-t[1], t[0]], along: false },
+          { dir: [t[1], -t[0]], along: false },
+        ]
+      : [
+          { dir: [1, 0], along: false },
+          { dir: [-1, 0], along: false },
+          { dir: [0, 1], along: false },
+          { dir: [0, -1], along: false },
+        ]
+    const inward: [number, number] | null =
+      tangentXZ && i === 0 ? [t[0], t[1]] : tangentXZ && i === last ? [-t[0], -t[1]] : null
+    for (const { dir, along } of dirs) {
+      const [dx, dz] = dir
+      if (inward && dx * inward[0] + dz * inward[1] > 0.999) continue
+      arrows.push({
+        key: `pt${i}-${dx.toFixed(3)}:${dz.toFixed(3)}`,
+        index: i,
+        kind: { axis: 'horizontal', dir: [dx, dz], along },
+        position: [p[0] + dx * base, p[1], p[2] + dz * base],
+        rotationY: Math.atan2(-dz, dx),
+        cursor: 'grab',
+      })
+    }
+    const inwardY =
+      verticalTangentY && i === 0
+        ? verticalTangentY
+        : verticalTangentY && i === last
+          ? -verticalTangentY
+          : null
+    for (const sign of [1, -1] as const) {
+      if (inwardY === sign) continue
+      arrows.push({
+        key: `pt${i}-${sign > 0 ? 'up' : 'down'}`,
+        index: i,
+        kind: { axis: 'y', along: verticalTangentY !== null },
+        position: [p[0], p[1] + sign * base, p[2]],
+        rotationY: runYaw,
+        vertical: sign > 0 ? 'up' : 'down',
+        cursor: 'ns-resize',
+      })
+    }
+  })
+  return arrows
+}
+
+function vertexTangentXZ(pipe: PipeSegmentNode, i: number): [number, number] | null {
+  const path = pipe.path
+  const last = path.length - 1
+  if (last < 1) return null
+  const seg = (a: number, b: number): [number, number] | null => {
+    const dx = path[b]![0] - path[a]![0]
+    const dz = path[b]![2] - path[a]![2]
+    const len = Math.hypot(dx, dz)
+    return len < 1e-6 ? null : [dx / len, dz / len]
+  }
+  if (i === 0) return seg(0, 1)
+  if (i === last) return seg(last - 1, last)
+  const inc = seg(i - 1, i)
+  const out = seg(i, i + 1)
+  if (!inc) return out
+  if (!out) return inc
+  const sx = inc[0] + out[0]
+  const sz = inc[1] + out[1]
+  const len = Math.hypot(sx, sz)
+  return len < 1e-6 ? inc : [sx / len, sz / len]
+}
+
+function vertexTangentY(pipe: PipeSegmentNode, i: number): 1 | -1 | null {
+  const path = pipe.path
+  const last = path.length - 1
+  if (last < 1) return null
+  const seg = (a: number, b: number): 1 | -1 | null => {
+    const dx = path[b]![0] - path[a]![0]
+    const dy = path[b]![1] - path[a]![1]
+    const dz = path[b]![2] - path[a]![2]
+    if (Math.hypot(dx, dz) > 1e-6 || Math.abs(dy) < 1e-6) return null
+    return dy > 0 ? 1 : -1
+  }
+  if (i === 0) return seg(0, 1)
+  if (i === last) return seg(last - 1, last)
+  const inc = seg(i - 1, i)
+  const out = seg(i, i + 1)
+  if (!inc) return out
+  if (!out) return inc
+  return inc === out ? inc : null
+}
+
+function vertexYaw(pipe: PipeSegmentNode, i: number): number {
+  const t = vertexTangentXZ(pipe, i)
+  return t ? Math.atan2(-t[1], t[0]) : 0
+}
+
+function runAxisAndCenter(pipe: PipeSegmentNode): { dir: Point; center: Point } | null {
+  const path = pipe.path
+  if (path.length < 2) return null
+  const a = path[0]!
+  const b = path[path.length - 1]!
+  let dx = b[0] - a[0]
+  let dy = b[1] - a[1]
+  let dz = b[2] - a[2]
+  let len = Math.hypot(dx, dy, dz)
+  if (len < 1e-6) {
+    const c = path[1]!
+    dx = c[0] - a[0]
+    dy = c[1] - a[1]
+    dz = c[2] - a[2]
+    len = Math.hypot(dx, dy, dz)
+    if (len < 1e-6) return null
+  }
+  return {
+    dir: [dx / len, dy / len, dz / len],
+    center: [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2, (a[2] + b[2]) / 2],
+  }
+}
+
+export default PipeSegmentSelectionAffordance

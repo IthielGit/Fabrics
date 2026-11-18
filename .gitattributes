@@ -4,4 +4,5 @@
 baseline/** text=auto eol=lf
 fixtures/** text=auto eol=lf
 packages/pascal/** text=auto eol=lf
-apps/pascal-*/** text=auto eol=lf
+# CSV des métrés : fins de ligne CRLF voulues (Excel) ; gardés octet pour octet, sans conversion.
+baseline/**/*.csv -text
