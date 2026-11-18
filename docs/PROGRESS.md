@@ -54,6 +54,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## Journal
 
 <!-- Format d'une entrée (la plus récente en haut) :
+### 2026-11-18 — M19 · Décisions de l'utilisateur après B5 (plan seulement)
+- **T1 et T2 vérifiés par l'utilisateur** : rapport de vérification, tout VALIDÉ (`docs/phases/M19-fixtures-review.md`) ; statut mis à jour dans `fixtures/T1/spec.json` et `fixtures/T2/spec.json`. Ses recommandations (contrôles des ouvertures, tests T3 à T10, conventions de métré des finitions, dalles et fondations séparées) y sont notées.
+- **Sous-lot B6 décidé** : toitures, escaliers et dalles de Pascal dans les métrés, et toitures / escaliers des anciens plans dans la 3D de Pascal. Plan proposé, en attente du feu vert.
+- **Textes anglais écrits en dur dans Pascal : à traduire** (sous-lot B7). Plan proposé, en attente du feu vert.
+
 ### 2026-11-18 — M19 · B5 Cas difficiles et preuves, gate G2 proposé (test par l'utilisateur)
 - **Cas difficiles** (`src/features/scene/hardCases.test.ts`, 9 tests) : les commandes de Pascal refusent épaisseur nulle et longueur nulle ; un mur sans épaisseur déjà dans la scène compte 0 m³ et est signalé (**nouvel avertissement « épaisseur invalide »**) ; un mur de longueur nulle est retiré par Pascal au chargement (il ne comptait rien ; **nouvel avertissement « longueur nulle »** pour un document hors scène) ; murs superposés signalés avec la longueur commune ; raccord en T sans double comptage ; ouvertures qui dépassent ou se chevauchent (union), porte plus haute que le mur : jamais de surface négative.
 - **Exemples T1 et T2** (`fixtures/T1/spec.json`, `fixtures/T2/spec.json`, calculs à la main **à relire par l'utilisateur**) : studio 6000 × 5000 mm ; séjour + chambre 9000 × 5000 mm. `src/features/scene/precision.test.ts` (15 tests) : métrés par la scène, 2D → 3D (nœuds Pascal aux mêmes cotes), emprise calculée par Pascal, 3D → 2D (mur déplacé avec ses coins, fenêtre élargie). Plus de 30 grandeurs comparées : **aucun écart**.

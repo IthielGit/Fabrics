@@ -1258,7 +1258,9 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 | B2 Édition 3D — **fait en partie le 2026-11-18** (voir la case du lot B), test à la fin de B5 | Murs, dalles, toitures, escaliers, ouvertures en 3D ; jonctions propres ; synchronisation 2D ↔ 3D sur le même objet | `/model opus` |
 | B3 Matériaux — **fait le 2026-11-18**, test à la fin de B5 | Couches de mur, bibliothèque de matériaux, quantités par couche sans double comptage | `/model opus` |
 | B4 Terrain — **fait le 2026-11-18**, test à la fin de B5 | Terrain, limite de propriété, implantation du bâtiment, altitudes des niveaux | `/model opus` |
-| B5 Cas difficiles et preuves — **fait le 2026-11-18**, gate G2 proposé (rapport `docs/phases/M19-report.md`), test par l'utilisateur | Jonctions, collisions, ouvertures, épaisseur nulle ou invalide ; exemples T1 / T2 ; tests 2D → 3D et 3D → 2D ; rapport de précision ; gate G2 | `/model opus` |
+| B5 Cas difficiles et preuves — **fait le 2026-11-18**, gate G2 proposé (rapport `docs/phases/M19-report.md`), test par l'utilisateur ; T1 / T2 vérifiés par l'utilisateur (`docs/phases/M19-fixtures-review.md`) | Jonctions, collisions, ouvertures, épaisseur nulle ou invalide ; exemples T1 / T2 ; tests 2D → 3D et 3D → 2D ; rapport de précision ; gate G2 | `/model opus` |
+| B6 Toitures, escaliers, dalles de Pascal — **ajouté le 2026-11-18 (décision de l'utilisateur), plan à valider** | Toitures, escaliers et dalles natifs de Pascal dans les métrés ; toitures et escaliers des anciens plans convertis en nœuds Pascal (visibles et modifiables en 3D) | `/model opus` |
+| B7 Textes de Pascal en français — **ajouté le 2026-11-18 (décision de l'utilisateur), plan à valider** | Les ≈ 660 textes anglais écrits en dur dans le code de Pascal passés par sa traduction, en français (noms par défaut « Mur 1 »…) | `/model sonnet` |
 
 ### Lot A — Interface et prise en main de Pascal (D80)
 

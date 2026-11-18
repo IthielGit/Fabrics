@@ -1,6 +1,6 @@
 {
   "id": "T2",
-  "status": "Calcul à la main rédigé par Claude le 2026-11-18 (M19 B5), à relire par l'utilisateur. Séjour et une chambre, plain-pied, une cloison.",
+  "status": "Calcul à la main rédigé par Claude le 2026-11-18 (M19 B5), vérifié par l'utilisateur le 2026-11-18 (docs/phases/M19-fixtures-review.md). Séjour et une chambre, plain-pied, une cloison.",
   "units": { "length": "mm", "area": "m² (2 décimales)", "volume": "m³ (3 décimales)" },
   "conventions": {
     "origin": "coin extérieur nord-ouest = (0, 0) ; x vers l'est, y vers le bas de l'écran (axe de Fabrics)",

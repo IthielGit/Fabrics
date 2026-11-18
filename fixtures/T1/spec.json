@@ -1,6 +1,6 @@
 {
   "id": "T1",
-  "status": "Calcul à la main rédigé par Claude le 2026-11-18 (M19 B5), à relire par l'utilisateur. Studio d'une pièce, plain-pied.",
+  "status": "Calcul à la main rédigé par Claude le 2026-11-18 (M19 B5), vérifié par l'utilisateur le 2026-11-18 (docs/phases/M19-fixtures-review.md). Studio d'une pièce, plain-pied.",
   "units": { "length": "mm", "area": "m² (2 décimales)", "volume": "m³ (3 décimales)" },
   "conventions": {
     "origin": "coin extérieur nord-ouest = (0, 0) ; x vers l'est, y vers le bas de l'écran (axe de Fabrics)",
