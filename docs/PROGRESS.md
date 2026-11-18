@@ -60,6 +60,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
+### 2026-11-18 — M17 · Relecture des fixtures HOUSE-01, HOUSE-02, EDGE-01
+- Fait : rapport de relecture de l'utilisateur enregistré (`docs/phases/M17-fixtures-review.md`). HOUSE-01 et HOUSE-02 : calculs confirmés, aucune erreur arithmétique. EDGE-01 : sept cas analysés, **aucun test exécuté** (à faire en M18).
+- Décisions à prendre : rejet ou décalage d'une baie hors mur ; déduction des chevauchements de baies ; altitudes des dalles pour éviter le double comptage murs + dalles.
+
 ### 2026-11-18 — M17 · CI GitHub verte sur Linux
 - Fait : premier passage de la CI en échec (929 puis 23 échecs). Causes : paquets de Pascal non compilés (étape turbo build ajoutée) ; tests IFC qui lisent des fichiers d'exemple absents de Git (6 fichiers sautés en CI, uniquement quand les fichiers manquent). Diagnostic des échecs ajouté dans `scripts/test-pascal.mjs`.
 - Résultat : `check:all` vert sur Linux (run `a89a7f0`). Pas de fichier de référence Linux : tout échec est bloquant.

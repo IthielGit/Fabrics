@@ -76,7 +76,7 @@ de 10 minutes d'une commande dans Claude Code ; elle reste la commande de réfé
   identique au dossier d'origine, à la demande de l'utilisateur) : **9 tâches sur 9 réussies** en 5 min 11 s
   (`core`, `viewer`, `nodes`, `mcp`, `ifc-converter`, `geometry-script`, `cli`, et les deux applications
   Next.js). Les fichiers produits (`dist/`, `.next/`) ne sont pas versionnés.
-- Relecture par l'utilisateur des calculs à la main de HOUSE-01, HOUSE-02 et EDGE-01.
+- ~~Relecture par l'utilisateur des calculs à la main de HOUSE-01, HOUSE-02 et EDGE-01.~~ **Fait le 2026-11-18** : HOUSE-01 et HOUSE-02 confirmés ; EDGE-01 non testé (`docs/phases/M17-fixtures-review.md`). Trois décisions restent à prendre avant M18 (même fichier, § « Décisions à prendre »).
 - ~~Premier passage de la CI GitHub (Linux) : relever `known-failures-linux.json`.~~ **Fait** (§ 8) :
   CI verte sur Linux ; pas de fichier de référence Linux, donc tout échec y est bloquant.
 
