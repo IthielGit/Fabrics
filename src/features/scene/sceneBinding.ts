@@ -117,6 +117,7 @@ export class SceneBinding {
   private scene: PlanScene | null = null
   private pending: Set<string> | null = null
   private pendingFromPeer = false
+  private destroyed = false
   private readonly onAfterTransaction: (transaction: Y.Transaction) => void
   private readonly onStackChange: () => void
 
@@ -156,8 +157,11 @@ export class SceneBinding {
     const local = this.host.getDocument()
     if (!local) return
     if (isYSceneEmpty(this.ydoc)) {
+      // La scène gardée avec le projet n'est reprise que si elle correspond exactement à ce que
+      // l'éditeur affiche (sinon elle est en retard : on repart de l'affichage).
       const stored = this.host.getScene?.()
-      const scene = stored ? settleScene(stored) : planToScene(local)
+      const settled = stored ? settleScene(stored) : null
+      const scene = settled && deepEqual(sceneToFabricsView(settled), local) ? settled : planToScene(local)
       writeScene(this.ydoc, scene, SCENE_SEED_ORIGIN)
       this.adopt(scene, local, false)
     } else {
@@ -218,6 +222,8 @@ export class SceneBinding {
   }
 
   destroy(): void {
+    if (this.destroyed) return
+    this.destroyed = true
     this.ydoc.off('afterTransaction', this.onAfterTransaction)
     this.undoManager.destroy()
     this.synced = null

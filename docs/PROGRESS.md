@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M18 · lot D, enregistrement de la scène, versions, duplication, script de conversion de la base (18/11)
-- **Prochaine tâche :** M18 · lot E, collaboration et commentaires sur la scène Pascal
+- **Dernière tâche terminée :** M18 · lot E, collaboration et commentaires sur la scène Pascal (18/11)
+- **Prochaine tâche :** M18 · lot F, métrés / cotes / repères sur la scène, corrections EDGE-01, gate G1
 - **À la mise en ligne de M18 (accord de l'utilisateur) :** sauvegarde `supabase/m18-backup.sql`, puis `npm run migrate:plans` (essai à blanc) et `-- --apply` (`docs/05-INSTALLATION.md`) ; commande de build de Cloudflare Pages à changer (Bun + `build:pascal`)
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -42,7 +42,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
-| M18 Modèle BIM unifié (G1) | en cours (lots A à D faits) | |
+| M18 Modèle BIM unifié (G1) | en cours (lots A à E faits) | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
@@ -60,6 +60,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M18 · Lot E : collaboration et commentaires sur la scène Pascal
+- Fait : `useCollaboration.ts` : un projet Plan partage sa scène Pascal (`SceneBinding` sur le `Y.Doc` de la salle, clés `sceneMeta` / `sceneNodes`, distinctes de l'ancien format) ; une fois synchronisée, elle remplace la scène locale de l'éditeur (`setSharedPlanBinding`) : un seul historique ; à la fin de la collaboration, retour à une scène locale. Projets Visuel : inchangés (`CollabBinding`).
+- Commentaires (point 5 A) : `src/features/scene/commentAnchors.ts`, `src/features/comments/commentAnchoring.ts` : un commentaire posé sur un élément d'un plan est enregistré sur le nœud qui le porte (premier côté d'un mur à plusieurs côtés), relu sur l'élément affiché ; les commentaires d'avant M18 restent valables.
+- Correctif trouvé par les tests : au retour en scène locale, la scène gardée avec le projet n'est reprise que si elle correspond exactement à l'affichage (sinon le dernier geste aurait été perdu).
+- Preuves : `commentAnchors.test.ts` (ancres, anciens commentaires, épingle qui suit son mur déplacé par un autre éditeur), `editorStore.scene.test.ts` (geste reçu par l'autre personne, annuler ne défait que ses gestes, retour en local sans perte) ; 3063 tests Fabrics OK.
+- À vérifier dans deux navigateurs (serveur temps réel local) à la fin de M18.
+- Commit : feat(m18): collaboration et commentaires sur la scène Pascal (lot E)
 
 ### 2026-11-18 — M18 · Lot D : enregistrement de la scène, versions, duplication
 - Fait : `src/features/scene/storedScene.ts` (format enregistré `{ format: 'pascal-scene', version: 5, sceneFormat, scene }`) ; `Project.scene` (scène du projet ouvert, tenue à jour par la liaison) ; lecture : `migrateProject` / `migrateDocument` reconnaissent les deux formats (anciens plans, versions, liens de partage) ; écriture : `toStoredProject` dans `LocalRepository`, `ResilientRepository` et `projectToRow` (Supabase) : un plan n'est enregistré que par sa scène ; suppression d'images : les images d'un plan en scène sont protégées (requête sur le document entier).

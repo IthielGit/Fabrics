@@ -1,6 +1,7 @@
 // Commentaires ancrés (M16) : lecture des lignes de `project_comments`, fils de discussion, position des
 // épingles. Fonctions pures, testées. Voir docs/02-ARCHITECTURE.md, « Commentaires ancrés (M16) ».
 
+import { commentElementOf } from './commentAnchoring'
 import { elementBounds } from '../export/bounds'
 import type { CanvasElement } from '../../types/document'
 
@@ -52,7 +53,8 @@ export function rowToComment(row: CommentRow): Comment {
     authorId: row.author_id,
     parentId: row.parent_id,
     levelId: row.level_id,
-    elementId: row.element_id,
+    // M18 : ancre sur un nœud de la scène Pascal → élément affiché par l'éditeur.
+    elementId: row.element_id === null ? null : commentElementOf(row.element_id),
     x: row.x,
     y: row.y,
     body: row.body,

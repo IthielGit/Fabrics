@@ -1208,6 +1208,9 @@ HOUSE-01, HOUSE-02 et EDGE-01 vérifiés par la scène.
 **Lot D (enregistrement, versions, duplication) fait le 2026-11-18** : un plan est enregistré par sa
 scène (format `pascal-scene`, version 5), localement et dans Supabase ; script `npm run migrate:plans`
 (essai à blanc, sauvegarde exigée, métrés comparés) prêt, **à lancer à la mise en ligne de M18**.
+**Lot E (collaboration et commentaires) fait le 2026-11-18** : en collaboration, un plan partage sa scène
+(`SceneBinding` sur la salle, seul historique) ; commentaires ancrés sur les nœuds (`wall_<id>__0` pour un
+mur à plusieurs côtés), anciens commentaires gardés.
 
 - [x] La scène Pascal (`@pascal-app/core`) devient le document des projets Plan, enregistré dans Supabase
       (lots C et D, 2026-11-18 ; conversion des plans de la base : à la mise en ligne de M18)
@@ -1216,7 +1219,8 @@ scène (format `pascal-scene`, version 5), localement et dans Supabase ; script 
       (lot B, 2026-11-18 ; migration de la base elle-même : lot D)
 - [x] Identifiants stables ; événement `ModelChanged` ; un seul historique annuler / rétablir
       (lot C, 2026-11-18 ; les projets Visuel gardent leur historique local, sans scène)
-- [ ] Collaboration Yjs, historique de versions et commentaires passés sur les nœuds Pascal
+- [x] Collaboration Yjs, historique de versions et commentaires passés sur les nœuds Pascal
+      (lots D et E, 2026-11-18)
 - [ ] Métrés, cotes Client / Exécution et repères `M01`, `P01`, `F01` branchés sur la scène Pascal
 - [x] Sauvegarde et restauration ; projets dupliqués (lot D, 2026-11-18)
 

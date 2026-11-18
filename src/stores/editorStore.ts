@@ -1,5 +1,7 @@
 import * as Y from 'yjs'
 import { create } from 'zustand'
+import { setCommentAnchorResolver } from '../features/comments/commentAnchoring'
+import { anchorOfElement } from '../features/scene/commentAnchors'
 import { SceneBinding } from '../features/scene/sceneBinding'
 import type { DimensioningMode } from '../features/dimensioning/types'
 import type { MetresVersion } from '../features/measurements/tables'
@@ -430,6 +432,23 @@ export function getPlanBinding(): SceneBinding | null {
   return planBinding
 }
 
+/** Rouvre la scène locale du projet ouvert (réglée par le store). */
+let reopenLocalPlanBinding: (() => void) | null = null
+
+/**
+ * Collaboration (M18, lot E) : la scène du projet Plan ouvert devient celle de la salle partagée
+ * (`binding`, déjà démarrée), avec son historique ; `null` : retour à une scène locale (fin de la
+ * collaboration). Un seul historique à la fois (ADR 0005).
+ */
+export function setSharedPlanBinding(binding: SceneBinding | null): void {
+  if (binding) {
+    if (planBinding && planBinding !== binding) planBinding.destroy()
+    planBinding = binding
+  } else {
+    reopenLocalPlanBinding?.()
+  }
+}
+
 /** Nombre d'étapes qu'« annuler » peut défaire : historique de la scène (Plan) ou local (Visuel). */
 export function undoDepth(): number {
   return planBinding ? planBinding.undoDepth() : useEditorStore.getState().history.past.length
@@ -488,6 +507,10 @@ export const useEditorStore = create<EditorState>()((set, get) => {
   function openPlanBinding() {
     planBinding?.destroy()
     planBinding = null
+    // Commentaires d'un plan : ancrés sur les nœuds de sa scène (M18, lot E, point 5 A).
+    setCommentAnchorResolver(
+      get().project?.kind === 'plan' ? (elementId) => anchorOfElement(get().project?.scene, elementId) : null,
+    )
     if (get().project?.kind !== 'plan') return
     const binding = new SceneBinding(new Y.Doc(), {
       getDocument: () => get().project?.document ?? null,
@@ -503,6 +526,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     planBinding = binding
     binding.start()
   }
+  reopenLocalPlanBinding = openPlanBinding
 
   return {
     project: null,
@@ -566,6 +590,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     closeProject: () => {
       planBinding?.destroy()
       planBinding = null
+      setCommentAnchorResolver(null)
       liveBase = null
       set({
         project: null,

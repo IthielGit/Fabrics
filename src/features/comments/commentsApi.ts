@@ -3,6 +3,7 @@
 // « M16 ») ; ici on envoie les demandes.
 
 import { supabase } from '../../lib/supabase'
+import { commentAnchorOf } from './commentAnchoring'
 import { COMMENT_COLUMNS, rowToComment, type Comment, type CommentRow } from './commentsLogic'
 
 function client() {
@@ -44,7 +45,8 @@ export async function createComment(comment: NewComment): Promise<Comment> {
     .insert({
       project_id: comment.projectId,
       level_id: comment.levelId,
-      element_id: comment.elementId,
+      // M18 : projet Plan → nœud de la scène Pascal qui porte l'élément.
+      element_id: comment.elementId === null ? null : commentAnchorOf(comment.elementId),
       x: comment.x,
       y: comment.y,
       body: comment.body,
