@@ -29,3 +29,6 @@ tools/ifc/.venv/
 
 # IFC d'exemple de Pascal : tests locaux seulement (README de Pascal ; 01-duplex.ifc a des conditions contradictoires)
 packages/pascal/apps/ifc-converter/public/test-ifc-files/*.ifc
+
+# Cache de Turborepo (construction des paquets de Pascal) : généré automatiquement
+.turbo/
