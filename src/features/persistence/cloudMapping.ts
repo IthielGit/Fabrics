@@ -1,4 +1,5 @@
 import type { CanvasElement, Project } from '../../types/document'
+import { toStoredDocument } from '../scene/storedScene'
 import type { StoredProject } from '../documents/migrations'
 import { collectAssetIds } from './collectAssetIds'
 import type { ProjectSummary } from './types'
@@ -47,7 +48,8 @@ export function projectToRow(project: Project) {
     id: project.id,
     name: project.name,
     kind: project.kind,
-    document: project.document,
+    // Projet Plan : la scène Pascal (M18) ; projet Visuel : son document.
+    document: toStoredDocument(project),
     thumbnail_path: project.thumbnail ?? null,
     created_at: project.createdAt,
   }
@@ -64,11 +66,12 @@ export function assetPath(userId: string, assetId: string): string {
  */
 export function unusedAssetIds(
   removedElements: CanvasElement[],
-  remainingProjects: { elements: CanvasElement[] }[],
+  remainingProjects: Parameters<typeof collectAssetIds>[0][],
 ): string[] {
   const candidates = collectAssetIds({ elements: removedElements })
   for (const other of remainingProjects) {
-    for (const assetId of collectAssetIds({ elements: other.elements ?? [] })) {
+    // Document Fabrics ou scène enregistrée (M18) : les images des deux formats comptent.
+    for (const assetId of collectAssetIds('elements' in other ? { elements: other.elements ?? [] } : other)) {
       candidates.delete(assetId)
     }
   }

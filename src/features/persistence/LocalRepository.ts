@@ -1,5 +1,5 @@
 import { del, delMany, get, getMany, keys, set, setMany } from 'idb-keyval'
-import { migrateProject, type StoredProject } from '../documents/migrations'
+import { migrateProject, toStoredProject, type StoredProject } from '../documents/migrations'
 import type { Project } from '../../types/document'
 import { collectAssetIds } from './collectAssetIds'
 import type { ProjectRepository, ProjectSummary } from './types'
@@ -13,7 +13,7 @@ const metaKey = (id: string) => `meta:${id}`
 const assetKey = (id: string) => `asset:${id}`
 
 function toSummary(project: Project): ProjectSummary {
-  const { document: _document, ...summary } = project
+  const { document: _document, scene: _scene, ...summary } = project
   return summary
 }
 
@@ -39,7 +39,8 @@ export class LocalRepository implements ProjectRepository {
 
   async save(project: Project): Promise<void> {
     await setMany([
-      [projectKey(project.id), project],
+      // Projet Plan : enregistré par sa scène (M18).
+      [projectKey(project.id), toStoredProject(project)],
       [metaKey(project.id), toSummary(project)],
     ])
   }

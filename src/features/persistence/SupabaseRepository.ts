@@ -1,6 +1,6 @@
 import type { SupabaseClient } from '@supabase/supabase-js'
-import type { CanvasElement, Project } from '../../types/document'
-import { migrateProject } from '../documents/migrations'
+import type { Project } from '../../types/document'
+import { migrateProject, type StoredProject } from '../documents/migrations'
 import {
   SUMMARY_COLUMNS,
   assetPath,
@@ -80,14 +80,15 @@ export class SupabaseRepository implements ProjectRepository {
     // Une image n'est supprimée que si plus aucun projet restant ne l'utilise.
     const { data: others, error: othersError } = await this.client
       .from('projects')
-      .select('elements:document->elements')
+      // Document entier : un plan enregistré en scène (M18) n'a pas de liste `elements`.
+      .select('document')
       .eq('owner_id', this.userId)
-      .overrideTypes<{ elements: CanvasElement[] | null }[], { merge: false }>()
+      .overrideTypes<{ document: StoredProject['document'] | null }[], { merge: false }>()
     if (othersError) throw othersError
 
     const unused = unusedAssetIds(
       project.document.elements,
-      others.map((row) => ({ elements: row.elements ?? [] })),
+      others.map((row) => row.document ?? { elements: [] }),
     )
     if (unused.length === 0) return
     const { error: removeError } = await this.client.storage

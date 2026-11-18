@@ -5,12 +5,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M18 · lot C, la scène Pascal devient le document de l'éditeur (18/11)
-- **Prochaine tâche :** M18 · lot D, enregistrement de la scène, versions, duplication, migration de la base
+- **Dernière tâche terminée :** M18 · lot D, enregistrement de la scène, versions, duplication, script de conversion de la base (18/11)
+- **Prochaine tâche :** M18 · lot E, collaboration et commentaires sur la scène Pascal
+- **À la mise en ligne de M18 (accord de l'utilisateur) :** sauvegarde `supabase/m18-backup.sql`, puis `npm run migrate:plans` (essai à blanc) et `-- --apply` (`docs/05-INSTALLATION.md`) ; commande de build de Cloudflare Pages à changer (Bun + `build:pascal`)
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
-- **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
+- **Problèmes connus :** sur une machine chargée, quelques tests de Pascal dépassent leur délai de 5 s ou Bun s'arrête sans résultat (vu le 2026-11-18, passent seuls) ; le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
 
 ## Jalons
 
@@ -41,7 +42,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
-| M18 Modèle BIM unifié (G1) | en cours (lots A, B et C faits) | |
+| M18 Modèle BIM unifié (G1) | en cours (lots A à D faits) | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
@@ -59,6 +60,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M18 · Lot D : enregistrement de la scène, versions, duplication
+- Fait : `src/features/scene/storedScene.ts` (format enregistré `{ format: 'pascal-scene', version: 5, sceneFormat, scene }`) ; `Project.scene` (scène du projet ouvert, tenue à jour par la liaison) ; lecture : `migrateProject` / `migrateDocument` reconnaissent les deux formats (anciens plans, versions, liens de partage) ; écriture : `toStoredProject` dans `LocalRepository`, `ResilientRepository` et `projectToRow` (Supabase) : un plan n'est enregistré que par sa scène ; suppression d'images : les images d'un plan en scène sont protégées (requête sur le document entier).
+- Version 5 : une ancienne version de Fabrics refuse proprement un plan converti (« version plus récente »), sans l'écraser.
+- Conversion de la base (point 3 B) : `src/features/scene/migrate/bulkMigration.ts` (pure, testée : métrés comparés avant / après, projet laissé intact au moindre écart), `scripts/migrate-plans-m18.ts` (`npm run migrate:plans`, essai à blanc par défaut, `--apply` exige les tables de sauvegarde de `supabase/m18-backup.sql` ; écrit seulement si le projet n'a pas changé depuis sa lecture) ; vérifié dans Node sur la grande maison. **Non lancé** : à faire à la mise en ligne de M18, avec l'accord de l'utilisateur. Les versions déjà enregistrées gardent leur ancien format (lues telles quelles).
+- Preuves : `storedScene.test.ts` (plan enregistré par sa scène, rouvert avec les mêmes métrés, ancien plan rouvert puis réenregistré, duplication, versions des deux formats, refus d'une version plus récente) ; `bulkMigration.test.ts` (une pièce tracée sur une partie d'un espace est refusée et signalée).
+- Vérification : build, lint, 3056 tests Fabrics OK. Tests de Pascal : un premier passage a planté (`nodes` arrêté sans résultat), le second a donné 3 tests du cœur au-delà de 5 s (`architecture.test.ts`, `cut-intent.test.ts`, `registry-isolation.test.ts`) ; relancés seuls : 15 réussis, 0 échec. Machine chargée, aucun fichier de Pascal modifié.
+- Commit : feat(m18): enregistrement des plans en scène Pascal (lot D)
 
 ### 2026-11-18 — M18 · Lot C : la scène Pascal devient le document de l'éditeur
 - Fait : `src/features/scene/yScene.ts` (scène dans un `Y.Doc`, une entrée par nœud et par propriété ; fonctions partagées avec `collab/yDocument.ts`) ; `sceneBinding.ts` (`SceneBinding` : chaque geste de l'éditeur → scène chargée par Pascal → seuls les nœuds modifiés écrits ; vue recalculée en gardant les objets inchangés) ; `modelEvents.ts` (« modèle changé ») ; `editorStore.ts` : un projet Plan ouvre sa scène dans un `Y.Doc` local, son historique (`Y.UndoManager`) remplace l'historique local (ADR 0005), les appuis rapides sur les flèches restent une seule étape ; `EditorHeader.tsx` (boutons annuler / rétablir).

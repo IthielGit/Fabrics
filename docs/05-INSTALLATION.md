@@ -96,6 +96,24 @@ tools/ifc/.venv/Scripts/python.exe -m pip install -r tools/ifc/requirements.txt
 tools/ifc/.venv/Scripts/python.exe -I tools/ifc/validate.py baseline/fabrics/example/export.ifc
 ```
 
+## Conversion des plans de la base (M18, une seule fois, à la mise en ligne de M18)
+
+À partir de M18, un projet Plan est enregistré sous forme de scène Pascal. Les plans déjà dans
+Supabase sont convertis une fois par un script, **seulement quand M18 est mis en ligne** (l'ancienne
+version de Fabrics refuserait d'ouvrir un plan converti). Claude te demandera ton accord avant.
+
+1. Dans Supabase (Project Settings → API), copie la clé **service_role** et ajoute-la à `.env.local` :
+   `SUPABASE_SERVICE_ROLE_KEY=...` (ce fichier n'est jamais envoyé sur GitHub ; ne donne cette clé à
+   personne, elle ouvre toute la base).
+2. Dans Supabase → SQL Editor, colle et lance `supabase/m18-backup.sql` : il copie les tables
+   `projects` et `project_versions`. Les deux nombres de chaque ligne du résultat doivent être égaux.
+3. Essai à blanc (n'écrit rien) dans le terminal de VS Code : `npm run migrate:plans`
+   Il affiche le nombre de plans prêts et de plans « laissés intacts et signalés », et écrit un
+   rapport dans `scripts/.reports/`.
+4. Seulement après accord : `npm run migrate:plans -- --apply`
+5. Vérifier : ouvrir deux ou trois plans dans le navigateur et comparer leurs métrés à ceux d'avant.
+6. Retirer la clé `SUPABASE_SERVICE_ROLE_KEY` de `.env.local` une fois la conversion terminée.
+
 ## Problèmes fréquents
 
 | Symptôme | Solution |
