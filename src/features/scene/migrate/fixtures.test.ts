@@ -9,7 +9,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { computeBuildingMeasurements } from '../../measurements/measurements'
-import { metresWarnings } from '../../measurements/warnings'
+import { isBlockingWarning, metresWarnings } from '../../measurements/warnings'
 import { parseLength } from '../../units/format'
 import type { CanvasElement, FabricsDocument, Level } from '../../../types/document'
 import { settleScene } from '../settle'
@@ -199,21 +199,35 @@ describe('EDGE-01 : jamais un résultat faux en silence', () => {
     const warnings = metresWarnings(doc, computeBuildingMeasurements(doc))
     expect(warnings).toContainEqual(expect.objectContaining({ kind: 'openingOutside', openingId: 'o' }))
   })
-  it.todo('window-off-wall : aucune surface déduite pour la fenêtre rejetée (aujourd’hui 1,62 m² déduits)')
+  it('window-off-wall : aucune surface déduite pour la fenêtre qui dépasse', () => {
+    const doc = viaScene(planDocument(levels, [wall(), win('o', 300)]))
+    const [w] = computeBuildingMeasurements(doc).levels[0].measurements.walls
+    expect(w.openingsArea).toBe(0)
+    expect(w.netArea).toBe(w.wallArea)
+  })
 
   it('overlapping-openings : le chevauchement est signalé', () => {
     const doc = viaScene(planDocument(levels, [wall(), win('a', 1600), win('b', 2400)]))
     const warnings = metresWarnings(doc, computeBuildingMeasurements(doc))
     expect(warnings).toContainEqual(expect.objectContaining({ kind: 'openingOverlap', openingIds: ['a', 'b'] }))
   })
-  it.todo('overlapping-openings : surface déduite = union 2,70 m² (aujourd’hui 3,24 m²)')
+  it('overlapping-openings : surface déduite = union 2,70 m² (et non 3,24)', () => {
+    const doc = viaScene(planDocument(levels, [wall(), win('a', 1600), win('b', 2400)]))
+    const [w] = computeBuildingMeasurements(doc).levels[0].measurements.walls
+    expect(w.openingsArea).toBeCloseTo(2_700_000, 3)
+  })
 
   it('zero-height-wall : surface nulle, le mur est gardé tel quel', () => {
     const doc = viaScene(planDocument(levels, [wall(0)]))
     const [w] = computeBuildingMeasurements(doc).levels[0].measurements.walls
     expect(w).toMatchObject({ wallArea: 0, netArea: 0, height: 0 })
   })
-  it.todo('zero-height-wall : avertissement « hauteur nulle » (aujourd’hui aucun)')
+  it('zero-height-wall : avertissement « hauteur nulle », sans bloquer', () => {
+    const doc = viaScene(planDocument(levels, [wall(0)]))
+    const warnings = metresWarnings(doc, computeBuildingMeasurements(doc))
+    expect(warnings).toContainEqual(expect.objectContaining({ kind: 'wallZeroHeight', wallId: 'w' }))
+    expect(isBlockingWarning(warnings.find((x) => x.kind === 'wallZeroHeight')!)).toBe(false)
+  })
 
   it('mixed-units : « 3,5 m », « 3500 » et « 350 cm » donnent 3500 mm', () => {
     expect(['3,5 m', '3500', '350 cm'].map(parseLength)).toEqual([3500, 3500, 3500])

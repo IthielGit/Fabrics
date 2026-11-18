@@ -1211,6 +1211,9 @@ scène (format `pascal-scene`, version 5), localement et dans Supabase ; script 
 **Lot E (collaboration et commentaires) fait le 2026-11-18** : en collaboration, un plan partage sa scène
 (`SceneBinding` sur la salle, seul historique) ; commentaires ancrés sur les nœuds (`wall_<id>__0` pour un
 mur à plusieurs côtés), anciens commentaires gardés.
+**Lot F (métrés et gate G1) fait le 2026-11-18** : métrés, cotes Client / Exécution et repères lus à travers la
+scène (baseline M17 identique) ; EDGE-01 corrigé (fenêtre hors du mur non déduite, union des ouvertures
+qui se chevauchent, avertissement « hauteur nulle ») ; rapport `docs/phases/M18-report.md`.
 
 - [x] La scène Pascal (`@pascal-app/core`) devient le document des projets Plan, enregistré dans Supabase
       (lots C et D, 2026-11-18 ; conversion des plans de la base : à la mise en ligne de M18)
@@ -1221,7 +1224,8 @@ mur à plusieurs côtés), anciens commentaires gardés.
       (lot C, 2026-11-18 ; les projets Visuel gardent leur historique local, sans scène)
 - [x] Collaboration Yjs, historique de versions et commentaires passés sur les nœuds Pascal
       (lots D et E, 2026-11-18)
-- [ ] Métrés, cotes Client / Exécution et repères `M01`, `P01`, `F01` branchés sur la scène Pascal
+- [x] Métrés, cotes Client / Exécution et repères `M01`, `P01`, `F01` branchés sur la scène Pascal
+      (lot F, 2026-11-18 ; baseline M17 identique à travers la scène ; EDGE-01 corrigé)
 - [x] Sauvegarde et restauration ; projets dupliqués (lot D, 2026-11-18)
 
 **Critères d'acceptation (G1)**

@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M18 · lot E, collaboration et commentaires sur la scène Pascal (18/11)
-- **Prochaine tâche :** M18 · lot F, métrés / cotes / repères sur la scène, corrections EDGE-01, gate G1
+- **Dernière tâche terminée :** M18 · lot F, métrés sur la scène et corrections EDGE-01 (18/11)
+- **Prochaine tâche :** décision de l'utilisateur sur le gate G1 (rapport `docs/phases/M18-report.md`), puis mise en ligne de M18
 - **À la mise en ligne de M18 (accord de l'utilisateur) :** sauvegarde `supabase/m18-backup.sql`, puis `npm run migrate:plans` (essai à blanc) et `-- --apply` (`docs/05-INSTALLATION.md`) ; commande de build de Cloudflare Pages à changer (Bun + `build:pascal`)
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -60,6 +60,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M18 · Lot F : métrés sur la scène et corrections EDGE-01
+- Fait : les trois écarts d'EDGE-01 décidés par l'utilisateur sont corrigés dans les métrés. (1) Une ouverture qui dépasse de son mur n'est plus déduite (`isOpeningOutside`, `geometry/openings.ts`, partagé avec l'avertissement existant ; sa surface affichée est 0). (2) Les ouvertures d'un même côté de mur qui se chevauchent sont déduites une seule fois : surface de l'union de leurs rectangles dans l'élévation (`unionArea`, `measurements.ts`). (3) Un mur de hauteur nulle déclenche l'avertissement `wallZeroHeight` (« hauteur nulle », non bloquant) avec texte et conseil français.
+- Écarts voulus : seuls les plans où une ouverture dépasse de son mur ou en chevauche une autre changent de métré (jamais ceux de la baseline M17 : référence inchangée, aucun fichier de référence modifié). Deux anciens tests avaient des ouvertures qui se chevauchaient de 50 mm sans le vouloir : elles sont écartées, valeurs attendues inchangées.
+- Preuves : les trois `it.todo` d'EDGE-01 deviennent des tests (`fixtures.test.ts`) ; 4 tests de `measurements.test.ts` (dépassement, union, recouvrement en hauteur seule, surface jamais négative). Baseline M17 (28 tests : métrés, tableaux Client / Exécution, CSV, XLSX, IFC, SVG, repères `M01` / `P01` / `F01`) identique à travers la scène.
+- Rapport : `docs/phases/M18-report.md` (critères G1, décisions, limites, mise en ligne).
+- Commit : feat(m18): métrés sur la scène et corrections EDGE-01 (lot F)
 
 ### 2026-11-18 — M18 · Lot E : collaboration et commentaires sur la scène Pascal
 - Fait : `useCollaboration.ts` : un projet Plan partage sa scène Pascal (`SceneBinding` sur le `Y.Doc` de la salle, clés `sceneMeta` / `sceneNodes`, distinctes de l'ancien format) ; une fois synchronisée, elle remplace la scène locale de l'éditeur (`setSharedPlanBinding`) : un seul historique ; à la fin de la collaboration, retour à une scène locale. Projets Visuel : inchangés (`CollabBinding`).

@@ -513,6 +513,7 @@ export const fr = {
         noLevel: 'Supprimez cet élément et recréez-le sur le niveau voulu.',
         openingOutside:
           'Glissez l’ouverture le long de son mur, ou réduisez sa largeur dans l’onglet Propriétés.',
+        wallZeroHeight: 'Indiquez la hauteur du mur dans l’onglet Propriétés : sans hauteur, sa surface et son volume sont nuls.',
         openingOverlap: 'Déplacez l’une des deux ouvertures le long du mur pour qu’elles ne se touchent plus.',
         wallGap: 'Cliquez le bouton de correction : le mur est prolongé jusqu’à l’autre mur (annulable).',
         wallOverlap:
@@ -531,6 +532,7 @@ export const fr = {
         `${name} : ${area} dépassent au-delà ${wallRef ? `du mur ${wallRef}` : 'des murs'}.`,
       noLevel: (type: string, name: string) => `${type} « ${name} » n’a pas de niveau : il n’est pas compté.`,
       openingOutside: (ref: string, wallRef: string) => `${ref} dépasse de son mur ${wallRef}.`,
+      wallZeroHeight: (ref: string) => `Le mur ${ref} a une hauteur nulle : sa surface est comptée à 0 m².`,
       openingOverlap: (first: string, second: string) => `${first} et ${second} se chevauchent sur le même mur.`,
       wallGap: (ref: string, otherRef: string, gap: string) =>
         `Le mur ${ref} ne touche pas le mur ${otherRef} (écart de ${gap}) : les angles et les longueurs seront faussés.`,

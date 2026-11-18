@@ -59,6 +59,7 @@ Un écart = gate **FAIL**, sauf écart voulu et documenté (règle du roadmap).
 |---|---|
 | Mur 4,00 × 2,50 m + porte 0,90 × 2,10 → 10,00 m² brut, 8,11 m² net | Auto : `measurements/measurements.test.ts` |
 | Ouverture bornée au mur, sans chevauchement | Auto : `geometry/openings.test.ts`, `geometry/openingPlacement.test.ts` |
+| Ouverture hors du mur non déduite ; chevauchement déduit une fois ; mur de hauteur nulle signalé (M18) | Auto : `measurements/measurements.test.ts`, `scene/migrate/fixtures.test.ts` |
 | Projet d'avant M5 ouvert sans perte | Auto : `documents/migrations.test.ts` |
 
 ### M6 — Niveaux

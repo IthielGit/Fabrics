@@ -1,15 +1,12 @@
 import type { CanvasElement, FabricsDocument, OpeningElement, RoomElement, WallElement } from '../../types/document'
 import { elementsOfLevel, isLevelIndependent } from '../documents/levels'
 import { overlappingRoomIds } from '../geometry/roomOverlap'
-import { openingInterval, wallSegment } from '../geometry/openings'
+import { isOpeningOutside, openingInterval, OPENING_TOLERANCE } from '../geometry/openings'
 import { wallIssues, type WallFix } from '../geometry/wallContacts'
 import type { Point } from '../geometry/viewport'
 import { computeBuildingMeasurements, type BuildingMeasurements } from './measurements'
 import { createCoverageChecker } from './roomCoverage'
 import { withDisplayNames } from '../naming/autoNames'
-
-/** Tolérance (mm) : une ouverture qui dépasse de moins que cela n'est pas signalée. */
-const OPENING_TOLERANCE = 1
 
 /** Éléments mesurés dans les métrés : sans niveau, ils n'y apparaissent pas. */
 const MEASURED_TYPES: readonly CanvasElement['type'][] = ['room', 'wall', 'opening', 'platform', 'stair', 'chimney', 'roof']
@@ -36,6 +33,7 @@ export type MetresWarning =
     }
   | { kind: 'noLevel'; elementId: string; elementName: string; elementType: CanvasElement['type'] }
   | { kind: 'openingOutside'; levelId: string; openingId: string; openingRef: string; wallRef: string }
+  | { kind: 'wallZeroHeight'; levelId: string; wallId: string; wallRef: string }
   | { kind: 'openingOverlap'; levelId: string; openingIds: [string, string]; openingRefs: [string, string] }
   | {
       kind: 'wallGap'
@@ -77,9 +75,7 @@ function openingChecks(
 
   for (const opening of openings) {
     const wall = walls.get(opening.wallId) as WallElement
-    const segment = wallSegment(wall, opening.segmentIndex)
-    const interval = openingInterval(opening)
-    if (!segment || interval.from < -OPENING_TOLERANCE || interval.to > segment.length + OPENING_TOLERANCE) {
+    if (isOpeningOutside(opening, wall)) {
       warnings.push({
         kind: 'openingOutside',
         levelId,
@@ -87,6 +83,11 @@ function openingChecks(
         openingRef: ref(opening.id, opening.name),
         wallRef: ref(wall.id, wall.name),
       })
+    }
+  }
+  for (const wall of walls.values()) {
+    if (wall.height <= 0) {
+      warnings.push({ kind: 'wallZeroHeight', levelId, wallId: wall.id, wallRef: ref(wall.id, wall.name) })
     }
   }
   for (let i = 0; i < openings.length; i++) {

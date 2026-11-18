@@ -67,7 +67,7 @@ codée. Rempli en M17 (2026-11-17) à partir du code de Fabrics et de Pascal (co
 
 | Capacité | Fabrics | Pascal | État | Preuve | Action | Justification | Non-régression | Propriétaire |
 |---|---|---|---|---|---|---|---|---|
-| Métrés (surfaces, longueurs, volumes, brut / net) | `src/features/measurements/` | `core/src/lib/zone-quantities.ts` (par pièce) | PARTIEL | fichier cité | Garder Fabrics, branché sur la scène (M18), étendu en M21 | Métrés Client / Exécution validés | baseline JSON, HOUSE-01 | Fabrics |
+| Métrés (surfaces, longueurs, volumes, brut / net) | `src/features/measurements/` | `core/src/lib/zone-quantities.ts` (par pièce) | PARTIEL | fichier cité | Garder Fabrics, branché sur la scène (fait en M18 : `scene/view`, baseline identique ; EDGE-01 corrigé), étendu en M21 | Métrés Client / Exécution validés | baseline JSON, HOUSE-01 | Fabrics |
 | Nomenclatures (portes, fenêtres, pièces) | tableaux des métrés | `editor/src/lib/floorplan/schedules.ts` | PARTIEL | fichier cité | Étendre en M20 (une seule implémentation à choisir) | Doublon à trancher en M20 | baseline tables | à décider M20 |
 | Contrôles du plan (manques, chevauchements) | `measurements/warnings.ts`, `roomCoverage.ts` | `validate_design`, `validate_scene`, `verify_scene`, `check_collisions` | PARTIEL | outils MCP | Étendre (M21, M24) | — | `warnings.test.ts` | à décider M21 |
 | Traçabilité des métrés | — | — | ABSENT | — | Ajouter (M21) | — | — | Fabrics (nouveau) |
@@ -87,9 +87,9 @@ codée. Rempli en M17 (2026-11-17) à partir du code de Fabrics et de Pascal (co
 |---|---|---|---|---|---|---|---|---|
 | Stockage des projets | `src/features/persistence/` (IndexedDB, Supabase) | `useAutoSave`, `onLoad` / `onSave` ; SQLite côté serveur (MCP) | EXISTANT | `editor/src/hooks/use-auto-save.ts` | Garder Fabrics (Supabase), branché via `onLoad` / `onSave` | D75 : Fabrics garde Supabase | `persistence/*.test.ts` | Fabrics |
 | Comptes, partage, membres | `src/features/auth`, `sharing` | — | ABSENT | — | Garder Fabrics | — | `sharing/*.test.ts`, `check:security` | Fabrics |
-| Collaboration temps réel | Yjs + `collab-server/` | SSE simple (`apps/editor/app/api/scenes/[id]/events`) | PARTIEL | fichier cité | Garder Fabrics, sur les nœuds Pascal (M18) | CRDT absent de Pascal | `collab/*.test.ts` | Fabrics |
+| Collaboration temps réel | Yjs + `collab-server/` | SSE simple (`apps/editor/app/api/scenes/[id]/events`) | PARTIEL | fichier cité | Garder Fabrics, sur les nœuds Pascal (fait en M18, lot E : `scene/sceneBinding.ts`) | CRDT absent de Pascal | `collab/*.test.ts` | Fabrics |
 | Historique de versions | `src/features/versions/` | `SceneMeta.version`, `saveMode` draft/checkpoint | PARTIEL | MCP `set_checkpoint` | Garder Fabrics | — | `versions/*.test.ts` | Fabrics |
-| Commentaires ancrés | `src/features/comments/` | — | ABSENT | — | Garder Fabrics, ancrés sur les nœuds (M18) | — | `comments/*.test.ts` | Fabrics |
+| Commentaires ancrés | `src/features/comments/` | — | ABSENT | — | Garder Fabrics, ancrés sur les nœuds (fait en M18, lot E : `scene/commentAnchors.ts`) | — | `comments/*.test.ts` | Fabrics |
 
 ## 5. API, MCP, IA
 
