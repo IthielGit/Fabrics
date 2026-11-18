@@ -5,6 +5,34 @@ Chaque jalon de la phase « Fabrics + Pascal » (M17 → M25) repasse cette list
 **Nav.** = geste à refaire dans le navigateur (`npm run dev`, puis http://localhost:5173).
 Un écart = gate **FAIL**, sauf écart voulu et documenté (règle du roadmap).
 
+## Passage de la liste — M19 A7 (2026-11-18)
+
+**Parties « Auto »** (`npm run check:all`, `check:all` s'arrête au premier échec) :
+
+| Étape | Résultat |
+|---|---|
+| Compilation des paquets de Pascal, build, lint Fabrics | ✓ |
+| Tests Fabrics (161 fichiers, 3 068 tests, baseline des métrés / CSV / XLSX / IFC / planche identique) | ✓ (14 tests retirés avec les modules supprimés en A7) |
+| Tests Pascal (bun) | 19 338 réussis, 74 en échec. **3 nouveaux par rapport à la référence** (`core` : `architecture.test.ts`, `contracts/cut-intent.test.ts`, `registry/registry-isolation.test.ts`) : ils **passent seuls** (15 / 15) ; échecs sous charge et `EPERM` (liens symboliques refusés par Windows) déjà constatés en A5 |
+| Lint Pascal (Biome) | 0 erreur (171 avertissements de Pascal) |
+| Doublons de code (`jscpd`) | **non exécuté** : `jscpd` est déclaré mais pas installé sur cette machine (`npm install`) |
+
+**Parties « Nav. »** : à refaire par l'utilisateur (test de fin d'A7). Seules celles qui ne dépendent pas des
+outils de dessin de l'ancien éditeur sont reprises ici ; le reste est **reporté** aux sous-lots qui
+apportent les outils de Pascal.
+
+| Parcours à refaire dans le navigateur | Reprend |
+|---|---|
+| Accueil : créer un plan, un Visuel ; ouvrir, renommer, dupliquer, supprimer | M0, M1, M12 |
+| Ouvrir un plan : 3D, 2D, niveaux, rendu, onglets Scène / Peinture / Objets / Métrés / Paramètres | M8, M19 A5 |
+| Métrés Client / Exécution, cotation, repères `M01` / `P01` / `F01`, points à vérifier | M3, M10 ter |
+| Vues : façades, coupes, planche ; exporter PNG, JPG, PDF, métrés, DXF, IFC | M4, M10, M11 |
+| Visuel : texte, formes, image, annuler, enregistrer, exporter | M1, M2, M4 |
+| Comptes, partage (lien, invitations), lecture seule d'un plan (lecteur, lien public) | M13, A7 |
+| Collaboration à deux navigateurs, historique et aperçu de version, commentaires | M14, M15, M16 |
+| Palette de commandes (Ctrl+K), raccourcis, réglages audio, visite à la première personne, réalité virtuelle | M19 A6 |
+| Dessin au clavier en mm, accrochages, murs, ouvertures, toitures, escaliers, bibliothèque | **reporté à B1 / B2** (outils de Pascal) |
+
 ## 0. Référence figée (baseline M17)
 
 | Contrôle | Vérification |
@@ -75,7 +103,7 @@ Un écart = gate **FAIL**, sauf écart voulu et documenté (règle du roadmap).
 | Lit 1600 × 2000 mesuré 1600 × 2000 à la cote | Auto : `library/library.test.ts` ; Nav. |
 | Nouvel axe parallèle à « A, B » → « C » | Auto : `geometry/axes.test.ts` |
 
-### M8 — Vue 3D
+### M8 — Vue 3D (assurée par le moteur de Pascal depuis M19 A2 ; l'ancienne vue 3D est retirée en A7)
 | Critère | Vérification |
 |---|---|
 | Modifier un mur met la 3D à jour en moins d'1 s | Nav. |
@@ -132,7 +160,7 @@ Un écart = gate **FAIL**, sauf écart voulu et documenté (règle du roadmap).
 |---|---|
 | DXF exporté ouvert dans LibreCAD, longueurs exactes en mm | Auto : `export/dxf.test.ts`, `export/dxfPlan.test.ts` ; Nav. : LibreCAD |
 | DXF importé : ligne de 5000 mm = 5000 mm | Auto : `export/dxfImport.test.ts` |
-| glTF et IFC exportés | Auto : `export/gltf.test.ts`, `export/ifc.test.ts`, baseline IFC |
+| IFC exporté (l'export glTF est remplacé par les exports 3D de Pascal, A7) | Auto : `export/ifc.test.ts`, baseline IFC ; Nav. : Paramètres → exports 3D |
 
 ### M11 bis — Dessin précis, bibliothèque, plafonds (lots A à H)
 | Critère | Vérification |
@@ -188,7 +216,7 @@ Un écart = gate **FAIL**, sauf écart voulu et documenté (règle du roadmap).
 | Critère | Vérification |
 |---|---|
 | Versions par session, aperçu en lecture seule, différences, restaurer annulable, copie | Auto : `versions/versionsLogic.test.ts`, `versions/versionDiff.test.ts`, `versions/pendingRestore.test.ts` ; Nav. : deux navigateurs |
-| En-tête, rail d'outils, barre d'état, métrés en direct (pièce 6000 × 2000 → « Surface 12,00 m² ») | Auto : `measurements/liveSummary.test.ts` ; Nav. |
+| En-tête, rail d'outils, barre d'état, métrés en direct (pièce 6000 × 2000 → « Surface 12,00 m² ») | Auto : `measurements/measurements.test.ts` ; Nav. : onglet Métrés de Pascal (la barre « métrés en direct » de l'ancien éditeur est retirée, A7) |
 
 ### M16 — Commentaires ancrés
 | Critère | Vérification |

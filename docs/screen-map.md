@@ -38,13 +38,13 @@ fonction marche dans le nouvel écran.
 | `SidePanel.tsx` (onglets en rail) | Panneau de droite | Pascal + panneau | `ed/ui/sidebar/app-sidebar.tsx`, `tab-bar.tsx`, `panels/*` ; onglets Fabrics ajoutés (`use-plugin-panels.tsx`) | M15 bis D |
 | `PropertiesPanel.tsx`, `*Fields.tsx`, `MultiSelectionFields.tsx`, `WallLockSection.tsx`, `MaterialField.tsx` | Propriétés, sélection multiple, verrou des murs, matériaux | Pascal + panneau | `ed/ui/panels/parametric-inspector.tsx`, `multi-parametric-inspector.tsx`, `multi-selection-panel.tsx`, `ed/ui/controls/material-picker.tsx` ; ajouter verrou de mur, style d'ouverture Fabrics, « Visible en » des cotes | M2, M5, M10 bis, hors jalon 2026-11-16 |
 | `LayersPanel.tsx` | Calques : renommer, masquer, verrouiller, réordonner | Pascal | arbre de la scène de la barre latérale (`ed/ui/sidebar/*`, nœuds) | M2 |
-| `LevelsPanel.tsx`, `LevelSelector.tsx`, `PlanContextBar.tsx` | Niveaux, niveau actif, transparence dessous / dessus | Pascal + panneau | gestion des niveaux de Pascal (empilés / éclatés / seuls, D81) + interrupteurs de transparence | M6, M11 bis C, M15 bis A |
+| `LevelsPanel.tsx`, `LevelSelector.tsx` (retiré en A7), `PlanContextBar.tsx` (retiré en A7) | Niveaux, niveau actif, transparence dessous / dessus | Pascal + panneau | gestion des niveaux de Pascal (empilés / éclatés / seuls, D81) + interrupteurs de transparence | M6, M11 bis C, M15 bis A |
 | `DimensioningSelector.tsx` | Cotation Aucune / Client / Exécution | Pascal + panneau | option ajoutée à la barre de vue (`ed/editor/views/view-bar.tsx`) | M10 ter B |
 | `ZoomControls.tsx`, `MiniMap.tsx`, `CompassWidget.tsx`, barre d'état | Zoom, plein écran, échelle d'impression, nord, mini-carte | Pascal + panneau | navigation Pascal (caméra, `fit-scene-framing.ts`) + échelle d'impression et nord Fabrics | M11 ter, M15 bis C |
-| `LiveMetresBar.tsx` | Métrés en direct (pièces, surface, murs) | Pascal + panneau | carte flottante type `quick-measurement-card.tsx` alimentée par les métrés Fabrics | M15 bis D |
+| `LiveMetresBar.tsx` (retiré en A7 ; onglet Métrés de Pascal) | Métrés en direct (pièces, surface, murs) | Pascal + panneau | carte flottante type `quick-measurement-card.tsx` alimentée par les métrés Fabrics | M15 bis D |
 | `PlanSignals.tsx`, `PlanCheckBadge.tsx`, `MetresWarningList.tsx` | Points à vérifier, signaux en haut à droite | Pascal + panneau | aide contextuelle (`ed/ui/helpers/contextual-helper-panel.tsx`) + liste Fabrics | M10 ter G3, M11 bis H, M11 quater J |
 | `ShortcutsDialog.tsx` (`?`) | Liste des raccourcis | Pascal | palette de commandes `ed/ui/command-palette/` + aide de Pascal | M11 quater E |
-| `EmptyPlanCard.tsx` | Premier pas dans un plan vide | Pascal | parcours de découverte de Pascal (D81) | M11 quater C |
+| `EmptyPlanCard.tsx` (retiré en A7 ; Pascal n'a pas de parcours guidé, voir PROGRESS) | Premier pas dans un plan vide | Pascal | parcours de découverte de Pascal (D81) | M11 quater C |
 | `Notice.tsx` | Confirmations temporaires | Pascal | notifications de Pascal | — |
 
 ## 3. Éditeur de plan — dessin et gestes
@@ -71,7 +71,7 @@ fonction marche dans le nouvel écran.
 
 | Fabrics | Fonction | Destination | Pascal | Vérif. |
 |---|---|---|---|---|
-| `Viewer3DPanel.tsx`, `OrientationCube.tsx` | Vue 3D à côté du plan, cube, capture PNG | Pascal | `@pascal-app/viewer` (WebGPU, effets, navigation, D81), `views/view-bar.tsx`, capture `snapshot-capture.ts` | M8 |
+| `Viewer3DPanel.tsx`, `OrientationCube.tsx` (retirés en A7) | Vue 3D à côté du plan, cube, capture PNG | Pascal | `@pascal-app/viewer` (WebGPU, effets, navigation, D81), `views/view-bar.tsx`, capture `snapshot-capture.ts` | M8 |
 | `ViewsScreen.tsx`, `ViewDrawing.tsx`, `ViewsPdfDialog.tsx` | Façades, coupes, planche, PDF | Pascal + panneau | vue « Vues » ajoutée (`ed/editor/views/plugins-view.tsx`) ; dessins Fabrics | M10, M10 bis |
 | `ExportDialog.tsx` | PNG, JPG, PDF, CSV, XLSX, DXF, glTF, IFC ; version Client / Exécution ; contrôle avant export | Pascal + panneau | `ed/editor/export-manager.tsx` (GLB, USDZ, STL, OBJ, IFC, PDF) + formats et contrôles Fabrics | M4, M10 ter, M11 |
 | `MeasurementsPanel.tsx` | Métrés Client / Exécution, plafonds, toitures, avertissements | Pascal + panneau | onglet ajouté à la barre latérale ; `zone/quantities-panel.tsx` pour la pièce sélectionnée | M3 → M11 quinquies |

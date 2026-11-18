@@ -42,7 +42,7 @@ Vérifié le 2026-11-18 (M19 A5) dans leur `package.json` : **tous sous licence 
 | `@pascal-app/plugin-landscape` (paysage) | Oui (A5) | — (modèles inclus dans le greffon) |
 | `@pascal-app/plugin-bath-space` (salle de bain) | Oui (A5) | Liens vers des fiches de fabricants (simples liens) |
 | `@pascal-app/plugin-streetscape` (rues) | Oui (A5) | Fonds de carte CARTO (`basemaps.cartocdn.com`) |
-| `@webxr/plugin` (réalité virtuelle) | Prévu en A6 | — |
+| `@webxr/plugin` (réalité virtuelle) | Oui (A6) : chargé seulement quand il est installé dans le projet ; dépend de `@react-three/xr` (MIT), `iwer` et `@iwer/devui` (MIT, émulateur de casque) | — (aucun service externe) |
 | `@mint/pascal-plugin` (génération d'objets 3D) | **Non** : essayé puis retiré à la demande de l'utilisateur (2026-11-18) | `api.mint.gg` |
 
 Le moteur de Pascal charge aussi les objets de son catalogue depuis son CDN (`editor.pascal.app`,
