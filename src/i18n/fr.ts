@@ -572,6 +572,9 @@ export const fr = {
         openingOutside:
           'Glissez l’ouverture le long de son mur, ou réduisez sa largeur dans l’onglet Propriétés.',
         wallZeroHeight: 'Indiquez la hauteur du mur dans l’onglet Propriétés : sans hauteur, sa surface et son volume sont nuls.',
+        wallInvalidThickness:
+          'Sélectionnez le mur et donnez-lui une épaisseur dans son panneau : sans épaisseur, son volume est nul et ses faces se confondent.',
+        wallZeroLength: 'Supprimez ce mur : ses deux extrémités sont au même endroit, il ne compte rien.',
         openingOverlap: 'Déplacez l’une des deux ouvertures le long du mur pour qu’elles ne se touchent plus.',
         wallGap: 'Cliquez le bouton de correction : le mur est prolongé jusqu’à l’autre mur (annulable).',
         wallOverlap:
@@ -591,6 +594,8 @@ export const fr = {
       noLevel: (type: string, name: string) => `${type} « ${name} » n’a pas de niveau : il n’est pas compté.`,
       openingOutside: (ref: string, wallRef: string) => `${ref} dépasse de son mur ${wallRef}.`,
       wallZeroHeight: (ref: string) => `Le mur ${ref} a une hauteur nulle : sa surface est comptée à 0 m².`,
+      wallInvalidThickness: (ref: string) => `Le mur ${ref} n’a pas d’épaisseur valable : son volume est compté à 0 m³.`,
+      wallZeroLength: (ref: string) => `Le mur ${ref} a une longueur nulle.`,
       openingOverlap: (first: string, second: string) => `${first} et ${second} se chevauchent sur le même mur.`,
       wallGap: (ref: string, otherRef: string, gap: string) =>
         `Le mur ${ref} ne touche pas le mur ${otherRef} (écart de ${gap}) : les angles et les longueurs seront faussés.`,

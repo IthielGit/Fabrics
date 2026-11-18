@@ -70,7 +70,7 @@ codée. Rempli en M17 (2026-11-17) à partir du code de Fabrics et de Pascal (co
 |---|---|---|---|---|---|---|---|---|
 | Métrés (surfaces, longueurs, volumes, brut / net) | `src/features/measurements/` | `core/src/lib/zone-quantities.ts` (par pièce) | PARTIEL | fichier cité | Garder Fabrics, branché sur la scène (fait en M18 : `scene/view`, baseline identique ; EDGE-01 corrigé), étendu en M21 | Métrés Client / Exécution validés | baseline JSON, HOUSE-01 | Fabrics |
 | Nomenclatures (portes, fenêtres, pièces) | tableaux des métrés | `editor/src/lib/floorplan/schedules.ts` | PARTIEL | fichier cité | Étendre en M20 (une seule implémentation à choisir) | Doublon à trancher en M20 | baseline tables | à décider M20 |
-| Contrôles du plan (manques, chevauchements) | `measurements/warnings.ts`, `roomCoverage.ts` | `validate_design`, `validate_scene`, `verify_scene`, `check_collisions` | PARTIEL | outils MCP | Étendre (M21, M24) | — | `warnings.test.ts` | à décider M21 |
+| Contrôles du plan (manques, chevauchements) | `measurements/warnings.ts`, `roomCoverage.ts` (M19 B5 : + épaisseur invalide, longueur nulle) | `validate_design`, `validate_scene`, `verify_scene`, `check_collisions` ; commandes qui refusent une géométrie impossible (`setWallGeometry`) | PARTIEL | outils MCP, `scene/hardCases.test.ts` | Étendre (M21, M24) | — | `warnings.test.ts` | à décider M21 |
 | Traçabilité des métrés | — | — | ABSENT | — | Ajouter (M21) | — | — | Fabrics (nouveau) |
 | Bibliothèque de prix, DQE | — | — | ABSENT | — | Ajouter (M23) | Aucun prix inventé | — | Fabrics (nouveau) |
 | Export CSV / XLSX des métrés | `measurements/csv.ts`, `export/metresXlsx.ts` | — | ABSENT | — | Garder Fabrics | — | baseline CSV / XLSX | Fabrics |

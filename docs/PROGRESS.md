@@ -5,7 +5,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M19 · B4 (2026-11-18). A1 à A7 validés par l'utilisateur le 2026-11-18. **B1 à B5 enchaînés à la demande de l'utilisateur, test dans le navigateur à la fin de B5**, un commit par sous-lot.
+- **Dernière tâche terminée :** M19 · B5 (2026-11-18). A1 à A7 validés par l'utilisateur le 2026-11-18. **B1 à B5 enchaînés à la demande de l'utilisateur, test dans le navigateur à la fin de B5**, un commit par sous-lot.
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »). **Prochaine tâche :** M19 · B1 Outils 2D (`/model opus`) ; en attente de décision de l'utilisateur : traduire les 660 textes de Pascal écrits en dur en anglais (sous-lot dédié). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
@@ -43,7 +43,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
 | M18 Modèle BIM unifié (G1) | en cours (lots A à E faits) | |
-| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
+| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | lot A validé ; lot B fait (B2 en partie), G2 proposé, à tester par l'utilisateur | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
 | M22 Échanges IFC (G5) | à faire | |
@@ -54,6 +54,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## Journal
 
 <!-- Format d'une entrée (la plus récente en haut) :
+### 2026-11-18 — M19 · B5 Cas difficiles et preuves, gate G2 proposé (test par l'utilisateur)
+- **Cas difficiles** (`src/features/scene/hardCases.test.ts`, 9 tests) : les commandes de Pascal refusent épaisseur nulle et longueur nulle ; un mur sans épaisseur déjà dans la scène compte 0 m³ et est signalé (**nouvel avertissement « épaisseur invalide »**) ; un mur de longueur nulle est retiré par Pascal au chargement (il ne comptait rien ; **nouvel avertissement « longueur nulle »** pour un document hors scène) ; murs superposés signalés avec la longueur commune ; raccord en T sans double comptage ; ouvertures qui dépassent ou se chevauchent (union), porte plus haute que le mur : jamais de surface négative.
+- **Exemples T1 et T2** (`fixtures/T1/spec.json`, `fixtures/T2/spec.json`, calculs à la main **à relire par l'utilisateur**) : studio 6000 × 5000 mm ; séjour + chambre 9000 × 5000 mm. `src/features/scene/precision.test.ts` (15 tests) : métrés par la scène, 2D → 3D (nœuds Pascal aux mêmes cotes), emprise calculée par Pascal, 3D → 2D (mur déplacé avec ses coins, fenêtre élargie). Plus de 30 grandeurs comparées : **aucun écart**.
+- **Rapport** : `docs/phases/M19-report.md` (critères G2, précision, cas difficiles, limites). **G2 proposé PASS** sous réserve du test de l'utilisateur et de sa décision sur les toitures et escaliers natifs de Pascal.
+- Vérification : build ✓ lint ✓ 3 118 tests ✓ ; `check:all` : tout passe (tests de Pascal identiques à la référence) sauf l'étape `jscpd`, non installé sur cette machine.
+
 ### 2026-11-18 — M19 · B4 Terrain et implantation (test par l'utilisateur à la fin de B5)
 - **Outils de Pascal réutilisés** : relief du terrain (Construire → Terrain), limite de propriété (onglet Scène, « Limite de propriété », crayon), position et rotation du bâtiment, altitude de base des niveaux. Le panneau de la limite de propriété affiche maintenant ses coordonnées et son périmètre en mm (modification de Pascal notée dans `FABRICS_CHANGES.md`).
 - **Métrés, version Technique : bloc « Terrain et implantation »** (`src/features/scene/siteMeasures.ts`, testé ; `SiteMeasuresTable.tsx`) : surface et périmètre de la parcelle, emprise au sol (contour extérieur des murs du niveau du sol, calculé par Pascal et placé par la position du bâtiment), coefficient d'emprise, recul minimal à la limite, alerte si le bâtiment dépasse la limite, relief modelé ou plat, altitudes et hauteurs des niveaux en mm. Tant que la limite est le carré par défaut de Pascal (30 × 30 m), elle n'est pas comptée comme une parcelle.

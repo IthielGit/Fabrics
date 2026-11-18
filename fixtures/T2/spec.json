@@ -1,0 +1,52 @@
+{
+  "id": "T2",
+  "status": "Calcul à la main rédigé par Claude le 2026-11-18 (M19 B5), à relire par l'utilisateur. Séjour et une chambre, plain-pied, une cloison.",
+  "units": { "length": "mm", "area": "m² (2 décimales)", "volume": "m³ (3 décimales)" },
+  "conventions": {
+    "origin": "coin extérieur nord-ouest = (0, 0) ; x vers l'est, y vers le bas de l'écran (axe de Fabrics)",
+    "wallArea": "surface brute = longueur à l'axe × hauteur ; nette = brute − ouvertures (largeur × hauteur)",
+    "wallVolume": "longueur à l'axe × épaisseur × hauteur − ouvertures × épaisseur ; la cloison s'arrête sur les faces intérieures (aucune part comptée deux fois)",
+    "roomArea": "surface au tracé ; les pièces sont tracées sur les faces intérieures des murs",
+    "footprint": "emprise au sol = contour extérieur des murs (axe ± demi-épaisseur)",
+    "openingOffset": "distance du début du côté du mur au milieu de l'ouverture"
+  },
+  "level": { "id": "L0", "name": "Rez-de-chaussée", "elevation": 0, "height": 2700, "slabThickness": 200 },
+  "walls": [
+    { "ref": "ENV", "thickness": 200, "height": 2700, "axis": [100, 100, 8900, 100, 8900, 4900, 100, 4900, 100, 100] },
+    { "ref": "C1", "thickness": 100, "height": 2700, "axis": [5000, 200, 5000, 4800] }
+  ],
+  "openings": [
+    { "ref": "P1", "kind": "door", "wall": "ENV", "segment": 0, "offset": 900, "width": 900, "height": 2100, "sillHeight": 0 },
+    { "ref": "F1", "kind": "window", "wall": "ENV", "segment": 2, "offset": 6400, "width": 1200, "height": 1000, "sillHeight": 1000 },
+    { "ref": "F2", "kind": "window", "wall": "ENV", "segment": 2, "offset": 1900, "width": 1200, "height": 1000, "sillHeight": 1000 },
+    { "ref": "P2", "kind": "door", "wall": "C1", "segment": 0, "offset": 2300, "width": 800, "height": 2100, "sillHeight": 0 }
+  ],
+  "rooms": [
+    { "name": "Séjour", "polygon": [200, 200, 4950, 200, 4950, 4800, 200, 4800] },
+    { "name": "Chambre", "polygon": [5050, 200, 8800, 200, 8800, 4800, 5050, 4800] }
+  ],
+  "expected": {
+    "walls": {
+      "ENV": {
+        "calc": "axe 2 × (8800 + 4800) = 27200 ; brute 27200 × 2700 = 73,44 m² ; ouvertures 1,89 + 1,20 + 1,20 = 4,29 m² ; nette 69,15 m² ; volume 27,2 × 0,2 × 2,7 − 4,29 × 0,2 = 14,688 − 0,858 = 13,830 m³",
+        "axisLength_mm": 27200, "grossArea_m2": 73.44, "openingsArea_m2": 4.29, "netArea_m2": 69.15, "volume_m3": 13.83
+      },
+      "C1": {
+        "calc": "axe 4600 ; brute 4600 × 2700 = 12,42 m² ; porte 0,8 × 2,1 = 1,68 m² ; nette 10,74 m² ; volume 4,6 × 0,1 × 2,7 − 1,68 × 0,1 = 1,242 − 0,168 = 1,074 m³",
+        "axisLength_mm": 4600, "grossArea_m2": 12.42, "openingsArea_m2": 1.68, "netArea_m2": 10.74, "volume_m3": 1.074
+      }
+    },
+    "rooms": [
+      { "name": "Séjour", "calc": "4750 × 4600", "area_m2": 21.85, "perimeter_mm": 18700 },
+      { "name": "Chambre", "calc": "3750 × 4600", "area_m2": 17.25, "perimeter_mm": 16700 }
+    ],
+    "roomsTotal_m2": 39.1,
+    "footprint_m2": 45.0,
+    "footprintCalc": "9000 × 5000",
+    "edit3d": {
+      "gesture": "fenêtre F1 élargie de 1200 à 1500 mm (poignée 3D)",
+      "calc": "ouvertures ENV 1,89 + 1,50 + 1,20 = 4,59 m² ; nette 73,44 − 4,59 = 68,85 m² ; volume 14,688 − 4,59 × 0,2 = 13,770 m³",
+      "openingsArea_m2": 4.59, "netArea_m2": 68.85, "volume_m3": 13.77
+    }
+  }
+}

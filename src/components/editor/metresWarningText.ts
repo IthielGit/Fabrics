@@ -22,6 +22,10 @@ export function metresWarningText(warning: MetresWarning): string {
       return t.openingOutside(warning.openingRef, warning.wallRef)
     case 'wallZeroHeight':
       return t.wallZeroHeight(warning.wallRef)
+    case 'wallInvalidThickness':
+      return t.wallInvalidThickness(warning.wallRef)
+    case 'wallZeroLength':
+      return t.wallZeroLength(warning.wallRef)
     case 'openingOverlap':
       return t.openingOverlap(warning.openingRefs[0], warning.openingRefs[1])
     case 'wallGap':
@@ -49,6 +53,8 @@ export function metresWarningTargets(warning: MetresWarning): string[] {
       return [...warning.openingIds]
     case 'wallGap':
     case 'wallZeroHeight':
+    case 'wallInvalidThickness':
+    case 'wallZeroLength':
       return [warning.wallId]
     case 'wallOverlap':
       return [...warning.wallIds]

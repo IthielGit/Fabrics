@@ -1,0 +1,42 @@
+{
+  "id": "T1",
+  "status": "Calcul à la main rédigé par Claude le 2026-11-18 (M19 B5), à relire par l'utilisateur. Studio d'une pièce, plain-pied.",
+  "units": { "length": "mm", "area": "m² (2 décimales)", "volume": "m³ (3 décimales)" },
+  "conventions": {
+    "origin": "coin extérieur nord-ouest = (0, 0) ; x vers l'est, y vers le bas de l'écran (axe de Fabrics)",
+    "wallArea": "surface brute = longueur à l'axe × hauteur ; nette = brute − ouvertures (largeur × hauteur)",
+    "wallVolume": "longueur à l'axe × épaisseur × hauteur − ouvertures × épaisseur",
+    "roomArea": "surface au tracé ; la pièce est tracée sur les faces intérieures des murs",
+    "footprint": "emprise au sol = contour extérieur des murs (axe ± demi-épaisseur)",
+    "openingOffset": "distance du début du côté du mur au milieu de l'ouverture"
+  },
+  "level": { "id": "L0", "name": "Rez-de-chaussée", "elevation": 0, "height": 2700, "slabThickness": 200 },
+  "walls": [
+    { "ref": "ENV", "thickness": 200, "height": 2700, "axis": [100, 100, 5900, 100, 5900, 4900, 100, 4900, 100, 100] }
+  ],
+  "openings": [
+    { "ref": "P1", "kind": "door", "wall": "ENV", "segment": 0, "offset": 900, "width": 900, "height": 2100, "sillHeight": 0 },
+    { "ref": "F1", "kind": "window", "wall": "ENV", "segment": 2, "offset": 2900, "width": 1200, "height": 1000, "sillHeight": 1000 }
+  ],
+  "rooms": [
+    { "name": "Studio", "polygon": [200, 200, 5800, 200, 5800, 4800, 200, 4800] }
+  ],
+  "expected": {
+    "walls": {
+      "ENV": {
+        "calc": "axe 2 × (5800 + 4800) = 21200 ; brute 21200 × 2700 = 57,24 m² ; ouvertures 0,9 × 2,1 + 1,2 × 1,0 = 3,09 m² ; nette 54,15 m² ; volume 21,2 × 0,2 × 2,7 − 3,09 × 0,2 = 11,448 − 0,618 = 10,830 m³",
+        "axisLength_mm": 21200, "grossArea_m2": 57.24, "openingsArea_m2": 3.09, "netArea_m2": 54.15, "volume_m3": 10.83
+      }
+    },
+    "rooms": [
+      { "name": "Studio", "calc": "5600 × 4600", "area_m2": 25.76, "perimeter_mm": 20400 }
+    ],
+    "footprint_m2": 30.0,
+    "footprintCalc": "6000 × 5000",
+    "edit3d": {
+      "gesture": "mur est (côté 1 de ENV) déplacé de 1000 mm vers l'est, ses deux coins avec lui",
+      "calc": "axe 2 × (6800 + 4800) = 23200 ; brute 23200 × 2700 = 62,64 m² ; nette 62,64 − 3,09 = 59,55 m² ; Studio 6600 × 4600 = 30,36 m² ; emprise 7000 × 5000 = 35,00 m²",
+      "axisLength_mm": 23200, "grossArea_m2": 62.64, "netArea_m2": 59.55, "roomArea_m2": 30.36, "footprint_m2": 35.0
+    }
+  }
+}

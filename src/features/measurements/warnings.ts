@@ -34,6 +34,9 @@ export type MetresWarning =
   | { kind: 'noLevel'; elementId: string; elementName: string; elementType: CanvasElement['type'] }
   | { kind: 'openingOutside'; levelId: string; openingId: string; openingRef: string; wallRef: string }
   | { kind: 'wallZeroHeight'; levelId: string; wallId: string; wallRef: string }
+  // M19 B5 : mur sans épaisseur (ou épaisseur invalide) et mur réduit à un point.
+  | { kind: 'wallInvalidThickness'; levelId: string; wallId: string; wallRef: string }
+  | { kind: 'wallZeroLength'; levelId: string; wallId: string; wallRef: string }
   | { kind: 'openingOverlap'; levelId: string; openingIds: [string, string]; openingRefs: [string, string] }
   | {
       kind: 'wallGap'
@@ -59,6 +62,15 @@ export type MetresWarning =
 
 /** Nom affiché d'une pièce (le nom vide reste reconnaissable). */
 const roomLabel = (room: RoomElement, index: number) => room.name.trim() || `#${index + 1}`
+
+/** Un mur plus court que 1 mm est un point : il ne compte rien et fausse les raccords. */
+const MIN_WALL_LENGTH = 1
+
+function wallAxisLength(points: readonly number[]): number {
+  let total = 0
+  for (let i = 0; i + 3 < points.length; i += 2) total += Math.hypot(points[i + 2] - points[i], points[i + 3] - points[i + 1])
+  return total
+}
 
 function openingChecks(
   levelId: string,
@@ -88,6 +100,12 @@ function openingChecks(
   for (const wall of walls.values()) {
     if (wall.height <= 0) {
       warnings.push({ kind: 'wallZeroHeight', levelId, wallId: wall.id, wallRef: ref(wall.id, wall.name) })
+    }
+    if (!(Number.isFinite(wall.thickness) && wall.thickness > 0)) {
+      warnings.push({ kind: 'wallInvalidThickness', levelId, wallId: wall.id, wallRef: ref(wall.id, wall.name) })
+    }
+    if (wallAxisLength(wall.points) < MIN_WALL_LENGTH) {
+      warnings.push({ kind: 'wallZeroLength', levelId, wallId: wall.id, wallRef: ref(wall.id, wall.name) })
     }
   }
   for (let i = 0; i < openings.length; i++) {
