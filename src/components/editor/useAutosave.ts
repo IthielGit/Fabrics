@@ -5,7 +5,7 @@ import { repository } from '../../features/persistence/repository'
 import { useCollabStore } from '../../stores/collabStore'
 import { useEditorStore } from '../../stores/editorStore'
 import { planExportExtent } from '../../features/export/bounds'
-import { captureThumbnail } from './thumbnail'
+import { captureThumbnail, onThumbnailCaptured } from './thumbnail'
 
 const AUTOSAVE_DELAY_MS = 1000
 
@@ -72,6 +72,12 @@ export function useAutosave() {
       }
     })
 
+    // Nouvelle photo de l'éditeur de Pascal : on l'enregistre avec le projet.
+    const unsubscribeCaptured = onThumbnailCaptured(() => {
+      const current = useEditorStore.getState().project
+      if (current) autosaver.schedule(current)
+    })
+
     const flushNow = () => void autosaver.flush()
     const onVisibilityChange = () => {
       if (document.visibilityState === 'hidden') flushNow()
@@ -83,6 +89,7 @@ export function useAutosave() {
       unsubscribe()
       unsubscribeCollab()
       unsubscribeOpen()
+      unsubscribeCaptured()
       clearTimeout(missingTimer)
       document.removeEventListener('visibilitychange', onVisibilityChange)
       window.removeEventListener('pagehide', flushNow)

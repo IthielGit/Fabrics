@@ -105,7 +105,7 @@ export default defineConfig({
   optimizeDeps: {
     // `@pascal-app/editor` est en source TypeScript : il faut autoriser ces extensions.
     extensions: ['.ts', '.tsx'],
-    include: ['@pascal-app/core/i18n', '@pascal-app/editor', '@pascal-app/editor/locales', '@pascal-app/core', '@pascal-app/viewer', '@pascal-app/nodes'],
+    include: ['@pascal-app/core/i18n', '@pascal-app/editor', '@pascal-app/core', '@pascal-app/viewer', '@pascal-app/nodes'],
   },
   // collab-server/ a ses propres dépendances et ses propres tests (npm test dans ce dossier).
   // packages/pascal/ : tests de Pascal sous bun (npm run test:pascal), jamais sous Vitest (ADR 0002).

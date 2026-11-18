@@ -1,9 +1,9 @@
-// Compile les traductions françaises « à relire » (fuzzy) du catalogue de Pascal dans un paquet de
-// Fabrics (choix de l'utilisateur du 2026-11-18, M19 A5). Pascal les écarte de sa compilation tant
-// qu'elles ne sont pas relues ; Fabrics les charge par-dessus le catalogue officiel, sans modifier
-// Pascal. Une traduction dont les variables diffèrent de l'anglais est ignorée.
+// Prépare l'unique fichier de textes de l'interface de Pascal dans Fabrics, en français (choix de
+// l'utilisateur du 2026-11-18 : une seule langue, rien d'autre à charger). Pour chaque texte : la
+// traduction française de Pascal (relue ou non), sinon le texte anglais d'origine. Une traduction dont
+// les variables diffèrent de l'anglais est écartée (l'anglais reste). Pascal n'est pas modifié.
 //
-// Usage : node scripts/compile-pascal-fr.mjs   (à relancer après une mise à jour de Pascal)
+// Usage : node scripts/compile-pascal-texts.mjs   (à relancer après une mise à jour de Pascal)
 import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 import { fileURLToPath, pathToFileURL } from 'node:url'
@@ -31,30 +31,37 @@ function variableNames(tokens, names = new Set()) {
   return [...names].sort()
 }
 
-const english = new Map(readPo('en').items.map((item) => [item.msgid, item.msgstr[0] || item.msgid]))
 const compiled = {}
+let english = 0
 let skipped = 0
+for (const item of readPo('en').items) {
+  if (item.obsolete) continue
+  compiled[item.msgid] = compileMessageOrThrow(item.msgstr[0] || item.msgid)
+  english += 1
+}
+const sources = new Map(readPo('en').items.map((item) => [item.msgid, item.msgstr[0] || item.msgid]))
+let french = 0
 for (const item of readPo('fr').items) {
   const translation = item.msgstr[0]
-  if (!item.flags.fuzzy || !translation || item.obsolete) continue
-  const source = english.get(item.msgid)
-  if (!source) continue
+  const source = sources.get(item.msgid)
+  if (!translation || item.obsolete || !source) continue
   try {
     const tokens = compileMessageOrThrow(translation)
     const same = JSON.stringify(variableNames(compileMessageOrThrow(source))) === JSON.stringify(variableNames(tokens))
     if (!same) throw new Error('placeholders')
     compiled[item.msgid] = tokens
+    french += 1
   } catch {
     skipped += 1
   }
 }
 
 const sorted = Object.fromEntries(Object.entries(compiled).sort(([a], [b]) => a.localeCompare(b)))
-const out = resolve(root, 'src/i18n/pascalFrReview.ts')
+const out = resolve(root, 'src/i18n/pascalTexts.ts')
 writeFileSync(
   out,
-  '// Fichier généré par `node scripts/compile-pascal-fr.mjs` : ne pas modifier à la main.\n' +
-    '// Traductions françaises de Pascal pas encore relues (fuzzy), chargées par `src/pascal/bootstrap.ts`.\n' +
-    `export const pascalFrReview: Record<string, unknown> = JSON.parse(${JSON.stringify(JSON.stringify(sorted))})\n`,
+  '// Fichier généré par `node scripts/compile-pascal-texts.mjs` : ne pas modifier à la main.\n' +
+    "// Textes de l'interface de Pascal en français (anglais d'origine s'il manque une traduction).\n" +
+    `export const pascalTexts: Record<string, unknown> = JSON.parse(${JSON.stringify(JSON.stringify(sorted))})\n`,
 )
-console.log(`${Object.keys(sorted).length} traductions compilées, ${skipped} ignorées → ${out}`)
+console.log(`${Object.keys(sorted).length} textes : ${french} en français, ${english - french} restés en anglais (${skipped} traductions écartées) → ${out}`)

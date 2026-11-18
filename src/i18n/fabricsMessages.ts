@@ -113,7 +113,6 @@ export const fabricsFr = {
   'pascalEditor.unavailableTitle': ['Éditeur indisponible'],
   'pascalEditor.notFound': ['Ce projet n’existe pas ou n’est plus accessible.'],
   'pascalEditor.loadError': ['Impossible de charger ce projet.'],
-  'projects.openInOldEditor': ['Ouvrir dans l’ancien éditeur'],
   'pascalEditor.tabMetres': ['Métrés'],
   'pascalEditor.tabComments': ['Commentaires'],
   'pascalEditor.tabHistory': ['Historique'],

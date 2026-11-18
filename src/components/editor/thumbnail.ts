@@ -8,6 +8,22 @@ export function setThumbnailStage(stage: Konva.Stage | null): void {
   currentStage = stage
 }
 
+// Miniature photographiée par l'éditeur de Pascal (lot Performance) : un plan n'a plus de scène Konva
+// montée en permanence ; la dernière photo de Pascal sert à la prochaine sauvegarde.
+let capturedThumbnail: string | null = null
+const capturedListeners = new Set<() => void>()
+
+/** Retient la photo de Pascal et prévient l'enregistrement automatique (`useAutosave`). */
+export function setCapturedThumbnail(dataUrl: string | null): void {
+  capturedThumbnail = dataUrl
+  if (dataUrl) for (const listener of capturedListeners) listener()
+}
+
+export function onThumbnailCaptured(listener: () => void): () => void {
+  capturedListeners.add(listener)
+  return () => capturedListeners.delete(listener)
+}
+
 /** La scène Konva de l'éditeur ouvert (`null` si aucun éditeur n'est affiché). */
 export function getEditorStage(): Konva.Stage | null {
   return currentStage
@@ -23,7 +39,7 @@ export function captureThumbnail(
   area: { x: number; y: number; width: number; height: number } = { x: 0, y: 0, ...page },
 ): string | null {
   const stage = currentStage
-  if (!stage) return null
+  if (!stage) return capturedThumbnail
 
   const scale = stage.scaleX()
   const widthPx = area.width * scale

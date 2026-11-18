@@ -1,20 +1,22 @@
 import { showSidebarPanel } from '@pascal-app/editor'
 import clsx from 'clsx'
 import { ArrowLeft, Download, PanelsTopLeft, Share2 } from 'lucide-react'
-import { useState, type KeyboardEvent } from 'react'
+import { lazy, Suspense, useState, type KeyboardEvent } from 'react'
 import { Link } from 'react-router'
 import CollabIndicator from '../components/editor/CollabIndicator'
 import DimensioningSelector from '../components/editor/DimensioningSelector'
-import ExportDialog from '../components/editor/ExportDialog'
 import PlanCheckBadge from '../components/editor/PlanCheckBadge'
 import PresenceAvatars from '../components/editor/PresenceAvatars'
 import SaveIndicator from '../components/editor/SaveIndicator'
-import ShareDialog from '../components/editor/ShareDialog'
 import { displayProjectName } from '../features/documents/projectName'
 import { useT } from '../i18n/useT'
 import { useAuthStore } from '../stores/authStore'
 import { useEditorStore } from '../stores/editorStore'
 import { useViewsStore } from '../stores/viewsStore'
+
+// Fenêtres chargées à l'ouverture seulement (lot Performance).
+const PascalExportDialog = lazy(() => import('./PascalExportDialog'))
+const ShareDialog = lazy(() => import('../components/editor/ShareDialog'))
 
 /** Identifiant de l'onglet Métrés dans la barre latérale de Pascal (`PascalEditorPage`). */
 export const METRES_TAB_ID = 'fabrics-metres'
@@ -103,16 +105,14 @@ export default function PascalNavbar({ isOwner }: { isOwner: boolean }) {
           <span className="max-sm:sr-only">{t('pascalEditor.export')}</span>
         </button>
       </div>
-      {exportOpen && (
-        <div className="fabrics-on-dark">
-          <ExportDialog onClose={() => setExportOpen(false)} />
-        </div>
-      )}
-      {shareOpen && projectId && (
-        <div className="fabrics-on-dark">
-          <ShareDialog projectId={projectId} isPlan onClose={() => setShareOpen(false)} />
-        </div>
-      )}
+      <Suspense fallback={null}>
+        {exportOpen && <PascalExportDialog onClose={() => setExportOpen(false)} />}
+        {shareOpen && projectId && (
+          <div className="fabrics-on-dark">
+            <ShareDialog projectId={projectId} isPlan onClose={() => setShareOpen(false)} />
+          </div>
+        )}
+      </Suspense>
     </header>
   )
 }

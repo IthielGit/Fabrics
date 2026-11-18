@@ -1,10 +1,9 @@
 import { applySceneGraphToEditor, Editor, type SceneGraph } from '@pascal-app/editor'
 import { EditorViewerToolbarLeft, EditorViewerToolbarRight } from '@pascal-app-host/viewer-toolbar'
 import { Calculator, History, MessageSquare } from 'lucide-react'
-import { useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import { Link, useParams } from 'react-router'
 import HistoryPanel from '../components/editor/HistoryPanel'
-import EditorStage from '../components/editor/EditorStage'
 import MeasurementsPanel from '../components/editor/MeasurementsPanel'
 import Notice from '../components/editor/Notice'
 import PlanSignals from '../components/editor/PlanSignals'
@@ -12,7 +11,6 @@ import { useAutosave } from '../components/editor/useAutosave'
 import { useCollaboration } from '../components/editor/useCollaboration'
 import { useComments } from '../components/editor/useComments'
 import { usePendingRestore } from '../components/editor/usePendingRestore'
-import ViewsScreen from '../components/views/ViewsScreen'
 import { commentsAvailable } from '../features/comments/commentsApi'
 import { forgetCreated, peekCreated } from '../features/persistence/justCreated'
 import { repository } from '../features/persistence/repository'
@@ -24,9 +22,14 @@ import PascalCommentsTab from '../pascal/PascalCommentsTab'
 import PascalNavbar, { METRES_TAB_ID } from '../pascal/PascalNavbar'
 import { pascalTabs, type PascalTab } from '../pascal/pascalTabs'
 import { usePascalLevelSync } from '../pascal/usePascalLevelSync'
-import EditorPage from './EditorPage'
+import { usePascalThumbnail } from '../pascal/usePascalThumbnail'
+import { EditorPage } from './lazyPages'
 import { useAuthStore } from '../stores/authStore'
 import { pushPascalScene, useEditorStore } from '../stores/editorStore'
+import { useViewsStore } from '../stores/viewsStore'
+
+// Façades, coupes et planche : chargées quand on ouvre les Vues (lot Performance).
+const ViewsScreen = lazy(() => import('../components/views/ViewsScreen'))
 
 type LoadState = 'loading' | 'ready' | 'notFound' | 'notPlan' | 'error'
 
@@ -108,6 +111,8 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
   usePendingRestore(projectId, ready)
   useComments(projectId, ready)
   usePascalLevelSync(ready)
+  const handleThumbnail = usePascalThumbnail(projectId, ready)
+  const viewsOpen = useViewsStore((state) => state.open)
 
   // Scène venue d'ailleurs (autre personne, version restaurée, annuler) → éditeur de Pascal.
   // Celles qui viennent de Pascal lui-même sont reconnues à leur identité et ignorées.
@@ -204,19 +209,17 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
         viewerToolbarRight={<EditorViewerToolbarRight />}
         onLoad={handleLoad}
         onSave={handleSave}
+        onThumbnailCapture={handleThumbnail}
       />
-      {/*
-        Plan de l'ancien éditeur, hors de l'écran et en lecture seule : il sert aux exports PNG, JPG et
-        PDF (cotes Client / Exécution comprises) et à la miniature, que Fabrics photographie sur ce plan.
-      */}
-      <div aria-hidden="true" inert className="pointer-events-none fixed top-0 h-[900px] w-[1400px]" style={{ left: -20000 }}>
-        <EditorStage readOnly />
-      </div>
       {/* Signaux du plan (export bloqué, surfaces à corriger…), en haut à droite, sous le bouton Split. */}
       <div className="fabrics-on-dark pointer-events-none absolute inset-x-0 bottom-0 top-14 z-40 [&_*]:pointer-events-auto">
         <PlanSignals />
       </div>
-      <ViewsScreen />
+      {viewsOpen && (
+        <Suspense fallback={null}>
+          <ViewsScreen />
+        </Suspense>
+      )}
       {/* Messages de Fabrics (enregistrement, export, versions) par-dessus l'éditeur. */}
       <div className="pointer-events-none absolute inset-x-0 top-14 z-50 [&>*]:pointer-events-auto">
         <Notice />

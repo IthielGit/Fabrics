@@ -6,7 +6,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
 - **Dernière tâche terminée :** M19 · A5 (18/11, à tester dans le navigateur). A1 à A4 validés par l'utilisateur le 2026-11-18.
-- **Prochaine tâche :** validation d'A5 (comparaison côte à côte), puis M19 · A6 Navigation, sons et aide (`/model sonnet`). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
+- **En cours :** lot Performance (lot 1 fait, lots 2 et 3 à faire). **Prochaine tâche :** validation d’A5 (comparaison côte à côte), puis M19 · A6 Navigation, sons et aide (`/model sonnet`). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -60,6 +60,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — Lot Performance (demande de l'utilisateur : « trop lourde et lente »)
+- **Lot 1 Chargement** : pages chargées à la demande (`src/pages/lazyPages.ts`) ; l'éditeur se précharge au survol d'une carte ; l'accueil n'utilise plus que les traductions de Pascal (`@pascal-app/core/i18n`) ; `public/_headers` : cache d'un an pour `/assets` sur Cloudflare Pages. Mint retiré (choix de l'utilisateur).
+- **Une seule version de l'éditeur de plans** : l'ancien plan Konva n'est plus monté à l'ouverture d'un plan. Il est chargé seulement pendant la fenêtre Exporter (`src/pascal/PascalExportDialog.tsx`, exports PNG / JPG / PDF avec cotes), et la miniature est photographiée par Pascal (`src/pascal/usePascalThumbnail.ts`, 640 × 360). L'adresse `/p/:id/ancien` et l'entrée « Ouvrir dans l'ancien éditeur » sont retirées. Vues et Partager sont chargés à l'ouverture. Les projets Visuel gardent leur éditeur (c'est le seul qu'ils ont).
+- **Textes de Pascal** : un seul fichier en français (`src/i18n/pascalTexts.ts`, généré par `node scripts/compile-pascal-texts.mjs`) : 3 960 textes sur 3 962 ; plus aucun autre catalogue de langue chargé.
+- Mesures (`vite preview`, comme en ligne, Chromium sans carte graphique) : accueil 1,6 s → 0,9 s ; ouverture d'un plan 8,6 s → 2,6 s (après survol) ; rafraîchissement 16 s → 5,1 s ; JavaScript de l'éditeur 12,5 → 11,5 Mo.
+- Limites : miniature photographiée après une modification (comme Pascal) ou 20 s après l'ouverture si le projet n'en a pas ; dans le navigateur de test, cette photo d'ouverture peut être mal cadrée (caméra encore en mouvement). L'accueil charge encore le moteur de Pascal (1,7 Mo) par le chemin enregistrement → conversion des scènes : à couper au lot 2.
+- Vérification : build ✓ lint ✓ 3 082 tests ✓ ; Chromium : export PNG téléchargé, Vues, miniature enregistrée, aucune erreur.
 
 ### 2026-11-18 — Hors jalon : lenteur du chargement en développement (demande de l'utilisateur)
 - Mesures (Chromium sans carte graphique, `npm run dev`) : ouverture de l'éditeur 35 s, rafraîchissement 18 s, environ 3 300 fichiers servis un par un (dont 2 235 de Pascal, en source TypeScript). Version compilée (`vite preview`, comme en ligne) : accueil 1,6 s, éditeur 8,6 s.

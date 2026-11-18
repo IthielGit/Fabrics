@@ -11,13 +11,12 @@ import {
   registerNode,
 } from '@pascal-app/core'
 import { registerEditorHostPanel } from '@pascal-app/editor'
-import { registerBundledLocales } from '@pascal-app/editor/locales'
 import { builtinPlugin } from '@pascal-app/nodes'
 import { bonesHostPanel, bonesPlugin } from '@pascal-app/plugin-bones'
 import { environmentHostPanel, environmentPlugin, environmentPresentation } from '@pascal-app/plugin-environment'
 import { treesHostPanel, treesPlugin } from '@pascal-app/plugin-trees'
 import { configureViewer, registerViewerPresentation } from '@pascal-app/viewer'
-import { pascalFrReview } from '../i18n/pascalFrReview'
+import { pascalTexts } from '../i18n/pascalTexts'
 
 // Fichiers du moteur (sons, icônes) servis par Fabrics (`vite.config.ts`). Les objets du catalogue
 // viennent du CDN de Pascal (adresse par défaut du moteur).
@@ -79,8 +78,6 @@ extendPluginDiscovery(async () => {
 loadBuiltins()
 void loadExternalPlugins()
 
-// Traductions françaises de Pascal pas encore relues (choix de l'utilisateur du 2026-11-18),
-// chargées d'abord : les traductions relues du catalogue officiel passent par-dessus.
-registerCompiledMessages('fr', '', pascalFrReview as CompiledTranslationMessages)
-// Catalogues de Pascal (dont le français) ; la langue active est celle de `src/i18n/runtime.tsx`.
-registerBundledLocales()
+// Textes de l'interface de Pascal : un seul fichier, en français (`scripts/compile-pascal-texts.mjs`).
+// Aucune autre langue n'est chargée (choix de l'utilisateur du 2026-11-18).
+registerCompiledMessages('fr', '', pascalTexts as CompiledTranslationMessages)
