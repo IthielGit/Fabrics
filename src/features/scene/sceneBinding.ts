@@ -12,6 +12,8 @@ import * as Y from 'yjs'
 import type { CanvasElement, FabricsDocument, Level } from '../../types/document'
 import { isLaterThan } from '../collab/yDocument'
 import { fabricsToScene } from './migrate/fromFabrics'
+import { deepEqual } from './deepEqual'
+import { keepNativeNodes } from './nativeNodes'
 import { emitModelChanged } from './modelEvents'
 import type { PlanScene } from './sceneTypes'
 import { settleScene } from './settle'
@@ -56,6 +58,16 @@ export function planToScene(document: FabricsDocument): PlanScene {
   return settleScene(fabricsToScene(document).scene)
 }
 
+/**
+ * Scène reconstruite depuis le document modifié par Fabrics, en gardant les nœuds créés dans Pascal
+ * (M19 B2, `keepNativeNodes`). `previous` est la scène dont `previousView` est la vue.
+ */
+export function rebuildScene(previous: PlanScene, previousView: FabricsDocument, current: FabricsDocument): PlanScene {
+  const rebuilt = planToScene(current)
+  const hasNative = Object.values(previous.nodes).some((node) => node.metadata?.fabrics === undefined && node.type !== 'site')
+  return hasNative ? settleScene(keepNativeNodes(previous, previousView, current, rebuilt)) : rebuilt
+}
+
 /** Vue recalculée, en gardant les objets de `previous` qui n'ont pas changé (affichage rapide). */
 export function viewOfScene(scene: PlanScene, previous?: FabricsDocument | null): FabricsDocument {
   const view = sceneToFabricsView(scene)
@@ -88,20 +100,7 @@ function reuse<T extends CanvasElement | Level>(previous: readonly T[], next: re
   })
 }
 
-/** Égalité de valeurs JSON, quel que soit l'ordre des propriétés. */
-export function deepEqual(a: unknown, b: unknown): boolean {
-  if (a === b) return true
-  if (typeof a !== 'object' || typeof b !== 'object' || a === null || b === null) return false
-  if (Array.isArray(a) !== Array.isArray(b)) return false
-  if (Array.isArray(a)) {
-    const other = b as unknown[]
-    return a.length === other.length && a.every((value, index) => deepEqual(value, other[index]))
-  }
-  const left = Object.entries(a as Record<string, unknown>).filter(([, v]) => v !== undefined)
-  const right = b as Record<string, unknown>
-  const rightCount = Object.values(right).filter((v) => v !== undefined).length
-  return left.length === rightCount && left.every(([key, value]) => deepEqual(value, right[key]))
-}
+export { deepEqual }
 
 function sameList<T>(a: readonly T[], b: readonly T[]): boolean {
   return a.length === b.length && a.every((item, index) => item === b[index])
@@ -161,7 +160,8 @@ export class SceneBinding {
       // l'éditeur affiche (sinon elle est en retard : on repart de l'affichage).
       const stored = this.host.getScene?.()
       const settled = stored ? settleScene(stored) : null
-      const scene = settled && deepEqual(sceneToFabricsView(settled), local) ? settled : planToScene(local)
+      const view = settled ? sceneToFabricsView(settled) : null
+      const scene = settled && view && deepEqual(view, local) ? settled : settled && view ? rebuildScene(settled, view, local) : planToScene(local)
       writeScene(this.ydoc, scene, SCENE_SEED_ORIGIN)
       this.adopt(scene, local, false)
     } else {
@@ -169,7 +169,7 @@ export class SceneBinding {
       if (!shared) return
       const savedAt = readSceneSavedAt(this.ydoc)
       if (savedAt !== null && isLaterThan(this.host.getSavedAt?.(), savedAt)) {
-        const scene = planToScene(local)
+        const scene = rebuildScene(shared, sceneToFabricsView(shared), local)
         applySceneDiff(this.ydoc, shared, scene, SCENE_SEED_ORIGIN)
         this.adopt(scene, local, false)
       } else {
@@ -260,7 +260,7 @@ export class SceneBinding {
   private pushLocal(): void {
     const current = this.host.getDocument()
     if (!this.synced || !this.scene || !current || current === this.synced) return
-    const next = planToScene(current)
+    const next = rebuildScene(this.scene, this.synced, current)
     applySceneDiff(this.ydoc, this.scene, next, SCENE_LOCAL_ORIGIN)
     this.adopt(next, current, false)
   }

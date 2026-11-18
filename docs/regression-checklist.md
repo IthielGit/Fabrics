@@ -32,7 +32,9 @@ apportent les outils de Pascal.
 | Collaboration à deux navigateurs, historique et aperçu de version, commentaires | M14, M15, M16 |
 | Palette de commandes (Ctrl+K), raccourcis, réglages audio, visite à la première personne, réalité virtuelle | M19 A6 |
 | Onglet Construire ; mur tracé en tapant `5000` (lu en mm) ; accrochages (Maj / Alt) ; cotes, niveaux, grille et surfaces en mm / m² | M19 B1 (outils de Pascal) |
-| Murs, ouvertures, toitures, escaliers modifiés en 3D, même objet en 2D | **reporté à B2** |
+| Mur allongé de 4000 à 5000 mm en 3D (glisser son extrémité) → 5000 mm sur le plan et dans Métrés ; le mur raccordé suit | Auto : `scene/edit3d.test.ts` ; Nav. (M19 B2) |
+| Porte élargie puis supprimée en 3D → surfaces nettes recalculées, aucune incohérence | Auto : `scene/edit3d.test.ts` ; Nav. (M19 B2) |
+| Mur, porte, pièce, niveau dessinés avec Construire → présents dans Métrés (« Mur 1 »…), gardés après un changement de cotation | Auto : `scene/edit3d.test.ts` ; Nav. (M19 B2) |
 
 ## 0. Référence figée (baseline M17)
 
