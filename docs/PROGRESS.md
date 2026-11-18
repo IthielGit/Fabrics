@@ -4,9 +4,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M17 Audit et intégration de Pascal (gate G0) : fait sur la branche `feat/m17-pascal` (dossier `Fabrics-m17`), en attente du verdict de l'utilisateur. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M16 · Lots D et E · commentaires pour les membres lecteurs et en direct (15/11, validés par l'utilisateur) : fin de M16
-- **Prochaine tâche :** M18 Modèle BIM unifié, après validation du gate G0 par l'utilisateur
+- **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
+- **Dernière tâche terminée :** M17 · gate G0 (18/11, validé par l'utilisateur)
+- **Prochaine tâche :** M18 Modèle BIM unifié (plan à présenter avant de coder)
+- **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
 - **Problèmes connus :** le test de durée « 600 murs en moins de 200 ms » (`src/features/building/model.test.ts`) échoue parfois quand toute la suite tourne sur une machine chargée (passe seul) ; aucun test automatisé du rendu Konva (clics, poignées, glisser) : à contrôler à la main ; avertissement de taille de bundle au build (Konva, ~600 Ko, sans conséquence pour M1) ; voir D16 et D17 (lint = oxlint, TypeScript 7)
@@ -39,7 +40,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M15 Historique de versions | terminé (lots A à D) | 2026-11-15 |
 | M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
-| M17 Audit et intégration de Pascal (G0) | fait, verdict de l'utilisateur attendu | 2026-11-18 |
+| M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
 | M18 Modèle BIM unifié (G1) | à faire | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |

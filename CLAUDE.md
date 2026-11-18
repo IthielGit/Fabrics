@@ -110,9 +110,10 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
 - TypeScript strict. Pas de `any` sauf justification en commentaire.
 - Composants React en fonctions, un composant par fichier, nommage `PascalCase.tsx`.
 - Code (variables, fonctions, fichiers) en **anglais** ; interface utilisateur en **français**.
-  Tous les textes d'interface passent par `src/i18n/fr.ts` (prépare la traduction future). Les
-  composants repris de Pascal passent par Lingui (catalogue français) ; un seul système de
-  traduction est retenu en M17 (doublon à trancher).
+  Système de traduction retenu en M17 : **Lingui** (catalogue français de Pascal, choix de
+  l'utilisateur du 2026-11-18, ADR 0003). Les composants repris de Pascal passent par Lingui ; les
+  textes de `src/i18n/fr.ts` y sont versés écran par écran en M19 (lot A), puis `fr.ts` disparaît.
+  D'ici là, un texte d'un écran Fabrics pas encore reconstruit reste dans `fr.ts`.
 - Logique métier (géométrie, métrés, unités) dans `src/features/*/` en **fonctions pures**,
   testées avec Vitest. Aucun calcul de métré dans un composant React.
 - **Unités : toujours « Métrique architectural » (comme Revit).** Longueurs en `mm` entiers

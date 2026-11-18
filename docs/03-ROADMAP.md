@@ -1154,6 +1154,8 @@ code ; liste les écarts Bloquant / Majeur / Mineur et décide GO / NO-GO. »
 
 ## M17 — Audit et intégration de Pascal (gate G0)
 
+**Terminé le 2026-11-18, gate G0 validé PASS par l'utilisateur** (rapport : `docs/phases/M17-report.md`).
+
 Prérequis : Git, Node.js, **Bun**, Python 3.11+ (pour IfcOpenShell), Docker facultatif ; WSL2 seulement
 si un script de Pascal l'exige ; navigateur compatible WebGPU, avec repli WebGL2. Travail sur une
 branche dédiée.

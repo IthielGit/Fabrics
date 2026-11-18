@@ -86,7 +86,7 @@ plans vers la scène Pascal comparée à la baseline M17.
 
 ## 7. Gate G0
 
-**PASS** (proposé par Claude, à confirmer par l'utilisateur).
+**PASS** : proposé par Claude, **validé par l'utilisateur le 2026-11-18**.
 
 - Les trois critères G0 sont remplis (§ 2), avec preuves chiffrées (§ 3).
 - Aucun écart avec la référence de Pascal ; aucune modification du code de Pascal ; aucune fonction de
