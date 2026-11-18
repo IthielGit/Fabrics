@@ -1,0 +1,222 @@
+/**
+ * Scène Pascal (m) → vue `FabricsDocument` (mm) pour l'éditeur actuel (ADR 0004). Fonction pure.
+ *
+ * Inverse exact de `fabricsToScene` : un plan converti puis relu redonne le même document, au
+ * millionième de mm près. La vue n'est jamais enregistrée : la scène reste la seule source.
+ */
+import type {
+  CanvasElement,
+  FabricsDocument,
+  Level,
+  OpeningElement,
+  PlanSettings,
+  WallElement,
+} from '../../../types/document'
+import { dimensionOffset, furnitureCorner, roundMm } from '../migrate/geometry'
+import { LENGTH_FIELDS, lengthsToMillimetres } from '../migrate/lengthFields'
+import { FABRICS_NODE_PREFIX } from '../nodes/fabricsNodes'
+import { roomClearOutlines } from './roomClearFloor'
+import { BUILDING_ID, type FabricsNodeMeta, type PlanScene, type SceneNodeData } from '../sceneTypes'
+import { mToMm, pascalRotationToDegrees, planPointsToFlat } from '../units'
+
+type Vec2 = [number, number]
+type Vec3 = [number, number, number]
+
+const FABRICS_KINDS = new Set(Object.keys(FABRICS_NODE_PREFIX))
+
+function metaOf(node: SceneNodeData | undefined): FabricsNodeMeta | undefined {
+  return node?.metadata?.fabrics as FabricsNodeMeta | undefined
+}
+
+/** Copie sans les clés `undefined`. */
+function defined<T extends Record<string, unknown>>(value: T): T {
+  return Object.fromEntries(Object.entries(value).filter(([, v]) => v !== undefined)) as T
+}
+
+export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
+  const { nodes } = scene
+  const building = nodes[BUILDING_ID]
+  const settings = (building?.metadata?.fabrics ?? {}) as {
+    version: 4
+    unit: 'px' | 'mm'
+    page: { width: number; height: number; background: string }
+    plan?: PlanSettings
+    levelsAbsent?: true
+  }
+
+  // --- Niveaux ---
+  const levelNodes = Object.values(nodes)
+    .filter((n) => n.type === 'level' && !(metaOf(n) as { synthetic?: boolean } | undefined)?.synthetic)
+    .sort((a, b) => (metaOf(a)?.order ?? 0) - (metaOf(b)?.order ?? 0))
+  const levels: Level[] = []
+  let previousTop: number | null = null
+  for (const node of levelNodes) {
+    const meta = metaOf(node) as FabricsNodeMeta & { slabThickness: number }
+    const height = mToMm(node.height as number)
+    const base = mToMm((node.baseElevation as number | undefined) ?? 0)
+    const elevation = roundMm(previousTop === null ? base : previousTop + base)
+    previousTop = elevation + height
+    levels.push({ id: meta.id, name: node.name ?? '', elevation, height, slabThickness: mToMm(meta.slabThickness) })
+  }
+
+  /** Niveau Fabrics d'un nœud : celui de son niveau ancêtre, sauf indication contraire. */
+  const levelIdOf = (node: SceneNodeData): string | undefined => {
+    const meta = metaOf(node)
+    if (meta?.levelId !== undefined) return meta.levelId ?? undefined
+    let current: SceneNodeData | undefined = node
+    while (current && current.type !== 'level') current = current.parentId ? nodes[current.parentId] : undefined
+    return current ? metaOf(current)?.id : undefined
+  }
+
+  /** Champs communs d'un élément. */
+  const baseOf = (node: SceneNodeData, meta: FabricsNodeMeta) =>
+    defined({
+      id: meta.id,
+      name: node.name ?? '',
+      x: meta.base?.x === undefined ? 0 : mToMm(meta.base.x),
+      y: meta.base?.y === undefined ? 0 : mToMm(meta.base.y),
+      rotation: meta.base?.rotation ?? 0,
+      opacity: meta.base?.opacity ?? 1,
+      locked: meta.base?.locked ?? false,
+      hidden: node.visible === false,
+      levelId: levelIdOf(node),
+    })
+
+  // --- Éléments ---
+  const clearOutlines = roomClearOutlines(nodes)
+  const elements: { order: number; element: CanvasElement }[] = []
+  const wallSegments = new Map<string, SceneNodeData[]>()
+
+  for (const node of Object.values(nodes)) {
+    const meta = metaOf(node)
+    if (!meta || node.type === 'level' || node.type === 'building' || node.type === 'site') continue
+    const props = meta.props ?? {}
+    const push = (element: CanvasElement) => elements.push({ order: meta.order, element })
+
+    switch (node.type) {
+      case 'wall': {
+        const list = wallSegments.get(meta.id) ?? []
+        list.push(node)
+        wallSegments.set(meta.id, list)
+        break
+      }
+      case 'door':
+      case 'window':
+        push(openingOf(node, meta))
+        break
+      case 'zone': {
+        // Pièce fermée par des murs : son sol intérieur (modèle de Pascal) ; sinon le contour tracé.
+        const outline = clearOutlines.get(node.id) ?? (node.polygon as Vec2[])
+        push({ ...baseOf(node, meta), type: 'room', points: planPointsToFlat(outline), ...props } as CanvasElement)
+        break
+      }
+      case 'item': {
+        const asset = node.asset as { id: string; dimensions: Vec3 }
+        const position = node.position as Vec3
+        const width = mToMm(asset.dimensions[0])
+        const depth = mToMm(asset.dimensions[2])
+        const rotation = pascalRotationToDegrees((node.rotation as Vec3)[1])
+        const [x, y] = furnitureCorner(mToMm(position[0]), mToMm(position[2]), width, depth, rotation)
+        push({ ...baseOf(node, meta), x, y, rotation, type: 'furniture', symbol: asset.id, width, depth, ...props } as CanvasElement)
+        break
+      }
+      case 'structural-grid': {
+        const [x1, y1] = node.start as Vec2
+        const [x2, y2] = node.end as Vec2
+        push({
+          ...baseOf(node, meta),
+          type: 'axis',
+          points: [mToMm(x1), mToMm(y1), mToMm(x2), mToMm(y2)],
+          label: (props.label as string | undefined) ?? (node.label as string),
+        } as CanvasElement)
+        break
+      }
+      case 'construction-dimension': {
+        const [a, b] = node.anchors as Vec3[]
+        const baseline = node.baseline as { origin: Vec2; direction: Vec2 }
+        const x1 = mToMm(a[0])
+        const y1 = mToMm(a[2])
+        const origin: Vec2 = [mToMm(baseline.origin[0]), mToMm(baseline.origin[1])]
+        push({
+          ...baseOf(node, meta),
+          type: 'dimension',
+          points: [x1, y1, mToMm(b[0]), mToMm(b[2])],
+          offset: dimensionOffset(x1, y1, origin, baseline.direction),
+          ...props,
+        } as CanvasElement)
+        break
+      }
+      default:
+        if (FABRICS_KINDS.has(node.type)) {
+          const element = node.element as Record<string, unknown>
+          const type = element.type as string
+          push({
+            ...lengthsToMillimetres(element, LENGTH_FIELDS[type] ?? []),
+            id: meta.id,
+            name: node.name ?? '',
+            hidden: node.visible === false,
+            ...defined({ levelId: levelIdOf(node) }),
+          } as unknown as CanvasElement)
+        }
+    }
+  }
+
+  for (const [, segments] of wallSegments) {
+    segments.sort((a, b) => (metaOf(a)?.segment ?? 0) - (metaOf(b)?.segment ?? 0))
+    const first = segments[0]
+    const meta = metaOf(first) as FabricsNodeMeta
+    const start = first.start as Vec2
+    const points = meta.degenerate
+      ? [mToMm(start[0]), mToMm(start[1])]
+      : planPointsToFlat([start, ...segments.map((s) => s.end as Vec2)])
+    const wall: WallElement = {
+      ...(baseOf(first, meta) as Omit<WallElement, 'type' | 'points' | 'thickness' | 'height' | 'fill'>),
+      type: 'wall',
+      points,
+      thickness: mToMm(first.thickness as number),
+      height: mToMm(first.height as number),
+      ...(meta.props as { fill: string; material?: WallElement['material'] }),
+    }
+    elements.push({ order: meta.order, element: wall })
+  }
+
+  elements.sort((a, b) => a.order - b.order)
+
+  const page = { ...settings.page, width: mToMm(settings.page.width), height: mToMm(settings.page.height) }
+  const plan = settings.plan && {
+    ...settings.plan,
+    gridSize: mToMm(settings.plan.gridSize),
+    defaultWallThickness: mToMm(settings.plan.defaultWallThickness),
+    defaultWallHeight: mToMm(settings.plan.defaultWallHeight),
+  }
+  return defined({
+    version: settings.version,
+    unit: settings.unit,
+    page,
+    elements: elements.map((e) => e.element),
+    plan,
+    levels: settings.levelsAbsent ? undefined : levels,
+  }) as FabricsDocument
+
+  function openingOf(node: SceneNodeData, meta: FabricsNodeMeta): OpeningElement {
+    const props = meta.props ?? {}
+    const position = node.position as Vec3
+    const height = mToMm(node.height as number)
+    const parent = node.parentId ? nodes[node.parentId] : undefined
+    const parentMeta = parent?.type === 'wall' ? metaOf(parent) : undefined
+    return {
+      ...baseOf(node, meta),
+      type: 'opening',
+      ...defined({ style: props.style as OpeningElement['style'], tiltTurn: props.tiltTurn as boolean | undefined }),
+      kind: props.kind as OpeningElement['kind'],
+      wallId: parentMeta ? parentMeta.id : (props.wallId as string),
+      segmentIndex: parentMeta ? (parentMeta.segment ?? 0) : (props.segmentIndex as number),
+      offset: mToMm(position[0]),
+      width: mToMm(node.width as number),
+      height,
+      sillHeight: roundMm(mToMm(position[1]) - height / 2),
+      hinge: node.hingesSide === 'right' ? 'end' : 'start',
+      side: node.side === 'back' ? 'right' : 'left',
+    } as OpeningElement
+  }
+}

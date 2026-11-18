@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M18 · lot A, branchement technique de `@pascal-app/core` (18/11)
-- **Prochaine tâche :** M18 · lot B, migration `FabricsDocument` → scène Pascal et vue calculée
+- **Dernière tâche terminée :** M18 · lot B, conversion plan Fabrics ↔ scène Pascal (18/11)
+- **Prochaine tâche :** M18 · lot C, la scène devient le document en mémoire de l'éditeur
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
@@ -41,7 +41,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
-| M18 Modèle BIM unifié (G1) | en cours (lot A fait) | |
+| M18 Modèle BIM unifié (G1) | en cours (lots A et B faits) | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
@@ -59,6 +59,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M18 · Lot B : conversion plan Fabrics ↔ scène Pascal
+- Fait : `src/features/scene/` : `migrate/fromFabrics.ts` (plan → scène, fonction pure : niveaux empilés comme Pascal, mur à N côtés → N `wall`, portes / fenêtres / baies → `door` / `window` sur leur côté, pièces → `zone`, mobilier → `item`, axes → `structural-grid`, cotes → `construction-dimension`) ; `nodes/fabricsNodes.ts` (coupe, toiture, escalier, cheminée, plateforme, textes, formes, images, fonds DXF : types déclarés par `registerNode`, sans modifier Pascal) ; `view/toFabricsView.ts` (vue calculée) ; `settle.ts` (chargement par Pascal) ; `view/roomClearFloor.ts`.
+- Une seule conversion m ↔ mm : `mToMm` / `mmToM` de `src/features/units/format.ts` (arrondi au millionième de mm). `zod` lu dans la copie de Pascal (alias).
+- Découvertes : (1) au chargement, Pascal reprend toute pièce fermée par des murs et la redessine à l'axe des murs ; **choix de l'utilisateur : modèle de pièces de Pascal** (ADR 0006), les métrés mesurent le sol intérieur calculé par Pascal ; (2) une dalle Pascal remonte les portes posées dessus (+150 mm sur la terrasse de la grande maison) : les plateformes restent des nœuds Fabrics.
+- Preuves : aller-retour exact (plan de test avec chaque type, exemple, grande maison) ; scène validée par `validateBuildJson` ; 31 pièces sur 31 identiques (surface, périmètre, dimensions) après chargement par Pascal ; **baseline M17 complète identique par la scène** (28 tests) ; HOUSE-01 et HOUSE-02 conformes au calcul à la main pour ce que Fabrics calcule (pièces, murs, ouvertures, trémie ; volumes et dalles en M21) ; EDGE-01 exécuté : identifiants en double refusés avec une erreur claire, unités mêlées OK, 3 écarts de métrés (fenêtre hors du mur déduite, chevauchement non réduit à l'union, pas d'avertissement « hauteur nulle ») **à corriger dans M18, lot F** (choix de l'utilisateur).
+- Commit : feat(m18): conversion plan Fabrics ↔ scène Pascal (lot B)
 
 ### 2026-11-18 — M18 · Lot A : branchement technique de Pascal
 - Plan validé par l'utilisateur (`docs/phases/M18-plan.md`) : vue calculée (1 A), `Y.UndoManager` seul historique (2 A), **script de migration de la base Supabase (3 B)**, types de nœuds Fabrics par `registerNode` (4 A), repère du mur d'origine (5 A). Travail dans le dossier séparé `Fabrics-m18`, branche `feat/m18-bim-model`.

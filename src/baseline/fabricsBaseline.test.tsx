@@ -22,6 +22,9 @@ import { measurementsToCsv, measurementsToFlatCsv, type CsvLabels } from '../fea
 import type { MetresVersion } from '../features/measurements/tables'
 import { EXECUTION_LABELS } from '../i18n/dimensioningLabels'
 import { fr } from '../i18n/fr'
+import { fabricsToScene } from '../features/scene/migrate/fromFabrics'
+import { settleScene } from '../features/scene/settle'
+import { sceneToFabricsView } from '../features/scene/view/toFabricsView'
 import type { Project, SectionLineElement } from '../types/document'
 
 /** Date fixe : les fichiers ne doivent pas changer d'un jour à l'autre. */
@@ -44,9 +47,20 @@ afterAll(() => {
   vi.restoreAllMocks()
 })
 
-const FIXTURES: { key: string; create: (now: Date) => Project }[] = [
-  { key: 'example', create: createExamplePlanProject },
-  { key: 'large-house', create: createLargeHouseProject },
+/** M18 (gate G1) : le même plan passé par la scène Pascal (plan → scène → chargement par Pascal, qui
+ * reprend les pièces à l'axe des murs → vue calculée) doit produire exactement les mêmes fichiers. */
+function viaPascalScene(create: (now: Date) => Project) {
+  return (now: Date): Project => {
+    const project = create(now)
+    return { ...project, document: sceneToFabricsView(settleScene(fabricsToScene(project.document).scene)) }
+  }
+}
+
+const FIXTURES: { key: string; route: string; create: (now: Date) => Project }[] = [
+  { key: 'example', route: 'Fabrics', create: createExamplePlanProject },
+  { key: 'large-house', route: 'Fabrics', create: createLargeHouseProject },
+  { key: 'example', route: 'scène Pascal', create: viaPascalScene(createExamplePlanProject) },
+  { key: 'large-house', route: 'scène Pascal', create: viaPascalScene(createLargeHouseProject) },
 ]
 
 function json(value: unknown): string {
@@ -85,7 +99,7 @@ function sheetSvg(project: Project, mode: DimensioningMode): string {
   return `${renderToStaticMarkup(<ViewDrawing drawing={sheet.drawing} />)}\n`
 }
 
-describe.each(FIXTURES)('baseline $key', ({ key, create }) => {
+describe.each(FIXTURES)('baseline $key ($route)', ({ key, create }) => {
   let project: Project
   const file = (name: string) => `${DIR}/${key}/${name}`
 

@@ -16,6 +16,10 @@
    atteignables par un script : ils restent convertis à l'ouverture, avec la même fonction.
 4. Éléments absents de Pascal : **types de nœuds Fabrics** par `registerNode` (A).
 5. Murs à plusieurs côtés : repère du mur d'origine, commentaire sur le premier segment (A).
+6. **Pièces : modèle de Pascal** (choix de l'utilisateur pendant le lot B, ADR 0006) : contour à l'axe
+   des murs, sol intérieur calculé par Pascal et mesuré par Fabrics.
+7. **EDGE-01 corrigé dans M18, lot F** (choix de l'utilisateur) : fenêtre hors du mur sans surface
+   déduite, union des ouvertures qui se chevauchent, avertissement « hauteur nulle ».
 
 ## 1. Existant (constaté le 2026-11-18)
 
@@ -37,16 +41,16 @@ Correspondance des types (à confirmer élément par élément dans le lot B) :
 | niveau | `level` (dans `site` / `building`) | altitude, hauteur |
 | `wall` (polyligne) | plusieurs `wall` (un par segment) | un mur Fabrics à N côtés → N murs Pascal ; table de correspondance gardée |
 | `opening` (porte, fenêtre, baie) | `door`, `window` (enfants du mur) | position relative → `position` en m le long du mur |
-| `room` | `zone` | contour |
-| plafond, dalle implicite | `ceiling`, `slab` | |
-| `roof` | `roof` / `roof-segment` | |
-| `stair` | `stair` / `stair-segment` | trémie → `floor-opening` |
-| `chimney` | `chimney` | |
-| `platform` | `slab` surélevée | à vérifier |
+| `room` | `zone` | **ADR 0006** : contour à l'axe des murs (Pascal), sol intérieur mesuré |
+| plafond, dalle implicite | — | gardés dans les réglages du niveau et de la pièce (M19 : `ceiling`, `slab`) |
+| `roof` | `fabrics:roof` | contour libre ≠ `roof-segment` rectangulaire : nœud Fabrics jusqu'en M19 |
+| `stair` | `fabrics:stair` | formes L / U et trémie calculée : nœud Fabrics jusqu'en M19 |
+| `chimney` | `fabrics:chimney` | une `chimney` Pascal exige un versant de toiture : nœud Fabrics |
+| `platform` | `fabrics:platform` | une `slab` porte les murs et remonte les portes (constaté) : nœud Fabrics |
 | `axis` | `structural-grid` | |
 | `dimension` | `construction-dimension` / `measurement` | |
 | `furniture` | `item` | bibliothèque Fabrics → `item` avec référence d'objet |
-| fond DXF (`line` + `groupId`, `text`) | `guide` ? | à décider (point 4) |
+| fond DXF (`line` + `groupId`, `text`) | `fabrics:annotation` | `guide` n'est qu'une image |
 | `section` (trait de coupe) | — | **absent** : type ajouté par `registerNode` (point 4) |
 | `text`, `rect`, `ellipse`, `image` dans un plan | — | **absents** : type « annotation » ajouté (point 4) |
 
@@ -148,6 +152,8 @@ Chaque lot : `npm run check:all` vert, case cochée, journal, commit.
 - Métrés, cotes Client / Exécution, repères, façades, coupes, planche, exports (PDF, CSV, XLSX, DXF,
   IFC) calculés depuis la scène (via la vue calculée en M18 ; lecture directe des nœuds en M21).
 - Comparaison complète à la baseline M17 (métrés JSON, SVG, exports) ; `test:pascal` inchangé.
+- EDGE-01 (décision 7) : fenêtre hors du mur sans surface déduite, union des ouvertures qui se
+  chevauchent, avertissement « hauteur nulle » ; écarts voulus documentés, référence mise à jour à part.
 - `docs/phases/M18-report.md`, `docs/capabilities.md`, `docs/regression-checklist.md`, `docs/risks.md`
   (R2, R3, R4), roadmap, journal.
 
