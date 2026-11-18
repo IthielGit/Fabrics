@@ -31,6 +31,10 @@ jobs:
       - name: Installation de Pascal (bun.lock gelé)
         run: npm run install:pascal
 
+      - name: Construire les paquets de Pascal (les tests lisent leur dossier dist/)
+        working-directory: packages/pascal
+        run: bunx turbo run build --filter='@pascal-app/*'
+
       - name: npm run check:all
         run: npm run check:all
 

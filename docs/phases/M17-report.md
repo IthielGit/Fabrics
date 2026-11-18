@@ -77,7 +77,8 @@ de 10 minutes d'une commande dans Claude Code ; elle reste la commande de réfé
   (`core`, `viewer`, `nodes`, `mcp`, `ifc-converter`, `geometry-script`, `cli`, et les deux applications
   Next.js). Les fichiers produits (`dist/`, `.next/`) ne sont pas versionnés.
 - Relecture par l'utilisateur des calculs à la main de HOUSE-01, HOUSE-02 et EDGE-01.
-- Premier passage de la CI GitHub (Linux) : relever `known-failures-linux.json`.
+- ~~Premier passage de la CI GitHub (Linux) : relever `known-failures-linux.json`.~~ **Fait** (§ 8) :
+  CI verte sur Linux ; pas de fichier de référence Linux, donc tout échec y est bloquant.
 
 ## 6. Suite (M18)
 
@@ -95,3 +96,22 @@ plans vers la scène Pascal comparée à la baseline M17.
 - Réserves, sans effet sur le verdict : test chronométré « 600 murs » instable sous charge (connu) ;
   référence Linux à relever au premier passage de la CI ; calculs à la main des fixtures à relire.
 - Merge dans `main` (qui déclenche le déploiement) : seulement après l'accord de l'utilisateur.
+
+## 8. CI GitHub (Linux) : correctifs après le premier passage
+
+Le premier passage de la CI (`check.yml`, Ubuntu) a échoué en deux temps ; corrigé en trois commits
+(`f5dc4e4`, `edcefca`, `a89a7f0`) :
+
+1. **929 échecs** : les paquets de Pascal n'étaient pas compilés (`Cannot find module
+   '@pascal-app/core/building'`). Correctif : étape « Construire les paquets de Pascal » (turbo build)
+   avant `check:all`. Ajout du diagnostic des échecs dans `scripts/test-pascal.mjs` (`f5dc4e4`).
+2. **23 échecs** : les tests d'import IFC de `ifc-converter` lisent des fichiers IFC d'exemple, absents
+   de Git (licences non vérifiées, `CLAUDE.md`). Correctif : sans ces fichiers, le script saute les
+   **6** fichiers de tests qui les lisent, et l'écrit dans le journal ; avec les fichiers, rien ne change
+   (107 tests) (`a89a7f0`).
+
+Résultat : **`check-all` vert sur Linux** (run `a89a7f0`, 6 min 25 s). Lecture pour la référence Linux :
+aucun échec (la CI n'a pas de fichier `known-failures-linux.json` ; tout échec y est bloquant).
+
+Limite : sur la CI, les 6 fichiers d'import IFC ne tournent pas. Ils restent couverts sur le poste de
+développement, où les fichiers d'exemple sont présents.
