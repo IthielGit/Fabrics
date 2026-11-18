@@ -1196,6 +1196,10 @@ branche dédiée.
 
 ## M18 — Modèle BIM unifié (gate G1)
 
+Plan validé le 2026-11-18 (`docs/phases/M18-plan.md`, lots A à F ; décisions 1 A, 2 A, 3 B, 4 A, 5 A).
+**Lot A (branchement technique) fait le 2026-11-18** : `@pascal-app/core` lu par `src/features/scene/`
+(alias Vite, `paths` TypeScript, `npm run build:pascal`), ADR 0004 et 0005, test d'architecture.
+
 - [ ] La scène Pascal (`@pascal-app/core`) devient le document des projets Plan, enregistré dans Supabase
 - [ ] Migration testée des plans existants vers des nœuds Pascal : niveaux, murs, ouvertures, pièces,
       dalles, toitures, escaliers, cheminées, plateformes, axes, cotes, coupes, mobilier, fonds DXF

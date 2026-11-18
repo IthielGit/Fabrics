@@ -40,6 +40,16 @@ describe('architecture de Fabrics', () => {
     expect(offenders).toEqual([])
   })
 
+  // M18 (ADR 0004) : un seul point d'entrée vers la scène Pascal, `src/features/scene/`.
+  it("n'importe @pascal-app/core que depuis src/features/scene/", () => {
+    const offenders = files.flatMap(([file, text]) =>
+      importsOf(text)
+        .filter((spec) => spec.startsWith('@pascal-app/core') && !file.startsWith('./features/scene/'))
+        .map((spec) => `${file} → ${spec}`),
+    )
+    expect(offenders).toEqual([])
+  })
+
   it("n'importe aucun module retiré", () => {
     const offenders = files.flatMap(([file, text]) =>
       importsOf(text).flatMap((spec) =>

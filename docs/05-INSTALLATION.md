@@ -84,6 +84,7 @@ reconnues. Ensuite, à la racine du projet :
 ```bash
 npm install              # Fabrics
 npm run install:pascal   # Pascal, avec Bun, aux versions exactes de son bun.lock (~2 min)
+npm run build:pascal     # compile les paquets de Pascal (Fabrics lit @pascal-app/core depuis M18) ; ~5 min la première fois
 npm run check:all        # tout vérifier : build, lint, tests Fabrics, tests Pascal, lint Pascal, doublons
 ```
 

@@ -9,6 +9,7 @@
     "lint": "oxlint",
     "test": "vitest run",
     "install:pascal": "bun install --cwd packages/pascal --frozen-lockfile",
+    "build:pascal": "bunx --cwd packages/pascal turbo run build --filter=@pascal-app/*",
     "test:pascal": "node scripts/test-pascal.mjs",
     "lint:pascal": "bun run --cwd packages/pascal lint",
     "check:duplicates": "jscpd",

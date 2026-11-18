@@ -21,7 +21,13 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
-    "noFallthroughCasesInSwitch": true
+    "noFallthroughCasesInSwitch": true,
+
+    /* Pascal (M18, ADR 0002 § 5) : types du paquet compilé */
+    "paths": {
+      "@pascal-app/core": ["./packages/pascal/packages/core/dist/index.d.ts"],
+      "zod": ["./packages/pascal/node_modules/zod/index.d.ts"]
+    }
   },
   "include": ["src"]
 }

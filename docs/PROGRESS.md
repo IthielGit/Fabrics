@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M17 · gate G0 (18/11, validé par l'utilisateur)
-- **Prochaine tâche :** M18 Modèle BIM unifié (plan à présenter avant de coder)
+- **Dernière tâche terminée :** M18 · lot A, branchement technique de `@pascal-app/core` (18/11)
+- **Prochaine tâche :** M18 · lot B, migration `FabricsDocument` → scène Pascal et vue calculée
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
 - **Hors jalon (demande de l'utilisateur) :** taille de la page modifiable dans Propriétés (largeur, hauteur, formats proposés) pour plans et visuels
@@ -41,7 +41,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M15 bis Réorganisation de l'éditeur | terminé (lots A à D) | 2026-11-15 |
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
-| M18 Modèle BIM unifié (G1) | à faire | |
+| M18 Modèle BIM unifié (G1) | en cours (lot A fait) | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | à faire | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
@@ -59,6 +59,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Vérification : build ✓ lint ✓ tests ✓ — testé dans le navigateur : …
 - Commit : feat: outil rectangle
 -->
+
+### 2026-11-18 — M18 · Lot A : branchement technique de Pascal
+- Plan validé par l'utilisateur (`docs/phases/M18-plan.md`) : vue calculée (1 A), `Y.UndoManager` seul historique (2 A), **script de migration de la base Supabase (3 B)**, types de nœuds Fabrics par `registerNode` (4 A), repère du mur d'origine (5 A). Travail dans le dossier séparé `Fabrics-m18`, branche `feat/m18-bim-model`.
+- Fait : `@pascal-app/core` résolu vers sa version compilée (`vite.config.ts`, `paths` dans `tsconfig.app.json`) ; script `npm run build:pascal`, ajouté en tête de `check:all` ; test d'architecture : seul `src/features/scene/` importe `@pascal-app/core` ; premier test (`src/features/scene/smoke.test.ts`) : un mur Pascal validé depuis Fabrics ; ADR 0004 (vue calculée) et 0005 (un seul historique) ; `docs/05-INSTALLATION.md`.
+- À noter : dès que l'application elle-même importera Pascal (lot C), Cloudflare Pages devra aussi installer et compiler Pascal (commande de build à changer, avec l'accord de l'utilisateur).
+- Commit : feat(m18): branchement de @pascal-app/core (lot A)
 
 ### 2026-11-18 — M17 · Fixtures : murs pleine hauteur, dalle découpée
 - Décision de l'utilisateur : les murs passent sur toute la hauteur et la dalle est découpée autour (remplace « la dalle prime »).
