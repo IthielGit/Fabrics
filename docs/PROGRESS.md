@@ -5,8 +5,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 ## État actuel
 
 - **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M19 · A3 (18/11) : A2 (a à d) et A3 faits, **à tester ensemble dans le navigateur par l'utilisateur** (A1 et A2a validés)
-- **Prochaine tâche :** test d'A2 + A3 par l'utilisateur, puis M19 · A4 Projets Visuel. **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
+- **Dernière tâche terminée :** M19 · A3 (18/11). **A1, A2 (a à d) et A3 validés par l'utilisateur le 2026-11-18.**
+- **Prochaine tâche :** M19 · A4 Projets Visuel, **en attente du feu vert de l'utilisateur** (« no go A4 » le 2026-11-18). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -61,7 +61,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - Commit : feat: outil rectangle
 -->
 
-### 2026-11-18 — M19 · A3 Collaboration, partage, Exporter, points à vérifier, cotation (à tester avec A2)
+### 2026-11-18 — M19 · A3 Collaboration, partage, Exporter, points à vérifier, cotation (validé avec A2 le 2026-11-18)
 - **`/p/:id` ouvre maintenant un projet Plan dans l'éditeur de Pascal** (`ProjectPage` → `PascalEditorPage`, chargé à la demande). Un projet Visuel y retrouve son éditeur. L'ancien éditeur reste en secours à `/p/:id/ancien` (entrée « Ouvrir dans l'ancien éditeur » du menu « ⋯ » des cartes Plan) jusqu'au nettoyage d'A7 ; `/p/:id/pascal` renvoie vers `/p/:id`.
 - Barre du haut de Fabrics dans Pascal (`src/pascal/PascalNavbar.tsx`) : retour, nom du projet (renommer), état d'enregistrement, collaboration (indicateur, avatars de présence), points à vérifier (ouvre l'onglet Métrés de Pascal), cotation Aucune / Client / Exécution, Vues (façades, coupes, planche), Partager (propriétaire connecté : lien, invitations, membres), Exporter (PNG, JPG, PDF, métrés, DXF, IFC). Signaux du plan en haut à droite.
 - Le plan de l'ancien éditeur est monté hors de l'écran, en lecture seule et inerte : les exports PNG / JPG / PDF (cotes Client / Exécution comprises) et la miniature se prennent dessus, comme avant.
