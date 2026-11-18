@@ -1,4 +1,10 @@
-import { formatLength, type MessageDescriptor, usePascalI18n } from '@pascal-app/core'
+import {
+  formatLength,
+  formatLinearMeasurement,
+  getMeasurementDisplayDefaults,
+  type MessageDescriptor,
+  usePascalI18n,
+} from '@pascal-app/core'
 import { Icon } from '@iconify/react'
 import type { ToolHint } from '@pascal-app/core'
 import { Fragment, useEffect, useId, useState, useSyncExternalStore } from 'react'
@@ -194,6 +200,11 @@ function SnappingChips({ context }: { context: SnapContext }) {
   const setGridSnapStep = useEditor((s) => s.setGridSnapStep)
 
   const gridActive = resolveSnapFlags(snappingMode).grid
+  // Host pinned millimetres (Fabrics): "500 mm" instead of "0.50 m".
+  const gridLengthLabel =
+    getMeasurementDisplayDefaults().metricNotation === 'millimeters'
+      ? formatLinearMeasurement(gridSnapStep, 'metric')
+      : formatLength(gridSnapStep, 'm', { locale: i18n.getLocale(), min: 2, max: 2 })
 
   return (
     <>
@@ -214,13 +225,13 @@ function SnappingChips({ context }: { context: SnapContext }) {
           ariaLabel={i18n._({
             id: 'editor.helpers.contextualHelperPanel.gridStepLength',
             message: 'Grid step: {length}',
-            values: { length: formatLength(gridSnapStep, 'm', { locale: i18n.getLocale(), min: 2, max: 2 }) },
+            values: { length: gridLengthLabel },
           })}
           guideTarget="snap-grid-step"
           label={i18n._({
             id: 'editor.helpers.contextualHelperPanel.gridLength',
             message: 'Grid: {length}',
-            values: { length: formatLength(gridSnapStep, 'm', { locale: i18n.getLocale(), min: 2, max: 2 }) },
+            values: { length: gridLengthLabel },
           })}
           onClick={() => {
             setGridSnapStep(nextGridSnapStep(gridSnapStep))

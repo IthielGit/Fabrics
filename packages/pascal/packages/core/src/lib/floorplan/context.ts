@@ -1,5 +1,6 @@
 import type { FloorplanGeometry, FloorplanPalette, GeometryContext } from '../../registry/types'
 import type { AnyNode, AnyNodeId } from '../../schema'
+import { getMeasurementDisplayDefaults } from '../../utils/measurement-format'
 
 /** The `def.floorplan` contract every plan host shares: context extensions and geometry metadata. */
 export const FLOORPLAN_GEOMETRY_METADATA_KEY = 'pascal:editor/floorplan'
@@ -243,7 +244,7 @@ export function buildFloorplanContext(
     sceneNodes: nodes,
     extensions: createFloorplanContextExtensions({
       automaticDimensions: viewState.automaticDimensions,
-      metricNotation: viewState.metricNotation ?? 'meters',
+      metricNotation: viewState.metricNotation ?? getMeasurementDisplayDefaults().metricNotation,
       purpose: viewState.purpose ?? 'edit',
       drafting: viewState.drafting === true,
       roomLabelOverlay: viewState.roomLabelOverlay === true,

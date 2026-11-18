@@ -17,6 +17,10 @@ import { environmentHostPanel, environmentPlugin, environmentPresentation } from
 import { treesHostPanel, treesPlugin } from '@pascal-app/plugin-trees'
 import { configureViewer, registerViewerPresentation } from '@pascal-app/viewer'
 import { pascalTexts } from '../i18n/pascalTexts'
+import { pinMillimetres } from './millimetreUnits'
+
+// Longueurs en mm, surfaces en m² (règle « Métrique architectural », M19 B1).
+pinMillimetres()
 
 // Fichiers du moteur (sons, icônes) servis par Fabrics (`vite.config.ts`). Les objets du catalogue
 // viennent du CDN de Pascal (adresse par défaut du moteur).

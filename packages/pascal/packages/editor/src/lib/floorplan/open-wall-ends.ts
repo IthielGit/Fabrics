@@ -1,5 +1,6 @@
 import {
   formatLinearMeasurement,
+  getMeasurementDisplayDefaults,
   type LinearUnit,
   type OpenWallEnd,
   planJoinOpenWallEnd,
@@ -42,6 +43,10 @@ export function formatOpenWallEndDistance(meters: number, unit: LinearUnit): str
     return `${Number.parseFloat(inches.toFixed(inches < 1 ? 2 : 1))}"`
   }
   if (value >= 1) return formatLinearMeasurement(value, unit)
+  // Host pinned millimetres (Fabrics): no centimetres.
+  if (getMeasurementDisplayDefaults().metricNotation === 'millimeters') {
+    return formatLinearMeasurement(value, unit)
+  }
   if (value < 0.01) return `${Math.max(1, Math.round(value * 1000))} mm`
   return `${Math.round(value * 100)} cm`
 }

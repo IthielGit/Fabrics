@@ -31,7 +31,8 @@ apportent les outils de Pascal.
 | Comptes, partage (lien, invitations), lecture seule d'un plan (lecteur, lien public) | M13, A7 |
 | Collaboration à deux navigateurs, historique et aperçu de version, commentaires | M14, M15, M16 |
 | Palette de commandes (Ctrl+K), raccourcis, réglages audio, visite à la première personne, réalité virtuelle | M19 A6 |
-| Dessin au clavier en mm, accrochages, murs, ouvertures, toitures, escaliers, bibliothèque | **reporté à B1 / B2** (outils de Pascal) |
+| Onglet Construire ; mur tracé en tapant `5000` (lu en mm) ; accrochages (Maj / Alt) ; cotes, niveaux, grille et surfaces en mm / m² | M19 B1 (outils de Pascal) |
+| Murs, ouvertures, toitures, escaliers modifiés en 3D, même objet en 2D | **reporté à B2** |
 
 ## 0. Référence figée (baseline M17)
 

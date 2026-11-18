@@ -132,6 +132,7 @@ export const fabricsFr = {
   'formats.size': [['width'], ' × ', ['height'], ' px'],
   'home.design.title': ['Créer un visuel'],
   'pascalEditor.tabScene': ['Scène'],
+  'pascalEditor.tabBuild': ['Construire'],
   'pascalEditor.tabPaint': ['Peinture'],
   'pascalEditor.tabItems': ['Objets'],
   'pascalEditor.tabSettings': ['Paramètres'],

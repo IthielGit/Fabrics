@@ -7,6 +7,7 @@ import {
   floorplanGeometryMetadata,
   formatLinearMeasurement,
   type GeometryContext,
+  getMeasurementDisplayDefaults,
   readFloorplanMetricNotationOverride,
 } from '@pascal-app/core'
 
@@ -100,7 +101,8 @@ export function buildBeamFloorplan(node: BeamNode, ctx: GeometryContext): Floorp
         text: formatLinearMeasurement(
           plan.length,
           view?.unit ?? 'metric',
-          readFloorplanMetricNotationOverride(ctx) ?? 'meters',
+          readFloorplanMetricNotationOverride(ctx) ??
+            getMeasurementDisplayDefaults().metricNotation,
         ),
         angle,
         offsetPx: -LABEL_OFFSET_PX - 4,

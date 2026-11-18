@@ -1,4 +1,5 @@
-import { Layers, Package, Palette, Settings } from 'lucide-react'
+import { BuildTab } from '@pascal-app-host/build-tab'
+import { Hammer, Layers, Package, Palette, Settings } from 'lucide-react'
 import type { ComponentType, ReactNode } from 'react'
 import type { Translate } from '../i18n/useT'
 import PaintPanel from './PaintPanel'
@@ -22,7 +23,8 @@ function railIcon(name: string): ReactNode {
  * Onglets de la barre latérale de Pascal (M19 A5), d'après `scene-loader.tsx` de Pascal : Scène,
  * Peinture, Objets et Paramètres (rendu, animation de construction, sons…). Les onglets de Fabrics
  * (Métrés, Commentaires, Historique) se placent entre Objets et Paramètres.
- * « Construire » (palette d'outils de l'application Pascal) arrive avec les outils, sous-lot B1.
+ * « Construire » (M19 B1) : palette d'outils de l'application Pascal reprise telle quelle (murs,
+ * dalles, plafonds, toits, escaliers, portes, fenêtres, cotes, terrain…), sans outil Fabrics en double.
  */
 export function pascalTabs(t: Translate): { leading: PascalTab[]; trailing: PascalTab[] } {
   return {
@@ -34,6 +36,14 @@ export function pascalTabs(t: Translate): { leading: PascalTab[]; trailing: Pasc
         mobileIcon: <Layers className="h-5 w-5" />,
         mobileDefaultSnap: 0.5,
         component: BuiltInPanel,
+      },
+      {
+        id: 'build',
+        label: t('pascalEditor.tabBuild'),
+        icon: railIcon('build'),
+        mobileIcon: <Hammer className="h-5 w-5" />,
+        mobileDefaultSnap: 0.5,
+        component: BuildTab,
       },
       {
         id: 'paint',

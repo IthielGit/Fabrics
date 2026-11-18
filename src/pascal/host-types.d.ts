@@ -17,6 +17,12 @@ export declare const EditorViewerToolbarRight: ComponentType<{
   vrLabel?: string
 }>
 
+/**
+ * Onglet « Construire » de l'application Pascal (M19 B1) : palette des outils de dessin (murs, dalles,
+ * plafonds, toitures, escaliers, ouvertures, cotes, terrain, réseaux…).
+ */
+export declare const BuildTab: ComponentType
+
 // Réalité virtuelle (M19 A6) : modules de l'application Pascal et du module WebXR.
 export declare function WebXRFeatureRuntime(props: { enabled: boolean; children: ReactNode }): ReactNode
 export declare function useWebXRFeature(): { session?: unknown; immersive?: unknown } | null

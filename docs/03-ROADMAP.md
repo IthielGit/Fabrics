@@ -1254,7 +1254,7 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 | A5 Rendu — **validé le 2026-11-18** | WebGPU (repli WebGL2), occlusion ambiante, bloom, anticrénelage, contours encrés, surlignage, lumière du jour, HDRI, animation de construction ; modules de Pascal (Mint essayé puis retiré à la demande de l'utilisateur) ; textes de Pascal en un seul fichier français | `/model opus` |
 | A6 Navigation, sons et aide — **validé le 2026-11-18** | Perspective / orthographique, première personne, suivi de caméra, WebXR, niveaux empilés / éclatés / seuls, coupe 3D, sons (`howler`) avec réglage, accrochages visibles, palette de commandes, aide et parcours de découverte | `/model sonnet` |
 | A7 Nettoyage — **validé le 2026-11-18** | Anciens composants Fabrics remplacés retirés, registre mis à jour, `docs/regression-checklist.md` passé en entier | `/model sonnet` |
-| B1 Outils 2D | Outils, vue en plan et accrochages de Pascal, saisie précise en mm, alignements, fusion sans doublon | `/model opus` |
+| B1 Outils 2D — **fait le 2026-11-18**, test par l'utilisateur à la fin de B5 (son choix) | Outils, vue en plan et accrochages de Pascal, saisie précise en mm, alignements, fusion sans doublon | `/model opus` |
 | B2 Édition 3D | Murs, dalles, toitures, escaliers, ouvertures en 3D ; jonctions propres ; synchronisation 2D ↔ 3D sur le même objet | `/model opus` |
 | B3 Matériaux | Couches de mur, bibliothèque de matériaux, quantités par couche sans double comptage | `/model opus` |
 | B4 Terrain | Terrain, limite de propriété, implantation du bâtiment, altitudes des niveaux | `/model opus` |
@@ -1293,9 +1293,10 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 
 ### Lot B — Édition 2D/3D professionnelle
 
-- [ ] Outils, vue en plan et viewer 3D de Pascal ; fusion outil par outil selon la matrice, sans
-      doublon
-- [ ] Saisie précise des dimensions en mm, accrochages, alignements, modes d'accrochage visibles
+- [x] Outils, vue en plan et viewer 3D de Pascal ; fusion outil par outil selon la matrice, sans
+      doublon (B1, 2026-11-18 : onglet Construire de Pascal ; aucun outil de plan Fabrics dans l'éditeur)
+- [x] Saisie précise des dimensions en mm, accrochages, alignements, modes d'accrochage visibles
+      (B1, 2026-11-18 : Pascal réglé en mm, `src/pascal/millimetreUnits.ts`)
 - [ ] Édition directe en 3D : murs, dalles, toitures, escaliers, ouvertures ; jonctions de murs propres ;
       synchronisation 2D ↔ 3D par commandes sur le **même** objet
 - [ ] **Matériaux et compositions** : couches de mur (maçonnerie, isolation, enduit, revêtement),

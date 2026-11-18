@@ -1,7 +1,11 @@
 'use client'
 
 import { Icon as IconifyIcon } from '@iconify/react'
-import { type MessageDescriptor, usePascalI18n } from '@pascal-app/core'
+import {
+  getMeasurementDisplayDefaults,
+  type MessageDescriptor,
+  usePascalI18n,
+} from '@pascal-app/core'
 import {
   DaylightMenu,
   DropdownMenu,
@@ -610,50 +614,55 @@ function DisplayMenu() {
                   })}
             </p>
           </div>
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger>
-              <Ruler className="h-4 w-4" />
-              <span>{i18n._({ id: 'app.viewerToolbar.units', message: 'Units' })}</span>
-              <span className="ml-auto text-muted-foreground text-xs">
-                {unit === 'imperial'
-                  ? i18n._({ id: 'app.viewerToolbar.feetInches', message: 'Feet & inches' })
-                  : metricNotation === 'millimeters'
-                    ? i18n._({ id: 'app.viewerToolbar.millimeters', message: 'Millimeters' })
-                    : i18n._({ id: 'app.viewerToolbar.meters', message: 'Meters' })}
-              </span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent className={SUBMENU_CONTENT_CLASS}>
-              <DropdownMenuItem onSelect={() => setMetricNotation('meters')}>
-                <span className="flex h-4 w-4 items-center justify-center font-semibold text-[10px]">
-                  m
+          {/* Host pinned the unit (Fabrics: millimetres only): no unit picker. */}
+          {getMeasurementDisplayDefaults().locked ? null : (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger>
+                <Ruler className="h-4 w-4" />
+                <span>{i18n._({ id: 'app.viewerToolbar.units', message: 'Units' })}</span>
+                <span className="ml-auto text-muted-foreground text-xs">
+                  {unit === 'imperial'
+                    ? i18n._({ id: 'app.viewerToolbar.feetInches', message: 'Feet & inches' })
+                    : metricNotation === 'millimeters'
+                      ? i18n._({ id: 'app.viewerToolbar.millimeters', message: 'Millimeters' })
+                      : i18n._({ id: 'app.viewerToolbar.meters', message: 'Meters' })}
                 </span>
-                <span>{i18n._({ id: 'app.viewerToolbar.meters', message: 'Meters' })}</span>
-                {unit === 'metric' && metricNotation === 'meters' ? (
-                  <Check className="ml-auto h-4 w-4 text-foreground" />
-                ) : null}
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setMetricNotation('millimeters')}>
-                <span className="flex h-4 w-4 items-center justify-center font-semibold text-[10px]">
-                  mm
-                </span>
-                <span>
-                  {i18n._({ id: 'app.viewerToolbar.millimeters', message: 'Millimeters' })}
-                </span>
-                {unit === 'metric' && metricNotation === 'millimeters' ? (
-                  <Check className="ml-auto h-4 w-4 text-foreground" />
-                ) : null}
-              </DropdownMenuItem>
-              <DropdownMenuItem onSelect={() => setUnit('imperial')}>
-                <span className="flex h-4 w-4 items-center justify-center font-semibold text-[10px]">
-                  ft
-                </span>
-                <span>
-                  {i18n._({ id: 'app.viewerToolbar.feetInches', message: 'Feet & inches' })}
-                </span>
-                {unit === 'imperial' ? <Check className="ml-auto h-4 w-4 text-foreground" /> : null}
-              </DropdownMenuItem>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent className={SUBMENU_CONTENT_CLASS}>
+                <DropdownMenuItem onSelect={() => setMetricNotation('meters')}>
+                  <span className="flex h-4 w-4 items-center justify-center font-semibold text-[10px]">
+                    m
+                  </span>
+                  <span>{i18n._({ id: 'app.viewerToolbar.meters', message: 'Meters' })}</span>
+                  {unit === 'metric' && metricNotation === 'meters' ? (
+                    <Check className="ml-auto h-4 w-4 text-foreground" />
+                  ) : null}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setMetricNotation('millimeters')}>
+                  <span className="flex h-4 w-4 items-center justify-center font-semibold text-[10px]">
+                    mm
+                  </span>
+                  <span>
+                    {i18n._({ id: 'app.viewerToolbar.millimeters', message: 'Millimeters' })}
+                  </span>
+                  {unit === 'metric' && metricNotation === 'millimeters' ? (
+                    <Check className="ml-auto h-4 w-4 text-foreground" />
+                  ) : null}
+                </DropdownMenuItem>
+                <DropdownMenuItem onSelect={() => setUnit('imperial')}>
+                  <span className="flex h-4 w-4 items-center justify-center font-semibold text-[10px]">
+                    ft
+                  </span>
+                  <span>
+                    {i18n._({ id: 'app.viewerToolbar.feetInches', message: 'Feet & inches' })}
+                  </span>
+                  {unit === 'imperial' ? (
+                    <Check className="ml-auto h-4 w-4 text-foreground" />
+                  ) : null}
+                </DropdownMenuItem>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          )}
         </DisplayGroup>
 
         {layout.plan ? (

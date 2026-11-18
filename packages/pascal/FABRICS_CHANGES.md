@@ -28,6 +28,25 @@ Toute modification de Fabrics dans ce dossier est notée ici, la plus récente e
 
 ## Modifications
 
-_Aucune._ Le code de Pascal est identique au commit `7f30521`. Il est installé par Bun dans ce
-dossier (`npm run install:pascal`, `bun.lock` gelé), qui applique lui-même ses correctifs (`patches/`).
-Un essai d'intégration par workspaces npm a été abandonné le 2026-11-18 (ADR 0002).
+Le code est installé par Bun dans ce dossier (`npm run install:pascal`, `bun.lock` gelé), qui applique
+lui-même ses correctifs (`patches/`). Un essai d'intégration par workspaces npm a été abandonné le
+2026-11-18 (ADR 0002). Après une modification ici : `npm run build:pascal`, puis `npx vite --force`.
+
+### 2026-11-18 — M19 B1 : unités d'affichage réglables par l'application hôte
+
+Fabrics affiche toujours les longueurs en mm et les surfaces en m² à 2 décimales. Sans réglage de
+l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d'unités visible).
+
+- `packages/core/src/utils/measurement-format.ts` : `configureMeasurementDisplay()` /
+  `getMeasurementDisplayDefaults()` (notation métrique, décimales des surfaces, `locked`) ; valeurs par
+  défaut de `formatLinearMeasurement` et `formatAreaLabel` lues à chaque appel.
+- `packages/core/src/lib/floorplan/context.ts`, `packages/nodes/src/{beam,item}/floorplan.ts`,
+  `packages/nodes/src/wall/contextual-dimensions.ts` : repli sur la notation de l'hôte au lieu de
+  `'meters'`.
+- `packages/viewer/src/ui/lib/room-area.ts` : décimales des étiquettes de pièces de l'hôte.
+- `packages/editor/src/lib/floorplan/open-wall-ends.ts`,
+  `packages/editor/src/components/editor/node-arrow-handles.tsx`,
+  `packages/editor/src/components/ui/helpers/contextual-helper-panel.tsx` : en mm quand l'hôte
+  l'impose (au lieu de « 4 cm », « 0.5m », « Grille : 0,50 m »).
+- `apps/editor/components/viewer-toolbar.tsx` : sous-menu « Unités » masqué si l'hôte verrouille
+  l'unité.

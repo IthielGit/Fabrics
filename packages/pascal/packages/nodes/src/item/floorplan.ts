@@ -7,6 +7,7 @@ import {
   type GeometryContext,
   getBlockFaceFrame,
   getEffectiveNode,
+  getMeasurementDisplayDefaults,
   getRoofWallFaceFrame,
   getScaledDimensions,
   getWallBodyCenterOffset,
@@ -293,7 +294,8 @@ export function buildItemContextualDimensions(
   const widthNormal = rotateVec(0, -1, transform.rotation)
   const depthNormal = rotateVec(1, 0, transform.rotation)
   const unit = ctx.viewState?.unit ?? 'metric'
-  const metricNotation = readFloorplanMetricNotationOverride(ctx) ?? 'meters'
+  const metricNotation =
+    readFloorplanMetricNotationOverride(ctx) ?? getMeasurementDisplayDefaults().metricNotation
   const stroke = ctx.viewState?.palette?.selectedStroke ?? '#2563eb'
 
   return {

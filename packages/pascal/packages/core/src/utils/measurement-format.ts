@@ -4,6 +4,30 @@ import type { MeasurementPoint } from '../schema'
 export type LinearUnit = 'metric' | 'imperial'
 export type MetricNotation = 'meters' | 'millimeters'
 
+/**
+ * Display defaults a host app can pin (Fabrics: always millimetres, areas to 2 decimals). Used when
+ * a caller passes no explicit notation / precision. `locked` asks UIs to hide the unit picker.
+ */
+export type MeasurementDisplayDefaults = {
+  metricNotation: MetricNotation
+  areaFractionDigits: number
+  locked: boolean
+}
+
+let measurementDisplayDefaults: MeasurementDisplayDefaults = {
+  metricNotation: 'meters',
+  areaFractionDigits: 1,
+  locked: false,
+}
+
+export function configureMeasurementDisplay(defaults: Partial<MeasurementDisplayDefaults>): void {
+  measurementDisplayDefaults = { ...measurementDisplayDefaults, ...defaults }
+}
+
+export function getMeasurementDisplayDefaults(): MeasurementDisplayDefaults {
+  return measurementDisplayDefaults
+}
+
 type MeasurementAngleArcOptions = {
   radius?: number
   sampleCount?: number
@@ -144,7 +168,7 @@ export function getAreaUnitLabel(unit: LinearUnit): string {
 export function formatAreaLabel(
   squareMeters: number,
   unit: LinearUnit,
-  fractionDigits = 1,
+  fractionDigits = measurementDisplayDefaults.areaFractionDigits,
 ): string {
   if (!Number.isFinite(squareMeters)) return '--'
 
@@ -178,7 +202,7 @@ export function formatVolumeLabel(
 export function formatLinearMeasurement(
   meters: number,
   unit: LinearUnit,
-  metricNotation: MetricNotation = 'meters',
+  metricNotation: MetricNotation = measurementDisplayDefaults.metricNotation,
 ): string {
   if (!Number.isFinite(meters)) return '--'
 

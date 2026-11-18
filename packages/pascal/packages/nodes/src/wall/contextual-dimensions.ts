@@ -3,6 +3,7 @@ import {
   type FloorplanPoint,
   formatLinearMeasurement,
   type GeometryContext,
+  getMeasurementDisplayDefaults,
   getWallCurveFrameAt,
   getWallCurveLength,
   getWallFaceOffsets,
@@ -28,7 +29,7 @@ function formatLength(value: number, ctx: GeometryContext): string {
   return formatLinearMeasurement(
     value,
     ctx.viewState?.unit ?? 'metric',
-    readFloorplanMetricNotationOverride(ctx) ?? 'meters',
+    readFloorplanMetricNotationOverride(ctx) ?? getMeasurementDisplayDefaults().metricNotation,
   )
 }
 

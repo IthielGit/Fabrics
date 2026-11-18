@@ -10,6 +10,8 @@ import {
   createSceneApi,
   DEFAULT_ANGLE_STEP,
   formatAngleRadians,
+  formatLinearMeasurement,
+  getMeasurementDisplayDefaults,
   type HandleDescriptor,
   type HandlePortal,
   type LatchHandle,
@@ -174,6 +176,10 @@ function formatDimension(value: number, unit: 'metric' | 'imperial'): string {
     const inches = Math.round((feet - wholeFeet) * 12)
     if (inches === 12) return `${wholeFeet + 1}'0"`
     return `${wholeFeet}'${inches}"`
+  }
+  // Host pinned millimetres (Fabrics): same formatter as every other length.
+  if (getMeasurementDisplayDefaults().metricNotation === 'millimeters') {
+    return formatLinearMeasurement(value, unit)
   }
   return `${Number.parseFloat(value.toFixed(2))}m`
 }
