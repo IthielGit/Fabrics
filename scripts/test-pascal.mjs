@@ -41,6 +41,23 @@ function workspaces() {
   })
 }
 
+/**
+ * Affiche de quoi comprendre un échec : si rien ne s'est chargé (0 réussi), le début de la sortie ;
+ * sinon les lignes d'erreur et les premiers tests en échec. Le journal de CI ne garde que ce qui est
+ * affiché ici.
+ */
+function printDiagnostics(label, output, nothingLoaded) {
+  const lines = output.split(/\r?\n/)
+  const picked = nothingLoaded
+    ? lines.slice(0, 40)
+    : lines.filter((l) => /error|cannot|not found|ENOENT|EACCES|timed out|EPERM/i.test(l)).slice(0, 15)
+  console.log(`  --- lignes utiles : ${label} ---`)
+  for (const line of picked) console.log(`  | ${line}`)
+  const firstFailures = [...output.matchAll(/^\(fail\) (.+?)(?: \[[\d.]+m?s\])?\s*$/gm)].slice(0, 3)
+  for (const m of firstFailures) console.log(`  x ${m[1]}`)
+  console.log('  ---')
+}
+
 /** Lance une commande bun et renvoie compteurs et noms des tests en échec. */
 function run(label, cwd, bunArgs) {
   const t0 = Date.now()
@@ -61,8 +78,8 @@ function run(label, cwd, bunArgs) {
   if (summary.exit !== 0 && summary.fail === 0) {
     // Échec sans test en échec : erreur de chargement ou de compilation, toujours bloquante.
     failures.add(`${label} › (erreur d'exécution, code ${summary.exit})`)
-    console.log(output.split('\n').slice(-20).join('\n'))
   }
+  if (summary.fail > 0 || summary.exit !== 0) printDiagnostics(label, output, summary.pass === 0)
   return { summary, failures }
 }
 
