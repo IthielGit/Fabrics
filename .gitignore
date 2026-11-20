@@ -36,3 +36,7 @@ packages/pascal/apps/ifc-converter/public/test-ifc-files/*.ifc
 # M18 : script de conversion des plans (bundle et rapports avec des noms de projets : jamais versionnés)
 scripts/.build/
 scripts/.reports/
+
+# Cache de build et fichiers temporaires
+.turbo/
+tmp/
