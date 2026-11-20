@@ -43,7 +43,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
 | M18 Modèle BIM unifié (G1) | en cours (lots A à E faits) | |
-| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | lot A validé ; lot B fait (B2 en partie), G2 proposé, à tester par l'utilisateur | |
+| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | lot A validé ; lot B fait (B1 à B6), B7 à faire, G2 proposé | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
 | M22 Échanges IFC (G5) | à faire | |
@@ -53,7 +53,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
-<!-- Format d'une entrée (la plus récente en haut) :
+### 2026-11-20 — M19 · B6 Toitures, escaliers, dalles de Pascal (vérifié par l'utilisateur dans le navigateur)
+- **Métrés** : dalles (tableau « Dalles » à part), escaliers et toitures natifs de Pascal comptés dans leur niveau (`scene/slabMeasures.ts`, `scene/roofQuantities.ts` : formules des 9 types de toits ; `view/pascalQuantities.ts`).
+- **Anciens plans → 3D de Pascal** (`scene/migrate/roofStairNodes.ts`) : toitures rectangulaires et escaliers deviennent des nœuds `roof` / `stair` de Pascal, visibles et modifiables en 3D ; l'élément d'origine est gardé. Non modifié : métrés identiques à ceux de Fabrics ; modifié : recalculé depuis la géométrie de Pascal. Formes non convertibles (mansarde, pan découpé, escalier hélicoïdal) : nœud Fabrics, quantités par `pascalQuantities.ts`.
+- **Test de l'utilisateur** : toiture et escalier d'un ancien plan visibles et modifiables en 3D, métrés qui suivent — « ça marche ».
+- Vérification : build ✓ lint ✓ 3 162 tests ✓.
+- Correction du journal : les entrées B1 à B5 étaient restées dans le commentaire de format (invisibles) ; le commentaire est remis à sa place.
+
 ### 2026-11-18 — M19 · Décisions de l'utilisateur après B5 (plan seulement)
 - **T1 et T2 vérifiés par l'utilisateur** : rapport de vérification, tout VALIDÉ (`docs/phases/M19-fixtures-review.md`) ; statut mis à jour dans `fixtures/T1/spec.json` et `fixtures/T2/spec.json`. Ses recommandations (contrôles des ouvertures, tests T3 à T10, conventions de métré des finitions, dalles et fondations séparées) y sont notées.
 - **Sous-lot B6 décidé** : toitures, escaliers et dalles de Pascal dans les métrés, et toitures / escaliers des anciens plans dans la 3D de Pascal. Plan proposé, en attente du feu vert.
@@ -89,6 +95,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 - **Reste à faire (non fait en B2)** : toitures, escaliers et dalles **natifs** de Pascal dans les métrés (leur géométrie par segments demande une conversion dédiée) ; les toitures et escaliers des anciens plans restent des nœuds Fabrics, invisibles et non modifiables dans la 3D de Pascal. Constat : la commande `setWallGeometry` de Pascal ajoute un mur « pont » quand on prolonge un mur dans son axe depuis un coin (mur en double) ; le geste de l'interface, lui, déplace le coin proprement.
 - Vérification : build ✓ lint ✓ 3 081 tests ✓.
 
+<!-- Format d'une entrée (la plus récente en haut) :
 ### AAAA-MM-JJ — M1 · Outil rectangle
 - Fait : …
 - Fichiers : src/…, src/…
