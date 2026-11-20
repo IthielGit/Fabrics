@@ -43,7 +43,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
 | M18 Modèle BIM unifié (G1) | en cours (lots A à E faits) | |
-| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | lot A validé ; lot B fait (B1 à B6), B7 à faire, G2 proposé | |
+| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | lot A validé ; lot B fait (B1 à B7, B6 et B7 vérifiés), G2 proposé | |
 | M20 Plans professionnels et mise en page (G3) | à faire | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
 | M22 Échanges IFC (G5) | à faire | |
@@ -53,7 +53,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
-### 2026-11-20 — M19 · B7 Textes de Pascal en français : fait, à vérifier par l'utilisateur dans le navigateur
+### 2026-11-20 — M19 · B7 Textes de Pascal en français : fait, vérifié par l'utilisateur dans le navigateur (« c'est en français »)
 - **Noms par défaut** (« Wall 3 », « Door 1 », « Roof 2 »…) : comme les pièces du catalogue de Pascal, ils restent en anglais dans la scène (la numérotation et le MCP de Pascal les lisent) et s'affichent traduits (« Mur 3 »). Pascal : `DEFAULT_NODE_NAME_MESSAGES` dans `viewer/src/ui/lib/room-name-messages.ts`, utilisé par l'arbre, le renommage, le titre des panneaux et la barre de sélection. Fabrics : `src/features/scene/view/pascalDisplayName.ts` (testé) avec `src/i18n/pascalNames.ts`, généré par `scripts/compile-pascal-texts.mjs` (80 noms) : pièces du catalogue (« Bedroom 2 » → « Chambre 2 »), toitures et escaliers natifs dans les vues et métrés.
 - **Boîtes de confirmation de suppression** : phrases réécrites en messages ICU entiers avec pluriels (fini l'assemblage anglais « it/them », « is/are ») ; 50 messages traduits ; noms de pièces traduits ; surface perdue en « 1,50 m² ». Les 65 tests de Pascal qui vérifient le texte anglais passent sans changement.
 - **Recompilation** : Fabrics charge `core`, `viewer` et `nodes` de Pascal depuis leur version compilée (`dist`, non versionnée) : après une mise à jour de la branche, lancer `npm run build:pascal` (≈ 2 min).
