@@ -11,6 +11,7 @@ import {
   parseMaterialColor,
   parseMaterialRef,
   type SceneMaterialId,
+  usePascalI18n,
   useScene,
 } from '@pascal-app/core'
 import {
@@ -89,6 +90,7 @@ function materialRefPreview(
 }
 
 export default function BlockPanel() {
+  const i18n = usePascalI18n()
   const selectedId = useViewer((state) => state.selection.selectedIds[0])
   const setViewerSelection = useViewer((state) => state.setSelection)
   const node = useScene((state) => {
@@ -270,8 +272,13 @@ export default function BlockPanel() {
           : `${selectedFaceIds.length} ${selectedFaceIds.length === 1 ? 'face' : 'faces'} · ${slotDeclarations.find((slot) => slot.slotId === materialSelection.slotId)?.label ?? materialSelection.slotId}`
 
   return (
-    <PanelWrapper icon="/icons/cube.webp" onClose={close} title={node.name || 'Block'} width={340}>
-      <PanelSection title="Position">
+    <PanelWrapper
+      icon="/icons/cube.webp"
+      onClose={close}
+      title={node.name || i18n._({ id: 'node.block.panel.block', message: 'Block' })}
+      width={340}
+    >
+      <PanelSection title={i18n._({ id: 'node.block.panel.position', message: 'Position' })}>
         {(
           [
             { axis: 0, label: 'X', onChange: updatePositionX },
@@ -291,7 +298,7 @@ export default function BlockPanel() {
         ))}
       </PanelSection>
 
-      <PanelSection title="Slots">
+      <PanelSection title={i18n._({ id: 'node.block.panel.slots', message: 'Slots' })}>
         <div className="rounded-md border border-border/50 bg-background/40 px-2.5 py-2 text-muted-foreground text-xs">
           {selectionLabel}
         </div>
@@ -301,11 +308,16 @@ export default function BlockPanel() {
             className={SLOT_DISABLED_ACTION_CLASS}
             disabled={!canOperateOnFaces || selectedFaceIds.length === 0 || readOnly}
             icon={<Plus className="h-3.5 w-3.5" />}
-            label="Add slot"
+            label={i18n._({ id: 'node.block.panel.addSlot', message: 'Add slot' })}
             onClick={addMaterialSlot}
             title={
               slotEditTitle ??
-              (selectedFaceIds.length === 0 ? 'Select one or more faces first' : undefined)
+              (selectedFaceIds.length === 0
+                ? i18n._({
+                    id: 'node.block.panel.selectOneOrMoreFacesFirst',
+                    message: 'Select one or more faces first',
+                  })
+                : undefined)
             }
           />
         </div>
@@ -339,7 +351,11 @@ export default function BlockPanel() {
               >
                 <button
                   className="absolute inset-0 z-0 rounded-none disabled:cursor-not-allowed disabled:opacity-50"
-                  aria-label={`Apply ${slot.label} to selected faces`}
+                  aria-label={i18n._({
+                    id: 'node.block.panel.applyLabelToSelectedFaces',
+                    message: 'Apply {label} to selected faces',
+                    values: { label: slot.label },
+                  })}
                   aria-pressed={active}
                   disabled={!canOperateOnFaces || selectedFaceIds.length === 0 || readOnly}
                   onClick={() => assignSlot(slot.slotId)}
@@ -358,7 +374,11 @@ export default function BlockPanel() {
 
                 <span className="pointer-events-none relative z-10 flex min-w-0 flex-1 flex-col justify-center py-1.5">
                   <input
-                    aria-label={`Rename ${slot.label} slot`}
+                    aria-label={i18n._({
+                      id: 'node.block.panel.renameLabelSlot',
+                      message: 'Rename {label} slot',
+                      values: { label: slot.label },
+                    })}
                     className="pointer-events-auto h-5 min-w-0 rounded bg-transparent px-1 font-medium text-foreground text-xs outline-none focus:bg-background/70 focus:ring-1 focus:ring-primary/50 disabled:cursor-not-allowed"
                     defaultValue={slot.label}
                     disabled={!editing || readOnly}
@@ -376,7 +396,10 @@ export default function BlockPanel() {
                     }}
                   />
                   <span className="truncate px-1 text-[10px] text-muted-foreground">
-                    {materialLabel} · {faceCount} {faceCount === 1 ? 'face' : 'faces'}
+                    {materialLabel} · {faceCount}{' '}
+                    {faceCount === 1
+                      ? i18n._({ id: 'node.block.panel.face', message: 'face' })
+                      : i18n._({ id: 'node.block.panel.faces', message: 'faces' })}
                   </span>
                 </span>
 
@@ -389,10 +412,20 @@ export default function BlockPanel() {
                 ) : (
                   <button
                     className={`${SLOT_TRAILING_ACTION_CLASS} relative z-10 text-muted-foreground transition-colors hover:bg-red-500/15 hover:text-red-700 dark:hover:text-red-300 focus-visible:bg-red-500/15 focus-visible:text-red-700 dark:focus-visible:text-red-300 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-muted-foreground dark:disabled:hover:text-muted-foreground`}
-                    aria-label={`Delete ${slot.label} slot`}
+                    aria-label={i18n._({
+                      id: 'node.block.panel.deleteLabelSlot',
+                      message: 'Delete {label} slot',
+                      values: { label: slot.label },
+                    })}
                     disabled={!editing || readOnly}
                     onClick={() => removeMaterialSlot(slot.slotId)}
-                    title={slotEditTitle ?? 'Delete material slot and use Body on its faces'}
+                    title={
+                      slotEditTitle ??
+                      i18n._({
+                        id: 'node.block.panel.deleteMaterialSlotAndUseBody',
+                        message: 'Delete material slot and use Body on its faces',
+                      })
+                    }
                     type="button"
                   >
                     <Trash2 aria-hidden="true" className="h-3.5 w-3.5" />
@@ -404,13 +437,17 @@ export default function BlockPanel() {
         </div>
       </PanelSection>
 
-      <PanelSection title="Actions">
+      <PanelSection title={i18n._({ id: 'node.block.panel.actions', message: 'Actions' })}>
         <ActionGroup>
-          <ActionButton icon={<Move className="h-4 w-4" />} label="Move" onClick={move} />
+          <ActionButton
+            icon={<Move className="h-4 w-4" />}
+            label={i18n._({ id: 'node.block.panel.move', message: 'Move' })}
+            onClick={move}
+          />
           <ActionButton
             className="border-red-500/40 text-red-700 dark:text-red-200 hover:bg-red-500/15"
             icon={<Trash2 className="h-4 w-4" />}
-            label="Delete"
+            label={i18n._({ id: 'node.block.panel.delete', message: 'Delete' })}
             onClick={() => {
               useScene.getState().deleteNode(node.id)
               setViewerSelection({ selectedIds: [] })

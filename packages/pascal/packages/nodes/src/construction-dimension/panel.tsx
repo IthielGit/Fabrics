@@ -11,10 +11,12 @@ import {
   type ConstructionDimensionTerminator,
   type ConstructionDimensionTextPosition,
   type ConstructionDrawingType,
+  type MessageDescriptor,
   resolveConstructionDimensionDrawingOverride,
   resolveConstructionDimensionDrawingPresentation,
   setConstructionDimensionDrawingPresentation,
   setConstructionDimensionDrawingSuppressedSegments,
+  usePascalI18n,
   useScene,
 } from '@pascal-app/core'
 import {
@@ -42,45 +44,151 @@ const MODE_LABELS: Record<ConstructionDimensionNode['mode'], string> = {
   coordinate: 'Coordinate',
 }
 
-const DATUM_POLICY_OPTIONS: Array<{ label: string; value: ConstructionDimensionDatumPolicy }> = [
-  { label: 'Centerline', value: 'centerline' },
-  { label: 'Wall face', value: 'wall-face' },
-  { label: 'Structural face', value: 'structural-face' },
-  { label: 'Finish face', value: 'finish-face' },
+const DATUM_POLICY_OPTIONS: Array<{
+  label: MessageDescriptor
+  value: ConstructionDimensionDatumPolicy
+}> = [
+  {
+    label: /* i18n */ {
+      id: 'node.constructionDimension.panel.option.centerline',
+      message: 'Centerline',
+    },
+    value: 'centerline',
+  },
+  {
+    label: /* i18n */ {
+      id: 'node.constructionDimension.panel.option.wallFace',
+      message: 'Wall face',
+    },
+    value: 'wall-face',
+  },
+  {
+    label: {
+      id: 'node.constructionDimension.panel.option.structuralFace',
+      message: 'Structural face',
+    },
+    value: 'structural-face',
+  },
+  {
+    label: /* i18n */ {
+      id: 'node.constructionDimension.panel.option.finishFace',
+      message: 'Finish face',
+    },
+    value: 'finish-face',
+  },
 ]
 
-const TERMINATOR_OPTIONS: Array<{ label: string; value: ConstructionDimensionTerminator }> = [
-  { label: 'Architectural tick', value: 'architectural-tick' },
-  { label: 'Filled arrow', value: 'filled-arrow' },
-  { label: 'Open arrow', value: 'open-arrow' },
-  { label: 'Dot', value: 'dot' },
+const TERMINATOR_OPTIONS: Array<{
+  label: MessageDescriptor
+  value: ConstructionDimensionTerminator
+}> = [
+  {
+    label: {
+      id: 'node.constructionDimension.panel.option.architecturalTick',
+      message: 'Architectural tick',
+    },
+    value: 'architectural-tick',
+  },
+  {
+    label: /* i18n */ {
+      id: 'node.constructionDimension.panel.option.filledArrow',
+      message: 'Filled arrow',
+    },
+    value: 'filled-arrow',
+  },
+  {
+    label: /* i18n */ {
+      id: 'node.constructionDimension.panel.option.openArrow',
+      message: 'Open arrow',
+    },
+    value: 'open-arrow',
+  },
+  {
+    label: /* i18n */ { id: 'node.constructionDimension.panel.option.dot', message: 'Dot' },
+    value: 'dot',
+  },
 ]
 
-const TEXT_POSITION_OPTIONS: Array<{ label: string; value: ConstructionDimensionTextPosition }> = [
-  { label: 'Above line', value: 'above' },
-  { label: 'Centered on line', value: 'centered' },
+const TEXT_POSITION_OPTIONS: Array<{
+  label: MessageDescriptor
+  value: ConstructionDimensionTextPosition
+}> = [
+  {
+    label: /* i18n */ {
+      id: 'node.constructionDimension.panel.option.aboveLine',
+      message: 'Above line',
+    },
+    value: 'above',
+  },
+  {
+    label: {
+      id: 'node.constructionDimension.panel.option.centeredOnLine',
+      message: 'Centered on line',
+    },
+    value: 'centered',
+  },
 ]
 
 const IMPERIAL_PRECISION_OPTIONS: Array<{
-  label: string
+  label: MessageDescriptor
   value: ConstructionDimensionImperialPrecision
 }> = [
-  { label: 'Nearest inch', value: '1' },
-  { label: 'Nearest 1/2 inch', value: '1/2' },
-  { label: 'Nearest 1/4 inch', value: '1/4' },
-  { label: 'Nearest 1/8 inch', value: '1/8' },
-  { label: 'Nearest 1/16 inch', value: '1/16' },
+  {
+    label: /* i18n */ {
+      id: 'node.constructionDimension.panel.option.nearestInch',
+      message: 'Nearest inch',
+    },
+    value: '1',
+  },
+  {
+    label: {
+      id: 'node.constructionDimension.panel.option.nearest12Inch',
+      message: 'Nearest 1/2 inch',
+    },
+    value: '1/2',
+  },
+  {
+    label: {
+      id: 'node.constructionDimension.panel.option.nearest14Inch',
+      message: 'Nearest 1/4 inch',
+    },
+    value: '1/4',
+  },
+  {
+    label: {
+      id: 'node.constructionDimension.panel.option.nearest18Inch',
+      message: 'Nearest 1/8 inch',
+    },
+    value: '1/8',
+  },
+  {
+    label: {
+      id: 'node.constructionDimension.panel.option.nearest116Inch',
+      message: 'Nearest 1/16 inch',
+    },
+    value: '1/16',
+  },
 ]
 
 const METRIC_NOTATION_OPTIONS: Array<{
-  label: string
+  label: MessageDescriptor
   value: ConstructionDimensionMetricNotation
 }> = [
-  { label: 'Meters', value: 'meters' },
-  { label: 'Millimeters', value: 'millimeters' },
+  {
+    label: /* i18n */ { id: 'node.constructionDimension.panel.option.meters', message: 'Meters' },
+    value: 'meters',
+  },
+  {
+    label: /* i18n */ {
+      id: 'node.constructionDimension.panel.option.millimeters',
+      message: 'Millimeters',
+    },
+    value: 'millimeters',
+  },
 ]
 
 export default function ConstructionDimensionPanel() {
+  const i18n = usePascalI18n()
   const selectedId = useViewer((state) => state.selection.selectedIds[0])
   const setSelection = useViewer((state) => state.setSelection)
   const dimension = useScene((state) => {
@@ -143,16 +251,26 @@ export default function ConstructionDimensionPanel() {
     <PanelWrapper
       icon="/icons/blueprint.webp"
       onClose={() => setSelection({ selectedIds: [] })}
-      title="Construction Dimension"
+      title={i18n._({
+        id: 'node.constructionDimension.panel.constructionDimension',
+        message: 'Construction Dimension',
+      })}
       width={320}
     >
-      <PanelSection title="Dimension">
+      <PanelSection
+        title={i18n._({ id: 'node.constructionDimension.panel.dimension', message: 'Dimension' })}
+      >
         <div className="flex items-center justify-between gap-3 text-sm">
-          <span className="text-muted-foreground">Mode</span>
+          <span className="text-muted-foreground">
+            {i18n._({ id: 'node.constructionDimension.panel.mode', message: 'Mode' })}
+          </span>
           <span className="font-medium text-foreground">{MODE_LABELS[dimension.mode]}</span>
         </div>
         <SliderControl
-          label="Feature count"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.featureCount',
+            message: 'Feature count',
+          })}
           max={999}
           min={1}
           onChange={(featureCount) => update({ featureCount })}
@@ -162,7 +280,12 @@ export default function ConstructionDimensionPanel() {
         />
         {supportsCenterMark ? (
           <label className="flex items-center justify-between gap-3 text-sm">
-            <span className="text-muted-foreground">Center mark</span>
+            <span className="text-muted-foreground">
+              {i18n._({
+                id: 'node.constructionDimension.panel.centerMark',
+                message: 'Center mark',
+              })}
+            </span>
             <input
               checked={dimension.showCenterMark}
               onChange={(event) => update({ showCenterMark: event.target.checked })}
@@ -172,9 +295,17 @@ export default function ConstructionDimensionPanel() {
         ) : null}
       </PanelSection>
 
-      <PanelSection title="Drawing coordination">
+      <PanelSection
+        title={i18n._({
+          id: 'node.constructionDimension.panel.drawingCoordination',
+          message: 'Drawing coordination',
+        })}
+      >
         <SelectField
-          label="Primary drawing"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.primaryDrawing',
+            message: 'Primary drawing',
+          })}
           onChange={(drawingType) =>
             update({ drawingType: drawingType as ConstructionDrawingType })
           }
@@ -185,7 +316,11 @@ export default function ConstructionDimensionPanel() {
           value={dimension.drawingType}
         />
         <SelectField
-          label={`${activeDrawingLabel} presentation`}
+          label={i18n._({
+            id: 'node.constructionDimension.panel.activedrawinglabelPresentation',
+            message: '{activeDrawingLabel} presentation',
+            values: { activeDrawingLabel },
+          })}
           onChange={(presentation) =>
             updateDrawingPresentation(
               activeDrawingType,
@@ -193,10 +328,24 @@ export default function ConstructionDimensionPanel() {
             )
           }
           options={[
-            { label: 'Shown', value: 'shown' },
-            { label: 'Omitted', value: 'omit' },
+            {
+              label: i18n._({ id: 'node.constructionDimension.panel.shown', message: 'Shown' }),
+              value: 'shown',
+            },
+            {
+              label: i18n._({ id: 'node.constructionDimension.panel.omitted', message: 'Omitted' }),
+              value: 'omit',
+            },
             ...(activeDrawingType === 'floor-plan'
-              ? [{ label: 'Controlled by foundation', value: 'controlled' }]
+              ? [
+                  {
+                    label: i18n._({
+                      id: 'node.constructionDimension.panel.controlledByFoundation',
+                      message: 'Controlled by foundation',
+                    }),
+                    value: 'controlled',
+                  },
+                ]
               : []),
           ]}
           value={activePresentation}
@@ -213,83 +362,134 @@ export default function ConstructionDimensionPanel() {
           />
         ) : null}
         <p className="text-muted-foreground text-xs">
-          Linked dimensions reuse the controller's associative anchors and update with it.
+          {i18n._({
+            id: 'node.constructionDimension.panel.linkedDimensionsReuseTheControllerS',
+            message:
+              "Linked dimensions reuse the controller's associative anchors and update with it.",
+          })}
         </p>
         <TextField
-          label={`${activeDrawingLabel} suppressed segments`}
+          label={i18n._({
+            id: 'node.constructionDimension.panel.activedrawinglabelSuppressedSegments',
+            message: '{activeDrawingLabel} suppressed segments',
+            values: { activeDrawingLabel },
+          })}
           onCommit={updateSuppressedSegments}
           placeholder="e.g. 2, 4"
           value={suppressedSegmentsText}
         />
         <p className="text-muted-foreground text-xs">
-          Segment numbers are one-based and apply only in this drawing view.
+          {i18n._({
+            id: 'node.constructionDimension.panel.segmentNumbersAreOneBasedAnd',
+            message: 'Segment numbers are one-based and apply only in this drawing view.',
+          })}
         </p>
       </PanelSection>
 
-      <PanelSection title="Notation">
+      <PanelSection
+        title={i18n._({ id: 'node.constructionDimension.panel.notation', message: 'Notation' })}
+      >
         <TextField
-          label="Prefix"
+          label={i18n._({ id: 'node.constructionDimension.panel.prefix', message: 'Prefix' })}
           onCommit={(prefix) => update({ prefix })}
           value={dimension.prefix}
         />
         <TextField
-          label="Suffix"
+          label={i18n._({ id: 'node.constructionDimension.panel.suffix', message: 'Suffix' })}
           onCommit={(suffix) => update({ suffix })}
           value={dimension.suffix}
         />
         <TextField
-          label="Text override"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.textOverride',
+            message: 'Text override',
+          })}
           onCommit={(textOverride) => update({ textOverride: textOverride || null })}
-          placeholder="Use measured value"
+          placeholder={i18n._({
+            id: 'node.constructionDimension.panel.useMeasuredValue',
+            message: 'Use measured value',
+          })}
           value={dimension.textOverride ?? ''}
         />
       </PanelSection>
 
-      <PanelSection title="Standards">
+      <PanelSection
+        title={i18n._({ id: 'node.constructionDimension.panel.standards', message: 'Standards' })}
+      >
         <SelectField
-          label="Datum policy"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.datumPolicy',
+            message: 'Datum policy',
+          })}
           onChange={(datumPolicy) =>
             update({ datumPolicy: datumPolicy as ConstructionDimensionDatumPolicy })
           }
-          options={DATUM_POLICY_OPTIONS}
+          options={DATUM_POLICY_OPTIONS.map((option) => ({
+            ...option,
+            label: i18n._(option.label),
+          }))}
           value={dimension.datumPolicy}
         />
         <SelectField
-          label="Terminator"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.terminator',
+            message: 'Terminator',
+          })}
           onChange={(terminator) =>
             update({ terminator: terminator as ConstructionDimensionTerminator })
           }
-          options={TERMINATOR_OPTIONS}
+          options={TERMINATOR_OPTIONS.map((option) => ({ ...option, label: i18n._(option.label) }))}
           value={dimension.terminator}
         />
         <SelectField
-          label="Text position"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.textPosition',
+            message: 'Text position',
+          })}
           onChange={(textPosition) =>
             update({ textPosition: textPosition as ConstructionDimensionTextPosition })
           }
-          options={TEXT_POSITION_OPTIONS}
+          options={TEXT_POSITION_OPTIONS.map((option) => ({
+            ...option,
+            label: i18n._(option.label),
+          }))}
           value={dimension.textPosition}
         />
         <SelectField
-          label="Imperial precision"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.imperialPrecision',
+            message: 'Imperial precision',
+          })}
           onChange={(imperialPrecision) =>
             update({
               imperialPrecision: imperialPrecision as ConstructionDimensionImperialPrecision,
             })
           }
-          options={IMPERIAL_PRECISION_OPTIONS}
+          options={IMPERIAL_PRECISION_OPTIONS.map((option) => ({
+            ...option,
+            label: i18n._(option.label),
+          }))}
           value={dimension.imperialPrecision}
         />
         <SelectField
-          label="Metric notation"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.metricNotation',
+            message: 'Metric notation',
+          })}
           onChange={(metricNotation) =>
             update({ metricNotation: metricNotation as ConstructionDimensionMetricNotation })
           }
-          options={METRIC_NOTATION_OPTIONS}
+          options={METRIC_NOTATION_OPTIONS.map((option) => ({
+            ...option,
+            label: i18n._(option.label),
+          }))}
           value={dimension.metricNotation}
         />
         <SliderControl
-          label="Extension gap"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.extensionGap',
+            message: 'Extension gap',
+          })}
           max={0.5}
           min={0}
           onChange={(extensionStartGap) => update({ extensionStartGap })}
@@ -298,7 +498,10 @@ export default function ConstructionDimensionPanel() {
           value={dimension.extensionStartGap}
         />
         <SliderControl
-          label="Extension overshoot"
+          label={i18n._({
+            id: 'node.constructionDimension.panel.extensionOvershoot',
+            message: 'Extension overshoot',
+          })}
           max={0.5}
           min={0}
           onChange={(extensionOvershoot) => update({ extensionOvershoot })}
@@ -308,12 +511,14 @@ export default function ConstructionDimensionPanel() {
         />
       </PanelSection>
 
-      <PanelSection title="Actions">
+      <PanelSection
+        title={i18n._({ id: 'node.constructionDimension.panel.actions', message: 'Actions' })}
+      >
         <ActionGroup>
           <ActionButton
             className="border-red-500/40 text-red-700 dark:text-red-200 hover:bg-red-500/15"
             icon={<Trash2 className="h-4 w-4" />}
-            label="Delete"
+            label={i18n._({ id: 'node.constructionDimension.panel.delete', message: 'Delete' })}
             onClick={() => {
               triggerSFX('sfx:structure-delete')
               deleteNode(dimension.id)
@@ -347,13 +552,17 @@ function FoundationControllerField({
   value: string
   onChange: (value: NonNullable<ConstructionDimensionNode['controllingDimensionId']>) => void
 }) {
+  const i18n = usePascalI18n()
   const foundationControllers = useScene(
     useShallow((state) => selectFoundationControllers(state.nodes, dimensionId)),
   )
   return (
     <SelectField
       disabled={foundationControllers.length === 0}
-      label="Foundation controller"
+      label={i18n._({
+        id: 'node.constructionDimension.panel.foundationController',
+        message: 'Foundation controller',
+      })}
       onChange={(controllingDimensionId) =>
         onChange(
           controllingDimensionId as NonNullable<
@@ -362,10 +571,18 @@ function FoundationControllerField({
         )
       }
       options={foundationControllers.map((controller) => ({
-        label: controller.name || 'Foundation dimension',
+        label:
+          controller.name ||
+          i18n._({
+            id: 'node.constructionDimension.panel.foundationDimension',
+            message: 'Foundation dimension',
+          }),
         value: controller.id,
       }))}
-      placeholder="No foundation dimensions"
+      placeholder={i18n._({
+        id: 'node.constructionDimension.panel.noFoundationDimensions',
+        message: 'No foundation dimensions',
+      })}
       value={value}
     />
   )

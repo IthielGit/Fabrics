@@ -25,6 +25,7 @@ import {
   parseLinearMeasurementInput,
   sceneRegistry,
   useLocale,
+  usePascalI18n,
   useScene,
 } from '@pascal-app/core'
 import {
@@ -1230,6 +1231,7 @@ function DraftLabel({
 }
 
 function DraftExtrusionControl({ position }: { position: Vector3 }) {
+  const i18n = usePascalI18n()
   const unit = useViewer((state) => state.unit)
   const locale = useLocale()
   const extrusionHeight = useMeasurementDraft((state) => state.extrusionHeight)
@@ -1290,14 +1292,17 @@ function DraftExtrusionControl({ position }: { position: Vector3 }) {
         }}
       >
         <label className="sr-only" htmlFor="measurement-3d-extrusion-height">
-          Extrusion height
+          {i18n._({ id: 'node.measurement.tool.extrusionHeight', message: 'Extrusion height' })}
         </label>
         <div className="relative min-w-0 flex-1">
           <span className="pointer-events-none absolute inset-y-0 left-2 flex items-center font-medium text-muted-foreground text-xs">
             H
           </span>
           <input
-            aria-label="Extrusion height"
+            aria-label={i18n._({
+              id: 'node.measurement.tool.extrusionHeight',
+              message: 'Extrusion height',
+            })}
             className="h-8 w-full rounded-md border border-border bg-background pr-7 pl-6 text-sm outline-none focus:border-indigo-400"
             id="measurement-3d-extrusion-height"
             inputMode="decimal"
@@ -1337,7 +1342,7 @@ function DraftExtrusionControl({ position }: { position: Vector3 }) {
           onClick={commit}
           type="button"
         >
-          Create
+          {i18n._({ id: 'node.measurement.tool.create', message: 'Create' })}
         </button>
       </div>
     </Html>

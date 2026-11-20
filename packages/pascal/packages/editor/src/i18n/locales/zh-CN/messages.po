@@ -18205,6 +18205,288 @@ msgstr "基于拓扑、可直接在画布中编辑的实体。"
 msgid "node.block.label"
 msgstr "体块"
 
+# English: "Actions"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.actions"
+msgstr ""
+
+# English: "Add slot"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.addSlot"
+msgstr ""
+
+# English: "Apply {label} to selected faces"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.applyLabelToSelectedFaces"
+msgstr ""
+
+# English: "Block"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.block"
+msgstr ""
+
+# English: "Delete"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.delete"
+msgstr ""
+
+# English: "Delete {label} slot"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.deleteLabelSlot"
+msgstr ""
+
+# English: "Delete material slot and use Body on its faces"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.deleteMaterialSlotAndUseBody"
+msgstr ""
+
+# English: "face"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.face"
+msgstr ""
+
+# English: "faces"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.faces"
+msgstr ""
+
+# English: "Move"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.move"
+msgstr ""
+
+# English: "Position"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.position"
+msgstr ""
+
+# English: "Rename {label} slot"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.renameLabelSlot"
+msgstr ""
+
+# English: "Select one or more faces first"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.selectOneOrMoreFacesFirst"
+msgstr ""
+
+# English: "Slots"
+# Review: missing
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.slots"
+msgstr ""
+
+# English: "Adjust {label}"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.adjustLabel"
+msgstr ""
+
+# English: "Adjust {label} (F9)"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.adjustLabelF9"
+msgstr ""
+
+# English: "Adjust Last Operation · F9"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.adjustLastOperationF9"
+msgstr ""
+
+# English: "BEVEL"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.bevel"
+msgstr ""
+
+# English: "Bevel selected edges"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.bevelSelectedEdges"
+msgstr ""
+
+# English: "Clear selection"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.clearSelection"
+msgstr ""
+
+# English: "Close last operation panel"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.closeLastOperationPanel"
+msgstr ""
+
+# English: "Could not preview loop cut"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.couldNotPreviewLoopCut"
+msgstr ""
+
+# English: "Delete components"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.deleteComponents"
+msgstr ""
+
+# English: "Dissolve selection"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.dissolveSelection"
+msgstr ""
+
+# English: "Edge select (2)"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.edgeSelect2"
+msgstr ""
+
+# English: "Extrude selected faces"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.extrudeSelectedFaces"
+msgstr ""
+
+# English: "Face select (3)"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.faceSelect3"
+msgstr ""
+
+# English: "Finish edit mode (Tab)"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.finishEditModeTab"
+msgstr ""
+
+# English: "Inset selected faces"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.insetSelectedFaces"
+msgstr ""
+
+# English: "Invert selection"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.invertSelection"
+msgstr ""
+
+# English: "LOOP CUT"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.loopCut"
+msgstr ""
+
+# English: "Loop Cut and Slide"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.loopCutAndSlide"
+msgstr ""
+
+# English: "Loop cut count"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.loopCutCount"
+msgstr ""
+
+# English: "Loop cut requires a connected ring of quad faces"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.loopCutRequiresAConnectedRing"
+msgstr ""
+
+# English: "Merge vertices"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.mergeVertices"
+msgstr ""
+
+# English: "Mesh operations"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.meshOperations"
+msgstr ""
+
+# English: "Move selection"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.moveSelection"
+msgstr ""
+
+# English: "Operations"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.operations"
+msgstr ""
+
+# English: "Repeat {label}"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.repeatLabel"
+msgstr ""
+
+# English: "Rotate selection"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.rotateSelection"
+msgstr ""
+
+# English: "Select all"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.selectAll"
+msgstr ""
+
+# English: "Selection actions"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.selectionActions"
+msgstr ""
+
+# English: "Selection and more"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.selectionAndMore"
+msgstr ""
+
+# English: "Shift+R"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.shiftR"
+msgstr ""
+
+# English: "Transform selected components (G / R / S)"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.transformSelectedComponentsGRS"
+msgstr ""
+
+# English: "Vertex select (1)"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.vertexSelect1"
+msgstr ""
+
+# English: "X-ray selection"
+# Review: missing
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.xRaySelection"
+msgstr ""
+
 # Source-Hash: b2a371b4041b5e38
 # Review: required
 # AI-Provider: claude-code
@@ -23535,6 +23817,258 @@ msgstr "关联的线性、曲线、圆形、角度或坐标平面尺寸。"
 msgid "node.constructionDimension.label"
 msgstr "施工尺寸"
 
+# English: "Actions"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.actions"
+msgstr ""
+
+# English: "{activeDrawingLabel} presentation"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.activedrawinglabelPresentation"
+msgstr ""
+
+# English: "{activeDrawingLabel} suppressed segments"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.activedrawinglabelSuppressedSegments"
+msgstr ""
+
+# English: "Center mark"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.centerMark"
+msgstr ""
+
+# English: "Construction Dimension"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.constructionDimension"
+msgstr ""
+
+# English: "Controlled by foundation"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.controlledByFoundation"
+msgstr ""
+
+# English: "Datum policy"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.datumPolicy"
+msgstr ""
+
+# English: "Delete"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.delete"
+msgstr ""
+
+# English: "Dimension"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.dimension"
+msgstr ""
+
+# English: "Drawing coordination"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.drawingCoordination"
+msgstr ""
+
+# English: "Extension gap"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.extensionGap"
+msgstr ""
+
+# English: "Extension overshoot"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.extensionOvershoot"
+msgstr ""
+
+# English: "Feature count"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.featureCount"
+msgstr ""
+
+# English: "Foundation controller"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.foundationController"
+msgstr ""
+
+# English: "Foundation dimension"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.foundationDimension"
+msgstr ""
+
+# English: "Imperial precision"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.imperialPrecision"
+msgstr ""
+
+# English: "Linked dimensions reuse the controller's associative anchors and update with it."
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.linkedDimensionsReuseTheControllerS"
+msgstr ""
+
+# English: "Metric notation"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.metricNotation"
+msgstr ""
+
+# English: "Mode"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.mode"
+msgstr ""
+
+# English: "No foundation dimensions"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.noFoundationDimensions"
+msgstr ""
+
+# English: "Notation"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.notation"
+msgstr ""
+
+# English: "Omitted"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.omitted"
+msgstr ""
+
+# English: "Above line"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.aboveLine"
+msgstr ""
+
+# English: "Centerline"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.centerline"
+msgstr ""
+
+# English: "Dot"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.dot"
+msgstr ""
+
+# English: "Filled arrow"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.filledArrow"
+msgstr ""
+
+# English: "Finish face"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.finishFace"
+msgstr ""
+
+# English: "Meters"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.meters"
+msgstr ""
+
+# English: "Millimeters"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.millimeters"
+msgstr ""
+
+# English: "Nearest inch"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.nearestInch"
+msgstr ""
+
+# English: "Open arrow"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.openArrow"
+msgstr ""
+
+# English: "Wall face"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.wallFace"
+msgstr ""
+
+# English: "Prefix"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.prefix"
+msgstr ""
+
+# English: "Primary drawing"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.primaryDrawing"
+msgstr ""
+
+# English: "Segment numbers are one-based and apply only in this drawing view."
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.segmentNumbersAreOneBasedAnd"
+msgstr ""
+
+# English: "Shown"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.shown"
+msgstr ""
+
+# English: "Standards"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.standards"
+msgstr ""
+
+# English: "Suffix"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.suffix"
+msgstr ""
+
+# English: "Terminator"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.terminator"
+msgstr ""
+
+# English: "Text override"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.textOverride"
+msgstr ""
+
+# English: "Text position"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.textPosition"
+msgstr ""
+
+# English: "Use measured value"
+# Review: missing
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.useMeasuredValue"
+msgstr ""
+
 # AI-Provider: claude-code
 # AI-Model: claude-opus-5-5
 # Source-Hash: 61b43e9e1ef4bbce
@@ -27833,6 +28367,24 @@ msgstr "持久的距离、角度、面积、周长或体积标注。"
 #, fuzzy
 msgid "node.measurement.label"
 msgstr "测量"
+
+# English: "Align "
+# Review: missing
+#: packages/nodes/src/measurement/selection.tsx
+msgid "node.measurement.selection.align"
+msgstr ""
+
+# English: "Create"
+# Review: missing
+#: packages/nodes/src/measurement/tool.tsx
+msgid "node.measurement.tool.create"
+msgstr ""
+
+# English: "Extrusion height"
+# Review: missing
+#: packages/nodes/src/measurement/tool.tsx
+msgid "node.measurement.tool.extrusionHeight"
+msgstr ""
 
 # Source-Hash: d71b38e990539364
 # Review: required
@@ -32830,6 +33382,48 @@ msgstr "楼层内的玩家或相机起点，每层一个。"
 msgid "node.spawn.label"
 msgstr "出生点"
 
+# English: "Actions"
+# Review: missing
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.actions"
+msgstr ""
+
+# English: "Delete"
+# Review: missing
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.delete"
+msgstr ""
+
+# English: "Facing"
+# Review: missing
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.facing"
+msgstr ""
+
+# English: "Move"
+# Review: missing
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.move"
+msgstr ""
+
+# English: "Position"
+# Review: missing
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.position"
+msgstr ""
+
+# English: "Spawn Point"
+# Review: missing
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.spawnPoint"
+msgstr ""
+
+# English: "Yaw"
+# Review: missing
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.yaw"
+msgstr ""
+
 # Source-Hash: faaa4f6b40001667
 # Review: required
 # AI-Provider: claude-code
@@ -36100,6 +36694,18 @@ msgstr "直线或曲线墙体段，可承载门、窗、单坡扩建和壁挂物
 #, fuzzy
 msgid "node.wall.label"
 msgstr "墙体"
+
+# English: "Alt to detach"
+# Review: missing
+#: packages/nodes/src/wall/move-endpoint-tool.tsx
+msgid "node.wall.moveEndpointTool.altToDetach"
+msgstr ""
+
+# English: "Detaching corner"
+# Review: missing
+#: packages/nodes/src/wall/move-endpoint-tool.tsx
+msgid "node.wall.moveEndpointTool.detachingCorner"
+msgstr ""
 
 # Source-Hash: aa6d82bdb3cc1d9a
 # Review: required

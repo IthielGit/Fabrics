@@ -12,6 +12,7 @@ import {
   resolveLevelId,
   sceneRegistry,
   useLiveNodeOverrides,
+  usePascalI18n,
   useScene,
 } from '@pascal-app/core'
 import {
@@ -156,6 +157,7 @@ function MeasurementEditHandle({
 }
 
 function MeasurementEditGuide({ guide }: { guide: MeasurementAxisGuide }) {
+  const i18n = usePascalI18n()
   const geometry = useMemo(() => {
     const next = new BufferGeometry()
     next.setAttribute('position', new Float32BufferAttribute([...guide.from, ...guide.to], 3))
@@ -184,7 +186,9 @@ function MeasurementEditGuide({ guide }: { guide: MeasurementAxisGuide }) {
       </lineSegments>
       <Html center position={guide.to} style={{ pointerEvents: 'none' }} zIndexRange={[80, 0]}>
         <div className="-translate-y-4 whitespace-nowrap rounded-full border border-indigo-400/70 bg-background/95 px-2.5 py-1 font-mono font-semibold text-[11px] text-foreground shadow-sm backdrop-blur">
-          {guide.proximity ? 'Align ' : ''}
+          {guide.proximity
+            ? i18n._({ id: 'node.measurement.selection.align', message: 'Align ' })
+            : ''}
           {guide.axis.toUpperCase()}
         </div>
       </Html>

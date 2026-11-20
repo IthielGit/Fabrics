@@ -7,6 +7,7 @@ import {
   type BlockTopology,
   emitter,
   sceneRegistry,
+  usePascalI18n,
 } from '@pascal-app/core'
 import {
   cn,
@@ -1454,9 +1455,14 @@ function LastOperationPanel({
   onClose: () => void
   onRepeat: () => void
 }) {
+  const i18n = usePascalI18n()
   return (
     <div
-      aria-label={`Adjust ${operation.label}`}
+      aria-label={i18n._({
+        id: 'node.block.selection.adjustLabel',
+        message: 'Adjust {label}',
+        values: { label: operation.label },
+      })}
       className="pointer-events-auto absolute bottom-16 left-4 w-64 max-w-[calc(100%-2rem)] rounded-xl border border-border/50 bg-background/98 p-2 shadow-elevation-4 backdrop-blur-xl"
       onContextMenu={(event) => event.stopPropagation()}
       onPointerDown={(event) => event.stopPropagation()}
@@ -1466,10 +1472,18 @@ function LastOperationPanel({
       <div className="mb-2 flex items-center justify-between gap-3">
         <div>
           <div className="font-medium text-xs">{operation.label}</div>
-          <div className="text-[10px] text-muted-foreground">Adjust Last Operation · F9</div>
+          <div className="text-[10px] text-muted-foreground">
+            {i18n._({
+              id: 'node.block.selection.adjustLastOperationF9',
+              message: 'Adjust Last Operation · F9',
+            })}
+          </div>
         </div>
         <button
-          aria-label="Close last operation panel"
+          aria-label={i18n._({
+            id: 'node.block.selection.closeLastOperationPanel',
+            message: 'Close last operation panel',
+          })}
           className="rounded p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
           onClick={onClose}
           type="button"
@@ -1483,8 +1497,16 @@ function LastOperationPanel({
         onClick={onRepeat}
         type="button"
       >
-        <span>Repeat {operation.label}</span>
-        <kbd className="font-mono text-[9px] text-muted-foreground">Shift+R</kbd>
+        <span>
+          {i18n._({
+            id: 'node.block.selection.repeatLabel',
+            message: 'Repeat {label}',
+            values: { label: operation.label },
+          })}
+        </span>
+        <kbd className="font-mono text-[9px] text-muted-foreground">
+          {i18n._({ id: 'node.block.selection.shiftR', message: 'Shift+R' })}
+        </kbd>
       </button>
     </div>
   )
@@ -1507,6 +1529,7 @@ function BlockEditor({
   target: Object3D
   mirrorTarget: boolean
 }) {
+  const i18n = usePascalI18n()
   const { camera, gl } = useThree()
   const topologyPreview = useMemo(
     () => createBlockTopologyPreview(node.id, sceneApi),
@@ -3093,7 +3116,14 @@ function BlockEditor({
     const segments = blockLoopCutSegments(node.topology, loopCutEdgeId, 0.5, loopCutCount)
     setLoopCutSegments(segments)
     setLoopCutFactor(0.5)
-    setError(segments ? null : 'Loop cut requires a connected ring of quad faces')
+    setError(
+      segments
+        ? null
+        : i18n._({
+            id: 'node.block.selection.loopCutRequiresAConnectedRing',
+            message: 'Loop cut requires a connected ring of quad faces',
+          }),
+    )
   }, [editing, loopCutCount, loopCutEdgeId, loopCutSliding, node.topology, transformTool])
 
   useEffect(() => {
@@ -3175,7 +3205,14 @@ function BlockEditor({
         })
         const segments = blockLoopCutSegments(baseTopology, edgeId, effectiveFactor, activeCuts)
         if (!result.ok || !segments) {
-          setError(result.ok ? 'Could not preview loop cut' : result.error)
+          setError(
+            result.ok
+              ? i18n._({
+                  id: 'node.block.selection.couldNotPreviewLoopCut',
+                  message: 'Could not preview loop cut',
+                })
+              : result.error,
+          )
           return false
         }
         if (!topologyPreview.set(result.topology)) {
@@ -3731,7 +3768,10 @@ function BlockEditor({
               <ToolbarButton
                 active={transformTool === 'transform'}
                 disabled={Boolean(selectedIds.length === 0 || cancelDragRef.current)}
-                label="Transform selected components (G / R / S)"
+                label={i18n._({
+                  id: 'node.block.selection.transformSelectedComponentsGRS',
+                  message: 'Transform selected components (G / R / S)',
+                })}
                 onClick={() => setTransformTool('transform')}
               >
                 <Move3D className="h-4 w-4" />
@@ -3739,7 +3779,10 @@ function BlockEditor({
               <ToolbarButton
                 active={mode === 'vertex'}
                 disabled={Boolean(cancelDragRef.current)}
-                label="Vertex select (1)"
+                label={i18n._({
+                  id: 'node.block.selection.vertexSelect1',
+                  message: 'Vertex select (1)',
+                })}
                 onClick={() => switchMode('vertex')}
               >
                 <CircleDot className="h-4 w-4" />
@@ -3747,7 +3790,10 @@ function BlockEditor({
               <ToolbarButton
                 active={mode === 'edge'}
                 disabled={Boolean(cancelDragRef.current)}
-                label="Edge select (2)"
+                label={i18n._({
+                  id: 'node.block.selection.edgeSelect2',
+                  message: 'Edge select (2)',
+                })}
                 onClick={() => switchMode('edge')}
               >
                 <ScanLine className="h-4 w-4" />
@@ -3755,7 +3801,10 @@ function BlockEditor({
               <ToolbarButton
                 active={mode === 'face'}
                 disabled={Boolean(cancelDragRef.current)}
-                label="Face select (3)"
+                label={i18n._({
+                  id: 'node.block.selection.faceSelect3',
+                  message: 'Face select (3)',
+                })}
                 onClick={() => switchMode('face')}
               >
                 <Square className="h-4 w-4" />
@@ -3783,15 +3832,30 @@ function BlockEditor({
                 >
                   {loopCutActive ? <Rows3 className="h-4 w-4" /> : null}
                   {bevelActive ? <Scaling className="h-4 w-4" /> : null}
-                  <span>{loopCutActive ? 'LOOP CUT' : bevelActive ? 'BEVEL' : 'Operations'}</span>
+                  <span>
+                    {loopCutActive
+                      ? i18n._({ id: 'node.block.selection.loopCut', message: 'LOOP CUT' })
+                      : bevelActive
+                        ? i18n._({ id: 'node.block.selection.bevel', message: 'BEVEL' })
+                        : i18n._({ id: 'node.block.selection.operations', message: 'Operations' })}
+                  </span>
                   <ChevronDown className="h-3.5 w-3.5" />
                 </button>
                 {toolbarPanel === 'operations' ? (
-                  <ToolbarPanelFrame label="Mesh operations" className="w-80 p-1.5">
+                  <ToolbarPanelFrame
+                    label={i18n._({
+                      id: 'node.block.selection.meshOperations',
+                      message: 'Mesh operations',
+                    })}
+                    className="w-80 p-1.5"
+                  >
                     <div className="space-y-0.5">
                       <ToolbarOperationItem
                         disabled={selectedIds.length === 0}
-                        label="Move selection"
+                        label={i18n._({
+                          id: 'node.block.selection.moveSelection',
+                          message: 'Move selection',
+                        })}
                         onClick={() => beginKeyboardTransformModal('translate')}
                         shortcut="G"
                       >
@@ -3799,7 +3863,10 @@ function BlockEditor({
                       </ToolbarOperationItem>
                       <ToolbarOperationItem
                         disabled={selectedIds.length === 0}
-                        label="Rotate selection"
+                        label={i18n._({
+                          id: 'node.block.selection.rotateSelection',
+                          message: 'Rotate selection',
+                        })}
                         onClick={() => beginKeyboardTransformModal('rotate')}
                         shortcut="R"
                       >
@@ -3807,7 +3874,10 @@ function BlockEditor({
                       </ToolbarOperationItem>
                       <ToolbarOperationItem
                         disabled={!operationAvailability.extrude}
-                        label="Extrude selected faces"
+                        label={i18n._({
+                          id: 'node.block.selection.extrudeSelectedFaces',
+                          message: 'Extrude selected faces',
+                        })}
                         onClick={extrudeSelectedFace}
                         shortcut="E"
                       >
@@ -3815,7 +3885,10 @@ function BlockEditor({
                       </ToolbarOperationItem>
                       <ToolbarOperationItem
                         disabled={!operationAvailability.inset}
-                        label="Inset selected faces"
+                        label={i18n._({
+                          id: 'node.block.selection.insetSelectedFaces',
+                          message: 'Inset selected faces',
+                        })}
                         onClick={insetSelectedFace}
                         shortcut="I"
                       >
@@ -3825,7 +3898,10 @@ function BlockEditor({
                         active={loopCutActive}
                         controls={
                           <input
-                            aria-label="Loop cut count"
+                            aria-label={i18n._({
+                              id: 'node.block.selection.loopCutCount',
+                              message: 'Loop cut count',
+                            })}
                             className={OPERATION_INPUT_CLASS}
                             max="32"
                             min="1"
@@ -3839,7 +3915,10 @@ function BlockEditor({
                             value={loopCutCount}
                           />
                         }
-                        label="Loop Cut and Slide"
+                        label={i18n._({
+                          id: 'node.block.selection.loopCutAndSlide',
+                          message: 'Loop Cut and Slide',
+                        })}
                         onClick={() => {
                           playBlockSfx('tool-select')
                           setTransformTool('loop-cut')
@@ -3851,7 +3930,10 @@ function BlockEditor({
                       </ToolbarOperationItem>
                       <ToolbarOperationItem
                         disabled={!operationAvailability.merge}
-                        label="Merge vertices"
+                        label={i18n._({
+                          id: 'node.block.selection.mergeVertices',
+                          message: 'Merge vertices',
+                        })}
                         onClick={mergeSelection}
                         shortcut="M"
                       >
@@ -3859,7 +3941,10 @@ function BlockEditor({
                       </ToolbarOperationItem>
                       <ToolbarOperationItem
                         disabled={!operationAvailability.dissolve}
-                        label="Dissolve selection"
+                        label={i18n._({
+                          id: 'node.block.selection.dissolveSelection',
+                          message: 'Dissolve selection',
+                        })}
                         onClick={dissolveSelection}
                         shortcut="D"
                       >
@@ -3868,7 +3953,10 @@ function BlockEditor({
                       <ToolbarOperationItem
                         active={bevelActive}
                         disabled={!operationAvailability.bevel}
-                        label="Bevel selected edges"
+                        label={i18n._({
+                          id: 'node.block.selection.bevelSelectedEdges',
+                          message: 'Bevel selected edges',
+                        })}
                         onClick={() => {
                           playBlockSfx('tool-select')
                           setBevelSegments(DEFAULT_BEVEL_SEGMENTS)
@@ -3887,21 +3975,35 @@ function BlockEditor({
               {lastOperation ? (
                 <ToolbarButton
                   active={lastOperationPanelOpen}
-                  label={`Adjust ${lastOperation.label} (F9)`}
+                  label={i18n._({
+                    id: 'node.block.selection.adjustLabelF9',
+                    message: 'Adjust {label} (F9)',
+                    values: { label: lastOperation.label },
+                  })}
                   onClick={() => setLastOperationPanelOpen((open) => !open)}
                 >
                   <Rotate3D className="h-4 w-4" />
                 </ToolbarButton>
               ) : null}
 
-              <ToolbarButton label="Finish edit mode (Tab)" onClick={exitEditMode} sound={false}>
+              <ToolbarButton
+                label={i18n._({
+                  id: 'node.block.selection.finishEditModeTab',
+                  message: 'Finish edit mode (Tab)',
+                })}
+                onClick={exitEditMode}
+                sound={false}
+              >
                 <Check className="h-4 w-4" />
               </ToolbarButton>
 
               <div className="relative">
                 <ToolbarButton
                   active={toolbarPanel === 'selection'}
-                  label="Selection and more"
+                  label={i18n._({
+                    id: 'node.block.selection.selectionAndMore',
+                    message: 'Selection and more',
+                  })}
                   onClick={() =>
                     setToolbarPanel((current) => (current === 'selection' ? null : 'selection'))
                   }
@@ -3910,12 +4012,18 @@ function BlockEditor({
                 </ToolbarButton>
                 {toolbarPanel === 'selection' ? (
                   <ToolbarPanelFrame
-                    label="Selection actions"
+                    label={i18n._({
+                      id: 'node.block.selection.selectionActions',
+                      message: 'Selection actions',
+                    })}
                     className="right-0 left-auto w-60 translate-x-0"
                   >
                     <div className="space-y-1">
                       <ToolbarMenuItem
-                        label="Select all"
+                        label={i18n._({
+                          id: 'node.block.selection.selectAll',
+                          message: 'Select all',
+                        })}
                         onClick={selectAll}
                         shortcut="A"
                         sound={false}
@@ -3923,7 +4031,10 @@ function BlockEditor({
                         <CircleDot className="h-4 w-4" />
                       </ToolbarMenuItem>
                       <ToolbarMenuItem
-                        label="Invert selection"
+                        label={i18n._({
+                          id: 'node.block.selection.invertSelection',
+                          message: 'Invert selection',
+                        })}
                         onClick={invertSelection}
                         shortcut="Ctrl+I"
                         sound={false}
@@ -3932,7 +4043,10 @@ function BlockEditor({
                       </ToolbarMenuItem>
                       <ToolbarMenuItem
                         disabled={selectedIds.length === 0}
-                        label="Clear selection"
+                        label={i18n._({
+                          id: 'node.block.selection.clearSelection',
+                          message: 'Clear selection',
+                        })}
                         onClick={clearSelection}
                         shortcut="Alt+A"
                         sound={false}
@@ -3941,7 +4055,10 @@ function BlockEditor({
                       </ToolbarMenuItem>
                       <ToolbarMenuItem
                         active={xray}
-                        label="X-ray selection"
+                        label={i18n._({
+                          id: 'node.block.selection.xRaySelection',
+                          message: 'X-ray selection',
+                        })}
                         onClick={() => setXray((value) => !value)}
                       >
                         {xray ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
@@ -3950,7 +4067,10 @@ function BlockEditor({
                       <ToolbarMenuItem
                         destructive
                         disabled={selectedIds.length === 0}
-                        label="Delete components"
+                        label={i18n._({
+                          id: 'node.block.selection.deleteComponents',
+                          message: 'Delete components',
+                        })}
                         onClick={deleteSelection}
                         shortcut="X"
                         sound={false}

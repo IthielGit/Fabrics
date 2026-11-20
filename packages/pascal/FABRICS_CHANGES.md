@@ -68,3 +68,6 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
   seulement) : `i18n:check` signale ces textes manquants ; `check:all` de Fabrics ne l'appelle pas.
 - Zone `packages/viewer` : textes convertis par le codemod de Pascal (`glb-scene`, `perf-panel`,
   `unsupported-gpu-fallback`, `scene-loader`, `walkthrough-hud`, `floorplan-dimension-renderer`).
+- Zone `packages/nodes` : `block/{panel,selection}`, `construction-dimension/panel` (libellés des listes en
+  descripteurs `/* i18n */`, rendus par `i18n._(option.label)`), `measurement/{selection,tool}`,
+  `spawn/panel`, `wall/move-endpoint-tool`.

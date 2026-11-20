@@ -1,6 +1,12 @@
 'use client'
 
-import { type AnyNode, type SpawnNode, useLiveTransforms, useScene } from '@pascal-app/core'
+import {
+  type AnyNode,
+  type SpawnNode,
+  useLiveTransforms,
+  usePascalI18n,
+  useScene,
+} from '@pascal-app/core'
 import {
   ActionButton,
   ActionGroup,
@@ -15,6 +21,7 @@ import { Move, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 
 export default function SpawnPanel() {
+  const i18n = usePascalI18n()
   const selectedId = useViewer((s) => s.selection.selectedIds[0])
   const setSelection = useViewer((s) => s.setSelection)
   const updateNode = useScene((s) => s.updateNode)
@@ -97,10 +104,10 @@ export default function SpawnPanel() {
     <PanelWrapper
       icon="/icons/spawn-point.webp"
       onClose={handleClose}
-      title="Spawn Point"
+      title={i18n._({ id: 'node.spawn.panel.spawnPoint', message: 'Spawn Point' })}
       width={300}
     >
-      <PanelSection title="Position">
+      <PanelSection title={i18n._({ id: 'node.spawn.panel.position', message: 'Position' })}>
         <SliderControl
           label="X"
           max={node.position[0] + 2}
@@ -139,9 +146,9 @@ export default function SpawnPanel() {
         />
       </PanelSection>
 
-      <PanelSection title="Facing">
+      <PanelSection title={i18n._({ id: 'node.spawn.panel.facing', message: 'Facing' })}>
         <SliderControl
-          label="Yaw"
+          label={i18n._({ id: 'node.spawn.panel.yaw', message: 'Yaw' })}
           max={storedRotationDegrees + 90}
           min={storedRotationDegrees - 90}
           onChange={handleRotationChange}
@@ -153,13 +160,17 @@ export default function SpawnPanel() {
         />
       </PanelSection>
 
-      <PanelSection title="Actions">
+      <PanelSection title={i18n._({ id: 'node.spawn.panel.actions', message: 'Actions' })}>
         <ActionGroup>
-          <ActionButton icon={<Move className="h-4 w-4" />} label="Move" onClick={handleMove} />
+          <ActionButton
+            icon={<Move className="h-4 w-4" />}
+            label={i18n._({ id: 'node.spawn.panel.move', message: 'Move' })}
+            onClick={handleMove}
+          />
           <ActionButton
             className="border-red-500/40 text-red-700 dark:text-red-200 hover:bg-red-500/15"
             icon={<Trash2 className="h-4 w-4" />}
-            label="Delete"
+            label={i18n._({ id: 'node.spawn.panel.delete', message: 'Delete' })}
             onClick={handleDelete}
           />
         </ActionGroup>

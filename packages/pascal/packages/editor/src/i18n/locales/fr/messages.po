@@ -18205,6 +18205,476 @@ msgstr "Solide à topologie, modifiable directement dans le canevas."
 msgid "node.block.label"
 msgstr "Bloc"
 
+# English: "Actions"
+# Source-Hash: aa6d82bdb3cc1d9a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.actions"
+msgstr "Actions"
+
+# English: "Add slot"
+# Source-Hash: 0a784a50cdd6f78a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.addSlot"
+msgstr "Ajouter un emplacement"
+
+# English: "Apply {label} to selected faces"
+# Source-Hash: e705d76c5161d3c2
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.applyLabelToSelectedFaces"
+msgstr "Appliquer {label} aux faces sélectionnées"
+
+# English: "Block"
+# Source-Hash: 279f456ebb2f5da0
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.block"
+msgstr "Bloc"
+
+# English: "Delete"
+# Source-Hash: b26de372b4b0eaac
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.delete"
+msgstr "Supprimer"
+
+# English: "Delete {label} slot"
+# Source-Hash: 031a27dee0e6c776
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.deleteLabelSlot"
+msgstr "Supprimer l’emplacement {label}"
+
+# English: "Delete material slot and use Body on its faces"
+# Source-Hash: 467fd539455493b2
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.deleteMaterialSlotAndUseBody"
+msgstr "Supprimer l’emplacement de matériau et utiliser le corps sur ses faces"
+
+# English: "face"
+# Source-Hash: 389e28b727e1e133
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.face"
+msgstr "face"
+
+# English: "faces"
+# Source-Hash: 698a3908b2b958ef
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.faces"
+msgstr "faces"
+
+# English: "Move"
+# Source-Hash: bd02c614454fbd2b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.move"
+msgstr "Déplacer"
+
+# English: "Position"
+# Source-Hash: 9da0cbfad144d737
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.position"
+msgstr "Position"
+
+# English: "Rename {label} slot"
+# Source-Hash: 06227dfda28f8c06
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.renameLabelSlot"
+msgstr "Renommer l’emplacement {label}"
+
+# English: "Select one or more faces first"
+# Source-Hash: c5e9249960f31f40
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.selectOneOrMoreFacesFirst"
+msgstr "Sélectionnez d’abord une ou plusieurs faces"
+
+# English: "Slots"
+# Source-Hash: e03c36bb4b3efb8e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/panel.tsx
+#, fuzzy
+msgid "node.block.panel.slots"
+msgstr "Emplacements"
+
+# English: "Adjust {label}"
+# Source-Hash: 5729095e9dee1f6c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.adjustLabel"
+msgstr "Ajuster {label}"
+
+# English: "Adjust {label} (F9)"
+# Source-Hash: c02cd03e18dae823
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.adjustLabelF9"
+msgstr "Ajuster {label} (F9)"
+
+# English: "Adjust Last Operation · F9"
+# Source-Hash: 38460003384d06ec
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.adjustLastOperationF9"
+msgstr "Ajuster la dernière opération · F9"
+
+# English: "BEVEL"
+# Source-Hash: aa41cdc0a68c4d8f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.bevel"
+msgstr "CHANFREIN"
+
+# English: "Bevel selected edges"
+# Source-Hash: 729e97f166bc8ad1
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.bevelSelectedEdges"
+msgstr "Chanfreiner les arêtes sélectionnées"
+
+# English: "Clear selection"
+# Source-Hash: 71f2343818c55e0c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.clearSelection"
+msgstr "Effacer la sélection"
+
+# English: "Close last operation panel"
+# Source-Hash: 2f36721f7b92223d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.closeLastOperationPanel"
+msgstr "Fermer le panneau de la dernière opération"
+
+# English: "Could not preview loop cut"
+# Source-Hash: 75172fa513786f8a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.couldNotPreviewLoopCut"
+msgstr "Impossible d’afficher l’aperçu de la coupe en boucle"
+
+# English: "Delete components"
+# Source-Hash: fcb9cfe3d9c27783
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.deleteComponents"
+msgstr "Supprimer les composants"
+
+# English: "Dissolve selection"
+# Source-Hash: 671839e2ee5d69c7
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.dissolveSelection"
+msgstr "Dissoudre la sélection"
+
+# English: "Edge select (2)"
+# Source-Hash: 94672110ad413c00
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.edgeSelect2"
+msgstr "Sélection d’arêtes (2)"
+
+# English: "Extrude selected faces"
+# Source-Hash: 756e9ddfe8f1d79f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.extrudeSelectedFaces"
+msgstr "Extruder les faces sélectionnées"
+
+# English: "Face select (3)"
+# Source-Hash: 6bdd007a0ad0d023
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.faceSelect3"
+msgstr "Sélection de faces (3)"
+
+# English: "Finish edit mode (Tab)"
+# Source-Hash: 563403cc8dadebfa
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.finishEditModeTab"
+msgstr "Terminer le mode édition (Tab)"
+
+# English: "Inset selected faces"
+# Source-Hash: 375a2201c391f7a3
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.insetSelectedFaces"
+msgstr "Insérer dans les faces sélectionnées"
+
+# English: "Invert selection"
+# Source-Hash: 883102340d5983ca
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.invertSelection"
+msgstr "Inverser la sélection"
+
+# English: "LOOP CUT"
+# Source-Hash: 7ee4ebdac5d136f1
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.loopCut"
+msgstr "COUPE EN BOUCLE"
+
+# English: "Loop Cut and Slide"
+# Source-Hash: 1780c5c5177f9f52
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.loopCutAndSlide"
+msgstr "Coupe en boucle et glissement"
+
+# English: "Loop cut count"
+# Source-Hash: 83d152be08265af1
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.loopCutCount"
+msgstr "Nombre de coupes en boucle"
+
+# English: "Loop cut requires a connected ring of quad faces"
+# Source-Hash: 6da72cf392f4d2ea
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.loopCutRequiresAConnectedRing"
+msgstr "La coupe en boucle exige un anneau connecté de faces à quatre côtés"
+
+# English: "Merge vertices"
+# Source-Hash: 664abf60d6735a5d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.mergeVertices"
+msgstr "Fusionner les sommets"
+
+# English: "Mesh operations"
+# Source-Hash: 3a8087b58a64a3d0
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.meshOperations"
+msgstr "Opérations sur le maillage"
+
+# English: "Move selection"
+# Source-Hash: 9c707069572fb3db
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.moveSelection"
+msgstr "Déplacer la sélection"
+
+# English: "Operations"
+# Source-Hash: 1653365f65b9061d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.operations"
+msgstr "Opérations"
+
+# English: "Repeat {label}"
+# Source-Hash: d84c504e1d41fc3c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.repeatLabel"
+msgstr "Répéter {label}"
+
+# English: "Rotate selection"
+# Source-Hash: 0a5813a673615551
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.rotateSelection"
+msgstr "Pivoter la sélection"
+
+# English: "Select all"
+# Source-Hash: e909b897a838f9c0
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.selectAll"
+msgstr "Tout sélectionner"
+
+# English: "Selection actions"
+# Source-Hash: 716c738a863bf811
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.selectionActions"
+msgstr "Actions sur la sélection"
+
+# English: "Selection and more"
+# Source-Hash: 6a5c3e294939087f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.selectionAndMore"
+msgstr "Sélection et plus"
+
+# English: "Shift+R"
+# Source-Hash: e4530f95ce67822a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.shiftR"
+msgstr "Maj+R"
+
+# English: "Transform selected components (G / R / S)"
+# Source-Hash: 72cf5b0f66cdc8c3
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.transformSelectedComponentsGRS"
+msgstr "Transformer les composants sélectionnés (G / R / S)"
+
+# English: "Vertex select (1)"
+# Source-Hash: 4cd094cf75b90500
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.vertexSelect1"
+msgstr "Sélection de sommets (1)"
+
+# English: "X-ray selection"
+# Source-Hash: fb402a1a29d2bb92
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/block/selection.tsx
+#, fuzzy
+msgid "node.block.selection.xRaySelection"
+msgstr "Sélection en transparence"
+
 # Source-Hash: b2a371b4041b5e38
 # Review: required
 # AI-Provider: claude-code
@@ -23535,6 +24005,426 @@ msgstr "Cote de plan associative : linéaire, courbe, circulaire, angulaire ou e
 msgid "node.constructionDimension.label"
 msgstr "Cote de construction"
 
+# English: "Actions"
+# Source-Hash: aa6d82bdb3cc1d9a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.actions"
+msgstr "Actions"
+
+# English: "{activeDrawingLabel} presentation"
+# Source-Hash: a8ff81bf11b0655f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.activedrawinglabelPresentation"
+msgstr "Présentation : {activeDrawingLabel}"
+
+# English: "{activeDrawingLabel} suppressed segments"
+# Source-Hash: 1eb7a0b3f9dc8b24
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.activedrawinglabelSuppressedSegments"
+msgstr "Segments supprimés : {activeDrawingLabel}"
+
+# English: "Center mark"
+# Source-Hash: 88c7750ed51d47a0
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.centerMark"
+msgstr "Repère de centre"
+
+# English: "Construction Dimension"
+# Source-Hash: 6875b60ee8a7cc3b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.constructionDimension"
+msgstr "Cote de construction"
+
+# English: "Controlled by foundation"
+# Source-Hash: 33274aa854f66807
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.controlledByFoundation"
+msgstr "Pilotée par la fondation"
+
+# English: "Datum policy"
+# Source-Hash: ccae6eca0db9279e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.datumPolicy"
+msgstr "Référence de cotation"
+
+# English: "Delete"
+# Source-Hash: b26de372b4b0eaac
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.delete"
+msgstr "Supprimer"
+
+# English: "Dimension"
+# Source-Hash: a39182d756659fcc
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.dimension"
+msgstr "Cote"
+
+# English: "Drawing coordination"
+# Source-Hash: b71ef53caf5ccaf3
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.drawingCoordination"
+msgstr "Coordination des dessins"
+
+# English: "Extension gap"
+# Source-Hash: ae8258ba96960c9a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.extensionGap"
+msgstr "Écart des lignes d’attache"
+
+# English: "Extension overshoot"
+# Source-Hash: 979b0be10d19a850
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.extensionOvershoot"
+msgstr "Dépassement des lignes d’attache"
+
+# English: "Feature count"
+# Source-Hash: 4213f44deb760a1a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.featureCount"
+msgstr "Nombre d’éléments"
+
+# English: "Foundation controller"
+# Source-Hash: 5520f27b7a15806d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.foundationController"
+msgstr "Fondation pilote"
+
+# English: "Foundation dimension"
+# Source-Hash: 006c47c65ec7dd36
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.foundationDimension"
+msgstr "Cote de fondation"
+
+# English: "Imperial precision"
+# Source-Hash: 9cf2e4098871758d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.imperialPrecision"
+msgstr "Précision impériale"
+
+# English: "Linked dimensions reuse the controller's associative anchors and update with it."
+# Source-Hash: 408b753fb42739dc
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.linkedDimensionsReuseTheControllerS"
+msgstr "Les cotes liées réutilisent les ancrages associatifs du pilote et se mettent à jour avec lui."
+
+# English: "Metric notation"
+# Source-Hash: d835cc5fed9a4ae2
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.metricNotation"
+msgstr "Notation métrique"
+
+# English: "Mode"
+# Source-Hash: b47ccf6a86662344
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.mode"
+msgstr "Mode"
+
+# English: "No foundation dimensions"
+# Source-Hash: 9e8890e945f3f890
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.noFoundationDimensions"
+msgstr "Aucune cote de fondation"
+
+# English: "Notation"
+# Source-Hash: 84c63fc42449c216
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.notation"
+msgstr "Notation"
+
+# English: "Omitted"
+# Source-Hash: f05a82382f04ad7c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.omitted"
+msgstr "Omise"
+
+# English: "Above line"
+# Source-Hash: 464e46dec8dbdb64
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.aboveLine"
+msgstr "Au-dessus de la ligne"
+
+# English: "Centerline"
+# Source-Hash: 8134613a0ac47513
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.centerline"
+msgstr "Axe"
+
+# English: "Dot"
+# Source-Hash: 118f2f668bffc95e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.dot"
+msgstr "Point"
+
+# English: "Filled arrow"
+# Source-Hash: 16bc973cc1bb1b04
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.filledArrow"
+msgstr "Flèche pleine"
+
+# English: "Finish face"
+# Source-Hash: 1448232e03d0a553
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.finishFace"
+msgstr "Face finie"
+
+# English: "Meters"
+# Source-Hash: 0a39470be3b84536
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.meters"
+msgstr "Mètres"
+
+# English: "Millimeters"
+# Source-Hash: 83cce6c521e71d01
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.millimeters"
+msgstr "Millimètres"
+
+# English: "Nearest inch"
+# Source-Hash: 5d4df8af453b73e6
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.nearestInch"
+msgstr "Au pouce près"
+
+# English: "Open arrow"
+# Source-Hash: 22240903213e02b5
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.openArrow"
+msgstr "Flèche ouverte"
+
+# English: "Wall face"
+# Source-Hash: 967e0ccc1cd34843
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.option.wallFace"
+msgstr "Face du mur"
+
+# English: "Prefix"
+# Source-Hash: fb9c842a4306e3de
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.prefix"
+msgstr "Préfixe"
+
+# English: "Primary drawing"
+# Source-Hash: 3f9240e7c564b8d6
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.primaryDrawing"
+msgstr "Dessin principal"
+
+# English: "Segment numbers are one-based and apply only in this drawing view."
+# Source-Hash: 1cb8f7b6163e06bc
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.segmentNumbersAreOneBasedAnd"
+msgstr "Les numéros de segment commencent à 1 et ne s’appliquent que dans cette vue de dessin."
+
+# English: "Shown"
+# Source-Hash: fd19d63f957780ed
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.shown"
+msgstr "Affichée"
+
+# English: "Standards"
+# Source-Hash: 8ab78e6652011f0d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.standards"
+msgstr "Normes"
+
+# English: "Suffix"
+# Source-Hash: dd30774775ec7e6e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.suffix"
+msgstr "Suffixe"
+
+# English: "Terminator"
+# Source-Hash: c305b45f926a006e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.terminator"
+msgstr "Terminaison"
+
+# English: "Text override"
+# Source-Hash: 40087dac74e0672f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.textOverride"
+msgstr "Texte imposé"
+
+# English: "Text position"
+# Source-Hash: eb4464df7cc04a1d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.textPosition"
+msgstr "Position du texte"
+
+# English: "Use measured value"
+# Source-Hash: dbd0346902d8e8b1
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/construction-dimension/panel.tsx
+#, fuzzy
+msgid "node.constructionDimension.panel.useMeasuredValue"
+msgstr "Utiliser la valeur mesurée"
+
 # AI-Provider: claude-code
 # AI-Model: claude-opus-5-5
 # Source-Hash: 61b43e9e1ef4bbce
@@ -27833,6 +28723,36 @@ msgstr "Annotation persistante de distance, d’angle, de surface, de périmètr
 #, fuzzy
 msgid "node.measurement.label"
 msgstr "Mesure"
+
+# English: "Align "
+# Source-Hash: 0f8772389dce5eee
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/measurement/selection.tsx
+#, fuzzy
+msgid "node.measurement.selection.align"
+msgstr "Aligner "
+
+# English: "Create"
+# Source-Hash: 88f0bf04a31eeb17
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/measurement/tool.tsx
+#, fuzzy
+msgid "node.measurement.tool.create"
+msgstr "Créer"
+
+# English: "Extrusion height"
+# Source-Hash: 9cf4bf59316a6f66
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/measurement/tool.tsx
+#, fuzzy
+msgid "node.measurement.tool.extrusionHeight"
+msgstr "Hauteur d’extrusion"
 
 # Source-Hash: d71b38e990539364
 # Review: required
@@ -32830,6 +33750,76 @@ msgstr "Origine du joueur ou de la caméra dans un niveau. Une par niveau."
 msgid "node.spawn.label"
 msgstr "Point d’apparition"
 
+# English: "Actions"
+# Source-Hash: aa6d82bdb3cc1d9a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/spawn/panel.tsx
+#, fuzzy
+msgid "node.spawn.panel.actions"
+msgstr "Actions"
+
+# English: "Delete"
+# Source-Hash: b26de372b4b0eaac
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/spawn/panel.tsx
+#, fuzzy
+msgid "node.spawn.panel.delete"
+msgstr "Supprimer"
+
+# English: "Facing"
+# Source-Hash: ea86cff529811e72
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/spawn/panel.tsx
+#, fuzzy
+msgid "node.spawn.panel.facing"
+msgstr "Orientation"
+
+# English: "Move"
+# Source-Hash: bd02c614454fbd2b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/spawn/panel.tsx
+#, fuzzy
+msgid "node.spawn.panel.move"
+msgstr "Déplacer"
+
+# English: "Position"
+# Source-Hash: 9da0cbfad144d737
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/spawn/panel.tsx
+#, fuzzy
+msgid "node.spawn.panel.position"
+msgstr "Position"
+
+# English: "Spawn Point"
+# Source-Hash: 3e2f6b4274f592c0
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/spawn/panel.tsx
+#, fuzzy
+msgid "node.spawn.panel.spawnPoint"
+msgstr "Point d’apparition"
+
+# English: "Yaw"
+# Source-Hash: fefc9b1cfb26b5a8
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/spawn/panel.tsx
+#, fuzzy
+msgid "node.spawn.panel.yaw"
+msgstr "Lacet"
+
 # Source-Hash: faaa4f6b40001667
 # Review: required
 # AI-Provider: claude-code
@@ -36100,6 +37090,26 @@ msgstr "Tronçon de mur droit ou courbe. Accueille portes, fenêtres, appentis e
 #, fuzzy
 msgid "node.wall.label"
 msgstr "Mur"
+
+# English: "Alt to detach"
+# Source-Hash: 70da87885ad8d2f4
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/wall/move-endpoint-tool.tsx
+#, fuzzy
+msgid "node.wall.moveEndpointTool.altToDetach"
+msgstr "Alt pour détacher"
+
+# English: "Detaching corner"
+# Source-Hash: 1c747fea332713d8
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/nodes/src/wall/move-endpoint-tool.tsx
+#, fuzzy
+msgid "node.wall.moveEndpointTool.detachingCorner"
+msgstr "Détachement du coin"
 
 # Source-Hash: aa6d82bdb3cc1d9a
 # Review: required

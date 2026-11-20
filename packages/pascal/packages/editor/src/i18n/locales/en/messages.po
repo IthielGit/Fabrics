@@ -7318,6 +7318,194 @@ msgstr "A topology-backed solid edited directly in the canvas."
 msgid "node.block.label"
 msgstr "Block"
 
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.actions"
+msgstr "Actions"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.addSlot"
+msgstr "Add slot"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.applyLabelToSelectedFaces"
+msgstr "Apply {label} to selected faces"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.block"
+msgstr "Block"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.delete"
+msgstr "Delete"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.deleteLabelSlot"
+msgstr "Delete {label} slot"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.deleteMaterialSlotAndUseBody"
+msgstr "Delete material slot and use Body on its faces"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.face"
+msgstr "face"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.faces"
+msgstr "faces"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.move"
+msgstr "Move"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.position"
+msgstr "Position"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.renameLabelSlot"
+msgstr "Rename {label} slot"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.selectOneOrMoreFacesFirst"
+msgstr "Select one or more faces first"
+
+#: packages/nodes/src/block/panel.tsx
+msgid "node.block.panel.slots"
+msgstr "Slots"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.adjustLabel"
+msgstr "Adjust {label}"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.adjustLabelF9"
+msgstr "Adjust {label} (F9)"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.adjustLastOperationF9"
+msgstr "Adjust Last Operation · F9"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.bevel"
+msgstr "BEVEL"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.bevelSelectedEdges"
+msgstr "Bevel selected edges"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.clearSelection"
+msgstr "Clear selection"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.closeLastOperationPanel"
+msgstr "Close last operation panel"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.couldNotPreviewLoopCut"
+msgstr "Could not preview loop cut"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.deleteComponents"
+msgstr "Delete components"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.dissolveSelection"
+msgstr "Dissolve selection"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.edgeSelect2"
+msgstr "Edge select (2)"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.extrudeSelectedFaces"
+msgstr "Extrude selected faces"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.faceSelect3"
+msgstr "Face select (3)"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.finishEditModeTab"
+msgstr "Finish edit mode (Tab)"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.insetSelectedFaces"
+msgstr "Inset selected faces"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.invertSelection"
+msgstr "Invert selection"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.loopCut"
+msgstr "LOOP CUT"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.loopCutAndSlide"
+msgstr "Loop Cut and Slide"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.loopCutCount"
+msgstr "Loop cut count"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.loopCutRequiresAConnectedRing"
+msgstr "Loop cut requires a connected ring of quad faces"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.mergeVertices"
+msgstr "Merge vertices"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.meshOperations"
+msgstr "Mesh operations"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.moveSelection"
+msgstr "Move selection"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.operations"
+msgstr "Operations"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.repeatLabel"
+msgstr "Repeat {label}"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.rotateSelection"
+msgstr "Rotate selection"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.selectAll"
+msgstr "Select all"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.selectionActions"
+msgstr "Selection actions"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.selectionAndMore"
+msgstr "Selection and more"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.shiftR"
+msgstr "Shift+R"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.transformSelectedComponentsGRS"
+msgstr "Transform selected components (G / R / S)"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.vertexSelect1"
+msgstr "Vertex select (1)"
+
+#: packages/nodes/src/block/selection.tsx
+msgid "node.block.selection.xRaySelection"
+msgstr "X-ray selection"
+
 #: packages/nodes/src/i18n/definition-messages.ts
 msgid "node.boxVent.description"
 msgstr "Small louvered exhaust vent that sits on a roof slope."
@@ -9450,6 +9638,174 @@ msgstr "Associative linear, curved, circular, angular, or coordinate plan dimens
 msgid "node.constructionDimension.label"
 msgstr "Construction Dimension"
 
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.actions"
+msgstr "Actions"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.activedrawinglabelPresentation"
+msgstr "{activeDrawingLabel} presentation"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.activedrawinglabelSuppressedSegments"
+msgstr "{activeDrawingLabel} suppressed segments"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.centerMark"
+msgstr "Center mark"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.constructionDimension"
+msgstr "Construction Dimension"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.controlledByFoundation"
+msgstr "Controlled by foundation"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.datumPolicy"
+msgstr "Datum policy"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.delete"
+msgstr "Delete"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.dimension"
+msgstr "Dimension"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.drawingCoordination"
+msgstr "Drawing coordination"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.extensionGap"
+msgstr "Extension gap"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.extensionOvershoot"
+msgstr "Extension overshoot"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.featureCount"
+msgstr "Feature count"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.foundationController"
+msgstr "Foundation controller"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.foundationDimension"
+msgstr "Foundation dimension"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.imperialPrecision"
+msgstr "Imperial precision"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.linkedDimensionsReuseTheControllerS"
+msgstr "Linked dimensions reuse the controller's associative anchors and update with it."
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.metricNotation"
+msgstr "Metric notation"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.mode"
+msgstr "Mode"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.noFoundationDimensions"
+msgstr "No foundation dimensions"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.notation"
+msgstr "Notation"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.omitted"
+msgstr "Omitted"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.aboveLine"
+msgstr "Above line"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.centerline"
+msgstr "Centerline"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.dot"
+msgstr "Dot"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.filledArrow"
+msgstr "Filled arrow"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.finishFace"
+msgstr "Finish face"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.meters"
+msgstr "Meters"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.millimeters"
+msgstr "Millimeters"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.nearestInch"
+msgstr "Nearest inch"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.openArrow"
+msgstr "Open arrow"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.option.wallFace"
+msgstr "Wall face"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.prefix"
+msgstr "Prefix"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.primaryDrawing"
+msgstr "Primary drawing"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.segmentNumbersAreOneBasedAnd"
+msgstr "Segment numbers are one-based and apply only in this drawing view."
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.shown"
+msgstr "Shown"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.standards"
+msgstr "Standards"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.suffix"
+msgstr "Suffix"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.terminator"
+msgstr "Terminator"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.textOverride"
+msgstr "Text override"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.textPosition"
+msgstr "Text position"
+
+#: packages/nodes/src/construction-dimension/panel.tsx
+msgid "node.constructionDimension.panel.useMeasuredValue"
+msgstr "Use measured value"
+
 #: packages/nodes/src/window/panel.tsx
 msgid "node.cornerRadius.bottomLeft"
 msgstr "Bottom left"
@@ -11174,6 +11530,18 @@ msgstr "A persistent distance, angle, area, perimeter, or volume annotation."
 #: packages/nodes/src/i18n/definition-messages.ts
 msgid "node.measurement.label"
 msgstr "Measurement"
+
+#: packages/nodes/src/measurement/selection.tsx
+msgid "node.measurement.selection.align"
+msgstr "Align "
+
+#: packages/nodes/src/measurement/tool.tsx
+msgid "node.measurement.tool.create"
+msgstr "Create"
+
+#: packages/nodes/src/measurement/tool.tsx
+msgid "node.measurement.tool.extrusionHeight"
+msgstr "Extrusion height"
 
 #: packages/nodes/src/roof/panel.tsx
 msgid "node.numberedName"
@@ -13177,6 +13545,34 @@ msgstr "Player or camera origin within a level. One per level."
 msgid "node.spawn.label"
 msgstr "Spawn Point"
 
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.actions"
+msgstr "Actions"
+
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.delete"
+msgstr "Delete"
+
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.facing"
+msgstr "Facing"
+
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.move"
+msgstr "Move"
+
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.position"
+msgstr "Position"
+
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.spawnPoint"
+msgstr "Spawn Point"
+
+#: packages/nodes/src/spawn/panel.tsx
+msgid "node.spawn.panel.yaw"
+msgstr "Yaw"
+
 #: packages/nodes/src/stair/construction-controls.tsx
 msgid "node.stair.constructionControls.body"
 msgstr "Body"
@@ -14485,6 +14881,14 @@ msgstr "A straight or curved wall segment. Hosts doors, windows, lean-to extensi
 #: packages/nodes/src/i18n/definition-messages.ts
 msgid "node.wall.label"
 msgstr "Wall"
+
+#: packages/nodes/src/wall/move-endpoint-tool.tsx
+msgid "node.wall.moveEndpointTool.altToDetach"
+msgstr "Alt to detach"
+
+#: packages/nodes/src/wall/move-endpoint-tool.tsx
+msgid "node.wall.moveEndpointTool.detachingCorner"
+msgstr "Detaching corner"
 
 #: packages/nodes/src/wall/panel.tsx
 msgid "node.wall.panel.actions"

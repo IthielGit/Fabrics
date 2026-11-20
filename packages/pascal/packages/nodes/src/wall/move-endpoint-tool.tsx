@@ -14,6 +14,7 @@ import {
   resolveMovedWallSupportSlabPatch,
   runAsSingleSceneHistoryStep,
   useLiveNodeOverrides,
+  usePascalI18n,
   useScene,
   type WallNode,
 } from '@pascal-app/core'
@@ -184,6 +185,7 @@ function getLinkedWallUpdates(
 }
 
 export const MoveWallEndpointTool: React.FC<{ target: MovingWallEndpoint }> = ({ target }) => {
+  const i18n = usePascalI18n()
   const previousGridPosRef = useRef<WallPlanPoint | null>(null)
   const altPressedRef = useRef(false)
   const nodeIdRef = useRef(target.wall.id)
@@ -714,7 +716,15 @@ export const MoveWallEndpointTool: React.FC<{ target: MovingWallEndpoint }> = ({
                     : 'border-border bg-background/95 text-muted-foreground'
                 }`}
               >
-                {altPressed ? 'Detaching corner' : 'Alt to detach'}
+                {altPressed
+                  ? i18n._({
+                      id: 'node.wall.moveEndpointTool.detachingCorner',
+                      message: 'Detaching corner',
+                    })
+                  : i18n._({
+                      id: 'node.wall.moveEndpointTool.altToDetach',
+                      message: 'Alt to detach',
+                    })}
               </div>
             </div>
           </Html>
