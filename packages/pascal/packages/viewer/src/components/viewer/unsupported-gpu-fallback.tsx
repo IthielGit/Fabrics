@@ -1,4 +1,6 @@
+import { usePascalI18n } from '@pascal-app/core'
 export function UnsupportedGpuViewerFallback() {
+  const i18n = usePascalI18n()
   return (
     <div
       style={{
@@ -27,11 +29,17 @@ export function UnsupportedGpuViewerFallback() {
         }}
       >
         <h2 style={{ margin: 0, fontWeight: 600, fontSize: 18, lineHeight: '28px' }}>
-          3D viewer unavailable
+          {i18n._({
+            id: 'viewer.unsupportedGpuFallback.n3dViewerUnavailable',
+            message: '3D viewer unavailable',
+          })}
         </h2>
         <p style={{ margin: '8px 0 0', color: '#525252', fontSize: 14, lineHeight: '20px' }}>
-          This browser or environment could not initialize WebGPU or WebGL, so Pascal cannot render
-          the 3D scene here. Try opening the editor in a browser with hardware acceleration enabled.
+          {i18n._({
+            id: 'viewer.unsupportedGpuFallback.thisBrowserOrEnvironmentCouldNot',
+            message:
+              'This browser or environment could not initialize WebGPU or WebGL, so Pascal cannot render the 3D scene here. Try opening the editor in a browser with hardware acceleration enabled.',
+          })}
         </p>
       </div>
     </div>

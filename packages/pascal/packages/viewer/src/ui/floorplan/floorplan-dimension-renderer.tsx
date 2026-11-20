@@ -1,6 +1,7 @@
 'use client'
 
 import type { FloorplanGeometry, FloorplanPoint } from '@pascal-app/core'
+import { usePascalI18n } from '@pascal-app/core'
 import { createContext, useContext } from 'react'
 import { resolveFloorplanLabelAngle } from './floorplan-label-angle'
 
@@ -552,6 +553,7 @@ function DimensionLabel({
   /** Draws the "override" badge when the value could not drive geometry. */
   overridden?: boolean
 }) {
+  const i18n = usePascalI18n()
   const width = Math.max(fontSize, text.length * fontSize * LABEL_CHARACTER_WIDTH_RATIO)
   const plateWidth = width + fontSize * 0.5
   const plateHeight = fontSize * 1.2
@@ -603,7 +605,10 @@ function DimensionLabel({
           x={0}
           y={y + fontSize * 0.86}
         >
-          override
+          {i18n._({
+            id: 'viewer.floorplan.floorplanDimensionRenderer.override',
+            message: 'override',
+          })}
         </text>
       ) : null}
       {renderMode === 'pdf' || !editable ? null : (

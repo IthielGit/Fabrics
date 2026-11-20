@@ -39145,6 +39145,12 @@ msgstr "Planta"
 msgid "viewer.floorplan.floorPlan"
 msgstr "Plano de planta"
 
+# English: "override"
+# Review: missing
+#: packages/viewer/src/ui/floorplan/floorplan-dimension-renderer.tsx
+msgid "viewer.floorplan.floorplanDimensionRenderer.override"
+msgstr ""
+
 # Source-Hash: 28b255b7bf5f1084
 # Review: human
 # English: "{floor} 2D view"
@@ -39165,6 +39171,18 @@ msgstr "Acercar"
 #: packages/viewer/src/ui/floorplan/floorplan-preview.tsx
 msgid "viewer.floorplan.zoomOut"
 msgstr "Alejar"
+
+# English: "Door"
+# Review: missing
+#: packages/viewer/src/components/viewer/glb-scene.tsx
+msgid "viewer.glbScene.door"
+msgstr ""
+
+# English: "Item"
+# Review: missing
+#: packages/viewer/src/components/viewer/glb-scene.tsx
+msgid "viewer.glbScene.item"
+msgstr ""
 
 # Source-Hash: 7ceade8f25b58fe9
 # Review: human
@@ -39250,6 +39268,78 @@ msgstr "Aislada"
 msgid "viewer.levels.stacked"
 msgstr "Apiladas"
 
+# English: "Dock panel to the side"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.dockPanelToTheSide"
+msgstr ""
+
+# English: "{fps} fps"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.fpsFps"
+msgstr ""
+
+# English: "{items} items · {instances} inst · {containers} mesh"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.itemsItemsInstancesInstContainersMesh"
+msgstr ""
+
+# English: "last action"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.lastAction"
+msgstr ""
+
+# English: "{meshes} mesh  {lines} line  {lights} light"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.meshesMeshLinesLineLightsLight"
+msgstr ""
+
+# English: "no timestamp-query"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.noTimestampQuery"
+msgstr ""
+
+# English: "perf"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.perf"
+msgstr ""
+
+# English: "Performance"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.performance"
+msgstr ""
+
+# English: "waiting for samples…"
+# Review: missing
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.waitingForSamples"
+msgstr ""
+
+# English: "Nothing was changed. Check your connection and try again."
+# Review: missing
+#: packages/viewer/src/ui/components/scene-loader.tsx
+msgid "viewer.sceneLoader.nothingWasChangedCheckYourConnection"
+msgstr ""
+
+# English: "This project couldn't be loaded"
+# Review: missing
+#: packages/viewer/src/ui/components/scene-loader.tsx
+msgid "viewer.sceneLoader.thisProjectCouldnTBeLoaded"
+msgstr ""
+
+# English: "Try again"
+# Review: missing
+#: packages/viewer/src/ui/components/scene-loader.tsx
+msgid "viewer.sceneLoader.tryAgain"
+msgstr ""
+
 # Source-Hash: 9dd21ca47cffa3b8
 # Review: human
 # English: "Viewer layout"
@@ -39334,6 +39424,18 @@ msgstr "Crepúsculo"
 msgid "viewer.theme.verdant"
 msgstr "Verde"
 
+# English: "3D viewer unavailable"
+# Review: missing
+#: packages/viewer/src/components/viewer/unsupported-gpu-fallback.tsx
+msgid "viewer.unsupportedGpuFallback.n3dViewerUnavailable"
+msgstr ""
+
+# English: "This browser or environment could not initialize WebGPU or WebGL, so Pascal cannot render the 3D scene here. Try opening the editor in a browser with hardware acceleration enabled."
+# Review: missing
+#: packages/viewer/src/components/viewer/unsupported-gpu-fallback.tsx
+msgid "viewer.unsupportedGpuFallback.thisBrowserOrEnvironmentCouldNot"
+msgstr ""
+
 # Source-Hash: 892d5dd34372028b
 # Review: human
 # English: "Guides"
@@ -39372,17 +39474,53 @@ msgstr "Recorrido: {state}"
 msgid "viewer.walkthrough.shutters"
 msgstr "Contraventanas"
 
-# English: "Close"
+# English: "Click"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.click"
+msgstr ""
+
+# English: "free cursor"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.freeCursor"
+msgstr ""
+
+# English: "or"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.or"
+msgstr ""
+
+# English: "or click to"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.orClickTo"
+msgstr ""
+
+# English: "to exit"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.toExit"
+msgstr ""
+
+# English: "to resume"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.toResume"
+msgstr ""
+
 # Source-Hash: d7cf5045c01b2eb9
 # Review: required
+# English: "Close"
 #: packages/viewer/src/ui/components/walkthrough-touch-controls.tsx
 #, fuzzy
 msgid "viewer.walkthroughTouch.close"
 msgstr "Cerrar"
 
-# English: "Crouch"
 # Source-Hash: f6bb8786828d83ab
 # Review: required
+# English: "Crouch"
 #: packages/viewer/src/ui/components/walkthrough-touch-controls.tsx
 #, fuzzy
 msgid "viewer.walkthroughTouch.crouch"

@@ -1,5 +1,6 @@
 'use client'
 
+import { usePascalI18n } from '@pascal-app/core'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { usePerfActionReceipts } from '../../lib/perf-actions'
@@ -71,11 +72,14 @@ const OLDER_ACTION_LINES = 2
  * started another one, or it blew the settle budget).
  */
 const LastAction = () => {
+  const i18n = usePascalI18n()
   const [latest, ...older] = usePerfActionReceipts()
   if (!latest) return null
   return (
     <div style={section}>
-      <div style={{ ...label, opacity: 0.7 }}>last action</div>
+      <div style={{ ...label, opacity: 0.7 }}>
+        {i18n._({ id: 'viewer.perfPanel.lastAction', message: 'last action' })}
+      </div>
       <div style={grid}>
         <span style={{ ...value, textAlign: 'left', ...clip }}>
           {latest.detail ? `${latest.name} ${latest.detail}` : latest.name}
@@ -106,6 +110,7 @@ const LastAction = () => {
 }
 
 export const PerfPanel = () => {
+  const i18n = usePascalI18n()
   const stats = usePerfStats()
   const [placement, setPlacement] = useState<PanelPlacement>(loadPlacement)
   const dragRef = useRef<{ pointerId: number; dx: number; dy: number } | null>(null)
@@ -178,7 +183,13 @@ export const PerfPanel = () => {
         }}
         type="button"
       >
-        {stats ? `${stats.fps} fps` : 'perf'}
+        {stats
+          ? i18n._({
+              id: 'viewer.perfPanel.fpsFps',
+              message: '{fps} fps',
+              values: { fps: stats.fps },
+            })
+          : i18n._({ id: 'viewer.perfPanel.perf', message: 'perf' })}
       </button>,
       document.body,
     )
@@ -221,12 +232,23 @@ export const PerfPanel = () => {
           touchAction: 'none',
         }}
       >
-        <span style={{ fontWeight: 600, letterSpacing: 0.2 }}>Performance</span>
+        <span style={{ fontWeight: 600, letterSpacing: 0.2 }}>
+          {i18n._({ id: 'viewer.perfPanel.performance', message: 'Performance' })}
+        </span>
         <span style={{ marginLeft: 'auto', color: stats ? fpsColor(stats.fps) : '#8b90a0' }}>
-          {stats ? `${stats.fps} fps` : '—'}
+          {stats
+            ? i18n._({
+                id: 'viewer.perfPanel.fpsFps',
+                message: '{fps} fps',
+                values: { fps: stats.fps },
+              })
+            : '—'}
         </span>
         <button
-          aria-label="Dock panel to the side"
+          aria-label={i18n._({
+            id: 'viewer.perfPanel.dockPanelToTheSide',
+            message: 'Dock panel to the side',
+          })}
           onClick={dock}
           onPointerDown={(e) => e.stopPropagation()}
           style={{
@@ -262,7 +284,10 @@ export const PerfPanel = () => {
             <Row name="gpu">
               {stats.gpuTracked
                 ? `${stats.gpuMs.toFixed(1)}ms (max ${stats.gpuMaxMs.toFixed(1)})`
-                : 'no timestamp-query'}
+                : i18n._({
+                    id: 'viewer.perfPanel.noTimestampQuery',
+                    message: 'no timestamp-query',
+                  })}
             </Row>
             <Row name="queue">
               {stats.queueMs > 0
@@ -272,7 +297,15 @@ export const PerfPanel = () => {
             <Row name="draw">{stats.drawCalls}</Row>
             {stats.batch.containers > 0 && (
               <Row name="batch">
-                {`${stats.batch.items} items · ${stats.batch.instances} inst · ${stats.batch.containers} mesh`}
+                {i18n._({
+                  id: 'viewer.perfPanel.itemsItemsInstancesInstContainersMesh',
+                  message: '{items} items · {instances} inst · {containers} mesh',
+                  values: {
+                    items: stats.batch.items,
+                    instances: stats.batch.instances,
+                    containers: stats.batch.containers,
+                  },
+                })}
               </Row>
             )}
             <Row name="tri">{`${(stats.triangles / 1000).toFixed(1)}k`}</Row>
@@ -285,7 +318,11 @@ export const PerfPanel = () => {
               {stats.dirtyDetail ? ` (${stats.dirtyDetail})` : ''}
             </Row>
             <Row name="visible">
-              {`${stats.meshes} mesh  ${stats.lines} line  ${stats.lights} light`}
+              {i18n._({
+                id: 'viewer.perfPanel.meshesMeshLinesLineLightsLight',
+                message: '{meshes} mesh  {lines} line  {lights} light',
+                values: { meshes: stats.meshes, lines: stats.lines, lights: stats.lights },
+              })}
             </Row>
           </div>
           <LastAction />
@@ -303,7 +340,9 @@ export const PerfPanel = () => {
           )}
         </div>
       ) : (
-        <div style={{ padding: '8px 10px', color: '#8b90a0' }}>waiting for samples…</div>
+        <div style={{ padding: '8px 10px', color: '#8b90a0' }}>
+          {i18n._({ id: 'viewer.perfPanel.waitingForSamples', message: 'waiting for samples…' })}
+        </div>
       )}
     </div>,
     document.body,

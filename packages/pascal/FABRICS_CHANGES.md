@@ -56,3 +56,15 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
   l'impose (au lieu de « 4 cm », « 0.5m », « Grille : 0,50 m »).
 - `apps/editor/components/viewer-toolbar.tsx` : sous-menu « Unités » masqué si l'hôte verrouille
   l'unité.
+
+## M19 B7 — textes en dur de Pascal passés par Lingui
+
+- `scripts/i18n.ts` : fournisseur de traduction `I18N_PROVIDER=file` (+ `I18N_FILE`, `I18N_MODEL`) qui lit
+  `i18n/fabrics-fr.json` (traductions françaises écrites à la main) au lieu d'appeler une IA ; les entrées
+  restent `fuzzy` + `Review: required`. Commande :
+  `I18N_PROVIDER=file I18N_MODEL=claude-sonnet-5-5 I18N_FILE=i18n/fabrics-fr.json bun scripts/i18n.ts translate fr`.
+- `i18n/fabrics-fr.json` : traductions françaises de B7 ; `i18n/literal-baseline.json` réduite.
+- Les catalogues `es`, `ja`, `zh-CN` ne reçoivent pas les nouveaux textes (Fabrics est en français
+  seulement) : `i18n:check` signale ces textes manquants ; `check:all` de Fabrics ne l'appelle pas.
+- Zone `packages/viewer` : textes convertis par le codemod de Pascal (`glb-scene`, `perf-panel`,
+  `unsupported-gpu-fallback`, `scene-loader`, `walkthrough-hud`, `floorplan-dimension-renderer`).

@@ -1,5 +1,6 @@
 'use client'
 
+import { usePascalI18n } from '@pascal-app/core'
 import { useEffect, useState } from 'react'
 import { cn } from '../lib/cn'
 import { Button } from '../primitives/button'
@@ -50,6 +51,7 @@ interface SceneLoadFailedProps {
  * project (prod scene-wipe class, 2026-09-02).
  */
 export function SceneLoadFailed({ className, onRetry }: SceneLoadFailedProps) {
+  const i18n = usePascalI18n()
   return (
     <div
       className={cn(
@@ -60,13 +62,21 @@ export function SceneLoadFailed({ className, onRetry }: SceneLoadFailedProps) {
       role="alert"
     >
       <div className="flex flex-col gap-1">
-        <p className="font-medium text-foreground text-sm">This project couldn't be loaded</p>
+        <p className="font-medium text-foreground text-sm">
+          {i18n._({
+            id: 'viewer.sceneLoader.thisProjectCouldnTBeLoaded',
+            message: "This project couldn't be loaded",
+          })}
+        </p>
         <p className="text-muted-foreground text-sm">
-          Nothing was changed. Check your connection and try again.
+          {i18n._({
+            id: 'viewer.sceneLoader.nothingWasChangedCheckYourConnection',
+            message: 'Nothing was changed. Check your connection and try again.',
+          })}
         </p>
       </div>
       <Button className="rounded-full" onClick={onRetry} size="sm" type="button">
-        Try again
+        {i18n._({ id: 'viewer.sceneLoader.tryAgain', message: 'Try again' })}
       </Button>
     </div>
   )

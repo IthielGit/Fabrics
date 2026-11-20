@@ -411,6 +411,25 @@ export async function configuredProvider(
   const modelName = env.I18N_MODEL
   if (!modelName) throw new Error('Set I18N_MODEL to the translation model')
 
+  // Fabrics : traductions écrites à la main dans un fichier JSON { id: texte } (aucune clé d'API).
+  // Les entrées restent « fuzzy » + « Review: required », comme celles d'un fournisseur IA.
+  if (name === 'file') {
+    if (!env.I18N_FILE) throw new Error('Set I18N_FILE to the JSON file of translations')
+    const table = JSON.parse(readFileSync(env.I18N_FILE, 'utf8')) as Record<string, string>
+    return {
+      name: 'claude-code',
+      model: modelName,
+      async translate(request) {
+        const absent = request.items.filter((item) => typeof table[item.id] !== 'string').map((item) => item.id)
+        if (absent.length) console.error('Sans traduction :', absent.join(', '))
+        const entries = request.items
+          .filter((item) => typeof table[item.id] === 'string')
+          .map((item) => ({ id: item.id, translation: table[item.id] as string, reviewNotes: '' }))
+        return { locale: request.locale, entries }
+      },
+    }
+  }
+
   if (name === 'openai' && !env.OPENAI_API_KEY) {
     throw new Error('Set OPENAI_API_KEY for the OpenAI translation provider')
   }

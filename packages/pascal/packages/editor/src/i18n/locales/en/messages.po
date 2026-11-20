@@ -15735,6 +15735,10 @@ msgstr "Floor"
 msgid "viewer.floorplan.floorPlan"
 msgstr "Floor plan"
 
+#: packages/viewer/src/ui/floorplan/floorplan-dimension-renderer.tsx
+msgid "viewer.floorplan.floorplanDimensionRenderer.override"
+msgstr "override"
+
 #: packages/viewer/src/ui/floorplan/floorplan-preview.tsx
 msgid "viewer.floorplan.viewLabel"
 msgstr "{floor} 2D view"
@@ -15746,6 +15750,14 @@ msgstr "Zoom in"
 #: packages/viewer/src/ui/floorplan/floorplan-preview.tsx
 msgid "viewer.floorplan.zoomOut"
 msgstr "Zoom out"
+
+#: packages/viewer/src/components/viewer/glb-scene.tsx
+msgid "viewer.glbScene.door"
+msgstr "Door"
+
+#: packages/viewer/src/components/viewer/glb-scene.tsx
+msgid "viewer.glbScene.item"
+msgstr "Item"
 
 #: packages/viewer/src/ui/components/viewer-scene-header.tsx
 msgid "viewer.header.back"
@@ -15795,6 +15807,54 @@ msgstr "Solo"
 msgid "viewer.levels.stacked"
 msgstr "Stacked"
 
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.dockPanelToTheSide"
+msgstr "Dock panel to the side"
+
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.fpsFps"
+msgstr "{fps} fps"
+
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.itemsItemsInstancesInstContainersMesh"
+msgstr "{items} items · {instances} inst · {containers} mesh"
+
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.lastAction"
+msgstr "last action"
+
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.meshesMeshLinesLineLightsLight"
+msgstr "{meshes} mesh  {lines} line  {lights} light"
+
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.noTimestampQuery"
+msgstr "no timestamp-query"
+
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.perf"
+msgstr "perf"
+
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.performance"
+msgstr "Performance"
+
+#: packages/viewer/src/components/viewer/perf-panel.tsx
+msgid "viewer.perfPanel.waitingForSamples"
+msgstr "waiting for samples…"
+
+#: packages/viewer/src/ui/components/scene-loader.tsx
+msgid "viewer.sceneLoader.nothingWasChangedCheckYourConnection"
+msgstr "Nothing was changed. Check your connection and try again."
+
+#: packages/viewer/src/ui/components/scene-loader.tsx
+msgid "viewer.sceneLoader.thisProjectCouldnTBeLoaded"
+msgstr "This project couldn't be loaded"
+
+#: packages/viewer/src/ui/components/scene-loader.tsx
+msgid "viewer.sceneLoader.tryAgain"
+msgstr "Try again"
+
 #: packages/viewer/src/ui/components/viewer-stage-switcher.tsx
 msgid "viewer.stage.layout"
 msgstr "Viewer layout"
@@ -15843,6 +15903,14 @@ msgstr "Twilight"
 msgid "viewer.theme.verdant"
 msgstr "Verdant"
 
+#: packages/viewer/src/components/viewer/unsupported-gpu-fallback.tsx
+msgid "viewer.unsupportedGpuFallback.n3dViewerUnavailable"
+msgstr "3D viewer unavailable"
+
+#: packages/viewer/src/components/viewer/unsupported-gpu-fallback.tsx
+msgid "viewer.unsupportedGpuFallback.thisBrowserOrEnvironmentCouldNot"
+msgstr "This browser or environment could not initialize WebGPU or WebGL, so Pascal cannot render the 3D scene here. Try opening the editor in a browser with hardware acceleration enabled."
+
 #: packages/viewer/src/ui/components/viewer-controls-bar.tsx
 msgid "viewer.visibility.guides"
 msgstr "Guides"
@@ -15864,6 +15932,30 @@ msgstr "Walkthrough: {state}"
 #: packages/viewer/src/ui/components/walkthrough-touch-controls.tsx
 msgid "viewer.walkthrough.shutters"
 msgstr "Shutters"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.click"
+msgstr "Click"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.freeCursor"
+msgstr "free cursor"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.or"
+msgstr "or"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.orClickTo"
+msgstr "or click to"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.toExit"
+msgstr "to exit"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.toResume"
+msgstr "to resume"
 
 #: packages/viewer/src/ui/components/walkthrough-touch-controls.tsx
 msgid "viewer.walkthroughTouch.close"
