@@ -90,3 +90,8 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
   `editedRoomName` après le catalogue des pièces ; exporté par `viewer/src/ui/index.ts`.
   `editor/src/components/ui/panels/panel-wrapper.tsx` (titre des panneaux) et `node-display.ts`
   (barre de sélection) passent le nom par `displayRoomName`.
+- `editor/src/components/editor/delete-confirmation-dialog.tsx` : chaque phrase est un message ICU entier
+  (pluriels `one` / `other`, plus `many` en français), au lieu de morceaux anglais assemblés (`count`,
+  pronoms `it/them`). `deleteConfirmationContent` et `hostedSummary` prennent un traducteur facultatif
+  (anglais par défaut : les tests existants vérifient le même texte) ; noms de pièces par `displayRoomName` ;
+  surface perdue formatée selon la langue (`formatNumber`).

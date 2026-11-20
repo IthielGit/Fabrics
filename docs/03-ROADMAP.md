@@ -1260,7 +1260,7 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 | B4 Terrain — **fait le 2026-11-18**, test à la fin de B5 | Terrain, limite de propriété, implantation du bâtiment, altitudes des niveaux | `/model opus` |
 | B5 Cas difficiles et preuves — **fait le 2026-11-18**, gate G2 proposé (rapport `docs/phases/M19-report.md`), test par l'utilisateur ; T1 / T2 vérifiés par l'utilisateur (`docs/phases/M19-fixtures-review.md`) | Jonctions, collisions, ouvertures, épaisseur nulle ou invalide ; exemples T1 / T2 ; tests 2D → 3D et 3D → 2D ; rapport de précision ; gate G2 | `/model opus` |
 | B6 Toitures, escaliers, dalles de Pascal — **fait et vérifié par l'utilisateur le 2026-11-20** | Toitures, escaliers et dalles natifs de Pascal dans les métrés ; toitures et escaliers des anciens plans convertis en nœuds Pascal (visibles et modifiables en 3D) | `/model opus` |
-| B7 Textes de Pascal en français — **en cours (2026-11-20) : 512 des 656 textes faits ; restent boîtes de suppression et noms par défaut ; plan validé par l'utilisateur** | Les ≈ 660 textes anglais écrits en dur dans le code de Pascal passés par sa traduction, en français (noms par défaut « Mur 1 »…) | `/model sonnet` |
+| B7 Textes de Pascal en français — **fait le 2026-11-20, à vérifier par l'utilisateur** (noms par défaut et boîtes de suppression compris ; `apps/editor` non utilisé, non traduit) | Les ≈ 660 textes anglais écrits en dur dans le code de Pascal passés par sa traduction, en français (noms par défaut « Mur 1 »…) | `/model sonnet` |
 
 ### Lot A — Interface et prise en main de Pascal (D80)
 

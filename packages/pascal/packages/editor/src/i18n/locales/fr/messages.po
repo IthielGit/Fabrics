@@ -4744,6 +4744,46 @@ msgstr "Force"
 msgid "editor.controls.terrainSculptPanel.target"
 msgstr "Cible"
 
+# English: "Add walls"
+# Source-Hash: 499246af9d73653a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.addWalls"
+msgstr "Ajouter les murs"
+
+# English: "Adds {count, plural, one {# wall} other {# walls}} · the room loses {area} m² of floor."
+# Source-Hash: 8ba521a5a81f0928
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.addWallsDescription"
+msgstr "Ajoute {count, plural, one {# mur} many {# murs} other {# murs}} · la pièce perd {area} m² de plancher."
+
+# English: "Add walls to {room}?"
+# Source-Hash: c53f5396dddc1208
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.addWallsTitle"
+msgstr "Ajouter des murs à {room} ?"
+
+# English: "{count, plural, one {It also covers {list}.} other {They also cover {list}.}}"
+# Source-Hash: 4314ced39291a3be
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.alsoCovers"
+msgstr "{count, plural, one {Il couvre aussi {list}.} many {Ils couvrent aussi {list}.} other {Ils couvrent aussi {list}.}}"
+
 # English: "Cancel"
 # Source-Hash: c0774c185060fc13
 # Review: required
@@ -4753,6 +4793,466 @@ msgstr "Cible"
 #, fuzzy
 msgid "editor.deleteConfirmationDialog.cancel"
 msgstr "Annuler"
+
+# English: "{count, plural, one {# door} other {# doors}}"
+# Source-Hash: d1543d49450a5a73
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.countDoor"
+msgstr "{count, plural, one {# porte} many {# portes} other {# portes}}"
+
+# English: "{count, plural, one {# item} other {# items}}"
+# Source-Hash: 4031be6515409ace
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.countItem"
+msgstr "{count, plural, one {# objet} many {# objets} other {# objets}}"
+
+# English: "{count, plural, one {# light} other {# lights}}"
+# Source-Hash: edf6d0e59aee1efa
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.countLight"
+msgstr "{count, plural, one {# luminaire} many {# luminaires} other {# luminaires}}"
+
+# English: "{count, plural, one {# separator} other {# separators}}"
+# Source-Hash: ebed145ab0800f93
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.countSeparator"
+msgstr "{count, plural, one {# séparation} many {# séparations} other {# séparations}}"
+
+# English: "{count, plural, one {# wall} other {# walls}}"
+# Source-Hash: 94f76314384e26ed
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.countWall"
+msgstr "{count, plural, one {# mur} many {# murs} other {# murs}}"
+
+# English: "{count, plural, one {# window} other {# windows}}"
+# Source-Hash: 96725e202faede09
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.countWindow"
+msgstr "{count, plural, one {# fenêtre} many {# fenêtres} other {# fenêtres}}"
+
+# English: "Delete"
+# Source-Hash: b26de372b4b0eaac
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.delete"
+msgstr "Supprimer"
+
+# English: "Delete all"
+# Source-Hash: 9caced8b5b5a9055
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.deleteAll"
+msgstr "Tout supprimer"
+
+# English: "This removes every selected element. You can undo the deletion while it remains in the editor history."
+# Source-Hash: 7e2c305c3034abcd
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.deleteElementsDescription"
+msgstr "Tous les éléments sélectionnés seront supprimés. Vous pouvez annuler la suppression tant qu’elle reste dans l’historique de l’éditeur."
+
+# English: "{count, plural, one {Delete # element?} other {Delete # elements?}}"
+# Source-Hash: 5cac76375671f84c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.deleteElementsTitle"
+msgstr "{count, plural, one {Supprimer # élément ?} many {Supprimer # éléments ?} other {Supprimer # éléments ?}}"
+
+# English: "Delete items"
+# Source-Hash: ddbd441cf7d3e60a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.deleteItems"
+msgstr "Supprimer les objets"
+
+# English: "Delete {name}?"
+# Source-Hash: 46983ede550a200f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.deleteRoomTitle"
+msgstr "Supprimer {name} ?"
+
+# English: "{count, plural, one {# item is on the ceiling{names}.} other {# items are on the ceiling{names}.}}"
+# Source-Hash: 0ae588e93676390d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.itemsOnCeiling"
+msgstr "{count, plural, one {# objet est au plafond{names}.} many {# objets sont au plafond{names}.} other {# objets sont au plafond{names}.}}"
+
+# English: "{count, plural, one {{hosted} stands on it. Keep it at its height, or delete it too.} other {{hosted} stand on it. Keep them at their height, or delete them too.}}"
+# Source-Hash: f6e664c7ce334c9b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.itemsStandOnFloor"
+msgstr "{count, plural, one {Sur ce plancher : {hosted}. Conservez cet élément à sa hauteur, ou supprimez-le aussi.} many {Sur ce plancher : {hosted}. Conservez ces éléments à leur hauteur, ou supprimez-les aussi.} other {Sur ce plancher : {hosted}. Conservez ces éléments à leur hauteur, ou supprimez-les aussi.}}"
+
+# English: "{count, plural, one {Keep it in place, or delete it too.} other {Keep them in place, or delete them too.}}"
+# Source-Hash: f55c3b45e2edf9a4
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.keepInPlace"
+msgstr "{count, plural, one {Conservez cet élément en place, ou supprimez-le aussi.} many {Conservez ces éléments en place, ou supprimez-les aussi.} other {Conservez ces éléments en place, ou supprimez-les aussi.}}"
+
+# English: "Keep items"
+# Source-Hash: 22bc136038136b64
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.keepItems"
+msgstr "Garder les objets"
+
+# English: "Keep lights"
+# Source-Hash: 3c48c8a4cb8962c7
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.keepLights"
+msgstr "Garder les luminaires"
+
+# English: "{count, plural, one {{summary} hangs from it.} other {{summary} hang from it.}}"
+# Source-Hash: 566acfc3eef42b30
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.lightsHang"
+msgstr "{count, plural, one {Au plafond : {summary}.} many {Au plafond : {summary}.} other {Au plafond : {summary}.}}"
+
+# English: "{head} and {last}"
+# Source-Hash: a9b9676fce3b6a86
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.listAnd"
+msgstr "{head} et {last}"
+
+# English: "{count, plural, one {Removes the hand-drawn ceiling{names}.} other {Removes # hand-drawn ceilings{names}.}}"
+# Source-Hash: 585368c24d986ddd
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.manualCeilings"
+msgstr "{count, plural, one {Supprime le plafond dessiné à la main{names}.} many {Supprime # plafonds dessinés à la main{names}.} other {Supprime # plafonds dessinés à la main{names}.}}"
+
+# English: "Merges it back into {room}: removes the {lines, plural, one {dividing line} other {dividing lines}} and its floor finish. The walls stay."
+# Source-Hash: 3ab48b2dd9233534
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.mergeInto"
+msgstr "Le réunit à {room} : supprime {lines, plural, one {la ligne de séparation} many {les lignes de séparation} other {les lignes de séparation}} et son revêtement de sol. Les murs restent."
+
+# English: "Merges it back into the room next to it: removes the {lines, plural, one {dividing line} other {dividing lines}} and its floor finish. The walls stay."
+# Source-Hash: 8c608897af801986
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.mergeIntoNext"
+msgstr "Le réunit à la pièce voisine : supprime {lines, plural, one {la ligne de séparation} many {les lignes de séparation} other {les lignes de séparation}} et son revêtement de sol. Les murs restent."
+
+# English: "{count, plural, one {# item inside stays where it is.} other {# items inside stay where they are.}}"
+# Source-Hash: 68c2d58fa29a07e7
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.mergeItems"
+msgstr "{count, plural, one {# objet à l’intérieur reste en place.} many {# objets à l’intérieur restent en place.} other {# objets à l’intérieur restent en place.}}"
+
+# English: "Removes the mezzanine floor and its railing."
+# Source-Hash: 91d43ac904c3128c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.mezzanine"
+msgstr "Supprime le plancher de la mezzanine et son garde-corps."
+
+# English: "{count, plural, one {# item is on it. Keep it on the floor below, or delete it too.} other {# items are on it. Keep them on the floor below, or delete them too.}}"
+# Source-Hash: 4d7d8e057a9677aa
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.mezzanineItems"
+msgstr "{count, plural, one {# objet est posé dessus. Gardez-le à l’étage inférieur, ou supprimez-le aussi.} many {# objets sont posés dessus. Gardez-les à l’étage inférieur, ou supprimez-les aussi.} other {# objets sont posés dessus. Gardez-les à l’étage inférieur, ou supprimez-les aussi.}}"
+
+# English: "Removes the mezzanine floor, its railing and the ceiling over it."
+# Source-Hash: 4c864ec086c1381f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.mezzanineWithCeiling"
+msgstr "Supprime le plancher de la mezzanine, son garde-corps et le plafond au-dessus."
+
+# English: "Opens into {list}."
+# Source-Hash: 28b89300480bd49d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.opensInto"
+msgstr "S’ouvre sur {list}."
+
+# English: "Remove"
+# Source-Hash: 9469a102f04ea196
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.remove"
+msgstr "Retirer"
+
+# English: "Remove all"
+# Source-Hash: 277bd363ad7f24c9
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removeAll"
+msgstr "Tout retirer"
+
+# English: "Remove the ceiling from {room}?"
+# Source-Hash: 4cb22379bc0166fd
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removeCeilingTitle"
+msgstr "Retirer le plafond de {room} ?"
+
+# English: "Remove the floor from {room}?"
+# Source-Hash: 03d28ba69bd0c11b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removeFloorTitle"
+msgstr "Retirer le plancher de {room} ?"
+
+# English: "Removes the ceiling."
+# Source-Hash: e5e0a80598c3fd10
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removesCeiling"
+msgstr "Retire le plafond."
+
+# English: "Removes the floor finish and ceiling."
+# Source-Hash: 25b0633daa0962df
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removesFinish"
+msgstr "Supprime le revêtement de sol et le plafond."
+
+# English: "Removes the floor."
+# Source-Hash: cf06c71daa87d633
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removesFloor"
+msgstr "Retire le plancher."
+
+# English: "Removes {list}, with the floor finish and ceiling."
+# Source-Hash: 8afe0ff3205867d4
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removesWithFinish"
+msgstr "Supprime {list}, avec le revêtement de sol et le plafond."
+
+# English: "Remove walls"
+# Source-Hash: 4a464d4aed9a3835
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removeWalls"
+msgstr "Retirer les murs"
+
+# English: "Remove walls from {room}?"
+# Source-Hash: 44792e15ecab7e7d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.removeWallsTitle"
+msgstr "Retirer les murs de {room} ?"
+
+# English: "{count, plural, one {# item is inside. Keep it where it is, or delete it too.} other {# items are inside. Keep them where they are, or delete them too.}}"
+# Source-Hash: 0d8285f4d25a65de
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.roomItems"
+msgstr "{count, plural, one {# objet est à l’intérieur. Gardez-le où il est, ou supprimez-le aussi.} many {# objets sont à l’intérieur. Gardez-les où ils sont, ou supprimez-les aussi.} other {# objets sont à l’intérieur. Gardez-les où ils sont, ou supprimez-les aussi.}}"
+
+# English: "Shared walls remain."
+# Source-Hash: 03b00a6532bb1b70
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.sharedWallsRemain"
+msgstr "Les murs partagés restent."
+
+# English: "Walls shared with other rooms stay."
+# Source-Hash: a65fda74701cc626
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.sharedWallsStay"
+msgstr "Les murs partagés avec d’autres pièces restent."
+
+# English: "the next room"
+# Source-Hash: a17a79e835fa2064
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.theNextRoom"
+msgstr "la pièce voisine"
+
+# English: "this area"
+# Source-Hash: a739c368e3a083bc
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.thisArea"
+msgstr "cette zone"
+
+# English: "this mezzanine"
+# Source-Hash: 0e7b615c83fe546b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.thisMezzanine"
+msgstr "cette mezzanine"
+
+# English: "this room"
+# Source-Hash: 31ef717d5cfdd437
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.thisRoom"
+msgstr "cette pièce"
+
+# English: "Turns {walls} into separators."
+# Source-Hash: 02ade1cb86dc2194
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.turnsIntoSeparators"
+msgstr "Transforme {walls} en séparations."
+
+# English: "Turns {walls} into separators and removes {hosted}."
+# Source-Hash: 79639fa95bc1638e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+#, fuzzy
+msgid "editor.deleteConfirmationDialog.turnsIntoSeparatorsAndRemoves"
+msgstr "Transforme {walls} en séparations et retire {hosted}."
 
 # Source-Hash: a2bd204e93e90598
 # Review: required

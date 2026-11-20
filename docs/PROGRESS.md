@@ -53,7 +53,15 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
-### 2026-11-20 — M19 · B7 Textes de Pascal en français (en cours, 512 textes sur 656 faits)
+### 2026-11-20 — M19 · B7 Textes de Pascal en français : fait, à vérifier par l'utilisateur dans le navigateur
+- **Noms par défaut** (« Wall 3 », « Door 1 », « Roof 2 »…) : comme les pièces du catalogue de Pascal, ils restent en anglais dans la scène (la numérotation et le MCP de Pascal les lisent) et s'affichent traduits (« Mur 3 »). Pascal : `DEFAULT_NODE_NAME_MESSAGES` dans `viewer/src/ui/lib/room-name-messages.ts`, utilisé par l'arbre, le renommage, le titre des panneaux et la barre de sélection. Fabrics : `src/features/scene/view/pascalDisplayName.ts` (testé) avec `src/i18n/pascalNames.ts`, généré par `scripts/compile-pascal-texts.mjs` (80 noms) : pièces du catalogue (« Bedroom 2 » → « Chambre 2 »), toitures et escaliers natifs dans les vues et métrés.
+- **Boîtes de confirmation de suppression** : phrases réécrites en messages ICU entiers avec pluriels (fini l'assemblage anglais « it/them », « is/are ») ; 50 messages traduits ; noms de pièces traduits ; surface perdue en « 1,50 m² ». Les 65 tests de Pascal qui vérifient le texte anglais passent sans changement.
+- **Recompilation** : Fabrics charge `core`, `viewer` et `nodes` de Pascal depuis leur version compilée (`dist`, non versionnée) : après une mise à jour de la branche, lancer `npm run build:pascal` (≈ 2 min).
+- **Non traduit volontairement** : `apps/editor` (84 textes, pages Next.js de Pascal non utilisées par Fabrics), catalogue d'objets, panneau de performance pour développeurs.
+- Vérification : build ✓ lint ✓ 3 166 tests ✓ ; `test:pascal` : une seule différence avec la référence (`core` › `cut-intent.test.ts`, échec intermittent sous charge : 12/12 lancé seul).
+
+
+### 2026-11-20 — M19 · B7 Textes de Pascal en français (lots précédents : 512 textes sur 656)
 - **Méthode** : codemod de Pascal (`bun run i18n:literals -- convert --apply`) pour passer les textes en dur par Lingui, puis traductions françaises écrites dans `packages/pascal/i18n/fabrics-fr.json` et versées au catalogue par `bun scripts/i18n.ts translate fr` avec un fournisseur `file` ajouté à `scripts/i18n.ts` (aucune clé d'API ; entrées « à relire »). Voir `packages/pascal/FABRICS_CHANGES.md`.
 - **Fait** : zones `viewer` (24), `nodes` (92 + listes d'options de cotes de construction) et `editor` (345 : palette de commandes, matériaux, terrain, réglages, import, capture, modules). Les durées en pieds sont affichées en mm.
 - **Cas manuels faits** (2026-11-20) : peinture de matériau, terrain, thème, types d'éléments de l'import, animation de construction, vitesse d'animation, boîte d'erreur, avis « Choisissez d'abord un matériau », visite guidée (verbes et noms de repli), messages à valeurs nommées. Non traduits volontairement : catalogue d'objets (« Intensity »), panneau de performance pour développeurs.

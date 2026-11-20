@@ -1925,8 +1925,208 @@ msgid "editor.controls.terrainSculptPanel.target"
 msgstr "Target"
 
 #: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.addWalls"
+msgstr "Add walls"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.addWallsDescription"
+msgstr "Adds {count, plural, one {# wall} other {# walls}} · the room loses {area} m² of floor."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.addWallsTitle"
+msgstr "Add walls to {room}?"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.alsoCovers"
+msgstr "{count, plural, one {It also covers {list}.} other {They also cover {list}.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
 msgid "editor.deleteConfirmationDialog.cancel"
 msgstr "Cancel"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.countDoor"
+msgstr "{count, plural, one {# door} other {# doors}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.countItem"
+msgstr "{count, plural, one {# item} other {# items}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.countLight"
+msgstr "{count, plural, one {# light} other {# lights}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.countSeparator"
+msgstr "{count, plural, one {# separator} other {# separators}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.countWall"
+msgstr "{count, plural, one {# wall} other {# walls}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.countWindow"
+msgstr "{count, plural, one {# window} other {# windows}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.delete"
+msgstr "Delete"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.deleteAll"
+msgstr "Delete all"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.deleteElementsDescription"
+msgstr "This removes every selected element. You can undo the deletion while it remains in the editor history."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.deleteElementsTitle"
+msgstr "{count, plural, one {Delete # element?} other {Delete # elements?}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.deleteItems"
+msgstr "Delete items"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.deleteRoomTitle"
+msgstr "Delete {name}?"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.itemsOnCeiling"
+msgstr "{count, plural, one {# item is on the ceiling{names}.} other {# items are on the ceiling{names}.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.itemsStandOnFloor"
+msgstr "{count, plural, one {{hosted} stands on it. Keep it at its height, or delete it too.} other {{hosted} stand on it. Keep them at their height, or delete them too.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.keepInPlace"
+msgstr "{count, plural, one {Keep it in place, or delete it too.} other {Keep them in place, or delete them too.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.keepItems"
+msgstr "Keep items"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.keepLights"
+msgstr "Keep lights"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.lightsHang"
+msgstr "{count, plural, one {{summary} hangs from it.} other {{summary} hang from it.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.listAnd"
+msgstr "{head} and {last}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.manualCeilings"
+msgstr "{count, plural, one {Removes the hand-drawn ceiling{names}.} other {Removes # hand-drawn ceilings{names}.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.mergeInto"
+msgstr "Merges it back into {room}: removes the {lines, plural, one {dividing line} other {dividing lines}} and its floor finish. The walls stay."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.mergeIntoNext"
+msgstr "Merges it back into the room next to it: removes the {lines, plural, one {dividing line} other {dividing lines}} and its floor finish. The walls stay."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.mergeItems"
+msgstr "{count, plural, one {# item inside stays where it is.} other {# items inside stay where they are.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.mezzanine"
+msgstr "Removes the mezzanine floor and its railing."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.mezzanineItems"
+msgstr "{count, plural, one {# item is on it. Keep it on the floor below, or delete it too.} other {# items are on it. Keep them on the floor below, or delete them too.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.mezzanineWithCeiling"
+msgstr "Removes the mezzanine floor, its railing and the ceiling over it."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.opensInto"
+msgstr "Opens into {list}."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.remove"
+msgstr "Remove"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removeAll"
+msgstr "Remove all"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removeCeilingTitle"
+msgstr "Remove the ceiling from {room}?"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removeFloorTitle"
+msgstr "Remove the floor from {room}?"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removesCeiling"
+msgstr "Removes the ceiling."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removesFinish"
+msgstr "Removes the floor finish and ceiling."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removesFloor"
+msgstr "Removes the floor."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removesWithFinish"
+msgstr "Removes {list}, with the floor finish and ceiling."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removeWalls"
+msgstr "Remove walls"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.removeWallsTitle"
+msgstr "Remove walls from {room}?"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.roomItems"
+msgstr "{count, plural, one {# item is inside. Keep it where it is, or delete it too.} other {# items are inside. Keep them where they are, or delete them too.}}"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.sharedWallsRemain"
+msgstr "Shared walls remain."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.sharedWallsStay"
+msgstr "Walls shared with other rooms stay."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.theNextRoom"
+msgstr "the next room"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.thisArea"
+msgstr "this area"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.thisMezzanine"
+msgstr "this mezzanine"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.thisRoom"
+msgstr "this room"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.turnsIntoSeparators"
+msgstr "Turns {walls} into separators."
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.turnsIntoSeparatorsAndRemoves"
+msgstr "Turns {walls} into separators and removes {hosted}."
 
 #: packages/editor/src/components/editor/index.tsx
 msgid "editor.dismiss"
