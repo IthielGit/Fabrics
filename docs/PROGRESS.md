@@ -53,6 +53,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-20 — M19 · B7 Textes de Pascal en français (en cours, 461 textes sur 656 faits)
+- **Méthode** : codemod de Pascal (`bun run i18n:literals -- convert --apply`) pour passer les textes en dur par Lingui, puis traductions françaises écrites dans `packages/pascal/i18n/fabrics-fr.json` et versées au catalogue par `bun scripts/i18n.ts translate fr` avec un fournisseur `file` ajouté à `scripts/i18n.ts` (aucune clé d'API ; entrées « à relire »). Voir `packages/pascal/FABRICS_CHANGES.md`.
+- **Fait** : zones `viewer` (24), `nodes` (92 + listes d'options de cotes de construction) et `editor` (345 : palette de commandes, matériaux, terrain, réglages, import, capture, modules). Les durées en pieds sont affichées en mm.
+- **Reste (≈ 180 textes)** : cas manuels de `editor` (76 : constantes de module, gabarits à plusieurs valeurs : boîtes de suppression, animation de construction, thème, raccourcis souris…), de `viewer` (17), et `apps/editor` (85, pages Next.js non utilisées par Fabrics : à décider).
+- Les catalogues `es`, `ja`, `zh-CN` ne reçoivent pas les nouveaux textes (Fabrics est en français) ; `i18n:check` de Pascal les signale, `check:all` de Fabrics ne l'appelle pas. Les 8 tests de Pascal sur les versions de publication échouent sous Windows avec ou sans ce travail (liens symboliques).
+- Vérification : build ✓ lint ✓ tests de `src/i18n` et `src/features/scene` ✓.
+
 ### 2026-11-20 — M19 · B6 Toitures, escaliers, dalles de Pascal (vérifié par l'utilisateur dans le navigateur)
 - **Métrés** : dalles (tableau « Dalles » à part), escaliers et toitures natifs de Pascal comptés dans leur niveau (`scene/slabMeasures.ts`, `scene/roofQuantities.ts` : formules des 9 types de toits ; `view/pascalQuantities.ts`).
 - **Anciens plans → 3D de Pascal** (`scene/migrate/roofStairNodes.ts`) : toitures rectangulaires et escaliers deviennent des nœuds `roof` / `stair` de Pascal, visibles et modifiables en 3D ; l'élément d'origine est gardé. Non modifié : métrés identiques à ceux de Fabrics ; modifié : recalculé depuis la géométrie de Pascal. Formes non convertibles (mansarde, pan découpé, escalier hélicoïdal) : nœud Fabrics, quantités par `pascalQuantities.ts`.
