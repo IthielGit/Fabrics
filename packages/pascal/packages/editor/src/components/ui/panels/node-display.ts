@@ -55,6 +55,7 @@ export function getNodeDisplay(node: AnyNode | null | undefined, i18n: PascalI18
   }
   return {
     icon: scripted ?? fallback.icon,
-    label: node.name || fallback.label,
+    // Fabrics : noms par défaut des outils traduits à l'affichage (« Wall 3 » → « Mur 3 »).
+    label: (node.name && displayRoomName(node.name, i18n)) || fallback.label,
   }
 }

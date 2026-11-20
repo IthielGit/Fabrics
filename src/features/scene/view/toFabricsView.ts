@@ -17,6 +17,7 @@ import { dimensionOffset, furnitureCorner, roundMm } from '../migrate/geometry'
 import { LENGTH_FIELDS, lengthsToMillimetres } from '../migrate/lengthFields'
 import { FABRICS_NODE_PREFIX } from '../nodes/fabricsNodes'
 import { roofFromPascal, stairFromPascal } from '../migrate/roofStairNodes'
+import { pascalDisplayName } from './pascalDisplayName'
 import { pascalQuantitiesOf } from './pascalQuantities'
 import { roomClearOutlines } from './roomClearFloor'
 import { BUILDING_ID, type FabricsNodeMeta, type PlanScene, type SceneNodeData } from '../sceneTypes'
@@ -51,7 +52,8 @@ const PASCAL_DEFAULT_NAME = /^(Wall|Door|Window|Room|Zone|Level) \d+$/
 
 export function nativeElementName(node: SceneNodeData): string {
   const name = node.name ?? ''
-  return PASCAL_DEFAULT_NAME.test(name) ? '' : name
+  // Autres noms anglais de Pascal (pièces de son catalogue : « Bedroom 2 ») : en français (M19 B7).
+  return PASCAL_DEFAULT_NAME.test(name) ? '' : pascalDisplayName(name)
 }
 
 /** Couches du corps d'un mur (composition de Pascal, m) en mm ; rien si le mur n'a pas de composition. */

@@ -41869,6 +41869,168 @@ msgstr "Cubierto"
 msgid "viewer.daylight.weather.title"
 msgstr "Clima"
 
+# English: "Beam"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.beam"
+msgstr ""
+
+# English: "Building"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.building"
+msgstr ""
+
+# English: "Canopy"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.canopy"
+msgstr ""
+
+# English: "Ceiling"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.ceiling"
+msgstr ""
+
+# English: "Chimney"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.chimney"
+msgstr ""
+
+# English: "Column"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.column"
+msgstr ""
+
+# English: "Door"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.door"
+msgstr ""
+
+# English: "Dormer"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.dormer"
+msgstr ""
+
+# English: "Elevator"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.elevator"
+msgstr ""
+
+# English: "Fence"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.fence"
+msgstr ""
+
+# English: "Floor"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.floor"
+msgstr ""
+
+# English: "Grid"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.grid"
+msgstr ""
+
+# English: "Lean-to"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.leanTo"
+msgstr ""
+
+# English: "Level"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.level"
+msgstr ""
+
+# English: "Material"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.material"
+msgstr ""
+
+# English: "Measurement"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.measurement"
+msgstr ""
+
+# English: "Post"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.post"
+msgstr ""
+
+# English: "Roof"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.roof"
+msgstr ""
+
+# English: "Room"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.room"
+msgstr ""
+
+# English: "Skylight"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.skylight"
+msgstr ""
+
+# English: "Slab"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.slab"
+msgstr ""
+
+# English: "Stair"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.stair"
+msgstr ""
+
+# English: "Staircase"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.staircase"
+msgstr ""
+
+# English: "Unit"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.unit"
+msgstr ""
+
+# English: "Wall"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.wall"
+msgstr ""
+
+# English: "Window"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.window"
+msgstr ""
+
+# English: "Zone"
+# Review: missing
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.zone"
+msgstr ""
+
 # Source-Hash: 14622745dbf93f4c
 # Review: human
 # English: "Camera"

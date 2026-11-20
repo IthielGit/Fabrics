@@ -65,3 +65,27 @@ writeFileSync(
     `export const pascalTexts: Record<string, unknown> = JSON.parse(${JSON.stringify(JSON.stringify(sorted))})\n`,
 )
 console.log(`${Object.keys(sorted).length} textes : ${french} en français, ${english - french} restés en anglais (${skipped} traductions écartées) → ${out}`)
+
+// Noms que Pascal garde en anglais dans la scène (catalogue des pièces, noms par défaut des outils) :
+// anglais → français, pour les vues et métrés de Fabrics (M19 B7). Petit fichier à part pour ne pas
+// charger tout le catalogue dans le calcul des vues.
+const NAME_PREFIXES = ['editor.roomName.', 'viewer.defaultName.']
+const frenchById = new Map(readPo('fr').items.map((item) => [item.msgid, item.msgstr[0]]))
+const names = {}
+for (const [id, source] of sources) {
+  if (!NAME_PREFIXES.some((prefix) => id.startsWith(prefix)) || id.startsWith('editor.roomName.section.')) continue
+  const translation = frenchById.get(id)
+  if (translation && translation !== source) names[source] = translation
+}
+const namesOut = resolve(root, 'src/i18n/pascalNames.ts')
+writeFileSync(
+  namesOut,
+  '// Fichier généré par `node scripts/compile-pascal-texts.mjs` : ne pas modifier à la main.\n' +
+    '// Noms que Pascal garde en anglais dans la scène (pièces du catalogue, noms par défaut des outils), en français.\n' +
+    `export const pascalNames: Readonly<Record<string, string>> = ${JSON.stringify(
+      Object.fromEntries(Object.entries(names).sort(([a], [b]) => a.localeCompare(b))),
+      null,
+      2,
+    )}\n`,
+)
+console.log(`${Object.keys(names).length} noms de pièces et noms par défaut → ${namesOut}`)

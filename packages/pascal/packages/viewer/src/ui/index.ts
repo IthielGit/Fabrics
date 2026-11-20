@@ -135,6 +135,7 @@ export {
 export { formatRoomArea } from './lib/room-area'
 export { type RoomAssemblyHeights, resolveRoomAssemblyHeights } from './lib/room-assembly-overlay'
 export {
+  DEFAULT_NODE_NAME_MESSAGES,
   type DescriptorTranslator,
   displayRoomName,
   editedRoomName,

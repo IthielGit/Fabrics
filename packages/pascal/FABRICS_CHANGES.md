@@ -84,3 +84,9 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
   performance pour développeurs (`perf-panel.tsx`), noms de raccourcis souris (déjà traduits par `toolHintKey`).
 - Reste à faire : boîtes de confirmation de suppression (`delete-confirmation-dialog.tsx`, phrases
   composées avec accords), noms par défaut (« Wall 1 ») de `packages/core`, `apps/editor` (non utilisé).
+- Noms par défaut des outils (« Wall 3 », « Door 1 », « Roof 2 »…) : restent en anglais dans la scène (la
+  numérotation et le MCP les lisent, comme le catalogue des pièces) et s'affichent traduits.
+  `viewer/src/ui/lib/room-name-messages.ts` : `DEFAULT_NODE_NAME_MESSAGES`, consulté par `displayRoomName` et
+  `editedRoomName` après le catalogue des pièces ; exporté par `viewer/src/ui/index.ts`.
+  `editor/src/components/ui/panels/panel-wrapper.tsx` (titre des panneaux) et `node-display.ts`
+  (barre de sélection) passent le nom par `displayRoomName`.

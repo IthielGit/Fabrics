@@ -19,7 +19,7 @@ import {
   useRef,
   useState,
 } from 'react'
-import { useIsMobile } from '@pascal-app/viewer/ui'
+import { displayRoomName, useIsMobile } from '@pascal-app/viewer/ui'
 import { NodeIconImage } from '../node-icon-image'
 import { resolveActiveExtension, toggleCard } from '../../../lib/inspector-card-mode'
 import { cn } from '../../../lib/utils'
@@ -355,13 +355,13 @@ export function PanelWrapper({
                 )}
                 {titleContent ?? (
                   <h2 className="truncate font-semibold text-foreground text-sm tracking-tight">
-                    {primaryExtension?.title ?? title}
+                    {primaryExtension?.title ?? displayRoomName(title, i18n)}
                   </h2>
                 )}
               </div>
             ) : (
               <h2 className="truncate font-semibold text-foreground text-sm tracking-tight">
-                {primaryExtension?.title ?? title}
+                {primaryExtension?.title ?? displayRoomName(title, i18n)}
               </h2>
             )}
           </div>

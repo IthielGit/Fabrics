@@ -9,6 +9,7 @@ import { roofFromPascal, stairFromPascal } from '../migrate/roofStairNodes'
 import { type PascalRoofKind, roofQuantities } from '../roofQuantities'
 import type { PlanScene, SceneNodeData } from '../sceneTypes'
 import { mToMm } from '../units'
+import { pascalDisplayName } from './pascalDisplayName'
 
 const ROOF_KINDS = new Set<PascalRoofKind>(['flat', 'shed', 'gable', 'hip', 'gambrel', 'mansard', 'dutch', 'conical', 'barrel'])
 
@@ -59,7 +60,7 @@ function roofQuantity(segment: SceneNodeData, roof: SceneNodeData, nodes: Record
   })
   return {
     id: segment.id,
-    name: segment.name || roof.name || '',
+    name: pascalDisplayName(segment.name || roof.name || ''),
     levelId: levelIdOf(roof, nodes),
     kind,
     pitch: kind === 'flat' || kind === 'barrel' ? null : pitch,
@@ -76,7 +77,7 @@ function roofQuantity(segment: SceneNodeData, roof: SceneNodeData, nodes: Record
 
 function stairQuantity(stair: SceneNodeData, nodes: Record<string, SceneNodeData>): NativeStairQuantity {
   const type = (stair.stairType as string | undefined) ?? 'straight'
-  const base = { id: stair.id, name: stair.name ?? '', levelId: levelIdOf(stair, nodes) }
+  const base = { id: stair.id, name: pascalDisplayName(stair.name ?? ''), levelId: levelIdOf(stair, nodes) }
   if (type === 'curved' || type === 'spiral') {
     // Une seule volée tournante : marches réparties sur la ligne de foulée (rayon intérieur + ½ largeur).
     const risers = Math.max(1, Math.round(num(stair.stepCount, 10)))

@@ -17563,6 +17563,114 @@ msgstr "Overcast"
 msgid "viewer.daylight.weather.title"
 msgstr "Weather"
 
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.beam"
+msgstr "Beam"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.building"
+msgstr "Building"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.canopy"
+msgstr "Canopy"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.ceiling"
+msgstr "Ceiling"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.chimney"
+msgstr "Chimney"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.column"
+msgstr "Column"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.door"
+msgstr "Door"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.dormer"
+msgstr "Dormer"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.elevator"
+msgstr "Elevator"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.fence"
+msgstr "Fence"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.floor"
+msgstr "Floor"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.grid"
+msgstr "Grid"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.leanTo"
+msgstr "Lean-to"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.level"
+msgstr "Level"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.material"
+msgstr "Material"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.measurement"
+msgstr "Measurement"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.post"
+msgstr "Post"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.roof"
+msgstr "Roof"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.room"
+msgstr "Room"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.skylight"
+msgstr "Skylight"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.slab"
+msgstr "Slab"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.stair"
+msgstr "Stair"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.staircase"
+msgstr "Staircase"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.unit"
+msgstr "Unit"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.wall"
+msgstr "Wall"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.window"
+msgstr "Window"
+
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+msgid "viewer.defaultName.zone"
+msgstr "Zone"
+
 #: packages/viewer/src/ui/components/viewer-controls-bar.tsx
 msgid "viewer.display.camera"
 msgstr "Camera"

@@ -75,6 +75,41 @@ export const ROOM_NAME_MESSAGES: Record<string, MessageDescriptor> = {
 }
 
 /**
+ * Fabrics : noms que les outils donnent aux éléments qu'ils créent (« Wall 3 »,
+ * « Door 1 »). Ils restent en anglais dans la scène, comme les noms de pièces,
+ * et s'affichent traduits avec leur numéro (« Wall 3 » → « Mur 3 »).
+ */
+export const DEFAULT_NODE_NAME_MESSAGES: Record<string, MessageDescriptor> = {
+  Wall: /* i18n */ { id: 'viewer.defaultName.wall', message: 'Wall' },
+  Door: /* i18n */ { id: 'viewer.defaultName.door', message: 'Door' },
+  Window: /* i18n */ { id: 'viewer.defaultName.window', message: 'Window' },
+  Roof: /* i18n */ { id: 'viewer.defaultName.roof', message: 'Roof' },
+  Slab: /* i18n */ { id: 'viewer.defaultName.slab', message: 'Slab' },
+  Ceiling: /* i18n */ { id: 'viewer.defaultName.ceiling', message: 'Ceiling' },
+  Floor: /* i18n */ { id: 'viewer.defaultName.floor', message: 'Floor' },
+  Fence: /* i18n */ { id: 'viewer.defaultName.fence', message: 'Fence' },
+  Post: /* i18n */ { id: 'viewer.defaultName.post', message: 'Post' },
+  Beam: /* i18n */ { id: 'viewer.defaultName.beam', message: 'Beam' },
+  Column: /* i18n */ { id: 'viewer.defaultName.column', message: 'Column' },
+  Stair: /* i18n */ { id: 'viewer.defaultName.stair', message: 'Stair' },
+  Staircase: /* i18n */ { id: 'viewer.defaultName.staircase', message: 'Staircase' },
+  Elevator: /* i18n */ { id: 'viewer.defaultName.elevator', message: 'Elevator' },
+  Dormer: /* i18n */ { id: 'viewer.defaultName.dormer', message: 'Dormer' },
+  Canopy: /* i18n */ { id: 'viewer.defaultName.canopy', message: 'Canopy' },
+  'Lean-to': /* i18n */ { id: 'viewer.defaultName.leanTo', message: 'Lean-to' },
+  Chimney: /* i18n */ { id: 'viewer.defaultName.chimney', message: 'Chimney' },
+  Skylight: /* i18n */ { id: 'viewer.defaultName.skylight', message: 'Skylight' },
+  Unit: /* i18n */ { id: 'viewer.defaultName.unit', message: 'Unit' },
+  Zone: /* i18n */ { id: 'viewer.defaultName.zone', message: 'Zone' },
+  Room: /* i18n */ { id: 'viewer.defaultName.room', message: 'Room' },
+  Level: /* i18n */ { id: 'viewer.defaultName.level', message: 'Level' },
+  Building: /* i18n */ { id: 'viewer.defaultName.building', message: 'Building' },
+  Measurement: /* i18n */ { id: 'viewer.defaultName.measurement', message: 'Measurement' },
+  Grid: /* i18n */ { id: 'viewer.defaultName.grid', message: 'Grid' },
+  Material: /* i18n */ { id: 'viewer.defaultName.material', message: 'Material' },
+}
+
+/**
  * A room name in the UI language. Catalog names stay English in the scene
  * (numbering, MCP and exports read them); a catalog name with the number the
  * picker adds shows translated with that number ("Bedroom 2" → "Chambre 2").
@@ -114,6 +149,10 @@ function roomNameParts(name: string) {
 
 function catalogLabel(english: string, i18n: DescriptorTranslator): string | undefined {
   // Own keys only: a room named "constructor" or "__proto__" is free text.
-  if (!(english && Object.hasOwn(ROOM_NAME_MESSAGES, english))) return undefined
-  return i18n._(ROOM_NAME_MESSAGES[english]!)
+  if (!english) return undefined
+  if (Object.hasOwn(ROOM_NAME_MESSAGES, english)) return i18n._(ROOM_NAME_MESSAGES[english]!)
+  // Fabrics : noms par défaut des outils (« Wall 3 » → « Mur 3 »).
+  if (Object.hasOwn(DEFAULT_NODE_NAME_MESSAGES, english))
+    return i18n._(DEFAULT_NODE_NAME_MESSAGES[english]!)
+  return undefined
 }

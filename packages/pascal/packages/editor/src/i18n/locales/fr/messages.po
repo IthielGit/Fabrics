@@ -3748,7 +3748,7 @@ msgstr "Zoom"
 # Source-Hash: 129a8e25ddf105f0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/capture-level-picker.tsx
 #, fuzzy
 msgid "editor.captureLevelPicker.levelsInTheShot"
@@ -3758,7 +3758,7 @@ msgstr "Niveaux dans la prise de vue"
 # Source-Hash: 2ea5d7b0c9109f91
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/capture-level-picker.tsx
 #, fuzzy
 msgid "editor.captureLevelPicker.wholeBuilding"
@@ -3768,7 +3768,7 @@ msgstr "Tout le bâtiment"
 # Source-Hash: d2498cd0a1e25567
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.back"
@@ -3778,7 +3778,7 @@ msgstr "retour"
 # Source-Hash: 97959247360c5f0b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.close"
@@ -3788,7 +3788,7 @@ msgstr "fermer"
 # Source-Hash: fdc2dc1d5cdb0c51
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.commandPalette"
@@ -3798,7 +3798,7 @@ msgstr "Palette de commandes"
 # Source-Hash: cb527b1c9e3a3a2b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.addLevel"
@@ -3808,7 +3808,7 @@ msgstr "Ajouter un niveau"
 # Source-Hash: 4cfce9125c6a5332
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.ceilingTool"
@@ -3818,7 +3818,7 @@ msgstr "Outil Plafond"
 # Source-Hash: 4a774da031cc143e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.copyShareLink"
@@ -3828,7 +3828,7 @@ msgstr "Copier le lien de partage"
 # Source-Hash: 21ee810e139efbe2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.deleteLevel"
@@ -3838,7 +3838,7 @@ msgstr "Supprimer le niveau"
 # Source-Hash: 4d3733b4adfe7ab7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.deleteSelection"
@@ -3848,7 +3848,7 @@ msgstr "Supprimer la sélection"
 # Source-Hash: 2e470d67296abe1f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.doorTool"
@@ -3858,7 +3858,7 @@ msgstr "Outil Porte"
 # Source-Hash: 5ec91bb339806413
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.exitUnitFocus"
@@ -3868,7 +3868,7 @@ msgstr "Quitter le focus sur l’unité"
 # Source-Hash: 46dffdbd9033ea83
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.export3dModelGlb"
@@ -3878,7 +3878,7 @@ msgstr "Exporter le modèle 3D (GLB)"
 # Source-Hash: f15804ed01c00808
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.exportSceneJson"
@@ -3888,7 +3888,7 @@ msgstr "Exporter la scène (JSON)"
 # Source-Hash: 18bada13fbdf0033
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.focusUnit"
@@ -3898,7 +3898,7 @@ msgstr "Cibler l’unité : {name}"
 # Source-Hash: 48e04f568358025e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.goToLevel"
@@ -3908,7 +3908,7 @@ msgstr "Aller au niveau"
 # Source-Hash: 88bc897f81f1b5f2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.itemTool"
@@ -3918,7 +3918,7 @@ msgstr "Outil Objet"
 # Source-Hash: d3dd089d4b0b89d3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.materialPaint"
@@ -3928,7 +3928,7 @@ msgstr "Peinture de matériau"
 # Source-Hash: 13b3e6a6afe319d1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.newUnit"
@@ -3938,7 +3938,7 @@ msgstr "Nouvelle unité"
 # Source-Hash: edbb8c17ae5dc86b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.redo"
@@ -3948,7 +3948,7 @@ msgstr "Rétablir"
 # Source-Hash: 724c750249f3b7a7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.renameLevel"
@@ -3958,7 +3958,7 @@ msgstr "Renommer le niveau"
 # Source-Hash: 30d357811ce05644
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.sculptTerrain"
@@ -3968,7 +3968,7 @@ msgstr "Sculpter le terrain"
 # Source-Hash: 2b94efdeb154c046
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.slabTool"
@@ -3978,7 +3978,7 @@ msgstr "Outil Dalle"
 # Source-Hash: a8f7f8b203589142
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.stairTool"
@@ -3988,7 +3988,7 @@ msgstr "Outil Escalier"
 # Source-Hash: 29c5fad00a2ffca5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.takeScreenshot"
@@ -3998,7 +3998,7 @@ msgstr "Capture d’écran"
 # Source-Hash: 07ae03367bc98af8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.takeSnapshot"
@@ -4008,7 +4008,7 @@ msgstr "Prendre une vue"
 # Source-Hash: a6173e7ebf8fddc1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.toggleFullscreen"
@@ -4018,7 +4018,7 @@ msgstr "Basculer en plein écran"
 # Source-Hash: 675036bd3758c1f7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.undo"
@@ -4028,7 +4028,7 @@ msgstr "Annuler"
 # Source-Hash: 062cc0f1afef0c52
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.unit"
@@ -4038,7 +4038,7 @@ msgstr "Unité"
 # Source-Hash: 512416fc48d08b18
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.wallMode"
@@ -4048,7 +4048,7 @@ msgstr "Mode mur"
 # Source-Hash: 9d88942597835889
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.wallTool"
@@ -4058,7 +4058,7 @@ msgstr "Outil Mur"
 # Source-Hash: 3c97dc28c9dbbc72
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.windowTool"
@@ -4068,7 +4068,7 @@ msgstr "Outil Fenêtre"
 # Source-Hash: f0e636dd8fa6d824
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.zoneTool"
@@ -4078,7 +4078,7 @@ msgstr "Outil Zone"
 # Source-Hash: f0b3b28c004892c2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.filterOptions"
@@ -4088,7 +4088,7 @@ msgstr "Filtrer les options…"
 # Source-Hash: 48e04f568358025e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.goToLevel"
@@ -4098,7 +4098,7 @@ msgstr "Aller au niveau"
 # Source-Hash: 5c3374f812f8f9f8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.navigate"
@@ -4108,7 +4108,7 @@ msgstr "naviguer"
 # Source-Hash: 2719ad8e72243f1e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.noCommandsFound"
@@ -4118,7 +4118,7 @@ msgstr "Aucune commande trouvée."
 # Source-Hash: 724c750249f3b7a7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.renameLevel"
@@ -4128,7 +4128,7 @@ msgstr "Renommer le niveau"
 # Source-Hash: f6fe1a798c79e0dd
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.renameTo"
@@ -4138,7 +4138,7 @@ msgstr "Renommer en"
 # Source-Hash: 6ed5ad00c41f4c74
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.searchActions"
@@ -4148,7 +4148,7 @@ msgstr "Rechercher des actions…"
 # Source-Hash: 8dac625925dff4ce
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.select"
@@ -4158,7 +4158,7 @@ msgstr "sélectionner"
 # Source-Hash: 5d95b03bd4929a1d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.typeANewName"
@@ -4168,7 +4168,7 @@ msgstr "Saisissez un nouveau nom…"
 # Source-Hash: 1fcb51498e00bb3c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.typeANewNameAbove"
@@ -4178,7 +4178,7 @@ msgstr "Saisissez un nouveau nom ci-dessus…"
 # Source-Hash: 512416fc48d08b18
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/command-palette/index.tsx
 #, fuzzy
 msgid "editor.commandPalette.wallMode"
@@ -4248,7 +4248,7 @@ msgstr "Par défaut"
 # Source-Hash: 4a91d681a23e60b8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.addMaterial"
@@ -4258,7 +4258,7 @@ msgstr "Ajouter un matériau"
 # Source-Hash: 89e2bbc0d6d5c232
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.clickAPaintedPartOfA"
@@ -4268,7 +4268,7 @@ msgstr "Cliquez sur une partie peinte d’un mur, d’un sol ou d’un plafond p
 # Source-Hash: f3ea3efa7102844f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.erase"
@@ -4278,7 +4278,7 @@ msgstr "Effacer"
 # Source-Hash: 8833bfb70bdb273f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.modeErase"
@@ -4288,7 +4288,7 @@ msgstr "Effacer : cliquez sur une partie peinte pour la retirer, ou sur une surf
 # Source-Hash: 30c45737ef2461d6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.modePick"
@@ -4298,7 +4298,7 @@ msgstr "Pipette : cliquez sur une surface pour peindre avec son matériau (ou ma
 # Source-Hash: e51ec320317b880a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.modePolygon"
@@ -4308,7 +4308,7 @@ msgstr "Polygone : cliquez les points d’une forme sur un sol ou un plafond"
 # Source-Hash: 7aeed2aa98f37a8d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.modeRectangle"
@@ -4318,7 +4318,7 @@ msgstr "Rectangle : appuyez n’importe où sur un mur, un sol ou un plafond et 
 # Source-Hash: 96fb58633a2d97fa
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.modeSurface"
@@ -4328,7 +4328,7 @@ msgstr "Surface entière : un clic peint la surface dessous"
 # Source-Hash: 52f18fccde726a24
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.noCustomMaterialsYetAddOne"
@@ -4338,7 +4338,7 @@ msgstr "Aucun matériau personnalisé — ajoutez-en un avec +."
 # Source-Hash: cf2e870fce0f2f51
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.paint"
@@ -4348,7 +4348,7 @@ msgstr "Peindre"
 # Source-Hash: 01359502b07284d4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.pickMaterial"
@@ -4358,7 +4358,7 @@ msgstr "Choisir un matériau"
 # Source-Hash: 47f19087b2b075c0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.sceneMaterials"
@@ -4368,7 +4368,7 @@ msgstr "Matériaux de la scène"
 # Source-Hash: 85ac8060edda403c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-picker.tsx
 #, fuzzy
 msgid "editor.controls.materialPicker.newMaterial"
@@ -4378,7 +4378,7 @@ msgstr "Nouveau matériau"
 # Source-Hash: 7ceade8f25b58fe9
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-properties-editor.tsx
 #, fuzzy
 msgid "editor.controls.materialPropertiesEditor.back"
@@ -4388,7 +4388,7 @@ msgstr "Arrière"
 # Source-Hash: fe18958cedd627d2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-properties-editor.tsx
 #, fuzzy
 msgid "editor.controls.materialPropertiesEditor.color"
@@ -4398,7 +4398,7 @@ msgstr "Couleur"
 # Source-Hash: 3cd71355956a1821
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-properties-editor.tsx
 #, fuzzy
 msgid "editor.controls.materialPropertiesEditor.double"
@@ -4408,7 +4408,7 @@ msgstr "Double"
 # Source-Hash: e360f89d3c0ec456
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-properties-editor.tsx
 #, fuzzy
 msgid "editor.controls.materialPropertiesEditor.front"
@@ -4418,7 +4418,7 @@ msgstr "Avant"
 # Source-Hash: 330c0e22d13d2984
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-properties-editor.tsx
 #, fuzzy
 msgid "editor.controls.materialPropertiesEditor.metalness"
@@ -4428,7 +4428,7 @@ msgstr "Métallisation"
 # Source-Hash: 1c0b8a5503c5daeb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-properties-editor.tsx
 #, fuzzy
 msgid "editor.controls.materialPropertiesEditor.opacity"
@@ -4438,7 +4438,7 @@ msgstr "Opacité"
 # Source-Hash: a6a7a36d982b4911
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-properties-editor.tsx
 #, fuzzy
 msgid "editor.controls.materialPropertiesEditor.roughness"
@@ -4448,7 +4448,7 @@ msgstr "Rugosité"
 # Source-Hash: feefe9c7cb273e79
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/material-properties-editor.tsx
 #, fuzzy
 msgid "editor.controls.materialPropertiesEditor.side"
@@ -4458,7 +4458,7 @@ msgstr "Face"
 # Source-Hash: b26de372b4b0eaac
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/scene-material-list.tsx
 #, fuzzy
 msgid "editor.controls.sceneMaterialList.delete"
@@ -4468,7 +4468,7 @@ msgstr "Supprimer"
 # Source-Hash: 34dc96fe77a31e51
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/scene-material-list.tsx
 #, fuzzy
 msgid "editor.controls.sceneMaterialList.duplicate"
@@ -4478,7 +4478,7 @@ msgstr "Dupliquer"
 # Source-Hash: f7e6729d30cf78fb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/scene-material-list.tsx
 #, fuzzy
 msgid "editor.controls.sceneMaterialList.edit"
@@ -4488,7 +4488,7 @@ msgstr "Modifier"
 # Source-Hash: 25205bb0084ae7e7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/scene-material-list.tsx
 #, fuzzy
 msgid "editor.controls.sceneMaterialList.paintWith"
@@ -4498,7 +4498,7 @@ msgstr "Peindre avec"
 # Source-Hash: 3262b7a621893b2f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/scene-material-list.tsx
 #, fuzzy
 msgid "editor.controls.sceneMaterialList.part"
@@ -4508,7 +4508,7 @@ msgstr "partie"
 # Source-Hash: 6691ae277870be1c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/scene-material-list.tsx
 #, fuzzy
 msgid "editor.controls.sceneMaterialList.parts"
@@ -4518,7 +4518,7 @@ msgstr "parties"
 # Source-Hash: e942cf97437988dd
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/scene-material-list.tsx
 #, fuzzy
 msgid "editor.controls.sceneMaterialList.usedBy"
@@ -4548,7 +4548,7 @@ msgstr "Mixte"
 # Source-Hash: f36926c00792ea28
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.clearTerrain"
@@ -4558,7 +4558,7 @@ msgstr "Effacer le terrain"
 # Source-Hash: 7e1968be26fd80d7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.clickTheGroundToPickIts"
@@ -4568,7 +4568,7 @@ msgstr "Cliquez sur le sol pour en choisir la hauteur comme cible."
 # Source-Hash: be7e63517f970e29
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.everyFlattenStrokeLevelsTowardThis"
@@ -4578,7 +4578,7 @@ msgstr "Chaque passage d’aplanissement nivelle vers cette hauteur."
 # Source-Hash: 8bf289f3770cf959
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.flatten"
@@ -4588,7 +4588,7 @@ msgstr "Aplanir"
 # Source-Hash: 0af9da075d54e07e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.hintFlatten"
@@ -4598,7 +4598,7 @@ msgstr "Glissez pour niveler le sol vers la hauteur cible. Sans jamais la dépas
 # Source-Hash: 8436275739d5432d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.hintLower"
@@ -4608,7 +4608,7 @@ msgstr "Glissez pour abaisser le sol. Un passage l’abaisse jusqu’à {distanc
 # Source-Hash: b6f5611136fd5098
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.hintRaise"
@@ -4618,7 +4618,7 @@ msgstr "Glissez pour relever le sol. Un passage le relève jusqu’à {distance}
 # Source-Hash: f229f92df449be1a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.hintSmooth"
@@ -4628,7 +4628,7 @@ msgstr "Glissez pour adoucir les pentes et effacer les crêtes. Un sol plat rest
 # Source-Hash: 36f54d179d7183ae
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.levelLot"
@@ -4638,7 +4638,7 @@ msgstr "Niveler la parcelle"
 # Source-Hash: 9b509ece2bf2f6df
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.lower"
@@ -4648,7 +4648,7 @@ msgstr "Abaisser"
 # Source-Hash: 32cb424d92dc79f2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.noTargetYetTheFirstClick"
@@ -4658,7 +4658,7 @@ msgstr "Pas encore de cible — le premier clic relève le sol dessous."
 # Source-Hash: 934e129379296c83
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.pickTargetHeightFromTheGround"
@@ -4668,7 +4668,7 @@ msgstr "Prendre la hauteur cible sur le sol"
 # Source-Hash: 011e4de244050a78
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.raise"
@@ -4678,7 +4678,7 @@ msgstr "Relever"
 # Source-Hash: ad0457800a1f0eb4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.round"
@@ -4688,7 +4688,7 @@ msgstr "Rond"
 # Source-Hash: 60bb3338e0ad558c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.size"
@@ -4698,7 +4698,7 @@ msgstr "Taille"
 # Source-Hash: 354c8bc5c8da5a6e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.smooth"
@@ -4708,7 +4708,7 @@ msgstr "Lisser"
 # Source-Hash: e4210a7850e84974
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.softness"
@@ -4718,7 +4718,7 @@ msgstr "Douceur"
 # Source-Hash: 39287346366fc206
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.square"
@@ -4728,7 +4728,7 @@ msgstr "Carré"
 # Source-Hash: 538fd08e76060456
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.strength"
@@ -4738,7 +4738,7 @@ msgstr "Force"
 # Source-Hash: 4eabc67ba8776d2f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.target"
@@ -4748,7 +4748,7 @@ msgstr "Cible"
 # Source-Hash: c0774c185060fc13
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
 #, fuzzy
 msgid "editor.deleteConfirmationDialog.cancel"
@@ -4778,7 +4778,7 @@ msgstr "Fermer l’aide sur les commandes de caméra"
 # Source-Hash: b0b39aa4ef3d18f6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor-2d/renderers/floorplan-dimension-edit-overlay.tsx
 #, fuzzy
 msgid "editor.editor2d.floorplanDimensionEditOverlay.cannotRead"
@@ -4788,7 +4788,7 @@ msgstr "Valeur illisible : « {value} »"
 # Source-Hash: 14f3108a28e97db1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
 #, fuzzy
 msgid "editor.editor2d.floorplanMeasurementToolLayer.align"
@@ -4798,7 +4798,7 @@ msgstr "ALIGNER "
 # Source-Hash: 88f0bf04a31eeb17
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
 #, fuzzy
 msgid "editor.editor2d.floorplanMeasurementToolLayer.create"
@@ -4808,7 +4808,7 @@ msgstr "Créer"
 # Source-Hash: 9cf4bf59316a6f66
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
 #, fuzzy
 msgid "editor.editor2d.floorplanMeasurementToolLayer.extrusionHeight"
@@ -4818,7 +4818,7 @@ msgstr "Hauteur d’extrusion"
 # Source-Hash: f2a43dfecfce3db5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor-2d/floorplan-open-wall-ends-layer.tsx
 #, fuzzy
 msgid "editor.editor2d.floorplanOpenWallEndsLayer.wallEndNotJoined"
@@ -4838,7 +4838,7 @@ msgstr "Développer la barre latérale"
 # Source-Hash: bfd7131cab028dcb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/first-person-controls.tsx
 #, fuzzy
 msgid "editor.firstPersonControls.placeASpawnPointFromThe"
@@ -5038,7 +5038,7 @@ msgstr "Le logement ciblé a des zones ici"
 # Source-Hash: 655055a310fb5d13
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/floating-level-selector.tsx
 #, fuzzy
 msgid "editor.floatingLevelSelector.groundFloorOverGrade"
@@ -5048,7 +5048,7 @@ msgstr "Le rez-de-chaussée se trouve à {distance} au-dessus du sol. Placez-le 
 # Source-Hash: 77548faae4869eec
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/floating-level-selector.tsx
 #, fuzzy
 msgid "editor.floatingLevelSelector.groundFloorUnderGrade"
@@ -5098,7 +5098,7 @@ msgstr "Hauteur du niveau"
 # Source-Hash: 8b57d2d8c732c3d6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/floating-level-selector.tsx
 #, fuzzy
 msgid "editor.floatingLevelSelector.n10Ft"
@@ -5108,7 +5108,7 @@ msgstr "3 048 mm"
 # Source-Hash: b369db882e3d1c49
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/floating-level-selector.tsx
 #, fuzzy
 msgid "editor.floatingLevelSelector.n8Ft"
@@ -5118,7 +5118,7 @@ msgstr "2 438 mm"
 # Source-Hash: df79b8c7112e234c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/floating-level-selector.tsx
 #, fuzzy
 msgid "editor.floatingLevelSelector.n9Ft"
@@ -5229,7 +5229,7 @@ msgstr "Plancher partagé"
 # Source-Hash: a2bd204e93e90598
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-mode-coordinator.tsx
 #, fuzzy
 msgid "editor.floorplanModeCoordinator.dismiss"
@@ -5239,7 +5239,7 @@ msgstr "Ignorer"
 # Source-Hash: da83b2ed2f60230a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-mode-coordinator.tsx
 #, fuzzy
 msgid "editor.floorplanModeCoordinator.switchToExpert"
@@ -5249,7 +5249,7 @@ msgstr "Passer en mode expert"
 # Source-Hash: 0dcceec91833c780
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.anyDecimalWorksUseTheKnown"
@@ -5259,7 +5259,7 @@ msgstr "Toute décimale convient. Utilisez la longueur réelle connue, pas la va
 # Source-Hash: c0774c185060fc13
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.cancel"
@@ -5269,7 +5269,7 @@ msgstr "Annuler"
 # Source-Hash: 8bd1b93c4567340f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.centimeters"
@@ -5279,7 +5279,7 @@ msgstr "Centimètres"
 # Source-Hash: 67786480148afc82
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.clickOneEndOfADistance"
@@ -5289,7 +5289,7 @@ msgstr "Cliquez sur une extrémité d’une distance connue — par exemple une 
 # Source-Hash: 07271603f37bd951
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.clickTheOtherEndOfThat"
@@ -5299,7 +5299,7 @@ msgstr "Cliquez sur l’autre extrémité de cette distance"
 # Source-Hash: 21daa1f21d494f5b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.ctrl"
@@ -5309,7 +5309,7 @@ msgstr "ctrl"
 # Source-Hash: 4fdce12ed043d22a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.drawnLine"
@@ -5319,7 +5319,7 @@ msgstr "Ligne dessinée"
 # Source-Hash: a88508e612bb9e21
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.eG35180cmOr"
@@ -5329,7 +5329,7 @@ msgstr "p. ex. 3500, 1800 cm ou 2438 mm"
 # Source-Hash: 785987409fd94310
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.enterAValidLengthToPreview"
@@ -5339,7 +5339,7 @@ msgstr "Saisissez une longueur valide pour voir l’aperçu de l’échelle."
 # Source-Hash: 9c821dcea16b7450
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.enterTheRealWorldLengthOf"
@@ -5349,7 +5349,7 @@ msgstr "Saisissez la longueur réelle de la ligne que vous venez de tracer. L’
 # Source-Hash: 7eb212fcdc4bd7dc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.feet"
@@ -5359,7 +5359,7 @@ msgstr "Pieds"
 # Source-Hash: 1c603e5aa89c3b38
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.imageWillScaleFactorFromTheFirstPoint"
@@ -5369,7 +5369,7 @@ msgstr "L’image sera agrandie {factor}× à partir du premier point."
 # Source-Hash: bcfff10ca598650e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.inches"
@@ -5379,7 +5379,7 @@ msgstr "Pouces"
 # Source-Hash: 0a39470be3b84536
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.meters"
@@ -5389,7 +5389,7 @@ msgstr "Mètres"
 # Source-Hash: e80fdef4566bcfb0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.panel"
@@ -5399,7 +5399,7 @@ msgstr "panneau"
 # Source-Hash: 340d97e271a995f1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.realLength"
@@ -5409,7 +5409,7 @@ msgstr "Longueur réelle"
 # Source-Hash: 25da05bc973d9d34
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.refValue"
@@ -5419,7 +5419,7 @@ msgstr "Réf. {value}"
 # Source-Hash: 2abb45eb3b206811
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.resize"
@@ -5429,7 +5429,7 @@ msgstr "redimensionner"
 # Source-Hash: f66ab93235649421
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.rotate"
@@ -5439,7 +5439,7 @@ msgstr "pivoter"
 # Source-Hash: 1b90df88a9e665e9
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.saveScale"
@@ -5449,7 +5449,7 @@ msgstr "Enregistrer l’échelle"
 # Source-Hash: 99de5ff91cd39152
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.setOverlayScale"
@@ -5459,7 +5459,7 @@ msgstr "Régler l’échelle du fond"
 # Source-Hash: 6c87593c6e26bf42
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.setScale"
@@ -5469,7 +5469,7 @@ msgstr "régler l’échelle"
 # Source-Hash: 730530688db3cea3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 #, fuzzy
 msgid "editor.floorplanPanel.switchToABuildingLevelTo"
@@ -5479,7 +5479,7 @@ msgstr "Passez à un niveau du bâtiment pour voir et modifier le plan d’étag
 # Source-Hash: f2e991d277b74254
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/lib/floor-region-session.ts
 #, fuzzy
 msgid "editor.floorRegionSession.pickMaterialFirst"
@@ -5489,7 +5489,7 @@ msgstr "Choisissez d’abord un matériau"
 # Source-Hash: 069d64adffa05db7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/footprint-height-handle.tsx
 #, fuzzy
 msgid "editor.footprintHeightHandle.floorTop"
@@ -5499,7 +5499,7 @@ msgstr "Dessus du plancher"
 # Source-Hash: 48c832c1fc389290
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/footprint-height-handle.tsx
 #, fuzzy
 msgid "editor.footprintHeightHandle.foundation"
@@ -10899,7 +10899,7 @@ msgstr "Culotte"
 # Source-Hash: e03aabb05a637f6a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/join-walls-pill.tsx
 #, fuzzy
 msgid "editor.joinWallsPill.joinWalls"
@@ -12134,7 +12134,7 @@ msgstr "Zone"
 # Source-Hash: f2a43dfecfce3db5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/open-wall-ends-3d-layer.tsx
 #, fuzzy
 msgid "editor.openWallEnds3dLayer.wallEndNotJoined"
@@ -12144,7 +12144,7 @@ msgstr "Extrémité de mur non raccordée"
 # Source-Hash: 827e0c6ac9936b69
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/open-wall-ends-hint.tsx
 #, fuzzy
 msgid "editor.openWallEndsHint.show"
@@ -15006,7 +15006,7 @@ msgstr "Décalage"
 # Source-Hash: 663d794ab24d713c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.askPascal"
@@ -15016,7 +15016,7 @@ msgstr "Demander à Pascal"
 # Source-Hash: e1297bb6ee0d7de5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.dictate"
@@ -15026,7 +15026,7 @@ msgstr "Dicter"
 # Source-Hash: 64bfda6bcd2b7309
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.dragToMoveItAside"
@@ -15036,7 +15036,7 @@ msgstr "Glissez pour le déplacer sur le côté"
 # Source-Hash: 51fb88df07f7d236
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.noPicture"
@@ -15046,7 +15046,7 @@ msgstr "Pas d’image"
 # Source-Hash: 50a54e307f2718d7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.queue"
@@ -15056,7 +15056,7 @@ msgstr "File d’attente"
 # Source-Hash: 9a8bd0b7e67b24d3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.removeName"
@@ -15066,7 +15066,7 @@ msgstr "Retirer {name}"
 # Source-Hash: 127e2d762c82e4dc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.removeTheArea"
@@ -15076,7 +15076,7 @@ msgstr "Retirer la zone"
 # Source-Hash: 31d32c960114af1d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.send"
@@ -15086,7 +15086,7 @@ msgstr "Envoyer"
 # Source-Hash: 95d57312ae1d43cb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.stopDictating"
@@ -15096,7 +15096,7 @@ msgstr "Arrêter la dictée"
 # Source-Hash: 094e3e9e98c7c522
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/bubble.tsx
 #, fuzzy
 msgid "editor.pointAsk.bubble.whatPascalWillSee"
@@ -15106,7 +15106,7 @@ msgstr "Ce que Pascal verra"
 # Source-Hash: 1a9de9e482eb9b52
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/hover-chip.tsx
 #, fuzzy
 msgid "editor.pointAsk.hoverChip.pascalIsWorkingOnThis"
@@ -15116,7 +15116,7 @@ msgstr "Pascal travaille dessus"
 # Source-Hash: 4b7c5a57921f0f41
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/hover-chip.tsx
 #, fuzzy
 msgid "editor.pointAsk.hoverChip.theWall"
@@ -15126,7 +15126,7 @@ msgstr "⌥ le mur"
 # Source-Hash: e024857dfc737812
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/mode-pill.tsx
 #, fuzzy
 msgid "editor.pointAsk.modePill.before"
@@ -15136,7 +15136,7 @@ msgstr "Avant"
 # Source-Hash: 311be1e3179061ae
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/mode-pill.tsx
 #, fuzzy
 msgid "editor.pointAsk.modePill.escToLeave"
@@ -15146,7 +15146,7 @@ msgstr "· Échap pour quitter"
 # Source-Hash: 5be64540c953d20a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/mode-pill.tsx
 #, fuzzy
 msgid "editor.pointAsk.modePill.pointAtAnythingToAskPascal"
@@ -15156,7 +15156,7 @@ msgstr "Pointez n’importe quoi pour demander à Pascal"
 # Source-Hash: 06fa39cf6f25a444
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.after"
@@ -15166,7 +15166,7 @@ msgstr "Après"
 # Source-Hash: a3a39f48f55b5e61
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.changeMore"
@@ -15176,7 +15176,7 @@ msgstr "Modifier davantage"
 # Source-Hash: 3ddcbf8dd45714c3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.holdToSeeBefore"
@@ -15186,7 +15186,7 @@ msgstr "Maintenez pour voir l’avant"
 # Source-Hash: ecbd65902e9e5ab0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.keep"
@@ -15196,7 +15196,7 @@ msgstr "Garder"
 # Source-Hash: a520d8126fe4ac5c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.openInChat"
@@ -15206,7 +15206,7 @@ msgstr "Ouvrir dans la discussion"
 # Source-Hash: edbb8c17ae5dc86b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.redo"
@@ -15216,7 +15216,7 @@ msgstr "Rétablir"
 # Source-Hash: 13cc3eea14150736
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.seeWhy"
@@ -15226,7 +15226,7 @@ msgstr "Voir pourquoi"
 # Source-Hash: ebf4cffd7edad14e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.sentToPascal"
@@ -15236,7 +15236,7 @@ msgstr "Envoyé à Pascal"
 # Source-Hash: bf6ec1eec3ce260f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.showingBefore"
@@ -15246,7 +15246,7 @@ msgstr "Affichage de l’avant"
 # Source-Hash: 514c63428de25cfb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.tryAgain"
@@ -15256,7 +15256,7 @@ msgstr "Réessayer"
 # Source-Hash: 675036bd3758c1f7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.undo"
@@ -15266,7 +15266,7 @@ msgstr "Annuler"
 # Source-Hash: 8ef6b4e6db300985
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.undoAnyway"
@@ -15276,7 +15276,7 @@ msgstr "Annuler quand même"
 # Source-Hash: b095ac886c5efe10
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/point-ask/pins.tsx
 #, fuzzy
 msgid "editor.pointAsk.pins.youVeChangedTheSceneSince"
@@ -15286,7 +15286,7 @@ msgstr "Vous avez modifié la scène depuis. Annuler retire aussi ces modificati
 # Source-Hash: d7cf5045c01b2eb9
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/primitives/dialog.tsx
 #, fuzzy
 msgid "editor.primitives.dialog.close"
@@ -15296,7 +15296,7 @@ msgstr "Fermer"
 # Source-Hash: db54f96370b20856
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/primitives/error-boundary.tsx
 #, fuzzy
 msgid "editor.primitives.errorBoundary.somethingWentWrong"
@@ -15306,7 +15306,7 @@ msgstr "Une erreur s’est produite"
 # Source-Hash: 514c63428de25cfb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/primitives/error-boundary.tsx
 #, fuzzy
 msgid "editor.primitives.errorBoundary.tryAgain"
@@ -15316,7 +15316,7 @@ msgstr "Réessayer"
 # Source-Hash: 1c0b8a5503c5daeb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/primitives/opacity-control.tsx
 #, fuzzy
 msgid "editor.primitives.opacityControl.opacity"
@@ -15326,7 +15326,7 @@ msgstr "Opacité"
 # Source-Hash: d7cf5045c01b2eb9
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/primitives/sheet.tsx
 #, fuzzy
 msgid "editor.primitives.sheet.close"
@@ -15336,7 +15336,7 @@ msgstr "Fermer"
 # Source-Hash: e9a9f75aaf3f59bc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/primitives/sidebar.tsx
 #, fuzzy
 msgid "editor.primitives.sidebar.displaysTheMobileSidebar"
@@ -15346,7 +15346,7 @@ msgstr "Affiche la barre latérale mobile."
 # Source-Hash: 30a7c06fa9358caa
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/primitives/sidebar.tsx
 #, fuzzy
 msgid "editor.primitives.sidebar.sidebar"
@@ -15356,7 +15356,7 @@ msgstr "Barre latérale"
 # Source-Hash: 09f9e362521d51ef
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/primitives/sidebar.tsx
 #, fuzzy
 msgid "editor.primitives.sidebar.toggleSidebar"
@@ -15476,7 +15476,7 @@ msgstr "Réinitialiser cette pièce"
 # Source-Hash: dfa7fce5b84b6e75
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/quick-measurement-card.tsx
 #, fuzzy
 msgid "editor.quickMeasurementCard.clickAnotherSurfaceToReplace"
@@ -15486,7 +15486,7 @@ msgstr "Cliquez sur une autre surface pour remplacer"
 # Source-Hash: 760ff1873e35f828
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/quick-measurement-card.tsx
 #, fuzzy
 msgid "editor.quickMeasurementCard.clickSurfaceToPin"
@@ -15496,7 +15496,7 @@ msgstr "Cliquez sur une surface pour l’épingler"
 # Source-Hash: ee7e6b16847c281c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/quick-measurement-card.tsx
 #, fuzzy
 msgid "editor.quickMeasurementCard.liveLens"
@@ -15506,7 +15506,7 @@ msgstr "Loupe en direct"
 # Source-Hash: 4384f96cca56a6fa
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/quick-measurement-card.tsx
 #, fuzzy
 msgid "editor.quickMeasurementCard.measurementsLabel"
@@ -15516,7 +15516,7 @@ msgstr "{pinned, select, true {Mesures {kind} épinglées} other {Mesures {kind}
 # Source-Hash: 8291a38885c68a04
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/quick-measurement-card.tsx
 #, fuzzy
 msgid "editor.quickMeasurementCard.pinned"
@@ -15657,7 +15657,7 @@ msgstr "{current} · au niveau de {shared}"
 # Source-Hash: f0a46329fef44d94
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/room-controls.tsx
 #, fuzzy
 msgid "editor.roomControls.addStairs"
@@ -15667,7 +15667,7 @@ msgstr "Ajouter un escalier"
 # Source-Hash: 60e8d235f3084a9e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/room-controls.tsx
 #, fuzzy
 msgid "editor.roomControls.divideRoom"
@@ -15717,7 +15717,7 @@ msgstr "Saisissez une cote pour déplacer le mur"
 # Source-Hash: c74d8e27f5f1e186
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/room-handles-2d.tsx
 #, fuzzy
 msgid "editor.roomHandles2d.floorHeight"
@@ -15727,7 +15727,7 @@ msgstr "Hauteur du plancher"
 # Source-Hash: 9e77d5b6c5811e97
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/room-handles-2d.tsx
 #, fuzzy
 msgid "editor.roomHandles2d.lowerTheFloor"
@@ -15737,7 +15737,7 @@ msgstr "Abaisser le plancher"
 # Source-Hash: f69b48072be7f6ad
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/room-handles-2d.tsx
 #, fuzzy
 msgid "editor.roomHandles2d.raiseTheFloor"
@@ -16596,7 +16596,7 @@ msgstr "Rechercher..."
 # Source-Hash: 086acdc3a01cb3c5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.addBasement"
@@ -16606,7 +16606,7 @@ msgstr "Ajouter un sous-sol"
 # Source-Hash: 5c34160bcefd3ccf
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.addFloor"
@@ -16616,7 +16616,7 @@ msgstr "Ajouter un étage"
 # Source-Hash: 3ef7075298048168
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.animationSpeed"
@@ -16626,7 +16626,7 @@ msgstr "Vitesse d’animation"
 # Source-Hash: 3e2b8ee9b2cbf5af
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.buildsPlayFast"
@@ -16636,7 +16636,7 @@ msgstr "Les constructions se jouent ×{speed} plus vite."
 # Source-Hash: 8d79371cd195a9c8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.higherPlaysABuildFasterIt"
@@ -16646,7 +16646,7 @@ msgstr "Plus la valeur est élevée, plus la construction se joue vite ; s’app
 # Source-Hash: efd3822b290d251d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.paceBuildsWereMadeAt"
@@ -16656,7 +16656,7 @@ msgstr "Le rythme auquel les constructions ont été faites."
 # Source-Hash: 6fce85f576cf5c54
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.turnTheConstructionAnimationOnTo"
@@ -16666,7 +16666,7 @@ msgstr "Activez l’animation de construction pour l’utiliser."
 # Source-Hash: 54ce6a88f30e69f3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.anyoneWithTheLinkCanView"
@@ -16676,7 +16676,7 @@ msgstr "Toute personne disposant du lien peut le voir."
 # Source-Hash: b178d28ed286e2eb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.audioSettings"
@@ -16686,7 +16686,7 @@ msgstr "Réglages audio"
 # Source-Hash: 93e3b0cd24f42cd4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.masterVolume"
@@ -16696,7 +16696,7 @@ msgstr "Volume général"
 # Source-Hash: ecf462e415476aaf
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.muteThisTab"
@@ -16706,7 +16706,7 @@ msgstr "Couper le son de cet onglet"
 # Source-Hash: b48c939b3382d2b7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.radioVolume"
@@ -16716,7 +16716,7 @@ msgstr "Volume de la radio"
 # Source-Hash: 9c95fb2565cba03e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.soundEffects"
@@ -16726,7 +16726,7 @@ msgstr "Effets sonores"
 # Source-Hash: 5e3328c9cc51b3ea
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.unmuteThisTab"
@@ -16736,7 +16736,7 @@ msgstr "Rétablir le son de cet onglet"
 # Source-Hash: 5ec1b04c035f1776
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.volumeLevelsApplyToEveryTab"
@@ -16746,7 +16746,7 @@ msgstr "Les niveaux de volume s’appliquent à tous les onglets. Le mode muet n
 # Source-Hash: 723d6d7ee575fec8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.castShadowsFromLights"
@@ -16756,7 +16756,7 @@ msgstr "Projeter les ombres des lumières."
 # Source-Hash: 9a9f6be8e4c264f7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.chooseWhichProceduralContentIsBaked"
@@ -16766,7 +16766,7 @@ msgstr "Choisissez le contenu procédural intégré aux fichiers de modèle. GLB
 # Source-Hash: d2c682a59f20369a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.clearAndStartNew"
@@ -16776,7 +16776,7 @@ msgstr "Tout effacer et recommencer"
 # Source-Hash: 0257835c6325e3ed
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation"
@@ -16786,7 +16786,7 @@ msgstr "Animation de construction"
 # Source-Hash: c7e72beff9fe4b37
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framing"
@@ -16796,7 +16796,7 @@ msgstr "Ossature"
 # Source-Hash: 24618c711709d6cc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingNeedsArchitect"
@@ -16806,7 +16806,7 @@ msgstr "L’ossature nécessite le module Architecte."
 # Source-Hash: 601ba1b2d132798e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingTitle"
@@ -16816,7 +16816,7 @@ msgstr "Complète, plus les éléments d’ossature qui tombent en premier, là 
 # Source-Hash: 77f8ce68b538bae7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.full"
@@ -16826,7 +16826,7 @@ msgstr "Complète"
 # Source-Hash: 49cc37a33205a31e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.fullTitle"
@@ -16836,7 +16836,7 @@ msgstr "Les pièces tombent en place avec de la poussière, la toiture s’assem
 # Source-Hash: 50accd740fa2e736
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.off"
@@ -16846,7 +16846,7 @@ msgstr "Désactivée"
 # Source-Hash: c81c6ea8e938efeb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.offTitle"
@@ -16856,7 +16856,7 @@ msgstr "Ce que l’IA construit apparaît d’un coup."
 # Source-Hash: a05a390ae205fdd8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simple"
@@ -16866,7 +16866,7 @@ msgstr "Simple"
 # Source-Hash: 657cfecfdd03437a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simpleTitle"
@@ -16876,7 +16876,7 @@ msgstr "Les murs montent et le reste pousse, pièce par pièce. Sans chute, sans
 # Source-Hash: dc0126b09c14975d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.controlWhoCanOpenThisProject"
@@ -16886,7 +16886,7 @@ msgstr "Choisissez qui peut ouvrir ce projet."
 # Source-Hash: 07e04484867c17d3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.copied"
@@ -16896,7 +16896,7 @@ msgstr "Copié"
 # Source-Hash: 4f60d1e142affa9c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.copy"
@@ -16906,7 +16906,7 @@ msgstr "Copier"
 # Source-Hash: 0fc9e23b7b99bed6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.copyProjectId"
@@ -16916,7 +16916,7 @@ msgstr "Copier l’identifiant du projet"
 # Source-Hash: 3ce86653eb42baa6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.dangerZone"
@@ -16926,7 +16926,7 @@ msgstr "Zone de danger"
 # Source-Hash: 43723fa12a33240f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.defaultMode"
@@ -16936,7 +16936,7 @@ msgstr "Mode par défaut"
 # Source-Hash: 8068220bdf37b51c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.downloadTheSceneOrHandIt"
@@ -16946,7 +16946,7 @@ msgstr "Téléchargez la scène ou transmettez-la à une autre application."
 # Source-Hash: b35c0322333d6295
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.excludeHiddenFurnitureAndOtherHidden"
@@ -16956,7 +16956,7 @@ msgstr "Exclure le mobilier masqué et les autres nœuds masqués de la scène"
 # Source-Hash: 48f412fdd330bc53
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.expertMode"
@@ -16966,7 +16966,7 @@ msgstr "Mode expert"
 # Source-Hash: a7c15036ca6b1fce
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.exploreSceneGraph"
@@ -16976,7 +16976,7 @@ msgstr "Explorer le graphe de scène"
 # Source-Hash: 99926cd22134f3db
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.export"
@@ -16986,7 +16986,7 @@ msgstr "Exporter"
 # Source-Hash: e4c327dc55fef809
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.exportingLabel"
@@ -16996,7 +16996,7 @@ msgstr "Export de {label}…"
 # Source-Hash: c10b560567c99bce
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.exportLabel"
@@ -17006,7 +17006,7 @@ msgstr "Exporter {label}"
 # Source-Hash: e876dddb5b9c34d5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.exportOptions"
@@ -17016,7 +17016,7 @@ msgstr "Options d’export"
 # Source-Hash: dfe19b47625b79ae
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.exportVisibleNodesOnly"
@@ -17026,7 +17026,7 @@ msgstr "Exporter seulement les nœuds visibles"
 # Source-Hash: c95faef9c4b8b8d1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.file"
@@ -17036,7 +17036,7 @@ msgstr "fichier…"
 # Source-Hash: fee6203bb9046929
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.floorPlan"
@@ -17046,7 +17046,7 @@ msgstr "Plan d’étage"
 # Source-Hash: bde1334ecbd61a85
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.floors"
@@ -17056,7 +17056,7 @@ msgstr "Étages"
 # Source-Hash: 7b6bb8d9eef57042
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.fullFloorPlan"
@@ -17066,7 +17066,7 @@ msgstr "Plan d’étage complet"
 # Source-Hash: 42a580e9cb33b47b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.generateThumbnail"
@@ -17076,7 +17076,7 @@ msgstr "Générer la vignette"
 # Source-Hash: ab7983dd4bc88e0a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.generating"
@@ -17086,7 +17086,7 @@ msgstr "Génération…"
 # Source-Hash: 9be661711030c7d1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.glbUsdzOnly"
@@ -17096,7 +17096,7 @@ msgstr "(GLB/USDZ seulement)"
 # Source-Hash: 8fb062e6dfd3214a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.includeInFile"
@@ -17106,7 +17106,7 @@ msgstr "Inclure dans le fichier"
 # Source-Hash: 612fa9d018d5c41d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.includeLabelInGlbAndUsdz"
@@ -17116,7 +17116,7 @@ msgstr "Inclure {label} dans GLB et USDZ"
 # Source-Hash: aff87efca4d830da
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.includeLabelInModelFiles"
@@ -17126,7 +17126,7 @@ msgstr "Inclure {label} dans les fichiers de modèle"
 # Source-Hash: 4cdfa3164cf86dc1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.inspectHowNodesAreNestedIn"
@@ -17136,7 +17136,7 @@ msgstr "Examinez comment les nœuds sont imbriqués dans cette scène."
 # Source-Hash: 59df81f7bd9b53a2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.interfaceTheme"
@@ -17146,7 +17146,7 @@ msgstr "Thème de l’interface"
 # Source-Hash: d0b93979a16d22a9
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.keepAJsonCopyOfThe"
@@ -17256,7 +17256,7 @@ msgstr "Les raccourcis dépendent du contexte. L’aimantation est un mode visib
 # Source-Hash: cb229558d642c5b8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuild"
@@ -17266,7 +17266,7 @@ msgstr "Charger une construction"
 # Source-Hash: c0774c185060fc13
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.cancel"
@@ -17276,7 +17276,7 @@ msgstr "Annuler"
 # Source-Hash: df2bc816e4ac46ca
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.cannotImportThisFile"
@@ -17286,7 +17286,7 @@ msgstr "Impossible d’importer ce fichier"
 # Source-Hash: 4d01709fcd599118
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.error"
@@ -17296,7 +17296,7 @@ msgstr "erreur"
 # Source-Hash: 5871b7c20478f4a1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.floorArea"
@@ -17306,7 +17306,7 @@ msgstr "Surface au sol"
 # Source-Hash: 591087ea83a48ead
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.hide"
@@ -17316,7 +17316,7 @@ msgstr "Masquer"
 # Source-Hash: 0f61677887e8c665
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.node"
@@ -17326,7 +17326,7 @@ msgstr "nœud"
 # Source-Hash: cceb487684cd08fb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.readyToImport"
@@ -17336,7 +17336,7 @@ msgstr "Prêt à importer"
 # Source-Hash: 21274fcebeaf2bda
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.replaceCurrentScene"
@@ -17346,7 +17346,7 @@ msgstr "Remplacer la scène actuelle"
 # Source-Hash: 1efd57d49936e416
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.schemaDetails"
@@ -17356,7 +17356,7 @@ msgstr "Détails du schéma ("
 # Source-Hash: 827e0c6ac9936b69
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.show"
@@ -17366,7 +17366,7 @@ msgstr "Afficher"
 # Source-Hash: 612710601324dc61
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.showHiddenwarningcountMore"
@@ -17376,7 +17376,7 @@ msgstr "Afficher {hiddenWarningCount} de plus"
 # Source-Hash: e02f016a6019b707
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statBuildings"
@@ -17386,7 +17386,7 @@ msgstr "Bâtiments"
 # Source-Hash: a03ae72f209e32db
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statCeilings"
@@ -17396,7 +17396,7 @@ msgstr "Plafonds"
 # Source-Hash: 20f60b98de67849b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statDoors"
@@ -17406,7 +17406,7 @@ msgstr "Portes"
 # Source-Hash: daebc0755d239c99
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statItems"
@@ -17416,7 +17416,7 @@ msgstr "Objets"
 # Source-Hash: cc3d601d59e2e26c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statLevels"
@@ -17426,7 +17426,7 @@ msgstr "Niveaux"
 # Source-Hash: 3260bfa69cca50e5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statScans"
@@ -17436,7 +17436,7 @@ msgstr "Relevés 3D"
 # Source-Hash: 1586192de6af7680
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statSites"
@@ -17446,7 +17446,7 @@ msgstr "Sites"
 # Source-Hash: 8fbaadd7805a3b2c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statSlabs"
@@ -17456,7 +17456,7 @@ msgstr "Dalles"
 # Source-Hash: aac9a732d2159ccc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statWalls"
@@ -17466,7 +17466,7 @@ msgstr "Murs"
 # Source-Hash: 0b1d1e9a36456a50
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statWindows"
@@ -17476,7 +17476,7 @@ msgstr "Fenêtres"
 # Source-Hash: 665db49a26f81425
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statZones"
@@ -17486,7 +17486,7 @@ msgstr "Zones"
 # Source-Hash: a20c89205a4448d2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.structure"
@@ -17496,7 +17496,7 @@ msgstr "Structure"
 # Source-Hash: 278024233205e1a7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.theFileContainsNoRecognisedNodes"
@@ -17506,7 +17506,7 @@ msgstr "Le fichier ne contient aucun nœud reconnu."
 # Source-Hash: c94f9df6f3f7bc69
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.warning"
@@ -17516,7 +17516,7 @@ msgstr "avertissement"
 # Source-Hash: 5ad3f0662667e6ac
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.n3dModel"
@@ -17526,7 +17526,7 @@ msgstr "Modèle 3D"
 # Source-Hash: 2b9517acb59afdd4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.needsThe"
@@ -17536,7 +17536,7 @@ msgstr "Nécessite le"
 # Source-Hash: 8ef067292b6db4d0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.noFloorsYet"
@@ -17546,7 +17546,7 @@ msgstr "Aucun étage pour l’instant"
 # Source-Hash: 800724da5b91288d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.noOptionalProceduralContentIsPresent"
@@ -17556,7 +17556,7 @@ msgstr "Aucun contenu procédural facultatif n’est présent."
 # Source-Hash: 39648edf8f613bfe
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.onlyYouCanViewIt"
@@ -17566,7 +17566,7 @@ msgstr "Vous seul pouvez le voir."
 # Source-Hash: aa78c0f0b093ab48
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.optionalStaticSurroundingsAreIncludedOnly"
@@ -17576,7 +17576,7 @@ msgstr "Les environnements statiques facultatifs ne sont inclus que dans GLB et 
 # Source-Hash: 5caf9aa066096734
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.pascalAddOnForBlender"
@@ -17586,7 +17586,7 @@ msgstr "Module Pascal pour Blender"
 # Source-Hash: 83adb5c50b2303db
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.preferences"
@@ -17596,7 +17596,7 @@ msgstr "Préférences"
 # Source-Hash: fdfd851fabbdf685
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.preparing"
@@ -17606,7 +17606,7 @@ msgstr "Préparation"
 # Source-Hash: 8e4732e64bf25ea2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.preparingFloorPlanPdf"
@@ -17616,7 +17616,7 @@ msgstr "Préparation du PDF du plan d’étage…"
 # Source-Hash: 40d4fd00e28fba70
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.printExportButton.export3dPrint3mf"
@@ -17626,7 +17626,7 @@ msgstr "Exporter pour impression 3D (3MF)"
 # Source-Hash: 40d18ead27037cc7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.printExportButton.export3dPrintStl"
@@ -17636,7 +17636,7 @@ msgstr "Exporter pour impression 3D (STL)"
 # Source-Hash: a1e31bb673dd749e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.printExportButton.n3dPrintExportFailed"
@@ -17646,7 +17646,7 @@ msgstr "L’export pour impression 3D a échoué."
 # Source-Hash: 6c6b7df3070f112f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.project"
@@ -17656,7 +17656,7 @@ msgstr "Projet"
 # Source-Hash: ea40410e6792f93a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.projectId"
@@ -17666,7 +17666,7 @@ msgstr "Identifiant du projet"
 # Source-Hash: eb20f62972c0daa5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.projectIdCopied"
@@ -17676,7 +17676,7 @@ msgstr "Identifiant du projet copié"
 # Source-Hash: 7ced66a5be1a937a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.publicProject"
@@ -17686,7 +17686,7 @@ msgstr "Projet public"
 # Source-Hash: 94582ee3b09dab6c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.referenceThisProjectFromTheApi"
@@ -17696,7 +17696,7 @@ msgstr "Référencez ce projet depuis l’API, les outils MCP ou le support."
 # Source-Hash: 1ba81b6d32e6c55e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.refreshThePreviewShownInYour"
@@ -17706,7 +17706,7 @@ msgstr "Actualisez l’aperçu affiché dans votre liste de projets."
 # Source-Hash: 8bb8dba837d5ddaf
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.removeFloor"
@@ -17716,7 +17716,7 @@ msgstr "Retirer l’étage"
 # Source-Hash: 9a8bd0b7e67b24d3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.removeName"
@@ -17726,7 +17726,7 @@ msgstr "Retirer {name}"
 # Source-Hash: 1a33cfbb6f4551ac
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.removesEveryNodeFromThisScene"
@@ -17736,7 +17736,7 @@ msgstr "Retire tous les nœuds de cette scène. Cette action est irréversible."
 # Source-Hash: ad97c31808397d22
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.renderingOptionsForThisEditorSession"
@@ -17746,7 +17746,7 @@ msgstr "Options de rendu pour cette session de l’éditeur."
 # Source-Hash: 14a7262cb910f4f1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.runningInAnOpenBlender"
@@ -17756,7 +17756,7 @@ msgstr "exécuté dans un Blender ouvert."
 # Source-Hash: cd23a764ae3d20ec
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.saveAndLoad"
@@ -17766,7 +17766,7 @@ msgstr "Enregistrer et charger"
 # Source-Hash: fd1ea9a52dee2f5c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.saveBuild"
@@ -17776,7 +17776,7 @@ msgstr "Enregistrer la construction"
 # Source-Hash: da5434f295ac2048
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.sceneGraph"
@@ -17786,7 +17786,7 @@ msgstr "Graphe de scène"
 # Source-Hash: 67ba3bc87151b667
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.sceneGraph2"
@@ -17796,7 +17796,7 @@ msgstr "Graphe de scène"
 # Source-Hash: 8bc164f99d110923
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.selectAFloorToMakeIt"
@@ -17806,7 +17806,7 @@ msgstr "Sélectionnez un étage pour l’activer. Le rez-de-chaussée est toujou
 # Source-Hash: a20565393f873b8a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.sendToBlender"
@@ -17816,7 +17816,7 @@ msgstr "Envoyer vers Blender"
 # Source-Hash: 4c6bcb30b40047fc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.shadows"
@@ -17826,7 +17826,7 @@ msgstr "Ombres"
 # Source-Hash: fb076bd5df70f375
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.sharing"
@@ -17836,7 +17836,7 @@ msgstr "Partage"
 # Source-Hash: 22e1166adb096c1a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.show3dScans"
@@ -17846,7 +17846,7 @@ msgstr "Afficher les relevés 3D"
 # Source-Hash: e6ae67e7adedea4a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.showFloorPlans"
@@ -17856,7 +17856,7 @@ msgstr "Afficher les plans d’étage"
 # Source-Hash: c048f28ad2507623
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.soundLevelsTheConstructionAnimationAnd"
@@ -17866,7 +17866,7 @@ msgstr "Niveaux sonores, animation de construction et raccourcis clavier."
 # Source-Hash: 95aa1b43dbdb3f02
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.structureOnly"
@@ -17876,7 +17876,7 @@ msgstr "Structure seulement"
 # Source-Hash: 96784447e12d93d9
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.systemFollowsYourDeviceSAppearance"
@@ -17886,7 +17886,7 @@ msgstr "« Système » suit l’apparence de votre appareil."
 # Source-Hash: 86a6d670f5ae7f70
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.theGroundFloorCannotBeRemoved"
@@ -17896,7 +17896,7 @@ msgstr "Le rez-de-chaussée ne peut pas être retiré"
 # Source-Hash: 9f4f496135e0915c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.themeDark"
@@ -17906,7 +17906,7 @@ msgstr "Sombre"
 # Source-Hash: 0b46afa96380156b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.themeLight"
@@ -17916,7 +17916,7 @@ msgstr "Clair"
 # Source-Hash: 88e6c2e1c344b2fc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.themeSystem"
@@ -17926,7 +17926,7 @@ msgstr "Système"
 # Source-Hash: 7eefb27172e4e257
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.thumbnail"
@@ -17936,7 +17936,7 @@ msgstr "Vignette"
 # Source-Hash: 514c63428de25cfb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.tryAgain"
@@ -17946,7 +17946,7 @@ msgstr "Réessayer"
 # Source-Hash: e09fcbbf63c50741
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.viewer"
@@ -17956,7 +17956,7 @@ msgstr "Visionneuse"
 # Source-Hash: f512c6734df0143a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.viewerSurroundings"
@@ -17966,7 +17966,7 @@ msgstr "Environnement de la visionneuse"
 # Source-Hash: cc190828d53b25d6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.viewerSurroundingsAreExcludedUnlessSelected"
@@ -17976,7 +17976,7 @@ msgstr "L’environnement de la visionneuse est exclu, sauf s’il est sélectio
 # Source-Hash: e0e3005a7af04d9c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.visibleInThePublicViewer"
@@ -17986,7 +17986,7 @@ msgstr "Visible dans la visionneuse publique."
 # Source-Hash: e0a09ff441657f11
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.visibleNodesOnly"
@@ -17996,7 +17996,7 @@ msgstr "Nœuds visibles seulement"
 # Source-Hash: ba7bd7a3d31b5d80
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.warningModelexportwarning"
@@ -18799,7 +18799,7 @@ msgstr "Ce panneau a rencontré une erreur et a été déchargé pour cette sess
 # Source-Hash: 2af7521d862949e1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/ui/slider-demo.tsx
 #, fuzzy
 msgid "editor.sliderDemo.temperature"
@@ -18809,7 +18809,7 @@ msgstr "Température"
 # Source-Hash: 8332ab41e22958f1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.area"
@@ -18819,7 +18819,7 @@ msgstr "Zone"
 # Source-Hash: 3a0701ebcb9f26cb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.capture"
@@ -18829,7 +18829,7 @@ msgstr "Capturer"
 # Source-Hash: 980032077747447c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.capturing"
@@ -18839,7 +18839,7 @@ msgstr "Capture…"
 # Source-Hash: bda7e0dd5b593838
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.closeCaptureMode"
@@ -18849,7 +18849,7 @@ msgstr "Fermer le mode capture"
 # Source-Hash: 1657a2a4f690bc91
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.crop"
@@ -18859,7 +18859,7 @@ msgstr "Recadrer"
 # Source-Hash: 715963390ab8c807
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.dragTheAreaYouWantTo"
@@ -18869,7 +18869,7 @@ msgstr "Glissez la zone à capturer"
 # Source-Hash: 6c4c0484268508f4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.drone"
@@ -18879,7 +18879,7 @@ msgstr "Drone"
 # Source-Hash: eb23d087eee13303
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.escToCancel"
@@ -18889,7 +18889,7 @@ msgstr "Échap pour annuler"
 # Source-Hash: ec020b471c05cdb7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.fieldOfView"
@@ -18899,7 +18899,7 @@ msgstr "Champ de vision"
 # Source-Hash: cf36dd0bba1ca6bb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.format"
@@ -18909,7 +18909,7 @@ msgstr "Format"
 # Source-Hash: aea3f4d240bd92f8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.freezesThisExactCameraAngleAs"
@@ -18919,7 +18919,7 @@ msgstr " fige cet angle de caméra exact comme référence réutilisable pour le
 # Source-Hash: e1ea6c0f6dd59d68
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.lens"
@@ -18929,7 +18929,7 @@ msgstr "Objectif"
 # Source-Hash: c0a7c00b8a8e80cf
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.orbit"
@@ -18939,7 +18939,7 @@ msgstr "Orbite"
 # Source-Hash: 17d0bc459039608a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.presetSquare"
@@ -18949,7 +18949,7 @@ msgstr "Préréglage · carré"
 # Source-Hash: 6e162d772d4018f2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.resetFieldOfView"
@@ -18959,7 +18959,7 @@ msgstr "Réinitialiser le champ de vision"
 # Source-Hash: 4ae0f957614c9f16
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.saved"
@@ -18969,7 +18969,7 @@ msgstr "Enregistré"
 # Source-Hash: 20ccb3d1c6ef3be0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.snapshot"
@@ -18979,7 +18979,7 @@ msgstr "vue"
 # Source-Hash: d998c212030bc7c2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.standard"
@@ -18989,7 +18989,7 @@ msgstr "Standard"
 # Source-Hash: 54a04dccf223c5a6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.switchBackToOrbitToDrag"
@@ -18999,7 +18999,7 @@ msgstr "Repassez en orbite pour glisser une zone de capture"
 # Source-Hash: c40163620df24a76
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.takeSnapshot"
@@ -19009,7 +19009,7 @@ msgstr "Prendre une vue"
 # Source-Hash: fd140265646b05dd
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.viewport"
@@ -19019,7 +19019,7 @@ msgstr "Fenêtre"
 # Source-Hash: 16242ef7042f4afc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
 #, fuzzy
 msgid "editor.snapshotCaptureOverlay.walk"
@@ -20989,7 +20989,7 @@ msgstr "saisir une longueur"
 # Source-Hash: 20f27bff57ce4839
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/host-view.tsx
 #, fuzzy
 msgid "editor.views.hostView.labelCrashed"
@@ -20999,7 +20999,7 @@ msgstr "« {label} » a planté"
 # Source-Hash: 9e84d6d7b9885c4f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/host-view.tsx
 #, fuzzy
 msgid "editor.views.hostView.loading"
@@ -21009,7 +21009,7 @@ msgstr "Chargement…"
 # Source-Hash: 28c0cec10097d476
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/host-view.tsx
 #, fuzzy
 msgid "editor.views.hostView.thisViewIsnTAvailable"
@@ -21029,7 +21029,7 @@ msgstr "Plugins"
 # Source-Hash: 0c6c56cf4a50bd50
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.about"
@@ -21039,7 +21039,7 @@ msgstr "À propos"
 # Source-Hash: 7fd4ffd73f50eb55
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.addFocusedToolsAndContentTo"
@@ -21049,7 +21049,7 @@ msgstr "Ajoutez des outils et du contenu ciblés à"
 # Source-Hash: d3007f3106ffbb10
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.addsANewToolPanelTo"
@@ -21059,7 +21059,7 @@ msgstr "Ajoute un nouveau panneau d’outils à l’éditeur."
 # Source-Hash: e5ef88ee8ce9d1cb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.allPlugins"
@@ -21069,7 +21069,7 @@ msgstr "Tous les modules"
 # Source-Hash: 88f1a727e5528c10
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.browse"
@@ -21079,7 +21079,7 @@ msgstr "Parcourir"
 # Source-Hash: 52f4ba0ab12f0131
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.by"
@@ -21089,7 +21089,7 @@ msgstr "Par"
 # Source-Hash: 2f8e11cfbec8e2b0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.byName"
@@ -21099,7 +21099,7 @@ msgstr "Par {name}"
 # Source-Hash: 0a9f245bb9cef63e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.canAccess"
@@ -21109,7 +21109,7 @@ msgstr "Peut accéder à"
 # Source-Hash: fdfac0ae1ad92fe6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.category"
@@ -21119,7 +21119,7 @@ msgstr "Catégorie"
 # Source-Hash: a42852706d641f56
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.closeDetails"
@@ -21129,7 +21129,7 @@ msgstr "Fermer les détails"
 # Source-Hash: 53a01eb613c985c8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.createAPascalPlugin"
@@ -21139,7 +21139,7 @@ msgstr "Créer un module Pascal"
 # Source-Hash: 954263a905fa5ef6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.credits"
@@ -21149,7 +21149,7 @@ msgstr "Crédits"
 # Source-Hash: d022c4ee02eaf771
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.doesnTUseCredits"
@@ -21159,7 +21159,7 @@ msgstr "N’utilise pas de crédits"
 # Source-Hash: f482d8db0a56bc7f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.install"
@@ -21169,7 +21169,7 @@ msgstr "Installer"
 # Source-Hash: 2756a5081448a09c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.installed"
@@ -21179,7 +21179,7 @@ msgstr "Installé"
 # Source-Hash: cdd5b677d391387e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.installed2"
@@ -21189,7 +21189,7 @@ msgstr "installé"
 # Source-Hash: d59f9dd093793563
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.installedInProjectname"
@@ -21199,7 +21199,7 @@ msgstr "Installé dans {projectName}"
 # Source-Hash: 98015ab0caed92a5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.installInProjectname"
@@ -21209,7 +21209,7 @@ msgstr "Installer dans {projectName}"
 # Source-Hash: 11064511cad4f08b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.labelDetails"
@@ -21219,7 +21219,7 @@ msgstr "Détails de {label}"
 # Source-Hash: b5d526a2f73dbfab
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.manage"
@@ -21229,7 +21229,7 @@ msgstr "Gérer"
 # Source-Hash: d11668cc74b4c62d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.noPluginsHereYet"
@@ -21239,7 +21239,7 @@ msgstr "Aucun module pour l’instant."
 # Source-Hash: f28ee8d86530a2da
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.noPluginsMatch"
@@ -21249,7 +21249,7 @@ msgstr "Aucun module ne correspond à « {query} »."
 # Source-Hash: cedda7ea5777fde4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.noPluginsMatchInCategory"
@@ -21259,7 +21259,7 @@ msgstr "Aucun module ne correspond à « {query} » dans {category}."
 # Source-Hash: 5ed76a45cb890fbe
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.notInstalled"
@@ -21269,7 +21269,7 @@ msgstr "Non installé"
 # Source-Hash: b4972fd539058d0a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.openLabel"
@@ -21279,7 +21279,7 @@ msgstr "Ouvrir {label}"
 # Source-Hash: c7828b0e9b8ea224
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.pluginCategories"
@@ -21289,7 +21289,7 @@ msgstr "Catégories de modules"
 # Source-Hash: 9fc7a39bc32f287a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.plugins"
@@ -21299,7 +21299,7 @@ msgstr "Modules"
 # Source-Hash: 0b4d82fd667d3d5d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.runsInTheEditorNoPascal"
@@ -21309,7 +21309,7 @@ msgstr "S’exécute dans l’éditeur. Aucun service Pascal, aucun compte exté
 # Source-Hash: 6fa2aeed05ce7b3f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.searchPlugins"
@@ -21319,7 +21319,7 @@ msgstr "Rechercher des modules"
 # Source-Hash: 3fa6cca4f0cc4a21
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.thisProject"
@@ -21329,7 +21329,7 @@ msgstr "ce projet"
 # Source-Hash: 675036bd3758c1f7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.undo"
@@ -21339,7 +21339,7 @@ msgstr "Annuler"
 # Source-Hash: dcd97fe36c746679
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.uninstall"
@@ -21349,7 +21349,7 @@ msgstr "Désinstaller"
 # Source-Hash: aea5b37bfa67a103
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.uninstalled"
@@ -21359,7 +21359,7 @@ msgstr "désinstallé"
 # Source-Hash: e7c0cc9476042c13
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.usesThisProjectSCredits"
@@ -21369,7 +21369,7 @@ msgstr "Utilise les crédits de ce projet"
 # Source-Hash: 88f02fdd729e8e2e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 #, fuzzy
 msgid "editor.views.pluginsView.viewPlugin"
@@ -21919,7 +21919,7 @@ msgstr "Bloc"
 # Source-Hash: aa6d82bdb3cc1d9a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.actions"
@@ -21929,7 +21929,7 @@ msgstr "Actions"
 # Source-Hash: 0a784a50cdd6f78a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.addSlot"
@@ -21939,7 +21939,7 @@ msgstr "Ajouter un emplacement"
 # Source-Hash: e705d76c5161d3c2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.applyLabelToSelectedFaces"
@@ -21949,7 +21949,7 @@ msgstr "Appliquer {label} aux faces sélectionnées"
 # Source-Hash: 279f456ebb2f5da0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.block"
@@ -21959,7 +21959,7 @@ msgstr "Bloc"
 # Source-Hash: b26de372b4b0eaac
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.delete"
@@ -21969,7 +21969,7 @@ msgstr "Supprimer"
 # Source-Hash: 031a27dee0e6c776
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.deleteLabelSlot"
@@ -21979,7 +21979,7 @@ msgstr "Supprimer l’emplacement {label}"
 # Source-Hash: 467fd539455493b2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.deleteMaterialSlotAndUseBody"
@@ -21989,7 +21989,7 @@ msgstr "Supprimer l’emplacement de matériau et utiliser le corps sur ses face
 # Source-Hash: 389e28b727e1e133
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.face"
@@ -21999,7 +21999,7 @@ msgstr "face"
 # Source-Hash: 698a3908b2b958ef
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.faces"
@@ -22009,7 +22009,7 @@ msgstr "faces"
 # Source-Hash: bd02c614454fbd2b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.move"
@@ -22019,7 +22019,7 @@ msgstr "Déplacer"
 # Source-Hash: 9da0cbfad144d737
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.position"
@@ -22029,7 +22029,7 @@ msgstr "Position"
 # Source-Hash: 06227dfda28f8c06
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.renameLabelSlot"
@@ -22039,7 +22039,7 @@ msgstr "Renommer l’emplacement {label}"
 # Source-Hash: c5e9249960f31f40
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.selectOneOrMoreFacesFirst"
@@ -22049,7 +22049,7 @@ msgstr "Sélectionnez d’abord une ou plusieurs faces"
 # Source-Hash: e03c36bb4b3efb8e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/panel.tsx
 #, fuzzy
 msgid "node.block.panel.slots"
@@ -22059,7 +22059,7 @@ msgstr "Emplacements"
 # Source-Hash: 5729095e9dee1f6c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.adjustLabel"
@@ -22069,7 +22069,7 @@ msgstr "Ajuster {label}"
 # Source-Hash: c02cd03e18dae823
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.adjustLabelF9"
@@ -22079,7 +22079,7 @@ msgstr "Ajuster {label} (F9)"
 # Source-Hash: 38460003384d06ec
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.adjustLastOperationF9"
@@ -22089,7 +22089,7 @@ msgstr "Ajuster la dernière opération · F9"
 # Source-Hash: aa41cdc0a68c4d8f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.bevel"
@@ -22099,7 +22099,7 @@ msgstr "CHANFREIN"
 # Source-Hash: 729e97f166bc8ad1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.bevelSelectedEdges"
@@ -22109,7 +22109,7 @@ msgstr "Chanfreiner les arêtes sélectionnées"
 # Source-Hash: 71f2343818c55e0c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.clearSelection"
@@ -22119,7 +22119,7 @@ msgstr "Effacer la sélection"
 # Source-Hash: 2f36721f7b92223d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.closeLastOperationPanel"
@@ -22129,7 +22129,7 @@ msgstr "Fermer le panneau de la dernière opération"
 # Source-Hash: 75172fa513786f8a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.couldNotPreviewLoopCut"
@@ -22139,7 +22139,7 @@ msgstr "Impossible d’afficher l’aperçu de la coupe en boucle"
 # Source-Hash: fcb9cfe3d9c27783
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.deleteComponents"
@@ -22149,7 +22149,7 @@ msgstr "Supprimer les composants"
 # Source-Hash: 671839e2ee5d69c7
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.dissolveSelection"
@@ -22159,7 +22159,7 @@ msgstr "Dissoudre la sélection"
 # Source-Hash: 94672110ad413c00
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.edgeSelect2"
@@ -22169,7 +22169,7 @@ msgstr "Sélection d’arêtes (2)"
 # Source-Hash: 756e9ddfe8f1d79f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.extrudeSelectedFaces"
@@ -22179,7 +22179,7 @@ msgstr "Extruder les faces sélectionnées"
 # Source-Hash: 6bdd007a0ad0d023
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.faceSelect3"
@@ -22189,7 +22189,7 @@ msgstr "Sélection de faces (3)"
 # Source-Hash: 563403cc8dadebfa
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.finishEditModeTab"
@@ -22199,7 +22199,7 @@ msgstr "Terminer le mode édition (Tab)"
 # Source-Hash: 375a2201c391f7a3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.insetSelectedFaces"
@@ -22209,7 +22209,7 @@ msgstr "Insérer dans les faces sélectionnées"
 # Source-Hash: 883102340d5983ca
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.invertSelection"
@@ -22219,7 +22219,7 @@ msgstr "Inverser la sélection"
 # Source-Hash: 7ee4ebdac5d136f1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.loopCut"
@@ -22229,7 +22229,7 @@ msgstr "COUPE EN BOUCLE"
 # Source-Hash: 1780c5c5177f9f52
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.loopCutAndSlide"
@@ -22239,7 +22239,7 @@ msgstr "Coupe en boucle et glissement"
 # Source-Hash: 83d152be08265af1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.loopCutCount"
@@ -22249,7 +22249,7 @@ msgstr "Nombre de coupes en boucle"
 # Source-Hash: 6da72cf392f4d2ea
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.loopCutRequiresAConnectedRing"
@@ -22259,7 +22259,7 @@ msgstr "La coupe en boucle exige un anneau connecté de faces à quatre côtés"
 # Source-Hash: 664abf60d6735a5d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.mergeVertices"
@@ -22269,7 +22269,7 @@ msgstr "Fusionner les sommets"
 # Source-Hash: 3a8087b58a64a3d0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.meshOperations"
@@ -22279,7 +22279,7 @@ msgstr "Opérations sur le maillage"
 # Source-Hash: 9c707069572fb3db
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.moveSelection"
@@ -22289,7 +22289,7 @@ msgstr "Déplacer la sélection"
 # Source-Hash: 1653365f65b9061d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.operations"
@@ -22299,7 +22299,7 @@ msgstr "Opérations"
 # Source-Hash: d84c504e1d41fc3c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.repeatLabel"
@@ -22309,7 +22309,7 @@ msgstr "Répéter {label}"
 # Source-Hash: 0a5813a673615551
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.rotateSelection"
@@ -22319,7 +22319,7 @@ msgstr "Pivoter la sélection"
 # Source-Hash: e909b897a838f9c0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.selectAll"
@@ -22329,7 +22329,7 @@ msgstr "Tout sélectionner"
 # Source-Hash: 716c738a863bf811
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.selectionActions"
@@ -22339,7 +22339,7 @@ msgstr "Actions sur la sélection"
 # Source-Hash: 6a5c3e294939087f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.selectionAndMore"
@@ -22349,7 +22349,7 @@ msgstr "Sélection et plus"
 # Source-Hash: e4530f95ce67822a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.shiftR"
@@ -22359,7 +22359,7 @@ msgstr "Maj+R"
 # Source-Hash: 72cf5b0f66cdc8c3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.transformSelectedComponentsGRS"
@@ -22369,7 +22369,7 @@ msgstr "Transformer les composants sélectionnés (G / R / S)"
 # Source-Hash: 4cd094cf75b90500
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.vertexSelect1"
@@ -22379,7 +22379,7 @@ msgstr "Sélection de sommets (1)"
 # Source-Hash: fb402a1a29d2bb92
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/block/selection.tsx
 #, fuzzy
 msgid "node.block.selection.xRaySelection"
@@ -27719,7 +27719,7 @@ msgstr "Cote de construction"
 # Source-Hash: aa6d82bdb3cc1d9a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.actions"
@@ -27729,7 +27729,7 @@ msgstr "Actions"
 # Source-Hash: a8ff81bf11b0655f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.activedrawinglabelPresentation"
@@ -27739,7 +27739,7 @@ msgstr "Présentation : {activeDrawingLabel}"
 # Source-Hash: 1eb7a0b3f9dc8b24
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.activedrawinglabelSuppressedSegments"
@@ -27749,7 +27749,7 @@ msgstr "Segments supprimés : {activeDrawingLabel}"
 # Source-Hash: 88c7750ed51d47a0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.centerMark"
@@ -27759,7 +27759,7 @@ msgstr "Repère de centre"
 # Source-Hash: 6875b60ee8a7cc3b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.constructionDimension"
@@ -27769,7 +27769,7 @@ msgstr "Cote de construction"
 # Source-Hash: 33274aa854f66807
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.controlledByFoundation"
@@ -27779,7 +27779,7 @@ msgstr "Pilotée par la fondation"
 # Source-Hash: ccae6eca0db9279e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.datumPolicy"
@@ -27789,7 +27789,7 @@ msgstr "Référence de cotation"
 # Source-Hash: b26de372b4b0eaac
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.delete"
@@ -27799,7 +27799,7 @@ msgstr "Supprimer"
 # Source-Hash: a39182d756659fcc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.dimension"
@@ -27809,7 +27809,7 @@ msgstr "Cote"
 # Source-Hash: b71ef53caf5ccaf3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.drawingCoordination"
@@ -27819,7 +27819,7 @@ msgstr "Coordination des dessins"
 # Source-Hash: ae8258ba96960c9a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.extensionGap"
@@ -27829,7 +27829,7 @@ msgstr "Écart des lignes d’attache"
 # Source-Hash: 979b0be10d19a850
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.extensionOvershoot"
@@ -27839,7 +27839,7 @@ msgstr "Dépassement des lignes d’attache"
 # Source-Hash: 4213f44deb760a1a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.featureCount"
@@ -27849,7 +27849,7 @@ msgstr "Nombre d’éléments"
 # Source-Hash: 5520f27b7a15806d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.foundationController"
@@ -27859,7 +27859,7 @@ msgstr "Fondation pilote"
 # Source-Hash: 006c47c65ec7dd36
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.foundationDimension"
@@ -27869,7 +27869,7 @@ msgstr "Cote de fondation"
 # Source-Hash: 9cf2e4098871758d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.imperialPrecision"
@@ -27879,7 +27879,7 @@ msgstr "Précision impériale"
 # Source-Hash: 408b753fb42739dc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.linkedDimensionsReuseTheControllerS"
@@ -27889,7 +27889,7 @@ msgstr "Les cotes liées réutilisent les ancrages associatifs du pilote et se m
 # Source-Hash: d835cc5fed9a4ae2
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.metricNotation"
@@ -27899,7 +27899,7 @@ msgstr "Notation métrique"
 # Source-Hash: b47ccf6a86662344
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.mode"
@@ -27909,7 +27909,7 @@ msgstr "Mode"
 # Source-Hash: 9e8890e945f3f890
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.noFoundationDimensions"
@@ -27919,7 +27919,7 @@ msgstr "Aucune cote de fondation"
 # Source-Hash: 84c63fc42449c216
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.notation"
@@ -27929,7 +27929,7 @@ msgstr "Notation"
 # Source-Hash: f05a82382f04ad7c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.omitted"
@@ -27939,7 +27939,7 @@ msgstr "Omise"
 # Source-Hash: 464e46dec8dbdb64
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.aboveLine"
@@ -27949,7 +27949,7 @@ msgstr "Au-dessus de la ligne"
 # Source-Hash: 8134613a0ac47513
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.centerline"
@@ -27959,7 +27959,7 @@ msgstr "Axe"
 # Source-Hash: 118f2f668bffc95e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.dot"
@@ -27969,7 +27969,7 @@ msgstr "Point"
 # Source-Hash: 16bc973cc1bb1b04
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.filledArrow"
@@ -27979,7 +27979,7 @@ msgstr "Flèche pleine"
 # Source-Hash: 1448232e03d0a553
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.finishFace"
@@ -27989,7 +27989,7 @@ msgstr "Face finie"
 # Source-Hash: 0a39470be3b84536
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.meters"
@@ -27999,7 +27999,7 @@ msgstr "Mètres"
 # Source-Hash: 83cce6c521e71d01
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.millimeters"
@@ -28009,7 +28009,7 @@ msgstr "Millimètres"
 # Source-Hash: 5d4df8af453b73e6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.nearestInch"
@@ -28019,7 +28019,7 @@ msgstr "Au pouce près"
 # Source-Hash: 22240903213e02b5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.openArrow"
@@ -28029,7 +28029,7 @@ msgstr "Flèche ouverte"
 # Source-Hash: 967e0ccc1cd34843
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.option.wallFace"
@@ -28039,7 +28039,7 @@ msgstr "Face du mur"
 # Source-Hash: fb9c842a4306e3de
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.prefix"
@@ -28049,7 +28049,7 @@ msgstr "Préfixe"
 # Source-Hash: 3f9240e7c564b8d6
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.primaryDrawing"
@@ -28059,7 +28059,7 @@ msgstr "Dessin principal"
 # Source-Hash: 1cb8f7b6163e06bc
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.segmentNumbersAreOneBasedAnd"
@@ -28069,7 +28069,7 @@ msgstr "Les numéros de segment commencent à 1 et ne s’appliquent que dans ce
 # Source-Hash: fd19d63f957780ed
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.shown"
@@ -28079,7 +28079,7 @@ msgstr "Affichée"
 # Source-Hash: 8ab78e6652011f0d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.standards"
@@ -28089,7 +28089,7 @@ msgstr "Normes"
 # Source-Hash: dd30774775ec7e6e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.suffix"
@@ -28099,7 +28099,7 @@ msgstr "Suffixe"
 # Source-Hash: c305b45f926a006e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.terminator"
@@ -28109,7 +28109,7 @@ msgstr "Terminaison"
 # Source-Hash: 40087dac74e0672f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.textOverride"
@@ -28119,7 +28119,7 @@ msgstr "Texte imposé"
 # Source-Hash: eb4464df7cc04a1d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.textPosition"
@@ -28129,7 +28129,7 @@ msgstr "Position du texte"
 # Source-Hash: dbd0346902d8e8b1
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/construction-dimension/panel.tsx
 #, fuzzy
 msgid "node.constructionDimension.panel.useMeasuredValue"
@@ -32438,7 +32438,7 @@ msgstr "Mesure"
 # Source-Hash: 0f8772389dce5eee
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/measurement/selection.tsx
 #, fuzzy
 msgid "node.measurement.selection.align"
@@ -32448,7 +32448,7 @@ msgstr "Aligner "
 # Source-Hash: 88f0bf04a31eeb17
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/measurement/tool.tsx
 #, fuzzy
 msgid "node.measurement.tool.create"
@@ -32458,7 +32458,7 @@ msgstr "Créer"
 # Source-Hash: 9cf4bf59316a6f66
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/measurement/tool.tsx
 #, fuzzy
 msgid "node.measurement.tool.extrusionHeight"
@@ -37464,7 +37464,7 @@ msgstr "Point d’apparition"
 # Source-Hash: aa6d82bdb3cc1d9a
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/spawn/panel.tsx
 #, fuzzy
 msgid "node.spawn.panel.actions"
@@ -37474,7 +37474,7 @@ msgstr "Actions"
 # Source-Hash: b26de372b4b0eaac
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/spawn/panel.tsx
 #, fuzzy
 msgid "node.spawn.panel.delete"
@@ -37484,7 +37484,7 @@ msgstr "Supprimer"
 # Source-Hash: ea86cff529811e72
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/spawn/panel.tsx
 #, fuzzy
 msgid "node.spawn.panel.facing"
@@ -37494,7 +37494,7 @@ msgstr "Orientation"
 # Source-Hash: bd02c614454fbd2b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/spawn/panel.tsx
 #, fuzzy
 msgid "node.spawn.panel.move"
@@ -37504,7 +37504,7 @@ msgstr "Déplacer"
 # Source-Hash: 9da0cbfad144d737
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/spawn/panel.tsx
 #, fuzzy
 msgid "node.spawn.panel.position"
@@ -37514,7 +37514,7 @@ msgstr "Position"
 # Source-Hash: 3e2f6b4274f592c0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/spawn/panel.tsx
 #, fuzzy
 msgid "node.spawn.panel.spawnPoint"
@@ -37524,7 +37524,7 @@ msgstr "Point d’apparition"
 # Source-Hash: fefc9b1cfb26b5a8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/spawn/panel.tsx
 #, fuzzy
 msgid "node.spawn.panel.yaw"
@@ -40805,7 +40805,7 @@ msgstr "Mur"
 # Source-Hash: 70da87885ad8d2f4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/wall/move-endpoint-tool.tsx
 #, fuzzy
 msgid "node.wall.moveEndpointTool.altToDetach"
@@ -40815,7 +40815,7 @@ msgstr "Alt pour détacher"
 # Source-Hash: 1c747fea332713d8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/nodes/src/wall/move-endpoint-tool.tsx
 #, fuzzy
 msgid "node.wall.moveEndpointTool.detachingCorner"
@@ -43757,6 +43757,276 @@ msgstr "Couvert"
 msgid "viewer.daylight.weather.title"
 msgstr "Météo"
 
+# English: "Beam"
+# Source-Hash: e14858b33b6e2623
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.beam"
+msgstr "Poutre"
+
+# English: "Building"
+# Source-Hash: d42f7d29e3fc4af7
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.building"
+msgstr "Bâtiment"
+
+# English: "Canopy"
+# Source-Hash: 8503bedfbafde9a3
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.canopy"
+msgstr "Auvent"
+
+# English: "Ceiling"
+# Source-Hash: 4275c05172abd7fb
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.ceiling"
+msgstr "Plafond"
+
+# English: "Chimney"
+# Source-Hash: 95169058fec6db14
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.chimney"
+msgstr "Cheminée"
+
+# English: "Column"
+# Source-Hash: 3530ac1f4046cd22
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.column"
+msgstr "Colonne"
+
+# English: "Door"
+# Source-Hash: 787e10f5db16904e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.door"
+msgstr "Porte"
+
+# English: "Dormer"
+# Source-Hash: 6b6f8068bbc4c902
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.dormer"
+msgstr "Lucarne"
+
+# English: "Elevator"
+# Source-Hash: ab5cbab7be160a1c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.elevator"
+msgstr "Ascenseur"
+
+# English: "Fence"
+# Source-Hash: 02042fde61b5aa11
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.fence"
+msgstr "Clôture"
+
+# English: "Floor"
+# Source-Hash: d7148fa065bc709b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.floor"
+msgstr "Plancher"
+
+# English: "Grid"
+# Source-Hash: 7e4a0a38f694be6b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.grid"
+msgstr "Grille"
+
+# English: "Lean-to"
+# Source-Hash: de71ab3fd5f5102c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.leanTo"
+msgstr "Appentis"
+
+# English: "Level"
+# Source-Hash: 0608743fc1736d86
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.level"
+msgstr "Niveau"
+
+# English: "Material"
+# Source-Hash: 964b86ae1474ff98
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.material"
+msgstr "Matériau"
+
+# English: "Measurement"
+# Source-Hash: ec3567fd058bab7c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.measurement"
+msgstr "Mesure"
+
+# English: "Post"
+# Source-Hash: 5cc981e79d737694
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.post"
+msgstr "Poteau"
+
+# English: "Roof"
+# Source-Hash: f5f730969df63d1d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.roof"
+msgstr "Toiture"
+
+# English: "Room"
+# Source-Hash: 612dcd5bf06a79c4
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.room"
+msgstr "Pièce"
+
+# English: "Skylight"
+# Source-Hash: 358826fbdeaf72b9
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.skylight"
+msgstr "Fenêtre de toit"
+
+# English: "Slab"
+# Source-Hash: 8775bc8dc9593964
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.slab"
+msgstr "Dalle"
+
+# English: "Stair"
+# Source-Hash: 53d7084bc41c1ad6
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.stair"
+msgstr "Escalier"
+
+# English: "Staircase"
+# Source-Hash: f8d4f66145e1eba0
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.staircase"
+msgstr "Escalier"
+
+# English: "Unit"
+# Source-Hash: 062cc0f1afef0c52
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.unit"
+msgstr "Unité"
+
+# English: "Wall"
+# Source-Hash: 2210e5ee50b74dc9
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.wall"
+msgstr "Mur"
+
+# English: "Window"
+# Source-Hash: aa3c35ed33e181e5
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.window"
+msgstr "Fenêtre"
+
+# English: "Zone"
+# Source-Hash: a107b4d76d6972e3
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-opus-5-5
+#: packages/viewer/src/ui/lib/room-name-messages.ts
+#, fuzzy
+msgid "viewer.defaultName.zone"
+msgstr "Zone"
+
 # Source-Hash: 14622745dbf93f4c
 # Review: human
 # English: "Camera"
@@ -43869,7 +44139,7 @@ msgstr "Plan d’étage"
 # Source-Hash: 454d2e9557e66fce
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/floorplan/floorplan-dimension-renderer.tsx
 #, fuzzy
 msgid "viewer.floorplan.floorplanDimensionRenderer.override"
@@ -43900,7 +44170,7 @@ msgstr "Zoom arrière"
 # Source-Hash: 787e10f5db16904e
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/glb-scene.tsx
 #, fuzzy
 msgid "viewer.glbScene.door"
@@ -43910,7 +44180,7 @@ msgstr "Porte"
 # Source-Hash: 2743a0e9d2743807
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/glb-scene.tsx
 #, fuzzy
 msgid "viewer.glbScene.item"
@@ -44004,7 +44274,7 @@ msgstr "Superposés"
 # Source-Hash: 0089f7b73bb670e4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.dockPanelToTheSide"
@@ -44014,7 +44284,7 @@ msgstr "Ancrer le panneau sur le côté"
 # Source-Hash: fe9500724156cf01
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.fpsFps"
@@ -44024,7 +44294,7 @@ msgstr "{fps} i/s"
 # Source-Hash: 875141f14acdbeb3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.itemsItemsInstancesInstContainersMesh"
@@ -44034,7 +44304,7 @@ msgstr "{items} objets · {instances} inst. · {containers} maillages"
 # Source-Hash: 681019a3f3351577
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.lastAction"
@@ -44044,7 +44314,7 @@ msgstr "dernière action"
 # Source-Hash: 5ae620baf7e54b21
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.meshesMeshLinesLineLightsLight"
@@ -44054,7 +44324,7 @@ msgstr "{meshes} maillages  {lines} lignes  {lights} lumières"
 # Source-Hash: 7e2cc5918e3cc01d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.noTimestampQuery"
@@ -44064,7 +44334,7 @@ msgstr "pas de timestamp-query"
 # Source-Hash: f60ee2607fe05116
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.perf"
@@ -44074,7 +44344,7 @@ msgstr "perf."
 # Source-Hash: fb8bc434078de779
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.performance"
@@ -44084,7 +44354,7 @@ msgstr "Performance"
 # Source-Hash: 6ea8e08ba5916e02
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/perf-panel.tsx
 #, fuzzy
 msgid "viewer.perfPanel.waitingForSamples"
@@ -44094,7 +44364,7 @@ msgstr "en attente d’échantillons…"
 # Source-Hash: 5da4b08f589ac990
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/scene-loader.tsx
 #, fuzzy
 msgid "viewer.sceneLoader.nothingWasChangedCheckYourConnection"
@@ -44104,7 +44374,7 @@ msgstr "Rien n’a été modifié. Vérifiez votre connexion et réessayez."
 # Source-Hash: 7520f0735d444ed0
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/scene-loader.tsx
 #, fuzzy
 msgid "viewer.sceneLoader.thisProjectCouldnTBeLoaded"
@@ -44114,7 +44384,7 @@ msgstr "Ce projet n’a pas pu être chargé"
 # Source-Hash: 514c63428de25cfb
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/scene-loader.tsx
 #, fuzzy
 msgid "viewer.sceneLoader.tryAgain"
@@ -44208,7 +44478,7 @@ msgstr "Verdoyant"
 # Source-Hash: 98f5d6727e5d6516
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/unsupported-gpu-fallback.tsx
 #, fuzzy
 msgid "viewer.unsupportedGpuFallback.n3dViewerUnavailable"
@@ -44218,7 +44488,7 @@ msgstr "Vue 3D indisponible"
 # Source-Hash: 8d295590dd53aa90
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/components/viewer/unsupported-gpu-fallback.tsx
 #, fuzzy
 msgid "viewer.unsupportedGpuFallback.thisBrowserOrEnvironmentCouldNot"
@@ -44266,7 +44536,7 @@ msgstr "Volets"
 # Source-Hash: a18387bc0be54c32
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.click"
@@ -44276,7 +44546,7 @@ msgstr "Cliquez"
 # Source-Hash: 33be3f822a4b3570
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.freeCursor"
@@ -44286,7 +44556,7 @@ msgstr "curseur libre"
 # Source-Hash: 02737b7a3942e1c5
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.labelDoor"
@@ -44296,7 +44566,7 @@ msgstr "la porte"
 # Source-Hash: 9b8bb7d06f752c2c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.labelDoorButton"
@@ -44306,7 +44576,7 @@ msgstr "le bouton de porte"
 # Source-Hash: f0a5bceeba62b520
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.labelElevatorButton"
@@ -44316,7 +44586,7 @@ msgstr "le bouton d’ascenseur"
 # Source-Hash: 24c84f68bc1fbc6d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.labelItem"
@@ -44326,7 +44596,7 @@ msgstr "l’objet"
 # Source-Hash: 4caee706a0273b76
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.labelLights"
@@ -44336,7 +44606,7 @@ msgstr "Lumières"
 # Source-Hash: d4d5a1cb2fb9993d
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.labelWindow"
@@ -44346,7 +44616,7 @@ msgstr "la fenêtre"
 # Source-Hash: 6f21340b75e3d46c
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.or"
@@ -44356,7 +44626,7 @@ msgstr "ou"
 # Source-Hash: 3405301c20abf4e4
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.orClickTo"
@@ -44366,7 +44636,7 @@ msgstr "ou cliquez pour"
 # Source-Hash: 2ba7d3c1732d7d25
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.toExit"
@@ -44376,7 +44646,7 @@ msgstr "pour quitter"
 # Source-Hash: 3dd71d153e48757f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.toResume"
@@ -44386,7 +44656,7 @@ msgstr "pour reprendre"
 # Source-Hash: 97959247360c5f0b
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.verbClose"
@@ -44396,7 +44666,7 @@ msgstr "fermer"
 # Source-Hash: 35ff74aeea25311f
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.verbOpen"
@@ -44406,7 +44676,7 @@ msgstr "ouvrir"
 # Source-Hash: e6f9696c8a766ee8
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.verbPress"
@@ -44416,7 +44686,7 @@ msgstr "appuyer sur"
 # Source-Hash: d4ae8d91a3321767
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.verbTurnOff"
@@ -44426,7 +44696,7 @@ msgstr "éteindre"
 # Source-Hash: dfca58866d7c10a3
 # Review: required
 # AI-Provider: claude-code
-# AI-Model: claude-sonnet-5-5
+# AI-Model: claude-opus-5-5
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 #, fuzzy
 msgid "viewer.walkthroughHud.verbTurnOn"
