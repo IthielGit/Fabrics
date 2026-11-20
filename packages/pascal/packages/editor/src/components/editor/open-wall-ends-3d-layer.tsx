@@ -1,6 +1,6 @@
 'use client'
 
-import { type OpenWallEnd, sceneRegistry } from '@pascal-app/core'
+import { type OpenWallEnd, sceneRegistry, usePascalI18n } from '@pascal-app/core'
 import { MEASUREMENT_DANGLING_COLOR, useViewer } from '@pascal-app/viewer'
 import { LocalizedHtml as Html } from '@pascal-app/viewer/ui'
 import { useFrame } from '@react-three/fiber'
@@ -152,6 +152,7 @@ function OpenWallEndMarker3D({
   refusal: string | null
   resources: MarkerResources
 }) {
+  const i18n = usePascalI18n()
   const { dashGeometry, discGeometry, ringGeometry, redMaterial, outlineMaterial } = resources
   const [x, z] = end.point
   const target = end.candidate?.point
@@ -244,7 +245,13 @@ function OpenWallEndMarker3D({
             ) : null}
           </div>
           <button
-            aria-label={label ?? 'Wall end not joined'}
+            aria-label={
+              label ??
+              i18n._({
+                id: 'editor.openWallEnds3dLayer.wallEndNotJoined',
+                message: 'Wall end not joined',
+              })
+            }
             className={cn(
               'h-3.5 w-3.5 rounded-full border-2 border-white shadow-sm transition-transform',
               interactive

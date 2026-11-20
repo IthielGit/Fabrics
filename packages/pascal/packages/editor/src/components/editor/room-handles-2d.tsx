@@ -8,6 +8,7 @@ import {
   nodeRegistry,
   type Point,
   roomDrawnFloor,
+  usePascalI18n,
   useScene,
 } from '@pascal-app/core'
 import { MEASUREMENT_FLOORPLAN_COLOR, useViewer } from '@pascal-app/viewer'
@@ -71,6 +72,7 @@ function signed(text: string, value: number) {
  * 3D elevation handle's clamp and commit, one undo step a click.
  */
 export function RoomFloorHeightStepper({ zoneId }: { zoneId: string }) {
+  const i18n = usePascalI18n()
   const nodes = useScene((s) => s.nodes)
   const unit = useViewer((s) => s.unit)
   const metricNotation = useViewer((s) => s.metricNotation)
@@ -93,11 +95,13 @@ export function RoomFloorHeightStepper({ zoneId }: { zoneId: string }) {
       onPointerDown={(event) => event.stopPropagation()}
       onPointerUp={(event) => event.stopPropagation()}
     >
-      <span className="mr-1 text-muted-foreground text-xs">Floor height</span>
+      <span className="mr-1 text-muted-foreground text-xs">
+        {i18n._({ id: 'editor.roomHandles2d.floorHeight', message: 'Floor height' })}
+      </span>
       <ActionMenuButton
         disabled={down === null}
         disabledReason="The floor can't go lower here"
-        label="Lower the floor"
+        label={i18n._({ id: 'editor.roomHandles2d.lowerTheFloor', message: 'Lower the floor' })}
         onClick={step(down)}
       >
         <Minus className="h-4 w-4" />
@@ -111,7 +115,7 @@ export function RoomFloorHeightStepper({ zoneId }: { zoneId: string }) {
       <ActionMenuButton
         disabled={up === null}
         disabledReason="The floor can't go higher here"
-        label="Raise the floor"
+        label={i18n._({ id: 'editor.roomHandles2d.raiseTheFloor', message: 'Raise the floor' })}
         onClick={step(up)}
       >
         <Plus className="h-4 w-4" />

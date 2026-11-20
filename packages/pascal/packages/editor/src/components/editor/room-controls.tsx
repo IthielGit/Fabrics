@@ -11,6 +11,7 @@ import {
   roomFloorElevation,
   type StructureNodes,
   sceneRegistry,
+  usePascalI18n,
   useScene,
 } from '@pascal-app/core'
 import {
@@ -144,6 +145,7 @@ export function roomDeleteBlockedReason(nodes: StructureNodes, zoneId: string) {
  * Delete.
  */
 export function RoomActionMenu({ room }: { room: RoomSelectionRecord }) {
+  const i18n = usePascalI18n()
   const zoneId = room.zoneId
   const levelId = room.key.levelId
   const nodes = useScene((s) => s.nodes)
@@ -183,7 +185,10 @@ export function RoomActionMenu({ room }: { room: RoomSelectionRecord }) {
         onRotateRight={turn('right')}
       >
         {mezzanine && (
-          <ActionMenuButton label="Add stairs" onClick={addStairs}>
+          <ActionMenuButton
+            label={i18n._({ id: 'editor.roomControls.addStairs', message: 'Add stairs' })}
+            onClick={addStairs}
+          >
             <span className="flex h-4 w-4 shrink-0 items-center justify-center">
               <Image
                 alt=""
@@ -197,7 +202,7 @@ export function RoomActionMenu({ room }: { room: RoomSelectionRecord }) {
         )}
         {!mezzanine && (
           <ActionMenuButton
-            label="Divide room"
+            label={i18n._({ id: 'editor.roomControls.divideRoom', message: 'Divide room' })}
             onClick={(event: MouseEvent<HTMLButtonElement>) => {
               event.stopPropagation()
               startRoomDivide(zoneId, levelId)

@@ -14,7 +14,7 @@ import {
   type ParsedBuildJson,
   useRegistryVersion,
   useScene,
-  validateBuildJson,
+  validateBuildJson, usePascalI18n,
 } from '@pascal-app/core'
 import { useViewer, viewerPresentationRegistry } from '@pascal-app/viewer'
 import { TreeView, VisualJson } from '@visual-json/react'
@@ -354,14 +354,15 @@ export function InterfaceThemeRow({
   onChange: (value: InterfaceTheme) => void
   value: InterfaceTheme
 }) {
+  const i18n = usePascalI18n()
   const labelId = useId()
   return (
     <div className="flex flex-col gap-2 py-1 @sm:flex-row @sm:items-center @sm:justify-between @sm:gap-4">
       <div className="min-w-0 space-y-0.5">
         <p className="font-medium text-sm" id={labelId}>
-          Interface theme
+          {i18n._({ id: 'editor.sidebar.panels.settingsPanel.interfaceTheme', message: 'Interface theme' })}
         </p>
-        <p className="text-muted-foreground text-xs">System follows your device’s appearance.</p>
+        <p className="text-muted-foreground text-xs">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.systemFollowsYourDeviceSAppearance', message: 'System follows your device’s appearance.' })}</p>
       </div>
       <div aria-labelledby={labelId} className="w-full shrink-0 @sm:w-60" role="group">
         <SegmentedControl onChange={onChange} options={INTERFACE_THEME_OPTIONS} value={value} />
@@ -389,6 +390,7 @@ export interface SettingsPanelProps {
 }
 
 function FloorSettingsSection() {
+  const i18n = usePascalI18n()
   const selectedBuildingId = useViewer((state) => state.selection.buildingId)
   const selectedLevelId = useViewer((state) => state.selection.levelId)
   const setSelection = useViewer((state) => state.setSelection)
@@ -434,11 +436,11 @@ function FloorSettingsSection() {
 
   return (
     <div className="space-y-3">
-      <label className="font-medium text-muted-foreground text-xs uppercase">Floors</label>
+      <label className="font-medium text-muted-foreground text-xs uppercase">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.floors', message: 'Floors' })}</label>
       <div className="grid grid-cols-2 gap-2">
         <Button className="justify-start" onClick={addFloor} size="sm" type="button" variant="outline">
           <ArrowUp className="size-3.5" />
-          Add floor
+          {i18n._({ id: 'editor.sidebar.panels.settingsPanel.addFloor', message: 'Add floor' })}
         </Button>
         <Button
           className="justify-start"
@@ -448,13 +450,13 @@ function FloorSettingsSection() {
           variant="outline"
         >
           <ArrowDown className="size-3.5" />
-          Add basement
+          {i18n._({ id: 'editor.sidebar.panels.settingsPanel.addBasement', message: 'Add basement' })}
         </Button>
       </div>
 
       <div className="space-y-1 rounded-md border p-1">
         {levels.length === 0 ? (
-          <div className="px-2 py-2 text-muted-foreground text-xs">No floors yet</div>
+          <div className="px-2 py-2 text-muted-foreground text-xs">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.noFloorsYet', message: 'No floors yet' })}</div>
         ) : (
           levels.map((level) => {
             const isSelected = level.id === selectedLevelId
@@ -483,7 +485,7 @@ function FloorSettingsSection() {
                   className="flex size-7 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:cursor-not-allowed disabled:opacity-30"
                   disabled={!canDelete}
                   onClick={() => deleteLevelWithFallbackSelection(level.id)}
-                  title={canDelete ? 'Remove floor' : 'The ground floor cannot be removed'}
+                  title={canDelete ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.removeFloor', message: 'Remove floor' }) : i18n._({ id: 'editor.sidebar.panels.settingsPanel.theGroundFloorCannotBeRemoved', message: 'The ground floor cannot be removed' })}
                   type="button"
                 >
                   <Trash2 className="size-3.5" />
@@ -494,7 +496,7 @@ function FloorSettingsSection() {
         )}
       </div>
       <p className="text-muted-foreground text-xs">
-        Select a floor to make it active. The ground floor is always kept as the building datum.
+        {i18n._({ id: 'editor.sidebar.panels.settingsPanel.selectAFloorToMakeIt', message: 'Select a floor to make it active. The ground floor is always kept as the building datum.' })}
       </p>
     </div>
   )
@@ -508,6 +510,7 @@ export function SettingsPanel({
   onVisibilityChange,
   preferences,
 }: SettingsPanelProps = {}) {
+  const i18n = usePascalI18n()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const copyResetTimeoutRef = useRef<number | null>(null)
   const nodes = useScene((state) => state.nodes)
@@ -903,19 +906,19 @@ export function SettingsPanel({
         </section>
         {projectId && (
           <SettingsSection
-            description="Reference this project from the API, MCP tools, or support."
-            title="Project"
+            description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.referenceThisProjectFromTheApi', message: 'Reference this project from the API, MCP tools, or support.' })}
+            title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.project', message: 'Project' })}
           >
             <div className="flex items-center gap-2">
               <Input
-                aria-label="Project ID"
+                aria-label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.projectId', message: 'Project ID' })}
                 className="font-mono text-xs"
                 readOnly
                 value={projectId}
               />
               <Button
                 aria-label={
-                  projectIdCopyState === 'copied' ? 'Project ID copied' : 'Copy project ID'
+                  projectIdCopyState === 'copied' ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.projectIdCopied', message: 'Project ID copied' }) : i18n._({ id: 'editor.sidebar.panels.settingsPanel.copyProjectId', message: 'Copy project ID' })
                 }
                 className="rounded-full"
                 onClick={() => void handleCopyProjectId()}
@@ -929,10 +932,10 @@ export function SettingsPanel({
                   <Copy className="size-3.5" />
                 )}
                 {projectIdCopyState === 'copied'
-                  ? 'Copied'
+                  ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.copied', message: 'Copied' })
                   : projectIdCopyState === 'error'
-                    ? 'Try again'
-                    : 'Copy'}
+                    ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.tryAgain', message: 'Try again' })
+                    : i18n._({ id: 'editor.sidebar.panels.settingsPanel.copy', message: 'Copy' })}
               </Button>
             </div>
           </SettingsSection>
@@ -940,44 +943,44 @@ export function SettingsPanel({
 
         {/* Sharing (only for cloud projects) */}
         {projectId && !isLocalProject && (
-          <SettingsSection description="Control who can open this project." title="Sharing">
+          <SettingsSection description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.controlWhoCanOpenThisProject', message: 'Control who can open this project.' })} title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.sharing', message: 'Sharing' })}>
             <SettingsSwitchRow
               checked={!(projectVisibility?.isPrivate ?? false)}
               description={
                 projectVisibility?.isPrivate
-                  ? 'Only you can view it.'
-                  : 'Anyone with the link can view it.'
+                  ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.onlyYouCanViewIt', message: 'Only you can view it.' })
+                  : i18n._({ id: 'editor.sidebar.panels.settingsPanel.anyoneWithTheLinkCanView', message: 'Anyone with the link can view it.' })
               }
-              label="Public project"
+              label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.publicProject', message: 'Public project' })}
               onCheckedChange={(checked) => handleVisibilityChange('isPrivate', !checked)}
             />
             <SettingsSwitchRow
               checked={projectVisibility?.showScansPublic ?? true}
-              description="Visible in the public viewer."
-              label="Show 3D scans"
+              description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.visibleInThePublicViewer', message: 'Visible in the public viewer.' })}
+              label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.show3dScans', message: 'Show 3D scans' })}
               onCheckedChange={(checked) => handleVisibilityChange('showScansPublic', checked)}
             />
             <SettingsSwitchRow
               checked={projectVisibility?.showGuidesPublic ?? true}
-              description="Visible in the public viewer."
-              label="Show floor plans"
+              description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.visibleInThePublicViewer', message: 'Visible in the public viewer.' })}
+              label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.showFloorPlans', message: 'Show floor plans' })}
               onCheckedChange={(checked) => handleVisibilityChange('showGuidesPublic', checked)}
             />
           </SettingsSection>
         )}
 
-        <SettingsSection description="Rendering options for this editor session." title="Viewer">
+        <SettingsSection description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.renderingOptionsForThisEditorSession', message: 'Rendering options for this editor session.' })} title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.viewer', message: 'Viewer' })}>
           <SettingsSwitchRow
             checked={shadows}
-            description="Cast shadows from lights."
-            label="Shadows"
+            description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.castShadowsFromLights', message: 'Cast shadows from lights.' })}
+            label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.shadows', message: 'Shadows' })}
             onCheckedChange={(checked) => useViewer.getState().setShadows(checked)}
           />
         </SettingsSection>
 
-        <SettingsSection description="Download the scene or hand it to another app." title="Export">
+        <SettingsSection description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.downloadTheSceneOrHandIt', message: 'Download the scene or hand it to another app.' })} title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.export', message: 'Export' })}>
           <div className="space-y-3">
-            <SettingsSubheading>3D model</SettingsSubheading>
+            <SettingsSubheading>{i18n._({ id: 'editor.sidebar.panels.settingsPanel.n3dModel', message: '3D model' })}</SettingsSubheading>
             <details
               className="group"
               onKeyDownCapture={(event) => {
@@ -986,21 +989,21 @@ export function SettingsPanel({
               }}
             >
               <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between rounded-md border px-3 font-medium text-sm focus-visible:outline-2 focus-visible:outline-ring">
-                Export options
+                {i18n._({ id: 'editor.sidebar.panels.settingsPanel.exportOptions', message: 'Export options' })}
                 <ChevronDown aria-hidden="true" className="size-4 group-open:rotate-180" />
               </summary>
               <div className="space-y-3 pt-3">
                 <div className="flex items-center justify-between gap-4 rounded-md border p-3">
                   <div className="min-w-0">
                     <label className="font-medium text-sm" htmlFor={visibleOnlySwitchId}>
-                      Visible nodes only
+                      {i18n._({ id: 'editor.sidebar.panels.settingsPanel.visibleNodesOnly', message: 'Visible nodes only' })}
                     </label>
                     <div className="text-muted-foreground text-xs">
-                      Exclude hidden furniture and other hidden scene nodes
+                      {i18n._({ id: 'editor.sidebar.panels.settingsPanel.excludeHiddenFurnitureAndOtherHidden', message: 'Exclude hidden furniture and other hidden scene nodes' })}
                     </div>
                   </div>
                   <Switch
-                    aria-label="Export visible nodes only"
+                    aria-label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.exportVisibleNodesOnly', message: 'Export visible nodes only' })}
                     checked={exportOnlyVisible}
                     id={visibleOnlySwitchId}
                     onCheckedChange={setExportOnlyVisible}
@@ -1008,10 +1011,9 @@ export function SettingsPanel({
                 </div>
 
                 <fieldset className="space-y-2 rounded-md border p-3">
-                  <legend className="px-1 font-medium text-sm">Include in file</legend>
+                  <legend className="px-1 font-medium text-sm">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.includeInFile', message: 'Include in file' })}</legend>
                   <p className="text-muted-foreground text-xs">
-                    Choose which procedural content is baked into model files. GLB and USDZ use the
-                    textured portable path; STL, OBJ and IFC remain geometry-only.
+                    {i18n._({ id: 'editor.sidebar.panels.settingsPanel.chooseWhichProceduralContentIsBaked', message: 'Choose which procedural content is baked into model files. GLB and USDZ use the textured portable path; STL, OBJ and IFC remain geometry-only.' })}
                   </p>
                   {exportableNodeTypes.length > 0 ? (
                     <div className="space-y-2 pt-1">
@@ -1023,13 +1025,11 @@ export function SettingsPanel({
                               {label}
                               {!supportsGeometryOnly && (
                                 <span className="text-muted-foreground text-xs">
-                                  {' '}
-                                  (GLB/USDZ only)
-                                </span>
+                                  {' '}{i18n._({ id: 'editor.sidebar.panels.settingsPanel.glbUsdzOnly', message: '(GLB/USDZ only)' })}</span>
                               )}
                             </label>
                             <Switch
-                              aria-label={`Include ${label} in model files`}
+                              aria-label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.includeLabelInModelFiles', message: 'Include {label} in model files', values: { label } })}
                               checked={!excludedNodeTypes.includes(type)}
                               id={switchId}
                               onCheckedChange={(included) =>
@@ -1042,18 +1042,18 @@ export function SettingsPanel({
                     </div>
                   ) : (
                     <p className="text-muted-foreground text-xs">
-                      No optional procedural content is present.
+                      {i18n._({ id: 'editor.sidebar.panels.settingsPanel.noOptionalProceduralContentIsPresent', message: 'No optional procedural content is present.' })}
                     </p>
                   )}
                   <p className="text-muted-foreground text-xs">
-                    Viewer surroundings are excluded unless selected separately below.
+                    {i18n._({ id: 'editor.sidebar.panels.settingsPanel.viewerSurroundingsAreExcludedUnlessSelected', message: 'Viewer surroundings are excluded unless selected separately below.' })}
                   </p>
                 </fieldset>
                 {exportablePresentations.length > 0 ? (
                   <fieldset className="space-y-2 rounded-md border p-3">
-                    <legend className="px-1 font-medium text-sm">Viewer surroundings</legend>
+                    <legend className="px-1 font-medium text-sm">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.viewerSurroundings', message: 'Viewer surroundings' })}</legend>
                     <p className="text-muted-foreground text-xs">
-                      Optional static surroundings are included only in GLB and USDZ.
+                      {i18n._({ id: 'editor.sidebar.panels.settingsPanel.optionalStaticSurroundingsAreIncludedOnly', message: 'Optional static surroundings are included only in GLB and USDZ.' })}
                     </p>
                     <div className="space-y-2 pt-1">
                       {exportablePresentations.map((contribution, index) => {
@@ -1068,7 +1068,7 @@ export function SettingsPanel({
                               {label}
                             </label>
                             <Switch
-                              aria-label={`Include ${label} in GLB and USDZ`}
+                              aria-label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.includeLabelInGlbAndUsdz', message: 'Include {label} in GLB and USDZ', values: { label } })}
                               checked={includedPresentationIds.includes(contribution.id)}
                               id={switchId}
                               onCheckedChange={(included) =>
@@ -1099,7 +1099,7 @@ export function SettingsPanel({
                     variant="outline"
                   >
                     <Download aria-hidden="true" className="size-4" />
-                    {isActive ? `Exporting ${label}…` : `Export ${label}`}
+                    {isActive ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.exportingLabel', message: 'Exporting {label}…', values: { label } }) : i18n._({ id: 'editor.sidebar.panels.settingsPanel.exportLabel', message: 'Export {label}', values: { label } })}
                   </Button>
                 )
               })}
@@ -1116,19 +1116,19 @@ export function SettingsPanel({
                 <Send aria-hidden="true" className="size-4" />
                 {sendToBlenderStep
                   ? SEND_TO_BLENDER_STEP_LABEL[sendToBlenderStep]
-                  : 'Send to Blender'}
+                  : i18n._({ id: 'editor.sidebar.panels.settingsPanel.sendToBlender', message: 'Send to Blender' })}
               </Button>
               <p className="text-muted-foreground text-xs">
-                Needs the{' '}
+                {i18n._({ id: 'editor.sidebar.panels.settingsPanel.needsThe', message: 'Needs the' })}{' '}
                 <a
                   className="underline underline-offset-2"
                   href={BLENDER_ADDON_URL}
                   rel="noreferrer"
                   target="_blank"
                 >
-                  Pascal add-on for Blender
+                  {i18n._({ id: 'editor.sidebar.panels.settingsPanel.pascalAddOnForBlender', message: 'Pascal add-on for Blender' })}
                 </a>{' '}
-                running in an open Blender.
+                {i18n._({ id: 'editor.sidebar.panels.settingsPanel.runningInAnOpenBlender', message: 'running in an open Blender.' })}
               </p>
             </div>
             {sendToBlenderMessage ? (
@@ -1146,7 +1146,7 @@ export function SettingsPanel({
 
             {activeModelExport ? (
               <p className="text-muted-foreground text-xs" role="status">
-                Preparing {activeModelExport.toUpperCase()} file…
+                {i18n._({ id: 'editor.sidebar.panels.settingsPanel.preparing', message: 'Preparing' })}{' '}{activeModelExport.toUpperCase()}{' '}{i18n._({ id: 'editor.sidebar.panels.settingsPanel.file', message: 'file…' })}
               </p>
             ) : null}
             {modelExportError ? (
@@ -1156,7 +1156,7 @@ export function SettingsPanel({
             ) : null}
             {modelExportWarning ? (
               <p className="text-foreground text-xs" role="status">
-                Warning: {modelExportWarning}
+                {i18n._({ id: 'editor.sidebar.panels.settingsPanel.warningModelexportwarning', message: 'Warning: {modelExportWarning}', values: { modelExportWarning } })}
               </p>
             ) : null}
 
@@ -1167,9 +1167,9 @@ export function SettingsPanel({
 
           <div className="space-y-3 pt-2">
             <div className="flex items-center justify-between">
-              <SettingsSubheading>Floor plan</SettingsSubheading>
+              <SettingsSubheading>{i18n._({ id: 'editor.sidebar.panels.settingsPanel.floorPlan', message: 'Floor plan' })}</SettingsSubheading>
               <span className="text-muted-foreground text-xs">
-                {floorplanMode === 'default' ? 'Default mode' : 'Expert mode'}
+                {floorplanMode === 'default' ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.defaultMode', message: 'Default mode' }) : i18n._({ id: 'editor.sidebar.panels.settingsPanel.expertMode', message: 'Expert mode' })}
               </span>
             </div>
             <div className="grid gap-2 @sm:grid-cols-2">
@@ -1181,7 +1181,7 @@ export function SettingsPanel({
                 variant="outline"
               >
                 <MapIcon className="size-4" />
-                Full floor plan
+                {i18n._({ id: 'editor.sidebar.panels.settingsPanel.fullFloorPlan', message: 'Full floor plan' })}
               </Button>
               <Button
                 aria-busy={activeFloorplanExport === 'structure'}
@@ -1191,12 +1191,12 @@ export function SettingsPanel({
                 variant="outline"
               >
                 <MapIcon className="size-4" />
-                Structure only
+                {i18n._({ id: 'editor.sidebar.panels.settingsPanel.structureOnly', message: 'Structure only' })}
               </Button>
             </div>
             {activeFloorplanExport ? (
               <p className="text-muted-foreground text-xs" role="status">
-                Preparing floor-plan PDF…
+                {i18n._({ id: 'editor.sidebar.panels.settingsPanel.preparingFloorPlanPdf', message: 'Preparing floor-plan PDF…' })}
               </p>
             ) : null}
             {floorplanExportError ? (
@@ -1210,8 +1210,8 @@ export function SettingsPanel({
         {/* Thumbnail (only for cloud projects) */}
         {projectId && !isLocalProject && (
           <SettingsSection
-            description="Refresh the preview shown in your project list."
-            title="Thumbnail"
+            description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.refreshThePreviewShownInYour', message: 'Refresh the preview shown in your project list.' })}
+            title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.thumbnail', message: 'Thumbnail' })}
           >
             <div className="grid gap-2 @sm:grid-cols-2">
               <Button
@@ -1221,15 +1221,15 @@ export function SettingsPanel({
                 variant="outline"
               >
                 <Camera className="size-4" />
-                {isGeneratingThumbnail ? 'Generating…' : 'Generate thumbnail'}
+                {isGeneratingThumbnail ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.generating', message: 'Generating…' }) : i18n._({ id: 'editor.sidebar.panels.settingsPanel.generateThumbnail', message: 'Generate thumbnail' })}
               </Button>
             </div>
           </SettingsSection>
         )}
 
         <SettingsSection
-          description="Keep a JSON copy of the scene, or restore one."
-          title="Save and load"
+          description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.keepAJsonCopyOfThe', message: 'Keep a JSON copy of the scene, or restore one.' })}
+          title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.saveAndLoad', message: 'Save and load' })}
         >
           <div className="grid gap-2 @sm:grid-cols-2">
             <Button
@@ -1238,7 +1238,7 @@ export function SettingsPanel({
               variant="outline"
             >
               <Save className="size-4" />
-              Save build
+              {i18n._({ id: 'editor.sidebar.panels.settingsPanel.saveBuild', message: 'Save build' })}
             </Button>
             <Button
               className="w-full justify-start gap-2"
@@ -1246,7 +1246,7 @@ export function SettingsPanel({
               variant="outline"
             >
               <Upload className="size-4" />
-              Load build
+              {i18n._({ id: 'editor.sidebar.panels.settingsPanel.loadBuild', message: 'Load build' })}
             </Button>
           </div>
 
@@ -1266,8 +1266,8 @@ export function SettingsPanel({
         </SettingsSection>
 
         <SettingsSection
-          description="Sound levels, the construction animation and keyboard shortcuts."
-          title="Preferences"
+          description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.soundLevelsTheConstructionAnimationAnd', message: 'Sound levels, the construction animation and keyboard shortcuts.' })}
+          title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.preferences', message: 'Preferences' })}
         >
           <ConstructionAnimationSetting />
           <AnimationSpeedSetting />
@@ -1279,20 +1279,20 @@ export function SettingsPanel({
         </SettingsSection>
 
         <SettingsSection
-          description="Inspect how nodes are nested in this scene."
-          title="Scene graph"
+          description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.inspectHowNodesAreNestedIn', message: 'Inspect how nodes are nested in this scene.' })}
+          title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.sceneGraph', message: 'Scene graph' })}
         >
           <Dialog>
             <DialogTrigger asChild>
               <div className="grid gap-2 @sm:grid-cols-2">
                 <Button className="w-full justify-start gap-2" variant="outline">
                   <ListTree className="size-4" />
-                  Explore scene graph
+                  {i18n._({ id: 'editor.sidebar.panels.settingsPanel.exploreSceneGraph', message: 'Explore scene graph' })}
                 </Button>
               </div>
             </DialogTrigger>
             <DialogContent className="dark h-[80vh] max-w-[95vw] gap-0 overflow-hidden border-0 bg-[#1e1e1e] p-0 shadow-none sm:max-w-5xl">
-              <DialogTitle className="sr-only">Scene Graph</DialogTitle>
+              <DialogTitle className="sr-only">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.sceneGraph2', message: 'Scene Graph' })}</DialogTitle>
               <div
                 className="flex h-full min-h-0 w-full min-w-0 *:h-full *:w-full *:overflow-y-auto"
                 onContextMenuCapture={blockSceneGraphMutations}
@@ -1309,8 +1309,8 @@ export function SettingsPanel({
         </SettingsSection>
 
         <SettingsSection
-          description="Removes every node from this scene. This cannot be undone."
-          title="Danger zone"
+          description={i18n._({ id: 'editor.sidebar.panels.settingsPanel.removesEveryNodeFromThisScene', message: 'Removes every node from this scene. This cannot be undone.' })}
+          title={i18n._({ id: 'editor.sidebar.panels.settingsPanel.dangerZone', message: 'Danger zone' })}
           tone="destructive"
         >
           <div className="grid gap-2 @sm:grid-cols-2">
@@ -1320,7 +1320,7 @@ export function SettingsPanel({
               variant="destructive"
             >
               <Trash2 className="size-4" />
-              Clear and start new
+              {i18n._({ id: 'editor.sidebar.panels.settingsPanel.clearAndStartNew', message: 'Clear and start new' })}
             </Button>
           </div>
         </SettingsSection>

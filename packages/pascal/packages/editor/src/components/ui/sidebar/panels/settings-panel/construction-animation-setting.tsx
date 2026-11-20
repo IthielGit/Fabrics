@@ -1,5 +1,6 @@
 'use client'
 
+import { usePascalI18n } from '@pascal-app/core'
 import type { ConstructionRevealLevel } from '@pascal-app/viewer'
 import {
   chooseConstructionLevel,
@@ -48,6 +49,7 @@ export function constructionLevelOptions(framingAvailable: boolean) {
 
 /** How much of an AI build plays as a construction. */
 export function ConstructionAnimationSetting() {
+  const i18n = usePascalI18n()
   // What plays: the person's choice, or Framing where the framing plugin is installed and Full where it is not.
   const level = useConstructionRevealLevel()
   const framingAvailable = useFramingAvailable()
@@ -78,11 +80,11 @@ export function ConstructionAnimationSetting() {
   return (
     <div className="space-y-2 py-1">
       <div className="space-y-0.5">
-        <p className="font-medium text-sm">Construction animation</p>
+        <p className="font-medium text-sm">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation', message: 'Construction animation' })}</p>
         <p className="text-muted-foreground text-xs">{current?.title}</p>
       </div>
       <SegmentedControl
-        aria-label="Construction animation"
+        aria-label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation', message: 'Construction animation' })}
         onChange={(next) => chooseConstructionLevel(next, framingAvailable)}
         options={options}
         value={level}

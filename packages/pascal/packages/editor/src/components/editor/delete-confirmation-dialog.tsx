@@ -4,6 +4,7 @@ import {
   type AnyNode,
   type DeleteZonePayload,
   type StructureNodes,
+  usePascalI18n,
   useScene,
 } from '@pascal-app/core'
 import { useEffect, useMemo, useRef } from 'react'
@@ -270,6 +271,7 @@ export function deleteConfirmationContent(
 }
 
 export function DeleteConfirmationDialog() {
+  const i18n = usePascalI18n()
   const request = useDeleteConfirmation((state) => state.request)
   const cancel = useDeleteConfirmation((state) => state.cancel)
   const confirm = useDeleteConfirmation((state) => state.confirm)
@@ -308,7 +310,7 @@ export function DeleteConfirmationDialog() {
             onClick={cancel}
             type="button"
           >
-            Cancel
+            {i18n._({ id: 'editor.deleteConfirmationDialog.cancel', message: 'Cancel' })}
           </button>
           {content?.keepLabel && (
             <button

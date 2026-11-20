@@ -3744,6 +3744,258 @@ msgstr "旋转"
 msgid "editor.cameraHint.zoom"
 msgstr "缩放"
 
+# English: "Levels in the shot"
+# Review: missing
+#: packages/editor/src/components/editor/capture-level-picker.tsx
+msgid "editor.captureLevelPicker.levelsInTheShot"
+msgstr ""
+
+# English: "Whole building"
+# Review: missing
+#: packages/editor/src/components/editor/capture-level-picker.tsx
+msgid "editor.captureLevelPicker.wholeBuilding"
+msgstr ""
+
+# English: "back"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.back"
+msgstr ""
+
+# English: "close"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.close"
+msgstr ""
+
+# English: "Command Palette"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.commandPalette"
+msgstr ""
+
+# English: "Add Level"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.addLevel"
+msgstr ""
+
+# English: "Ceiling Tool"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.ceilingTool"
+msgstr ""
+
+# English: "Copy Share Link"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.copyShareLink"
+msgstr ""
+
+# English: "Delete Level"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.deleteLevel"
+msgstr ""
+
+# English: "Delete Selection"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.deleteSelection"
+msgstr ""
+
+# English: "Door Tool"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.doorTool"
+msgstr ""
+
+# English: "Exit unit focus"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.exitUnitFocus"
+msgstr ""
+
+# English: "Export 3D Model (GLB)"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.export3dModelGlb"
+msgstr ""
+
+# English: "Export Scene (JSON)"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.exportSceneJson"
+msgstr ""
+
+# English: "Go to Level"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.goToLevel"
+msgstr ""
+
+# English: "Item Tool"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.itemTool"
+msgstr ""
+
+# English: "Material Paint"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.materialPaint"
+msgstr ""
+
+# English: "New unit"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.newUnit"
+msgstr ""
+
+# English: "Redo"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.redo"
+msgstr ""
+
+# English: "Rename Level"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.renameLevel"
+msgstr ""
+
+# English: "Sculpt Terrain"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.sculptTerrain"
+msgstr ""
+
+# English: "Slab Tool"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.slabTool"
+msgstr ""
+
+# English: "Stair Tool"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.stairTool"
+msgstr ""
+
+# English: "Take Screenshot"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.takeScreenshot"
+msgstr ""
+
+# English: "Take Snapshot"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.takeSnapshot"
+msgstr ""
+
+# English: "Toggle Fullscreen"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.toggleFullscreen"
+msgstr ""
+
+# English: "Undo"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.undo"
+msgstr ""
+
+# English: "Wall Mode"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.wallMode"
+msgstr ""
+
+# English: "Wall Tool"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.wallTool"
+msgstr ""
+
+# English: "Window Tool"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.windowTool"
+msgstr ""
+
+# English: "Zone Tool"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.zoneTool"
+msgstr ""
+
+# English: "Filter options…"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.filterOptions"
+msgstr ""
+
+# English: "Go to Level"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.goToLevel"
+msgstr ""
+
+# English: "navigate"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.navigate"
+msgstr ""
+
+# English: "No commands found."
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.noCommandsFound"
+msgstr ""
+
+# English: "Rename Level"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.renameLevel"
+msgstr ""
+
+# English: "Rename to"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.renameTo"
+msgstr ""
+
+# English: "Search actions…"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.searchActions"
+msgstr ""
+
+# English: "select"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.select"
+msgstr ""
+
+# English: "Type a new name…"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.typeANewName"
+msgstr ""
+
+# English: "Type a new name above…"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.typeANewNameAbove"
+msgstr ""
+
+# English: "Wall Mode"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.wallMode"
+msgstr ""
+
 # Source-Hash: 5299816622fc73be
 # Review: required
 # AI-Provider: claude-code
@@ -3804,6 +4056,144 @@ msgstr "{label}：{finish}"
 msgid "editor.controls.finishSwatch.default"
 msgstr "默认"
 
+# English: "Add material"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.addMaterial"
+msgstr ""
+
+# English: "Click a painted part of a wall, floor or ceiling to remove it, or a painted surface to reset it to its default."
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.clickAPaintedPartOfA"
+msgstr ""
+
+# English: "Erase"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.erase"
+msgstr ""
+
+# English: "No custom materials yet — add one with +."
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.noCustomMaterialsYetAddOne"
+msgstr ""
+
+# English: "Paint"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.paint"
+msgstr ""
+
+# English: "Pick material"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.pickMaterial"
+msgstr ""
+
+# English: "Scene materials"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.sceneMaterials"
+msgstr ""
+
+# English: "New material"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-picker.tsx
+msgid "editor.controls.materialPicker.newMaterial"
+msgstr ""
+
+# English: "Back"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.back"
+msgstr ""
+
+# English: "Color"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.color"
+msgstr ""
+
+# English: "Double"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.double"
+msgstr ""
+
+# English: "Front"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.front"
+msgstr ""
+
+# English: "Metalness"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.metalness"
+msgstr ""
+
+# English: "Opacity"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.opacity"
+msgstr ""
+
+# English: "Roughness"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.roughness"
+msgstr ""
+
+# English: "Side"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.side"
+msgstr ""
+
+# English: "Delete"
+# Review: missing
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.delete"
+msgstr ""
+
+# English: "Duplicate"
+# Review: missing
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.duplicate"
+msgstr ""
+
+# English: "Edit"
+# Review: missing
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.edit"
+msgstr ""
+
+# English: "Paint with"
+# Review: missing
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.paintWith"
+msgstr ""
+
+# English: "part"
+# Review: missing
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.part"
+msgstr ""
+
+# English: "parts"
+# Review: missing
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.parts"
+msgstr ""
+
+# English: "Used by"
+# Review: missing
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.usedBy"
+msgstr ""
+
 # AI-Provider: claude-code
 # AI-Model: claude-opus-5-5
 # Source-Hash: 6774854416d6dfdf
@@ -3823,6 +4213,84 @@ msgstr "编辑{label}"
 #, fuzzy
 msgid "editor.controls.sliderControl.mixed"
 msgstr "混合"
+
+# English: "Clear terrain"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.clearTerrain"
+msgstr ""
+
+# English: "Click the ground to pick its height as the target."
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.clickTheGroundToPickIts"
+msgstr ""
+
+# English: "Every flatten stroke levels toward this height."
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.everyFlattenStrokeLevelsTowardThis"
+msgstr ""
+
+# English: "Level lot"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.levelLot"
+msgstr ""
+
+# English: "No target yet — the first click samples the ground under it."
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.noTargetYetTheFirstClick"
+msgstr ""
+
+# English: "Pick target height from the ground"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.pickTargetHeightFromTheGround"
+msgstr ""
+
+# English: "Round"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.round"
+msgstr ""
+
+# English: "Size"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.size"
+msgstr ""
+
+# English: "Softness"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.softness"
+msgstr ""
+
+# English: "Square"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.square"
+msgstr ""
+
+# English: "Strength"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.strength"
+msgstr ""
+
+# English: "Target"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.target"
+msgstr ""
+
+# English: "Cancel"
+# Review: missing
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.cancel"
+msgstr ""
 
 # Source-Hash: a2bd204e93e90598
 # Review: required
@@ -3844,6 +4312,30 @@ msgstr "关闭"
 msgid "editor.dismissCameraControlsHint"
 msgstr "关闭相机操作提示"
 
+# English: "ALIGN "
+# Review: missing
+#: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
+msgid "editor.editor2d.floorplanMeasurementToolLayer.align"
+msgstr ""
+
+# English: "Create"
+# Review: missing
+#: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
+msgid "editor.editor2d.floorplanMeasurementToolLayer.create"
+msgstr ""
+
+# English: "Extrusion height"
+# Review: missing
+#: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
+msgid "editor.editor2d.floorplanMeasurementToolLayer.extrusionHeight"
+msgstr ""
+
+# English: "Wall end not joined"
+# Review: missing
+#: packages/editor/src/components/editor-2d/floorplan-open-wall-ends-layer.tsx
+msgid "editor.editor2d.floorplanOpenWallEndsLayer.wallEndNotJoined"
+msgstr ""
+
 # Source-Hash: aeac665749d3101d
 # Review: required
 # AI-Provider: claude-code
@@ -3853,6 +4345,12 @@ msgstr "关闭相机操作提示"
 #, fuzzy
 msgid "editor.expandSidebar"
 msgstr "展开侧边栏"
+
+# English: "Place a spawn point from the Build tab to control where walkthrough starts."
+# Review: missing
+#: packages/editor/src/components/editor/first-person-controls.tsx
+msgid "editor.firstPersonControls.placeASpawnPointFromThe"
+msgstr ""
 
 # Source-Hash: dd86efcab72fc5c7
 # Review: required
@@ -4104,6 +4602,24 @@ msgstr "在此插入楼层"
 msgid "editor.floatingLevelSelector.levelHeight"
 msgstr "楼层高度"
 
+# English: "10 ft"
+# Review: missing
+#: packages/editor/src/components/ui/floating-level-selector.tsx
+msgid "editor.floatingLevelSelector.n10Ft"
+msgstr ""
+
+# English: "8 ft"
+# Review: missing
+#: packages/editor/src/components/ui/floating-level-selector.tsx
+msgid "editor.floatingLevelSelector.n8Ft"
+msgstr ""
+
+# English: "9 ft"
+# Review: missing
+#: packages/editor/src/components/ui/floating-level-selector.tsx
+msgid "editor.floatingLevelSelector.n9Ft"
+msgstr ""
+
 # Source-Hash: 91af436e81bb0875
 # Review: required
 # AI-Provider: claude-code
@@ -4204,6 +4720,156 @@ msgstr "{room}楼板"
 #, fuzzy
 msgid "editor.floorFootprint.shared"
 msgstr "共用楼板"
+
+# English: "Dismiss"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-mode-coordinator.tsx
+msgid "editor.floorplanModeCoordinator.dismiss"
+msgstr ""
+
+# English: "Switch to Expert"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-mode-coordinator.tsx
+msgid "editor.floorplanModeCoordinator.switchToExpert"
+msgstr ""
+
+# English: "Any decimal works. Use the known real length, not the drawn value."
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.anyDecimalWorksUseTheKnown"
+msgstr ""
+
+# English: "Cancel"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.cancel"
+msgstr ""
+
+# English: "Centimeters"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.centimeters"
+msgstr ""
+
+# English: "Click one end of a distance you know — e.g. a dimension printed on the plan"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.clickOneEndOfADistance"
+msgstr ""
+
+# English: "Click the other end of that distance"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.clickTheOtherEndOfThat"
+msgstr ""
+
+# English: "ctrl"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.ctrl"
+msgstr ""
+
+# English: "Drawn line"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.drawnLine"
+msgstr ""
+
+# English: "e.g. 3.5, 180cm or 5'11\""
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.eG35180cmOr"
+msgstr ""
+
+# English: "Enter a valid length to preview the scale."
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.enterAValidLengthToPreview"
+msgstr ""
+
+# English: "Enter the real-world length of the line you just drew. The image will resize to match it."
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.enterTheRealWorldLengthOf"
+msgstr ""
+
+# English: "Feet"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.feet"
+msgstr ""
+
+# English: "Inches"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.inches"
+msgstr ""
+
+# English: "Meters"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.meters"
+msgstr ""
+
+# English: "panel"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.panel"
+msgstr ""
+
+# English: "Real length"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.realLength"
+msgstr ""
+
+# English: "resize"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.resize"
+msgstr ""
+
+# English: "rotate"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.rotate"
+msgstr ""
+
+# English: "Save Scale"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.saveScale"
+msgstr ""
+
+# English: "Set overlay scale"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.setOverlayScale"
+msgstr ""
+
+# English: "set scale"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.setScale"
+msgstr ""
+
+# English: "Switch to a building level to view and edit the floorplan."
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.switchToABuildingLevelTo"
+msgstr ""
+
+# English: "Floor top"
+# Review: missing
+#: packages/editor/src/components/editor/footprint-height-handle.tsx
+msgid "editor.footprintHeightHandle.floorTop"
+msgstr ""
+
+# English: "Foundation"
+# Review: missing
+#: packages/editor/src/components/editor/footprint-height-handle.tsx
+msgid "editor.footprintHeightHandle.foundation"
+msgstr ""
 
 # Source-Hash: c0774c185060fc13
 # Review: required
@@ -9595,6 +10261,12 @@ msgstr "排污"
 msgid "editor.inspector.option.wye.14vupc8"
 msgstr "Y 形三通"
 
+# English: "Join walls"
+# Review: missing
+#: packages/editor/src/components/editor/join-walls-pill.tsx
+msgid "editor.joinWallsPill.joinWalls"
+msgstr ""
+
 # Source-Hash: 179b025e25f9a091
 # Review: required
 # AI-Provider: claude-code
@@ -10819,6 +11491,18 @@ msgstr "窗"
 #, fuzzy
 msgid "editor.nodeDisplay.zone"
 msgstr "区域"
+
+# English: "Wall end not joined"
+# Review: missing
+#: packages/editor/src/components/editor/open-wall-ends-3d-layer.tsx
+msgid "editor.openWallEnds3dLayer.wallEndNotJoined"
+msgstr ""
+
+# English: "Show"
+# Review: missing
+#: packages/editor/src/components/editor/open-wall-ends-hint.tsx
+msgid "editor.openWallEndsHint.show"
+msgstr ""
 
 # Source-Hash: c0774c185060fc13
 # Review: required
@@ -13672,6 +14356,210 @@ msgstr "长度"
 msgid "editor.placementTyping.offset"
 msgstr "偏移"
 
+# English: "Ask Pascal"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.askPascal"
+msgstr ""
+
+# English: "Dictate"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.dictate"
+msgstr ""
+
+# English: "Drag to move it aside"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.dragToMoveItAside"
+msgstr ""
+
+# English: "No picture"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.noPicture"
+msgstr ""
+
+# English: "Queue"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.queue"
+msgstr ""
+
+# English: "Remove {name}"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.removeName"
+msgstr ""
+
+# English: "Remove the area"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.removeTheArea"
+msgstr ""
+
+# English: "Send"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.send"
+msgstr ""
+
+# English: "Stop dictating"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.stopDictating"
+msgstr ""
+
+# English: "What Pascal will see"
+# Review: missing
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.whatPascalWillSee"
+msgstr ""
+
+# English: "Pascal is working on this"
+# Review: missing
+#: packages/editor/src/components/point-ask/hover-chip.tsx
+msgid "editor.pointAsk.hoverChip.pascalIsWorkingOnThis"
+msgstr ""
+
+# English: "⌥ the wall"
+# Review: missing
+#: packages/editor/src/components/point-ask/hover-chip.tsx
+msgid "editor.pointAsk.hoverChip.theWall"
+msgstr ""
+
+# English: "Before"
+# Review: missing
+#: packages/editor/src/components/point-ask/mode-pill.tsx
+msgid "editor.pointAsk.modePill.before"
+msgstr ""
+
+# English: "· Esc to leave"
+# Review: missing
+#: packages/editor/src/components/point-ask/mode-pill.tsx
+msgid "editor.pointAsk.modePill.escToLeave"
+msgstr ""
+
+# English: "Point at anything to ask Pascal"
+# Review: missing
+#: packages/editor/src/components/point-ask/mode-pill.tsx
+msgid "editor.pointAsk.modePill.pointAtAnythingToAskPascal"
+msgstr ""
+
+# English: "After"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.after"
+msgstr ""
+
+# English: "Change more"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.changeMore"
+msgstr ""
+
+# English: "Hold to see before"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.holdToSeeBefore"
+msgstr ""
+
+# English: "Keep"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.keep"
+msgstr ""
+
+# English: "Open in chat"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.openInChat"
+msgstr ""
+
+# English: "Redo"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.redo"
+msgstr ""
+
+# English: "See why"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.seeWhy"
+msgstr ""
+
+# English: "Sent to Pascal"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.sentToPascal"
+msgstr ""
+
+# English: "Showing before"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.showingBefore"
+msgstr ""
+
+# English: "Try again"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.tryAgain"
+msgstr ""
+
+# English: "Undo"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.undo"
+msgstr ""
+
+# English: "Undo anyway"
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.undoAnyway"
+msgstr ""
+
+# English: "You've changed the scene since. Undoing also removes those changes."
+# Review: missing
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.youVeChangedTheSceneSince"
+msgstr ""
+
+# English: "Close"
+# Review: missing
+#: packages/editor/src/components/ui/primitives/dialog.tsx
+msgid "editor.primitives.dialog.close"
+msgstr ""
+
+# English: "Opacity"
+# Review: missing
+#: packages/editor/src/components/ui/primitives/opacity-control.tsx
+msgid "editor.primitives.opacityControl.opacity"
+msgstr ""
+
+# English: "Close"
+# Review: missing
+#: packages/editor/src/components/ui/primitives/sheet.tsx
+msgid "editor.primitives.sheet.close"
+msgstr ""
+
+# English: "Displays the mobile sidebar."
+# Review: missing
+#: packages/editor/src/components/ui/primitives/sidebar.tsx
+msgid "editor.primitives.sidebar.displaysTheMobileSidebar"
+msgstr ""
+
+# English: "Sidebar"
+# Review: missing
+#: packages/editor/src/components/ui/primitives/sidebar.tsx
+msgid "editor.primitives.sidebar.sidebar"
+msgstr ""
+
+# English: "Toggle Sidebar"
+# Review: missing
+#: packages/editor/src/components/ui/primitives/sidebar.tsx
+msgid "editor.primitives.sidebar.toggleSidebar"
+msgstr ""
+
 # Source-Hash: 89ee318aad485f83
 # Review: required
 # AI-Provider: claude-code
@@ -13781,6 +14669,30 @@ msgstr "位置"
 #, fuzzy
 msgid "editor.proceduralItems.inspector.resetThisPart"
 msgstr "重置此部件"
+
+# English: "Click another surface to replace"
+# Review: missing
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.clickAnotherSurfaceToReplace"
+msgstr ""
+
+# English: "Click surface to pin"
+# Review: missing
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.clickSurfaceToPin"
+msgstr ""
+
+# English: "Live lens"
+# Review: missing
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.liveLens"
+msgstr ""
+
+# English: "Pinned"
+# Review: missing
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.pinned"
+msgstr ""
 
 # Source-Hash: 5eab376947d29a50
 # Review: required
@@ -13913,6 +14825,18 @@ msgstr "{current} · 低于{shared} {distance}"
 msgid "editor.room.builtOn.levelWith"
 msgstr "{current} · 与{shared}齐平"
 
+# English: "Add stairs"
+# Review: missing
+#: packages/editor/src/components/editor/room-controls.tsx
+msgid "editor.roomControls.addStairs"
+msgstr ""
+
+# English: "Divide room"
+# Review: missing
+#: packages/editor/src/components/editor/room-controls.tsx
+msgid "editor.roomControls.divideRoom"
+msgstr ""
+
 # Source-Hash: 782bc47cb30d5c66
 # Review: required
 # AI-Provider: claude-code
@@ -13952,6 +14876,24 @@ msgstr "楼面"
 #, fuzzy
 msgid "editor.roomHandles.typeASizeToMoveThe"
 msgstr "输入尺寸以移动墙体"
+
+# English: "Floor height"
+# Review: missing
+#: packages/editor/src/components/editor/room-handles-2d.tsx
+msgid "editor.roomHandles2d.floorHeight"
+msgstr ""
+
+# English: "Lower the floor"
+# Review: missing
+#: packages/editor/src/components/editor/room-handles-2d.tsx
+msgid "editor.roomHandles2d.lowerTheFloor"
+msgstr ""
+
+# English: "Raise the floor"
+# Review: missing
+#: packages/editor/src/components/editor/room-handles-2d.tsx
+msgid "editor.roomHandles2d.raiseTheFloor"
+msgstr ""
 
 # Source-Hash: 612dcd5bf06a79c4
 # Review: required
@@ -14802,6 +15744,276 @@ msgstr "没有“{search}”的结果"
 msgid "editor.sidebar.panels.itemsPanel.search"
 msgstr "搜索..."
 
+# English: "Add basement"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.addBasement"
+msgstr ""
+
+# English: "Add floor"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.addFloor"
+msgstr ""
+
+# English: "Animation speed"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.animationSpeed"
+msgstr ""
+
+# English: "Higher plays a build faster; it applies to the next build."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.higherPlaysABuildFasterIt"
+msgstr ""
+
+# English: "Turn the construction animation on to use this."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.turnTheConstructionAnimationOnTo"
+msgstr ""
+
+# English: "Anyone with the link can view it."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.anyoneWithTheLinkCanView"
+msgstr ""
+
+# English: "Audio settings"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.audioSettings"
+msgstr ""
+
+# English: "Master volume"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.masterVolume"
+msgstr ""
+
+# English: "Mute this tab"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.muteThisTab"
+msgstr ""
+
+# English: "Radio volume"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.radioVolume"
+msgstr ""
+
+# English: "Sound effects"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.soundEffects"
+msgstr ""
+
+# English: "Unmute this tab"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.unmuteThisTab"
+msgstr ""
+
+# English: "Volume levels apply to every tab. Muting applies to this tab only."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.volumeLevelsApplyToEveryTab"
+msgstr ""
+
+# English: "Cast shadows from lights."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.castShadowsFromLights"
+msgstr ""
+
+# English: "Choose which procedural content is baked into model files. GLB and USDZ use the textured portable path; STL, OBJ and IFC remain geometry-only."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.chooseWhichProceduralContentIsBaked"
+msgstr ""
+
+# English: "Clear and start new"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.clearAndStartNew"
+msgstr ""
+
+# English: "Construction animation"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation"
+msgstr ""
+
+# English: "Control who can open this project."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.controlWhoCanOpenThisProject"
+msgstr ""
+
+# English: "Copied"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.copied"
+msgstr ""
+
+# English: "Copy"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.copy"
+msgstr ""
+
+# English: "Copy project ID"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.copyProjectId"
+msgstr ""
+
+# English: "Danger zone"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.dangerZone"
+msgstr ""
+
+# English: "Default mode"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.defaultMode"
+msgstr ""
+
+# English: "Download the scene or hand it to another app."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.downloadTheSceneOrHandIt"
+msgstr ""
+
+# English: "Exclude hidden furniture and other hidden scene nodes"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.excludeHiddenFurnitureAndOtherHidden"
+msgstr ""
+
+# English: "Expert mode"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.expertMode"
+msgstr ""
+
+# English: "Explore scene graph"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exploreSceneGraph"
+msgstr ""
+
+# English: "Export"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.export"
+msgstr ""
+
+# English: "Exporting {label}…"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exportingLabel"
+msgstr ""
+
+# English: "Export {label}"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exportLabel"
+msgstr ""
+
+# English: "Export options"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exportOptions"
+msgstr ""
+
+# English: "Export visible nodes only"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exportVisibleNodesOnly"
+msgstr ""
+
+# English: "file…"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.file"
+msgstr ""
+
+# English: "Floor plan"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.floorPlan"
+msgstr ""
+
+# English: "Floors"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.floors"
+msgstr ""
+
+# English: "Full floor plan"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.fullFloorPlan"
+msgstr ""
+
+# English: "Generate thumbnail"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.generateThumbnail"
+msgstr ""
+
+# English: "Generating…"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.generating"
+msgstr ""
+
+# English: "(GLB/USDZ only)"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.glbUsdzOnly"
+msgstr ""
+
+# English: "Include in file"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.includeInFile"
+msgstr ""
+
+# English: "Include {label} in GLB and USDZ"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.includeLabelInGlbAndUsdz"
+msgstr ""
+
+# English: "Include {label} in model files"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.includeLabelInModelFiles"
+msgstr ""
+
+# English: "Inspect how nodes are nested in this scene."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.inspectHowNodesAreNestedIn"
+msgstr ""
+
+# English: "Interface theme"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.interfaceTheme"
+msgstr ""
+
+# English: "Keep a JSON copy of the scene, or restore one."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.keepAJsonCopyOfThe"
+msgstr ""
+
 # Source-Hash: fb66c49eee49a3bc
 # Review: required
 # AI-Provider: claude-code
@@ -14901,6 +16113,366 @@ msgstr "选择"
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.shortcutsAreContextAwareGuidedConstraints"
 msgstr "快捷键随上下文而变化。吸附是可见的模式：轻按 Shift 切换，操作中按住 Alt 可自由放置。"
+
+# English: "Load build"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuild"
+msgstr ""
+
+# English: "Cancel"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.cancel"
+msgstr ""
+
+# English: "Cannot import this file"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.cannotImportThisFile"
+msgstr ""
+
+# English: "error"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.error"
+msgstr ""
+
+# English: "Floor area"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.floorArea"
+msgstr ""
+
+# English: "Hide"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.hide"
+msgstr ""
+
+# English: "node"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.node"
+msgstr ""
+
+# English: "Ready to import"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.readyToImport"
+msgstr ""
+
+# English: "Replace current scene"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.replaceCurrentScene"
+msgstr ""
+
+# English: "Schema details ("
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.schemaDetails"
+msgstr ""
+
+# English: "Show"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.show"
+msgstr ""
+
+# English: "Show {hiddenWarningCount} more"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.showHiddenwarningcountMore"
+msgstr ""
+
+# English: "Structure"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.structure"
+msgstr ""
+
+# English: "The file contains no recognised nodes."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.theFileContainsNoRecognisedNodes"
+msgstr ""
+
+# English: "warning"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.warning"
+msgstr ""
+
+# English: "3D model"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.n3dModel"
+msgstr ""
+
+# English: "Needs the"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.needsThe"
+msgstr ""
+
+# English: "No floors yet"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.noFloorsYet"
+msgstr ""
+
+# English: "No optional procedural content is present."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.noOptionalProceduralContentIsPresent"
+msgstr ""
+
+# English: "Only you can view it."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.onlyYouCanViewIt"
+msgstr ""
+
+# English: "Optional static surroundings are included only in GLB and USDZ."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.optionalStaticSurroundingsAreIncludedOnly"
+msgstr ""
+
+# English: "Pascal add-on for Blender"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.pascalAddOnForBlender"
+msgstr ""
+
+# English: "Preferences"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.preferences"
+msgstr ""
+
+# English: "Preparing"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.preparing"
+msgstr ""
+
+# English: "Preparing floor-plan PDF…"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.preparingFloorPlanPdf"
+msgstr ""
+
+# English: "Export 3D print 3MF"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
+msgid "editor.sidebar.panels.settingsPanel.printExportButton.export3dPrint3mf"
+msgstr ""
+
+# English: "Export 3D print STL"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
+msgid "editor.sidebar.panels.settingsPanel.printExportButton.export3dPrintStl"
+msgstr ""
+
+# English: "3D print export failed."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
+msgid "editor.sidebar.panels.settingsPanel.printExportButton.n3dPrintExportFailed"
+msgstr ""
+
+# English: "Project"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.project"
+msgstr ""
+
+# English: "Project ID"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.projectId"
+msgstr ""
+
+# English: "Project ID copied"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.projectIdCopied"
+msgstr ""
+
+# English: "Public project"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.publicProject"
+msgstr ""
+
+# English: "Reference this project from the API, MCP tools, or support."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.referenceThisProjectFromTheApi"
+msgstr ""
+
+# English: "Refresh the preview shown in your project list."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.refreshThePreviewShownInYour"
+msgstr ""
+
+# English: "Remove floor"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.removeFloor"
+msgstr ""
+
+# English: "Removes every node from this scene. This cannot be undone."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.removesEveryNodeFromThisScene"
+msgstr ""
+
+# English: "Rendering options for this editor session."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.renderingOptionsForThisEditorSession"
+msgstr ""
+
+# English: "running in an open Blender."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.runningInAnOpenBlender"
+msgstr ""
+
+# English: "Save and load"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.saveAndLoad"
+msgstr ""
+
+# English: "Save build"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.saveBuild"
+msgstr ""
+
+# English: "Scene graph"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.sceneGraph"
+msgstr ""
+
+# English: "Scene Graph"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.sceneGraph2"
+msgstr ""
+
+# English: "Select a floor to make it active. The ground floor is always kept as the building datum."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.selectAFloorToMakeIt"
+msgstr ""
+
+# English: "Send to Blender"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.sendToBlender"
+msgstr ""
+
+# English: "Shadows"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.shadows"
+msgstr ""
+
+# English: "Sharing"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.sharing"
+msgstr ""
+
+# English: "Show 3D scans"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.show3dScans"
+msgstr ""
+
+# English: "Show floor plans"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.showFloorPlans"
+msgstr ""
+
+# English: "Sound levels, the construction animation and keyboard shortcuts."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.soundLevelsTheConstructionAnimationAnd"
+msgstr ""
+
+# English: "Structure only"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.structureOnly"
+msgstr ""
+
+# English: "System follows your device’s appearance."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.systemFollowsYourDeviceSAppearance"
+msgstr ""
+
+# English: "The ground floor cannot be removed"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.theGroundFloorCannotBeRemoved"
+msgstr ""
+
+# English: "Thumbnail"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.thumbnail"
+msgstr ""
+
+# English: "Try again"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.tryAgain"
+msgstr ""
+
+# English: "Viewer"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.viewer"
+msgstr ""
+
+# English: "Viewer surroundings"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.viewerSurroundings"
+msgstr ""
+
+# English: "Viewer surroundings are excluded unless selected separately below."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.viewerSurroundingsAreExcludedUnlessSelected"
+msgstr ""
+
+# English: "Visible in the public viewer."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.visibleInThePublicViewer"
+msgstr ""
+
+# English: "Visible nodes only"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.visibleNodesOnly"
+msgstr ""
+
+# English: "Warning: {modelExportWarning}"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.warningModelexportwarning"
+msgstr ""
 
 # Source-Hash: 3c67cde0578ac829
 # Review: required
@@ -15694,6 +17266,144 @@ msgstr "插件"
 #, fuzzy
 msgid "editor.sidebar.usePluginPanels.thisPanelHitAnErrorAnd"
 msgstr "此面板发生错误，已在本次会话中卸载。编辑器的其余部分不受影响——重新加载即可重试。"
+
+# English: "Temperature"
+# Review: missing
+#: packages/editor/src/components/ui/slider-demo.tsx
+msgid "editor.sliderDemo.temperature"
+msgstr ""
+
+# English: "Area"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.area"
+msgstr ""
+
+# English: "Capture"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.capture"
+msgstr ""
+
+# English: "Capturing…"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.capturing"
+msgstr ""
+
+# English: "Close capture mode"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.closeCaptureMode"
+msgstr ""
+
+# English: "Crop"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.crop"
+msgstr ""
+
+# English: "Drag the area you want to capture"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.dragTheAreaYouWantTo"
+msgstr ""
+
+# English: "Drone"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.drone"
+msgstr ""
+
+# English: "Esc to cancel"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.escToCancel"
+msgstr ""
+
+# English: "Field of view"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.fieldOfView"
+msgstr ""
+
+# English: "Format"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.format"
+msgstr ""
+
+# English: " freezes this exact camera angle as a reusable reference for renders & videos."
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.freezesThisExactCameraAngleAs"
+msgstr ""
+
+# English: "Lens"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.lens"
+msgstr ""
+
+# English: "Orbit"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.orbit"
+msgstr ""
+
+# English: "Preset · square"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.presetSquare"
+msgstr ""
+
+# English: "Reset field of view"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.resetFieldOfView"
+msgstr ""
+
+# English: "Saved"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.saved"
+msgstr ""
+
+# English: "snapshot"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.snapshot"
+msgstr ""
+
+# English: "Standard"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.standard"
+msgstr ""
+
+# English: "Switch back to orbit to drag a capture area"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.switchBackToOrbitToDrag"
+msgstr ""
+
+# English: "Take snapshot"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.takeSnapshot"
+msgstr ""
+
+# English: "Viewport"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.viewport"
+msgstr ""
+
+# English: "Walk"
+# Review: missing
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.walk"
+msgstr ""
 
 # Source-Hash: 2ab3b6983e384ecc
 # Review: required
@@ -17655,6 +19365,24 @@ msgstr "目标标高：{elevation} m · 单击或按 Enter 放置"
 msgid "editor.tools.distribution.distributionRunTool.typeALength"
 msgstr "输入长度"
 
+# English: "\"{label}\" crashed"
+# Review: missing
+#: packages/editor/src/components/editor/views/host-view.tsx
+msgid "editor.views.hostView.labelCrashed"
+msgstr ""
+
+# English: "Loading…"
+# Review: missing
+#: packages/editor/src/components/editor/views/host-view.tsx
+msgid "editor.views.hostView.loading"
+msgstr ""
+
+# English: "This view isn't available"
+# Review: missing
+#: packages/editor/src/components/editor/views/host-view.tsx
+msgid "editor.views.hostView.thisViewIsnTAvailable"
+msgstr ""
+
 # Source-Hash: 9fc7a39bc32f287a
 # Review: required
 # AI-Provider: claude-code
@@ -17664,6 +19392,204 @@ msgstr "输入长度"
 #, fuzzy
 msgid "editor.views.plugins"
 msgstr "插件"
+
+# English: "About"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.about"
+msgstr ""
+
+# English: "Add focused tools and content to"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.addFocusedToolsAndContentTo"
+msgstr ""
+
+# English: "Adds a new tool panel to the editor."
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.addsANewToolPanelTo"
+msgstr ""
+
+# English: "All plugins"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.allPlugins"
+msgstr ""
+
+# English: "Browse"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.browse"
+msgstr ""
+
+# English: "By"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.by"
+msgstr ""
+
+# English: "By {name}"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.byName"
+msgstr ""
+
+# English: "Can access"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.canAccess"
+msgstr ""
+
+# English: "Category"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.category"
+msgstr ""
+
+# English: "Close details"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.closeDetails"
+msgstr ""
+
+# English: "Create a Pascal plugin"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.createAPascalPlugin"
+msgstr ""
+
+# English: "Credits"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.credits"
+msgstr ""
+
+# English: "Doesn't use credits"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.doesnTUseCredits"
+msgstr ""
+
+# English: "Install"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.install"
+msgstr ""
+
+# English: "Installed"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.installed"
+msgstr ""
+
+# English: "installed"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.installed2"
+msgstr ""
+
+# English: "Installed in {projectName}"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.installedInProjectname"
+msgstr ""
+
+# English: "Install in {projectName}"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.installInProjectname"
+msgstr ""
+
+# English: "{label} details"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.labelDetails"
+msgstr ""
+
+# English: "Manage"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.manage"
+msgstr ""
+
+# English: "No plugins here yet."
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.noPluginsHereYet"
+msgstr ""
+
+# English: "Not installed"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.notInstalled"
+msgstr ""
+
+# English: "Open {label}"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.openLabel"
+msgstr ""
+
+# English: "Plugin categories"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.pluginCategories"
+msgstr ""
+
+# English: "Plugins"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.plugins"
+msgstr ""
+
+# English: "Runs in the editor. No Pascal services, no outside accounts."
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.runsInTheEditorNoPascal"
+msgstr ""
+
+# English: "Search plugins"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.searchPlugins"
+msgstr ""
+
+# English: "this project"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.thisProject"
+msgstr ""
+
+# English: "Undo"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.undo"
+msgstr ""
+
+# English: "Uninstall"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.uninstall"
+msgstr ""
+
+# English: "uninstalled"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.uninstalled"
+msgstr ""
+
+# English: "Uses this project's credits"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.usesThisProjectSCredits"
+msgstr ""
+
+# English: "View plugin"
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.viewPlugin"
+msgstr ""
 
 # Source-Hash: c54f9bac358893d8
 # Review: required

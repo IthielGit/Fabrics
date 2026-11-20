@@ -1,5 +1,6 @@
 'use client'
 
+import { usePascalI18n } from '@pascal-app/core'
 import { Link2 } from 'lucide-react'
 
 /**
@@ -18,6 +19,7 @@ export function JoinWallsPill({
   onJoin: () => void
   refusal: string | null
 }) {
+  const i18n = usePascalI18n()
   return (
     <div
       className="pointer-events-auto flex items-center gap-1 whitespace-nowrap rounded-full border border-border bg-background/95 p-1 text-xs shadow-xl backdrop-blur-md"
@@ -37,7 +39,7 @@ export function JoinWallsPill({
         type="button"
       >
         <Link2 className="h-3.5 w-3.5" />
-        Join walls
+        {i18n._({ id: 'editor.joinWallsPill.joinWalls', message: 'Join walls' })}
       </button>
     </div>
   )

@@ -1,4 +1,4 @@
-import { getProjectFileSink } from '@pascal-app/core'
+import { getProjectFileSink, usePascalI18n } from '@pascal-app/core'
 import { downloadProjectFile } from '../../../../../lib/download-project-file'
 import { AlertTriangle, Printer } from 'lucide-react'
 import { useState } from 'react'
@@ -67,6 +67,7 @@ export async function preparePrintExport(
 }
 
 export function PrintExportButton({ onlyVisible }: { onlyVisible: boolean }) {
+  const i18n = usePascalI18n()
   const modelExport = useEditor((state) => state.modelExport)
   const [exportingFormat, setExportingFormat] = useState<PrintModelExportFormat | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -81,7 +82,7 @@ export function PrintExportButton({ onlyVisible }: { onlyVisible: boolean }) {
       const prepared = await preparePrintExport(modelExport, onlyVisible, format)
       await downloadProjectFile(prepared.artifact.blob, prepared.artifact.filename, fileSink)
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : '3D print export failed.')
+      setError(reason instanceof Error ? reason.message : i18n._({ id: 'editor.sidebar.panels.settingsPanel.printExportButton.n3dPrintExportFailed', message: '3D print export failed.' }))
     } finally {
       setExportingFormat(null)
     }
@@ -99,7 +100,7 @@ export function PrintExportButton({ onlyVisible }: { onlyVisible: boolean }) {
         variant="outline"
       >
         <Printer className="size-4" />
-        Export 3D print 3MF
+        {i18n._({ id: 'editor.sidebar.panels.settingsPanel.printExportButton.export3dPrint3mf', message: 'Export 3D print 3MF' })}
       </Button>
       <Button
         aria-busy={exportingFormat === 'print-stl'}
@@ -109,7 +110,7 @@ export function PrintExportButton({ onlyVisible }: { onlyVisible: boolean }) {
         variant="outline"
       >
         <Printer className="size-4" />
-        Export 3D print STL
+        {i18n._({ id: 'editor.sidebar.panels.settingsPanel.printExportButton.export3dPrintStl', message: 'Export 3D print STL' })}
       </Button>
       {error && (
         <div className="col-span-full flex gap-2 text-destructive text-xs">

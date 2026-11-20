@@ -5,7 +5,7 @@ import {
   RAISE_METRES_PER_STROKE,
   type SiteNode,
   type TerrainVerb,
-  useScene,
+  useScene, usePascalI18n,
 } from '@pascal-app/core'
 import { Mountain, Pipette } from 'lucide-react'
 import { brushRadiusRange, flattenSite, resetSiteTerrain } from '../../../lib/terrain-sculpt'
@@ -41,6 +41,7 @@ const VERB_HINTS: Record<TerrainVerb, string> = {
  * `MaterialPaintPanel`.
  */
 export function TerrainSculptPanel() {
+  const i18n = usePascalI18n()
   const verb = useEditor((state) => state.terrainVerb)
   const setTerrainVerb = useEditor((state) => state.setTerrainVerb)
   const brush = useEditor((state) => state.terrainBrush)
@@ -92,7 +93,7 @@ export function TerrainSculptPanel() {
           under it lands between samples and paints nothing at all.
         */}
         <SliderControl
-          label="Size"
+          label={i18n._({ id: 'editor.controls.terrainSculptPanel.size', message: 'Size' })}
           max={maxRadius}
           min={minRadius}
           onChange={(radius) => setTerrainBrush({ radius })}
@@ -102,7 +103,7 @@ export function TerrainSculptPanel() {
           value={brush.radius}
         />
         <SliderControl
-          label="Strength"
+          label={i18n._({ id: 'editor.controls.terrainSculptPanel.strength', message: 'Strength' })}
           max={1}
           min={0.05}
           onChange={(strength) => setTerrainBrush({ strength })}
@@ -111,7 +112,7 @@ export function TerrainSculptPanel() {
           value={brush.strength}
         />
         <SliderControl
-          label="Softness"
+          label={i18n._({ id: 'editor.controls.terrainSculptPanel.softness', message: 'Softness' })}
           max={1}
           min={0}
           onChange={(falloff) => setTerrainBrush({ falloff })}
@@ -122,8 +123,8 @@ export function TerrainSculptPanel() {
         <SegmentedControl
           onChange={(shape) => setTerrainBrush({ shape })}
           options={[
-            { value: 'round', label: 'Round' },
-            { value: 'square', label: 'Square' },
+            { value: 'round', label: i18n._({ id: 'editor.controls.terrainSculptPanel.round', message: 'Round' }) },
+            { value: 'square', label: i18n._({ id: 'editor.controls.terrainSculptPanel.square', message: 'Square' }) },
           ]}
           value={brush.shape}
         />
@@ -134,7 +135,7 @@ export function TerrainSculptPanel() {
           <div className="flex items-center gap-2">
             <div className="min-w-0 flex-1">
               <SliderControl
-                label="Target"
+                label={i18n._({ id: 'editor.controls.terrainSculptPanel.target', message: 'Target' })}
                 max={50}
                 min={-50}
                 onChange={setTerrainFlattenTarget}
@@ -145,7 +146,7 @@ export function TerrainSculptPanel() {
               />
             </div>
             <Button
-              aria-label="Pick target height from the ground"
+              aria-label={i18n._({ id: 'editor.controls.terrainSculptPanel.pickTargetHeightFromTheGround', message: 'Pick target height from the ground' })}
               aria-pressed={sampling}
               onClick={() => setTerrainSampling(!sampling)}
               size="icon-sm"
@@ -157,10 +158,10 @@ export function TerrainSculptPanel() {
           </div>
           <p className="px-0.5 text-muted-foreground text-xs">
             {sampling
-              ? 'Click the ground to pick its height as the target.'
+              ? i18n._({ id: 'editor.controls.terrainSculptPanel.clickTheGroundToPickIts', message: 'Click the ground to pick its height as the target.' })
               : flattenTarget === null
-                ? 'No target yet — the first click samples the ground under it.'
-                : 'Every flatten stroke levels toward this height.'}
+                ? i18n._({ id: 'editor.controls.terrainSculptPanel.noTargetYetTheFirstClick', message: 'No target yet — the first click samples the ground under it.' })
+                : i18n._({ id: 'editor.controls.terrainSculptPanel.everyFlattenStrokeLevelsTowardThis', message: 'Every flatten stroke levels toward this height.' })}
           </p>
         </div>
       )}
@@ -175,7 +176,7 @@ export function TerrainSculptPanel() {
           variant="outline"
         >
           <Mountain />
-          Level lot
+          {i18n._({ id: 'editor.controls.terrainSculptPanel.levelLot', message: 'Level lot' })}
         </Button>
         <Button
           className="flex-1"
@@ -185,7 +186,7 @@ export function TerrainSculptPanel() {
           type="button"
           variant="outline"
         >
-          Clear terrain
+          {i18n._({ id: 'editor.controls.terrainSculptPanel.clearTerrain', message: 'Clear terrain' })}
         </Button>
       </div>
     </div>

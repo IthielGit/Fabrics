@@ -1,7 +1,12 @@
 'use client'
 
 import type { QuickMeasurementMetric, QuickMeasurementReport } from '@pascal-app/core'
-import { formatAreaLabel, formatLinearMeasurement, formatVolumeLabel } from '@pascal-app/core'
+import {
+  formatAreaLabel,
+  formatLinearMeasurement,
+  formatVolumeLabel,
+  usePascalI18n,
+} from '@pascal-app/core'
 import { Crosshair, MapPin } from 'lucide-react'
 import { memo } from 'react'
 
@@ -26,6 +31,7 @@ export const QuickMeasurementCard = memo(function QuickMeasurementCard({
   metricNotation: 'meters' | 'millimeters'
   lensState: 'live' | 'pinned'
 }) {
+  const i18n = usePascalI18n()
   const pinned = lensState === 'pinned'
 
   return (
@@ -47,7 +53,9 @@ export const QuickMeasurementCard = memo(function QuickMeasurementCard({
           <div className="text-[10px] text-muted-foreground leading-tight">{report.kindLabel}</div>
         </div>
         <span className="ml-auto shrink-0 rounded-full bg-muted px-2 py-0.5 font-medium text-[10px] text-muted-foreground">
-          {pinned ? 'Pinned' : 'Live lens'}
+          {pinned
+            ? i18n._({ id: 'editor.quickMeasurementCard.pinned', message: 'Pinned' })
+            : i18n._({ id: 'editor.quickMeasurementCard.liveLens', message: 'Live lens' })}
         </span>
       </div>
 
@@ -68,7 +76,15 @@ export const QuickMeasurementCard = memo(function QuickMeasurementCard({
       <div className="flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1 border-border/60 border-t px-3 py-1.5 text-[10px] text-muted-foreground leading-tight">
         {report.note ? <span className="min-w-48 flex-1">{report.note}</span> : <span />}
         <span className="ml-auto shrink-0 text-foreground/70">
-          {pinned ? 'Click another surface to replace' : 'Click surface to pin'}
+          {pinned
+            ? i18n._({
+                id: 'editor.quickMeasurementCard.clickAnotherSurfaceToReplace',
+                message: 'Click another surface to replace',
+              })
+            : i18n._({
+                id: 'editor.quickMeasurementCard.clickSurfaceToPin',
+                message: 'Click surface to pin',
+              })}
         </span>
       </div>
     </div>

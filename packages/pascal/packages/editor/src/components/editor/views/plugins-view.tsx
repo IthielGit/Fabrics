@@ -1,6 +1,6 @@
 'use client'
 
-import { useScene } from '@pascal-app/core'
+import { usePascalI18n, useScene } from '@pascal-app/core'
 import { Button } from '@pascal-app/viewer/ui'
 import {
   Check,
@@ -103,15 +103,20 @@ function PluginIcon({ panel, size }: { panel: EditorHostPanel; size: 'md' | 'lg'
 }
 
 function StatusLine({ entry, projectName }: { entry: PluginEntry; projectName?: string }) {
+  const i18n = usePascalI18n()
   return (
     <span className="flex min-w-0 items-center gap-1.5 text-muted-foreground text-xs">
       {entry.installed && <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-foreground/80" />}
       <span className="truncate">
         {entry.installed
           ? projectName
-            ? `Installed in ${projectName}`
-            : 'Installed'
-          : 'Not installed'}{' '}
+            ? i18n._({
+                id: 'editor.views.pluginsView.installedInProjectname',
+                message: 'Installed in {projectName}',
+                values: { projectName },
+              })
+            : i18n._({ id: 'editor.views.pluginsView.installed', message: 'Installed' })
+          : i18n._({ id: 'editor.views.pluginsView.notInstalled', message: 'Not installed' })}{' '}
         · {entry.category}
       </span>
     </span>
@@ -155,6 +160,7 @@ function PluginCard({
   onOpen: () => void
   onInstall: () => void
 }) {
+  const i18n = usePascalI18n()
   const { panel } = entry
   return (
     <div
@@ -187,13 +193,18 @@ function PluginCard({
         </div>
       </div>
       <p className="line-clamp-2 text-foreground/80 text-sm">
-        {panel.summary ?? panel.description ?? 'Adds a new tool panel to the editor.'}
+        {panel.summary ??
+          panel.description ??
+          i18n._({
+            id: 'editor.views.pluginsView.addsANewToolPanelTo',
+            message: 'Adds a new tool panel to the editor.',
+          })}
       </p>
       <div className="flex flex-wrap items-center gap-1.5">
         <AccessChips panel={panel} />
         {entry.installed ? (
           <span className="ml-auto inline-flex items-center gap-1 text-muted-foreground text-xs">
-            Manage
+            {i18n._({ id: 'editor.views.pluginsView.manage', message: 'Manage' })}
             <ChevronRight className="h-3.5 w-3.5" />
           </span>
         ) : (
@@ -208,7 +219,9 @@ function PluginCard({
             size="sm"
             variant="outline"
           >
-            {lock ? lock.actionLabel : 'Install'}
+            {lock
+              ? lock.actionLabel
+              : i18n._({ id: 'editor.views.pluginsView.install', message: 'Install' })}
           </Button>
         )}
       </div>
@@ -236,11 +249,16 @@ function PluginDetail({
   /** Opens the plugin's panel; absent when it has none in this workspace. */
   onOpen?: () => void
 }) {
+  const i18n = usePascalI18n()
   const { panel } = entry
   const credits = creditsLabel(context.credits)
   return (
     <aside
-      aria-label={`${panel.label} details`}
+      aria-label={i18n._({
+        id: 'editor.views.pluginsView.labelDetails',
+        message: '{label} details',
+        values: { label: panel.label },
+      })}
       className={cn(
         'flex w-[360px] shrink-0 flex-col gap-5 overflow-y-auto border-border/60 border-l bg-sidebar p-5',
         floating && 'absolute inset-y-0 right-0 z-10 max-w-full shadow-2xl',
@@ -256,7 +274,10 @@ function PluginDetail({
           <StatusLine entry={entry} projectName={context.projectName} />
         </div>
         <button
-          aria-label="Close details"
+          aria-label={i18n._({
+            id: 'editor.views.pluginsView.closeDetails',
+            message: 'Close details',
+          })}
           className="ml-auto flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
           onClick={onClose}
           type="button"
@@ -279,7 +300,11 @@ function PluginDetail({
         <div className="flex gap-2">
           {onOpen && (
             <Button className="h-10 flex-1 rounded-full" onClick={onOpen}>
-              Open {panel.label}
+              {i18n._({
+                id: 'editor.views.pluginsView.openLabel',
+                message: 'Open {label}',
+                values: { label: panel.label },
+              })}
             </Button>
           )}
           <Button
@@ -288,28 +313,39 @@ function PluginDetail({
             onClick={onToggle}
             variant="outline"
           >
-            Uninstall
+            {i18n._({ id: 'editor.views.pluginsView.uninstall', message: 'Uninstall' })}
           </Button>
         </div>
       ) : (
         <Button className="h-10 rounded-full" disabled={readOnly} onClick={onToggle}>
           <Check />
-          {context.projectName ? `Install in ${context.projectName}` : 'Install'}
+          {context.projectName
+            ? i18n._({
+                id: 'editor.views.pluginsView.installInProjectname',
+                message: 'Install in {projectName}',
+                values: { projectName: context.projectName },
+              })
+            : i18n._({ id: 'editor.views.pluginsView.install', message: 'Install' })}
         </Button>
       )}
 
       <section>
         <h4 className="mb-2 font-mono text-[10.5px] text-muted-foreground uppercase tracking-[0.08em]">
-          About
+          {i18n._({ id: 'editor.views.pluginsView.about', message: 'About' })}
         </h4>
         <p className="text-foreground/90 text-sm leading-relaxed">
-          {panel.description ?? panel.summary ?? 'Adds a new tool panel to the editor.'}
+          {panel.description ??
+            panel.summary ??
+            i18n._({
+              id: 'editor.views.pluginsView.addsANewToolPanelTo',
+              message: 'Adds a new tool panel to the editor.',
+            })}
         </p>
       </section>
 
       <section>
         <h4 className="mb-2 font-mono text-[10.5px] text-muted-foreground uppercase tracking-[0.08em]">
-          Can access
+          {i18n._({ id: 'editor.views.pluginsView.canAccess', message: 'Can access' })}
         </h4>
         {panel.access?.length ? (
           <ul className="overflow-hidden rounded-xl border border-border/60">
@@ -331,18 +367,31 @@ function PluginDetail({
           </ul>
         ) : (
           <p className="rounded-xl border border-border/60 border-dashed px-3.5 py-3 text-muted-foreground text-sm">
-            Runs in the editor. No Pascal services, no outside accounts.
+            {i18n._({
+              id: 'editor.views.pluginsView.runsInTheEditorNoPascal',
+              message: 'Runs in the editor. No Pascal services, no outside accounts.',
+            })}
           </p>
         )}
       </section>
 
       <section>
         <h4 className="mb-2 font-mono text-[10.5px] text-muted-foreground uppercase tracking-[0.08em]">
-          Credits
+          {i18n._({ id: 'editor.views.pluginsView.credits', message: 'Credits' })}
         </h4>
         <div className="flex items-center gap-2.5 rounded-xl bg-accent/60 px-3.5 py-3 text-sm">
           <Coins className="h-4 w-4 shrink-0 text-muted-foreground" />
-          <span>{usesCredits(panel) ? "Uses this project's credits" : "Doesn't use credits"}</span>
+          <span>
+            {usesCredits(panel)
+              ? i18n._({
+                  id: 'editor.views.pluginsView.usesThisProjectSCredits',
+                  message: "Uses this project's credits",
+                })
+              : i18n._({
+                  id: 'editor.views.pluginsView.doesnTUseCredits',
+                  message: "Doesn't use credits",
+                })}
+          </span>
           {credits && usesCredits(panel) && (
             <span className="ml-auto font-mono text-muted-foreground text-xs tabular-nums">
               {credits}
@@ -361,11 +410,17 @@ function PluginDetail({
                 rel="noreferrer"
                 target="_blank"
               >
-                By {panel.creator.name}
+                {i18n._({ id: 'editor.views.pluginsView.by', message: 'By' })} {panel.creator.name}
                 <ExternalLink className="h-3 w-3" />
               </a>
             ) : (
-              <span>By {panel.creator.name}</span>
+              <span>
+                {i18n._({
+                  id: 'editor.views.pluginsView.byName',
+                  message: 'By {name}',
+                  values: { name: panel.creator.name },
+                })}
+              </span>
             ))}
           {panel.pluginUrl && (
             <a
@@ -374,7 +429,7 @@ function PluginDetail({
               rel="noreferrer"
               target="_blank"
             >
-              View plugin
+              {i18n._({ id: 'editor.views.pluginsView.viewPlugin', message: 'View plugin' })}
               <ExternalLink className="h-3 w-3" />
             </a>
           )}
@@ -391,6 +446,7 @@ function PluginDetail({
  * room to read like one.
  */
 export function PluginsView() {
+  const i18n = usePascalI18n()
   const panels = useRegistry(editorHostPanelRegistry)
   const installLocks = useRegistry(pluginInstallLocks)
   const context = useRegistry(pluginDirectoryContext)
@@ -514,11 +570,14 @@ export function PluginsView() {
     >
       {wide && (
         <nav
-          aria-label="Plugin categories"
+          aria-label={i18n._({
+            id: 'editor.views.pluginsView.pluginCategories',
+            message: 'Plugin categories',
+          })}
           className="flex w-56 shrink-0 flex-col gap-0.5 overflow-y-auto border-border/60 border-r px-3.5 py-6"
         >
           <h4 className="mx-2.5 mb-1.5 font-mono text-[10.5px] text-muted-foreground uppercase tracking-[0.08em]">
-            Browse
+            {i18n._({ id: 'editor.views.pluginsView.browse', message: 'Browse' })}
           </h4>
           {[null, ...categories].map((name) => {
             const count = name
@@ -537,7 +596,10 @@ export function PluginsView() {
                 onClick={() => pickCategory(name)}
                 type="button"
               >
-                <span className="flex-1 truncate">{name ?? 'All plugins'}</span>
+                <span className="flex-1 truncate">
+                  {name ??
+                    i18n._({ id: 'editor.views.pluginsView.allPlugins', message: 'All plugins' })}
+                </span>
                 <span className="font-mono text-muted-foreground text-xs">{count}</span>
               </button>
             )
@@ -552,7 +614,10 @@ export function PluginsView() {
               rel="noreferrer"
               target="_blank"
             >
-              Create a Pascal plugin
+              {i18n._({
+                id: 'editor.views.pluginsView.createAPascalPlugin',
+                message: 'Create a Pascal plugin',
+              })}
               <ExternalLink className="h-3 w-3" />
             </a>
           </div>
@@ -562,19 +627,29 @@ export function PluginsView() {
       <main className={cn('min-w-0 flex-1 overflow-y-auto pt-7 pb-12', wide ? 'px-8' : 'px-5')}>
         <div className="mb-6 flex flex-wrap items-end gap-4">
           <div className={cn('min-w-0', wide ? 'flex-1' : 'basis-full')}>
-            <h1 className="font-semibold text-2xl text-foreground tracking-tight">Plugins</h1>
+            <h1 className="font-semibold text-2xl text-foreground tracking-tight">
+              {i18n._({ id: 'editor.views.pluginsView.plugins', message: 'Plugins' })}
+            </h1>
             <p className="mt-1 text-muted-foreground text-sm">
-              Add focused tools and content to {context.projectName ?? 'this project'}.
+              {i18n._({
+                id: 'editor.views.pluginsView.addFocusedToolsAndContentTo',
+                message: 'Add focused tools and content to',
+              })}{' '}
+              {context.projectName ??
+                i18n._({ id: 'editor.views.pluginsView.thisProject', message: 'this project' })}
+              .
             </p>
           </div>
           {!wide && categories.length > 1 && (
             <select
-              aria-label="Category"
+              aria-label={i18n._({ id: 'editor.views.pluginsView.category', message: 'Category' })}
               className="h-9 rounded-lg border border-border bg-accent/40 px-2.5 text-sm"
               onChange={(event) => pickCategory(event.target.value || null)}
               value={category ?? ''}
             >
-              <option value="">All plugins</option>
+              <option value="">
+                {i18n._({ id: 'editor.views.pluginsView.allPlugins', message: 'All plugins' })}
+              </option>
               {categories.map((name) => (
                 <option key={name} value={name}>
                   {name}
@@ -585,10 +660,16 @@ export function PluginsView() {
           <label className="flex h-9 w-64 max-w-full items-center gap-2 rounded-lg border border-border bg-accent/40 px-3 text-muted-foreground focus-within:border-foreground/30">
             <Search className="h-4 w-4 shrink-0" />
             <input
-              aria-label="Search plugins"
+              aria-label={i18n._({
+                id: 'editor.views.pluginsView.searchPlugins',
+                message: 'Search plugins',
+              })}
               className="min-w-0 flex-1 bg-transparent text-foreground text-sm outline-none placeholder:text-muted-foreground"
               onChange={(event) => setQuery(event.target.value)}
-              placeholder="Search plugins"
+              placeholder={i18n._({
+                id: 'editor.views.pluginsView.searchPlugins',
+                message: 'Search plugins',
+              })}
               type="search"
               value={query}
             />
@@ -618,7 +699,10 @@ export function PluginsView() {
           <p className="py-12 text-center text-muted-foreground text-sm">
             {needle
               ? `No plugins match “${query.trim()}”${category ? ` in ${category}` : ''}.`
-              : 'No plugins here yet.'}
+              : i18n._({
+                  id: 'editor.views.pluginsView.noPluginsHereYet',
+                  message: 'No plugins here yet.',
+                })}
           </p>
         ) : (
           <>
@@ -647,14 +731,17 @@ export function PluginsView() {
           role="status"
         >
           <span>
-            {undoEntry.panel.label} {undo.installed ? 'installed' : 'uninstalled'}
+            {undoEntry.panel.label}{' '}
+            {undo.installed
+              ? i18n._({ id: 'editor.views.pluginsView.installed2', message: 'installed' })
+              : i18n._({ id: 'editor.views.pluginsView.uninstalled', message: 'uninstalled' })}
           </span>
           <button
             className="h-8 rounded-lg px-2.5 font-semibold transition-colors hover:bg-accent"
             onClick={() => setInstalled(undo.id, !undo.installed, false)}
             type="button"
           >
-            Undo
+            {i18n._({ id: 'editor.views.pluginsView.undo', message: 'Undo' })}
           </button>
         </div>
       )}

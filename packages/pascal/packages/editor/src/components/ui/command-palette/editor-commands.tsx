@@ -93,7 +93,7 @@ export function EditorCommands() {
       // ── Scene ────────────────────────────────────────────────────────────
       {
         id: 'editor.tool.wall',
-        label: 'Wall Tool',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.wallTool', message: 'Wall Tool' }),
         group: 'Scene',
         icon: <Square className="h-4 w-4" />,
         keywords: ['draw', 'build', 'structure'],
@@ -101,7 +101,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.tool.slab',
-        label: 'Slab Tool',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.slabTool', message: 'Slab Tool' }),
         group: 'Scene',
         icon: <Layers className="h-4 w-4" />,
         keywords: ['floor', 'build'],
@@ -109,7 +109,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.tool.ceiling',
-        label: 'Ceiling Tool',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.ceilingTool', message: 'Ceiling Tool' }),
         group: 'Scene',
         icon: <Grid3X3 className="h-4 w-4" />,
         keywords: ['top', 'build'],
@@ -117,7 +117,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.tool.door',
-        label: 'Door Tool',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.doorTool', message: 'Door Tool' }),
         group: 'Scene',
         icon: <DoorOpen className="h-4 w-4" />,
         keywords: ['opening', 'entrance'],
@@ -125,7 +125,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.tool.window',
-        label: 'Window Tool',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.windowTool', message: 'Window Tool' }),
         group: 'Scene',
         icon: <AppWindow className="h-4 w-4" />,
         keywords: ['opening', 'glass'],
@@ -133,7 +133,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.tool.item',
-        label: 'Item Tool',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.itemTool', message: 'Item Tool' }),
         group: 'Scene',
         icon: <Package className="h-4 w-4" />,
         keywords: ['furniture', 'object', 'asset', 'furnish'],
@@ -141,7 +141,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.tool.stair',
-        label: 'Stair Tool',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.stairTool', message: 'Stair Tool' }),
         group: 'Scene',
         icon: <ArrowRight className="h-4 w-4" />,
         keywords: ['stairs', 'staircase', 'flight', 'landing', 'steps'],
@@ -149,7 +149,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.tool.zone',
-        label: 'Zone Tool',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.zoneTool', message: 'Zone Tool' }),
         group: 'Scene',
         icon: <Hexagon className="h-4 w-4" />,
         keywords: ['area', 'room', 'space'],
@@ -157,7 +157,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.delete-selection',
-        label: 'Delete Selection',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.deleteSelection', message: 'Delete Selection' }),
         group: 'Scene',
         icon: <Trash2 className="h-4 w-4" />,
         keywords: ['remove', 'erase'],
@@ -171,7 +171,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.mode.material-paint',
-        label: 'Material Paint',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.materialPaint', message: 'Material Paint' }),
         group: 'Scene',
         icon: <PaintBucket className="h-4 w-4" />,
         keywords: ['paint', 'material', 'texture', 'bucket', 'surface'],
@@ -181,7 +181,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.mode.terrain-sculpt',
-        label: 'Sculpt Terrain',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.sculptTerrain', message: 'Sculpt Terrain' }),
         group: 'Scene',
         icon: <Mountain className="h-4 w-4" />,
         keywords: ['terrain', 'ground', 'elevation', 'sculpt', 'hill', 'slope', 'grade', 'dig'],
@@ -193,7 +193,7 @@ export function EditorCommands() {
       // ── Levels ───────────────────────────────────────────────────────────
       {
         id: 'editor.level.goto',
-        label: 'Go to Level',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.goToLevel', message: 'Go to Level' }),
         group: 'Levels',
         icon: <ArrowRight className="h-4 w-4" />,
         keywords: ['level', 'floor', 'go', 'navigate', 'switch', 'select'],
@@ -203,7 +203,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.level.add',
-        label: 'Add Level',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.addLevel', message: 'Add Level' }),
         group: 'Levels',
         icon: <Plus className="h-4 w-4" />,
         keywords: ['level', 'floor', 'add', 'create', 'new'],
@@ -219,7 +219,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.level.rename',
-        label: 'Rename Level',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.renameLevel', message: 'Rename Level' }),
         group: 'Levels',
         icon: <PencilLine className="h-4 w-4" />,
         keywords: ['level', 'floor', 'rename', 'name'],
@@ -235,7 +235,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.level.delete',
-        label: 'Delete Level',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.deleteLevel', message: 'Delete Level' }),
         group: 'Levels',
         icon: <Trash2 className="h-4 w-4" />,
         keywords: ['level', 'floor', 'delete', 'remove'],
@@ -256,7 +256,7 @@ export function EditorCommands() {
       // ── Units ────────────────────────────────────────────────────────────
       {
         id: 'editor.unit.new',
-        label: 'New unit',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.newUnit', message: 'New unit' }),
         group: 'Units',
         icon: <Group className="h-4 w-4" />,
         keywords: ['unit', 'apartment', 'hotel', 'room', 'add', 'create', 'new'],
@@ -283,7 +283,7 @@ export function EditorCommands() {
       })),
       {
         id: 'editor.unit.exit-focus',
-        label: 'Exit unit focus',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.exitUnitFocus', message: 'Exit unit focus' }),
         group: 'Units',
         icon: <Group className="h-4 w-4" />,
         keywords: ['unit', 'focus', 'exit', 'leave', 'apartment'],
@@ -294,7 +294,7 @@ export function EditorCommands() {
       // ── Viewer Controls ──────────────────────────────────────────────────
       {
         id: 'editor.viewer.wall-mode',
-        label: 'Wall Mode',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.wallMode', message: 'Wall Mode' }),
         group: 'Viewer Controls',
         icon: <Layers className="h-4 w-4" />,
         keywords: ['wall', 'cutaway', 'up', 'down', 'translucent', 'view'],
@@ -354,7 +354,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.viewer.camera-snapshot',
-        label: 'Take Snapshot',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.takeSnapshot', message: 'Take Snapshot' }),
         group: 'Viewer Controls',
         icon: <Camera className="h-4 w-4" />,
         keywords: ['camera', 'snapshot', 'capture', 'save', 'view', 'bookmark'],
@@ -375,7 +375,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.view.fullscreen',
-        label: 'Toggle Fullscreen',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.toggleFullscreen', message: 'Toggle Fullscreen' }),
         group: 'View',
         icon: <Maximize2 className="h-4 w-4" />,
         keywords: ['fullscreen', 'maximize', 'expand', 'window'],
@@ -389,7 +389,7 @@ export function EditorCommands() {
       // ── History ──────────────────────────────────────────────────────────
       {
         id: 'editor.history.undo',
-        label: 'Undo',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.undo', message: 'Undo' }),
         group: 'History',
         icon: <Undo2 className="h-4 w-4" />,
         keywords: ['undo', 'revert', 'back'],
@@ -398,7 +398,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.history.redo',
-        label: 'Redo',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.redo', message: 'Redo' }),
         group: 'History',
         icon: <Redo2 className="h-4 w-4" />,
         keywords: ['redo', 'forward', 'repeat'],
@@ -409,7 +409,7 @@ export function EditorCommands() {
       // ── Export & Share ───────────────────────────────────────────────────
       {
         id: 'editor.export.json',
-        label: 'Export Scene (JSON)',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.exportSceneJson', message: 'Export Scene (JSON)' }),
         group: 'Export & Share',
         icon: <FileJson className="h-4 w-4" />,
         keywords: ['export', 'download', 'json', 'save', 'data'],
@@ -431,7 +431,7 @@ export function EditorCommands() {
         ? [
             {
               id: 'editor.export.glb',
-              label: 'Export 3D Model (GLB)',
+              label: i18n._({ id: 'editor.commandPalette.editorCommands.export3dModelGlb', message: 'Export 3D Model (GLB)' }),
               group: 'Export & Share',
               icon: <Box className="h-4 w-4" />,
               keywords: ['export', 'glb', 'gltf', '3d', 'model', 'download'],
@@ -441,7 +441,7 @@ export function EditorCommands() {
         : []),
       {
         id: 'editor.export.share-link',
-        label: 'Copy Share Link',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.copyShareLink', message: 'Copy Share Link' }),
         group: 'Export & Share',
         icon: <Copy className="h-4 w-4" />,
         keywords: ['share', 'copy', 'url', 'link'],
@@ -449,7 +449,7 @@ export function EditorCommands() {
       },
       {
         id: 'editor.export.screenshot',
-        label: 'Take Screenshot',
+        label: i18n._({ id: 'editor.commandPalette.editorCommands.takeScreenshot', message: 'Take Screenshot' }),
         group: 'Export & Share',
         icon: <Camera className="h-4 w-4" />,
         keywords: ['screenshot', 'capture', 'image', 'photo', 'png'],

@@ -6,7 +6,7 @@ import {
   type SceneMaterial,
   type SceneMaterialId,
   toSceneMaterialRef,
-  useScene,
+  useScene, usePascalI18n,
 } from '@pascal-app/core'
 import { Copy, Paintbrush, Pencil, Trash2 } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
@@ -80,6 +80,7 @@ function SceneMaterialRow({
   removeSceneMaterial: ReturnType<typeof useScene.getState>['removeSceneMaterial']
   armMaterialPaint: ReturnType<typeof useEditor.getState>['armMaterialPaint']
 }) {
+  const i18n = usePascalI18n()
   // A freshly-created material (via "+ Custom") mounts with its editor open.
   const [isEditingMaterial, setIsEditingMaterial] = useState(autoEdit)
   const [draftName, setDraftName] = useState(sceneMaterial.name)
@@ -139,13 +140,13 @@ function SceneMaterialRow({
 
       <div className="mt-2 flex items-center justify-between gap-2">
         <span className="text-muted-foreground text-xs">
-          Used by {usageCount} {usageCount === 1 ? 'part' : 'parts'}
+          {i18n._({ id: 'editor.controls.sceneMaterialList.usedBy', message: 'Used by' })}{' '}{usageCount} {usageCount === 1 ? i18n._({ id: 'editor.controls.sceneMaterialList.part', message: 'part' }) : i18n._({ id: 'editor.controls.sceneMaterialList.parts', message: 'parts' })}
         </span>
         <div className="flex items-center gap-1">
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                aria-label="Paint with"
+                aria-label={i18n._({ id: 'editor.controls.sceneMaterialList.paintWith', message: 'Paint with' })}
                 onClick={() =>
                   armMaterialPaint({
                     materialPreset: toSceneMaterialRef(id),
@@ -159,12 +160,12 @@ function SceneMaterialRow({
                 <Paintbrush />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Paint with</TooltipContent>
+            <TooltipContent>{i18n._({ id: 'editor.controls.sceneMaterialList.paintWith', message: 'Paint with' })}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                aria-label="Edit"
+                aria-label={i18n._({ id: 'editor.controls.sceneMaterialList.edit', message: 'Edit' })}
                 aria-pressed={isEditingMaterial}
                 onClick={() => setIsEditingMaterial((value) => !value)}
                 size="icon-sm"
@@ -174,12 +175,12 @@ function SceneMaterialRow({
                 <Pencil />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Edit</TooltipContent>
+            <TooltipContent>{i18n._({ id: 'editor.controls.sceneMaterialList.edit', message: 'Edit' })}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                aria-label="Duplicate"
+                aria-label={i18n._({ id: 'editor.controls.sceneMaterialList.duplicate', message: 'Duplicate' })}
                 onClick={duplicateMaterial}
                 size="icon-sm"
                 type="button"
@@ -188,12 +189,12 @@ function SceneMaterialRow({
                 <Copy />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Duplicate</TooltipContent>
+            <TooltipContent>{i18n._({ id: 'editor.controls.sceneMaterialList.duplicate', message: 'Duplicate' })}</TooltipContent>
           </Tooltip>
           <Tooltip>
             <TooltipTrigger asChild>
               <Button
-                aria-label="Delete"
+                aria-label={i18n._({ id: 'editor.controls.sceneMaterialList.delete', message: 'Delete' })}
                 onClick={() => removeSceneMaterial(id)}
                 size="icon-sm"
                 type="button"
@@ -202,7 +203,7 @@ function SceneMaterialRow({
                 <Trash2 />
               </Button>
             </TooltipTrigger>
-            <TooltipContent>Delete</TooltipContent>
+            <TooltipContent>{i18n._({ id: 'editor.controls.sceneMaterialList.delete', message: 'Delete' })}</TooltipContent>
           </Tooltip>
         </div>
       </div>

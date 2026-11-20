@@ -1,6 +1,6 @@
 'use client'
 
-import { type AnyNodeId, emitter, type OpenWallEnd } from '@pascal-app/core'
+import { type AnyNodeId, emitter, type OpenWallEnd, usePascalI18n } from '@pascal-app/core'
 import { MEASUREMENT_DANGLING_COLOR } from '@pascal-app/viewer'
 import { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
@@ -45,6 +45,7 @@ export function OpenWallEndsHint({
   ends: readonly OpenWallEnd[]
   onShow: (end: OpenWallEnd) => void
 }) {
+  const i18n = usePascalI18n()
   const anchor = useViewerAreaTopCenter()
   const [cursor, setCursor] = useState(0)
   const joinable = ends.filter((end) => end.candidate)
@@ -81,7 +82,7 @@ export function OpenWallEndsHint({
         }}
         type="button"
       >
-        Show
+        {i18n._({ id: 'editor.openWallEndsHint.show', message: 'Show' })}
       </button>
     </div>,
     document.body,

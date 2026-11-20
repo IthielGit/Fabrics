@@ -63,6 +63,7 @@ import {
   useLiveNodeOverrides,
   useLiveTransforms,
   useLocale,
+  usePascalI18n,
   useScene,
   type WallNode,
   WallNode as WallNodeSchema,
@@ -3549,6 +3550,7 @@ function FloorplanGuideHandleHint({
   rotationModifierPressed: boolean
   showScaleHint: boolean
 }) {
+  const i18n = usePascalI18n()
   if (!anchor) {
     return null
   }
@@ -3574,7 +3576,9 @@ function FloorplanGuideHandleHint({
             rotationModifierPressed ? 'opacity-40' : 'opacity-100',
           )}
         >
-          <span className="font-medium text-[11px] lowercase leading-none">resize</span>
+          <span className="font-medium text-[11px] lowercase leading-none">
+            {i18n._({ id: 'editor.floorplanPanel.resize', message: 'resize' })}
+          </span>
           <Icon
             aria-hidden="true"
             className="h-3.5 w-3.5 shrink-0"
@@ -3589,11 +3593,15 @@ function FloorplanGuideHandleHint({
             rotationModifierPressed ? 'opacity-100' : 'opacity-40',
           )}
         >
-          <span className="font-medium text-[11px] lowercase leading-none">rotate</span>
+          <span className="font-medium text-[11px] lowercase leading-none">
+            {i18n._({ id: 'editor.floorplanPanel.rotate', message: 'rotate' })}
+          </span>
           {isMacPlatform ? (
             <Command aria-hidden="true" className="h-3.5 w-3.5 shrink-0" strokeWidth={2.2} />
           ) : (
-            <span className="font-mono text-[10px] uppercase leading-none">ctrl</span>
+            <span className="font-mono text-[10px] uppercase leading-none">
+              {i18n._({ id: 'editor.floorplanPanel.ctrl', message: 'ctrl' })}
+            </span>
           )}
           <Icon
             aria-hidden="true"
@@ -3605,9 +3613,13 @@ function FloorplanGuideHandleHint({
 
         {showScaleHint && (
           <div className="flex items-center gap-1.5 opacity-40">
-            <span className="font-medium text-[11px] lowercase leading-none">set scale</span>
+            <span className="font-medium text-[11px] lowercase leading-none">
+              {i18n._({ id: 'editor.floorplanPanel.setScale', message: 'set scale' })}
+            </span>
             <Ruler aria-hidden="true" className="h-3.5 w-3.5 shrink-0" strokeWidth={2.2} />
-            <span className="font-medium text-[11px] lowercase leading-none">panel</span>
+            <span className="font-medium text-[11px] lowercase leading-none">
+              {i18n._({ id: 'editor.floorplanPanel.panel', message: 'panel' })}
+            </span>
           </div>
         )}
       </div>
@@ -4927,6 +4939,7 @@ export function FloorplanPanel({
   compassHost?: HTMLElement | null
   floorplanSceneSlot?: ReactNode
 }) {
+  const i18n = usePascalI18n()
   useFloorplanCameraSyncBridge()
   const locale = useLocale()
   const viewportHostRef = useRef<HTMLDivElement>(null)
@@ -11608,8 +11621,15 @@ export function FloorplanPanel({
         {referenceScaleDraft && (
           <div className="pointer-events-none absolute top-3 left-1/2 z-30 -translate-x-1/2 rounded-md border bg-background/95 px-3 py-2 text-center text-sm shadow-sm">
             {referenceScaleDraft.start
-              ? 'Click the other end of that distance'
-              : 'Click one end of a distance you know — e.g. a dimension printed on the plan'}
+              ? i18n._({
+                  id: 'editor.floorplanPanel.clickTheOtherEndOfThat',
+                  message: 'Click the other end of that distance',
+                })
+              : i18n._({
+                  id: 'editor.floorplanPanel.clickOneEndOfADistance',
+                  message:
+                    'Click one end of a distance you know — e.g. a dimension printed on the plan',
+                })}
           </div>
         )}
 
@@ -11635,17 +11655,25 @@ export function FloorplanPanel({
                 <Ruler className="h-4 w-4 text-foreground/80" />
               </div>
               <div className="min-w-0">
-                <div className="font-medium text-sm">Set overlay scale</div>
+                <div className="font-medium text-sm">
+                  {i18n._({
+                    id: 'editor.floorplanPanel.setOverlayScale',
+                    message: 'Set overlay scale',
+                  })}
+                </div>
                 <div className="mt-0.5 text-muted-foreground text-xs leading-4">
-                  Enter the real-world length of the line you just drew. The image will resize to
-                  match it.
+                  {i18n._({
+                    id: 'editor.floorplanPanel.enterTheRealWorldLengthOf',
+                    message:
+                      'Enter the real-world length of the line you just drew. The image will resize to match it.',
+                  })}
                 </div>
               </div>
             </div>
 
             <div className="mb-3 rounded-xl border border-border/70 bg-black/4 dark:bg-white/5 px-3 py-2">
               <div className="text-[11px] text-muted-foreground uppercase tracking-wide">
-                Drawn line
+                {i18n._({ id: 'editor.floorplanPanel.drawnLine', message: 'Drawn line' })}
               </div>
               <div className="mt-1 font-medium text-sm">
                 {formatMeasurement(
@@ -11659,7 +11687,7 @@ export function FloorplanPanel({
 
             <label className="block">
               <span className="mb-1.5 block font-medium text-muted-foreground text-xs">
-                Real length
+                {i18n._({ id: 'editor.floorplanPanel.realLength', message: 'Real length' })}
               </span>
               <div className="grid grid-cols-[1fr_8.25rem] gap-2">
                 <input
@@ -11669,7 +11697,10 @@ export function FloorplanPanel({
                     referenceScaleInputError ? 'border-destructive/60' : 'border-border',
                   )}
                   onChange={(event) => setReferenceScaleValue(event.target.value)}
-                  placeholder={`e.g. 3.5, 180cm or 5'11"`}
+                  placeholder={i18n._({
+                    id: 'editor.floorplanPanel.eG35180cmOr',
+                    message: 'e.g. 3.5, 180cm or 5\'11"',
+                  })}
                   type="text"
                   value={referenceScaleValue}
                 />
@@ -11680,10 +11711,18 @@ export function FloorplanPanel({
                   }
                   value={referenceScaleUnit}
                 >
-                  <option value="meters">Meters</option>
-                  <option value="centimeters">Centimeters</option>
-                  <option value="feet">Feet</option>
-                  <option value="inches">Inches</option>
+                  <option value="meters">
+                    {i18n._({ id: 'editor.floorplanPanel.meters', message: 'Meters' })}
+                  </option>
+                  <option value="centimeters">
+                    {i18n._({ id: 'editor.floorplanPanel.centimeters', message: 'Centimeters' })}
+                  </option>
+                  <option value="feet">
+                    {i18n._({ id: 'editor.floorplanPanel.feet', message: 'Feet' })}
+                  </option>
+                  <option value="inches">
+                    {i18n._({ id: 'editor.floorplanPanel.inches', message: 'Inches' })}
+                  </option>
                 </select>
               </div>
               <span
@@ -11694,14 +11733,20 @@ export function FloorplanPanel({
               >
                 {referenceScaleInputError ??
                   referenceScaleHint ??
-                  'Any decimal works. Use the known real length, not the drawn value.'}
+                  i18n._({
+                    id: 'editor.floorplanPanel.anyDecimalWorksUseTheKnown',
+                    message: 'Any decimal works. Use the known real length, not the drawn value.',
+                  })}
               </span>
             </label>
 
             <div className="mt-3 rounded-lg bg-muted/45 px-3 py-2 text-muted-foreground text-xs">
               {pendingReferenceImageScaleFactor
                 ? `Image will scale ${formatFloorplanNumber(pendingReferenceImageScaleFactor, locale, 3)}x from the first point.`
-                : 'Enter a valid length to preview the scale.'}
+                : i18n._({
+                    id: 'editor.floorplanPanel.enterAValidLengthToPreview',
+                    message: 'Enter a valid length to preview the scale.',
+                  })}
             </div>
 
             <div className="mt-4 flex justify-end gap-2">
@@ -11710,14 +11755,14 @@ export function FloorplanPanel({
                 onClick={() => setPendingReferenceScale(null)}
                 type="button"
               >
-                Cancel
+                {i18n._({ id: 'editor.floorplanPanel.cancel', message: 'Cancel' })}
               </button>
               <button
                 className="h-8 rounded-lg bg-foreground px-3 font-medium text-background text-xs transition hover:bg-foreground/90 disabled:cursor-not-allowed disabled:opacity-50"
                 disabled={!pendingReferenceMetersPerUnit}
                 type="submit"
               >
-                Save Scale
+                {i18n._({ id: 'editor.floorplanPanel.saveScale', message: 'Save Scale' })}
               </button>
             </div>
           </form>
@@ -11725,7 +11770,10 @@ export function FloorplanPanel({
 
         {levelNode?.type !== 'level' && !hasAmbientBuildingLevel ? (
           <div className="flex h-full items-center justify-center px-6 text-center text-muted-foreground text-sm">
-            Switch to a building level to view and edit the floorplan.
+            {i18n._({
+              id: 'editor.floorplanPanel.switchToABuildingLevelTo',
+              message: 'Switch to a building level to view and edit the floorplan.',
+            })}
           </div>
         ) : isFloorplanOpen ? (
           // The panel stays mounted in 3D mode (display:none) to keep the

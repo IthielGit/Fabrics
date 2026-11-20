@@ -201,9 +201,9 @@ function LevelRow({
   // for whole-foot storey heights.
   const heightPresets = isImperial
     ? [
-        { label: '8 ft', height: 2.4384 },
-        { label: '9 ft', height: 2.7432 },
-        { label: '10 ft', height: 3.048 },
+        { label: i18n._({ id: 'editor.floatingLevelSelector.n8Ft', message: '8 ft' }), height: 2.4384 },
+        { label: i18n._({ id: 'editor.floatingLevelSelector.n9Ft', message: '9 ft' }), height: 2.7432 },
+        { label: i18n._({ id: 'editor.floatingLevelSelector.n10Ft', message: '10 ft' }), height: 3.048 },
       ]
     : [
         { label: '2.5 m', height: 2.5 },

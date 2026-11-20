@@ -1,6 +1,6 @@
 'use client'
 
-import { useScene } from '@pascal-app/core'
+import { usePascalI18n, useScene } from '@pascal-app/core'
 import { LiveWalkthroughController, useFirstPersonHud, useViewer } from '@pascal-app/viewer'
 import { DroneHud, WalkthroughHud } from '@pascal-app/viewer/ui'
 import { useCallback } from 'react'
@@ -29,6 +29,7 @@ export function FirstPersonControls() {
 }
 
 export const FirstPersonOverlay = ({ onExit }: { onExit: () => void }) => {
+  const i18n = usePascalI18n()
   const hasPlacedSpawn = useScene((state) =>
     Object.values(state.nodes).some((node) => node.type === 'spawn'),
   )
@@ -57,7 +58,10 @@ export const FirstPersonOverlay = ({ onExit }: { onExit: () => void }) => {
     >
       {!hasPlacedSpawn && (
         <div className="corner-smooth rounded-full border border-border/40 bg-background/80 px-3 py-1 text-center text-muted-foreground text-xs shadow-elevation-3 backdrop-blur-xl">
-          Place a spawn point from the Build tab to control where walkthrough starts.
+          {i18n._({
+            id: 'editor.firstPersonControls.placeASpawnPointFromThe',
+            message: 'Place a spawn point from the Build tab to control where walkthrough starts.',
+          })}
         </div>
       )}
     </WalkthroughHud>

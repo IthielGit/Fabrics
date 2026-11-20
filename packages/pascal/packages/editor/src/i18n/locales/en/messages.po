@@ -1524,6 +1524,174 @@ msgstr "Rotate"
 msgid "editor.cameraHint.zoom"
 msgstr "Zoom"
 
+#: packages/editor/src/components/editor/capture-level-picker.tsx
+msgid "editor.captureLevelPicker.levelsInTheShot"
+msgstr "Levels in the shot"
+
+#: packages/editor/src/components/editor/capture-level-picker.tsx
+msgid "editor.captureLevelPicker.wholeBuilding"
+msgstr "Whole building"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.back"
+msgstr "back"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.close"
+msgstr "close"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.commandPalette"
+msgstr "Command Palette"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.addLevel"
+msgstr "Add Level"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.ceilingTool"
+msgstr "Ceiling Tool"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.copyShareLink"
+msgstr "Copy Share Link"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.deleteLevel"
+msgstr "Delete Level"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.deleteSelection"
+msgstr "Delete Selection"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.doorTool"
+msgstr "Door Tool"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.exitUnitFocus"
+msgstr "Exit unit focus"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.export3dModelGlb"
+msgstr "Export 3D Model (GLB)"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.exportSceneJson"
+msgstr "Export Scene (JSON)"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.goToLevel"
+msgstr "Go to Level"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.itemTool"
+msgstr "Item Tool"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.materialPaint"
+msgstr "Material Paint"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.newUnit"
+msgstr "New unit"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.redo"
+msgstr "Redo"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.renameLevel"
+msgstr "Rename Level"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.sculptTerrain"
+msgstr "Sculpt Terrain"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.slabTool"
+msgstr "Slab Tool"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.stairTool"
+msgstr "Stair Tool"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.takeScreenshot"
+msgstr "Take Screenshot"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.takeSnapshot"
+msgstr "Take Snapshot"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.toggleFullscreen"
+msgstr "Toggle Fullscreen"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.undo"
+msgstr "Undo"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.wallMode"
+msgstr "Wall Mode"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.wallTool"
+msgstr "Wall Tool"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.windowTool"
+msgstr "Window Tool"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.zoneTool"
+msgstr "Zone Tool"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.filterOptions"
+msgstr "Filter options…"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.goToLevel"
+msgstr "Go to Level"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.navigate"
+msgstr "navigate"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.noCommandsFound"
+msgstr "No commands found."
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.renameLevel"
+msgstr "Rename Level"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.renameTo"
+msgstr "Rename to"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.searchActions"
+msgstr "Search actions…"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.select"
+msgstr "select"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.typeANewName"
+msgstr "Type a new name…"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.typeANewNameAbove"
+msgstr "Type a new name above…"
+
+#: packages/editor/src/components/ui/command-palette/index.tsx
+msgid "editor.commandPalette.wallMode"
+msgstr "Wall Mode"
+
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 msgid "editor.commands.qualityAuto"
 msgstr "Quality: Auto"
@@ -1548,6 +1716,98 @@ msgstr "{label}: {finish}"
 msgid "editor.controls.finishSwatch.default"
 msgstr "Default"
 
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.addMaterial"
+msgstr "Add material"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.clickAPaintedPartOfA"
+msgstr "Click a painted part of a wall, floor or ceiling to remove it, or a painted surface to reset it to its default."
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.erase"
+msgstr "Erase"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.noCustomMaterialsYetAddOne"
+msgstr "No custom materials yet — add one with +."
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.paint"
+msgstr "Paint"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.pickMaterial"
+msgstr "Pick material"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.sceneMaterials"
+msgstr "Scene materials"
+
+#: packages/editor/src/components/ui/controls/material-picker.tsx
+msgid "editor.controls.materialPicker.newMaterial"
+msgstr "New material"
+
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.back"
+msgstr "Back"
+
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.color"
+msgstr "Color"
+
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.double"
+msgstr "Double"
+
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.front"
+msgstr "Front"
+
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.metalness"
+msgstr "Metalness"
+
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.opacity"
+msgstr "Opacity"
+
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.roughness"
+msgstr "Roughness"
+
+#: packages/editor/src/components/ui/controls/material-properties-editor.tsx
+msgid "editor.controls.materialPropertiesEditor.side"
+msgstr "Side"
+
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.delete"
+msgstr "Delete"
+
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.duplicate"
+msgstr "Duplicate"
+
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.edit"
+msgstr "Edit"
+
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.paintWith"
+msgstr "Paint with"
+
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.part"
+msgstr "part"
+
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.parts"
+msgstr "parts"
+
+#: packages/editor/src/components/ui/controls/scene-material-list.tsx
+msgid "editor.controls.sceneMaterialList.usedBy"
+msgstr "Used by"
+
 #: packages/editor/src/components/ui/controls/slider-control.tsx
 msgid "editor.controls.sliderControl.editLabel"
 msgstr "Edit {label}"
@@ -1555,6 +1815,58 @@ msgstr "Edit {label}"
 #: packages/editor/src/components/ui/controls/slider-control.tsx
 msgid "editor.controls.sliderControl.mixed"
 msgstr "Mixed"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.clearTerrain"
+msgstr "Clear terrain"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.clickTheGroundToPickIts"
+msgstr "Click the ground to pick its height as the target."
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.everyFlattenStrokeLevelsTowardThis"
+msgstr "Every flatten stroke levels toward this height."
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.levelLot"
+msgstr "Level lot"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.noTargetYetTheFirstClick"
+msgstr "No target yet — the first click samples the ground under it."
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.pickTargetHeightFromTheGround"
+msgstr "Pick target height from the ground"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.round"
+msgstr "Round"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.size"
+msgstr "Size"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.softness"
+msgstr "Softness"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.square"
+msgstr "Square"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.strength"
+msgstr "Strength"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.target"
+msgstr "Target"
+
+#: packages/editor/src/components/editor/delete-confirmation-dialog.tsx
+msgid "editor.deleteConfirmationDialog.cancel"
+msgstr "Cancel"
 
 #: packages/editor/src/components/editor/index.tsx
 msgid "editor.dismiss"
@@ -1564,9 +1876,29 @@ msgstr "Dismiss"
 msgid "editor.dismissCameraControlsHint"
 msgstr "Dismiss camera controls hint"
 
+#: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
+msgid "editor.editor2d.floorplanMeasurementToolLayer.align"
+msgstr "ALIGN "
+
+#: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
+msgid "editor.editor2d.floorplanMeasurementToolLayer.create"
+msgstr "Create"
+
+#: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
+msgid "editor.editor2d.floorplanMeasurementToolLayer.extrusionHeight"
+msgstr "Extrusion height"
+
+#: packages/editor/src/components/editor-2d/floorplan-open-wall-ends-layer.tsx
+msgid "editor.editor2d.floorplanOpenWallEndsLayer.wallEndNotJoined"
+msgstr "Wall end not joined"
+
 #: packages/editor/src/components/editor/index.tsx
 msgid "editor.expandSidebar"
 msgstr "Expand sidebar"
+
+#: packages/editor/src/components/editor/first-person-controls.tsx
+msgid "editor.firstPersonControls.placeASpawnPointFromThe"
+msgstr "Place a spawn point from the Build tab to control where walkthrough starts."
 
 #: packages/editor/src/components/editor/floating-action-menu.tsx
 msgid "editor.floatingActionMenu.axis"
@@ -1669,6 +2001,18 @@ msgid "editor.floatingLevelSelector.levelHeight"
 msgstr "Level height"
 
 #: packages/editor/src/components/ui/floating-level-selector.tsx
+msgid "editor.floatingLevelSelector.n10Ft"
+msgstr "10 ft"
+
+#: packages/editor/src/components/ui/floating-level-selector.tsx
+msgid "editor.floatingLevelSelector.n8Ft"
+msgstr "8 ft"
+
+#: packages/editor/src/components/ui/floating-level-selector.tsx
+msgid "editor.floatingLevelSelector.n9Ft"
+msgstr "9 ft"
+
+#: packages/editor/src/components/ui/floating-level-selector.tsx
 msgid "editor.floatingLevelSelector.pasteCopiedSelection"
 msgstr "Paste copied selection"
 
@@ -1708,6 +2052,106 @@ msgstr "{room} floor"
 #: packages/editor/src/i18n/floor-footprint-name.ts
 msgid "editor.floorFootprint.shared"
 msgstr "Shared floor"
+
+#: packages/editor/src/components/editor/floorplan-mode-coordinator.tsx
+msgid "editor.floorplanModeCoordinator.dismiss"
+msgstr "Dismiss"
+
+#: packages/editor/src/components/editor/floorplan-mode-coordinator.tsx
+msgid "editor.floorplanModeCoordinator.switchToExpert"
+msgstr "Switch to Expert"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.anyDecimalWorksUseTheKnown"
+msgstr "Any decimal works. Use the known real length, not the drawn value."
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.cancel"
+msgstr "Cancel"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.centimeters"
+msgstr "Centimeters"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.clickOneEndOfADistance"
+msgstr "Click one end of a distance you know — e.g. a dimension printed on the plan"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.clickTheOtherEndOfThat"
+msgstr "Click the other end of that distance"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.ctrl"
+msgstr "ctrl"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.drawnLine"
+msgstr "Drawn line"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.eG35180cmOr"
+msgstr "e.g. 3.5, 180cm or 5'11\""
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.enterAValidLengthToPreview"
+msgstr "Enter a valid length to preview the scale."
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.enterTheRealWorldLengthOf"
+msgstr "Enter the real-world length of the line you just drew. The image will resize to match it."
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.feet"
+msgstr "Feet"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.inches"
+msgstr "Inches"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.meters"
+msgstr "Meters"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.panel"
+msgstr "panel"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.realLength"
+msgstr "Real length"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.resize"
+msgstr "resize"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.rotate"
+msgstr "rotate"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.saveScale"
+msgstr "Save Scale"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.setOverlayScale"
+msgstr "Set overlay scale"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.setScale"
+msgstr "set scale"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.switchToABuildingLevelTo"
+msgstr "Switch to a building level to view and edit the floorplan."
+
+#: packages/editor/src/components/editor/footprint-height-handle.tsx
+msgid "editor.footprintHeightHandle.floorTop"
+msgstr "Floor top"
+
+#: packages/editor/src/components/editor/footprint-height-handle.tsx
+msgid "editor.footprintHeightHandle.foundation"
+msgstr "Foundation"
 
 #: packages/editor/src/components/ui/helpers/building-helper.tsx
 msgid "editor.helpers.buildingHelper.cancel"
@@ -3865,6 +4309,10 @@ msgstr "Waste"
 msgid "editor.inspector.option.wye.14vupc8"
 msgstr "Wye"
 
+#: packages/editor/src/components/editor/join-walls-pill.tsx
+msgid "editor.joinWallsPill.joinWalls"
+msgstr "Join walls"
+
 #: packages/editor/src/components/ui/sidebar/panels/site-panel/index.tsx
 #: packages/editor/src/components/ui/sidebar/panels/site-panel/tree-node.tsx
 msgid "editor.layers.collapse"
@@ -4357,6 +4805,14 @@ msgstr "Window"
 #: packages/editor/src/components/ui/panels/node-display.ts
 msgid "editor.nodeDisplay.zone"
 msgstr "Zone"
+
+#: packages/editor/src/components/editor/open-wall-ends-3d-layer.tsx
+msgid "editor.openWallEnds3dLayer.wallEndNotJoined"
+msgstr "Wall end not joined"
+
+#: packages/editor/src/components/editor/open-wall-ends-hint.tsx
+msgid "editor.openWallEndsHint.show"
+msgstr "Show"
 
 #: packages/editor/src/components/ui/panels/collections/collections-popover.tsx
 msgid "editor.panels.collections.collectionsPopover.cancel"
@@ -5500,6 +5956,142 @@ msgstr "Length"
 msgid "editor.placementTyping.offset"
 msgstr "Offset"
 
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.askPascal"
+msgstr "Ask Pascal"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.dictate"
+msgstr "Dictate"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.dragToMoveItAside"
+msgstr "Drag to move it aside"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.noPicture"
+msgstr "No picture"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.queue"
+msgstr "Queue"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.removeName"
+msgstr "Remove {name}"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.removeTheArea"
+msgstr "Remove the area"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.send"
+msgstr "Send"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.stopDictating"
+msgstr "Stop dictating"
+
+#: packages/editor/src/components/point-ask/bubble.tsx
+msgid "editor.pointAsk.bubble.whatPascalWillSee"
+msgstr "What Pascal will see"
+
+#: packages/editor/src/components/point-ask/hover-chip.tsx
+msgid "editor.pointAsk.hoverChip.pascalIsWorkingOnThis"
+msgstr "Pascal is working on this"
+
+#: packages/editor/src/components/point-ask/hover-chip.tsx
+msgid "editor.pointAsk.hoverChip.theWall"
+msgstr "⌥ the wall"
+
+#: packages/editor/src/components/point-ask/mode-pill.tsx
+msgid "editor.pointAsk.modePill.before"
+msgstr "Before"
+
+#: packages/editor/src/components/point-ask/mode-pill.tsx
+msgid "editor.pointAsk.modePill.escToLeave"
+msgstr "· Esc to leave"
+
+#: packages/editor/src/components/point-ask/mode-pill.tsx
+msgid "editor.pointAsk.modePill.pointAtAnythingToAskPascal"
+msgstr "Point at anything to ask Pascal"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.after"
+msgstr "After"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.changeMore"
+msgstr "Change more"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.holdToSeeBefore"
+msgstr "Hold to see before"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.keep"
+msgstr "Keep"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.openInChat"
+msgstr "Open in chat"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.redo"
+msgstr "Redo"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.seeWhy"
+msgstr "See why"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.sentToPascal"
+msgstr "Sent to Pascal"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.showingBefore"
+msgstr "Showing before"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.tryAgain"
+msgstr "Try again"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.undo"
+msgstr "Undo"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.undoAnyway"
+msgstr "Undo anyway"
+
+#: packages/editor/src/components/point-ask/pins.tsx
+msgid "editor.pointAsk.pins.youVeChangedTheSceneSince"
+msgstr "You've changed the scene since. Undoing also removes those changes."
+
+#: packages/editor/src/components/ui/primitives/dialog.tsx
+msgid "editor.primitives.dialog.close"
+msgstr "Close"
+
+#: packages/editor/src/components/ui/primitives/opacity-control.tsx
+msgid "editor.primitives.opacityControl.opacity"
+msgstr "Opacity"
+
+#: packages/editor/src/components/ui/primitives/sheet.tsx
+msgid "editor.primitives.sheet.close"
+msgstr "Close"
+
+#: packages/editor/src/components/ui/primitives/sidebar.tsx
+msgid "editor.primitives.sidebar.displaysTheMobileSidebar"
+msgstr "Displays the mobile sidebar."
+
+#: packages/editor/src/components/ui/primitives/sidebar.tsx
+msgid "editor.primitives.sidebar.sidebar"
+msgstr "Sidebar"
+
+#: packages/editor/src/components/ui/primitives/sidebar.tsx
+msgid "editor.primitives.sidebar.toggleSidebar"
+msgstr "Toggle Sidebar"
+
 #: packages/editor/src/components/procedural-items/inspector.tsx
 msgid "editor.proceduralItems.inspector.adjustDesign"
 msgstr "Adjust design"
@@ -5543,6 +6135,22 @@ msgstr "Position"
 #: packages/editor/src/components/procedural-items/inspector.tsx
 msgid "editor.proceduralItems.inspector.resetThisPart"
 msgstr "Reset this part"
+
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.clickAnotherSurfaceToReplace"
+msgstr "Click another surface to replace"
+
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.clickSurfaceToPin"
+msgstr "Click surface to pin"
+
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.liveLens"
+msgstr "Live lens"
+
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.pinned"
+msgstr "Pinned"
 
 #: packages/editor/src/components/editor/index.tsx
 msgid "editor.reloadEditor"
@@ -5597,6 +6205,14 @@ msgstr "{current} · {distance} below {shared}"
 msgid "editor.room.builtOn.levelWith"
 msgstr "{current} · level with {shared}"
 
+#: packages/editor/src/components/editor/room-controls.tsx
+msgid "editor.roomControls.addStairs"
+msgstr "Add stairs"
+
+#: packages/editor/src/components/editor/room-controls.tsx
+msgid "editor.roomControls.divideRoom"
+msgstr "Divide room"
+
 #: packages/editor/src/components/editor/room-handles.tsx
 msgid "editor.roomHandles.cannotReadInput"
 msgstr "Cannot read \"{input}\""
@@ -5612,6 +6228,18 @@ msgstr "Floor"
 #: packages/editor/src/components/editor/room-handles.tsx
 msgid "editor.roomHandles.typeASizeToMoveThe"
 msgstr "Type a size to move the wall"
+
+#: packages/editor/src/components/editor/room-handles-2d.tsx
+msgid "editor.roomHandles2d.floorHeight"
+msgstr "Floor height"
+
+#: packages/editor/src/components/editor/room-handles-2d.tsx
+msgid "editor.roomHandles2d.lowerTheFloor"
+msgstr "Lower the floor"
+
+#: packages/editor/src/components/editor/room-handles-2d.tsx
+msgid "editor.roomHandles2d.raiseTheFloor"
+msgstr "Raise the floor"
 
 #: packages/viewer/src/ui/lib/viewer-selection.ts
 msgid "editor.roomLabel.room"
@@ -5953,6 +6581,186 @@ msgstr "No results for “{search}”"
 msgid "editor.sidebar.panels.itemsPanel.search"
 msgstr "Search..."
 
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.addBasement"
+msgstr "Add basement"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.addFloor"
+msgstr "Add floor"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.animationSpeed"
+msgstr "Animation speed"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.higherPlaysABuildFasterIt"
+msgstr "Higher plays a build faster; it applies to the next build."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.turnTheConstructionAnimationOnTo"
+msgstr "Turn the construction animation on to use this."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.anyoneWithTheLinkCanView"
+msgstr "Anyone with the link can view it."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.audioSettings"
+msgstr "Audio settings"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.masterVolume"
+msgstr "Master volume"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.muteThisTab"
+msgstr "Mute this tab"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.radioVolume"
+msgstr "Radio volume"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.soundEffects"
+msgstr "Sound effects"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.unmuteThisTab"
+msgstr "Unmute this tab"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/audio-settings-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.audioSettingsDialog.volumeLevelsApplyToEveryTab"
+msgstr "Volume levels apply to every tab. Muting applies to this tab only."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.castShadowsFromLights"
+msgstr "Cast shadows from lights."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.chooseWhichProceduralContentIsBaked"
+msgstr "Choose which procedural content is baked into model files. GLB and USDZ use the textured portable path; STL, OBJ and IFC remain geometry-only."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.clearAndStartNew"
+msgstr "Clear and start new"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation"
+msgstr "Construction animation"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.controlWhoCanOpenThisProject"
+msgstr "Control who can open this project."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.copied"
+msgstr "Copied"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.copy"
+msgstr "Copy"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.copyProjectId"
+msgstr "Copy project ID"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.dangerZone"
+msgstr "Danger zone"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.defaultMode"
+msgstr "Default mode"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.downloadTheSceneOrHandIt"
+msgstr "Download the scene or hand it to another app."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.excludeHiddenFurnitureAndOtherHidden"
+msgstr "Exclude hidden furniture and other hidden scene nodes"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.expertMode"
+msgstr "Expert mode"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exploreSceneGraph"
+msgstr "Explore scene graph"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.export"
+msgstr "Export"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exportingLabel"
+msgstr "Exporting {label}…"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exportLabel"
+msgstr "Export {label}"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exportOptions"
+msgstr "Export options"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.exportVisibleNodesOnly"
+msgstr "Export visible nodes only"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.file"
+msgstr "file…"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.floorPlan"
+msgstr "Floor plan"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.floors"
+msgstr "Floors"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.fullFloorPlan"
+msgstr "Full floor plan"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.generateThumbnail"
+msgstr "Generate thumbnail"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.generating"
+msgstr "Generating…"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.glbUsdzOnly"
+msgstr "(GLB/USDZ only)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.includeInFile"
+msgstr "Include in file"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.includeLabelInGlbAndUsdz"
+msgstr "Include {label} in GLB and USDZ"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.includeLabelInModelFiles"
+msgstr "Include {label} in model files"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.inspectHowNodesAreNestedIn"
+msgstr "Inspect how nodes are nested in this scene."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.interfaceTheme"
+msgstr "Interface theme"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.keepAJsonCopyOfThe"
+msgstr "Keep a JSON copy of the scene, or restore one."
+
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
 msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.buildTools"
 msgstr "Build Tools"
@@ -5992,6 +6800,246 @@ msgstr "Selection"
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
 msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.shortcutsAreContextAwareGuidedConstraints"
 msgstr "Shortcuts are context-aware. Snapping is a visible mode: tap Shift to cycle it, hold Alt during a gesture to place freely."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuild"
+msgstr "Load build"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.cancel"
+msgstr "Cancel"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.cannotImportThisFile"
+msgstr "Cannot import this file"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.error"
+msgstr "error"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.floorArea"
+msgstr "Floor area"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.hide"
+msgstr "Hide"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.node"
+msgstr "node"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.readyToImport"
+msgstr "Ready to import"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.replaceCurrentScene"
+msgstr "Replace current scene"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.schemaDetails"
+msgstr "Schema details ("
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.show"
+msgstr "Show"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.showHiddenwarningcountMore"
+msgstr "Show {hiddenWarningCount} more"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.structure"
+msgstr "Structure"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.theFileContainsNoRecognisedNodes"
+msgstr "The file contains no recognised nodes."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.warning"
+msgstr "warning"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.n3dModel"
+msgstr "3D model"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.needsThe"
+msgstr "Needs the"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.noFloorsYet"
+msgstr "No floors yet"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.noOptionalProceduralContentIsPresent"
+msgstr "No optional procedural content is present."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.onlyYouCanViewIt"
+msgstr "Only you can view it."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.optionalStaticSurroundingsAreIncludedOnly"
+msgstr "Optional static surroundings are included only in GLB and USDZ."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.pascalAddOnForBlender"
+msgstr "Pascal add-on for Blender"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.preferences"
+msgstr "Preferences"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.preparing"
+msgstr "Preparing"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.preparingFloorPlanPdf"
+msgstr "Preparing floor-plan PDF…"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
+msgid "editor.sidebar.panels.settingsPanel.printExportButton.export3dPrint3mf"
+msgstr "Export 3D print 3MF"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
+msgid "editor.sidebar.panels.settingsPanel.printExportButton.export3dPrintStl"
+msgstr "Export 3D print STL"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/print-export-button.tsx
+msgid "editor.sidebar.panels.settingsPanel.printExportButton.n3dPrintExportFailed"
+msgstr "3D print export failed."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.project"
+msgstr "Project"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.projectId"
+msgstr "Project ID"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.projectIdCopied"
+msgstr "Project ID copied"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.publicProject"
+msgstr "Public project"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.referenceThisProjectFromTheApi"
+msgstr "Reference this project from the API, MCP tools, or support."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.refreshThePreviewShownInYour"
+msgstr "Refresh the preview shown in your project list."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.removeFloor"
+msgstr "Remove floor"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.removesEveryNodeFromThisScene"
+msgstr "Removes every node from this scene. This cannot be undone."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.renderingOptionsForThisEditorSession"
+msgstr "Rendering options for this editor session."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.runningInAnOpenBlender"
+msgstr "running in an open Blender."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.saveAndLoad"
+msgstr "Save and load"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.saveBuild"
+msgstr "Save build"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.sceneGraph"
+msgstr "Scene graph"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.sceneGraph2"
+msgstr "Scene Graph"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.selectAFloorToMakeIt"
+msgstr "Select a floor to make it active. The ground floor is always kept as the building datum."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.sendToBlender"
+msgstr "Send to Blender"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.shadows"
+msgstr "Shadows"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.sharing"
+msgstr "Sharing"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.show3dScans"
+msgstr "Show 3D scans"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.showFloorPlans"
+msgstr "Show floor plans"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.soundLevelsTheConstructionAnimationAnd"
+msgstr "Sound levels, the construction animation and keyboard shortcuts."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.structureOnly"
+msgstr "Structure only"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.systemFollowsYourDeviceSAppearance"
+msgstr "System follows your device’s appearance."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.theGroundFloorCannotBeRemoved"
+msgstr "The ground floor cannot be removed"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.thumbnail"
+msgstr "Thumbnail"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.tryAgain"
+msgstr "Try again"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.viewer"
+msgstr "Viewer"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.viewerSurroundings"
+msgstr "Viewer surroundings"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.viewerSurroundingsAreExcludedUnlessSelected"
+msgstr "Viewer surroundings are excluded unless selected separately below."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.visibleInThePublicViewer"
+msgstr "Visible in the public viewer."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.visibleNodesOnly"
+msgstr "Visible nodes only"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.warningModelexportwarning"
+msgstr "Warning: {modelExportWarning}"
 
 #: packages/editor/src/components/ui/sidebar/panels/site-panel/index.tsx
 msgid "editor.sidebar.panels.sitePanel.addLevel"
@@ -6313,6 +7361,98 @@ msgstr "Plugins"
 #: packages/editor/src/components/ui/sidebar/use-plugin-panels.tsx
 msgid "editor.sidebar.usePluginPanels.thisPanelHitAnErrorAnd"
 msgstr "This panel hit an error and was unloaded for this session. The rest of the editor is unaffected — reload to try again."
+
+#: packages/editor/src/components/ui/slider-demo.tsx
+msgid "editor.sliderDemo.temperature"
+msgstr "Temperature"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.area"
+msgstr "Area"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.capture"
+msgstr "Capture"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.capturing"
+msgstr "Capturing…"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.closeCaptureMode"
+msgstr "Close capture mode"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.crop"
+msgstr "Crop"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.dragTheAreaYouWantTo"
+msgstr "Drag the area you want to capture"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.drone"
+msgstr "Drone"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.escToCancel"
+msgstr "Esc to cancel"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.fieldOfView"
+msgstr "Field of view"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.format"
+msgstr "Format"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.freezesThisExactCameraAngleAs"
+msgstr " freezes this exact camera angle as a reusable reference for renders & videos."
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.lens"
+msgstr "Lens"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.orbit"
+msgstr "Orbit"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.presetSquare"
+msgstr "Preset · square"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.resetFieldOfView"
+msgstr "Reset field of view"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.saved"
+msgstr "Saved"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.snapshot"
+msgstr "snapshot"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.standard"
+msgstr "Standard"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.switchBackToOrbitToDrag"
+msgstr "Switch back to orbit to drag a capture area"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.takeSnapshot"
+msgstr "Take snapshot"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.viewport"
+msgstr "Viewport"
+
+#: packages/editor/src/components/editor/snapshot-capture-overlay.tsx
+msgid "editor.snapshotCaptureOverlay.walk"
+msgstr "Walk"
 
 #: packages/editor/src/components/ui/snap-target-badge.tsx
 msgid "editor.snapTarget.ceiling"
@@ -7098,9 +8238,153 @@ msgstr "Target elevation: {elevation} m · click or Enter to place"
 msgid "editor.tools.distribution.distributionRunTool.typeALength"
 msgstr "type a length"
 
+#: packages/editor/src/components/editor/views/host-view.tsx
+msgid "editor.views.hostView.labelCrashed"
+msgstr "\"{label}\" crashed"
+
+#: packages/editor/src/components/editor/views/host-view.tsx
+msgid "editor.views.hostView.loading"
+msgstr "Loading…"
+
+#: packages/editor/src/components/editor/views/host-view.tsx
+msgid "editor.views.hostView.thisViewIsnTAvailable"
+msgstr "This view isn't available"
+
 #: packages/editor/src/components/editor/views/view-bar.tsx
 msgid "editor.views.plugins"
 msgstr "Plugins"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.about"
+msgstr "About"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.addFocusedToolsAndContentTo"
+msgstr "Add focused tools and content to"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.addsANewToolPanelTo"
+msgstr "Adds a new tool panel to the editor."
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.allPlugins"
+msgstr "All plugins"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.browse"
+msgstr "Browse"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.by"
+msgstr "By"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.byName"
+msgstr "By {name}"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.canAccess"
+msgstr "Can access"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.category"
+msgstr "Category"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.closeDetails"
+msgstr "Close details"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.createAPascalPlugin"
+msgstr "Create a Pascal plugin"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.credits"
+msgstr "Credits"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.doesnTUseCredits"
+msgstr "Doesn't use credits"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.install"
+msgstr "Install"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.installed"
+msgstr "Installed"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.installed2"
+msgstr "installed"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.installedInProjectname"
+msgstr "Installed in {projectName}"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.installInProjectname"
+msgstr "Install in {projectName}"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.labelDetails"
+msgstr "{label} details"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.manage"
+msgstr "Manage"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.noPluginsHereYet"
+msgstr "No plugins here yet."
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.notInstalled"
+msgstr "Not installed"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.openLabel"
+msgstr "Open {label}"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.pluginCategories"
+msgstr "Plugin categories"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.plugins"
+msgstr "Plugins"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.runsInTheEditorNoPascal"
+msgstr "Runs in the editor. No Pascal services, no outside accounts."
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.searchPlugins"
+msgstr "Search plugins"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.thisProject"
+msgstr "this project"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.undo"
+msgstr "Undo"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.uninstall"
+msgstr "Uninstall"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.uninstalled"
+msgstr "uninstalled"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.usesThisProjectSCredits"
+msgstr "Uses this project's credits"
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.viewPlugin"
+msgstr "View plugin"
 
 #: packages/editor/src/components/editor/views/view-bar.tsx
 msgid "editor.views.view2d"

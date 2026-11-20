@@ -1,6 +1,7 @@
 'use client'
 
 import type { AnyNodeId, OpenWallEnd } from '@pascal-app/core'
+import { usePascalI18n } from '@pascal-app/core'
 import { MEASUREMENT_DANGLING_COLOR, useViewer } from '@pascal-app/viewer'
 import { resolveFloorplanLabelAngle } from '@pascal-app/viewer/ui'
 import { memo, useEffect, useState } from 'react'
@@ -124,6 +125,7 @@ function OpenWallEndMarker({
   sceneRotationDeg: number
   unitsPerPixel: number
 }) {
+  const i18n = usePascalI18n()
   const [x, z] = end.point
   const candidate = end.candidate
   const labelAnchor = candidate
@@ -168,7 +170,13 @@ function OpenWallEndMarker({
       />
       {/* Hit target larger than the dot so it is easy to catch at any zoom. */}
       <circle
-        aria-label={label ?? 'Wall end not joined'}
+        aria-label={
+          label ??
+          i18n._({
+            id: 'editor.editor2d.floorplanOpenWallEndsLayer.wallEndNotJoined',
+            message: 'Wall end not joined',
+          })
+        }
         cx={x}
         cy={z}
         data-open-wall-end=""

@@ -1,5 +1,6 @@
 'use client'
 
+import { usePascalI18n } from '@pascal-app/core'
 import { useEffect, useRef } from 'react'
 import { CHIP_OFFSET, DWELL_MS } from '../../lib/point-ask/choreography'
 import { subscribeFrame } from '../../lib/point-ask/frame-loop'
@@ -12,6 +13,7 @@ import { usePointAsk } from '../../store/use-point-ask'
  * appearance waits 120 ms then fades in, and target substitutions are instant (the tooltip rule).
  */
 export function HoverChip() {
+  const i18n = usePascalI18n()
   const wrap = useRef<HTMLDivElement>(null)
   const label = useRef<HTMLDivElement>(null)
   const hover = usePointAsk((s) => s.hover)
@@ -75,13 +77,20 @@ export function HoverChip() {
       <div className="pa-hlabel" ref={label}>
         {hover ? (
           busy ? (
-            'Pascal is working on this'
+            i18n._({
+              id: 'editor.pointAsk.hoverChip.pascalIsWorkingOnThis',
+              message: 'Pascal is working on this',
+            })
           ) : (
             <>
               {plus}
               {hover.target.name}
               {hover.target.size ? <span className="sz">{hover.target.size}</span> : null}
-              {hover.ambiguous ? <span className="sub">⌥ the wall</span> : null}
+              {hover.ambiguous ? (
+                <span className="sub">
+                  {i18n._({ id: 'editor.pointAsk.hoverChip.theWall', message: '⌥ the wall' })}
+                </span>
+              ) : null}
             </>
           )
         ) : null}

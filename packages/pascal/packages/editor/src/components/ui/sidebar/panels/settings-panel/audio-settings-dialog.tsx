@@ -1,3 +1,4 @@
+import { usePascalI18n } from '@pascal-app/core'
 import { Volume2, VolumeX } from 'lucide-react'
 import { Button } from '@pascal-app/viewer/ui'
 import {
@@ -12,6 +13,7 @@ import { Slider } from '../../../../../components/ui/slider'
 import { useAudioSettings as useAudio } from '@pascal-app/viewer/sfx'
 
 export function AudioSettingsDialog() {
+  const i18n = usePascalI18n()
   const {
     masterVolume,
     sfxVolume,
@@ -28,21 +30,21 @@ export function AudioSettingsDialog() {
       <DialogTrigger asChild>
         <Button className="w-full justify-start gap-2" variant="outline">
           {muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
-          Audio settings
+          {i18n._({ id: 'editor.sidebar.panels.settingsPanel.audioSettingsDialog.audioSettings', message: 'Audio settings' })}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Audio settings</DialogTitle>
+          <DialogTitle>{i18n._({ id: 'editor.sidebar.panels.settingsPanel.audioSettingsDialog.audioSettings', message: 'Audio settings' })}</DialogTitle>
           <DialogDescription>
-            Volume levels apply to every tab. Muting applies to this tab only.
+            {i18n._({ id: 'editor.sidebar.panels.settingsPanel.audioSettingsDialog.volumeLevelsApplyToEveryTab', message: 'Volume levels apply to every tab. Muting applies to this tab only.' })}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-6 py-4">
           {/* Master Volume */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="font-medium text-sm">Master volume</label>
+              <label className="font-medium text-sm">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.audioSettingsDialog.masterVolume', message: 'Master volume' })}</label>
               <span className="text-muted-foreground text-sm">{masterVolume}%</span>
             </div>
             <Slider
@@ -56,7 +58,7 @@ export function AudioSettingsDialog() {
           {/* Radio Volume */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="font-medium text-sm">Radio volume</label>
+              <label className="font-medium text-sm">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.audioSettingsDialog.radioVolume', message: 'Radio volume' })}</label>
               <span className="text-muted-foreground text-sm">{radioVolume}%</span>
             </div>
             <Slider
@@ -70,7 +72,7 @@ export function AudioSettingsDialog() {
           {/* SFX Volume */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="font-medium text-sm">Sound effects</label>
+              <label className="font-medium text-sm">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.audioSettingsDialog.soundEffects', message: 'Sound effects' })}</label>
               <span className="text-muted-foreground text-sm">{sfxVolume}%</span>
             </div>
             <Slider
@@ -89,7 +91,7 @@ export function AudioSettingsDialog() {
               variant={muted ? 'default' : 'outline'}
             >
               {muted ? <VolumeX className="size-4" /> : <Volume2 className="size-4" />}
-              {muted ? 'Unmute this tab' : 'Mute this tab'}
+              {muted ? i18n._({ id: 'editor.sidebar.panels.settingsPanel.audioSettingsDialog.unmuteThisTab', message: 'Unmute this tab' }) : i18n._({ id: 'editor.sidebar.panels.settingsPanel.audioSettingsDialog.muteThisTab', message: 'Mute this tab' })}
             </Button>
           </div>
         </div>

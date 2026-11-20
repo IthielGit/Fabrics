@@ -1,7 +1,7 @@
 'use client'
 
 import type { AnyNodeId, LevelNode } from '@pascal-app/core'
-import { useScene } from '@pascal-app/core'
+import { useScene, usePascalI18n } from '@pascal-app/core'
 import { markPerfAction, useViewer } from '@pascal-app/viewer'
 import { Command, defaultFilter, useCommandState } from 'cmdk'
 import { ChevronRight, Search } from 'lucide-react'
@@ -224,6 +224,7 @@ function EmptyActionItem({ action }: { action: CommandPaletteEmptyAction }) {
 // Main component
 // ---------------------------------------------------------------------------
 export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEmptyAction }) {
+  const i18n = usePascalI18n()
   const { open, setOpen, mode, setMode, pages, inputValue, setInputValue, navigateTo, goBack } =
     useCommandPalette()
 
@@ -313,7 +314,7 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
   return (
     <Dialog onOpenChange={setOpen} open={open}>
       <DialogContent className="max-w-lg gap-0 overflow-hidden p-0" showCloseButton={false}>
-        <DialogTitle className="sr-only">Command Palette</DialogTitle>
+        <DialogTitle className="sr-only">{i18n._({ id: 'editor.commandPalette.commandPalette', message: 'Command Palette' })}</DialogTitle>
 
         {modeView && <modeView.Component onBack={onBack} onClose={onClose} />}
 
@@ -346,10 +347,10 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
                 onValueChange={setInputValue}
                 placeholder={
                   page === 'rename-level'
-                    ? 'Type a new name…'
+                    ? i18n._({ id: 'editor.commandPalette.typeANewName', message: 'Type a new name…' })
                     : page
-                      ? 'Filter options…'
-                      : 'Search actions…'
+                      ? i18n._({ id: 'editor.commandPalette.filterOptions', message: 'Filter options…' })
+                      : i18n._({ id: 'editor.commandPalette.searchActions', message: 'Search actions…' })
                 }
                 value={inputValue}
               />
@@ -358,7 +359,7 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
             <Command.List className="max-h-100 overflow-y-auto p-1.5" ref={listRef}>
               {(!emptyAction || page) && (
                 <Command.Empty className="py-8 text-center text-muted-foreground text-sm">
-                  No commands found.
+                  {i18n._({ id: 'editor.commandPalette.noCommandsFound', message: 'No commands found.' })}
                 </Command.Empty>
               )}
               {emptyAction && !page && <EmptyActionItem action={emptyAction} />}
@@ -397,7 +398,7 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
 
               {/* ── Wall Mode sub-page ────────────────────────────────────── */}
               {page === 'wall-mode' && (
-                <Command.Group heading="Wall Mode">
+                <Command.Group heading={i18n._({ id: 'editor.commandPalette.wallMode', message: 'Wall Mode' })}>
                   {(['cutaway', 'up', 'down', 'translucent'] as const).map((mode) => (
                     <OptionItem
                       isActive={wallMode === mode}
@@ -411,7 +412,7 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
 
               {/* ── Go to Level sub-page ──────────────────────────────────── */}
               {page === 'goto-level' && (
-                <Command.Group heading="Go to Level">
+                <Command.Group heading={i18n._({ id: 'editor.commandPalette.goToLevel', message: 'Go to Level' })}>
                   {allLevels.map((level) => (
                     <OptionItem
                       isActive={level.id === activeLevelId}
@@ -432,7 +433,7 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
 
               {/* ── Rename Level sub-page ─────────────────────────────────── */}
               {page === 'rename-level' && (
-                <Command.Group heading="Rename Level">
+                <Command.Group heading={i18n._({ id: 'editor.commandPalette.renameLevel', message: 'Rename Level' })}>
                   <Command.Item
                     className="flex cursor-pointer items-center gap-2.5 rounded-md px-2.5 py-2 text-foreground text-sm transition-colors data-[disabled=true]:cursor-not-allowed data-[selected=true]:bg-accent data-[disabled=true]:opacity-40"
                     disabled={!inputValue.trim()}
@@ -458,10 +459,10 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
                     <span className="flex-1 truncate">
                       {inputValue.trim() ? (
                         <>
-                          Rename to <span className="font-medium">"{inputValue.trim()}"</span>
+                          {i18n._({ id: 'editor.commandPalette.renameTo', message: 'Rename to' })}{' '}<span className="font-medium">"{inputValue.trim()}"</span>
                         </>
                       ) : (
-                        <span className="text-muted-foreground">Type a new name above…</span>
+                        <span className="text-muted-foreground">{i18n._({ id: 'editor.commandPalette.typeANewNameAbove', message: 'Type a new name above…' })}</span>
                       )}
                     </span>
                   </Command.Item>
@@ -473,18 +474,18 @@ export function CommandPalette({ emptyAction }: { emptyAction?: CommandPaletteEm
             {/* Footer hint */}
             <div className="flex items-center justify-between border-border/50 border-t px-3 py-2">
               <span className="text-[11px] text-muted-foreground">
-                <Shortcut keys={['↑', '↓']} /> navigate
+                <Shortcut keys={['↑', '↓']} />{' '}{i18n._({ id: 'editor.commandPalette.navigate', message: 'navigate' })}
               </span>
               <span className="text-[11px] text-muted-foreground">
-                <Shortcut keys={['↵']} /> select
+                <Shortcut keys={['↵']} />{' '}{i18n._({ id: 'editor.commandPalette.select', message: 'select' })}
               </span>
               {page ? (
                 <span className="text-[11px] text-muted-foreground">
-                  <Shortcut keys={['⌫']} /> back
+                  <Shortcut keys={['⌫']} />{' '}{i18n._({ id: 'editor.commandPalette.back', message: 'back' })}
                 </span>
               ) : (
                 <span className="text-[11px] text-muted-foreground">
-                  <Shortcut keys={['Esc']} /> close
+                  <Shortcut keys={['Esc']} />{' '}{i18n._({ id: 'editor.commandPalette.close', message: 'close' })}
                 </span>
               )}
             </div>

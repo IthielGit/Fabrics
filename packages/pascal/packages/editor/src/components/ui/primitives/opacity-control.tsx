@@ -1,5 +1,6 @@
 'use client'
 
+import { usePascalI18n } from '@pascal-app/core'
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'
 import { Button } from '@pascal-app/viewer/ui'
@@ -22,6 +23,7 @@ export function OpacityControl({
   onOpacityChange,
   className,
 }: OpacityControlProps) {
+  const i18n = usePascalI18n()
   const [isOpen, setIsOpen] = useState(false)
   const actualOpacity = opacity ?? 100
   const isHidden = visible === false || actualOpacity === 0
@@ -59,7 +61,7 @@ export function OpacityControl({
         >
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <span className="font-medium text-sm">Opacity</span>
+              <span className="font-medium text-sm">{i18n._({ id: 'editor.primitives.opacityControl.opacity', message: 'Opacity' })}</span>
               <span className="text-muted-foreground text-xs">{actualOpacity}%</span>
             </div>
             <Slider

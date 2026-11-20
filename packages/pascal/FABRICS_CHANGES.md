@@ -71,3 +71,7 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
 - Zone `packages/nodes` : `block/{panel,selection}`, `construction-dimension/panel` (libellés des listes en
   descripteurs `/* i18n */`, rendus par `i18n._(option.label)`), `measurement/{selection,tool}`,
   `spawn/panel`, `wall/move-endpoint-tool`.
+- Zone `packages/editor` (lot automatique, 321 textes) : palette de commandes, panneaux matériaux et terrain,
+  réglages (export, audio, scène, import), capture de vue, modules, aide du plan d'étage, etc. Les durées
+  en pieds (« 8 ft ») sont affichées en mm (« 2 438 mm »). Restent 76 textes à passer à la main
+  (constantes de module, gabarits à plusieurs valeurs) : voir l'étape suivante.

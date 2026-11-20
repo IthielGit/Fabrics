@@ -1,6 +1,12 @@
 'use client'
 
-import { type BuildingNode, getLevelDisplayName, type LevelNode, useScene } from '@pascal-app/core'
+import {
+  type BuildingNode,
+  getLevelDisplayName,
+  type LevelNode,
+  usePascalI18n,
+  useScene,
+} from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
 import { useShallow } from 'zustand/react/shallow'
 import { cn } from '../../lib/utils'
@@ -20,6 +26,7 @@ const rowClass = (selected: boolean) =>
  * capture). A level shows itself and the levels below it, as while editing.
  */
 export function CaptureLevelPicker() {
+  const i18n = usePascalI18n()
   const captureLevelId = useEditor((s) => s.captureLevelId)
   const setCaptureLevel = useEditor((s) => s.setCaptureLevel)
   const buildingId = useViewer((s) => s.selection.buildingId)
@@ -41,7 +48,10 @@ export function CaptureLevelPicker() {
 
   return (
     <div
-      aria-label="Levels in the shot"
+      aria-label={i18n._({
+        id: 'editor.captureLevelPicker.levelsInTheShot',
+        message: 'Levels in the shot',
+      })}
       className="pointer-events-auto absolute top-4 left-4 flex w-36 flex-col gap-0.5 rounded-xl border border-border bg-background/90 p-1 shadow-2xl backdrop-blur-md"
       data-capture-level-picker
       role="group"
@@ -52,7 +62,9 @@ export function CaptureLevelPicker() {
         onClick={() => setCaptureLevel(null)}
         type="button"
       >
-        <span className="truncate">Whole building</span>
+        <span className="truncate">
+          {i18n._({ id: 'editor.captureLevelPicker.wholeBuilding', message: 'Whole building' })}
+        </span>
       </button>
       <div className="mx-1.5 my-0.5 h-px bg-border/60" />
       {levels.map((level) => (

@@ -1,6 +1,7 @@
 'use client'
 
 import type { LazyComponent } from '@pascal-app/core'
+import { usePascalI18n } from '@pascal-app/core'
 import { type ComponentType, lazy, Suspense } from 'react'
 import type { EditorViewDescriptor } from '../../../lib/editor-views'
 import { ErrorBoundary } from '../../ui/primitives/error-boundary'
@@ -35,11 +36,15 @@ function ViewMessage({ title, body }: { title: string; body: string }) {
  * so the choice comes back once the view does.
  */
 export function HostView({ view }: { view: EditorViewDescriptor | undefined }) {
+  const i18n = usePascalI18n()
   if (!view?.component) {
     return (
       <ViewMessage
         body="Its plugin isn't installed in this project. Pick another view above."
-        title="This view isn't available"
+        title={i18n._({
+          id: 'editor.views.hostView.thisViewIsnTAvailable',
+          message: "This view isn't available",
+        })}
       />
     )
   }
@@ -49,11 +54,22 @@ export function HostView({ view }: { view: EditorViewDescriptor | undefined }) {
       fallback={
         <ViewMessage
           body="This view hit an error and was unloaded for this session. Reload to try again."
-          title={`"${view.label}" crashed`}
+          title={i18n._({
+            id: 'editor.views.hostView.labelCrashed',
+            message: '"{label}" crashed',
+            values: { label: view.label },
+          })}
         />
       }
     >
-      <Suspense fallback={<ViewMessage body="" title="Loading…" />}>
+      <Suspense
+        fallback={
+          <ViewMessage
+            body=""
+            title={i18n._({ id: 'editor.views.hostView.loading', message: 'Loading…' })}
+          />
+        }
+      >
         <Component />
       </Suspense>
     </ErrorBoundary>

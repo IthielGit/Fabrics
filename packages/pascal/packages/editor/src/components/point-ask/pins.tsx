@@ -1,6 +1,6 @@
 'use client'
 
-import { emitter, sceneRegistry } from '@pascal-app/core'
+import { emitter, sceneRegistry, usePascalI18n } from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
 import { type PointerEvent, useEffect, useRef, useState } from 'react'
 import { Vector3 } from 'three'
@@ -107,6 +107,7 @@ export function PointAskPins() {
 }
 
 function PinView({ askId }: { askId: string }) {
+  const i18n = usePascalI18n()
   const pin = usePointAsk((s) => s.pins[askId])
   // "Change more" in flight: this pin gives way to the ask that will stand where it stood.
   const gaveWay = usePointAsk(
@@ -417,7 +418,11 @@ function PinView({ askId }: { askId: string }) {
           el.current = node
           arcs.current = node?.querySelector<SVGGElement>('.pa-parcs') ?? null
         }}
-        title={model.state === 'working' && model.sentence ? model.sentence : 'Sent to Pascal'}
+        title={
+          model.state === 'working' && model.sentence
+            ? model.sentence
+            : i18n._({ id: 'editor.pointAsk.pins.sentToPascal', message: 'Sent to Pascal' })
+        }
       >
         {PIN_SVG}
       </div>
@@ -442,6 +447,7 @@ const pinHover: { askId: string | null } = { askId: null }
 
 /** The pin's card: what Pascal did, and Keep or Undo; it rises from the pin. */
 function PinCard() {
+  const i18n = usePascalI18n()
   const askId = usePointAsk((s) => s.cardFor)
   const pin = usePointAsk((s) => (askId ? s.pins[askId] : undefined))
   const wrap = useRef<HTMLDivElement>(null)
@@ -573,9 +579,15 @@ function PinCard() {
           <div className="pa-card-head">
             <div className="pa-card-t">{title}</div>
             {pin.after?.dataUrl || pin.before?.dataUrl ? (
-              <div className="pa-card-thumb" title="After">
+              <div
+                className="pa-card-thumb"
+                title={i18n._({ id: 'editor.pointAsk.pins.after', message: 'After' })}
+              >
                 {/* biome-ignore lint/performance/noImgElement: data URLs the capture just made */}
-                <img alt="After" src={pin.after?.dataUrl ?? pin.before?.dataUrl} />
+                <img
+                  alt={i18n._({ id: 'editor.pointAsk.pins.after', message: 'After' })}
+                  src={pin.after?.dataUrl ?? pin.before?.dataUrl}
+                />
               </div>
             ) : null}
           </div>
@@ -597,7 +609,10 @@ function PinCard() {
         {note ? <div className="pa-card-s">{note}</div> : null}
         {model.state === 'done' && edits > 0 && warn ? (
           <div className="pa-card-s">
-            You've changed the scene since. Undoing also removes those changes.
+            {i18n._({
+              id: 'editor.pointAsk.pins.youVeChangedTheSceneSince',
+              message: "You've changed the scene since. Undoing also removes those changes.",
+            })}
           </div>
         ) : null}
         {refusal ? <div className="pa-card-s">{COMPARE_REFUSAL_WORDS[refusal]}</div> : null}
@@ -622,7 +637,12 @@ function PinCard() {
             onPointerUp={() => endCompare()}
             type="button"
           >
-            {comparing ? 'Showing before' : 'Hold to see before'}
+            {comparing
+              ? i18n._({ id: 'editor.pointAsk.pins.showingBefore', message: 'Showing before' })
+              : i18n._({
+                  id: 'editor.pointAsk.pins.holdToSeeBefore',
+                  message: 'Hold to see before',
+                })}
           </button>
         ) : null}
         <div className="pa-card-row">
@@ -636,7 +656,7 @@ function PinCard() {
                 }}
                 type="button"
               >
-                Keep
+                {i18n._({ id: 'editor.pointAsk.pins.keep', message: 'Keep' })}
               </button>
               <button
                 className="pa-btn"
@@ -645,7 +665,7 @@ function PinCard() {
                 }}
                 type="button"
               >
-                Change more
+                {i18n._({ id: 'editor.pointAsk.pins.changeMore', message: 'Change more' })}
               </button>
               <button
                 className="pa-btn"
@@ -657,7 +677,9 @@ function PinCard() {
                 }}
                 type="button"
               >
-                {edits > 0 && warn ? 'Undo anyway' : 'Undo'}
+                {edits > 0 && warn
+                  ? i18n._({ id: 'editor.pointAsk.pins.undoAnyway', message: 'Undo anyway' })
+                  : i18n._({ id: 'editor.pointAsk.pins.undo', message: 'Undo' })}
               </button>
             </>
           ) : null}
@@ -670,7 +692,7 @@ function PinCard() {
               }}
               type="button"
             >
-              Redo
+              {i18n._({ id: 'editor.pointAsk.pins.redo', message: 'Redo' })}
             </button>
           ) : null}
           {model.state === 'error' ? (
@@ -682,14 +704,14 @@ function PinCard() {
                 }}
                 type="button"
               >
-                Try again
+                {i18n._({ id: 'editor.pointAsk.pins.tryAgain', message: 'Try again' })}
               </button>
               <button
                 className="pa-btn"
                 onClick={() => emitter.emit('point-ask:pin', { askId, action: 'open' })}
                 type="button"
               >
-                Open in chat
+                {i18n._({ id: 'editor.pointAsk.pins.openInChat', message: 'Open in chat' })}
               </button>
             </>
           ) : null}
@@ -701,7 +723,9 @@ function PinCard() {
               onClick={() => emitter.emit('point-ask:pin', { askId, action: 'open' })}
               type="button"
             >
-              {model.state === 'no-change' ? 'See why' : 'Open in chat'}
+              {model.state === 'no-change'
+                ? i18n._({ id: 'editor.pointAsk.pins.seeWhy', message: 'See why' })
+                : i18n._({ id: 'editor.pointAsk.pins.openInChat', message: 'Open in chat' })}
             </button>
           ) : null}
         </div>
