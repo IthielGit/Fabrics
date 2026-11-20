@@ -1282,7 +1282,8 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
       - options de navigation et gestes : modes d'accrochage visibles (Maj pour changer, Alt pour
         ignorer), palette de commandes, raccourcis, sélection, un geste = une annulation ;
       - prise en main : aide et parcours de découverte de Pascal
-- [ ] Tous les textes en français (Lingui) ; unités affichées en mm, m², m³
+- [x] Tous les textes en français (Lingui) ; unités affichées en mm, m², m³ (B7, vérifié le 2026-11-20 ;
+      `apps/editor`, non utilisé par Fabrics, non traduit)
 - [ ] Anciens composants d'interface de Fabrics retirés une fois remplacés (registre mis à jour)
 
 **Critères d'acceptation (lot A)**
@@ -1299,11 +1300,12 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
       doublon (B1, 2026-11-18 : onglet Construire de Pascal ; aucun outil de plan Fabrics dans l'éditeur)
 - [x] Saisie précise des dimensions en mm, accrochages, alignements, modes d'accrochage visibles
       (B1, 2026-11-18 : Pascal réglé en mm, `src/pascal/millimetreUnits.ts`)
-- [ ] Édition directe en 3D : murs, dalles, toitures, escaliers, ouvertures ; jonctions de murs propres ;
+- [x] Édition directe en 3D : murs, dalles, toitures, escaliers, ouvertures ; jonctions de murs propres ;
       synchronisation 2D ↔ 3D par commandes sur le **même** objet
       (B2, 2026-11-18 : fait pour murs, ouvertures, pièces et niveaux, y compris ceux dessinés dans
       Pascal ; **reste** : toitures, escaliers et dalles natifs de Pascal dans les métrés, et toitures /
-      escaliers des anciens plans affichés et modifiables dans la 3D de Pascal)
+      escaliers des anciens plans affichés et modifiables dans la 3D de Pascal ; **fait en B6**, vérifié par
+      l'utilisateur le 2026-11-20)
 - [x] **Matériaux et compositions** : couches de mur (maçonnerie, isolation, enduit, revêtement),
       bibliothèque de matériaux et objets 3D de Pascal (B3, 2026-11-18 : quantités par couche dans
       les métrés Technique, `measurements/wallLayers.ts` ; couches des toitures et dalles : M21)
