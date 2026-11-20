@@ -2,6 +2,7 @@
 
 import {
   type AnyNodeId,
+  type MessageDescriptor,
   RAISE_METRES_PER_STROKE,
   type SiteNode,
   type TerrainVerb,
@@ -14,18 +15,30 @@ import { Button } from '@pascal-app/viewer/ui'
 import { SegmentedControl } from './segmented-control'
 import { SliderControl } from './slider-control'
 
-const VERB_OPTIONS: Array<{ value: TerrainVerb; iconSrc: string; hint: string }> = [
-  { value: 'raise', iconSrc: '/icons/terrain-raise.webp', hint: 'Raise' },
-  { value: 'lower', iconSrc: '/icons/terrain-lower.webp', hint: 'Lower' },
-  { value: 'flatten', iconSrc: '/icons/terrain-flatten.webp', hint: 'Flatten' },
-  { value: 'smooth', iconSrc: '/icons/terrain-smooth.webp', hint: 'Smooth' },
+const VERB_OPTIONS: Array<{ value: TerrainVerb; iconSrc: string; hint: MessageDescriptor }> = [
+  { value: 'raise', iconSrc: '/icons/terrain-raise.webp', hint: /* i18n */ { id: 'editor.controls.terrainSculptPanel.raise', message: 'Raise' } },
+  { value: 'lower', iconSrc: '/icons/terrain-lower.webp', hint: /* i18n */ { id: 'editor.controls.terrainSculptPanel.lower', message: 'Lower' } },
+  { value: 'flatten', iconSrc: '/icons/terrain-flatten.webp', hint: /* i18n */ { id: 'editor.controls.terrainSculptPanel.flatten', message: 'Flatten' } },
+  { value: 'smooth', iconSrc: '/icons/terrain-smooth.webp', hint: /* i18n */ { id: 'editor.controls.terrainSculptPanel.smooth', message: 'Smooth' } },
 ]
 
-const VERB_HINTS: Record<TerrainVerb, string> = {
-  raise: `Drag to raise the ground. One pass moves it up to ${RAISE_METRES_PER_STROKE} m — release and drag again to go further.`,
-  lower: `Drag to lower the ground. One pass moves it down to ${RAISE_METRES_PER_STROKE} m.`,
-  flatten: 'Drag to level the ground toward the target height. It never overshoots.',
-  smooth: 'Drag to soften slopes and remove ridges. Flat ground stays flat.',
+const VERB_HINTS: Record<TerrainVerb, MessageDescriptor> = {
+  raise: /* i18n */ {
+    id: 'editor.controls.terrainSculptPanel.hintRaise',
+    message: 'Drag to raise the ground. One pass moves it up to {distance} — release and drag again to go further.',
+  },
+  lower: /* i18n */ {
+    id: 'editor.controls.terrainSculptPanel.hintLower',
+    message: 'Drag to lower the ground. One pass moves it down to {distance}.',
+  },
+  flatten: /* i18n */ {
+    id: 'editor.controls.terrainSculptPanel.hintFlatten',
+    message: 'Drag to level the ground toward the target height. It never overshoots.',
+  },
+  smooth: /* i18n */ {
+    id: 'editor.controls.terrainSculptPanel.hintSmooth',
+    message: 'Drag to soften slopes and remove ridges. Flat ground stays flat.',
+  },
 }
 
 /**
@@ -77,13 +90,13 @@ export function TerrainSculptPanel() {
                   src={iconSrc}
                   width={28}
                 />
-                <span className="text-[9px] leading-none">{hint}</span>
+                <span className="text-[9px] leading-none">{i18n._(hint)}</span>
               </span>
             ),
           }))}
           value={verb}
         />
-        <p className="px-0.5 text-muted-foreground text-xs">{VERB_HINTS[verb]}</p>
+        <p className="px-0.5 text-muted-foreground text-xs">{i18n._({ ...VERB_HINTS[verb], values: { distance: `${Math.round(RAISE_METRES_PER_STROKE * 1000)} mm` } })}</p>
       </div>
 
       <div className="flex flex-col gap-1.5">

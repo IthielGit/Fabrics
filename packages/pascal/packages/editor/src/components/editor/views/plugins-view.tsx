@@ -698,7 +698,17 @@ export function PluginsView() {
         {installed.length + available.length === 0 ? (
           <p className="py-12 text-center text-muted-foreground text-sm">
             {needle
-              ? `No plugins match “${query.trim()}”${category ? ` in ${category}` : ''}.`
+              ? category
+                ? i18n._({
+                    id: 'editor.views.pluginsView.noPluginsMatchInCategory',
+                    message: 'No plugins match “{query}” in {category}.',
+                    values: { query: query.trim(), category },
+                  })
+                : i18n._({
+                    id: 'editor.views.pluginsView.noPluginsMatch',
+                    message: 'No plugins match “{query}”.',
+                    values: { query: query.trim() },
+                  })
               : i18n._({
                   id: 'editor.views.pluginsView.noPluginsHereYet',
                   message: 'No plugins here yet.',

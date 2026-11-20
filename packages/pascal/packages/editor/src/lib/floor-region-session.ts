@@ -46,6 +46,19 @@ import { addCeilingRegion, addFloorRegion } from './paint-regions'
 
 export const PICK_MATERIAL_MESSAGE = 'Pick a material first'
 
+/** The same notice as shown: translated where the notice is displayed. */
+export const PICK_MATERIAL_TEXT = /* i18n */ {
+  id: 'editor.floorRegionSession.pickMaterialFirst',
+  message: 'Pick a material first',
+}
+
+export function noticeText(
+  notice: string | null,
+  i18n: { _: (d: { id: string; message: string }) => string },
+) {
+  return notice === PICK_MATERIAL_MESSAGE ? i18n._(PICK_MATERIAL_TEXT) : notice
+}
+
 export type FloorDraftCommit = { ok: true } | { ok: false; message: string }
 
 /** What a floor outline is drawn for, and how it commits. */

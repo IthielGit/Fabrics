@@ -1,7 +1,7 @@
 'use client'
 
 import type { AnyNode, AnyNodeId } from '@pascal-app/core'
-import { useLocale, useScene } from '@pascal-app/core'
+import { useLocale, usePascalI18n, useScene } from '@pascal-app/core'
 import { useViewer } from '@pascal-app/viewer'
 import { FloorplanDimensionHitsProvider } from '@pascal-app/viewer/ui'
 import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react'
@@ -111,6 +111,7 @@ const MIN_INPUT_WIDTH_PX = 76
 const CLICK_SLOP_PX = 4
 
 export function FloorplanDimensionEditOverlay(): React.ReactElement | null {
+  const i18n = usePascalI18n()
   const [target, setTarget] = useState<EditTarget | null>(null)
   const [draft, setDraft] = useState('')
   const [error, setError] = useState<string | null>(null)
@@ -191,7 +192,13 @@ export function FloorplanDimensionEditOverlay(): React.ReactElement | null {
     if (!target) return
     const nextLength = parseDimensionInput(draft, unit, locale)
     if (nextLength === null) {
-      setError(`Cannot read "${draft.trim()}"`)
+      setError(
+        i18n._({
+          id: 'editor.editor2d.floorplanDimensionEditOverlay.cannotRead',
+          message: 'Cannot read "{value}"',
+          values: { value: draft.trim() },
+        }),
+      )
       return
     }
     const outcome = commitDimensionValue({ target, nextLength, unit })
@@ -201,7 +208,7 @@ export function FloorplanDimensionEditOverlay(): React.ReactElement | null {
     }
     setTarget(null)
     setError(null)
-  }, [draft, locale, target, unit])
+  }, [draft, i18n, locale, target, unit])
 
   if (!target) return null
   if (typeof document === 'undefined') return null

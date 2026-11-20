@@ -3399,6 +3399,7 @@ function FloorplanReferenceScaleDraftLine({
   unit: 'metric' | 'imperial'
   unitsPerPixel: number
 }) {
+  const i18n = usePascalI18n()
   const cursor = useFloorplanDraftPreview((s) => s.cursorPoint)
   const metricNotation = useViewer((state) => state.metricNotation)
   if (!cursor) {
@@ -3409,12 +3410,18 @@ function FloorplanReferenceScaleDraftLine({
     <FloorplanReferenceScaleLine
       end={cursor}
       isDraft
-      label={`Ref ${formatMeasurement(
-        Math.hypot(cursor[0] - start[0], cursor[1] - start[1]),
-        unit,
-        null,
-        metricNotation,
-      )}`}
+      label={i18n._({
+        id: 'editor.floorplanPanel.refValue',
+        message: 'Ref {value}',
+        values: {
+          value: formatMeasurement(
+            Math.hypot(cursor[0] - start[0], cursor[1] - start[1]),
+            unit,
+            null,
+            metricNotation,
+          ),
+        },
+      })}
       palette={palette}
       start={start}
       unitsPerPixel={unitsPerPixel}
@@ -11742,7 +11749,13 @@ export function FloorplanPanel({
 
             <div className="mt-3 rounded-lg bg-muted/45 px-3 py-2 text-muted-foreground text-xs">
               {pendingReferenceImageScaleFactor
-                ? `Image will scale ${formatFloorplanNumber(pendingReferenceImageScaleFactor, locale, 3)}x from the first point.`
+                ? i18n._({
+                    id: 'editor.floorplanPanel.imageWillScaleFactorFromTheFirstPoint',
+                    message: 'Image will scale {factor}x from the first point.',
+                    values: {
+                      factor: formatFloorplanNumber(pendingReferenceImageScaleFactor, locale, 3),
+                    },
+                  })
                 : i18n._({
                     id: 'editor.floorplanPanel.enterAValidLengthToPreview',
                     message: 'Enter a valid length to preview the scale.',

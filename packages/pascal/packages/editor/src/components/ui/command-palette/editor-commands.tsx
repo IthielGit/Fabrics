@@ -274,7 +274,13 @@ export function EditorCommands() {
       },
       ...focusableUnits.map((unit) => ({
         id: `editor.unit.focus.${unit.id}`,
-        label: `Focus unit: ${unit.name || 'Unit'}`,
+        label: i18n._({
+          id: 'editor.commandPalette.editorCommands.focusUnit',
+          message: 'Focus unit: {name}',
+          values: {
+            name: unit.name || i18n._({ id: 'editor.commandPalette.editorCommands.unit', message: 'Unit' }),
+          },
+        }),
         group: 'Units',
         icon: <Group className="h-4 w-4" />,
         keywords: ['unit', 'focus', 'apartment', unit.name || 'Unit'],

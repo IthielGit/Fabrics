@@ -1,5 +1,6 @@
 'use client'
 
+import { usePascalI18n } from '@pascal-app/core'
 import React, { Component, type ErrorInfo, type ReactNode } from 'react'
 
 interface Props {
@@ -10,6 +11,21 @@ interface Props {
 interface State {
   hasError: boolean
   error: Error | null
+}
+
+function DefaultErrorFallback({ message, onRetry }: { message?: string; onRetry: () => void }) {
+  const i18n = usePascalI18n()
+  return (
+    <div className="flex h-screen w-screen flex-col items-center justify-center bg-[#1b1c1f] p-4 text-white">
+      <h2 className="mb-4 font-bold text-red-400 text-xl">
+        {i18n._({ id: 'editor.primitives.errorBoundary.somethingWentWrong', message: 'Something went wrong' })}
+      </h2>
+      <pre className="max-w-full overflow-auto rounded bg-black/30 p-4 text-gray-300 text-sm">{message}</pre>
+      <button className="mt-4 rounded bg-blue-600 px-4 py-2 hover:bg-blue-700" onClick={onRetry} type="button">
+        {i18n._({ id: 'editor.primitives.errorBoundary.tryAgain', message: 'Try again' })}
+      </button>
+    </div>
+  )
 }
 
 export class ErrorBoundary extends Component<Props, State> {
@@ -32,18 +48,10 @@ export class ErrorBoundary extends Component<Props, State> {
         return this.props.fallback
       }
       return (
-        <div className="flex h-screen w-screen flex-col items-center justify-center bg-[#1b1c1f] p-4 text-white">
-          <h2 className="mb-4 font-bold text-red-400 text-xl">Something went wrong</h2>
-          <pre className="max-w-full overflow-auto rounded bg-black/30 p-4 text-gray-300 text-sm">
-            {this.state.error?.message}
-          </pre>
-          <button
-            className="mt-4 rounded bg-blue-600 px-4 py-2 hover:bg-blue-700"
-            onClick={() => this.setState({ hasError: false, error: null })}
-          >
-            Try again
-          </button>
-        </div>
+        <DefaultErrorFallback
+          message={this.state.error?.message}
+          onRetry={() => this.setState({ hasError: false, error: null })}
+        />
       )
     }
 

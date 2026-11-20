@@ -3828,6 +3828,12 @@ msgstr ""
 msgid "editor.commandPalette.editorCommands.exportSceneJson"
 msgstr ""
 
+# English: "Focus unit: {name}"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.focusUnit"
+msgstr ""
+
 # English: "Go to Level"
 # Review: missing
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
@@ -3904,6 +3910,12 @@ msgstr ""
 # Review: missing
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 msgid "editor.commandPalette.editorCommands.undo"
+msgstr ""
+
+# English: "Unit"
+# Review: missing
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.unit"
 msgstr ""
 
 # English: "Wall Mode"
@@ -4074,6 +4086,36 @@ msgstr ""
 msgid "editor.controls.materialPaintPanel.erase"
 msgstr ""
 
+# English: "Erase: click a painted part to remove it, or a painted surface to reset it"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modeErase"
+msgstr ""
+
+# English: "Pick: click a surface to paint with its material (or hold Alt / Option)"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modePick"
+msgstr ""
+
+# English: "Polygon: click the points of a shape on a floor or ceiling"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modePolygon"
+msgstr ""
+
+# English: "Rectangle: press anywhere on a wall, floor or ceiling, drag to the opposite corner"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modeRectangle"
+msgstr ""
+
+# English: "Whole surface: a click paints the surface under it"
+# Review: missing
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modeSurface"
+msgstr ""
+
 # English: "No custom materials yet — add one with +."
 # Review: missing
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
@@ -4232,10 +4274,46 @@ msgstr ""
 msgid "editor.controls.terrainSculptPanel.everyFlattenStrokeLevelsTowardThis"
 msgstr ""
 
+# English: "Flatten"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.flatten"
+msgstr ""
+
+# English: "Drag to level the ground toward the target height. It never overshoots."
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.hintFlatten"
+msgstr ""
+
+# English: "Drag to lower the ground. One pass moves it down to {distance}."
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.hintLower"
+msgstr ""
+
+# English: "Drag to raise the ground. One pass moves it up to {distance} — release and drag again to go further."
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.hintRaise"
+msgstr ""
+
+# English: "Drag to soften slopes and remove ridges. Flat ground stays flat."
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.hintSmooth"
+msgstr ""
+
 # English: "Level lot"
 # Review: missing
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 msgid "editor.controls.terrainSculptPanel.levelLot"
+msgstr ""
+
+# English: "Lower"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.lower"
 msgstr ""
 
 # English: "No target yet — the first click samples the ground under it."
@@ -4250,6 +4328,12 @@ msgstr ""
 msgid "editor.controls.terrainSculptPanel.pickTargetHeightFromTheGround"
 msgstr ""
 
+# English: "Raise"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.raise"
+msgstr ""
+
 # English: "Round"
 # Review: missing
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
@@ -4260,6 +4344,12 @@ msgstr ""
 # Review: missing
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 msgid "editor.controls.terrainSculptPanel.size"
+msgstr ""
+
+# English: "Smooth"
+# Review: missing
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.smooth"
 msgstr ""
 
 # English: "Softness"
@@ -4311,6 +4401,12 @@ msgstr "閉じる"
 #, fuzzy
 msgid "editor.dismissCameraControlsHint"
 msgstr "カメラ操作のヒントを閉じる"
+
+# English: "Cannot read \"{value}\""
+# Review: missing
+#: packages/editor/src/components/editor-2d/renderers/floorplan-dimension-edit-overlay.tsx
+msgid "editor.editor2d.floorplanDimensionEditOverlay.cannotRead"
+msgstr ""
 
 # English: "ALIGN "
 # Review: missing
@@ -4799,6 +4895,12 @@ msgstr ""
 msgid "editor.floorplanPanel.feet"
 msgstr ""
 
+# English: "Image will scale {factor}x from the first point."
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.imageWillScaleFactorFromTheFirstPoint"
+msgstr ""
+
 # English: "Inches"
 # Review: missing
 #: packages/editor/src/components/editor/floorplan-panel.tsx
@@ -4821,6 +4923,12 @@ msgstr ""
 # Review: missing
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 msgid "editor.floorplanPanel.realLength"
+msgstr ""
+
+# English: "Ref {value}"
+# Review: missing
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.refValue"
 msgstr ""
 
 # English: "resize"
@@ -4857,6 +4965,12 @@ msgstr ""
 # Review: missing
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 msgid "editor.floorplanPanel.switchToABuildingLevelTo"
+msgstr ""
+
+# English: "Pick a material first"
+# Review: missing
+#: packages/editor/src/lib/floor-region-session.ts
+msgid "editor.floorRegionSession.pickMaterialFirst"
 msgstr ""
 
 # English: "Floor top"
@@ -14530,6 +14644,18 @@ msgstr ""
 msgid "editor.primitives.dialog.close"
 msgstr ""
 
+# English: "Something went wrong"
+# Review: missing
+#: packages/editor/src/components/ui/primitives/error-boundary.tsx
+msgid "editor.primitives.errorBoundary.somethingWentWrong"
+msgstr ""
+
+# English: "Try again"
+# Review: missing
+#: packages/editor/src/components/ui/primitives/error-boundary.tsx
+msgid "editor.primitives.errorBoundary.tryAgain"
+msgstr ""
+
 # English: "Opacity"
 # Review: missing
 #: packages/editor/src/components/ui/primitives/opacity-control.tsx
@@ -14686,6 +14812,12 @@ msgstr ""
 # Review: missing
 #: packages/editor/src/components/editor/quick-measurement-card.tsx
 msgid "editor.quickMeasurementCard.liveLens"
+msgstr ""
+
+# English: "{pinned, select, true {Pinned {kind} measurements} other {Live {kind} measurements}}"
+# Review: missing
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.measurementsLabel"
 msgstr ""
 
 # English: "Pinned"
@@ -15762,10 +15894,22 @@ msgstr ""
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.animationSpeed"
 msgstr ""
 
+# English: "Builds play ×{speed} as fast."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.buildsPlayFast"
+msgstr ""
+
 # English: "Higher plays a build faster; it applies to the next build."
 # Review: missing
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.higherPlaysABuildFasterIt"
+msgstr ""
+
+# English: "The pace builds were made at."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.paceBuildsWereMadeAt"
 msgstr ""
 
 # English: "Turn the construction animation on to use this."
@@ -15844,6 +15988,60 @@ msgstr ""
 # Review: missing
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation"
+msgstr ""
+
+# English: "Framing"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framing"
+msgstr ""
+
+# English: "Framing needs the Architect plugin."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingNeedsArchitect"
+msgstr ""
+
+# English: "Full, plus the framing members dropping in first, where the framing plugin draws them."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingTitle"
+msgstr ""
+
+# English: "Full"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.full"
+msgstr ""
+
+# English: "Pieces drop into place with dust, the roof assembles, one sound per phase."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.fullTitle"
+msgstr ""
+
+# English: "Off"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.off"
+msgstr ""
+
+# English: "What the AI builds appears at once."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.offTitle"
+msgstr ""
+
+# English: "Simple"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simple"
+msgstr ""
+
+# English: "Walls rise and the rest grows in, piece by piece. No falls, no dust, no sound."
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simpleTitle"
 msgstr ""
 
 # English: "Control who can open this project."
@@ -16186,6 +16384,72 @@ msgstr ""
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.showHiddenwarningcountMore"
 msgstr ""
 
+# English: "Buildings"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statBuildings"
+msgstr ""
+
+# English: "Ceilings"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statCeilings"
+msgstr ""
+
+# English: "Doors"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statDoors"
+msgstr ""
+
+# English: "Items"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statItems"
+msgstr ""
+
+# English: "Levels"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statLevels"
+msgstr ""
+
+# English: "Scans"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statScans"
+msgstr ""
+
+# English: "Sites"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statSites"
+msgstr ""
+
+# English: "Slabs"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statSlabs"
+msgstr ""
+
+# English: "Walls"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statWalls"
+msgstr ""
+
+# English: "Windows"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statWindows"
+msgstr ""
+
+# English: "Zones"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statZones"
+msgstr ""
+
 # English: "Structure"
 # Review: missing
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
@@ -16324,6 +16588,12 @@ msgstr ""
 msgid "editor.sidebar.panels.settingsPanel.removeFloor"
 msgstr ""
 
+# English: "Remove {name}"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.removeName"
+msgstr ""
+
 # English: "Removes every node from this scene. This cannot be undone."
 # Review: missing
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
@@ -16424,6 +16694,24 @@ msgstr ""
 # Review: missing
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 msgid "editor.sidebar.panels.settingsPanel.theGroundFloorCannotBeRemoved"
+msgstr ""
+
+# English: "Dark"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.themeDark"
+msgstr ""
+
+# English: "Light"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.themeLight"
+msgstr ""
+
+# English: "System"
+# Review: missing
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.themeSystem"
 msgstr ""
 
 # English: "Thumbnail"
@@ -19517,6 +19805,18 @@ msgstr ""
 # Review: missing
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 msgid "editor.views.pluginsView.noPluginsHereYet"
+msgstr ""
+
+# English: "No plugins match “{query}”."
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.noPluginsMatch"
+msgstr ""
+
+# English: "No plugins match “{query}” in {category}."
+# Review: missing
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.noPluginsMatchInCategory"
 msgstr ""
 
 # English: "Not installed"

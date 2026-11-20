@@ -22,6 +22,7 @@ import {
   resolveRotateHandleHelpHints,
   resolveSelectModeHelpHints,
 } from '../../../lib/contextual-help'
+import { noticeText } from '../../../lib/floor-region-session'
 import { getContextualHelpNodeExtension } from '../../../lib/contextual-help-extension'
 import { continuationContextOf, keyCyclableContinuationContext } from '../../../lib/continuation'
 import { canDirectMoveNode, canDirectRotateNode } from '../../../lib/direct-manipulation'
@@ -517,7 +518,7 @@ export function HelperManager() {
   if (mode === 'material-paint' && paintRegionDrawing) {
     return (
       <ContextualHelperPanel
-        hints={paintRegionHints(paintRegionMode, paintRegionNotice, paintRegionHovering)}
+        hints={paintRegionHints(paintRegionMode, noticeText(paintRegionNotice, i18n), paintRegionHovering)}
         snapContext={snapContext}
         title={paintRegionHudTitle(paintRegionMode)}
       />

@@ -109,9 +109,6 @@
       "· Updated",
       "“{name}” will be removed from this editor, along with everything in it."
     ],
-    "packages/editor/src/components/editor-2d/renderers/floorplan-dimension-edit-overlay.tsx": [
-      "Cannot read \"{?}\""
-    ],
     "packages/editor/src/components/editor/delete-confirmation-dialog.tsx": [
       "Add walls",
       "Add walls to {room}?",
@@ -134,43 +131,13 @@
       "This removes every selected element. You can undo the deletion while it remains in the editor history.",
       "{hosted} {?} on it. Keep {it} at {its} height, or delete {it} too."
     ],
-    "packages/editor/src/components/editor/floorplan-panel.tsx": [
-      "Image will scale {?}x from the first point.",
-      "Ref {?}"
-    ],
     "packages/editor/src/components/editor/footprint-height-handle.tsx": [
       "footprint-height"
-    ],
-    "packages/editor/src/components/editor/quick-measurement-card.tsx": [
-      "{?} {?} measurements"
-    ],
-    "packages/editor/src/components/editor/views/plugins-view.tsx": [
-      "No plugins match “{?}”{?}."
-    ],
-    "packages/editor/src/components/ui/command-palette/editor-commands.tsx": [
-      "Focus unit: {?}"
-    ],
-    "packages/editor/src/components/ui/controls/material-paint-panel.tsx": [
-      "Erase: click a painted part to remove it, or a painted surface to reset it",
-      "Pick: click a surface to paint with its material (or hold Alt / Option)",
-      "Polygon: click the points of a shape on a floor or ceiling",
-      "Rectangle: press anywhere on a wall, floor or ceiling, drag to the opposite corner",
-      "Whole surface: a click paints the surface under it"
-    ],
-    "packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx": [
-      "Flatten",
-      "Lower",
-      "Raise",
-      "Smooth"
     ],
     "packages/editor/src/components/ui/item-catalog/catalog-items.tsx": [
       "Intensity",
       "Intensity",
       "Intensity"
-    ],
-    "packages/editor/src/components/ui/primitives/error-boundary.tsx": [
-      "Something went wrong",
-      "Try again"
     ],
     "packages/editor/src/components/ui/primitives/shortcut-token.tsx": [
       "Left click",
@@ -178,10 +145,6 @@
       "Middle click",
       "Right click",
       "Scroll"
-    ],
-    "packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx": [
-      "Builds play ×{speed} as fast.",
-      "The pace builds were made at."
     ],
     "packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx": [
       "Framing",
@@ -195,24 +158,7 @@
       "What the AI builds appears at once."
     ],
     "packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx": [
-      "Dark",
-      "Light",
-      "Remove {?}",
-      "System",
       "USDZ"
-    ],
-    "packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx": [
-      "Buildings",
-      "Ceilings",
-      "Doors",
-      "Items",
-      "Levels",
-      "Scans",
-      "Sites",
-      "Slabs",
-      "Walls",
-      "Windows",
-      "Zones"
     ],
     "packages/editor/src/lib/floor-region-session.ts": [
       "Pick a material first",

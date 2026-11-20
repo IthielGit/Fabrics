@@ -15,6 +15,7 @@ import {
   useRegistryVersion,
   useScene,
   validateBuildJson, usePascalI18n,
+  type MessageDescriptor,
 } from '@pascal-app/core'
 import { useViewer, viewerPresentationRegistry } from '@pascal-app/viewer'
 import { TreeView, VisualJson } from '@visual-json/react'
@@ -313,34 +314,10 @@ export function SettingsSwitchRow({
 
 export type InterfaceTheme = 'system' | 'light' | 'dark'
 
-const INTERFACE_THEME_OPTIONS: { label: ReactNode; value: InterfaceTheme }[] = [
-  {
-    label: (
-      <>
-        <Monitor className="size-3.5" />
-        System
-      </>
-    ),
-    value: 'system',
-  },
-  {
-    label: (
-      <>
-        <Sun className="size-3.5" />
-        Light
-      </>
-    ),
-    value: 'light',
-  },
-  {
-    label: (
-      <>
-        <Moon className="size-3.5" />
-        Dark
-      </>
-    ),
-    value: 'dark',
-  },
+const INTERFACE_THEME_OPTIONS: { icon: typeof Monitor; label: MessageDescriptor; value: InterfaceTheme }[] = [
+  { icon: Monitor, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.themeSystem', message: 'System' }, value: 'system' },
+  { icon: Sun, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.themeLight', message: 'Light' }, value: 'light' },
+  { icon: Moon, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.themeDark', message: 'Dark' }, value: 'dark' },
 ]
 
 /**
@@ -365,7 +342,19 @@ export function InterfaceThemeRow({
         <p className="text-muted-foreground text-xs">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.systemFollowsYourDeviceSAppearance', message: 'System follows your device’s appearance.' })}</p>
       </div>
       <div aria-labelledby={labelId} className="w-full shrink-0 @sm:w-60" role="group">
-        <SegmentedControl onChange={onChange} options={INTERFACE_THEME_OPTIONS} value={value} />
+        <SegmentedControl
+          onChange={onChange}
+          options={INTERFACE_THEME_OPTIONS.map(({ icon: ThemeIcon, label, value: optionValue }) => ({
+            label: (
+              <>
+                <ThemeIcon className="size-3.5" />
+                {i18n._(label)}
+              </>
+            ),
+            value: optionValue,
+          }))}
+          value={value}
+        />
       </div>
     </div>
   )
@@ -481,7 +470,7 @@ function FloorSettingsSection() {
                   </span>
                 </button>
                 <button
-                  aria-label={`Remove ${getLevelDisplayName(level)}`}
+                  aria-label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.removeName', message: 'Remove {name}', values: { name: getLevelDisplayName(level) } })}
                   className="flex size-7 shrink-0 items-center justify-center rounded text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:cursor-not-allowed disabled:opacity-30"
                   disabled={!canDelete}
                   onClick={() => deleteLevelWithFallbackSelection(level.id)}

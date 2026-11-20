@@ -3884,6 +3884,16 @@ msgstr "Exporter le modèle 3D (GLB)"
 msgid "editor.commandPalette.editorCommands.exportSceneJson"
 msgstr "Exporter la scène (JSON)"
 
+# English: "Focus unit: {name}"
+# Source-Hash: 18bada13fbdf0033
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+#, fuzzy
+msgid "editor.commandPalette.editorCommands.focusUnit"
+msgstr "Cibler l’unité : {name}"
+
 # English: "Go to Level"
 # Source-Hash: 48e04f568358025e
 # Review: required
@@ -4013,6 +4023,16 @@ msgstr "Basculer en plein écran"
 #, fuzzy
 msgid "editor.commandPalette.editorCommands.undo"
 msgstr "Annuler"
+
+# English: "Unit"
+# Source-Hash: 062cc0f1afef0c52
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+#, fuzzy
+msgid "editor.commandPalette.editorCommands.unit"
+msgstr "Unité"
 
 # English: "Wall Mode"
 # Source-Hash: 512416fc48d08b18
@@ -4253,6 +4273,56 @@ msgstr "Cliquez sur une partie peinte d’un mur, d’un sol ou d’un plafond p
 #, fuzzy
 msgid "editor.controls.materialPaintPanel.erase"
 msgstr "Effacer"
+
+# English: "Erase: click a painted part to remove it, or a painted surface to reset it"
+# Source-Hash: 8833bfb70bdb273f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+#, fuzzy
+msgid "editor.controls.materialPaintPanel.modeErase"
+msgstr "Effacer : cliquez sur une partie peinte pour la retirer, ou sur une surface peinte pour la réinitialiser"
+
+# English: "Pick: click a surface to paint with its material (or hold Alt / Option)"
+# Source-Hash: 30c45737ef2461d6
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+#, fuzzy
+msgid "editor.controls.materialPaintPanel.modePick"
+msgstr "Pipette : cliquez sur une surface pour peindre avec son matériau (ou maintenez Alt / Option)"
+
+# English: "Polygon: click the points of a shape on a floor or ceiling"
+# Source-Hash: e51ec320317b880a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+#, fuzzy
+msgid "editor.controls.materialPaintPanel.modePolygon"
+msgstr "Polygone : cliquez les points d’une forme sur un sol ou un plafond"
+
+# English: "Rectangle: press anywhere on a wall, floor or ceiling, drag to the opposite corner"
+# Source-Hash: 7aeed2aa98f37a8d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+#, fuzzy
+msgid "editor.controls.materialPaintPanel.modeRectangle"
+msgstr "Rectangle : appuyez n’importe où sur un mur, un sol ou un plafond et glissez jusqu’au coin opposé"
+
+# English: "Whole surface: a click paints the surface under it"
+# Source-Hash: 96fb58633a2d97fa
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+#, fuzzy
+msgid "editor.controls.materialPaintPanel.modeSurface"
+msgstr "Surface entière : un clic peint la surface dessous"
 
 # English: "No custom materials yet — add one with +."
 # Source-Hash: 52f18fccde726a24
@@ -4504,6 +4574,56 @@ msgstr "Cliquez sur le sol pour en choisir la hauteur comme cible."
 msgid "editor.controls.terrainSculptPanel.everyFlattenStrokeLevelsTowardThis"
 msgstr "Chaque passage d’aplanissement nivelle vers cette hauteur."
 
+# English: "Flatten"
+# Source-Hash: 8bf289f3770cf959
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+#, fuzzy
+msgid "editor.controls.terrainSculptPanel.flatten"
+msgstr "Aplanir"
+
+# English: "Drag to level the ground toward the target height. It never overshoots."
+# Source-Hash: 0af9da075d54e07e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+#, fuzzy
+msgid "editor.controls.terrainSculptPanel.hintFlatten"
+msgstr "Glissez pour niveler le sol vers la hauteur cible. Sans jamais la dépasser."
+
+# English: "Drag to lower the ground. One pass moves it down to {distance}."
+# Source-Hash: 8436275739d5432d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+#, fuzzy
+msgid "editor.controls.terrainSculptPanel.hintLower"
+msgstr "Glissez pour abaisser le sol. Un passage l’abaisse jusqu’à {distance}."
+
+# English: "Drag to raise the ground. One pass moves it up to {distance} — release and drag again to go further."
+# Source-Hash: b6f5611136fd5098
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+#, fuzzy
+msgid "editor.controls.terrainSculptPanel.hintRaise"
+msgstr "Glissez pour relever le sol. Un passage le relève jusqu’à {distance} — relâchez et glissez de nouveau pour aller plus loin."
+
+# English: "Drag to soften slopes and remove ridges. Flat ground stays flat."
+# Source-Hash: f229f92df449be1a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+#, fuzzy
+msgid "editor.controls.terrainSculptPanel.hintSmooth"
+msgstr "Glissez pour adoucir les pentes et effacer les crêtes. Un sol plat reste plat."
+
 # English: "Level lot"
 # Source-Hash: 36f54d179d7183ae
 # Review: required
@@ -4513,6 +4633,16 @@ msgstr "Chaque passage d’aplanissement nivelle vers cette hauteur."
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.levelLot"
 msgstr "Niveler la parcelle"
+
+# English: "Lower"
+# Source-Hash: 9b509ece2bf2f6df
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+#, fuzzy
+msgid "editor.controls.terrainSculptPanel.lower"
+msgstr "Abaisser"
 
 # English: "No target yet — the first click samples the ground under it."
 # Source-Hash: 32cb424d92dc79f2
@@ -4534,6 +4664,16 @@ msgstr "Pas encore de cible — le premier clic relève le sol dessous."
 msgid "editor.controls.terrainSculptPanel.pickTargetHeightFromTheGround"
 msgstr "Prendre la hauteur cible sur le sol"
 
+# English: "Raise"
+# Source-Hash: 011e4de244050a78
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+#, fuzzy
+msgid "editor.controls.terrainSculptPanel.raise"
+msgstr "Relever"
+
 # English: "Round"
 # Source-Hash: ad0457800a1f0eb4
 # Review: required
@@ -4553,6 +4693,16 @@ msgstr "Rond"
 #, fuzzy
 msgid "editor.controls.terrainSculptPanel.size"
 msgstr "Taille"
+
+# English: "Smooth"
+# Source-Hash: 354c8bc5c8da5a6e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+#, fuzzy
+msgid "editor.controls.terrainSculptPanel.smooth"
+msgstr "Lisser"
 
 # English: "Softness"
 # Source-Hash: e4210a7850e84974
@@ -4623,6 +4773,16 @@ msgstr "Fermer"
 #, fuzzy
 msgid "editor.dismissCameraControlsHint"
 msgstr "Fermer l’aide sur les commandes de caméra"
+
+# English: "Cannot read \"{value}\""
+# Source-Hash: b0b39aa4ef3d18f6
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/editor-2d/renderers/floorplan-dimension-edit-overlay.tsx
+#, fuzzy
+msgid "editor.editor2d.floorplanDimensionEditOverlay.cannotRead"
+msgstr "Valeur illisible : « {value} »"
 
 # English: "ALIGN "
 # Source-Hash: 14f3108a28e97db1
@@ -5195,6 +5355,16 @@ msgstr "Saisissez la longueur réelle de la ligne que vous venez de tracer. L’
 msgid "editor.floorplanPanel.feet"
 msgstr "Pieds"
 
+# English: "Image will scale {factor}x from the first point."
+# Source-Hash: 1c603e5aa89c3b38
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+#, fuzzy
+msgid "editor.floorplanPanel.imageWillScaleFactorFromTheFirstPoint"
+msgstr "L’image sera agrandie {factor}× à partir du premier point."
+
 # English: "Inches"
 # Source-Hash: bcfff10ca598650e
 # Review: required
@@ -5234,6 +5404,16 @@ msgstr "panneau"
 #, fuzzy
 msgid "editor.floorplanPanel.realLength"
 msgstr "Longueur réelle"
+
+# English: "Ref {value}"
+# Source-Hash: 25da05bc973d9d34
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+#, fuzzy
+msgid "editor.floorplanPanel.refValue"
+msgstr "Réf. {value}"
 
 # English: "resize"
 # Source-Hash: 2abb45eb3b206811
@@ -5294,6 +5474,16 @@ msgstr "régler l’échelle"
 #, fuzzy
 msgid "editor.floorplanPanel.switchToABuildingLevelTo"
 msgstr "Passez à un niveau du bâtiment pour voir et modifier le plan d’étage."
+
+# English: "Pick a material first"
+# Source-Hash: f2e991d277b74254
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/lib/floor-region-session.ts
+#, fuzzy
+msgid "editor.floorRegionSession.pickMaterialFirst"
+msgstr "Choisissez d’abord un matériau"
 
 # English: "Floor top"
 # Source-Hash: 069d64adffa05db7
@@ -15102,6 +15292,26 @@ msgstr "Vous avez modifié la scène depuis. Annuler retire aussi ces modificati
 msgid "editor.primitives.dialog.close"
 msgstr "Fermer"
 
+# English: "Something went wrong"
+# Source-Hash: db54f96370b20856
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/primitives/error-boundary.tsx
+#, fuzzy
+msgid "editor.primitives.errorBoundary.somethingWentWrong"
+msgstr "Une erreur s’est produite"
+
+# English: "Try again"
+# Source-Hash: 514c63428de25cfb
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/primitives/error-boundary.tsx
+#, fuzzy
+msgid "editor.primitives.errorBoundary.tryAgain"
+msgstr "Réessayer"
+
 # English: "Opacity"
 # Source-Hash: 1c0b8a5503c5daeb
 # Review: required
@@ -15291,6 +15501,16 @@ msgstr "Cliquez sur une surface pour l’épingler"
 #, fuzzy
 msgid "editor.quickMeasurementCard.liveLens"
 msgstr "Loupe en direct"
+
+# English: "{pinned, select, true {Pinned {kind} measurements} other {Live {kind} measurements}}"
+# Source-Hash: 4384f96cca56a6fa
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+#, fuzzy
+msgid "editor.quickMeasurementCard.measurementsLabel"
+msgstr "{pinned, select, true {Mesures {kind} épinglées} other {Mesures {kind} en direct}}"
 
 # English: "Pinned"
 # Source-Hash: 8291a38885c68a04
@@ -16402,6 +16622,16 @@ msgstr "Ajouter un étage"
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.animationSpeed"
 msgstr "Vitesse d’animation"
 
+# English: "Builds play ×{speed} as fast."
+# Source-Hash: 3e2b8ee9b2cbf5af
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.buildsPlayFast"
+msgstr "Les constructions se jouent ×{speed} plus vite."
+
 # English: "Higher plays a build faster; it applies to the next build."
 # Source-Hash: 8d79371cd195a9c8
 # Review: required
@@ -16411,6 +16641,16 @@ msgstr "Vitesse d’animation"
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.higherPlaysABuildFasterIt"
 msgstr "Plus la valeur est élevée, plus la construction se joue vite ; s’applique à la prochaine construction."
+
+# English: "The pace builds were made at."
+# Source-Hash: efd3822b290d251d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.paceBuildsWereMadeAt"
+msgstr "Le rythme auquel les constructions ont été faites."
 
 # English: "Turn the construction animation on to use this."
 # Source-Hash: 6fce85f576cf5c54
@@ -16541,6 +16781,96 @@ msgstr "Tout effacer et recommencer"
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation"
 msgstr "Animation de construction"
+
+# English: "Framing"
+# Source-Hash: c7e72beff9fe4b37
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framing"
+msgstr "Ossature"
+
+# English: "Framing needs the Architect plugin."
+# Source-Hash: 24618c711709d6cc
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingNeedsArchitect"
+msgstr "L’ossature nécessite le module Architecte."
+
+# English: "Full, plus the framing members dropping in first, where the framing plugin draws them."
+# Source-Hash: 601ba1b2d132798e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingTitle"
+msgstr "Complète, plus les éléments d’ossature qui tombent en premier, là où le module d’ossature les dessine."
+
+# English: "Full"
+# Source-Hash: 77f8ce68b538bae7
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.full"
+msgstr "Complète"
+
+# English: "Pieces drop into place with dust, the roof assembles, one sound per phase."
+# Source-Hash: 49cc37a33205a31e
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.fullTitle"
+msgstr "Les pièces tombent en place avec de la poussière, la toiture s’assemble, un son par phase."
+
+# English: "Off"
+# Source-Hash: 50accd740fa2e736
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.off"
+msgstr "Désactivée"
+
+# English: "What the AI builds appears at once."
+# Source-Hash: c81c6ea8e938efeb
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.offTitle"
+msgstr "Ce que l’IA construit apparaît d’un coup."
+
+# English: "Simple"
+# Source-Hash: a05a390ae205fdd8
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simple"
+msgstr "Simple"
+
+# English: "Walls rise and the rest grows in, piece by piece. No falls, no dust, no sound."
+# Source-Hash: 657cfecfdd03437a
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simpleTitle"
+msgstr "Les murs montent et le reste pousse, pièce par pièce. Sans chute, sans poussière, sans son."
 
 # English: "Control who can open this project."
 # Source-Hash: dc0126b09c14975d
@@ -17042,6 +17372,116 @@ msgstr "Afficher"
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.showHiddenwarningcountMore"
 msgstr "Afficher {hiddenWarningCount} de plus"
 
+# English: "Buildings"
+# Source-Hash: e02f016a6019b707
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statBuildings"
+msgstr "Bâtiments"
+
+# English: "Ceilings"
+# Source-Hash: a03ae72f209e32db
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statCeilings"
+msgstr "Plafonds"
+
+# English: "Doors"
+# Source-Hash: 20f60b98de67849b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statDoors"
+msgstr "Portes"
+
+# English: "Items"
+# Source-Hash: daebc0755d239c99
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statItems"
+msgstr "Objets"
+
+# English: "Levels"
+# Source-Hash: cc3d601d59e2e26c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statLevels"
+msgstr "Niveaux"
+
+# English: "Scans"
+# Source-Hash: 3260bfa69cca50e5
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statScans"
+msgstr "Relevés 3D"
+
+# English: "Sites"
+# Source-Hash: 1586192de6af7680
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statSites"
+msgstr "Sites"
+
+# English: "Slabs"
+# Source-Hash: 8fbaadd7805a3b2c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statSlabs"
+msgstr "Dalles"
+
+# English: "Walls"
+# Source-Hash: aac9a732d2159ccc
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statWalls"
+msgstr "Murs"
+
+# English: "Windows"
+# Source-Hash: 0b1d1e9a36456a50
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statWindows"
+msgstr "Fenêtres"
+
+# English: "Zones"
+# Source-Hash: 665db49a26f81425
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statZones"
+msgstr "Zones"
+
 # English: "Structure"
 # Source-Hash: a20c89205a4448d2
 # Review: required
@@ -17272,6 +17712,16 @@ msgstr "Actualisez l’aperçu affiché dans votre liste de projets."
 msgid "editor.sidebar.panels.settingsPanel.removeFloor"
 msgstr "Retirer l’étage"
 
+# English: "Remove {name}"
+# Source-Hash: 9a8bd0b7e67b24d3
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.removeName"
+msgstr "Retirer {name}"
+
 # English: "Removes every node from this scene. This cannot be undone."
 # Source-Hash: 1a33cfbb6f4551ac
 # Review: required
@@ -17441,6 +17891,36 @@ msgstr "« Système » suit l’apparence de votre appareil."
 #, fuzzy
 msgid "editor.sidebar.panels.settingsPanel.theGroundFloorCannotBeRemoved"
 msgstr "Le rez-de-chaussée ne peut pas être retiré"
+
+# English: "Dark"
+# Source-Hash: 9f4f496135e0915c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.themeDark"
+msgstr "Sombre"
+
+# English: "Light"
+# Source-Hash: 0b46afa96380156b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.themeLight"
+msgstr "Clair"
+
+# English: "System"
+# Source-Hash: 88e6c2e1c344b2fc
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+#, fuzzy
+msgid "editor.sidebar.panels.settingsPanel.themeSystem"
+msgstr "Système"
 
 # English: "Thumbnail"
 # Source-Hash: 7eefb27172e4e257
@@ -20754,6 +21234,26 @@ msgstr "Gérer"
 #, fuzzy
 msgid "editor.views.pluginsView.noPluginsHereYet"
 msgstr "Aucun module pour l’instant."
+
+# English: "No plugins match “{query}”."
+# Source-Hash: f28ee8d86530a2da
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+#, fuzzy
+msgid "editor.views.pluginsView.noPluginsMatch"
+msgstr "Aucun module ne correspond à « {query} »."
+
+# English: "No plugins match “{query}” in {category}."
+# Source-Hash: cedda7ea5777fde4
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+#, fuzzy
+msgid "editor.views.pluginsView.noPluginsMatchInCategory"
+msgstr "Aucun module ne correspond à « {query} » dans {category}."
 
 # English: "Not installed"
 # Source-Hash: 5ed76a45cb890fbe

@@ -1,3 +1,4 @@
+import { noticeText } from '../../../lib/floor-region-session'
 import {
   formatLength,
   formatLinearMeasurement,
@@ -363,10 +364,11 @@ const PAINT_SCOPE_ICONS: Record<PaintScope, string> = {
 // Why the last paint click did nothing (a surface that has no finish of its
 // own to paint), in the same "!" row the region gestures use for a refusal.
 function PaintNotice() {
+  const i18n = usePascalI18n()
   const notice = usePaintRegionMode((s) => s.notice)
   // Leaving the painter forgets it.
   useEffect(() => () => usePaintRegionMode.getState().setNotice(null), [])
-  return notice ? <HintRow hint={{ keys: ['!'], label: notice, active: true }} /> : null
+  return notice ? <HintRow hint={{ keys: ['!'], label: noticeText(notice, i18n) ?? notice, active: true }} /> : null
 }
 
 // The painter's application-scope chip. Driven entirely by the hovered node's

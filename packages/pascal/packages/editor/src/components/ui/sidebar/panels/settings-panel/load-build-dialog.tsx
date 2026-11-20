@@ -23,7 +23,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '../../../../../components/ui/primitives/dialog'
-import { getAreaUnitLabel, type LinearUnit, squareMetersToAreaUnit, usePascalI18n } from '@pascal-app/core'
+import { getAreaUnitLabel, type LinearUnit, squareMetersToAreaUnit, type MessageDescriptor, usePascalI18n } from '@pascal-app/core'
 
 export type PendingImport = {
   fileName: string
@@ -39,24 +39,24 @@ type Props = {
 
 type StatRow = {
   icon: typeof Building2
-  label: string
+  label: MessageDescriptor
   count: number
 }
 
 function statsRows(stats: BuildStats): StatRow[] {
   return (
     [
-      { icon: MapPin, label: 'Sites', count: stats.byType.site ?? 0 },
-      { icon: Building2, label: 'Buildings', count: stats.byType.building ?? 0 },
-      { icon: Layers, label: 'Levels', count: stats.byType.level ?? 0 },
-      { icon: Square, label: 'Walls', count: stats.byType.wall ?? 0 },
-      { icon: DoorOpen, label: 'Doors', count: stats.byType.door ?? 0 },
-      { icon: AppWindow, label: 'Windows', count: stats.byType.window ?? 0 },
-      { icon: Box, label: 'Items', count: stats.byType.item ?? 0 },
-      { icon: Square, label: 'Slabs', count: stats.byType.slab ?? 0 },
-      { icon: Square, label: 'Ceilings', count: stats.byType.ceiling ?? 0 },
-      { icon: Square, label: 'Zones', count: stats.byType.zone ?? 0 },
-      { icon: Scan, label: 'Scans', count: stats.byType.scan ?? 0 },
+      { icon: MapPin, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statSites', message: 'Sites' }, count: stats.byType.site ?? 0 },
+      { icon: Building2, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statBuildings', message: 'Buildings' }, count: stats.byType.building ?? 0 },
+      { icon: Layers, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statLevels', message: 'Levels' }, count: stats.byType.level ?? 0 },
+      { icon: Square, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statWalls', message: 'Walls' }, count: stats.byType.wall ?? 0 },
+      { icon: DoorOpen, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statDoors', message: 'Doors' }, count: stats.byType.door ?? 0 },
+      { icon: AppWindow, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statWindows', message: 'Windows' }, count: stats.byType.window ?? 0 },
+      { icon: Box, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statItems', message: 'Items' }, count: stats.byType.item ?? 0 },
+      { icon: Square, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statSlabs', message: 'Slabs' }, count: stats.byType.slab ?? 0 },
+      { icon: Square, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statCeilings', message: 'Ceilings' }, count: stats.byType.ceiling ?? 0 },
+      { icon: Square, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statZones', message: 'Zones' }, count: stats.byType.zone ?? 0 },
+      { icon: Scan, label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.loadBuildDialog.statScans', message: 'Scans' }, count: stats.byType.scan ?? 0 },
     ] satisfies StatRow[]
   ).filter((row) => row.count > 0)
 }
@@ -156,11 +156,11 @@ export function LoadBuildDialog({ pending, onCancel, onConfirm }: Props) {
                         className={`flex items-center justify-between px-3 py-2 ${
                           i === rows.length - 1 ? '' : 'border-b'
                         }`}
-                        key={row.label}
+                        key={row.label.id}
                       >
                         <div className="flex items-center gap-2">
                           <Icon className="size-4 text-muted-foreground" />
-                          <span className="text-sm">{row.label}</span>
+                          <span className="text-sm">{i18n._(row.label)}</span>
                         </div>
                         <span className="font-medium text-sm">{row.count}</span>
                       </div>

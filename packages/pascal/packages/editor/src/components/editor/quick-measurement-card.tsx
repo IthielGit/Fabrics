@@ -36,7 +36,12 @@ export const QuickMeasurementCard = memo(function QuickMeasurementCard({
 
   return (
     <div
-      aria-label={`${pinned ? 'Pinned' : 'Live'} ${report.kindLabel.toLowerCase()} measurements`}
+      aria-label={i18n._({
+        id: 'editor.quickMeasurementCard.measurementsLabel',
+        message:
+          '{pinned, select, true {Pinned {kind} measurements} other {Live {kind} measurements}}',
+        values: { pinned: String(pinned), kind: report.kindLabel.toLowerCase() },
+      })}
       className="w-full min-w-0 overflow-hidden rounded-lg border border-border/45 bg-background/96 text-foreground shadow-elevation-3 backdrop-blur-xl"
       data-quick-measure-card
       data-quick-measure-state={lensState}

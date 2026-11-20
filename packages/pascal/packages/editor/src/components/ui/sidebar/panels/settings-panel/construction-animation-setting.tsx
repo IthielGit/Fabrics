@@ -1,6 +1,6 @@
 'use client'
 
-import { usePascalI18n } from '@pascal-app/core'
+import { type MessageDescriptor, usePascalI18n } from '@pascal-app/core'
 import type { ConstructionRevealLevel } from '@pascal-app/viewer'
 import {
   chooseConstructionLevel,
@@ -35,6 +35,40 @@ const OPTIONS: { label: string; value: ConstructionRevealLevel; title: string; b
   },
 ]
 
+// Textes affichés (les données ci-dessus restent en anglais : elles servent aux tests).
+const LEVEL_TEXT: Record<ConstructionRevealLevel, { label: MessageDescriptor; title: MessageDescriptor }> = {
+  off: {
+    label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.off', message: 'Off' },
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.offTitle', message: 'What the AI builds appears at once.' },
+  },
+  simple: {
+    label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simple', message: 'Simple' },
+    title: /* i18n */ {
+      id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simpleTitle',
+      message: 'Walls rise and the rest grows in, piece by piece. No falls, no dust, no sound.',
+    },
+  },
+  full: {
+    label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.full', message: 'Full' },
+    title: /* i18n */ {
+      id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.fullTitle',
+      message: 'Pieces drop into place with dust, the roof assembles, one sound per phase.',
+    },
+  },
+  framing: {
+    label: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framing', message: 'Framing' },
+    title: /* i18n */ {
+      id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingTitle',
+      message: 'Full, plus the framing members dropping in first, where the framing plugin draws them.',
+    },
+  },
+}
+
+const FRAMING_NEEDS_ARCHITECT_TEXT: MessageDescriptor = /* i18n */ {
+  id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingNeedsArchitect',
+  message: 'Framing needs the Architect plugin.',
+}
+
 /**
  * The four levels as the control offers them: Framing is greyed out, with the reason as its tip,
  * where the project has no plugin that draws the framing.
@@ -57,13 +91,13 @@ export function ConstructionAnimationSetting() {
   const options = constructionLevelOptions(framingAvailable).map((option) => {
     const label = option.badge ? (
       <span className="inline-flex items-center gap-1.5">
-        {option.label}
+        {i18n._(LEVEL_TEXT[option.value].label)}
         <Badge label={option.badge} />
       </span>
     ) : (
-      option.label
+      i18n._(LEVEL_TEXT[option.value].label)
     )
-    if (!option.disabled) return { ...option, label }
+    if (!option.disabled) return { ...option, label, title: i18n._(LEVEL_TEXT[option.value].title) }
     return {
       ...option,
       title: undefined,
@@ -72,7 +106,7 @@ export function ConstructionAnimationSetting() {
           <TooltipTrigger asChild>
             <span>{label}</span>
           </TooltipTrigger>
-          <TooltipContent>{option.title}</TooltipContent>
+          <TooltipContent>{i18n._(FRAMING_NEEDS_ARCHITECT_TEXT)}</TooltipContent>
         </Tooltip>
       ),
     }
@@ -81,7 +115,7 @@ export function ConstructionAnimationSetting() {
     <div className="space-y-2 py-1">
       <div className="space-y-0.5">
         <p className="font-medium text-sm">{i18n._({ id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation', message: 'Construction animation' })}</p>
-        <p className="text-muted-foreground text-xs">{current?.title}</p>
+        <p className="text-muted-foreground text-xs">{current ? i18n._(LEVEL_TEXT[current.value].title) : null}</p>
       </div>
       <SegmentedControl
         aria-label={i18n._({ id: 'editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation', message: 'Construction animation' })}

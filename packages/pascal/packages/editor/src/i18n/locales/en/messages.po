@@ -1581,6 +1581,10 @@ msgid "editor.commandPalette.editorCommands.exportSceneJson"
 msgstr "Export Scene (JSON)"
 
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.focusUnit"
+msgstr "Focus unit: {name}"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 msgid "editor.commandPalette.editorCommands.goToLevel"
 msgstr "Go to Level"
 
@@ -1631,6 +1635,10 @@ msgstr "Toggle Fullscreen"
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 msgid "editor.commandPalette.editorCommands.undo"
 msgstr "Undo"
+
+#: packages/editor/src/components/ui/command-palette/editor-commands.tsx
+msgid "editor.commandPalette.editorCommands.unit"
+msgstr "Unit"
 
 #: packages/editor/src/components/ui/command-palette/editor-commands.tsx
 msgid "editor.commandPalette.editorCommands.wallMode"
@@ -1727,6 +1735,26 @@ msgstr "Click a painted part of a wall, floor or ceiling to remove it, or a pain
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 msgid "editor.controls.materialPaintPanel.erase"
 msgstr "Erase"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modeErase"
+msgstr "Erase: click a painted part to remove it, or a painted surface to reset it"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modePick"
+msgstr "Pick: click a surface to paint with its material (or hold Alt / Option)"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modePolygon"
+msgstr "Polygon: click the points of a shape on a floor or ceiling"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modeRectangle"
+msgstr "Rectangle: press anywhere on a wall, floor or ceiling, drag to the opposite corner"
+
+#: packages/editor/src/components/ui/controls/material-paint-panel.tsx
+msgid "editor.controls.materialPaintPanel.modeSurface"
+msgstr "Whole surface: a click paints the surface under it"
 
 #: packages/editor/src/components/ui/controls/material-paint-panel.tsx
 msgid "editor.controls.materialPaintPanel.noCustomMaterialsYetAddOne"
@@ -1829,8 +1857,32 @@ msgid "editor.controls.terrainSculptPanel.everyFlattenStrokeLevelsTowardThis"
 msgstr "Every flatten stroke levels toward this height."
 
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.flatten"
+msgstr "Flatten"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.hintFlatten"
+msgstr "Drag to level the ground toward the target height. It never overshoots."
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.hintLower"
+msgstr "Drag to lower the ground. One pass moves it down to {distance}."
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.hintRaise"
+msgstr "Drag to raise the ground. One pass moves it up to {distance} — release and drag again to go further."
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.hintSmooth"
+msgstr "Drag to soften slopes and remove ridges. Flat ground stays flat."
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 msgid "editor.controls.terrainSculptPanel.levelLot"
 msgstr "Level lot"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.lower"
+msgstr "Lower"
 
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 msgid "editor.controls.terrainSculptPanel.noTargetYetTheFirstClick"
@@ -1841,12 +1893,20 @@ msgid "editor.controls.terrainSculptPanel.pickTargetHeightFromTheGround"
 msgstr "Pick target height from the ground"
 
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.raise"
+msgstr "Raise"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 msgid "editor.controls.terrainSculptPanel.round"
 msgstr "Round"
 
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 msgid "editor.controls.terrainSculptPanel.size"
 msgstr "Size"
+
+#: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
+msgid "editor.controls.terrainSculptPanel.smooth"
+msgstr "Smooth"
 
 #: packages/editor/src/components/ui/controls/terrain-sculpt-panel.tsx
 msgid "editor.controls.terrainSculptPanel.softness"
@@ -1875,6 +1935,10 @@ msgstr "Dismiss"
 #: packages/editor/src/components/editor/index.tsx
 msgid "editor.dismissCameraControlsHint"
 msgstr "Dismiss camera controls hint"
+
+#: packages/editor/src/components/editor-2d/renderers/floorplan-dimension-edit-overlay.tsx
+msgid "editor.editor2d.floorplanDimensionEditOverlay.cannotRead"
+msgstr "Cannot read \"{value}\""
 
 #: packages/editor/src/components/editor-2d/floorplan-measurement-tool-layer.tsx
 msgid "editor.editor2d.floorplanMeasurementToolLayer.align"
@@ -2106,6 +2170,10 @@ msgid "editor.floorplanPanel.feet"
 msgstr "Feet"
 
 #: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.imageWillScaleFactorFromTheFirstPoint"
+msgstr "Image will scale {factor}x from the first point."
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
 msgid "editor.floorplanPanel.inches"
 msgstr "Inches"
 
@@ -2120,6 +2188,10 @@ msgstr "panel"
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 msgid "editor.floorplanPanel.realLength"
 msgstr "Real length"
+
+#: packages/editor/src/components/editor/floorplan-panel.tsx
+msgid "editor.floorplanPanel.refValue"
+msgstr "Ref {value}"
 
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 msgid "editor.floorplanPanel.resize"
@@ -2144,6 +2216,10 @@ msgstr "set scale"
 #: packages/editor/src/components/editor/floorplan-panel.tsx
 msgid "editor.floorplanPanel.switchToABuildingLevelTo"
 msgstr "Switch to a building level to view and edit the floorplan."
+
+#: packages/editor/src/lib/floor-region-session.ts
+msgid "editor.floorRegionSession.pickMaterialFirst"
+msgstr "Pick a material first"
 
 #: packages/editor/src/components/editor/footprint-height-handle.tsx
 msgid "editor.footprintHeightHandle.floorTop"
@@ -6072,6 +6148,14 @@ msgstr "You've changed the scene since. Undoing also removes those changes."
 msgid "editor.primitives.dialog.close"
 msgstr "Close"
 
+#: packages/editor/src/components/ui/primitives/error-boundary.tsx
+msgid "editor.primitives.errorBoundary.somethingWentWrong"
+msgstr "Something went wrong"
+
+#: packages/editor/src/components/ui/primitives/error-boundary.tsx
+msgid "editor.primitives.errorBoundary.tryAgain"
+msgstr "Try again"
+
 #: packages/editor/src/components/ui/primitives/opacity-control.tsx
 msgid "editor.primitives.opacityControl.opacity"
 msgstr "Opacity"
@@ -6147,6 +6231,10 @@ msgstr "Click surface to pin"
 #: packages/editor/src/components/editor/quick-measurement-card.tsx
 msgid "editor.quickMeasurementCard.liveLens"
 msgstr "Live lens"
+
+#: packages/editor/src/components/editor/quick-measurement-card.tsx
+msgid "editor.quickMeasurementCard.measurementsLabel"
+msgstr "{pinned, select, true {Pinned {kind} measurements} other {Live {kind} measurements}}"
 
 #: packages/editor/src/components/editor/quick-measurement-card.tsx
 msgid "editor.quickMeasurementCard.pinned"
@@ -6594,8 +6682,16 @@ msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.animationSpeed"
 msgstr "Animation speed"
 
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.buildsPlayFast"
+msgstr "Builds play ×{speed} as fast."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.higherPlaysABuildFasterIt"
 msgstr "Higher plays a build faster; it applies to the next build."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.paceBuildsWereMadeAt"
+msgstr "The pace builds were made at."
 
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/animation-speed-setting.tsx
 msgid "editor.sidebar.panels.settingsPanel.animationSpeedSetting.turnTheConstructionAnimationOnTo"
@@ -6648,6 +6744,42 @@ msgstr "Clear and start new"
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
 msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.constructionAnimation"
 msgstr "Construction animation"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framing"
+msgstr "Framing"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingNeedsArchitect"
+msgstr "Framing needs the Architect plugin."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.framingTitle"
+msgstr "Full, plus the framing members dropping in first, where the framing plugin draws them."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.full"
+msgstr "Full"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.fullTitle"
+msgstr "Pieces drop into place with dust, the roof assembles, one sound per phase."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.off"
+msgstr "Off"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.offTitle"
+msgstr "What the AI builds appears at once."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simple"
+msgstr "Simple"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/construction-animation-setting.tsx
+msgid "editor.sidebar.panels.settingsPanel.constructionAnimationSetting.simpleTitle"
+msgstr "Walls rise and the rest grows in, piece by piece. No falls, no dust, no sound."
 
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 msgid "editor.sidebar.panels.settingsPanel.controlWhoCanOpenThisProject"
@@ -6850,6 +6982,50 @@ msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.showHiddenwarningcoun
 msgstr "Show {hiddenWarningCount} more"
 
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statBuildings"
+msgstr "Buildings"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statCeilings"
+msgstr "Ceilings"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statDoors"
+msgstr "Doors"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statItems"
+msgstr "Items"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statLevels"
+msgstr "Levels"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statScans"
+msgstr "Scans"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statSites"
+msgstr "Sites"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statSlabs"
+msgstr "Slabs"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statWalls"
+msgstr "Walls"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statWindows"
+msgstr "Windows"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.statZones"
+msgstr "Zones"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/load-build-dialog.tsx
 msgid "editor.sidebar.panels.settingsPanel.loadBuildDialog.structure"
 msgstr "Structure"
 
@@ -6942,6 +7118,10 @@ msgid "editor.sidebar.panels.settingsPanel.removeFloor"
 msgstr "Remove floor"
 
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.removeName"
+msgstr "Remove {name}"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 msgid "editor.sidebar.panels.settingsPanel.removesEveryNodeFromThisScene"
 msgstr "Removes every node from this scene. This cannot be undone."
 
@@ -7008,6 +7188,18 @@ msgstr "System follows your device’s appearance."
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 msgid "editor.sidebar.panels.settingsPanel.theGroundFloorCannotBeRemoved"
 msgstr "The ground floor cannot be removed"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.themeDark"
+msgstr "Dark"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.themeLight"
+msgstr "Light"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
+msgid "editor.sidebar.panels.settingsPanel.themeSystem"
+msgstr "System"
 
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/index.tsx
 msgid "editor.sidebar.panels.settingsPanel.thumbnail"
@@ -8337,6 +8529,14 @@ msgstr "Manage"
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 msgid "editor.views.pluginsView.noPluginsHereYet"
 msgstr "No plugins here yet."
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.noPluginsMatch"
+msgstr "No plugins match “{query}”."
+
+#: packages/editor/src/components/editor/views/plugins-view.tsx
+msgid "editor.views.pluginsView.noPluginsMatchInCategory"
+msgstr "No plugins match “{query}” in {category}."
 
 #: packages/editor/src/components/editor/views/plugins-view.tsx
 msgid "editor.views.pluginsView.notInstalled"

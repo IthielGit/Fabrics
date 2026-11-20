@@ -1,6 +1,6 @@
 'use client'
 
-import { type SceneMaterialId, usePascalI18n } from '@pascal-app/core'
+import { type SceneMaterialId, type MessageDescriptor, usePascalI18n } from '@pascal-app/core'
 import { Eraser, PaintBucket, Pentagon, Pipette, Plus, Square } from 'lucide-react'
 import { useState } from 'react'
 import { useMaterialPaintPanelModel } from '../../../lib/material-paint-panel-model'
@@ -24,26 +24,38 @@ export type MaterialPaintPanelProps = {
   onCreateMaterialRequest?: () => void
 }
 
-const PAINT_MODE_OPTIONS: { value: PaintMode; label: string; icon: typeof PaintBucket }[] = [
-  { value: 'surface', label: 'Whole surface: a click paints the surface under it', icon: PaintBucket },
+const PAINT_MODE_OPTIONS: { value: PaintMode; label: MessageDescriptor; icon: typeof PaintBucket }[] = [
+  { value: 'surface', label: /* i18n */ { id: 'editor.controls.materialPaintPanel.modeSurface', message: 'Whole surface: a click paints the surface under it' }, icon: PaintBucket },
   {
     value: 'rectangle',
-    label: 'Rectangle: press anywhere on a wall, floor or ceiling, drag to the opposite corner',
+    label: /* i18n */ {
+      id: 'editor.controls.materialPaintPanel.modeRectangle',
+      message: 'Rectangle: press anywhere on a wall, floor or ceiling, drag to the opposite corner',
+    },
     icon: Square,
   },
   {
     value: 'polygon',
-    label: 'Polygon: click the points of a shape on a floor or ceiling',
+    label: /* i18n */ {
+      id: 'editor.controls.materialPaintPanel.modePolygon',
+      message: 'Polygon: click the points of a shape on a floor or ceiling',
+    },
     icon: Pentagon,
   },
   {
     value: 'erase',
-    label: 'Erase: click a painted part to remove it, or a painted surface to reset it',
+    label: /* i18n */ {
+      id: 'editor.controls.materialPaintPanel.modeErase',
+      message: 'Erase: click a painted part to remove it, or a painted surface to reset it',
+    },
     icon: Eraser,
   },
   {
     value: 'pick',
-    label: 'Pick: click a surface to paint with its material (or hold Alt / Option)',
+    label: /* i18n */ {
+      id: 'editor.controls.materialPaintPanel.modePick',
+      message: 'Pick: click a surface to paint with its material (or hold Alt / Option)',
+    },
     icon: Pipette,
   },
 ]
@@ -83,11 +95,11 @@ function PaintModeControl() {
           label: (
             <Tooltip>
               <TooltipTrigger asChild>
-                <span aria-label={label} className="flex items-center justify-center">
+                <span aria-label={i18n._(label)} className="flex items-center justify-center">
                   <Icon className="h-3.5 w-3.5" />
                 </span>
               </TooltipTrigger>
-              <TooltipContent>{label}</TooltipContent>
+              <TooltipContent>{i18n._(label)}</TooltipContent>
             </Tooltip>
           ),
         }))}
