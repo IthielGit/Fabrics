@@ -43,7 +43,12 @@ export function keepNativeNodes(
 
   const carried: SceneNodeData[] = []
   for (const node of Object.values(previous.nodes)) {
-    if (!isNative(node)) continue
+    if (!isNative(node)) {
+      // Nœud venu de Fabrics que la vue ne montre pas (toiture convertie devenue mansarde…) : gardé.
+      const id = (node.metadata.fabrics as { id?: unknown }).id
+      if (typeof id === 'string' && !before.has(id) && !nodes[node.id]) carried.push(node)
+      continue
+    }
     const represented = isNativeElementNode(node) || node.type === 'level'
     if (!represented) {
       if (!nodes[node.id]) carried.push(node)

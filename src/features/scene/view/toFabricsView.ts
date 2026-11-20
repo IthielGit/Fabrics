@@ -16,6 +16,7 @@ import type {
 import { dimensionOffset, furnitureCorner, roundMm } from '../migrate/geometry'
 import { LENGTH_FIELDS, lengthsToMillimetres } from '../migrate/lengthFields'
 import { FABRICS_NODE_PREFIX } from '../nodes/fabricsNodes'
+import { roofFromPascal, stairFromPascal } from '../migrate/roofStairNodes'
 import { pascalQuantitiesOf } from './pascalQuantities'
 import { roomClearOutlines } from './roomClearFloor'
 import { BUILDING_ID, type FabricsNodeMeta, type PlanScene, type SceneNodeData } from '../sceneTypes'
@@ -216,6 +217,17 @@ export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
           offset: dimensionOffset(x1, y1, origin, baseline.direction),
           ...props,
         } as CanvasElement)
+        break
+      }
+      // Toitures et escaliers convertis (M19 B6) : élément recalculé depuis la géométrie de Pascal.
+      case 'roof': {
+        const roof = roofFromPascal(node, nodes)
+        if (roof) push({ ...roof, ...defined({ levelId: levelIdOf(node) }) } as CanvasElement)
+        break
+      }
+      case 'stair': {
+        const stair = stairFromPascal(node, nodes)
+        if (stair) push({ ...stair, ...defined({ levelId: levelIdOf(node) }) } as CanvasElement)
         break
       }
       default:

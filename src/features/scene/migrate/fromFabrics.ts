@@ -49,6 +49,8 @@ import { degreesToPascalRotation, flatToPlanPoints, mmToM } from '../units'
 import { LENGTH_FIELDS, lengthsToMetres } from './lengthFields'
 import { dimensionFrame, furnitureCentre } from './geometry'
 import { nodeIdOf } from './nodeIds'
+import { canConvertRoof, roofToPascal, stairToPascal } from './roofStairNodes'
+import { levelAboveOf } from '../../stairs/stairs'
 
 export interface FabricsToSceneResult {
   scene: PlanScene
@@ -210,23 +212,41 @@ export function fabricsToScene(doc: FabricsDocument): FabricsToSceneResult {
       case 'dimension':
         add(asData(dimensionNode(el, common, meta)))
         return
-      default: {
-        const kind = FABRICS_NODE_KINDS[el.type]
-        const { id, name, hidden, ...rest } = el
-        void name
-        void hidden
-        add(
-          asData(
-            FABRICS_NODE_SCHEMAS[kind].parse({
-              ...common,
-              id: `${FABRICS_NODE_PREFIX[kind]}_${id}`,
-              element: lengthsToMetres(rest, LENGTH_FIELDS[el.type]),
-              metadata: { fabrics: defined({ id, order, levelId }) },
-            }),
-          ),
-        )
+      // Toitures et escaliers (M19 B6) : nœuds natifs de Pascal, l'élément d'origine gardé avec eux.
+      case 'roof':
+        if (canConvertRoof(el)) {
+          const level = doc.levels?.find((l) => l.id === el.levelId)
+          const [roof, ...segments] = roofToPascal(el, { parentId, levelHeight: mmToM(level?.height ?? 0) }, defined({ id: el.id, order, levelId }) as FabricsNodeMeta)
+          add({ ...roof, children: [] })
+          for (const segment of segments) add(segment)
+          return
+        }
+        break
+      case 'stair': {
+        const level = doc.levels?.find((l) => l.id === el.levelId)
+        const above = levelAboveOf(doc.levels, el.levelId)
+        const rise = above && level ? above.elevation - level.elevation : (level?.height ?? 2700)
+        const [stair, ...segments] = stairToPascal(el, { parentId, rise }, defined({ id: el.id, order, levelId }) as FabricsNodeMeta)
+        add({ ...stair, children: [] })
+        for (const segment of segments) add(segment)
+        return
       }
     }
+    // Autres éléments (et toiture que Pascal ne peut pas porter) : nœud propre à Fabrics.
+    const kind = FABRICS_NODE_KINDS[el.type as keyof typeof FABRICS_NODE_KINDS]
+    const { id, name, hidden, ...rest } = el
+    void name
+    void hidden
+    add(
+      asData(
+        FABRICS_NODE_SCHEMAS[kind].parse({
+          ...common,
+          id: `${FABRICS_NODE_PREFIX[kind]}_${id}`,
+          element: lengthsToMetres(rest, LENGTH_FIELDS[el.type]),
+          metadata: { fabrics: defined({ id, order, levelId }) },
+        }),
+      ),
+    )
   })
 
   for (const [el, order] of openings) addOpening(el, order)

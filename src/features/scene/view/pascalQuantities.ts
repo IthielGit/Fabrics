@@ -5,6 +5,7 @@
  */
 import { getRoofSegmentDeckReach, ROOF_SHAPE_DEFAULTS } from '@pascal-app/core'
 import type { NativeRoofQuantity, NativeStairQuantity, PascalQuantities } from '../../../types/document'
+import { roofFromPascal, stairFromPascal } from '../migrate/roofStairNodes'
 import { type PascalRoofKind, roofQuantities } from '../roofQuantities'
 import type { PlanScene, SceneNodeData } from '../sceneTypes'
 import { mToMm } from '../units'
@@ -118,13 +119,15 @@ export function pascalQuantitiesOf(scene: PlanScene): PascalQuantities | undefin
   const roofs: NativeRoofQuantity[] = []
   const stairs: NativeStairQuantity[] = []
   for (const node of Object.values(nodes)) {
-    if (!isNative(node)) continue
     if (node.type === 'roof') {
+      // Toiture de Pascal, ou convertie mais devenue une forme que Fabrics ne sait pas représenter.
+      if (!isNative(node) && roofFromPascal(node, nodes)) continue
       for (const segment of childrenOf(node, nodes, 'roof-segment')) {
         const q = roofQuantity(segment, node, nodes)
         if (q) roofs.push(q)
       }
     } else if (node.type === 'stair') {
+      if (!isNative(node) && stairFromPascal(node, nodes)) continue
       stairs.push(stairQuantity(node, nodes))
     }
   }
