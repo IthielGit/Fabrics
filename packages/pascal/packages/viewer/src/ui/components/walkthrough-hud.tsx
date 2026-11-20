@@ -1,11 +1,40 @@
 'use client'
 
-import { usePascalI18n } from '@pascal-app/core'
+import { type MessageDescriptor, usePascalI18n } from '@pascal-app/core'
 import { type ReactNode, useMemo } from 'react'
 import type { WalkthroughInteract, WalkthroughSeenInteract } from '../../store/use-first-person-hud'
 import useViewer from '../../store/use-viewer'
 import { cn } from '../lib/cn'
 import { displayRoomName } from '../lib/room-name-messages'
+
+// Verbs and fallback names of what the walkthrough points at (built in the viewer controller, in English).
+const INTERACT_VERBS: Record<string, MessageDescriptor> = {
+  press: /* i18n */ { id: 'viewer.walkthroughHud.verbPress', message: 'press' },
+  open: /* i18n */ { id: 'viewer.walkthroughHud.verbOpen', message: 'open' },
+  close: /* i18n */ { id: 'viewer.walkthroughHud.verbClose', message: 'close' },
+  'turn on': /* i18n */ { id: 'viewer.walkthroughHud.verbTurnOn', message: 'turn on' },
+  'turn off': /* i18n */ { id: 'viewer.walkthroughHud.verbTurnOff', message: 'turn off' },
+}
+const INTERACT_LABELS: Record<string, MessageDescriptor> = {
+  'door button': /* i18n */ { id: 'viewer.walkthroughHud.labelDoorButton', message: 'door button' },
+  'elevator button': /* i18n */ {
+    id: 'viewer.walkthroughHud.labelElevatorButton',
+    message: 'elevator button',
+  },
+  door: /* i18n */ { id: 'viewer.walkthroughHud.labelDoor', message: 'door' },
+  window: /* i18n */ { id: 'viewer.walkthroughHud.labelWindow', message: 'window' },
+  item: /* i18n */ { id: 'viewer.walkthroughHud.labelItem', message: 'item' },
+  Lights: /* i18n */ { id: 'viewer.walkthroughHud.labelLights', message: 'Lights' },
+}
+
+function known(
+  map: Record<string, MessageDescriptor>,
+  value: string,
+  i18n: { _: (descriptor: MessageDescriptor) => string },
+) {
+  const descriptor = map[value]
+  return descriptor ? i18n._(descriptor) : value
+}
 
 /** A control shown in the HUD's key strip: its keys (as printed on the keycaps) and what they do. */
 export type WalkthroughHint = { keys: readonly string[]; action: string }
@@ -158,7 +187,8 @@ export function WalkthroughHud({
               {i18n._({ id: 'viewer.walkthroughHud.orClickTo', message: 'or click to' })}
             </span>
             <span className="font-medium">
-              {interact.verb} {interact.label}
+              {known(INTERACT_VERBS, interact.verb, i18n)}{' '}
+              {known(INTERACT_LABELS, interact.label, i18n)}
             </span>
           </div>
         </div>

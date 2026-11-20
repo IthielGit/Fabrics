@@ -44282,6 +44282,66 @@ msgstr "Cliquez"
 msgid "viewer.walkthroughHud.freeCursor"
 msgstr "curseur libre"
 
+# English: "door"
+# Source-Hash: 02737b7a3942e1c5
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.labelDoor"
+msgstr "la porte"
+
+# English: "door button"
+# Source-Hash: 9b8bb7d06f752c2c
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.labelDoorButton"
+msgstr "le bouton de porte"
+
+# English: "elevator button"
+# Source-Hash: f0a5bceeba62b520
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.labelElevatorButton"
+msgstr "le bouton d’ascenseur"
+
+# English: "item"
+# Source-Hash: 24c84f68bc1fbc6d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.labelItem"
+msgstr "l’objet"
+
+# English: "Lights"
+# Source-Hash: 4caee706a0273b76
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.labelLights"
+msgstr "Lumières"
+
+# English: "window"
+# Source-Hash: d4d5a1cb2fb9993d
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.labelWindow"
+msgstr "la fenêtre"
+
 # English: "or"
 # Source-Hash: 6f21340b75e3d46c
 # Review: required
@@ -44321,6 +44381,56 @@ msgstr "pour quitter"
 #, fuzzy
 msgid "viewer.walkthroughHud.toResume"
 msgstr "pour reprendre"
+
+# English: "close"
+# Source-Hash: 97959247360c5f0b
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.verbClose"
+msgstr "fermer"
+
+# English: "open"
+# Source-Hash: 35ff74aeea25311f
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.verbOpen"
+msgstr "ouvrir"
+
+# English: "press"
+# Source-Hash: e6f9696c8a766ee8
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.verbPress"
+msgstr "appuyer sur"
+
+# English: "turn off"
+# Source-Hash: d4ae8d91a3321767
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.verbTurnOff"
+msgstr "éteindre"
+
+# English: "turn on"
+# Source-Hash: dfca58866d7c10a3
+# Review: required
+# AI-Provider: claude-code
+# AI-Model: claude-sonnet-5-5
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+#, fuzzy
+msgid "viewer.walkthroughHud.verbTurnOn"
+msgstr "allumer"
 
 # English: "Close"
 # Source-Hash: d7cf5045c01b2eb9

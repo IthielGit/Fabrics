@@ -42318,6 +42318,42 @@ msgstr ""
 msgid "viewer.walkthroughHud.freeCursor"
 msgstr ""
 
+# English: "door"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelDoor"
+msgstr ""
+
+# English: "door button"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelDoorButton"
+msgstr ""
+
+# English: "elevator button"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelElevatorButton"
+msgstr ""
+
+# English: "item"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelItem"
+msgstr ""
+
+# English: "Lights"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelLights"
+msgstr ""
+
+# English: "window"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelWindow"
+msgstr ""
+
 # English: "or"
 # Review: missing
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
@@ -42340,6 +42376,36 @@ msgstr ""
 # Review: missing
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 msgid "viewer.walkthroughHud.toResume"
+msgstr ""
+
+# English: "close"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbClose"
+msgstr ""
+
+# English: "open"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbOpen"
+msgstr ""
+
+# English: "press"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbPress"
+msgstr ""
+
+# English: "turn off"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbTurnOff"
+msgstr ""
+
+# English: "turn on"
+# Review: missing
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbTurnOn"
 msgstr ""
 
 # Source-Hash: d7cf5045c01b2eb9

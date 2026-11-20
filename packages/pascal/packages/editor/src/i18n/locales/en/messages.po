@@ -17830,6 +17830,30 @@ msgid "viewer.walkthroughHud.freeCursor"
 msgstr "free cursor"
 
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelDoor"
+msgstr "door"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelDoorButton"
+msgstr "door button"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelElevatorButton"
+msgstr "elevator button"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelItem"
+msgstr "item"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelLights"
+msgstr "Lights"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.labelWindow"
+msgstr "window"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
 msgid "viewer.walkthroughHud.or"
 msgstr "or"
 
@@ -17844,6 +17868,26 @@ msgstr "to exit"
 #: packages/viewer/src/ui/components/walkthrough-hud.tsx
 msgid "viewer.walkthroughHud.toResume"
 msgstr "to resume"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbClose"
+msgstr "close"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbOpen"
+msgstr "open"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbPress"
+msgstr "press"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbTurnOff"
+msgstr "turn off"
+
+#: packages/viewer/src/ui/components/walkthrough-hud.tsx
+msgid "viewer.walkthroughHud.verbTurnOn"
+msgstr "turn on"
 
 #: packages/viewer/src/ui/components/walkthrough-touch-controls.tsx
 msgid "viewer.walkthroughTouch.close"

@@ -495,5 +495,16 @@
   "editor.sidebar.panels.settingsPanel.themeLight": "Clair",
   "editor.sidebar.panels.settingsPanel.themeSystem": "Système",
   "editor.views.pluginsView.noPluginsMatch": "Aucun module ne correspond à « {query} ».",
-  "editor.views.pluginsView.noPluginsMatchInCategory": "Aucun module ne correspond à « {query} » dans {category}."
+  "editor.views.pluginsView.noPluginsMatchInCategory": "Aucun module ne correspond à « {query} » dans {category}.",
+  "viewer.walkthroughHud.labelDoor": "la porte",
+  "viewer.walkthroughHud.labelDoorButton": "le bouton de porte",
+  "viewer.walkthroughHud.labelElevatorButton": "le bouton d’ascenseur",
+  "viewer.walkthroughHud.labelItem": "l’objet",
+  "viewer.walkthroughHud.labelLights": "Lumières",
+  "viewer.walkthroughHud.labelWindow": "la fenêtre",
+  "viewer.walkthroughHud.verbClose": "fermer",
+  "viewer.walkthroughHud.verbOpen": "ouvrir",
+  "viewer.walkthroughHud.verbPress": "appuyer sur",
+  "viewer.walkthroughHud.verbTurnOff": "éteindre",
+  "viewer.walkthroughHud.verbTurnOn": "allumer"
 }

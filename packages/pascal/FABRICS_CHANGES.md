@@ -75,3 +75,12 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
   réglages (export, audio, scène, import), capture de vue, modules, aide du plan d'étage, etc. Les durées
   en pieds (« 8 ft ») sont affichées en mm (« 2 438 mm »). Restent 76 textes à passer à la main
   (constantes de module, gabarits à plusieurs valeurs) : voir l'étape suivante.
+- Cas manuels de `editor` et `viewer` : listes de libellés en descripteurs `/* i18n */` (peinture de matériau,
+  terrain, thème, types d'éléments de l'import, animation de construction) ; repli du `ErrorBoundary` en
+  composant fonction ; messages à valeurs nommées (« Réf. {value} », « Cibler l'unité : {name} »…) ;
+  `noticeText` (`lib/floor-region-session.ts`) traduit l'avis « Choisissez d'abord un matériau » à l'affichage ;
+  verbes et noms de repli de la visite guidée (`walkthrough-hud.tsx`).
+- Non traduits volontairement : contenu de catalogue (`catalog-items.tsx`, « Intensity »), panneau de
+  performance pour développeurs (`perf-panel.tsx`), noms de raccourcis souris (déjà traduits par `toolHintKey`).
+- Reste à faire : boîtes de confirmation de suppression (`delete-confirmation-dialog.tsx`, phrases
+  composées avec accords), noms par défaut (« Wall 1 ») de `packages/core`, `apps/editor` (non utilisé).
