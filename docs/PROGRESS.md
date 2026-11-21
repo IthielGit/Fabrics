@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; étape 2 faite (essai des deux moteurs, `docs/phases/M20-engine-trial.md`) ; moteur de Fabrics choisi (ADR 0007) ; étape 3 faite (escaliers, mobilier, murs hachurés, poteaux, étiquettes allégées, repères `PP` / `All.`, cotes intérieures par pièce : D20-9 ; rendu accepté par l'utilisateur le 2026-11-22) ; prochaine : étape 4 (lien au modèle). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; étape 2 faite (essai des deux moteurs, `docs/phases/M20-engine-trial.md`) ; moteur de Fabrics choisi (ADR 0007) ; étape 3 faite (escaliers, mobilier, murs hachurés, poteaux, étiquettes allégées, repères `PP` / `All.`, cotes intérieures par pièce : D20-9 ; rendu accepté par l'utilisateur le 2026-11-22) ; étape 4 faite (lien au modèle) ; prochaine : étape 5 (exactitude imprimée). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-22 — M20 · 20.1a étape 4 : lien au modèle
+- Test `src/features/scene/modelLink.test.ts` sur l'exemple ROOMIT-RDC, par le même chemin que l'éditeur de Pascal (`SceneBinding.pushScene`) : la cloison SDB_G avance de 500 mm.
+  - Cote intérieure de la SDB : 1475 → 975 mm ; surfaces : SDB 6,47 → 4,28 m², Séjour 36,18 → 38,37 m² (500 × 4389 mm = 2,19 m²) ; étiquettes du plan à jour.
+  - Annuler remet la cote et les surfaces d'avant.
+  - Le projet enregistré ne contient que la scène : aucune cote ni repère gardé à part.
+- Aucun code à changer : les pièces de Pascal suivent leurs murs (`autoFromWalls`) et les cotes sont recalculées depuis la vue de la scène.
+- Le plan proposait l'exemple « mur de 4000 à 5000 mm » ; le test utilise une cloison réelle de ROOMIT (même principe, valeurs vérifiables sur la référence).
 
 ### 2026-11-21 — M20 · 20.1a étape 3 (3/3) : étiquettes, repères des baies, cotes intérieures (D20-9)
 - Choix de l'utilisateur (D20-9, `docs/phases/M20-decisions.md`), qui modifie les usages de M10 ter, lot B :

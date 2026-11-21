@@ -41,7 +41,9 @@ Garder les deux ferait **deux moteurs de dessin et deux bibliothèques PDF** (in
    `dimensioning/executionDimensions.ts`, `dimensioning/planMarks.ts` ; ou (moteur Pascal) un module
    `src/features/sheets/` qui ajoute les cotes et repères de Fabrics à la géométrie de Pascal,
    `packages/pascal/FABRICS_CHANGES.md`.
-4. **Lien au modèle** : changer un mur dans Pascal met le plan à jour (test : mur de 4000 à 5000 mm,
+4. **[fait le 2026-11-22 : `src/features/scene/modelLink.test.ts`, cloison SDB_G de ROOMIT-RDC avancée
+   de 500 mm dans Pascal : cote SDB 1475 → 975 mm, SDB 6,47 → 4,28 m², Séjour 36,18 → 38,37 m² ;
+   aucun code à changer]** **Lien au modèle** : changer un mur dans Pascal met le plan à jour (test : mur de 4000 à 5000 mm,
    la cote et la surface de la pièce suivent) ; aucune donnée de plan enregistrée à part.
 5. **Exactitude imprimée** : test qui lit le PDF produit : à 1:50, 1000 mm = 20,0 mm sur la feuille
    (écart ≤ 0,1 mm) ; impression à 100 % par vous.
