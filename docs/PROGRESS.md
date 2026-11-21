@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; étape 2 faite (essai des deux moteurs, `docs/phases/M20-engine-trial.md`) ; moteur de Fabrics choisi (ADR 0007) ; prochaine tâche : étape 3, plan de niveau complet. M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; étape 2 faite (essai des deux moteurs, `docs/phases/M20-engine-trial.md`) ; moteur de Fabrics choisi (ADR 0007) ; étape 3 en cours (escaliers et mobilier de Pascal faits ; restent murs hachurés et poteaux, étiquettes allégées, repères `PP` / `All.`). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-21 — M20 · 20.1a étape 3 (1/3) : escaliers et mobilier de Pascal sur les plans de niveau
+- **Choix de l'utilisateur : moteur de Fabrics** (ADR 0007, `docs/adr/0007-sheet-engine.md`) ; doublon jsPDF / pdfkit tranché (ADR 0003), `docs/capabilities.md` à jour. Code d'essai supprimé.
+- Les plans de niveau (écran Vues, planche, PDF des vues) dessinent les **escaliers et les objets du catalogue de Pascal** avec sa géométrie de plan (`collectSheetGeometry`, sans annotations), convertie en traits de Fabrics : meubles en filet gris, sanitaires en symbole (masque blanc), nez de marche en filet sur leur axe ; étiquettes anglaises (`WC`, `LAV`) et ombrages écartés. Les marches 3D de Fabrics ne sont plus dessinées sur le plan (pas de double dessin).
+- Fichiers : `src/features/scene/view/planSymbols.ts` (+ tests, conversion et chemins SVG), `src/features/scene/view/levelPlanSymbols.ts`, `src/pascal/useLevelPlanSymbols.ts`, `building/views/drawing.ts` (`symbolsOfPascal`), `building/views/sheet.ts`, `components/views/ViewsScreen.tsx`, `src/pascal/editor-types.d.ts`. Exemple ROOMIT-RDC : escalier en L et 4 objets.
+- **Baseline mise à jour volontairement** (`baseline/fabrics/*/sheet-*.svg`, 6 fichiers) : la planche des exemples montre maintenant escalier et mobilier (absents avant) ; murs, ouvertures, cotes, façades et coupes inchangés ; même planche par le plan Fabrics et par la scène Pascal. Build, lint, 3 194 tests OK.
 
 ### 2026-11-21 — M20 · 20.1a étape 2 : essai des deux moteurs de dessin (choix de l'utilisateur à venir)
 - Convention des pièces séparées sans mur : **A retenu** par l'utilisateur (séparation au milieu de la poutre, D20-8).

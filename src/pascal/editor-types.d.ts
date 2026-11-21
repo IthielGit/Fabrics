@@ -32,3 +32,20 @@ export declare const useEditor: {
     armMaterialPaint(): void
   }
 }
+
+/** Géométrie de plan d'un niveau, sans interface (M20 20.1a, ADR 0007 : escaliers et mobilier sur les feuilles). */
+export interface SheetGeometryEntry {
+  id: string
+  type: string
+  model: import('@pascal-app/core').FloorplanGeometry | null
+  annotations: import('@pascal-app/core').FloorplanGeometry | null
+}
+export declare function collectSheetGeometry(options: {
+  nodes: Record<string, import('@pascal-app/core').AnyNode>
+  levelId: import('@pascal-app/core').AnyNodeId
+  drawingType: 'floor-plan' | 'site-plan' | 'foundation-plan' | 'reflected-ceiling-plan' | 'roof-plan'
+  annotationVisibility: Record<string, boolean>
+  accept?: (node: import('@pascal-app/core').AnyNode, category: string | undefined) => boolean
+  unit?: 'metric' | 'imperial'
+  metricNotation?: 'meters' | 'millimeters'
+}): SheetGeometryEntry[]

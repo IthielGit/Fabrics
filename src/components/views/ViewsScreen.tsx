@@ -14,6 +14,7 @@ import { useEditorStore } from '../../stores/editorStore'
 import { useViewsStore, type ViewsTab } from '../../stores/viewsStore'
 import type { SectionLineElement } from '../../types/document'
 import Button from '../ui/Button'
+import { useLevelPlanSymbols } from '../../pascal/useLevelPlanSymbols'
 import { useBuildingModel } from '../viewer3d/useBuildingModel'
 import ViewDrawing from './ViewDrawing'
 import ViewsPdfDialog from './ViewsPdfDialog'
@@ -47,6 +48,8 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
   const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
   const elements = useEditorStore((state) => state.project?.document.elements)
   const sheetDimensioning = useViewsStore((state) => state.sheetDimensioning)
+  // Scène de Pascal : escaliers et mobilier dessinés avec sa géométrie de plan (ADR 0007).
+  const levelSymbols = useLevelPlanSymbols()
 
   return useMemo(() => {
     const allLevels = levels ?? []
@@ -93,12 +96,13 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
           fontMm,
           levelOverlay: (level, font) =>
             planOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
+          levelSymbols: (level) => levelSymbols(level.id),
         })
         return sheet.drawing.width > 0 ? sheet.drawing : null
       },
       emptyText: fr.views.empty,
     }
-  }, [tab, sections, model, levels, northAngle, elements, sheetDimensioning])
+  }, [tab, sections, model, levels, northAngle, elements, sheetDimensioning, levelSymbols])
 }
 
 const MODES: readonly DimensioningMode[] = ['none', 'client', 'execution']

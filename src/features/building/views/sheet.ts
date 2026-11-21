@@ -34,6 +34,8 @@ export interface SheetInput {
   fontMm?: number
   /** Cotes automatiques du plan d'un niveau (M10 ter lot B) ; absent ou `null` : pas de cotes. */
   levelOverlay?: (level: Level, fontMm: number) => PlanOverlay | null
+  /** Escaliers et mobilier de Pascal d'un niveau (ADR 0007) ; absent : aucun. */
+  levelSymbols?: (level: Level) => PlanOverlay | null
 }
 
 function entriesFor(input: SheetInput, fontMm: number | undefined): SheetEntry[] {
@@ -48,7 +50,7 @@ function entriesFor(input: SheetInput, fontMm: number | undefined): SheetEntry[]
     add(
       `level-${level.id}`,
       level.name,
-      levelPlanDrawing(model, level, fontMm, overlay ? (font) => overlay(level, font) : undefined),
+      levelPlanDrawing(model, level, fontMm, overlay ? (font) => overlay(level, font) : undefined, input.levelSymbols?.(level)),
     )
   }
   for (const cardinal of CARDINALS) {

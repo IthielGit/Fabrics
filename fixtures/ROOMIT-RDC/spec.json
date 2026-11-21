@@ -60,6 +60,15 @@
   "separators": [
     { "ref": "SEJ_DEG", "line": [4604, 6789, 6745, 6789], "note": "tireté bleu de la référence (poutre) : passage ouvert de 2 m entre Séjour et Dégagement" }
   ],
+  "stairs": [
+    { "ref": "ESC", "x": 8460, "y": 2700, "shape": "l", "width": 950, "length": 940, "length2": 2071, "mirrored": true, "note": "escalier en L de la référence, relevé à l'œil (marches balancées non reproduites)" }
+  ],
+  "items": [
+    { "ref": "LIT_CH1", "assetId": "double-bed", "name": "Lit double", "x": 10700, "y": 10000, "rotation": 90, "size": [1600, 500, 2000] },
+    { "ref": "TABLE_SEJ", "assetId": "dining-table", "name": "Table", "x": 2490, "y": 9460, "size": [2000, 750, 900] },
+    { "ref": "CANAPE_SEJ", "assetId": "sofa", "name": "Canapé", "x": 5870, "y": 9140, "rotation": 90, "size": [2000, 800, 900] },
+    { "ref": "WC_SDB2", "assetId": "toilet", "name": "WC", "x": 9100, "y": 550, "size": [400, 800, 700] }
+  ],
   "rooms": [
     { "name": "Cellier", "polygon": [1469, 200, 4504, 200, 4504, 1670, 1469, 1670] },
     { "name": "Chambre FDM", "polygon": [4704, 200, 8124, 200, 8124, 2500, 4704, 2500] },

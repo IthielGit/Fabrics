@@ -242,8 +242,10 @@ function planRole(prism: Prism, cutV: number): PlanRole | null {
   switch (prism.kind) {
     case 'slab':
     case 'platform':
-    case 'step':
       return 'floor'
+    // Escaliers : dessinés avec la géométrie de plan de Pascal (ADR 0007), pas par leurs marches 3D.
+    case 'step':
+      return null
     case 'wall':
     case 'chimney':
     case 'frame':
@@ -268,6 +270,8 @@ const PLAN_ORDER: Record<PlanRole, number> = { floor: 0, below: 1, glass: 2, cut
 export interface PlanOverlay {
   lines: DrawLine[]
   texts: DrawText[]
+  /** Fonds (masques blancs des objets), peints sur les sols et sous les murs coupés. */
+  polygons?: DrawPolygon[]
 }
 
 export function levelPlanDrawing(
@@ -276,6 +280,8 @@ export function levelPlanDrawing(
   fontMm?: number,
   /** Cotes à ajouter (M10 ter lot B), construites avec la hauteur de texte du dessin. */
   overlay?: (fontMm: number) => PlanOverlay | null,
+  /** Escaliers et mobilier de Pascal du niveau (ADR 0007), en coordonnées du plan. */
+  symbolsOfPascal?: PlanOverlay | null,
 ): Drawing | null {
   const cutV = level.elevation + PLAN_CUT_HEIGHT
   const items = prismsOf(model)
@@ -308,6 +314,12 @@ export function levelPlanDrawing(
       minY = Math.min(minY, p.y)
       maxY = Math.max(maxY, p.y)
     }
+  }
+  for (const p of [...(symbolsOfPascal?.polygons ?? []).flatMap((q) => q.points), ...(symbolsOfPascal?.lines ?? []).flatMap((l) => [[l.x1, l.y1], [l.x2, l.y2]] as [number, number][])]) {
+    minX = Math.min(minX, p[0])
+    maxX = Math.max(maxX, p[0])
+    minY = Math.min(minY, p[1])
+    maxY = Math.max(maxY, p[1])
   }
   const font = fontMm ?? autoFontMm(maxX - minX, maxY - minY)
   // Les cotes agrandissent le cadre : elles sont à l'extérieur des murs.
@@ -348,6 +360,16 @@ export function levelPlanDrawing(
   const dx = margin - minX
   const dy = margin - minY
   const at = (p: { x: number; y: number }): [number, number] => [p.x + dx, p.y + dy]
+  const shift = (l: DrawLine): DrawLine => ({ ...l, x1: l.x1 + dx, x2: l.x2 + dx, y1: l.y1 + dy, y2: l.y2 + dy })
+  // Masques des objets de Pascal : sur les sols, sous les allèges, vitres et murs coupés.
+  const firstAbove = items.findIndex((item) => item.role !== 'floor')
+  const masks: DrawPolygon[] = (symbolsOfPascal?.polygons ?? []).map((q) => ({
+    ...q,
+    points: q.points.map(([x, y]) => [x + dx, y + dy] as [number, number]),
+  }))
+  polygons.splice(firstAbove < 0 ? polygons.length : firstAbove, 0, ...masks)
+  for (let k = 0; k < cutIndices.length; k++) if (cutIndices[k] >= firstAbove && firstAbove >= 0) cutIndices[k] += masks.length
+  for (let k = 0; k < hatchedIndices.length; k++) if (hatchedIndices[k] >= firstAbove && firstAbove >= 0) hatchedIndices[k] += masks.length
   const symbolLines: DrawLine[] = []
   for (const symbol of symbols) {
     // Découpe : efface le mur, les cadres et l'allège dans l'ouverture (fond blanc, sans contour).
@@ -368,9 +390,10 @@ export function levelPlanDrawing(
     height: maxY - minY + margin * 2,
     polygons,
     lines: [
+      ...(symbolsOfPascal?.lines ?? []).map(shift),
       ...hatchedOutline(polygons, cutIndices, hatchedIndices),
       ...symbolLines,
-      ...(extra?.lines ?? []).map((l) => ({ ...l, x1: l.x1 + dx, x2: l.x2 + dx, y1: l.y1 + dy, y2: l.y2 + dy })),
+      ...(extra?.lines ?? []).map(shift),
     ],
     texts: (extra?.texts ?? []).map((t) => ({ ...t, x: t.x + dx, y: t.y + dy })),
   }

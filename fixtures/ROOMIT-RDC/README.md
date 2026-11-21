@@ -42,5 +42,5 @@ Sans la séparation, Pascal voit le Séjour et le Dégagement comme un seul espa
 - Porte de la Salle de prière : coulissante de 1000 mm, modélisée en porte.
 - Poteaux non modélisés à part : ils sont compris dans les murs de 200 mm (le poteau isolé du Séjour,
   sous la poutre, est absent).
-- Pas encore dans l'exemple : escalier, mobilier, garde-corps et marches du Chalet. Ils seront ajoutés
-  pour l'essai des deux moteurs de dessin (20.1a, étape 2).
+- Escalier en L (`stairs`) et 4 objets du catalogue de Pascal (`items` : lit, table, canapé, WC), placés
+  à l'œil d'après la référence. Pas encore : marches balancées, garde-corps et marches du Chalet.

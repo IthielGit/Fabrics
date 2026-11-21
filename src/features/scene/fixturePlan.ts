@@ -1,4 +1,4 @@
-import { SeparatorNode } from '@pascal-app/core'
+import { ItemNode, SeparatorNode } from '@pascal-app/core'
 import type { CanvasElement, FabricsDocument, Level } from '../../types/document'
 import { fabricsToScene } from './migrate/fromFabrics'
 import type { PlanScene, SceneNodeData } from './sceneTypes'
@@ -24,6 +24,13 @@ export interface FixtureSpec {
   rooms: { name: string; polygon: number[] }[]
   /** Lignes de séparation de pièces de Pascal (limite sans mur, comme dans Revit), `[x1, y1, x2, y2]` en mm. */
   separators?: { ref: string; line: [number, number, number, number] }[]
+  /** Escaliers au format de Fabrics (convertis en escaliers de Pascal), mm. */
+  stairs?: { ref: string; x: number; y: number; rotation?: number; shape: 'straight' | 'l' | 'u'; width: number; length: number; length2?: number; mirrored?: boolean }[]
+  /**
+   * Objets du catalogue de Pascal (nœuds `item` natifs) : centre `x`, `y` (mm), rotation (degrés),
+   * identifiant et nom d'objet du catalogue (ils décident du symbole de plan), largeur × hauteur × profondeur (mm).
+   */
+  items?: { ref: string; assetId: string; name: string; x: number; y: number; rotation?: number; size: [number, number, number] }[]
 }
 
 const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
@@ -43,6 +50,13 @@ export function fixturePlan(s: FixtureSpec): FabricsDocument {
   s.rooms.forEach((r, i) =>
     elements.push({ ...BASE, id: `room${i}`, levelId, type: 'room', name: r.name, points: r.polygon, fill: '#eef', showLabel: true }),
   )
+  for (const st of s.stairs ?? []) {
+    elements.push({
+      ...BASE, id: st.ref, levelId, type: 'stair', name: st.ref, x: st.x, y: st.y, rotation: st.rotation ?? 0,
+      shape: st.shape, width: st.width, length: st.length, ...(st.length2 !== undefined ? { length2: st.length2 } : {}),
+      ...(st.mirrored ? { mirrored: true } : {}), voidMargin: 50,
+    })
+  }
   return {
     version: 4, unit: 'mm', page: { width: 42000, height: 29700, background: '#ffffff' },
     levels: [{ ...s.level }],
@@ -56,16 +70,28 @@ export function fixturePlan(s: FixtureSpec): FabricsDocument {
  */
 export function fixtureScene(s: FixtureSpec): PlanScene {
   const base = fabricsToScene(fixturePlan(s)).scene
-  const separators = s.separators ?? []
-  if (separators.length === 0) return settleScene(base)
   const levelId = Object.values(base.nodes).find((n) => n.type === 'level')!.id
   const nodes: Record<string, SceneNodeData> = { ...base.nodes }
-  for (const sep of separators) {
-    const [x1, y1, x2, y2] = sep.line
-    const node = SeparatorNode.parse({ id: `separator_${sep.ref}`, parentId: levelId, start: [x1 / 1000, y1 / 1000], end: [x2 / 1000, y2 / 1000] })
+  const add = (node: { id: string }) => {
     nodes[node.id] = node as unknown as SceneNodeData
     const level = nodes[levelId]
     nodes[levelId] = { ...level, children: [...(level.children ?? []), node.id] }
+  }
+  for (const sep of s.separators ?? []) {
+    const [x1, y1, x2, y2] = sep.line
+    add(SeparatorNode.parse({ id: `separator_${sep.ref}`, parentId: levelId, start: [x1 / 1000, y1 / 1000], end: [x2 / 1000, y2 / 1000] }))
+  }
+  for (const it of s.items ?? []) {
+    const [w, h, d] = it.size.map((v) => v / 1000)
+    add(
+      ItemNode.parse({
+        id: `item_${it.ref}`,
+        parentId: levelId,
+        position: [it.x / 1000, 0, it.y / 1000],
+        rotation: [0, ((it.rotation ?? 0) * Math.PI) / 180, 0],
+        asset: { id: it.assetId, category: 'furniture', name: it.name, thumbnail: '', src: `/items/${it.assetId}.glb`, dimensions: [w, h, d] },
+      }),
+    )
   }
   return settleScene({ nodes, rootNodeIds: base.rootNodeIds })
 }

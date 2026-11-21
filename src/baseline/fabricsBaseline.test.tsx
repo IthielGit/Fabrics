@@ -24,6 +24,7 @@ import { EXECUTION_LABELS } from '../i18n/dimensioningLabels'
 import { fr } from '../i18n/fr'
 import { fabricsToScene } from '../features/scene/migrate/fromFabrics'
 import { settleScene } from '../features/scene/settle'
+import { pascalLevelSymbols } from '../features/scene/view/levelPlanSymbols'
 import { sceneToFabricsView } from '../features/scene/view/toFabricsView'
 import type { Project, SectionLineElement } from '../types/document'
 
@@ -87,6 +88,8 @@ function sheetSvg(project: Project, mode: DimensioningMode): string {
   const doc = project.document
   const levels = doc.levels ?? []
   const sections = doc.elements.filter((el): el is SectionLineElement => el.type === 'section')
+  // Comme l'écran Vues (ADR 0007) : escaliers et mobilier dessinés avec la géométrie de plan de Pascal.
+  const scene = settleScene(fabricsToScene(doc).scene)
   const sheet = buildSheet({
     model: buildBuildingModel(doc),
     levels,
@@ -95,6 +98,7 @@ function sheetSvg(project: Project, mode: DimensioningMode): string {
     labels: { elevation: fr.views.elevation, section: fr.views.section, ridge: fr.views.ridge },
     levelOverlay: (level, font) =>
       planOverlay({ elements: doc.elements, levels }, level.id, mode, EXECUTION_LABELS, font),
+    levelSymbols: (level) => pascalLevelSymbols(scene.nodes, level.id),
   })
   return `${renderToStaticMarkup(<ViewDrawing drawing={sheet.drawing} />)}\n`
 }
