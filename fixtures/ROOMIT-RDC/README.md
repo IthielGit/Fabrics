@@ -27,6 +27,8 @@ de la référence. Écarts (test `src/features/scene/roomit.test.ts`) :
 | Dégagement | 28,64 m² | 28,84 m² | Idem |
 | SDB | 6,48 m² | 6,47 m² | 1475 × 4389 mm = 6,474 m² au relevé ; écart non expliqué |
 
+**Choix de l'utilisateur (2026-11-21) : A**, la séparation reste au milieu de la poutre (règle de Revit) ; les +0,20 m² de Séjour et Dégagement sont acceptés. Dans les projets, chaque passage ouvert entre deux pièces demande une séparation de pièces.
+
 Sans la séparation, Pascal voit le Séjour et le Dégagement comme un seul espace : le Séjour prenait
 65,25 m² et Fabrics signalait le chevauchement des deux pièces.
 

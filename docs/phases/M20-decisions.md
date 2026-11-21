@@ -95,6 +95,13 @@ se remplit dans l'app et s'exporte (PDF) pour être envoyée à l'ingénieur.
 
 ---
 
+## D20-8 · Pièces séparées sans mur (ajoutée le 2026-11-21, étape 1 de 20.1a)
+
+Un passage ouvert entre deux pièces se modélise par une **séparation de pièces** de Pascal. **Retenu : A,
+la séparation passe au milieu de la poutre** (règle de Revit, sans épaisseur) ; la bande sous la poutre
+est partagée entre les deux pièces (Villa ROOMIT : +0,20 m² au Séjour et au Dégagement par rapport au
+tableau de la référence).
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et

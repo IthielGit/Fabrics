@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; prochaine tâche : étape 2, essai des deux moteurs de dessin. M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; étape 2 faite (essai des deux moteurs, `docs/phases/M20-engine-trial.md`) ; en attente du choix du moteur par l'utilisateur. M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-21 — M20 · 20.1a étape 2 : essai des deux moteurs de dessin (choix de l'utilisateur à venir)
+- Convention des pièces séparées sans mur : **A retenu** par l'utilisateur (séparation au milieu de la poutre, D20-8).
+- Plan RDC de ROOMIT dessiné par Fabrics et par Pascal, A2 à 1:50, comparé à la page 5 (`docs/phases/M20-engine-trial.md`, images dans `tmp/m20-trial/out/`, non versionnées).
+- Fabrics : usages français, 3 chaînes de cotes lisibles, noms et surfaces, façades et coupes ; mais ni escalier ni mobilier de Pascal, murs en noir plein. Pascal : escalier dessiné, mais cotes qui se chevauchent, repères à l'américaine, noms et surfaces absents, texte d'escalier en anglais, ni façades ni coupes.
+- **Recommandation** : moteur de Fabrics, avec reprise du dessin 2D de Pascal pour escaliers et mobilier. Code d'essai non versionné (`tmp/`, `packages/pascal/packages/editor/fabrics-trial.tmp.ts`), supprimé après le choix.
 
 ### 2026-11-21 — M20 · 20.1a étape 1 : exemple ROOMIT-RDC (RDC de la Villa ROOMIT)
 - **Relevé au mm** dans le PDF vectoriel de l'utilisateur (page 5) : 22 murs, 20 ouvertures, 12 pièces, une séparation de pièces (`fixtures/ROOMIT-RDC/spec.json`, méthode et hypothèses dans `README.md`).
