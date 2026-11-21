@@ -29,7 +29,7 @@ Garder les deux ferait **deux moteurs de dessin et deux bibliothèques PDF** (in
    référence ne dit pas si ses surfaces sont au nu brut ou fini). Les cotes en cm de la référence
    sont converties en mm. Fichiers : `fixtures/ROOMIT-RDC/scene.json`, `spec.json`, `README.md`,
    test `src/features/scene/migrate/fixtures.test.ts` (étendu).
-2. **[essai fait le 2026-11-21, choix de l'utilisateur à venir]** **Essai des deux moteurs** sur cet exemple : plan RDC à 1:50 dessiné par Fabrics et par Pascal,
+2. **[fait le 2026-11-21 : moteur de Fabrics choisi, ADR 0007]** **Essai des deux moteurs** sur cet exemple : plan RDC à 1:50 dessiné par Fabrics et par Pascal,
    deux PDF et une capture côte à côte avec la page 5. Rapport `docs/phases/M20-engine-trial.md`,
    **vous choisissez**, puis ADR `docs/adr/0007-sheet-engine.md` et mise à jour de
    `docs/capabilities.md`. Code d'essai jeté après le choix.

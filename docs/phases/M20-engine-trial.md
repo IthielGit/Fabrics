@@ -47,6 +47,5 @@ Autre option : le moteur de Pascal pour les plans de niveau. Il faudrait refaire
 repères et ses cotes, désencombrer les chaînes, ajouter noms et surfaces, et garder quand même Fabrics
 pour façades et coupes : deux moteurs et deux bibliothèques PDF (pdfkit et jsPDF).
 
-**Choix de l'utilisateur : à venir.** Après le choix : ADR `docs/adr/0007-sheet-engine.md`, mise à
-jour de `docs/capabilities.md`, suppression du code d'essai (`tmp/m20-trial/`,
-`packages/pascal/packages/editor/fabrics-trial.tmp.ts`).
+**Choix de l'utilisateur (2026-11-21) : moteur de Fabrics**, avec le dessin 2D de Pascal pour
+escaliers et mobilier (ADR `docs/adr/0007-sheet-engine.md`). Code d'essai supprimé.
