@@ -60,6 +60,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
   - Le projet enregistré ne contient que la scène : aucune cote ni repère gardé à part.
 - Aucun code à changer : les pièces de Pascal suivent leurs murs (`autoFromWalls`) et les cotes sont recalculées depuis la vue de la scène.
 - Le plan proposait l'exemple « mur de 4000 à 5000 mm » ; le test utilise une cloison réelle de ROOMIT (même principe, valeurs vérifiables sur la référence).
+- Vérification : build ✓ lint ✓ 3 202 tests ✓ ; `check:all` arrêté aux tests de Pascal, lancés pendant d'autres tests (machine chargée, `EPERM` de liens symboliques) ; relancés seuls : 19 341 réussis, 71 en échec, **identiques à la référence**. Aucun fichier de `packages/pascal/` modifié.
 
 ### 2026-11-21 — M20 · 20.1a étape 3 (3/3) : étiquettes, repères des baies, cotes intérieures (D20-9)
 - Choix de l'utilisateur (D20-9, `docs/phases/M20-decisions.md`), qui modifie les usages de M10 ter, lot B :
