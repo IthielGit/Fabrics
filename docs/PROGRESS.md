@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), sous-lot 20.0 Décisions (options proposées, en attente des choix de l'utilisateur). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 Décisions fait le 2026-11-21 ; prochaine tâche : plan de 20.1 Vues liées au modèle (`/model opus`). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -44,7 +44,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
 | M18 Modèle BIM unifié (G1) | en cours (lots A à E faits) | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | terminé, gate G2 validé PASS | 2026-11-21 |
-| M20 Plans professionnels et mise en page (G3) | en cours (20.0 Décisions) | |
+| M20 Plans professionnels et mise en page (G3) | en cours (20.0 fait) | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
 | M22 Échanges IFC (G5) | à faire | |
 | M23 Bibliothèque de prix et DQE (G6) | à faire | |
@@ -52,6 +52,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-21 — M20 · 20.0 Décisions prises par l'utilisateur
+- Détail et raisons : `docs/phases/M20-decisions.md`. Référence de résultat : dossier Villa ROOMIT (`CONTEXT.md`).
+- Retenu : **mm partout** sur les feuilles (la référence est en cm ; la règle de `CLAUDE.md` est gardée) ; usages français (NF / ISO 128) ; gabarit de feuille de la référence (colonne droite, cartouche avec statut), A2 paysage par défaut ; échelles 1:50 / 1:100 / 1:20 / 1:10, 1:200 disponible ; **plans de niveau d'abord**, feuille RDC refaite comme premier cas de comparaison ; façades en trait, ombres en option.
+- Fondations, réseaux, fosse : **dessin seulement**, jamais de dimensionnement par Fabrics ; une **fiche « Données à fournir par l'ingénieur »** dit ce que l'app attend de lui (valeurs, unités, usage) ; objet marqué « à dimensionner par l'ingénieur » tant qu'il manque une valeur.
 
 ### 2026-11-21 — M19 terminé (gate G2 PASS) ; règle des branches changée
 - **G2 validé PASS par l'utilisateur** après test dans le navigateur des trois critères (mur allongé de 4000 à 5000 mm en 3D, couches 20 + 160 + 20 mm, pose et suppression d'une ouverture).

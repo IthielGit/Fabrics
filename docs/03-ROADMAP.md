@@ -1327,13 +1327,19 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 À décider avec l'utilisateur avant de commencer : normes de représentation (usages retenus en M10
 ter : Madagascar, héritage français), échelles, formats et livrables contractuels.
 
+**Décisions 20.0 prises par l'utilisateur le 2026-11-21** (`docs/phases/M20-decisions.md`) : mm partout,
+usages français, gabarit de feuille de Villa ROOMIT (A2 paysage par défaut), échelles 1:50 / 1:100 /
+1:20 / 1:10 (1:200 disponible), plans de niveau d'abord (feuille RDC comme premier cas de comparaison),
+façades en trait avec ombres en option, fondations / réseaux / fosse dessinés seulement, avec une fiche
+« Données à fournir par l'ingénieur ».
+
 **Découpage en sous-lots proposé le 2026-11-18, à confirmer au plan du jalon.** Ordre : 20.0 → 20.9 ; test par
 l'utilisateur après chaque sous-lot. Taper la commande `/model` indiquée avant le sous-lot (Claude la
 rappelle s'il tourne sur un autre modèle).
 
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
-| 20.0 Décisions | Normes de représentation, échelles, formats et livrables contractuels proposés en options, choisis par l'utilisateur | `/model opus` |
+| 20.0 Décisions — **fait le 2026-11-21** | Normes de représentation, échelles, formats et livrables contractuels proposés en options, choisis par l'utilisateur | `/model opus` |
 | 20.1 Vues liées au modèle | Plans de niveau, coupes, façades, détails ; planche et cotes Client / Exécution étendues au modèle Pascal | `/model opus` |
 | 20.2 Annotations | Cotes chaînées, repères portes et fenêtres, noms et surfaces de pièces, axes, symboles, légendes | `/model opus` |
 | 20.3 Nomenclatures et plans dérivés | Nomenclatures, plan de plafond, plan de toiture | `/model sonnet` |
