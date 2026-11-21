@@ -4,7 +4,7 @@ Décisions : `docs/phases/M20-decisions.md` (20.0, 2026-11-21).
 
 ## 20.1a — Plan de niveau lié au modèle (feuille RDC de Villa ROOMIT)
 
-Proposé le 2026-11-21, **en attente du feu vert**. Modèle : `/model opus`.
+Proposé le 2026-11-21, **feu vert de l'utilisateur le 2026-11-21**. Modèle : `/model opus`.
 
 D'après D20-5 (plans de niveau d'abord), le sous-lot 20.1 est découpé : **20.1a** plan de niveau
 (RDC), **20.1b** plan de toiture et R+1, **20.1c** coupes et façades branchées sur la scène Pascal.
@@ -23,7 +23,7 @@ Garder les deux ferait **deux moteurs de dessin et deux bibliothèques PDF** (in
 
 ### Tâches
 
-1. **Exemple ROOMIT-RDC** (`fixtures/ROOMIT-RDC/`) : le RDC de la page 5 saisi dans une scène Pascal
+1. **[fait le 2026-11-21]** **Exemple ROOMIT-RDC** (`fixtures/ROOMIT-RDC/`) : le RDC de la page 5 saisi dans une scène Pascal
    en mm (murs, poteaux, portes, fenêtres, pièces, escalier, quelques meubles), et les surfaces du
    tableau « Pièces Niveau RDC » comme valeurs attendues (écart toléré à fixer avec vous : la
    référence ne dit pas si ses surfaces sont au nu brut ou fini). Les cotes en cm de la référence

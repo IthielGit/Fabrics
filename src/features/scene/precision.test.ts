@@ -12,7 +12,8 @@ import { useScene } from '@pascal-app/core'
 import { describe, expect, it } from 'vitest'
 import { computeBuildingMeasurements } from '../measurements/measurements'
 import { metresWarnings } from '../measurements/warnings'
-import type { CanvasElement, FabricsDocument } from '../../types/document'
+import type { FabricsDocument } from '../../types/document'
+import { fixturePlan } from './fixturePlan'
 import { fabricsToScene } from './migrate/fromFabrics'
 import type { PlanScene } from './sceneTypes'
 import { settleScene } from './settle'
@@ -23,31 +24,9 @@ const SPECS = import.meta.glob<Record<string, unknown>>('../../../fixtures/T*/sp
 type Spec = any // JSON de spécification, lu tel quel (forme documentée dans le fichier lui-même)
 const spec = (id: string): Spec => SPECS[`../../../fixtures/${id}/spec.json`]
 
-const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
 const m2 = (mm2: number) => Math.round(mm2 / 1e4) / 100
 const m3 = (mm3: number) => Math.round(mm3 / 1e6) / 1000
-
-function planOf(s: Spec): FabricsDocument {
-  const levelId = s.level.id
-  const elements: CanvasElement[] = []
-  for (const w of s.walls) {
-    elements.push({ ...BASE, id: w.ref, levelId, type: 'wall', name: w.ref, points: w.axis, thickness: w.thickness, height: w.height, fill: '#475569' })
-  }
-  for (const o of s.openings) {
-    elements.push({
-      ...BASE, id: o.ref, levelId, type: 'opening', name: o.ref, kind: o.kind, wallId: o.wall, segmentIndex: o.segment,
-      offset: o.offset, width: o.width, height: o.height, sillHeight: o.sillHeight, hinge: 'start', side: 'left',
-    })
-  }
-  s.rooms.forEach((r: { name: string; polygon: number[] }, i: number) =>
-    elements.push({ ...BASE, id: `room${i}`, levelId, type: 'room', name: r.name, points: r.polygon, fill: '#eef', showLabel: true }),
-  )
-  return {
-    version: 4, unit: 'mm', page: { width: 42000, height: 29700, background: '#ffffff' },
-    levels: [{ ...s.level }],
-    elements,
-  }
-}
+const planOf = (s: Spec): FabricsDocument => fixturePlan(s)
 
 const sceneOf = (doc: FabricsDocument): PlanScene => settleScene(fabricsToScene(doc).scene)
 const metresOf = (scene: PlanScene) => computeBuildingMeasurements(sceneToFabricsView(scene)).levels[0].measurements
