@@ -32,7 +32,6 @@ export function levelAnnotations(
     level: levels[index],
     levelAbove: levels[index + 1],
     measurements: entry.measurements,
-    references: building.refs,
     voids: collectStairVoids(document.elements, document.levels).filter((v) => v.levelId === levelId),
     labels,
   })

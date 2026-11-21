@@ -2,7 +2,6 @@ import type { CanvasElement, Level, WallElement } from '../../types/document'
 import { flattenPoints, polygonCentroid } from '../geometry/polygon'
 import type { Point } from '../geometry/viewport'
 import { axisAlignedRectangle, type Measurements } from '../measurements/measurements'
-import type { References } from '../measurements/references'
 import { roomDimensionsText } from '../measurements/clientView'
 import { stairFootprint } from '../stairs/stairs'
 import type { StairVoid } from '../stairs/voids'
@@ -14,10 +13,11 @@ import type { AutoAnnotations, AutoDimension, AutoLabel } from './types'
 /**
  * Cotes **Exécution** d'un niveau (M10 ter lot B), au nu brut des murs (D38) :
  * - les trois chaînes de chaque façade (`facadeChains`) ;
- * - des chaînes intérieures qui traversent le bâtiment à hauteur de chaque pièce, avec l'épaisseur
- *   de chaque mur et la largeur de chaque pièce entre deux murs ;
- * - chaque baie : repère, `largeur / hauteur` en dimensions brutes de maçonnerie (D39), allège ;
- * - chaque pièce : nom, surface, altitudes du sol et du dessus de la dalle haute (`±0`, `+2850`) ;
+ * - dans chaque pièce, une cote de largeur et une de profondeur au nu des murs (D20-9, M20) ;
+ * - chaque baie en dimensions brutes de maçonnerie (D39), au format de la référence de l'utilisateur
+ *   (D20-9) : porte `PP: 900 x 2100`, fenêtre `1500 x 1000` et allège `All. 1100` ; les repères `P01`,
+ *   `F01` restent dans les métrés ;
+ * - chaque pièce : nom et surface (D20-9 ; altitudes dans les métrés et sur les coupes) ;
  * - les plateformes (altitude du dessus), les trémies (dimensions) et les escaliers (nombre de
  *   contremarches, hauteur, giron).
  * Les nombres viennent des métrés et des repères : plan et métrés d'exécution ne se contredisent pas.
@@ -25,6 +25,10 @@ import type { AutoAnnotations, AutoDimension, AutoLabel } from './types'
 export interface ExecutionLabels {
   /** « All. 900 ». */
   sill: (mm: number) => string
+  /** Porte ou baie : « PP: 900 x 2100 ». */
+  door: (width: number, height: number) => string
+  /** Fenêtre : « 1500 x 1000 ». */
+  window: (width: number, height: number) => string
   /** « Sol ±0 ». */
   floor: (altitude: string) => string
   /** « Dalle +2700 ». */
@@ -52,14 +56,13 @@ export interface ExecutionContext {
   /** Niveau juste au-dessus (altitude de la dalle haute) ; absent : haut des murs du niveau. */
   levelAbove?: Level
   measurements: Pick<Measurements, 'rooms' | 'stairs'>
-  references: References
   /** Trémies qui percent ce niveau. */
   voids: readonly StairVoid[]
   labels: ExecutionLabels
 }
 
 export interface ExecutionOptions extends FacadeChainOptions {
-  /** Distance entre le centre d'une pièce et sa chaîne intérieure, en mm (pour ne pas couvrir le nom). */
+  /** Distance entre le centre d'une pièce et ses cotes de largeur et de profondeur, en mm (pour ne pas couvrir le nom). */
   innerShift: number
   /** Distance entre la face d'un mur et l'étiquette d'une ouverture, en mm. */
   openingLabelGap: number
@@ -85,49 +88,33 @@ export function formatAltitude(mm: number): string {
   return rounded > 0 ? `+${rounded}` : `${rounded}`
 }
 
-const ALIGN_TOLERANCE = 0.5
-const TICK_MERGE = 1
 
 /**
- * Chaîne intérieure le long d'une ligne horizontale (`y` fixé) ou verticale (`x` fixé) : faces des
- * murs perpendiculaires qu'elle traverse. `null` si elle traverse moins de deux murs.
+ * Intervalle intérieur d'une pièce (polygone `[x1, y1, …]`) sur une ligne horizontale (`y = at`) ou
+ * verticale (`x = at`) : celui qui contient `around`, sinon le plus long ; `null` si la ligne ne
+ * traverse pas la pièce. Sert à la cote de largeur et de profondeur de chaque pièce (D20-9).
  */
-export function innerChainTicks(
-  walls: readonly WallElement[],
+export function roomChord(
+  flat: readonly number[],
   direction: 'horizontal' | 'vertical',
   at: number,
-): number[] | null {
-  const ticks: number[] = []
-  let crossed = 0
-  for (const wall of walls) {
-    for (let i = 0; i + 3 < wall.points.length; i += 2) {
-      const [ax, ay, bx, by] = wall.points.slice(i, i + 4)
-      // Ligne horizontale : murs verticaux (x constant) dont le tracé couvre `at`.
-      const [c0, c1, s0, s1] = direction === 'horizontal' ? [ax, bx, ay, by] : [ay, by, ax, bx]
-      if (Math.abs(c0 - c1) > ALIGN_TOLERANCE) continue
-      if (at < Math.min(s0, s1) || at > Math.max(s0, s1)) continue
-      ticks.push(c0 - wall.thickness / 2, c0 + wall.thickness / 2)
-      crossed++
-    }
+  around: number,
+): [number, number] | null {
+  const hits: number[] = []
+  const n = flat.length / 2
+  for (let i = 0; i < n; i++) {
+    const [ax, ay] = [flat[2 * i], flat[2 * i + 1]]
+    const [bx, by] = [flat[(2 * i + 2) % flat.length], flat[(2 * i + 3) % flat.length]]
+    // Coordonnée « en travers » de la ligne (c) et « le long » (s).
+    const [ca, cb, sa, sb] = direction === 'horizontal' ? [ay, by, ax, bx] : [ax, bx, ay, by]
+    if (ca === cb || at < Math.min(ca, cb) || at >= Math.max(ca, cb)) continue
+    hits.push(sa + ((at - ca) / (cb - ca)) * (sb - sa))
   }
-  if (crossed < 2) return null
-  const sorted = ticks.sort((a, b) => a - b)
-  return sorted.filter((v, k) => k === 0 || v - sorted[k - 1] >= TICK_MERGE)
-}
-
-function chainToDimensions(
-  ticks: readonly number[],
-  direction: 'horizontal' | 'vertical',
-  at: number,
-  idPrefix: string,
-): AutoDimension[] {
-  const result: AutoDimension[] = []
-  for (let k = 0; k + 1 < ticks.length; k++) {
-    const points: [number, number, number, number] =
-      direction === 'horizontal' ? [ticks[k], at, ticks[k + 1], at] : [at, ticks[k], at, ticks[k + 1]]
-    result.push({ id: `${idPrefix}-${k}`, points, offset: 0, chainIndex: k })
-  }
-  return result
+  hits.sort((x, y) => x - y)
+  const spans: [number, number][] = []
+  for (let k = 0; k + 1 < hits.length; k += 2) if (hits[k + 1] - hits[k] > 1) spans.push([hits[k], hits[k + 1]])
+  if (spans.length === 0) return null
+  return spans.find(([lo, hi]) => around >= lo && around <= hi) ?? spans.reduce((best, sp) => (sp[1] - sp[0] > best[1] - best[0] ? sp : best))
 }
 
 /** Centre d'une ouverture sur l'axe de son mur, et normale du mur (vecteur unitaire). */
@@ -150,17 +137,14 @@ export function executionDimensions(
   context: ExecutionContext,
   options: ExecutionOptions = DEFAULT_EXECUTION_OPTIONS,
 ): AutoAnnotations {
-  const { level, levelAbove, measurements, references, voids, labels } = context
+  const { level, measurements, voids, labels } = context
   const visible = elements.filter((el) => !el.hidden)
   const walls = visible.filter((el): el is WallElement => el.type === 'wall')
   const dimensions: AutoDimension[] = [...facadeChains(visible, options)]
   const result: AutoLabel[] = []
 
-  // Chaînes intérieures : une horizontale et une verticale par pièce, sans doublon.
-  const seenChains = new Set<string>()
+  // Pièces : nom et surface ; une cote de largeur et une de profondeur, au nu des murs.
   const roomById = new Map(measurements.rooms.map((room) => [room.id, room]))
-  const floor = labels.floor(formatAltitude(level.elevation))
-  const slab = labels.slab(formatAltitude(levelAbove ? levelAbove.elevation : level.elevation + level.height))
   for (const room of visible) {
     if (room.type !== 'room') continue
     const centre = polygonCentroid(room.points)
@@ -170,26 +154,17 @@ export function executionDimensions(
       id: `room-${room.id}`,
       x: centre.x,
       y: centre.y,
-      // Altitude sous plafond : sol + hauteur sous plafond (Technique seulement, jamais en Client).
-      lines: [
-        room.name,
-        formatArea(measure.netArea),
-        floor,
-        ...(measure.ceilingHeight === null
-          ? []
-          : [labels.ceiling(formatAltitude(level.elevation + measure.ceilingHeight))]),
-        slab,
-      ],
+      lines: [room.name, formatArea(measure.netArea)],
       bounds: pointsBox(room.points),
     })
     for (const direction of ['horizontal', 'vertical'] as const) {
       const at = direction === 'horizontal' ? centre.y + options.innerShift : centre.x + options.innerShift
-      const ticks = innerChainTicks(walls, direction, at)
-      if (!ticks) continue
-      const key = `${direction}:${ticks.map((t) => Math.round(t)).join(',')}`
-      if (seenChains.has(key)) continue
-      seenChains.add(key)
-      dimensions.push(...chainToDimensions(ticks, direction, at, `inner-${room.id}-${direction}`))
+      const around = direction === 'horizontal' ? centre.x : centre.y
+      const chord = roomChord(room.points, direction, at, around)
+      if (!chord) continue
+      const [lo, hi] = chord
+      const points: [number, number, number, number] = direction === 'horizontal' ? [lo, at, hi, at] : [at, lo, at, hi]
+      dimensions.push({ id: `room-${room.id}-${direction === 'horizontal' ? 'width' : 'depth'}`, points, offset: 0 })
     }
   }
 
@@ -205,10 +180,9 @@ export function executionDimensions(
     const { centre, normal } = frame
     const outward = (centre.x - middle.x) * normal.x + (centre.y - middle.y) * normal.y >= 0 ? 1 : -1
     const distance = wall.thickness / 2 + options.openingLabelGap
-    const lines = [
-      references.openings.get(opening.id) ?? '',
-      `${Math.round(opening.width)} / ${Math.round(opening.height)}`,
-    ].filter((line) => line !== '')
+    const width = Math.round(opening.width)
+    const height = Math.round(opening.height)
+    const lines = [opening.kind === 'window' ? labels.window(width, height) : labels.door(width, height)]
     if (opening.sillHeight > 0) lines.push(labels.sill(Math.round(opening.sillHeight)))
     result.push({
       id: `opening-${opening.id}`,

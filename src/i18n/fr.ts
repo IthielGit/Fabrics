@@ -1424,6 +1424,8 @@ export const fr = {
     title: 'Cotes calculées automatiquement à partir du plan (elles ne modifient pas le document)',
     modes: { none: 'Aucune', client: 'Client', execution: 'Technique' },
     sill: (mm: number) => `All. ${mm}`,
+    door: (width: number, height: number) => `PP: ${width} x ${height}`,
+    window: (width: number, height: number) => `${width} x ${height}`,
     floor: (altitude: string) => `Sol ${altitude}`,
     slab: (altitude: string) => `Dalle ${altitude}`,
     ceiling: (altitude: string) => `${altitude} sous plafond`,
@@ -1440,7 +1442,7 @@ export const fr = {
     pdfVersion: 'Cotation des plans',
     pdfOptions: { screen: 'Comme à l’écran', client: 'Client', execution: 'Technique' },
     baysNote:
-      'Baies cotées en dimensions brutes de maçonnerie (tableau à tableau). Dimensions des menuiseries : à confirmer par le menuisier après prise de cotes sur place. Repères valables à la date du document.',
+      'Baies cotées en dimensions brutes de maçonnerie (tableau à tableau), largeur x hauteur : PP = passage de porte, All. = allège. Dimensions des menuiseries : à confirmer par le menuisier après prise de cotes sur place.',
   },
   toolModes: {
     label: 'Mode de tracé',

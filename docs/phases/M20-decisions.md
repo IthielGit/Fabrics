@@ -102,6 +102,16 @@ la séparation passe au milieu de la poutre** (règle de Revit, sans épaisseur)
 est partagée entre les deux pièces (Villa ROOMIT : +0,20 m² au Séjour et au Dégagement par rapport au
 tableau de la référence).
 
+## D20-9 · Plan d'exécution : étiquettes, repères, cotes intérieures (2026-11-21, 20.1a étape 3)
+
+Choix de l'utilisateur (modifie les usages validés en M10 ter, lot B) :
+- **Étiquette de pièce : nom + surface** (comme Villa ROOMIT). Les altitudes (sol, sous plafond, dalle)
+  restent dans les métrés et iront sur les coupes.
+- **Repères des baies au format ROOMIT, en mm** : porte `PP: 900 x 2100`, fenêtre `1500 x 1000` et
+  `All. 1100`. Pas de numéro `P01` / `F01` sur le plan (les numéros restent dans les métrés).
+- **Cotes intérieures : une largeur et une profondeur par pièce**, au nu des murs, au lieu des chaînes
+  par rangée de pièces (qui répétaient des valeurs).
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et

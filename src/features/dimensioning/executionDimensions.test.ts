@@ -2,9 +2,8 @@ import { describe, expect, it } from 'vitest'
 import type { CanvasElement, OpeningElement, RoomElement, StairElement, WallElement } from '../../types/document'
 import { dimensionGeometry } from '../geometry/dimension'
 import { computeMeasurements } from '../measurements/measurements'
-import { buildReferences } from '../measurements/references'
 import { collectStairVoids } from '../stairs/voids'
-import { executionDimensions, formatAltitude, innerChainTicks, type ExecutionLabels } from './executionDimensions'
+import { executionDimensions, formatAltitude, roomChord, type ExecutionLabels } from './executionDimensions'
 import type { AutoDimension } from './types'
 import { levelAnnotations } from './levelAnnotations'
 
@@ -14,6 +13,8 @@ const L1 = { id: 'L1', name: 'Étage', elevation: 2850, height: 2700, slabThickn
 
 const LABELS: ExecutionLabels = {
   sill: (mm) => `All. ${mm}`,
+  door: (w, h) => `PP: ${w} x ${h}`,
+  window: (w, h) => `${w} x ${h}`,
   floor: (a) => `Sol ${a}`,
   slab: (a) => `Dalle ${a}`,
   ceiling: (a) => `${a} sous plafond`,
@@ -51,7 +52,6 @@ function run(elements: CanvasElement[], levels = [L0], levelId = 'L0') {
     level,
     levelAbove,
     measurements: computeMeasurements(own, levels, voids),
-    references: buildReferences({ elements, levels }),
     voids,
     labels: LABELS,
   })
@@ -67,42 +67,47 @@ describe('cotes Exécution', () => {
     expect(formatAltitude(-450)).toBe('-450')
   })
 
-  it('fenêtre : F01, 1200 / 1350, All. 900, à l’extérieur du mur', () => {
+  it('fenêtre : 1200 x 1350, All. 900, à l’extérieur du mur (D20-9 : sans repère F01)', () => {
     const { labels } = run([box, opening('f', 'box')])
     const label = labels.find((l) => l.id === 'opening-f')!
-    expect(label.lines).toEqual(['F01', '1200 / 1350', 'All. 900'])
+    expect(label.lines).toEqual(['1200 x 1350', 'All. 900'])
     expect(label.y).toBeLessThan(-100) // au-dessus de la façade haute
   })
 
-  it('porte : repère P01 et pas d’allège', () => {
+  it('porte et baie : « PP: 900 x 2100 », pas d’allège', () => {
     const { labels } = run([box, opening('p', 'box', { kind: 'door', width: 900, height: 2100, sillHeight: 0 })])
-    expect(labels.find((l) => l.id === 'opening-p')!.lines).toEqual(['P01', '900 / 2100'])
+    expect(labels.find((l) => l.id === 'opening-p')!.lines).toEqual(['PP: 900 x 2100'])
+    const bay = run([box, opening('b', 'box', { kind: 'bay', width: 2400, height: 2150, sillHeight: 0 })])
+    expect(bay.labels.find((l) => l.id === 'opening-b')!.lines).toEqual(['PP: 2400 x 2150'])
   })
 
-  it('le repère du plan est celui des métrés d’exécution', () => {
-    const elements = [box, opening('a', 'box', { offset: 1000 }), opening('b', 'box', { offset: 4000 })]
-    const refs = buildReferences({ elements, levels: [L0] })
-    const { labels } = run(elements)
-    expect(labels.find((l) => l.id === 'opening-b')!.lines[0]).toBe(refs.openings.get('b'))
-  })
-
-  it('chaîne intérieure : épaisseur de chaque mur et largeur de chaque pièce', () => {
+  it('une cote de largeur et une de profondeur par pièce, au nu des murs, sans doublon', () => {
     const refend = wall('r', [2000, 0, 2000, 4000])
-    expect(innerChainTicks([box, refend], 'horizontal', 2000)).toEqual([-100, 100, 1900, 2100, 5700, 5900])
     const r1 = room('r1', 'Chambre', [100, 100, 1900, 100, 1900, 3900, 100, 3900])
     const r2 = room('r2', 'Séjour', [2100, 100, 5700, 100, 5700, 3900, 2100, 3900])
     const { dimensions } = run([box, refend, r1, r2])
-    const inner = dimensions.filter((d) => d.id.includes('-horizontal-'))
-    // Les deux pièces sont sur la même ligne : une seule chaîne.
-    expect(inner.map(len)).toEqual([200, 1800, 200, 3600, 200])
+    const inner = dimensions.filter((d) => d.id.startsWith('room-'))
+    expect(inner.map((d) => [d.id, len(d)])).toEqual([
+      ['room-r1-width', 1800],
+      ['room-r1-depth', 3800],
+      ['room-r2-width', 3600],
+      ['room-r2-depth', 3800],
+    ])
   })
 
-  it('pièce : nom, surface, altitude du sol et de la dalle haute', () => {
+  it('pièce en L : la cote passe dans la partie qui contient le centre', () => {
+    // L : 4000 × 1000 en haut, 1000 × 3000 à gauche
+    const L = [0, 0, 4000, 0, 4000, 1000, 1000, 1000, 1000, 4000, 0, 4000]
+    expect(roomChord(L, 'horizontal', 500, 2000)).toEqual([0, 4000])
+    expect(roomChord(L, 'horizontal', 2500, 500)).toEqual([0, 1000])
+    expect(roomChord(L, 'vertical', 2500, 500)).toEqual([0, 1000])
+    expect(roomChord(L, 'horizontal', 5000, 500)).toBeNull()
+  })
+
+  it('pièce : nom et surface seulement (D20-9 ; altitudes dans les métrés)', () => {
     const r = room('r', 'Cuisine', [100, 100, 5700, 100, 5700, 3900, 100, 3900])
     const ground = run([box, r], [L0, L1]).labels.find((l) => l.id === 'room-r')!
-    expect(ground.lines).toEqual(['Cuisine', '21,28 m²', 'Sol ±0', '+2650 sous plafond', 'Dalle +2850'])
-    const upper = run([{ ...box, levelId: 'L1' }, { ...r, levelId: 'L1' }], [L0, L1], 'L1')
-    expect(upper.labels.find((l) => l.id === 'room-r')!.lines.slice(2)).toEqual(['Sol +2850', '+5350 sous plafond', 'Dalle +5550'])
+    expect(ground.lines).toEqual(['Cuisine', '21,28 m²'])
   })
 
   it('escalier : contremarches, hauteur et giron ; trémie cotée au niveau du dessus', () => {
@@ -136,9 +141,9 @@ describe('cotes d’un niveau selon le réglage', () => {
     expect(labels.map((l) => l.lines)).toEqual([['Chambre', '4000 × 3000', '12,00 m²']])
   })
 
-  it('Exécution : repère de la fenêtre ; niveau inconnu : rien', () => {
+  it('Exécution : dimensions de la fenêtre ; niveau inconnu : rien', () => {
     const { labels } = levelAnnotations(doc, 'L0', 'execution', LABELS)
-    expect(labels.find((l) => l.id === 'opening-f')!.lines[0]).toBe('F01')
+    expect(labels.find((l) => l.id === 'opening-f')!.lines[0]).toBe('1200 x 1350')
     expect(levelAnnotations(doc, 'X', 'execution', LABELS).labels).toEqual([])
   })
 })

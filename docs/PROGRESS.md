@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; étape 2 faite (essai des deux moteurs, `docs/phases/M20-engine-trial.md`) ; moteur de Fabrics choisi (ADR 0007) ; étape 3 en cours (escaliers, mobilier, murs hachurés et poteaux faits ; restent étiquettes allégées et repères `PP` / `All.`, à valider par l'utilisateur car ils modifient les usages de M10 ter). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; étape 2 faite (essai des deux moteurs, `docs/phases/M20-engine-trial.md`) ; moteur de Fabrics choisi (ADR 0007) ; étape 3 faite (escaliers, mobilier, murs hachurés, poteaux, étiquettes allégées, repères `PP` / `All.`, cotes intérieures par pièce : D20-9), à vérifier par l'utilisateur dans le navigateur. M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-21 — M20 · 20.1a étape 3 (3/3) : étiquettes, repères des baies, cotes intérieures (D20-9)
+- Choix de l'utilisateur (D20-9, `docs/phases/M20-decisions.md`), qui modifie les usages de M10 ter, lot B :
+  - **Pièces** : nom + surface seulement. Les altitudes (sol, sous plafond, dalle) restent dans les métrés et iront sur les coupes.
+  - **Baies au format ROOMIT, en mm** : porte ou baie `PP: 900 x 2100`, fenêtre `1500 x 1000` + `All. 1100`. Plus de `P01` / `F01` sur le plan (ils restent dans les métrés). Note de la planche mise à jour (`fr.ts`).
+  - **Cotes intérieures** : une largeur et une profondeur par pièce, au nu des murs (`roomChord`, qui gère les pièces en L), au lieu des chaînes par rangée qui répétaient des valeurs.
+- Fichiers : `executionDimensions.ts` (+ tests), `levelAnnotations.ts`, `dimensioningLabels.ts`, `fr.ts` ; planches de référence (baseline) `example` et `large-house` mises à jour en conséquence.
+- Build, lint, 3 198 tests OK.
 
 ### 2026-11-21 — M20 · 20.1a étape 3 (2/3) : murs hachurés et poteaux
 - **Murs dessinés dans Pascal** : le matériau de coupe vient de leur composition (couche porteuse : brique, bloc / pierre, béton, bois) ; un mur coupé avec un matériau est hachuré, sinon noir plein (`wallMaterialOfAssembly`, `scene/view/toFabricsView.ts`, testé).
