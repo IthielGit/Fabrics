@@ -45,7 +45,7 @@ Garder les deux ferait **deux moteurs de dessin et deux bibliothèques PDF** (in
    de 500 mm dans Pascal : cote SDB 1475 → 975 mm, SDB 6,47 → 4,28 m², Séjour 36,18 → 38,37 m² ;
    aucun code à changer]** **Lien au modèle** : changer un mur dans Pascal met le plan à jour (test : mur de 4000 à 5000 mm,
    la cote et la surface de la pièce suivent) ; aucune donnée de plan enregistrée à part.
-5. **Exactitude imprimée** : test qui lit le PDF produit : à 1:50, 1000 mm = 20,0 mm sur la feuille
+5. **[test fait le 2026-11-22 : `src/features/export/printScale.test.ts` ; impression par l'utilisateur à faire]** **Exactitude imprimée** : test qui lit le PDF produit : à 1:50, 1000 mm = 20,0 mm sur la feuille
    (écart ≤ 0,1 mm) ; impression à 100 % par vous.
 6. Suivi : roadmap, `PROGRESS.md`, `docs/regression-checklist.md`, `npm run check:all`.
 
