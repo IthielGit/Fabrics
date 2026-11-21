@@ -4,9 +4,9 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M17 Audit et intégration de Pascal terminé, **gate G0 validé PASS par l'utilisateur le 2026-11-18**, mergé dans `main`. Avant : M16 Commentaires ancrés terminé et validé (lots A à E) ; M14 Collaboration temps réel (lots A à F faits et validés : jalon terminé) ; M15 Historique de versions terminé et validé (lots A à D) ; M15 bis Réorganisation de l'éditeur terminé et validé (lots A à D) ; M13 et M12 terminés et validés (MVP terminé) ; M11 bis, M11 et M11 ter terminés, à tester dans le navigateur ; M10 ter terminé et validé
-- **Dernière tâche terminée :** M19 · B5 (2026-11-18). A1 à A7 validés par l'utilisateur le 2026-11-18. **B1 à B5 enchaînés à la demande de l'utilisateur, test dans le navigateur à la fin de B5**, un commit par sous-lot.
-- **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »). **Prochaine tâche :** M19 · B1 Outils 2D (`/model opus`) ; en attente de décision de l'utilisateur : traduire les 660 textes de Pascal écrits en dur en anglais (sous-lot dédié). **M18 terminé : gate G1 validé PASS le 2026-11-18, aperçu Cloudflare construit sans erreur et validé en ligne par l'utilisateur, mergé dans `main` le 2026-11-18.**
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), sous-lot 20.0 Décisions (options proposées, en attente des choix de l'utilisateur). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
+- **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
 - **Installation (depuis M17) :** `npm install` puis `npm run install:pascal` (Bun) ; vérification complète : `npm run check:all`
 - **Avant M18 :** relire les calculs à la main de `fixtures/HOUSE-01`, `HOUSE-02`, `EDGE-01`
@@ -43,8 +43,8 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M16 Commentaires ancrés | terminé (lots A à E) | 2026-11-15 |
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
 | M18 Modèle BIM unifié (G1) | en cours (lots A à E faits) | |
-| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | lot A validé ; lot B fait (B1 à B7, B6 et B7 vérifiés), G2 proposé | |
-| M20 Plans professionnels et mise en page (G3) | à faire | |
+| M19 Interface Pascal et édition 2D/3D professionnelle (G2) | terminé, gate G2 validé PASS | 2026-11-21 |
+| M20 Plans professionnels et mise en page (G3) | en cours (20.0 Décisions) | |
 | M21 Quantitatif automatique et traçabilité (G4) | à faire | |
 | M22 Échanges IFC (G5) | à faire | |
 | M23 Bibliothèque de prix et DQE (G6) | à faire | |
@@ -52,6 +52,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-21 — M19 terminé (gate G2 PASS) ; règle des branches changée
+- **G2 validé PASS par l'utilisateur** après test dans le navigateur des trois critères (mur allongé de 4000 à 5000 mm en 3D, couches 20 + 160 + 20 mm, pose et suppression d'une ouverture).
+- **Règle des branches** (demande de l'utilisateur) : le travail Pascal se fait sur la branche `pascal` ; `main` n'est plus touché tant que les mises à jour Pascal ne sont pas terminées (`CLAUDE.md`, règle 5).
+- **Suivant :** M20, sous-lot 20.0 Décisions (`docs/phases/M20-decisions.md`).
 
 ### 2026-11-20 — M19 · B7 Textes de Pascal en français : fait, vérifié par l'utilisateur dans le navigateur (« c'est en français »)
 - **Noms par défaut** (« Wall 3 », « Door 1 », « Roof 2 »…) : comme les pièces du catalogue de Pascal, ils restent en anglais dans la scène (la numérotation et le MCP de Pascal les lisent) et s'affichent traduits (« Mur 3 »). Pascal : `DEFAULT_NODE_NAME_MESSAGES` dans `viewer/src/ui/lib/room-name-messages.ts`, utilisé par l'arbre, le renommage, le titre des panneaux et la barre de sélection. Fabrics : `src/features/scene/view/pascalDisplayName.ts` (testé) avec `src/i18n/pascalNames.ts`, généré par `scripts/compile-pascal-texts.mjs` (80 noms) : pièces du catalogue (« Bedroom 2 » → « Chambre 2 »), toitures et escaliers natifs dans les vues et métrés.

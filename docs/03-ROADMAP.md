@@ -1238,7 +1238,7 @@ qui se chevauchent, avertissement « hauteur nulle ») ; rapport `docs/phases/M1
 - Deux navigateurs modifient le même plan en direct ; un commentaire reste attaché à son élément
 - Changer de vue ne modifie pas le document ; les scénarios natifs de Pascal passent toujours
 
-## M19 — Interface Pascal et édition 2D/3D professionnelle (gate G2)
+## M19 — Interface Pascal et édition 2D/3D professionnelle (gate G2) — **terminé, gate G2 validé PASS par l'utilisateur le 2026-11-21**
 
 **Découpage en sous-lots validé par l'utilisateur le 2026-11-18.** Ordre : A1 → A7, puis B1 → B5 ;
 test dans le navigateur par l'utilisateur après chaque sous-lot (indispensable après A2 et B1).

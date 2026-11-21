@@ -64,8 +64,10 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
    et ajoute une entrée dans `docs/PROGRESS.md`.
 5. **Commits.** Propose un commit git à la fin de chaque tâche réussie, avec un message clair
    (`feat: outil mur`, `fix: zoom molette`…).
-   **Depuis le 2026-11-18, on travaille directement sur `main`** : ni branche de fonctionnalité ni
-   worktree. Commit puis `git push origin main` à la fin de chaque tâche réussie.
+   **Depuis le 2026-11-21, tout le travail Fabrics + Pascal (M17 et suivants) se fait sur la
+   branche `pascal`** : commit puis `git push origin pascal` à la fin de chaque tâche réussie.
+   **Ne jamais toucher à `main`** (ni commit, ni fusion, ni push) tant que l'utilisateur n'a pas
+   déclaré les mises à jour Pascal terminées. Pas d'autre branche de fonctionnalité ni de worktree.
 6. **Dépendances.** N'utilise que les bibliothèques listées dans `docs/02-ARCHITECTURE.md`. Les
    paquets de Pascal et leurs dépendances sont acceptés en bloc (D78). Pour en ajouter une autre,
    demande d'abord en expliquant pourquoi.
