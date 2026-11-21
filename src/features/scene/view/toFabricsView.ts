@@ -12,6 +12,7 @@ import type {
   PlanSettings,
   WallElement,
   WallLayer,
+  WallMaterial,
 } from '../../../types/document'
 import { dimensionOffset, furnitureCorner, roundMm } from '../migrate/geometry'
 import { LENGTH_FIELDS, lengthsToMillimetres } from '../migrate/lengthFields'
@@ -65,6 +66,22 @@ function wallLayersOf(node: SceneNodeData): { layers?: WallLayer[] } {
       defined({ id: layer.id, role: layer.role, material: layer.material, thickness: mToMm(layer.thickness) }) as WallLayer,
     ),
   }
+}
+
+/**
+ * Matériau de coupe d'un mur d'après sa composition de Pascal (M20 20.1a) : celui de sa couche porteuse
+ * (`core`, sinon la première couche `structure`). Sur les plans, un mur coupé avec un matériau est
+ * hachuré selon ce matériau ; sans composition ou matériau reconnu : rien (noir plein, D20-2).
+ */
+export function wallMaterialOfAssembly(assembly: unknown): { material?: WallMaterial } {
+  const layers = (assembly as { layers?: { role?: string; core?: boolean; material?: string }[] } | undefined)?.layers ?? []
+  const core = layers.find((l) => l.core) ?? layers.find((l) => l.role === 'structure')
+  const kind = core?.material?.toLowerCase() ?? ''
+  if (/brick|brique/.test(kind)) return { material: 'brick' }
+  if (/concrete|b[eé]ton/.test(kind)) return { material: 'concrete' }
+  if (/cmu|block|bloc|parpaing|stone|pierre|masonry/.test(kind)) return { material: 'masonry' }
+  if (/wood|timber|stud|clt|bois/.test(kind)) return { material: 'wood' }
+  return {}
 }
 
 /** Rang des éléments natifs : après tous ceux de Fabrics (dont le rang est leur place dans le plan). */
@@ -266,6 +283,7 @@ export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
           : mToMm(first.height as number),
       ...(meta.props as { fill: string; material?: WallElement['material'] }),
       ...wallLayersOf(first),
+      ...((meta.props as { material?: unknown }).material ? {} : wallMaterialOfAssembly(first.assembly)),
     }
     elements.push({ order: meta.order, element: wall })
   }

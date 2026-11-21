@@ -33,7 +33,7 @@ Garder les deux ferait **deux moteurs de dessin et deux bibliothèques PDF** (in
    deux PDF et une capture côte à côte avec la page 5. Rapport `docs/phases/M20-engine-trial.md`,
    **vous choisissez**, puis ADR `docs/adr/0007-sheet-engine.md` et mise à jour de
    `docs/capabilities.md`. Code d'essai jeté après le choix.
-3. **[en cours : escaliers et mobilier de Pascal faits le 2026-11-21]** **Plan de niveau complet avec le moteur choisi**, tout lu dans la scène Pascal : murs coupés
+3. **[en cours : escaliers, mobilier, murs hachurés et poteaux faits le 2026-11-21]** **Plan de niveau complet avec le moteur choisi**, tout lu dans la scène Pascal : murs coupés
    hachurés, poteaux pleins, portes (battant et arc), fenêtres, escalier, mobilier, nom et surface
    de chaque pièce (venus des métrés), repères `PP: 90 x 210` et `All. 1100`, 3 chaînes de cotes
    extérieures et cotes intérieures (Exécution), le tout en mm. Fichiers prévus (moteur Fabrics) :

@@ -272,6 +272,8 @@ export interface PlanOverlay {
   texts: DrawText[]
   /** Fonds (masques blancs des objets), peints sur les sols et sous les murs coupés. */
   polygons?: DrawPolygon[]
+  /** Matière coupée posée sur les murs (poteaux de Pascal, noir plein), peinte par-dessus les murs coupés. */
+  cutPolygons?: DrawPolygon[]
 }
 
 export function levelPlanDrawing(
@@ -315,7 +317,7 @@ export function levelPlanDrawing(
       maxY = Math.max(maxY, p.y)
     }
   }
-  for (const p of [...(symbolsOfPascal?.polygons ?? []).flatMap((q) => q.points), ...(symbolsOfPascal?.lines ?? []).flatMap((l) => [[l.x1, l.y1], [l.x2, l.y2]] as [number, number][])]) {
+  for (const p of [...[...(symbolsOfPascal?.polygons ?? []), ...(symbolsOfPascal?.cutPolygons ?? [])].flatMap((q) => q.points), ...(symbolsOfPascal?.lines ?? []).flatMap((l) => [[l.x1, l.y1], [l.x2, l.y2]] as [number, number][])]) {
     minX = Math.min(minX, p[0])
     maxX = Math.max(maxX, p[0])
     minY = Math.min(minY, p[1])
@@ -370,6 +372,10 @@ export function levelPlanDrawing(
   polygons.splice(firstAbove < 0 ? polygons.length : firstAbove, 0, ...masks)
   for (let k = 0; k < cutIndices.length; k++) if (cutIndices[k] >= firstAbove && firstAbove >= 0) cutIndices[k] += masks.length
   for (let k = 0; k < hatchedIndices.length; k++) if (hatchedIndices[k] >= firstAbove && firstAbove >= 0) hatchedIndices[k] += masks.length
+  // Poteaux de Pascal : noir plein, par-dessus les murs coupés (hachurés ou non).
+  for (const q of symbolsOfPascal?.cutPolygons ?? []) {
+    polygons.push({ ...q, points: q.points.map(([x, y]) => [x + dx, y + dy] as [number, number]) })
+  }
   const symbolLines: DrawLine[] = []
   for (const symbol of symbols) {
     // Découpe : efface le mur, les cadres et l'allège dans l'ouverture (fond blanc, sans contour).

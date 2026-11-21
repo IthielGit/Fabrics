@@ -10,7 +10,10 @@ import type { SceneNodeData } from '../sceneTypes'
 import { floorplanToDrawing, mergeSymbols, type PlanSymbols } from './planSymbols'
 
 /** Types de nœuds dessinés par Pascal sur les feuilles de Fabrics. */
-export const PASCAL_DRAWN_TYPES: ReadonlySet<string> = new Set(['stair', 'item'])
+export const PASCAL_DRAWN_TYPES: ReadonlySet<string> = new Set(['stair', 'item', 'column'])
+
+/** Types dessinés en matière coupée (noir plein, sur les murs). */
+const CUT_TYPES: ReadonlySet<string> = new Set(['column'])
 
 const NO_ANNOTATIONS = {
   automaticDimensions: false,
@@ -60,5 +63,5 @@ export function pascalLevelSymbols(nodes: Readonly<Record<string, SceneNodeData>
     metricNotation: 'millimeters',
   })
   if (entries.length === 0) return null
-  return mergeSymbols(entries.map((e) => floorplanToDrawing(e.model)))
+  return mergeSymbols(entries.map((e) => floorplanToDrawing(e.model, { cut: CUT_TYPES.has(e.type) })))
 }

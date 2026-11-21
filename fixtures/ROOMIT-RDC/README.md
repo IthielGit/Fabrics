@@ -40,7 +40,8 @@ Sans la séparation, Pascal voit le Séjour et le Dégagement comme un seul espa
 - Porte du cellier : 800 mm (non étiquetée ; vide de 850 mm).
 - Porte de la SDB depuis la Chambre 1 : coulissante sur la référence, modélisée en porte de 900 mm.
 - Porte de la Salle de prière : coulissante de 1000 mm, modélisée en porte.
-- Poteaux non modélisés à part : ils sont compris dans les murs de 200 mm (le poteau isolé du Séjour,
-  sous la poutre, est absent).
+- Murs en brique (référence : « Mur de remplissage en Brique ») : hachurés sur le plan. 25 poteaux de
+  Pascal (`columns`, 200 × 200 mm) aux positions relevées, posés sur les murs (le poteau isolé du
+  Séjour compris).
 - Escalier en L (`stairs`) et 4 objets du catalogue de Pascal (`items` : lit, table, canapé, WC), placés
   à l'œil d'après la référence. Pas encore : marches balancées, garde-corps et marches du Chalet.

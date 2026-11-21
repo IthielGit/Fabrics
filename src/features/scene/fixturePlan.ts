@@ -1,5 +1,5 @@
-import { ItemNode, SeparatorNode } from '@pascal-app/core'
-import type { CanvasElement, FabricsDocument, Level } from '../../types/document'
+import { ColumnNode, ItemNode, SeparatorNode } from '@pascal-app/core'
+import type { CanvasElement, FabricsDocument, Level, WallMaterial } from '../../types/document'
 import { fabricsToScene } from './migrate/fromFabrics'
 import type { PlanScene, SceneNodeData } from './sceneTypes'
 import { settleScene } from './settle'
@@ -10,7 +10,7 @@ import { settleScene } from './settle'
  */
 export interface FixtureSpec {
   level: Level
-  walls: { ref: string; thickness: number; height: number; axis: number[] }[]
+  walls: { ref: string; thickness: number; height: number; axis: number[]; material?: WallMaterial }[]
   openings: {
     ref: string
     kind: 'door' | 'window'
@@ -30,6 +30,8 @@ export interface FixtureSpec {
    * Objets du catalogue de Pascal (nœuds `item` natifs) : centre `x`, `y` (mm), rotation (degrés),
    * identifiant et nom d'objet du catalogue (ils décident du symbole de plan), largeur × hauteur × profondeur (mm).
    */
+  /** Poteaux de Pascal (section carrée ou rectangulaire), centre `x`, `y` et `width` × `depth` en mm. */
+  columns?: { ref: string; x: number; y: number; width: number; depth: number }[]
   items?: { ref: string; assetId: string; name: string; x: number; y: number; rotation?: number; size: [number, number, number] }[]
 }
 
@@ -39,7 +41,7 @@ export function fixturePlan(s: FixtureSpec): FabricsDocument {
   const levelId = s.level.id
   const elements: CanvasElement[] = []
   for (const w of s.walls) {
-    elements.push({ ...BASE, id: w.ref, levelId, type: 'wall', name: w.ref, points: w.axis, thickness: w.thickness, height: w.height, fill: '#475569' })
+    elements.push({ ...BASE, id: w.ref, levelId, type: 'wall', name: w.ref, points: w.axis, thickness: w.thickness, height: w.height, fill: '#475569', ...(w.material ? { material: w.material } : {}) })
   }
   for (const o of s.openings) {
     elements.push({
@@ -80,6 +82,19 @@ export function fixtureScene(s: FixtureSpec): PlanScene {
   for (const sep of s.separators ?? []) {
     const [x1, y1, x2, y2] = sep.line
     add(SeparatorNode.parse({ id: `separator_${sep.ref}`, parentId: levelId, start: [x1 / 1000, y1 / 1000], end: [x2 / 1000, y2 / 1000] }))
+  }
+  for (const c of s.columns ?? []) {
+    add(
+      ColumnNode.parse({
+        id: `column_${c.ref}`,
+        parentId: levelId,
+        position: [c.x / 1000, 0, c.y / 1000],
+        crossSection: 'rectangular',
+        width: c.width / 1000,
+        depth: c.depth / 1000,
+        height: s.level.height / 1000,
+      }),
+    )
   }
   for (const it of s.items ?? []) {
     const [w, h, d] = it.size.map((v) => v / 1000)

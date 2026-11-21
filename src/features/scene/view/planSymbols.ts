@@ -8,6 +8,7 @@
  * Règles de conversion (géométrie de Pascal en mètres, plan x / z → dessin x / y en mm) :
  * - contour tracé : traits ; gris clair (mobilier) → filet gris ; tireté → trait pointillé ;
  * - fond blanc : masque blanc sans contour (un WC cache le sol sous lui) ;
+ * - matière coupée (poteaux, option `cut`) : fond noir plein, posé sur les murs coupés ;
  * - bande sombre étroite sans contour (nez de marche de Pascal, 40 mm) : un filet sur son axe, comme
  *   une ligne de marche d'un plan à la française ;
  * - autres fonds sombres sans contour et textes (étiquettes anglaises `WC`, `LAV`…) : non repris.
@@ -20,6 +21,12 @@ type Pt = [number, number]
 /** Symboles de Pascal convertis, en mm dans le repère du plan (y vers le bas). */
 export interface PlanSymbols extends PlanOverlay {
   polygons: DrawPolygon[]
+  cutPolygons: DrawPolygon[]
+}
+
+export interface ConvertOptions {
+  /** Matière coupée (poteaux) : tout fond devient noir plein, posé sur les murs. */
+  cut?: boolean
 }
 
 const M_TO_MM = 1000
@@ -210,10 +217,14 @@ function stripAxis(p: Pt[]): { x1: number; y1: number; x2: number; y2: number } 
 type Styled = { fill?: string; stroke?: string; strokeWidth?: number; strokeDasharray?: string }
 
 /** Géométrie de plan de Pascal (m) → polygones et traits du dessin de Fabrics (mm, repère du plan). */
-export function floorplanToDrawing(geometry: FloorplanGeometry | null | undefined): PlanSymbols {
-  const out: PlanSymbols = { polygons: [], lines: [], texts: [] }
+export function floorplanToDrawing(geometry: FloorplanGeometry | null | undefined, options: ConvertOptions = {}): PlanSymbols {
+  const out: PlanSymbols = { polygons: [], cutPolygons: [], lines: [], texts: [] }
   const emit = (points: Pt[], closed: boolean, style: Styled) => {
     if (points.length < 2) return
+    if (options.cut) {
+      if (closed && points.length >= 3 && !isNone(style.fill)) out.cutPolygons.push({ points, fill: 'black' })
+      return
+    }
     if (closed && points.length >= 3 && isWhite(style.fill)) {
       out.polygons.push({ points, fill: 'white', edges: points.map(() => false) })
     }
@@ -276,6 +287,7 @@ export function floorplanToDrawing(geometry: FloorplanGeometry | null | undefine
 export function mergeSymbols(parts: readonly PlanSymbols[]): PlanSymbols {
   return {
     polygons: parts.flatMap((p) => p.polygons),
+    cutPolygons: parts.flatMap((p) => p.cutPolygons),
     lines: parts.flatMap((p) => p.lines),
     texts: parts.flatMap((p) => p.texts),
   }

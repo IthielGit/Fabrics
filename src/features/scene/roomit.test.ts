@@ -60,7 +60,7 @@ describe('ROOMIT-RDC : RDC de la Villa ROOMIT passé par la scène Pascal', () =
 describe('ROOMIT-RDC : escaliers et mobilier de Pascal sur le plan de niveau (ADR 0007)', () => {
   const symbols = pascalLevelSymbols(scene.nodes, spec.level.id)
 
-  it('l’escalier et les 4 objets donnent des traits, en mm dans le repère du plan', () => {
+  it('l’escalier, les 4 objets et les poteaux donnent des traits, en mm dans le repère du plan', () => {
     expect(symbols).not.toBeNull()
     const inside = (x: number, y: number, box: [number, number, number, number]) => x >= box[0] && x <= box[2] && y >= box[1] && y <= box[3]
     const linesIn = (box: [number, number, number, number]) => symbols!.lines.filter((l) => inside(l.x1, l.y1, box) && inside(l.x2, l.y2, box))
@@ -79,6 +79,9 @@ describe('ROOMIT-RDC : escaliers et mobilier de Pascal sur le plan de niveau (AD
     const plain = levelPlanDrawing(model, view.levels![0], 125)!
     const withSymbols = levelPlanDrawing(model, view.levels![0], 125, undefined, symbols)!
     expect(withSymbols.lines.length - plain.lines.length).toBe(symbols!.lines.length)
-    expect(withSymbols.polygons.length - plain.polygons.length).toBe(symbols!.polygons.length)
+    expect(withSymbols.polygons.length - plain.polygons.length).toBe(symbols!.polygons.length + symbols!.cutPolygons!.length)
+    // 25 poteaux de 200 × 200 mm, noir plein, peints après les murs coupés
+    expect(symbols!.cutPolygons).toHaveLength(spec.columns.length)
+    expect(withSymbols.polygons.slice(-symbols!.cutPolygons!.length - 20).some((q) => q.fill === 'black')).toBe(true)
   })
 })

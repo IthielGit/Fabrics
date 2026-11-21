@@ -71,6 +71,16 @@ describe('floorplanToDrawing', () => {
   })
 
   it('géométrie absente : rien', () => {
-    expect(floorplanToDrawing(null)).toEqual({ polygons: [], lines: [], texts: [] })
+    expect(floorplanToDrawing(null)).toEqual({ polygons: [], cutPolygons: [], lines: [], texts: [] })
+  })
+
+  it('poteau (option cut) : fond noir plein posé sur les murs, sans autre trait', () => {
+    const column = { kind: 'polygon', points: [[0, 0], [0.2, 0], [0.2, 0.2], [0, 0.2]], fill: '#9ca3af', stroke: '#374151', strokeWidth: 0.02 } as unknown as FloorplanGeometry
+    expect(floorplanToDrawing(column, { cut: true })).toEqual({
+      polygons: [],
+      cutPolygons: [{ points: [[0, 0], [200, 0], [200, 200], [0, 200]], fill: 'black' }],
+      lines: [],
+      texts: [],
+    })
   })
 })
