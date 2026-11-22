@@ -2,8 +2,9 @@ import { create } from 'zustand'
 import type { Cardinal } from '../features/building/north'
 import type { DimensioningMode } from '../features/dimensioning/types'
 
-/** Onglets de l'écran « Vues » : une façade, une coupe (par son identifiant) ou la planche. */
+/** Onglets de l'écran « Vues » : le plan d'un niveau, une façade, une coupe (par son identifiant) ou la planche. */
 export type ViewsTab =
+  | { kind: 'level'; levelId: string }
   | { kind: 'elevation'; cardinal: Cardinal }
   | { kind: 'section'; sectionId: string }
   | { kind: 'sheet' }

@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { FileDown, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { drawingFromView, type Drawing } from '../../features/building/views/drawing'
+import { drawingFromView, levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
 import { buildElevation } from '../../features/building/views/elevation'
 import { buildSection } from '../../features/building/views/section'
 import { buildSheet } from '../../features/building/views/sheet'
@@ -25,6 +25,7 @@ function isSameTab(a: ViewsTab, b: ViewsTab): boolean {
   if (a.kind !== b.kind) return false
   if (a.kind === 'elevation' && b.kind === 'elevation') return a.cardinal === b.cardinal
   if (a.kind === 'section' && b.kind === 'section') return a.sectionId === b.sectionId
+  if (a.kind === 'level' && b.kind === 'level') return a.levelId === b.levelId
   return true
 }
 
@@ -41,7 +42,7 @@ interface ActiveView {
   emptyText: string
 }
 
-/** Dessin de l'onglet affiché : une façade, une coupe ou la planche. */
+/** Dessin de l'onglet affiché : le plan d'un niveau, une façade, une coupe ou la planche. */
 function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): ActiveView {
   const model = useBuildingModel(undefined)
   const levels = useEditorStore((state) => state.project?.document.levels)
@@ -53,6 +54,26 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
 
   return useMemo(() => {
     const allLevels = levels ?? []
+    if (tab.kind === 'level') {
+      // Plan d'un niveau seul (M20 20.1b) : même dessin que sur la planche, une feuille par niveau.
+      const level = allLevels.find((l) => l.id === tab.levelId)
+      if (!level) return { title: '', note: '', build: () => null, emptyText: fr.views.levelMissing }
+      const title = fr.views.levelPlan(level.name)
+      const document = { elements: elements ?? [], levels: allLevels }
+      return {
+        title,
+        note: fr.views.levelPlanNote,
+        build: (fontMm, version) =>
+          levelPlanDrawing(
+            model,
+            level,
+            fontMm,
+            (font) => planOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
+            levelSymbols(level.id),
+          ),
+        emptyText: fr.views.empty,
+      }
+    }
     if (tab.kind === 'elevation') {
       const title = fr.views.elevation[tab.cardinal]
       const view = buildElevation(model, allLevels, tab.cardinal, northAngle)
@@ -108,12 +129,12 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
 const MODES: readonly DimensioningMode[] = ['none', 'client', 'execution']
 
 /** Planche : réglage de cotation du plan de chaque niveau (M10 ter lot B), hors document. */
-function SheetDimensioning() {
+function SheetDimensioning({ levelId }: { levelId?: string }) {
   const levels = useEditorStore((state) => state.project?.document.levels)
   const modes = useViewsStore((state) => state.sheetDimensioning)
   const setMode = useViewsStore((state) => state.setSheetDimensioning)
   if (!levels || levels.length === 0) return null
-  const sorted = [...levels].sort((a, b) => a.elevation - b.elevation)
+  const sorted = [...levels].filter((l) => !levelId || l.id === levelId).sort((a, b) => a.elevation - b.elevation)
   return (
     <div
       role="group"
@@ -162,9 +183,19 @@ function ScreenBody() {
   const view = { ...active, drawing }
   const levels = useEditorStore((state) => state.project?.document.levels)
   const sheetDimensioning = useViewsStore((state) => state.sheetDimensioning)
-  const hasExecution = (levels ?? []).some((level) => sheetDimensioning[level.id] === 'execution')
+  const hasExecution = (levels ?? [])
+    .filter((level) => tab.kind !== 'level' || level.id === tab.levelId)
+    .some((level) => sheetDimensioning[level.id] === 'execution')
+  const showsPlans = tab.kind === 'sheet' || tab.kind === 'level'
 
   const tabs: { key: string; label: string; value: ViewsTab }[] = [
+    ...[...(levels ?? [])]
+      .sort((a, b) => a.elevation - b.elevation)
+      .map((level) => ({
+        key: `level-${level.id}`,
+        label: fr.views.levelPlan(level.name),
+        value: { kind: 'level', levelId: level.id } as ViewsTab,
+      })),
     ...CARDINALS.map((cardinal) => ({
       key: `elevation-${cardinal}`,
       label: fr.views.elevation[cardinal],
@@ -221,6 +252,7 @@ function ScreenBody() {
       <main className="flex min-h-0 flex-1 flex-col">
         {view.note && <p className="px-4 pt-3 text-sm text-slate-600">{view.note}</p>}
         {tab.kind === 'sheet' && <SheetDimensioning />}
+        {tab.kind === 'level' && <SheetDimensioning levelId={tab.levelId} />}
         <div className="min-h-0 flex-1 p-4">
           {view.drawing ? (
             <ViewDrawing drawing={view.drawing} />
@@ -234,8 +266,8 @@ function ScreenBody() {
         <ViewsPdfDialog
           build={active.build}
           viewTitle={view.title}
-          showNorth={tab.kind === 'sheet'}
-          dimensioning={tab.kind === 'sheet' ? { hasExecution } : undefined}
+          showNorth={showsPlans}
+          dimensioning={showsPlans ? { hasExecution } : undefined}
           onClose={() => setPdfOpen(false)}
         />
       )}

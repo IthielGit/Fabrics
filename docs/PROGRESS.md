@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étape 1 faite : exemple ROOMIT-R1). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 et 2 faites : exemple ROOMIT-R1, plan de niveau R+1). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -53,10 +53,18 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-22 — M20 · 20.1b étape 2 : plan de niveau R+1
+- Choix de l'utilisateur **D20-12 : A** : la cloison isolée d'une douche n'est pas déduite de la surface (règle de Pascal), écart de +0,09 m² accepté pour SDB 1 et SDB 2. L'option B est notée dans les Idées.
+- **Écran Vues : un onglet par niveau** (« Plan de niveau RDC », « Plan de niveau R+1 »), avant les façades. Même dessin que sur la planche, avec le choix de cotation du niveau (Aucune / Client / Exécution) ; le bouton PDF exporte ce niveau seul, avec la flèche du nord. C'est la feuille 05 ou 06 de la référence (le gabarit de feuille viendra en 20.4). Fichiers : `ViewsScreen.tsx`, `viewsStore.ts`, `fr.ts`.
+- **Escalier du niveau du dessous** : Pascal ne dessine un escalier que sur son propre niveau. La référence montre l'escalier qui monte du RDC sur le plan du R+1. `levelPlanSymbols.ts` le dessine maintenant sur le niveau où il arrive (escalier dont `toLevelId` est ce niveau, ou qui monte d'au moins 90 % de la hauteur de son niveau). La trémie et ses cotes apparaissent sur le R+1.
+- **Scène à deux niveaux** : `fixtureBuildingScene` (`fixturePlan.ts`) réunit ROOMIT-RDC et ROOMIT-R1 (ids préfixés `R1_…`). L'escalier est retiré de ROOMIT-R1 : il appartient au RDC. Test `src/features/scene/roomitBuilding.test.ts` : niveaux à 0 et 3000 mm, surfaces inchangées, escalier sur le R+1 avec les mêmes traits qu'au RDC, repères `PP: 2000 x 2100`, `All. 800`, surface du balcon.
+- **Baseline mise à jour (commit séparé)** : sur les planches des exemples « example » et « large-house », les escaliers qui montent à l'étage sont maintenant dessinés aussi sur l'étage : +33 et +147 traits, aucun polygone ni métré changé.
+- Vérification : build ✓ lint ✓ 3 231 tests ✓. Contrôle visuel du plan R+1 (PDF A2 1:50) : escalier et trémie à leur place. Limites connues : quelques textes de cotes se chevauchent dans la Bibliothèque (placement des textes : 20.2) ; escalier sans marches balancées (comme au RDC).
+
 ### 2026-11-22 — M20 · 20.1b étape 1 : exemple ROOMIT-R1 (R+1 de la Villa ROOMIT)
 - Relevé au mm de la page 6 du PDF (PyMuPDF, outil local hors projet), **dans le même repère que le RDC** (les deux pages ont la même emprise, 14472 × 12472 mm) : 22 murs, 19 ouvertures, 21 poteaux, 11 pièces, une séparation de pièces, l'escalier en L, 8 meubles du catalogue de Pascal. Fichiers : `fixtures/ROOMIT-R1/spec.json`, `README.md` ; test `src/features/scene/roomitR1.test.ts`.
 - Surfaces recalculées à travers la scène Pascal : **7 pièces sur 11 identiques** au tableau « Pièces Niveau R+1 ». Total balcon compris (D20-10 : A) : **144,36 m²** pour 144,16 m².
-  - SDB 1 et SDB 2 : 4,64 au lieu de 4,55 m². La référence déduit la petite cloison de la douche (100 × 912 mm) ; Pascal ne déduit pas une cloison dont un bout est libre. **Choix à faire par l'utilisateur.**
+  - SDB 1 et SDB 2 : 4,64 au lieu de 4,55 m². La référence déduit la petite cloison de la douche (100 × 912 mm) ; Pascal ne déduit pas une cloison dont un bout est libre. **Écart accepté par l'utilisateur (D20-12 : A).**
   - BAR : 18,46 au lieu de 18,47 (18,4645 m², arrondi).
   - Bibliothèque : 21,52 au lieu de 21,50. Bibliothèque et Dégagement forment un seul espace ouvert, sans ligne de séparation sur la référence : la séparation de pièces est placée pour garder 5,65 m² au Dégagement.
 - Appris : Pascal détecte les pièces à partir des **axes** des murs. Un mur arrêté sur la face d'un autre fusionne deux pièces (au premier essai, Bibliothèque et Dégagement donnaient une seule pièce de 27,17 m²). Tous les murs de l'exemple se rejoignent donc sur leurs axes.
@@ -2071,6 +2079,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Accrochage de Pascal sur les traits d'un fond DXF importé (nœud `fabrics:annotation`) et sur le niveau de référence (comme l'ancien plan, M11 bis lots A et C).
 
 <!-- Demandes de l'utilisateur ou idées de Claude à prioriser plus tard. -->
+- Déduire de la surface d'une pièce les cloisons dont un bout est libre (cloison de douche), comme Revit (D20-12, option B non retenue le 2026-11-22) : change les métrés de tous les projets.
 - ~~Signaler les irrégularités de dessin qui faussent cotes et métrés~~ : fait en M11 bis, lot H (2026-11-12) pour les écarts et superpositions de murs. Reste à étudier : objets posés à quelques mm d'un mur, murs plus courts que leur épaisseur, bouts de mur sur la face (et pas l'axe) d'un autre mur dessinés en biais, raccords sur un sommet d'un tracé à plusieurs côtés.
 - ~~Aimantation sur les sommets et les traits d'un fond DXF importé~~ : planifié dans M11 bis, lot A (2026-11-12).
 - ~~Reprendre les textes d'un DXF importé et exporter dans le DXF les escaliers, plateformes, toitures et cheminées~~ : planifié dans M11 bis, lot E (2026-11-12).

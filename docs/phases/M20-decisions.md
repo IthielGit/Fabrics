@@ -123,6 +123,13 @@ l'utilisateur le demande** (valeurs reprises des métrés, `roofQuantities.ts`).
 **Retenu : A.** L'escalier d'accès au toit est un **escalier natif de Pascal** (avec sa 3D), dessiné
 sur le plan de toiture avec le même symbole que l'escalier du plan de niveau.
 
+## D20-12 · Cloison isolée dans une pièce (2026-11-22, 20.1b étape 1)
+
+Une cloison dont un bout est libre (cloison de douche des SDB 1 et 2 du R+1 de ROOMIT) n'est pas
+déduite de la surface de la pièce par Pascal ; la référence la déduit (+0,09 m² par salle de bain).
+**Retenu : A**, on garde la règle de Pascal et l'écart est accepté. L'option B (déduire ces cloisons,
+comme Revit) est notée dans les Idées de `docs/PROGRESS.md`.
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et

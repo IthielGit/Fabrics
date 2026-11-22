@@ -331,3 +331,5 @@ droite de la 3D) et onglet **Paramètres**.
 |---|---|
 | Surfaces des 11 pièces du R+1 = tableau de la référence à l'écart expliqué près (`fixtures/ROOMIT-R1/spec.json`), total balcon compris 144,36 m² (référence 144,16, D20-10 : A), aucun avertissement de métré | Auto : `scene/roomitR1.test.ts` |
 | 21 poteaux, escalier et mobilier de Pascal dessinés sur le plan R+1 | Auto : `scene/roomitR1.test.ts` ; Nav. |
+| RDC + R+1 dans une scène : surfaces de chaque niveau inchangées ; l'escalier qui monte du RDC est dessiné sur le R+1 (un seul nœud, dans le RDC) ; un escalier trop court n'y est pas | Auto : `scene/roomitBuilding.test.ts` |
+| Écran Vues : un onglet « Plan de niveau RDC / R+1 » par niveau, cotation réglable, export PDF du niveau seul avec flèche du nord | Nav. |

@@ -91,9 +91,6 @@
     {"ref": "P20", "x": 100, "y": 12372, "width": 200, "depth": 200},
     {"ref": "P21", "x": 4604, "y": 12372, "width": 200, "depth": 200}
   ],
-  "stairs": [
-    {"ref": "ESC", "x": 8460, "y": 2700, "shape": "l", "width": 950, "length": 940, "length2": 2071, "mirrored": true, "note": "escalier en L qui monte du RDC (même emprise que ROOMIT-RDC), repris ici pour dessiner le niveau seul"}
-  ],
   "items": [
     {"ref": "LIT_CH3", "assetId": "double-bed", "name": "Lit double", "x": 1216, "y": 3388, "rotation": 90, "size": [1600, 500, 2000]},
     {"ref": "LIT_CH2", "assetId": "double-bed", "name": "Lit double", "x": 1216, "y": 10587, "rotation": 90, "size": [1600, 500, 2000]},

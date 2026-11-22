@@ -48,20 +48,67 @@ export function levelNodeIdOf(nodes: Readonly<Record<string, SceneNodeData>>, fa
   return null
 }
 
-/** Symboles des escaliers et objets de Pascal d'un niveau Fabrics, en mm ; `null` s'il n'y en a pas. */
+/** Montée d'un escalier de Pascal (m) : somme des hauteurs de ses volées. */
+function stairRise(nodes: Readonly<Record<string, SceneNodeData>>, stair: SceneNodeData): number {
+  return (stair.children ?? []).reduce((sum, id) => sum + (((nodes[id] as { height?: number } | undefined)?.height) ?? 0), 0)
+}
+
+/**
+ * Niveau directement en dessous (nœud de niveau de Pascal, même parent, rang `level` juste inférieur).
+ */
+function levelBelow(nodes: Readonly<Record<string, SceneNodeData>>, levelId: string): SceneNodeData | null {
+  const rank = (n: SceneNodeData) => (n as unknown as { level?: number }).level
+  const level = nodes[levelId]
+  const own = rank(level) ?? 0
+  const candidates = Object.values(nodes).filter(
+    (n) => n.type === 'level' && n.parentId === level.parentId && typeof rank(n) === 'number' && rank(n)! < own,
+  )
+  return candidates.sort((a, b) => rank(b)! - rank(a)!)[0] ?? null
+}
+
+/**
+ * Escaliers qui arrivent sur ce niveau depuis le niveau du dessous (M20 20.1b) : comme sur les plans
+ * de la référence (Villa ROOMIT, R+1), l'escalier qui monte du RDC est dessiné sur le plan du R+1.
+ * Arrive ici un escalier du niveau du dessous dont `toLevelId` est ce niveau, ou, sans `toLevelId`,
+ * qui monte d'au moins 90 % de la hauteur de son niveau (règle des escaliers convertis par Fabrics).
+ */
+function arrivingStairIds(nodes: Readonly<Record<string, SceneNodeData>>, levelId: string): Set<string> {
+  const below = levelBelow(nodes, levelId)
+  const ids = new Set<string>()
+  if (!below) return ids
+  const belowHeight = (below as { height?: number }).height ?? 0
+  for (const node of Object.values(nodes)) {
+    if (node.type !== 'stair' || node.parentId !== below.id) continue
+    const to = (node as { toLevelId?: string | null }).toLevelId
+    if (to === levelId || (to == null && belowHeight > 0 && stairRise(nodes, node) >= 0.9 * belowHeight)) ids.add(node.id)
+  }
+  return ids
+}
+
+/**
+ * Symboles des escaliers et objets de Pascal d'un niveau Fabrics, en mm, plus les escaliers qui
+ * arrivent du niveau du dessous ; `null` s'il n'y en a pas.
+ */
 export function pascalLevelSymbols(nodes: Readonly<Record<string, SceneNodeData>>, fabricsLevelId: string): PlanSymbols | null {
   const levelId = levelNodeIdOf(nodes, fabricsLevelId)
   if (!levelId) return null
   ensureBuiltinNodes()
-  const entries = collectSheetGeometry({
-    nodes: nodes as unknown as Record<string, AnyNode>,
-    levelId: levelId as AnyNodeId,
-    drawingType: 'floor-plan',
-    annotationVisibility: NO_ANNOTATIONS,
-    accept: (node) => PASCAL_DRAWN_TYPES.has(node.type),
-    unit: 'metric',
-    metricNotation: 'millimeters',
-  })
+  const collect = (id: string, accept: (node: AnyNode) => boolean) =>
+    collectSheetGeometry({
+      nodes: nodes as unknown as Record<string, AnyNode>,
+      levelId: id as AnyNodeId,
+      drawingType: 'floor-plan',
+      annotationVisibility: NO_ANNOTATIONS,
+      accept,
+      unit: 'metric',
+      metricNotation: 'millimeters',
+    })
+  const entries = collect(levelId, (node) => PASCAL_DRAWN_TYPES.has(node.type))
+  const arriving = arrivingStairIds(nodes, levelId)
+  if (arriving.size > 0) {
+    const below = levelBelow(nodes, levelId)!
+    entries.push(...collect(below.id, (node) => arriving.has(node.id)))
+  }
   if (entries.length === 0) return null
   return mergeSymbols(entries.map((e) => floorplanToDrawing(e.model, { cut: CUT_TYPES.has(e.type) })))
 }

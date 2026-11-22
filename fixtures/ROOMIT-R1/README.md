@@ -28,7 +28,7 @@ Test : `src/features/scene/roomitR1.test.ts`.
 | Pièce | Référence | Fabrics | Cause |
 |---|---|---|---|
 | BAR | 18,47 m² | 18,46 m² | 6777 × 2300 + 1520 × 1893 = 18,4645 m² : arrondi |
-| SDB 2 | 4,55 m² | 4,64 m² | La référence déduit la petite cloison de la douche (100 × 912 mm). Pascal ne déduit pas une cloison dont un bout est libre. **Point à trancher par l'utilisateur.** |
+| SDB 2 | 4,55 m² | 4,64 m² | La référence déduit la petite cloison de la douche (100 × 912 mm). Pascal ne déduit pas une cloison dont un bout est libre. **Accepté par l'utilisateur (D20-12 : A).** |
 | SDB 1 | 4,55 m² | 4,64 m² | Idem (100 × 913 mm) |
 | Bibliothèque | 21,50 m² | 21,52 m² | Bibliothèque et Dégagement forment un seul espace ouvert, sans ligne de séparation sur la référence. La séparation de pièces (D20-8) est placée à x = 5776 mm pour garder 5,65 m² au Dégagement ; la référence arrête le couloir 19 mm avant la face du mur (8265 au lieu de 8284). |
 | **Total R+1** | **144,16 m²** | **144,36 m²** | Somme des écarts ci-dessus |
@@ -42,8 +42,9 @@ Test : `src/features/scene/roomitR1.test.ts`.
 - Portes sans étiquette : double porte Bibliothèque → Suite parentale 1400 mm (vide de 1451 mm) ;
   coulissants Dressing → SDB 3 et Dressing → Suite parentale 1200 mm (vide mesuré).
 - Les coulissants de la référence (`PP: 150 x 210`, `PP: 200 x 210`) sont modélisés en portes, comme au RDC.
-- L'escalier en L de la Bibliothèque est celui qui **monte du RDC** (même emprise que ROOMIT-RDC). Il est
-  repris dans cet exemple pour dessiner le niveau seul ; dans le projet complet, il appartient au RDC.
+- L'escalier en L de la Bibliothèque est celui qui **monte du RDC** (`fixtures/ROOMIT-RDC`) : il n'est
+  pas dans cet exemple. Dans le bâtiment complet (RDC + R+1, `src/features/scene/roomitBuilding.test.ts`),
+  il est dessiné sur le plan du R+1 comme sur la référence.
 - Balcon : pièce sans mur sur ses deux côtés ouverts ; garde-corps non modélisés.
 - Mobilier du catalogue de Pascal placé à l'œil : 3 lits, la table de la Bibliothèque, le canapé du
   balcon, 3 WC. Pas encore : fauteuils, bureaux, lavabos, douches, baignoire, rangements.

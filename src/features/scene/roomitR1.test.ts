@@ -60,13 +60,10 @@ describe('ROOMIT-R1 : R+1 de la Villa ROOMIT passé par la scène Pascal', () =>
     expect(metresWarnings(view, metres)).toEqual([])
   })
 
-  it('escalier, mobilier et 21 poteaux dessinés sur le plan de niveau', () => {
+  it('mobilier et 21 poteaux dessinés sur le plan de niveau (l’escalier vient du RDC : roomitBuilding.test.ts)', () => {
     const symbols = pascalLevelSymbols(scene.nodes, spec.level.id)
     expect(symbols).not.toBeNull()
     expect(symbols!.cutPolygons).toHaveLength(spec.columns.length)
     expect(spec.columns).toHaveLength(21)
-    const inside = (x: number, y: number, b: number[]) => x >= b[0] && x <= b[2] && y >= b[1] && y <= b[3]
-    const stairLines = symbols!.lines.filter((l) => inside(l.x1, l.y1, [8450, 2690, 11490, 4600]) && inside(l.x2, l.y2, [8450, 2690, 11490, 4600]))
-    expect(stairLines.length).toBeGreaterThan(10)
   })
 })
