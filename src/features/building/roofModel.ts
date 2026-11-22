@@ -101,10 +101,12 @@ export function buildRoofParts(
   level: Level,
   walls: readonly WallElement[],
   defaultWallThickness: number,
+  /** Plus petite pente acceptée (degrés) : toutes pour une toiture dérivée de Pascal (M20 20.1c). */
+  minPitch?: number,
 ): RoofParts {
   const empty: RoofParts = { prisms: [], slabs: [] }
   const thickness = Math.max(1, level.slabThickness)
-  const result = computeRoof(roof, roofBaseY(level))
+  const result = computeRoof(roof, roofBaseY(level), minPitch)
   if ('problem' in result) return empty
   const g = result.geometry
 

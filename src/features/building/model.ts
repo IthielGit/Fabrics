@@ -190,7 +190,7 @@ export function modelBounds(walls: readonly WallPiece[], slabs: readonly SlabSha
  * niveaux (Visuel) donne un modèle vide.
  */
 export function buildBuildingModel(
-  doc: Pick<FabricsDocument, 'elements' | 'levels'> & Partial<Pick<FabricsDocument, 'plan'>>,
+  doc: Pick<FabricsDocument, 'elements' | 'levels'> & Partial<Pick<FabricsDocument, 'plan' | 'nativeRoofs'>>,
   options: BuildOptions = {},
 ): BuildingModel {
   const allLevels = doc.levels ?? []
@@ -244,7 +244,9 @@ export function buildBuildingModel(
   const roofs: RoofPrism[] = []
   const rooms = doc.elements.filter((el): el is RoomElement => el.type === 'room' && !el.hidden)
   // Toitures dessinées (visibles) et murs de chaque niveau, pour l'épaisseur des pignons.
-  const roofElements = doc.elements.filter((el): el is RoofElement => el.type === 'roof' && !el.hidden)
+  // Toitures de Pascal dérivées (M20 20.1c) comprises : elles couvrent leurs pièces comme les autres.
+  const nativeRoofs = doc.nativeRoofs ?? []
+  const roofElements = [...doc.elements.filter((el): el is RoofElement => el.type === 'roof' && !el.hidden), ...nativeRoofs]
   const wallsOfLevel = (levelId: string) =>
     doc.elements.filter(
       (el): el is WallElement =>
@@ -306,6 +308,15 @@ export function buildBuildingModel(
       }
     } else if (el.type === 'roof' && showRoof) {
       const parts = buildRoofParts(el, level, wallsOfLevel(level.id), doc.plan?.defaultWallThickness ?? 200)
+      roofs.push(...parts.prisms)
+      slabs.push(...parts.slabs)
+    }
+  }
+  if (showRoof) {
+    for (const roof of nativeRoofs) {
+      const level = levelOf(roof)
+      if (!level) continue
+      const parts = buildRoofParts(roof, level, wallsOfLevel(level.id), doc.plan?.defaultWallThickness ?? 200, Number.MIN_VALUE)
       roofs.push(...parts.prisms)
       slabs.push(...parts.slabs)
     }

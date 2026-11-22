@@ -27,6 +27,10 @@ export interface FabricsDocument {
   // M19 B6 : toitures et escaliers dessinés dans Pascal, quantifiés à la lecture de la scène (vue
   // calculée, jamais écrite dans la scène). Ajoutés aux métrés de leur niveau.
   pascalQuantities?: PascalQuantities;
+  // M20 20.1c : pans des toitures de Pascal que la toiture de Fabrics ne sait pas représenter (plusieurs
+  // pans, pente sous 1°), en toitures dérivées pour les façades et coupes. Vue calculée, jamais écrite ni
+  // comptée dans les métrés (leurs quantités sont dans `pascalQuantities`).
+  nativeRoofs?: RoofElement[];
 }
 
 export interface PascalQuantities {

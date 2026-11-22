@@ -146,6 +146,8 @@ export function roofPlanOutline(roof: Pick<RoofElement, 'points' | 'overhang'>):
 export function computeRoof(
   roof: Pick<RoofElement, 'points' | 'shape' | 'pitch' | 'overhang' | 'ridgeEdge'>,
   baseY: number,
+  /** Plus petite pente acceptée (degrés) ; une toiture dérivée de Pascal accepte toute pente > 0 (M20 20.1c). */
+  minPitch: number = MIN_PITCH,
 ): RoofResult {
   const outline = toPoints([...roof.points])
   if (outline.length < 3) return { problem: 'too-few-points' }
@@ -179,7 +181,7 @@ export function computeRoof(
   }
 
   if (!isRoofRectangle(roof.points)) return { problem: 'not-rectangle' }
-  if (!(roof.pitch >= MIN_PITCH && roof.pitch <= MAX_PITCH)) return { problem: 'bad-pitch' }
+  if (!(roof.pitch >= minPitch && roof.pitch > 0 && roof.pitch <= MAX_PITCH)) return { problem: 'bad-pitch' }
 
   const [p0, p1, , p3] = outline
   const w = Math.hypot(p1.x - p0.x, p1.y - p0.y)

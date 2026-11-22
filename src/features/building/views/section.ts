@@ -21,6 +21,9 @@ import {
 } from './projection'
 
 /** Ligne de coupe : ce qu'il faut savoir d'un élément `section` pour calculer sa coupe. */
+/** Deux cotes de faîtage plus proches que cela (mm) n'en font qu'une : la plus haute. */
+export const RIDGE_MERGE_MM = 300
+
 export interface SectionSpec {
   points: readonly number[]
   lookLeft: boolean
@@ -366,14 +369,20 @@ export function buildSection(
   }
   const marks = levelMarks(levels)
   if (section.ridgeLabel) {
-    const seen = new Set(marks.map((m) => Math.round(m.elevation)))
-    for (const roofId of cutRoofs) {
-      const top = Math.max(
-        ...model.roofs.filter((p) => p.sourceId === roofId && p.kind === 'roof').flatMap((p) => p.polygon.map((q) => q.y)),
-      )
-      const elevation = Math.round(top)
-      if (seen.has(elevation)) continue
-      seen.add(elevation)
+    // Une cote par faîtage, du plus haut au plus bas ; deux faîtages à moins de `RIDGE_MERGE_MM` (pans
+    // voisins d'une même toiture, M20 20.1c) ou trop près d'un niveau ne donnent qu'une cote, la plus haute.
+    const kept = marks.map((m) => Math.round(m.elevation))
+    const tops = [...cutRoofs]
+      .map((roofId) => ({
+        roofId,
+        elevation: Math.round(
+          Math.max(...model.roofs.filter((p) => p.sourceId === roofId && p.kind === 'roof').flatMap((p) => p.polygon.map((q) => q.y))),
+        ),
+      }))
+      .sort((a, b) => b.elevation - a.elevation)
+    for (const { roofId, elevation } of tops) {
+      if (kept.some((e) => Math.abs(e - elevation) < RIDGE_MERGE_MM)) continue
+      kept.push(elevation)
       marks.push({ levelId: `ridge-${roofId}`, name: section.ridgeLabel, elevation })
     }
     marks.sort((a, b) => a.elevation - b.elevation)

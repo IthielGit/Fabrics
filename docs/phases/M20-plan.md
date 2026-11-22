@@ -163,3 +163,19 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
 - Modifier un mur, un débord ou une pente dans Pascal met à jour les plans sans autre action.
 - Imprimé à 100 % à 1:50, une cote de 4500 mm mesure 90 mm à la règle.
 - Aucune longueur en m ou cm, aucun texte en anglais.
+
+## 20.1c — Coupes et façades branchées sur la scène Pascal
+
+Fait le 2026-11-22 (demande de l'utilisateur : tout M20, essai dans le navigateur à la fin).
+
+- **Constat** : les façades, coupes et la planche de Fabrics lisent déjà la scène (M18, `toFabricsView`).
+  Il manquait les toitures de Pascal que Fabrics ne sait pas reprendre (plusieurs pans, pente sous 1°) :
+  invisibles en façade et en coupe, et les pièces dessous recevaient un toit plat automatique.
+- **Fait** : `scene/view/nativeRoofs.ts` dérive un élément de toiture par pan (`nativeRoofs` de la vue :
+  jamais enregistré, jamais compté dans les métrés, qui gardent les quantités de Pascal). Le modèle du
+  bâtiment les construit (`computeRoof` accepte toute pente > 0 pour elles) et elles couvrent leurs pièces.
+- Coupe : une seule cote « Faîtage » pour des faîtages à moins de 300 mm l'un de l'autre (pans voisins).
+- Tests : `scene/roomitViews.test.ts` (façade sud et coupe A–A de ROOMIT avec la toiture ; critère G3 :
+  étage de 2500 mm = 50,0 mm sur une façade imprimée à 1:50, PDF relu).
+- Limite : les escaliers de Pascal que Fabrics ne sait pas reprendre (hélicoïdaux…) ne sont pas dessinés en
+  coupe ; détails (1:20, 1:10) : pas de vue de détail, noté pour 20.9.

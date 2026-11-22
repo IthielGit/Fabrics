@@ -20,6 +20,7 @@ import { FABRICS_NODE_PREFIX } from '../nodes/fabricsNodes'
 import { roofFromPascal, stairFromPascal } from '../migrate/roofStairNodes'
 import { pascalDisplayName } from './pascalDisplayName'
 import { pascalQuantitiesOf } from './pascalQuantities'
+import { nativeRoofElements } from './nativeRoofs'
 import { roomClearOutlines } from './roomClearFloor'
 import { BUILDING_ID, type FabricsNodeMeta, type PlanScene, type SceneNodeData } from '../sceneTypes'
 import { mToMm, pascalRotationToDegrees, planPointsToFlat } from '../units'
@@ -306,6 +307,11 @@ export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
     levels: settings.levelsAbsent ? undefined : levels,
     // Toitures et escaliers dessinés dans Pascal (M19 B6) : leurs quantités, pour les métrés.
     pascalQuantities: pascalQuantitiesOf(scene),
+    // Toitures de Pascal dessinées par les façades et coupes (M20 20.1c), hors métrés.
+    nativeRoofs: (() => {
+      const roofs = nativeRoofElements(scene.nodes)
+      return roofs.length > 0 ? roofs : undefined
+    })(),
   }) as FabricsDocument
 
   function openingOf(node: SceneNodeData, meta: FabricsNodeMeta): OpeningElement {

@@ -341,3 +341,10 @@ droite de la 3D) et onglet **Paramètres**.
 | Plan de toiture : surfaces affichées seulement si « Afficher les surfaces de toiture » est cochée ; mêmes valeurs que l'onglet Métrés | Auto : `building/views/areaTable.test.ts` ; Nav. |
 | Plan de toiture lié au modèle : pente 1 → 2 % dans Pascal → flèches « Pente 2 % » ; débord 300 → 400 mm → cote d'ensemble 15072 → 15272 mm et surface en plan à jour ; rien enregistré hors de la scène | Auto : `scene/roofModelLink.test.ts` |
 | PDF relu : R+1 à 1:50 (A2) tous les traits à ≤ 0,1 mm, 4304 mm = 86,08 mm ; toiture à 1:50 (15072 mm = 301,44 mm), 1:100 (A3) et 1:200 (A4) | Auto : `export/printScaleR1.test.ts` |
+
+### M20 · 20.1c — Coupes et façades
+| Critère | Vérification |
+|---|---|
+| Toiture de Pascal de plusieurs pans (ou pente < 1°) dessinée en façade et en coupe ; pas de toit plat automatique dessous ; métrés de toiture sans doublon | Auto : `scene/roomitViews.test.ts` |
+| Coupe : une seule cote « Faîtage » pour des faîtages à moins de 300 mm | Auto : `scene/roomitViews.test.ts` |
+| Étage de 2500 mm = 50,0 mm sur une façade imprimée à 1:50 (G3) | Auto : `scene/roomitViews.test.ts` ; Nav. (règle) |
