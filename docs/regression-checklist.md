@@ -388,3 +388,8 @@ droite de la 3D) et onglet **Paramètres**.
 | Jeu de feuilles numéroté 01, 02… dans l'ordre du dossier ; un n° saisi à l'export l'emporte | Auto : `features/sheets/sheetSet.test.ts` ; Nav. (PDF) |
 | Émetteur, indice, statut et n° saisis enregistrés avec le plan (gardés dans chaque version) | Auto : `features/sheets/sheetSet.test.ts` ; Nav. (rouvrir le projet) |
 | Aperçu d'une version : indice, statut et feuilles modifiées depuis la version précédente | Auto : `features/sheets/sheetSet.test.ts` ; Nav. (Historique) |
+
+### M20 · 20.8 — Étude de `ifcopenshell.draw`
+| Critère | Vérification |
+|---|---|
+| `tools/ifc/draw_plans.py` dessine plans et façades d'un IFC à l'échelle (un SVG par dessin) | Manuel : `tools/ifc/.venv/Scripts/python.exe -I tools/ifc/draw_plans.py baseline/fabrics/example/export.ifc tmp/draw` |

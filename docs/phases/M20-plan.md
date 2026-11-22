@@ -311,3 +311,19 @@ Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-18).
 - Limites : le dessin d'une ancienne version est refait avec le code actuel (une évolution du dessin de
   Fabrics change l'aspect d'une ancienne feuille, pas ses données) ; pas de tableau des indices sur la feuille
   (un seul indice courant par jeu) ; la comparaison dit quelle feuille a changé, pas où sur la feuille.
+
+## 20.8 — Étude de `ifcopenshell.draw`
+
+Faite le 2026-11-22. Rapport : `docs/phases/M20-ifcopenshell-draw.md` (D20-19, proposé par Claude, à valider).
+
+- Essai sur ROOMIT exporté par Fabrics (IFC2X3) et par Pascal (IFC4), et sur l'exemple de référence :
+  plans, façades et coupes à 1:50, échelle exacte, en 1 à 5 s.
+- Quatre défauts d'IfcOpenShell 0.9.0.post1 :
+  - plantage par défaut ;
+  - dessins superposés sur une page ;
+  - « m² » échappé deux fois ;
+  - styles en CSS ignorés par plusieurs visionneuses.
+- Il ne fait pas de cotes, de repères, de cartouche, d'usages français ni de hachures, et il exige Python et
+  OpenCascade côté serveur.
+- Conclusion : le moteur de feuilles reste Fabrics (ADR 0007). Nouvel outil complémentaire hors application
+  `tools/ifc/draw_plans.py` : un second dessin indépendant pour contrôler un export IFC (utile en M22).

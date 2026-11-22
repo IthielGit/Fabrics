@@ -172,6 +172,12 @@ numérotation automatique dans l'ordre du dossier avec n° saisi possible, un in
 par empreinte du dessin, affichée dans l'aperçu d'une version. Option écartée : stocker les PDF de chaque
 version (stockage Supabase, et une deuxième vérité à côté de la scène).
 
+## D20-19 · `ifcopenshell.draw` (2026-11-22, 20.8) — proposé par Claude, à valider
+
+Pas de moteur de feuilles (pas d'usages français, de cotes ni de cartouche, et serveur Python obligatoire) ;
+gardé comme **outil de contrôle des exports IFC** hors application (`tools/ifc/draw_plans.py`). Rapport :
+`docs/phases/M20-ifcopenshell-draw.md`.
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et
