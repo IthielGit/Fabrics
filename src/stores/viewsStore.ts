@@ -6,6 +6,8 @@ import type { DimensioningMode } from '../features/dimensioning/types'
 export type ViewsTab =
   | { kind: 'level'; levelId: string }
   | { kind: 'roof'; levelId: string }
+  | { kind: 'ceiling'; levelId: string }
+  | { kind: 'schedules' }
   | { kind: 'elevation'; cardinal: Cardinal }
   | { kind: 'section'; sectionId: string }
   | { kind: 'sheet' }

@@ -356,3 +356,9 @@ droite de la 3D) et onglet **Paramètres**.
 | Nom de pièce en gras 1,4 × la hauteur des cotes ; chiffres de cotes qui se touchent : un autre rang | Auto : `dimensioning/layout.test.ts` ; baseline SVG |
 | PDF : texte tourné centré sur son point (cotes verticales, flèche de pente) | Nav. (PDF) |
 | Axes du quadrillage (bulles, repères) sur les feuilles de l'écran Vues ; légende des hachures sous le tableau des surfaces | Auto : `dimensioning/axes.test.ts`, `building/views/legend.test.ts` ; Nav. |
+
+### M20 · 20.3 — Nomenclatures et plan de plafond
+| Critère | Vérification |
+|---|---|
+| Nomenclature des menuiseries : une ligne par type identique, quantités = toutes les ouvertures, repères et niveaux ; nomenclature des pièces (surface, HSP, faux plafond) | Auto : `scene/roomitSchedules.test.ts` ; Nav. (onglet « Nomenclatures ») |
+| Plan de plafond d'un niveau : nom, « HSP … » et « Faux plafond » par pièce, sans conflit de texte | Auto : `scene/roomitSchedules.test.ts` ; Nav. |

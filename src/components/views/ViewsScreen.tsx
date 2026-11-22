@@ -6,6 +6,8 @@ import { levelAreaTable, roofAreaTable, withAreaTable } from '../../features/bui
 import { roofPerimeter } from '../../features/scene/view/roofPlanData'
 import { roofPlanDrawing } from '../../features/building/views/roofPlan'
 import { levelWallMaterials, materialLegend } from '../../features/building/views/legend'
+import { openingSchedule, roomSchedule, scheduleDrawing } from '../../features/building/views/schedule'
+import { ceilingPlanOverlay } from '../../features/dimensioning/ceilingPlan'
 import { annotationGraphics } from '../../features/dimensioning/annotationGraphics'
 import { roofChains } from '../../features/dimensioning/roofChains'
 import { useRoofPlans } from '../../pascal/useRoofPlans'
@@ -35,6 +37,7 @@ function isSameTab(a: ViewsTab, b: ViewsTab): boolean {
   if (a.kind === 'section' && b.kind === 'section') return a.sectionId === b.sectionId
   if (a.kind === 'level' && b.kind === 'level') return a.levelId === b.levelId
   if (a.kind === 'roof' && b.kind === 'roof') return a.levelId === b.levelId
+  if (a.kind === 'ceiling' && b.kind === 'ceiling') return a.levelId === b.levelId
   return true
 }
 
@@ -66,6 +69,35 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
 
   return useMemo(() => {
     const allLevels = levels ?? []
+    if (tab.kind === 'schedules') {
+      // Nomenclatures (M20 20.3) : tirées des métrés, comme l'onglet Métrés.
+      const document = { elements: elements ?? [], levels: allLevels, pascalQuantities }
+      const labels = { ...fr.views.schedule, kinds: fr.measurements.csv.kinds, styles: fr.measurements.csv.styles }
+      return {
+        title: fr.views.schedules,
+        note: fr.views.schedulesNote,
+        build: (fontMm) => {
+          const building = computeBuildingMeasurements(document)
+          return scheduleDrawing([openingSchedule(building, labels), roomSchedule(building, labels)], fontMm ?? 125)
+        },
+        emptyText: fr.views.empty,
+      }
+    }
+    if (tab.kind === 'ceiling') {
+      // Plan de plafond (M20 20.3) : murs du niveau, hauteur sous plafond et faux plafond par pièce.
+      const level = allLevels.find((l) => l.id === tab.levelId)
+      if (!level) return { title: '', note: '', build: () => null, emptyText: fr.views.levelMissing }
+      const document = { elements: elements ?? [], levels: allLevels, pascalQuantities }
+      return {
+        title: fr.views.ceilingPlan(level.name),
+        note: fr.views.ceilingPlanNote,
+        build: (fontMm) => {
+          const metres = computeBuildingMeasurements(document).levels.find((l) => l.level.id === level.id)
+          return levelPlanDrawing(model, level, fontMm, (font) => (metres ? ceilingPlanOverlay(document, level.id, metres.measurements, fr.views.ceiling, font) : null))
+        },
+        emptyText: fr.views.empty,
+      }
+    }
     if (tab.kind === 'roof') {
       // Plan de toiture (M20 20.1b) : contour, débords, pentes lues dans les pans, escalier d'accès.
       const level = allLevels.find((l) => l.id === tab.levelId)
@@ -255,6 +287,13 @@ function ScreenBody() {
       })),
     ...[...(levels ?? [])]
       .sort((a, b) => a.elevation - b.elevation)
+      .map((level) => ({
+        key: `ceiling-${level.id}`,
+        label: fr.views.ceilingPlan(level.name),
+        value: { kind: 'ceiling', levelId: level.id } as ViewsTab,
+      })),
+    ...[...(levels ?? [])]
+      .sort((a, b) => a.elevation - b.elevation)
       .filter((level) => roofPlans(level.id) !== null)
       .map((level) => ({
         key: `roof-${level.id}`,
@@ -271,6 +310,7 @@ function ScreenBody() {
       label: fr.views.section(section.label),
       value: { kind: 'section', sectionId: section.id } as ViewsTab,
     })),
+    { key: 'schedules', label: fr.views.schedules, value: { kind: 'schedules' } as ViewsTab },
     { key: 'sheet', label: fr.views.sheet, value: { kind: 'sheet' } as ViewsTab },
   ]
 

@@ -1654,6 +1654,23 @@ export const fr = {
     roofPlan: (level: string) => `Plan de toiture ${level}`,
     roofPlanNote: 'Contour de la toiture et débords, sens de la pente, escalier d’accès, cotes. La pente est lue dans les pans de la toiture.',
     roofSlope: (percent: number) => `Pente ${percent.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} %`,
+    /** Nomenclatures et plan de plafond (M20 20.3). */
+    schedules: 'Nomenclatures',
+    schedulesNote: 'Menuiseries par type (repères, quantités, niveaux) et pièces (surface, hauteur sous plafond), tirées des métrés.',
+    schedule: {
+      openingsTitle: 'Nomenclature des menuiseries',
+      roomsTitle: 'Nomenclature des pièces',
+      openingHeader: ['Type', 'L x H (mm)', 'Allège (mm)', 'Quantité', 'Repères', 'Niveaux'],
+      roomHeader: ['Pièce', 'Niveau', 'Surface', 'HSP (mm)', 'Faux plafond'],
+      yes: 'Oui',
+      no: 'Non',
+    },
+    ceilingPlan: (level: string) => `Plan de plafond ${level}`,
+    ceilingPlanNote: 'Hauteur sous plafond et faux plafond de chaque pièce, lus dans les métrés.',
+    ceiling: {
+      height: (mm: string) => `HSP ${mm}`,
+      falseCeiling: 'Faux plafond',
+    },
     /** Légende des hachures à droite du plan d'un niveau (M20 20.2). */
     legendTitle: 'Légende',
     /** Surfaces de toiture sur la feuille de toiture, seulement sur demande (D20-10). */

@@ -203,3 +203,19 @@ de toiture (20.1b).
   Client et Exécution, plan de toiture, à 1:50), `dimensioning/axes.test.ts`, `building/views/legend.test.ts`.
 - Limites : un texte qui recouvre un trait (repère sur un mur) n'est pas compté comme conflit critique ;
   symboles de plan (flèche de montée d'escalier, repères de coupe sur le plan) non ajoutés.
+
+## 20.3 — Nomenclatures et plans dérivés
+
+Fait le 2026-11-22.
+
+- **Onglet « Nomenclatures »** de l'écran Vues (`building/views/schedule.ts`) : nomenclature des
+  menuiseries (une ligne par type identique : genre et style, L x H, allège, quantité, repères `P01`…,
+  niveaux) et nomenclature des pièces (niveau, surface, hauteur sous plafond, faux plafond). Tout vient des
+  métrés (repères compris) ; PDF comme les autres vues.
+- **Onglet « Plan de plafond … »** par niveau (`dimensioning/ceilingPlan.ts`) : murs du niveau, nom de
+  chaque pièce, « HSP 2880 » et « Faux plafond », sans mobilier ni escalier.
+- Plan de toiture : fait en 20.1b.
+- Tests : `scene/roomitSchedules.test.ts` (ROOMIT : 9 fenêtres 1500 x 1000 allège 1100 sur une ligne,
+  « RDC, R+1 » ; 23 pièces ; « HSP 2880 » sur les 11 pièces du R+1 ; aucun conflit de texte).
+- Limites : pas de nomenclature des murs ni des équipements ; le plan de plafond ne dessine pas de
+  calepinage ni de luminaires (pas dans le modèle).
