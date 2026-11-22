@@ -238,3 +238,31 @@ Fait le 2026-11-22 (D20-3 : A, gabarit de Villa ROOMIT).
 - Tests : `export/sheetTemplate.test.ts` (mise en page, cellules du cartouche, feuille R+1 de ROOMIT relue
   dans le PDF : tous les traits à ≤ 0,1 mm, textes du cartouche et de la colonne).
 - Limites : pas de logo d'émetteur ; renseignements du cartouche non enregistrés dans le projet (20.7).
+
+## 20.5 — Styles graphiques
+
+Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-16).
+
+- **Épaisseurs imprimées selon l'échelle** (`building/views/graphicStyles.ts`, `lineWeights`), série ISO 128,
+  une seule table pour tous les PDF de l'écran Vues :
+  | Échelle | Coupé | Vu | Filet | Hachure | Sol |
+  |---|---|---|---|---|---|
+  | 1:50 et plus grand (1:20, 1:10) | 0,5 | 0,25 | 0,13 | 0,1 | 0,7 |
+  | 1:100 | 0,35 | 0,18 | 0,13 | 0,08 | 0,5 |
+  | 1:200 et plus petit | 0,25 | 0,13 | 0,1 | 0,07 | 0,35 |
+  « Ajuster à la page » prend la tranche la plus proche. L'écran garde ses épaisseurs en pixels, dans les mêmes rapports.
+- **Éléments coupés et vus** : murs et poteaux coupés en trait « coupé » (noir plein ou hachuré), menuiseries,
+  mobilier et escaliers en trait « vu », éléments au-dessus de la coupe en pointillé fin (inchangé, maintenant
+  imprimé selon la table).
+- **Catégories (calques)** sur chaque trait, fond et texte des plans : murs, poteaux, portes et fenêtres,
+  escaliers, mobilier, pièces, cotes, repères, axes ; les hachures se masquent à part. Sols et découpes des
+  ouvertures restent toujours.
+- **Visibilité** : cases « Visibilité » au-dessus des plans de niveau, de plafond, de toiture et de la planche ;
+  ce qui est décoché disparaît à l'écran **et** dans le PDF (`applyVisibility`). Réglage gardé pendant la session.
+- **Masques** : fond blanc sous les noms et surfaces des pièces, qui cache le mobilier dessous (écran et PDF).
+  Pas de masque sous les repères de portes et fenêtres : posés contre les murs, ils mordraient sur leur trait.
+- Tests : `building/views/graphicStyles.test.ts` (table, catégories du plan R+1 de ROOMIT, visibilité de
+  chaque catégorie, hachures, masques, épaisseurs relues dans le PDF à 1:50 et 1:100).
+- Limites : façades et coupes sans catégories ni cases « Visibilité » ;
+  réglage de visibilité commun à toutes les vues, non enregistré dans le projet ; calques des fichiers
+  vectoriels (groupes par catégorie) avec l'export SVG de 20.6.

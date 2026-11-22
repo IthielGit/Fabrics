@@ -1664,6 +1664,22 @@ export const fr = {
       schedules: 'Nomenclatures',
       sheet: 'Planche',
     },
+    /** Visibilité des catégories sur les plans de l'écran Vues et leurs PDF (M20 20.5). */
+    visibility: {
+      title: 'Visibilité',
+      keys: {
+        walls: 'Murs',
+        hatch: 'Hachures',
+        columns: 'Poteaux',
+        openings: 'Portes et fenêtres',
+        stairs: 'Escaliers',
+        furniture: 'Mobilier',
+        rooms: 'Pièces',
+        dimensions: 'Cotes',
+        marks: 'Repères',
+        axes: 'Axes',
+      },
+    },
     sheetInfo: {
       title: 'Cartouche',
       issuer: 'Émetteur',

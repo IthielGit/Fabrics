@@ -6,6 +6,8 @@
 import { type AnyNode, type AnyNodeDefinition, type AnyNodeId, nodeRegistry, registerNode } from '@pascal-app/core'
 import { collectSheetGeometry } from '@pascal-app/editor'
 import { builtinPlugin } from '@pascal-app/nodes'
+import type { DrawCategory } from '../../building/views/drawing'
+import { tagOverlay } from '../../building/views/graphicStyles'
 import type { SceneNodeData } from '../sceneTypes'
 import { floorplanToDrawing, mergeSymbols, type PlanSymbols } from './planSymbols'
 
@@ -14,6 +16,9 @@ export const PASCAL_DRAWN_TYPES: ReadonlySet<string> = new Set(['stair', 'item',
 
 /** Types dessinés en matière coupée (noir plein, sur les murs). */
 const CUT_TYPES: ReadonlySet<string> = new Set(['column'])
+
+/** Catégorie (calque) de chaque type dessiné, pour la visibilité (M20 20.5). */
+const CATEGORY_OF: Readonly<Record<string, DrawCategory>> = { stair: 'stairs', item: 'furniture', column: 'columns' }
 
 const NO_ANNOTATIONS = {
   automaticDimensions: false,
@@ -121,7 +126,7 @@ export function pascalLevelSymbols(nodes: Readonly<Record<string, SceneNodeData>
     entries.push(...collect(below.id, (node) => arriving.has(node.id)))
   }
   if (entries.length === 0) return null
-  return mergeSymbols(entries.map((e) => floorplanToDrawing(e.model, { cut: CUT_TYPES.has(e.type) })))
+  return mergeSymbols(entries.map((e) => tagOverlay(floorplanToDrawing(e.model, { cut: CUT_TYPES.has(e.type) }), CATEGORY_OF[e.type] ?? 'furniture')))
 }
 
 /**
@@ -151,5 +156,5 @@ export function pascalRoofStairSymbols(nodes: Readonly<Record<string, SceneNodeD
     metricNotation: 'millimeters',
   })
   if (entries.length === 0) return null
-  return mergeSymbols(entries.map((e) => floorplanToDrawing(e.model, { cut: false })))
+  return mergeSymbols(entries.map((e) => tagOverlay(floorplanToDrawing(e.model, { cut: false }), 'stairs')))
 }

@@ -153,6 +153,12 @@ les bouts sur le vrai bord du toit, une fois. Exact pour plat, un pan, deux pans
 formes à plusieurs pentes recouverts : point « à vérifier » dans les métrés. La feuille de toiture affiche ces
 mêmes valeurs, sur demande. (Option B non retenue : métrés par pan inchangés, avec un avertissement.)
 
+## D20-16 · Styles graphiques (2026-11-22, 20.5) — proposé par Claude, à valider
+
+Épaisseurs imprimées de la série ISO 128 selon l'échelle (coupé 0,5 / 0,35 / 0,25 mm à 1:50 / 1:100 / 1:200),
+neuf catégories de visibilité plus les hachures, réglage commun à toutes les vues pendant la session, masques
+blancs sous les noms de pièces seulement. À confirmer à l'essai de fin de M20 (impression à 100 %).
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et

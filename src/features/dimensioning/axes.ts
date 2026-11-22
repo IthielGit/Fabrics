@@ -1,5 +1,6 @@
 import type { DrawLine, DrawText, PlanOverlay } from '../building/views/drawing'
 import type { AxisElement, CanvasElement } from '../../types/document'
+import { tagOverlay } from '../building/views/graphicStyles'
 
 /**
  * Axes du quadrillage porteur sur les plans imprimés (M20 20.2) : trait mixte d'un bout à l'autre,
@@ -34,5 +35,5 @@ export function axisGraphics(elements: readonly CanvasElement[], levelId: string
       texts.push({ x: cx, y: cy + fontMm * 0.35, text: axis.label, size: fontMm, anchor: 'middle' })
     }
   }
-  return { lines, texts }
+  return tagOverlay({ lines, texts }, 'axes')
 }

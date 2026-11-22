@@ -3,6 +3,7 @@ import { FileDown, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { autoFontMm, drawingFromView, levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
 import { levelAreaTable, roofAreaTable, withAreaTable } from '../../features/building/views/areaTable'
+import { applyVisibility, VISIBILITY_KEYS, type VisibilityKey } from '../../features/building/views/graphicStyles'
 import { roofPerimeter } from '../../features/scene/view/roofPlanData'
 import { roofPlanDrawing } from '../../features/building/views/roofPlan'
 import { levelWallMaterials, materialLegend } from '../../features/building/views/legend'
@@ -283,6 +284,45 @@ function RoofAreasToggle() {
   )
 }
 
+/** Cases « Visibilité » des plans (M20 20.5) : les catégories cochées sont dessinées, à l'écran et dans le PDF. */
+function VisibilityPanel() {
+  const hidden = useViewsStore((state) => state.hidden)
+  const toggle = useViewsStore((state) => state.toggleHidden)
+  return (
+    <fieldset className="flex flex-wrap items-center gap-x-4 gap-y-1 px-4 pt-2 text-sm text-slate-700">
+      <legend className="sr-only">{fr.views.visibility.title}</legend>
+      <span aria-hidden="true" className="font-medium text-slate-900">
+        {fr.views.visibility.title}
+      </span>
+      {VISIBILITY_KEYS.map((key) => (
+        <label key={key} className="flex items-center gap-1.5">
+          <input type="checkbox" checked={!hidden.includes(key)} onChange={() => toggle(key)} className="h-4 w-4" />
+          {fr.views.visibility.keys[key]}
+        </label>
+      ))}
+    </fieldset>
+  )
+}
+
+/** Vue dont les dessins (écran et PDF) n'ont plus les catégories masquées (M20 20.5). */
+function withVisibility(view: ActiveView, hidden: readonly VisibilityKey[]): ActiveView {
+  if (hidden.length === 0) return view
+  const set = new Set(hidden)
+  const filter = (drawing: Drawing | null) => (drawing ? applyVisibility(drawing, set) : null)
+  return {
+    ...view,
+    build: (fontMm, version) => filter(view.build(fontMm, version)),
+    ...(view.parts
+      ? {
+          parts: (fontMm, version) => {
+            const { main, side } = view.parts!(fontMm, version)
+            return { main: filter(main), side }
+          },
+        }
+      : {}),
+  }
+}
+
 /** Écran « Vues » : façades, coupes et planche calculées à partir du plan, en lecture seule. */
 function ScreenBody() {
   const tab = useViewsStore((state) => state.tab)
@@ -297,7 +337,9 @@ function ScreenBody() {
         .sort((a, b) => a.label.localeCompare(b.label, 'fr', { numeric: true })),
     [elements],
   )
-  const active = useActiveView(tab, sections)
+  const hidden = useViewsStore((state) => state.hidden)
+  const viewOfTab = useActiveView(tab, sections)
+  const active = useMemo(() => withVisibility(viewOfTab, hidden), [viewOfTab, hidden])
   // Le dessin n'est calculé qu'une fois par changement de vue, pas à chaque rendu.
   const drawing = useMemo(() => active.build(), [active])
   const view = { ...active, drawing }
@@ -391,6 +433,7 @@ function ScreenBody() {
         {tab.kind === 'sheet' && <SheetDimensioning />}
         {tab.kind === 'level' && <SheetDimensioning levelId={tab.levelId} />}
         {tab.kind === 'roof' && <RoofAreasToggle />}
+        {(tab.kind === 'level' || tab.kind === 'ceiling' || tab.kind === 'roof' || tab.kind === 'sheet') && <VisibilityPanel />}
         <div className="min-h-0 flex-1 p-4">
           {view.drawing ? (
             <ViewDrawing drawing={view.drawing} />

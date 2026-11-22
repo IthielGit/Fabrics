@@ -368,3 +368,10 @@ droite de la 3D) et onglet **Paramètres**.
 |---|---|
 | PDF de l'écran Vues au gabarit de la référence : type de plan, rose des vents orientée, tableaux dans la colonne, cartouche (projet, émetteur, titre, N° de plan, indice, date, statut, échelle, format) | Auto : `export/sheetTemplate.test.ts` ; Nav. (PDF) |
 | Formats A4 à A1, A2 paysage par défaut ; le plan reste à l'échelle exacte (traits à ≤ 0,1 mm) | Auto : `export/sheetTemplate.test.ts` |
+
+### M20 · 20.5 — Styles graphiques
+| Critère | Vérification |
+|---|---|
+| Épaisseurs imprimées selon l'échelle (coupé 0,5 / 0,35 / 0,25 mm à 1:50 / 1:100 / 1:200), coupé > vu > filet > hachure | Auto : `building/views/graphicStyles.test.ts` |
+| Chaque élément du plan est rangé dans une catégorie ; décocher une case de « Visibilité » retire ces éléments à l'écran et dans le PDF, et rien d'autre | Auto : `building/views/graphicStyles.test.ts` ; Nav. |
+| Masque blanc sous les noms de pièces (mobilier caché), pas sous les repères ni les cotes | Auto : `building/views/graphicStyles.test.ts` ; Nav. (PDF) |

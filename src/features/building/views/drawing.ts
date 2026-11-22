@@ -13,6 +13,13 @@ import { prismsOf, type Prism } from './section'
  */
 export type DrawFill = 'white' | 'black' | 'light' | 'wall' | 'none'
 
+/**
+ * Catégorie (calque) d'un élément dessiné, pour la visibilité (M20 20.5) : murs coupés, poteaux,
+ * menuiseries, escaliers, mobilier, noms de pièces, cotes, repères (portes, fenêtres, nord, niveau),
+ * axes. Absente : toujours visible (sols, découpes des ouvertures, cadres de feuille).
+ */
+export type DrawCategory = 'walls' | 'columns' | 'openings' | 'stairs' | 'furniture' | 'rooms' | 'dimensions' | 'marks' | 'axes'
+
 export interface DrawPolygon {
   points: [number, number][]
   fill: DrawFill
@@ -35,6 +42,8 @@ export interface DrawPolygon {
    * contours. Absente : pas de hachure.
    */
   hatch?: Segment[]
+  /** Catégorie pour la visibilité (M20 20.5). */
+  category?: DrawCategory
 }
 
 /**
@@ -74,6 +83,8 @@ export interface DrawLine {
   weight?: 'heavy' | 'cut' | 'normal' | 'hair'
   /** Trait gris (cotes de niveaux, filets) plutôt que noir. */
   muted?: boolean
+  /** Catégorie pour la visibilité (M20 20.5). */
+  category?: DrawCategory
 }
 
 export interface DrawText {
@@ -88,6 +99,13 @@ export interface DrawText {
   muted?: boolean
   /** Rotation en degrés autour de (x, y), sens horaire à l'écran (texte d'une cote verticale : -90). */
   angle?: number
+  /** Catégorie pour la visibilité (M20 20.5). */
+  category?: DrawCategory
+  /**
+   * Masque (M20 20.5) : fond blanc sous le texte, qui cache les traits dessous (noms de pièces sur le
+   * mobilier).
+   */
+  mask?: boolean
 }
 
 export interface Drawing {
@@ -349,15 +367,16 @@ export function levelPlanDrawing(
     if (role === 'cut' && prism.material) {
       // Mur coupé avec un matériau : blanc hachuré, cerné de son contour sans coutures.
       hatchedIndices.push(index)
-      return hatched(points, prism.material, font, 0)
+      return { ...hatched(points, prism.material, font, 0), category: 'walls' }
     }
     if (role === 'cut' && prism.kind !== 'frame') {
       // Murs et cheminées coupés : noir plein, sans trait, pour que les morceaux se fondent.
-      return { points, fill: 'black', edges: points.map(() => false), layer: 0 }
+      return { points, fill: 'black', edges: points.map(() => false), layer: 0, category: 'walls' }
     }
-    if (role === 'cut') return { points, fill: 'black' }
+    if (role === 'cut') return { points, fill: 'black', category: 'openings' }
     if (role === 'floor') return { points, fill: 'light' }
-    return { points, fill: 'white' }
+    // Allèges et murets vus sous la coupe : avec les murs ; vitres : avec les menuiseries.
+    return { points, fill: 'white', category: role === 'glass' ? 'openings' : 'walls' }
   })
   const dx = margin - minX
   const dy = margin - minY
@@ -385,7 +404,7 @@ export function levelPlanDrawing(
       for (let i = 0; i + 1 < points.length; i++) {
         const [x1, y1] = at(points[i])
         const [x2, y2] = at(points[i + 1])
-        symbolLines.push({ x1, y1, x2, y2, ...(dashed ? { dashed: true, weight: 'hair' as const } : {}) })
+        symbolLines.push({ x1, y1, x2, y2, category: 'openings', ...(dashed ? { dashed: true, weight: 'hair' as const } : {}) })
       }
     }
     for (const line of symbol.lines) push(line, false)
@@ -397,7 +416,7 @@ export function levelPlanDrawing(
     polygons,
     lines: [
       ...(symbolsOfPascal?.lines ?? []).map(shift),
-      ...hatchedOutline(polygons, cutIndices, hatchedIndices),
+      ...hatchedOutline(polygons, cutIndices, hatchedIndices).map((l) => ({ ...l, category: 'walls' as const })),
       ...symbolLines,
       ...(extra?.lines ?? []).map(shift),
     ],

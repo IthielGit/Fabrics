@@ -1,4 +1,5 @@
 import type { FabricsDocument } from '../../types/document'
+import { tagOverlay } from '../building/views/graphicStyles'
 import type { DrawLine, DrawText, PlanOverlay } from '../building/views/drawing'
 import { elementBounds } from '../export/bounds'
 import { elementsOnLevel } from '../documents/levels'
@@ -100,7 +101,7 @@ export function planMarks(
     size: fontMm,
     anchor: 'middle',
   })
-  return { lines, texts }
+  return tagOverlay({ lines, texts }, 'marks')
 }
 
 /** Réunit deux calques de cotes et d'annotations (l'un ou l'autre peut manquer). */

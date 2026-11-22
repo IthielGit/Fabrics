@@ -9,7 +9,7 @@ describe('cotes automatiques en traits de dessin', () => {
     )
     expect(lines).toHaveLength(5)
     expect(lines[0]).toMatchObject({ x1: 0, y1: -800, x2: 6000, y2: -800 })
-    expect(texts).toEqual([{ x: 3000, y: -835, text: '6000', size: 100, anchor: 'middle' }])
+    expect(texts).toEqual([{ x: 3000, y: -835, text: '6000', size: 100, category: 'dimensions', anchor: 'middle' }])
   })
 
   it('une cote verticale : texte tourné de -90°, lu de bas en haut', () => {

@@ -1,4 +1,5 @@
 import { FILL_COLORS, paintBatches, type Drawing, type DrawPolygon } from '../building/views/drawing'
+import { lineWeights, textMask } from '../building/views/graphicStyles'
 import { printedTextSize } from './printedText'
 import {
   cartoucheArea,
@@ -42,8 +43,11 @@ const INK: Rgb = [26, 26, 26]
 const MUTED: Rgb = [102, 102, 102]
 const HAIRLINE: Rgb = [166, 166, 166]
 
-/** Épaisseurs de trait en mm sur le papier : le dessin se lit par ses épaisseurs, pas par la couleur. */
-const LINE = { frame: 0.5, rule: 0.35, heavy: 0.5, normal: 0.2, hair: 0.12, hatch: 0.08, cut: 0.35, divider: 0.2 }
+/**
+ * Épaisseurs de trait du cadre et du cartouche, en mm sur le papier. Celles du dessin dépendent de
+ * l'échelle (`lineWeights`, M20 20.5) : le dessin se lit par ses épaisseurs, pas par la couleur.
+ */
+const LINE = { frame: 0.5, rule: 0.35, divider: 0.2 }
 
 export interface CartoucheField {
   /** Intitulé de la cellule (« Échelle »), affiché en petites capitales grises. */
@@ -441,6 +445,8 @@ export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
   const k = placement.width / drawing.width
   const px = (x: number) => placement.x + x * k
   const py = (y: number) => placement.y + y * k
+  // Épaisseurs imprimées selon l'échelle (M20 20.5, `graphicStyles.ts`).
+  const W = lineWeights(1 / k)
 
   pdf.setLineJoin('round')
   const outline = (polygon: DrawPolygon) => {
@@ -454,10 +460,10 @@ export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
   for (const batch of paintBatches(drawing.polygons)) {
     const [head] = batch
     pdf.setDrawColor(...INK)
-    pdf.setLineWidth(head.fill === 'black' ? LINE.cut : LINE.normal)
+    pdf.setLineWidth(head.fill === 'black' ? W.cut : W.normal)
     if (head.open) {
       // Trait de façade d'une ouverture (triangle d'ouverture, flèche) : ligne brisée fine.
-      pdf.setLineWidth(LINE.hair)
+      pdf.setLineWidth(W.hair)
       pdf.setLineDashPattern(head.dashed ? [1.5, 1] : [], 0)
       for (let i = 0; i + 1 < head.points.length; i++) {
         const [x, y] = head.points[i]
@@ -477,11 +483,11 @@ export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
       }
       // Hachures des matières coupées, sur les fonds et sous les contours.
       if (batch.some((p) => p.hatch?.length)) {
-        pdf.setLineWidth(LINE.hatch)
+        pdf.setLineWidth(W.hatch)
         for (const polygon of batch) {
           for (const [x1, y1, x2, y2] of polygon.hatch ?? []) pdf.line(px(x1), py(y1), px(x2), py(y2))
         }
-        pdf.setLineWidth(head.fill === 'black' ? LINE.cut : LINE.normal)
+        pdf.setLineWidth(head.fill === 'black' ? W.cut : W.normal)
       }
       for (const polygon of batch) {
         polygon.points.forEach(([x, y], i) => {
@@ -504,11 +510,23 @@ export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
 
   for (const line of drawing.lines) {
     pdf.setDrawColor(...(line.muted ? MUTED : INK))
-    pdf.setLineWidth(LINE[line.weight ?? 'normal'])
+    pdf.setLineWidth(W[line.weight ?? 'normal'])
     pdf.setLineDashPattern(line.dashed ? [2, 1.5] : [], 0)
     pdf.line(px(line.x1), py(line.y1), px(line.x2), py(line.y2))
   }
   pdf.setLineDashPattern([], 0)
+
+  // Masques blancs sous les textes qui en demandent (M20 20.5), tous avant les textes : le masque d'une
+  // ligne ne mord pas sur la ligne voisine de la même étiquette.
+  pdf.setFillColor(255, 255, 255)
+  for (const text of drawing.texts) {
+    if (!text.mask) continue
+    pdf.setFont('helvetica', text.bold ? 'bold' : 'normal')
+    const size = printedTextSize(text, 1 / k) * k
+    pdf.setFontSize(size * MM_TO_PT)
+    const rect = textMask({ ...text, x: px(text.x), y: py(text.y) }, size, pdf.getTextWidth(pdfText(text.text)))
+    if (rect) pdf.rect(rect.x, rect.y, rect.width, rect.height, 'F')
+  }
 
   for (const text of drawing.texts) {
     pdf.setTextColor(...(text.muted ? MUTED : INK))

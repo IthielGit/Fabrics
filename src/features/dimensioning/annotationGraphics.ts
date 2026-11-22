@@ -24,14 +24,14 @@ export function annotationGraphics(annotations: AutoAnnotations, fontMm: number)
     const geometry = dimensionGeometry(dimension.points, dimension.offset)
     if (!geometry) continue
     const { line, extensions, center, textAngle, direction, normal, length } = geometry
-    lines.push({ x1: line[0].x, y1: line[0].y, x2: line[1].x, y2: line[1].y, weight: 'hair' })
+    lines.push({ x1: line[0].x, y1: line[0].y, x2: line[1].x, y2: line[1].y, weight: 'hair', category: 'dimensions' })
     const gap = Math.min(extensionGap, Math.abs(dimension.offset) / 2) * (dimension.offset < 0 ? -1 : 1)
     for (const [from, to] of extensions) {
       if (Math.abs(dimension.offset) < 1) continue // chaîne intérieure : la ligne passe sur les murs
-      lines.push({ x1: from.x + normal.x * gap, y1: from.y + normal.y * gap, x2: to.x, y2: to.y, weight: 'hair' })
+      lines.push({ x1: from.x + normal.x * gap, y1: from.y + normal.y * gap, x2: to.x, y2: to.y, weight: 'hair', category: 'dimensions' })
     }
     const t = { x: ((direction.x + normal.x) / Math.SQRT2) * tick, y: ((direction.y + normal.y) / Math.SQRT2) * tick }
-    for (const p of line) lines.push({ x1: p.x - t.x, y1: p.y - t.y, x2: p.x + t.x, y2: p.y + t.y })
+    for (const p of line) lines.push({ x1: p.x - t.x, y1: p.y - t.y, x2: p.x + t.x, y2: p.y + t.y, category: 'dimensions' })
     // Texte dans le sens de lecture : au-dessus, ou en alternance s'il ne tient pas entre les traits.
     // S'il touche le chiffre d'une autre cote déjà placé, il essaie les autres rangs (M20 20.2).
     const a = (textAngle * Math.PI) / 180
@@ -46,6 +46,7 @@ export function annotationGraphics(annotations: AutoAnnotations, fontMm: number)
         text: value,
         size: fontMm,
         anchor: 'middle',
+        category: 'dimensions',
         ...(textAngle !== 0 ? { angle: textAngle } : {}),
       }
     }
@@ -60,9 +61,14 @@ export function annotationGraphics(annotations: AutoAnnotations, fontMm: number)
     const step = fontMm * LINE_HEIGHT_EM
     const title = fontMm * LABEL_TITLE_EM
     const top = label.y - (labelHeightEm(label.lines.length) * fontMm) / 2
+    // Noms de pièces dans « Pièces », repères des portes, fenêtres, escaliers… dans « Repères » (M20 20.5).
+    // Masque blanc sous les noms de pièces seulement (il cache le mobilier dessous) : les repères sont
+    // posés contre les murs, un masque mordrait sur leur trait.
+    const category = label.id.startsWith('room-') ? 'rooms' : 'marks'
+    const mask = category === 'rooms'
     label.lines.forEach((text, index) => {
       const y = top + title * 0.8 + step * index
-      texts.push({ x: label.x, y, text, size: index === 0 ? title : fontMm, anchor: 'middle', bold: index === 0 })
+      texts.push({ x: label.x, y, text, size: index === 0 ? title : fontMm, anchor: 'middle', bold: index === 0, category, ...(mask ? { mask } : {}) })
     })
   }
   return { lines, texts }

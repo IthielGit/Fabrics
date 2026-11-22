@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import type { Cardinal } from '../features/building/north'
 import type { DimensioningMode } from '../features/dimensioning/types'
 import type { SheetInfo } from '../features/export/cartouche'
+import type { VisibilityKey } from '../features/building/views/graphicStyles'
 
 /** Onglets de l'écran « Vues » : le plan d'un niveau, le plan de toiture d'un niveau, une façade, une coupe (par son identifiant) ou la planche. */
 export type ViewsTab =
@@ -29,6 +30,9 @@ interface ViewsState {
   /** Renseignements du cartouche (M20 20.4) : émetteur, n° de plan, indice, statut ; gardés pendant la session. */
   sheetInfo: SheetInfo
   setSheetInfo: (info: Partial<SheetInfo>) => void
+  /** Catégories masquées sur les plans et leurs PDF (M20 20.5) ; tout est visible par défaut. */
+  hidden: VisibilityKey[]
+  toggleHidden: (key: VisibilityKey) => void
 }
 
 export const useViewsStore = create<ViewsState>()((set) => ({
@@ -44,4 +48,7 @@ export const useViewsStore = create<ViewsState>()((set) => ({
   setRoofAreas: (on) => set({ roofAreas: on }),
   sheetInfo: { issuer: '', sheetNumber: '01', revision: '0', status: 'esquisse' },
   setSheetInfo: (info) => set((state) => ({ sheetInfo: { ...state.sheetInfo, ...info } })),
+  hidden: [],
+  toggleHidden: (key) =>
+    set((state) => ({ hidden: state.hidden.includes(key) ? state.hidden.filter((k) => k !== key) : [...state.hidden, key] })),
 }))

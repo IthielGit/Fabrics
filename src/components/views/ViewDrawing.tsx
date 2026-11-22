@@ -6,6 +6,7 @@ import {
   type Drawing,
   type DrawPolygon,
 } from '../../features/building/views/drawing'
+import { estimatedTextWidth, textMask } from '../../features/building/views/graphicStyles'
 
 interface ViewDrawingProps {
   drawing: Drawing
@@ -117,6 +118,11 @@ export default function ViewDrawing({ drawing }: ViewDrawingProps) {
           vectorEffect="non-scaling-stroke"
         />
       ))}
+      {/* Masques blancs sous les étiquettes (M20 20.5), avant tous les textes. */}
+      {drawing.texts.map((text, index) => {
+        const rect = text.mask ? textMask(text, text.size, estimatedTextWidth(text, text.size)) : null
+        return rect && <rect key={`mask-${index}`} x={rect.x} y={rect.y} width={rect.width} height={rect.height} fill="#ffffff" />
+      })}
       {drawing.texts.map((text, index) => (
         <text
           key={index}
