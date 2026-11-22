@@ -90,7 +90,7 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
    Test : `src/features/scene/roomitR1.test.ts` (sur le modèle de `roomit.test.ts`).
 2. **[fait le 2026-11-22 : onglet « Plan de niveau … » par niveau dans l'écran Vues (PDF d'un niveau seul) ; escalier du RDC dessiné sur le R+1 ; scène à deux niveaux `fixtureBuildingScene`, test `scene/roomitBuilding.test.ts`]** **Plan de niveau R+1** : même chaîne que le RDC (20.1a). Sélection du niveau R+1 dans la vue
    de la feuille. Contrôle : mêmes éléments, mêmes cotes, mêmes repères que la page 6.
-3. **Tableau de surfaces sur la feuille** : un tableau « Pièces Niveau R+1 » (pièce, surface) et un
+3. **[fait le 2026-11-22 : `building/views/areaTable.ts`, à droite du plan dans l'onglet « Plan de niveau … » et son PDF ; total dans un second tableau « Total Niveau R+1 »]** **Tableau de surfaces sur la feuille** : un tableau « Pièces Niveau R+1 » (pièce, surface) et un
    total, lus des métrés. Format de la référence (D20-3, colonne droite). Le tableau du RDC sera
    réutilisé (20.4 le place sur le gabarit final).
 4. **Plan de toiture** (nouveau) : contour de la toiture à partir des pans Pascal (projection en

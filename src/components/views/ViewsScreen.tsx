@@ -1,7 +1,9 @@
 import clsx from 'clsx'
 import { FileDown, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { drawingFromView, levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
+import { autoFontMm, drawingFromView, levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
+import { levelAreaTable, withAreaTable } from '../../features/building/views/areaTable'
+import { computeBuildingMeasurements } from '../../features/measurements/measurements'
 import { buildElevation } from '../../features/building/views/elevation'
 import { buildSection } from '../../features/building/views/section'
 import { buildSheet } from '../../features/building/views/sheet'
@@ -63,14 +65,20 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
       return {
         title,
         note: fr.views.levelPlanNote,
-        build: (fontMm, version) =>
-          levelPlanDrawing(
+        build: (fontMm, version) => {
+          const plan = levelPlanDrawing(
             model,
             level,
             fontMm,
             (font) => planOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
             levelSymbols(level.id),
-          ),
+          )
+          if (!plan) return null
+          // Tableau des surfaces du niveau, lu dans les métrés (balcon compris, D20-10).
+          const metres = computeBuildingMeasurements(document).levels.find((l) => l.level.id === level.id)
+          const table = metres ? levelAreaTable(metres.measurements, level.name, fr.views.areaTable) : null
+          return withAreaTable(plan, table, fontMm ?? autoFontMm(plan.width, plan.height))
+        },
         emptyText: fr.views.empty,
       }
     }

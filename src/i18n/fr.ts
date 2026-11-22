@@ -1647,6 +1647,14 @@ export const fr = {
     levelPlan: (name: string) => `Plan de niveau ${name}`,
     levelPlanNote: 'Plan du niveau seul, à l’échelle, avec ses cotes : une feuille par niveau.',
     levelMissing: 'Ce niveau n’existe plus. Choisissez une autre vue.',
+    /** Tableau des surfaces à droite du plan d'un niveau (format de la référence, D20-3). */
+    areaTable: {
+      title: (level: string) => `Pièces Niveau ${level}`,
+      room: 'Pièces',
+      area: 'Surface',
+      totalTitle: (level: string) => `Total Niveau ${level}`,
+      totalRow: (level: string) => `Niveau ${level}`,
+    },
     sheet: 'Planche',
     sheetNote: 'Plans des niveaux, façades et coupes côte à côte, à la même échelle.',
     section: (label: string) => `Coupe ${label}–${label}`,

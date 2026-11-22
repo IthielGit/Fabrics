@@ -1340,7 +1340,7 @@ rappelle s'il tourne sur un autre modèle).
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
 | 20.0 Décisions — **fait le 2026-11-21** | Normes de représentation, échelles, formats et livrables contractuels proposés en options, choisis par l'utilisateur | `/model opus` |
-| 20.1 Vues liées au modèle — découpé le 2026-11-21 en 20.1a plan de niveau RDC (**fait le 2026-11-22**, `docs/phases/M20-plan.md`), 20.1b toiture et R+1 (**en cours**, étapes 1 et 2 faites : exemple ROOMIT-R1, plan de niveau R+1), 20.1c coupes et façades | Plans de niveau, coupes, façades, détails ; planche et cotes Client / Exécution étendues au modèle Pascal | `/model opus` |
+| 20.1 Vues liées au modèle — découpé le 2026-11-21 en 20.1a plan de niveau RDC (**fait le 2026-11-22**, `docs/phases/M20-plan.md`), 20.1b toiture et R+1 (**en cours**, étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1, tableau des surfaces), 20.1c coupes et façades | Plans de niveau, coupes, façades, détails ; planche et cotes Client / Exécution étendues au modèle Pascal | `/model opus` |
 | 20.2 Annotations | Cotes chaînées, repères portes et fenêtres, noms et surfaces de pièces, axes, symboles, légendes | `/model opus` |
 | 20.3 Nomenclatures et plans dérivés | Nomenclatures, plan de plafond, plan de toiture | `/model sonnet` |
 | 20.4 Feuilles | Formats A4 à A1, cartouche, échelle, unités, orientation, nord, indice, date, émetteur, statut | `/model sonnet` |

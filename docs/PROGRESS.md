@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 et 2 faites : exemple ROOMIT-R1, plan de niveau R+1). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1 (validé dans le navigateur), tableau des surfaces). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-22 — M20 · 20.1b étape 3 : tableau des surfaces du niveau
+- Étape 2 (onglets « Plan de niveau … », escalier sur l'étage) **validée par l'utilisateur dans le navigateur**.
+- Nouveau `src/features/building/views/areaTable.ts` (fonctions pures, testées) : tableau « Pièces Niveau R+1 » (colonnes Pièces / Surface, une ligne par pièce), puis un second tableau « Total Niveau R+1 » avec la ligne « Niveau R+1 », comme la colonne droite de la référence (D20-3). Les surfaces viennent des métrés, le total est leur somme, balcon compris (D20-10 : A).
+- Le tableau est posé à droite du plan dans l'onglet « Plan de niveau … » de l'écran Vues et dans son PDF ; le plan ne bouge pas (mêmes coordonnées, même échelle). La planche (tous les niveaux) n'a pas de tableau. Le gabarit de feuille de 20.4 le placera dans la colonne droite.
+- Écart de forme avec la référence : le second tableau s'appelle « Total Niveau R+1 » (la référence répète « Pièces Niveau R+1 ») ; les surfaces s'écrivent `18,63 m²` (virgule française).
+- R+1 de ROOMIT : 11 lignes, total **144,36 m²**. Test : `areaTable.test.ts`, `scene/roomitBuilding.test.ts`. Contrôle visuel du PDF A2 1:50.
+- Vérification : build ✓ lint ✓ 3 236 tests ✓ ; références anti-régression inchangées.
 
 ### 2026-11-22 — M20 · 20.1b étape 2 : plan de niveau R+1
 - Choix de l'utilisateur **D20-12 : A** : la cloison isolée d'une douche n'est pas déduite de la surface (règle de Pascal), écart de +0,09 m² accepté pour SDB 1 et SDB 2. L'option B est notée dans les Idées.

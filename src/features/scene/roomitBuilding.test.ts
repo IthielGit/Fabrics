@@ -8,6 +8,8 @@ import rdc from '../../../fixtures/ROOMIT-RDC/spec.json'
 import r1 from '../../../fixtures/ROOMIT-R1/spec.json'
 import { buildBuildingModel } from '../building/model'
 import { levelPlanDrawing } from '../building/views/drawing'
+import { levelAreaTable } from '../building/views/areaTable'
+import { fr } from '../../i18n/fr'
 import { planOverlay } from '../dimensioning/planOverlay'
 import { computeBuildingMeasurements } from '../measurements/measurements'
 import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
@@ -70,5 +72,15 @@ describe('Villa ROOMIT, RDC + R+1 dans une seule scène', () => {
     expect(texts).toContain('18,63 m²')
     expect(texts).toContain('5,65 m²')
     expect(symbols!.cutPolygons).toHaveLength(21)
+  })
+
+  it('tableau « Pièces Niveau R+1 » : 11 pièces lues dans les métrés, total 144,36 m² balcon compris', () => {
+    const level = metres.levels.find((l) => l.level.id === 'R1')!
+    const table = levelAreaTable(level.measurements, 'R+1', fr.views.areaTable)!
+    expect(table.title).toBe('Pièces Niveau R+1')
+    expect(table.rows).toHaveLength(11)
+    expect(table.rows).toContainEqual(['Balcon', '18,63 m²'])
+    expect(table.rows).toContainEqual(['Suite parentale', '20,16 m²'])
+    expect(table.total).toEqual(['Niveau R+1', '144,36 m²'])
   })
 })
