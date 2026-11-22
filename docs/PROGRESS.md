@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1 (validé dans le navigateur), tableau des surfaces, validé dans le navigateur ; tâche 4 plan de toiture faite (D20-13 : A) ; tâche 5 surfaces de toiture sur demande faite (D20-15 : A)) ; **20.1b fait le 2026-11-22** ; **20.1c fait le 2026-11-22** ; **20.2 fait le 2026-11-22** ; **20.3 fait le 2026-11-22** ; suite : 20.4 à 20.9 (demande de l'utilisateur : tout M20, essai dans le navigateur à la fin). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1 (validé dans le navigateur), tableau des surfaces, validé dans le navigateur ; tâche 4 plan de toiture faite (D20-13 : A) ; tâche 5 surfaces de toiture sur demande faite (D20-15 : A)) ; **20.1b fait le 2026-11-22** ; **20.1c fait le 2026-11-22** ; **20.2 fait le 2026-11-22** ; **20.3 fait le 2026-11-22** ; **20.4 fait le 2026-11-22** ; suite : 20.5 à 20.9 (demande de l'utilisateur : tout M20, essai dans le navigateur à la fin). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-22 — M20 · 20.4 : feuilles au gabarit de la référence
+- Tous les PDF de l'écran Vues prennent le **gabarit de Villa ROOMIT** (D20-3 : A) : colonne de droite avec le type de plan (« PLAN DE NIVEAU »), la rose des vents orientée selon le nord, les tableaux de la feuille (surfaces, légende) et, en bas, l'échelle graphique et le cartouche (projet, émetteur, titre, N° de plan / Indice, Date / Statut, Échelle / Format).
+- Formats A4, A3, A2 et **A1** ; **A2 paysage par défaut**. La fenêtre d'export demande l'émetteur, le n° de plan, l'indice et le statut (Esquisse, APS, APD, PC, DCE, EXE).
+- Les exports de l'éditeur gardent le cartouche en bande (M10).
+- Test `export/sheetTemplate.test.ts` : la feuille R+1 de ROOMIT est relue dans le PDF (tous les traits du plan à ≤ 0,1 mm à 1:50 ; textes du cartouche et de la colonne présents).
 
 ### 2026-11-22 — M20 · 20.3 : nomenclatures et plan de plafond
 - Écran Vues, onglet **« Nomenclatures »** : menuiseries regroupées par type identique (genre et style, L x H, allège, quantité, repères `P01`…, niveaux) et pièces (niveau, surface, hauteur sous plafond, faux plafond), tirées des métrés. ROOMIT : 9 fenêtres 1500 x 1000 (allège 1100) sur une ligne, « RDC, R+1 » ; 23 pièces.

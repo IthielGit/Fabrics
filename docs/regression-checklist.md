@@ -362,3 +362,9 @@ droite de la 3D) et onglet **Paramètres**.
 |---|---|
 | Nomenclature des menuiseries : une ligne par type identique, quantités = toutes les ouvertures, repères et niveaux ; nomenclature des pièces (surface, HSP, faux plafond) | Auto : `scene/roomitSchedules.test.ts` ; Nav. (onglet « Nomenclatures ») |
 | Plan de plafond d'un niveau : nom, « HSP … » et « Faux plafond » par pièce, sans conflit de texte | Auto : `scene/roomitSchedules.test.ts` ; Nav. |
+
+### M20 · 20.4 — Feuilles
+| Critère | Vérification |
+|---|---|
+| PDF de l'écran Vues au gabarit de la référence : type de plan, rose des vents orientée, tableaux dans la colonne, cartouche (projet, émetteur, titre, N° de plan, indice, date, statut, échelle, format) | Auto : `export/sheetTemplate.test.ts` ; Nav. (PDF) |
+| Formats A4 à A1, A2 paysage par défaut ; le plan reste à l'échelle exacte (traits à ≤ 0,1 mm) | Auto : `export/sheetTemplate.test.ts` |

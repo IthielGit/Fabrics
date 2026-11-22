@@ -1,9 +1,9 @@
 import type { Box } from '../geometry/box'
 
-export type SheetFormat = 'a4' | 'a3' | 'a2'
+export type SheetFormat = 'a4' | 'a3' | 'a2' | 'a1'
 
 /** Formats de feuille proposés dans les fenêtres d'export, du plus petit au plus grand. */
-export const SHEET_FORMATS: readonly SheetFormat[] = ['a4', 'a3', 'a2']
+export const SHEET_FORMATS: readonly SheetFormat[] = ['a4', 'a3', 'a2', 'a1']
 export type Orientation = 'portrait' | 'landscape'
 
 /** Feuilles en portrait, en mm. */
@@ -11,6 +11,7 @@ const SHEETS: Record<SheetFormat, { width: number; height: number }> = {
   a4: { width: 210, height: 297 },
   a3: { width: 297, height: 420 },
   a2: { width: 420, height: 594 },
+  a1: { width: 594, height: 841 },
 }
 
 /** Marge de la feuille, en mm. */
@@ -62,12 +63,41 @@ export function cartoucheArea(sheet: SheetSize): Rect {
   }
 }
 
+/**
+ * Gabarit de feuille (M20 20.4, D20-3 : A, gabarit de Villa ROOMIT) : `column` = colonne de droite
+ * (type de plan, rose des vents, tableaux) et cartouche en bas de cette colonne ; `band` = cartouche en
+ * bande en bas (M10, exports de l'éditeur).
+ */
+export type SheetTemplate = 'band' | 'column'
+
+/** Largeur de la colonne de droite du gabarit `column` (mm) : 13 % de la feuille, entre 50 et 90 mm. */
+export function columnWidth(sheet: SheetSize): number {
+  return Math.min(90, Math.max(50, sheet.width * 0.13))
+}
+
+/** Gabarit `column` : zone du dessin (la feuille moins les marges et la colonne de droite). */
+export function columnPrintableArea(sheet: SheetSize): Rect {
+  return {
+    x: PDF_MARGIN_MM,
+    y: PDF_MARGIN_MM,
+    width: sheet.width - PDF_MARGIN_MM * 2 - columnWidth(sheet),
+    height: sheet.height - PDF_MARGIN_MM * 2,
+  }
+}
+
+/** Gabarit `column` : la colonne de droite (titre, rose des vents, tableaux, cartouche). */
+export function columnArea(sheet: SheetSize): Rect {
+  const w = columnWidth(sheet)
+  return { x: sheet.width - PDF_MARGIN_MM - w, y: PDF_MARGIN_MM, width: w, height: sheet.height - PDF_MARGIN_MM * 2 }
+}
+
 /** Format de feuille dont la page (en px à 300 dpi, dans un sens ou l'autre) est exactement la taille. */
 export function matchingSheetFormat(pageWidth: number, pageHeight: number): SheetFormat | null {
   const dims: Record<SheetFormat, [number, number]> = {
     a4: [2480, 3508],
     a3: [3508, 4961],
     a2: [4961, 7016],
+    a1: [7016, 9933],
   }
   for (const format of SHEET_FORMATS) {
     const [w, h] = dims[format]
@@ -140,8 +170,9 @@ export function planPdfPlacement(
   extent: { width: number; height: number },
   sheet: SheetSize,
   choice: ScaleChoice,
+  template: SheetTemplate = 'band',
 ): PlanPdfPlacement {
-  const area = printableArea(sheet)
+  const area = template === 'column' ? columnPrintableArea(sheet) : printableArea(sheet)
   const fittingScale = PLAN_SCALES.find((s) => fitsIn(paperSize(extent, s), area)) ?? null
 
   let scale: number

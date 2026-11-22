@@ -1,12 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import { PAPER_TEXT_MM, type Drawing } from '../../features/building/views/drawing'
-import { cartoucheFields } from '../../features/export/cartouche'
+import { columnCartoucheCells, SHEET_STATUSES, type SheetStatus } from '../../features/export/cartouche'
+import { useViewsStore } from '../../stores/viewsStore'
 import { buildDrawingPdf } from '../../features/export/pdf'
 import { exportFileName } from '../../features/export/fileName'
 import {
   defaultOrientation,
   planPdfPlacement,
   PLAN_SCALES,
+  SHEET_FORMATS,
   sheetSize,
   type Orientation,
   type ScaleChoice,
@@ -35,6 +37,13 @@ interface ViewsPdfDialogProps {
   showNorth?: boolean
   /** Planche : choix de la cotation des plans ; `hasExecution` : une vue est cotée en Exécution à l'écran. */
   dimensioning?: { hasExecution: boolean }
+  /** Type de plan en tête de la colonne de droite (« Plan de niveau »), gabarit de la référence (M20 20.4). */
+  sheetKind: string
+  /**
+   * Pour le PDF : le dessin sans ses tableaux, et les tableaux à poser dans la colonne de droite. Absent :
+   * le dessin de `build`, sans tableau.
+   */
+  parts?: (fontMm?: number, version?: 'client' | 'execution') => { main: Drawing | null; side: Drawing | null }
   onClose: () => void
 }
 
@@ -51,11 +60,20 @@ export default function ViewsPdfDialog({
   viewTitle,
   showNorth = false,
   dimensioning,
+  sheetKind,
+  parts,
   onClose,
 }: ViewsPdfDialogProps) {
+  const sheetInfo = useViewsStore((state) => state.sheetInfo)
+  const setSheetInfo = useViewsStore((state) => state.setSheetInfo)
+  // Dessin principal : sans ses tableaux quand la vue les pose dans la colonne de droite.
+  const mainOf = useCallback(
+    (fontMm?: number, version?: 'client' | 'execution') => (parts ? parts(fontMm, version).main : build(fontMm, version)),
+    [build, parts],
+  )
   const projectName = useEditorStore((state) => state.project?.name ?? '')
   const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
-  const base = useMemo(() => build() ?? EMPTY_DRAWING, [build])
+  const base = useMemo(() => mainOf() ?? EMPTY_DRAWING, [mainOf])
   // Une pièce laisse un manque ou déborde des murs (n'importe quel niveau) : export refusé (D55).
   const elements = useEditorStore((state) => state.project?.document.elements)
   const levels = useEditorStore((state) => state.project?.document.levels)
@@ -65,14 +83,15 @@ export default function ViewsPdfDialog({
   )
 
   const [fileName, setFileName] = useState(`${projectName} ${viewTitle}`.trim())
-  const [sheet, setSheet] = useState<SheetFormat>('a4')
+  // Gabarit de la référence (D20-3 : A) : A2 paysage par défaut, colonne de droite et cartouche.
+  const [sheet, setSheet] = useState<SheetFormat>('a2')
   const [orientation, setOrientation] = useState<Orientation>(() =>
-    defaultOrientation(base.width, base.height),
+    base.width >= base.height ? 'landscape' : defaultOrientation(base.width, base.height),
   )
   const [scale, setScale] = useState<ScaleChoice>(() => {
-    // La plus grande échelle standard qui tient sur une feuille A4 ; sinon « Ajuster ».
-    const size = sheetSize('a4', defaultOrientation(base.width, base.height))
-    return planPdfPlacement({ width: base.width, height: base.height }, size, 50).fittingScale ?? 'fit'
+    // La plus grande échelle standard qui tient sur la feuille A2 ; sinon « Ajuster ».
+    const size = sheetSize('a2', base.width >= base.height ? 'landscape' : 'portrait')
+    return planPdfPlacement({ width: base.width, height: base.height }, size, 50, 'column').fittingScale ?? 'fit'
   })
   const [version, setVersion] = useState<VersionChoice>('screen')
   const forced = version === 'screen' ? undefined : version
@@ -85,10 +104,11 @@ export default function ViewsPdfDialog({
   // Les textes ont la même hauteur sur le papier (environ 7 pt) quelle que soit l'échelle : on
   // reconstruit le dessin avec la hauteur réelle qui donne cette hauteur à l'échelle choisie.
   const nominalScale =
-    scale === 'fit' ? planPdfPlacement({ width: base.width, height: base.height }, size, 'fit').scale : scale
+    scale === 'fit' ? planPdfPlacement({ width: base.width, height: base.height }, size, 'fit', 'column').scale : scale
   const fontMm = PAPER_TEXT_MM * nominalScale
-  const drawing = useMemo(() => build(fontMm, forced) ?? EMPTY_DRAWING, [build, fontMm, forced])
-  const placement = planPdfPlacement({ width: drawing.width, height: drawing.height }, size, scale)
+  const drawing = useMemo(() => mainOf(fontMm, forced) ?? EMPTY_DRAWING, [mainOf, fontMm, forced])
+  const side = useMemo(() => (parts ? parts(fontMm, forced).side : null), [parts, fontMm, forced])
+  const placement = planPdfPlacement({ width: drawing.width, height: drawing.height }, size, scale, 'column')
   const doesNotFit = !placement.fits
 
   const submit = async () => {
@@ -99,15 +119,17 @@ export default function ViewsPdfDialog({
       const blob = await buildDrawingPdf(drawing, size, placement.rect, placement.scale, {
         projectName,
         subtitle: viewTitle,
-        fields: cartoucheFields(
-          {
-            exactScale: placement.exact,
-            denominator: Math.round(placement.scale),
-            date: todayText(),
-            format: sheet,
-          },
-          fr.export.cartouche,
-        ),
+        fields: [],
+        column: {
+          kind: sheetKind,
+          issuer: sheetInfo.issuer,
+          cells: columnCartoucheCells(
+            sheetInfo,
+            { exactScale: placement.exact, denominator: Math.round(placement.scale), date: todayText(), format: sheet },
+            fr.views.sheetInfo,
+          ),
+          side,
+        },
         scaleBarUnit: fr.export.cartouche.scaleBarUnit,
         northAngle: showNorth ? northAngle : undefined,
         northLabel: fr.viewer3d.cardinal.north,
@@ -154,16 +176,62 @@ export default function ViewsPdfDialog({
         {execution && <p className="text-xs text-slate-500">{fr.dimensioning.baysNote}</p>}
 
         <Group label={fr.export.sheet}>
-          <Choice name="views-sheet" checked={sheet === 'a4'} onSelect={() => setSheet('a4')}>
-            A4
-          </Choice>
-          <Choice name="views-sheet" checked={sheet === 'a3'} onSelect={() => setSheet('a3')}>
-            A3
-          </Choice>
-          <Choice name="views-sheet" checked={sheet === 'a2'} onSelect={() => setSheet('a2')}>
-            A2
-          </Choice>
+          {SHEET_FORMATS.map((format) => (
+            <Choice key={format} name="views-sheet" checked={sheet === format} onSelect={() => setSheet(format)}>
+              {format.toUpperCase()}
+            </Choice>
+          ))}
         </Group>
+        <fieldset className="space-y-2">
+          <legend className="text-sm font-medium text-slate-900">{fr.views.sheetInfo.title}</legend>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="col-span-2 flex flex-col gap-1 text-sm text-slate-700">
+              {fr.views.sheetInfo.issuer}
+              <input
+                type="text"
+                value={sheetInfo.issuer}
+                maxLength={80}
+                placeholder={fr.views.sheetInfo.issuerPlaceholder}
+                onChange={(event) => setSheetInfo({ issuer: event.target.value })}
+                className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-indigo-500 focus:outline-none"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm text-slate-700">
+              {fr.views.sheetInfo.sheetNumber}
+              <input
+                type="text"
+                value={sheetInfo.sheetNumber}
+                maxLength={12}
+                onChange={(event) => setSheetInfo({ sheetNumber: event.target.value })}
+                className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-indigo-500 focus:outline-none"
+              />
+            </label>
+            <label className="flex flex-col gap-1 text-sm text-slate-700">
+              {fr.views.sheetInfo.revision}
+              <input
+                type="text"
+                value={sheetInfo.revision}
+                maxLength={6}
+                onChange={(event) => setSheetInfo({ revision: event.target.value })}
+                className="rounded-md border border-slate-300 px-3 py-1.5 text-sm focus:border-indigo-500 focus:outline-none"
+              />
+            </label>
+            <label className="col-span-2 flex flex-col gap-1 text-sm text-slate-700">
+              {fr.views.sheetInfo.status}
+              <select
+                value={sheetInfo.status}
+                onChange={(event) => setSheetInfo({ status: event.target.value as SheetStatus })}
+                className="rounded-md border border-slate-300 px-3 py-1.5 text-sm"
+              >
+                {SHEET_STATUSES.map((status) => (
+                  <option key={status} value={status}>
+                    {fr.views.sheetInfo.statuses[status]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </fieldset>
         <Group label={fr.export.orientation}>
           <Choice
             name="views-orientation"

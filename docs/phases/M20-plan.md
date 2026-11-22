@@ -219,3 +219,22 @@ Fait le 2026-11-22.
   « RDC, R+1 » ; 23 pièces ; « HSP 2880 » sur les 11 pièces du R+1 ; aucun conflit de texte).
 - Limites : pas de nomenclature des murs ni des équipements ; le plan de plafond ne dessine pas de
   calepinage ni de luminaires (pas dans le modèle).
+
+## 20.4 — Feuilles
+
+Fait le 2026-11-22 (D20-3 : A, gabarit de Villa ROOMIT).
+
+- **Gabarit « colonne »** pour tous les PDF de l'écran Vues (`export/pdfLayout.ts`, `export/pdf.ts`) :
+  cadre, colonne de droite (13 % de la largeur, entre 50 et 90 mm) avec le **type de plan** souligné
+  (« PLAN DE NIVEAU »…), la **rose des vents** orientée selon le nord du projet, les **tableaux** de la
+  feuille (surfaces, légende, surfaces de toiture) à l'échelle du plan, l'échelle graphique, la note sur les
+  baies, et le **cartouche** : projet, émetteur, titre, puis N° de plan / Indice, Date / Statut,
+  Échelle / Format. Le gabarit « bande » (M10) reste pour les exports de l'éditeur.
+- Formats **A4, A3, A2, A1**, portrait ou paysage ; **A2 paysage par défaut**.
+- Fenêtre « Exporter en PDF » : saisie de l'émetteur, du n° de plan, de l'indice et du **statut** (Esquisse,
+  APS, APD, PC, DCE, EXE), gardés pendant la session (`viewsStore.sheetInfo`) ; à garder par version en 20.7.
+- Le plan de niveau et le plan de toiture posent leurs tableaux dans la colonne (`parts` de la vue) ;
+  à l'écran, ils restent à droite du plan.
+- Tests : `export/sheetTemplate.test.ts` (mise en page, cellules du cartouche, feuille R+1 de ROOMIT relue
+  dans le PDF : tous les traits à ≤ 0,1 mm, textes du cartouche et de la colonne).
+- Limites : pas de logo d'émetteur ; renseignements du cartouche non enregistrés dans le projet (20.7).

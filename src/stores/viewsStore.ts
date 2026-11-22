@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import type { Cardinal } from '../features/building/north'
 import type { DimensioningMode } from '../features/dimensioning/types'
+import type { SheetInfo } from '../features/export/cartouche'
 
 /** Onglets de l'écran « Vues » : le plan d'un niveau, le plan de toiture d'un niveau, une façade, une coupe (par son identifiant) ou la planche. */
 export type ViewsTab =
@@ -25,6 +26,9 @@ interface ViewsState {
   /** Surfaces de toiture sur le plan de toiture (D20-10 : seulement sur demande) ; non par défaut. */
   roofAreas: boolean
   setRoofAreas: (on: boolean) => void
+  /** Renseignements du cartouche (M20 20.4) : émetteur, n° de plan, indice, statut ; gardés pendant la session. */
+  sheetInfo: SheetInfo
+  setSheetInfo: (info: Partial<SheetInfo>) => void
 }
 
 export const useViewsStore = create<ViewsState>()((set) => ({
@@ -38,4 +42,6 @@ export const useViewsStore = create<ViewsState>()((set) => ({
     set((state) => ({ sheetDimensioning: { ...state.sheetDimensioning, [levelId]: mode } })),
   roofAreas: false,
   setRoofAreas: (on) => set({ roofAreas: on }),
+  sheetInfo: { issuer: '', sheetNumber: '01', revision: '0', status: 'esquisse' },
+  setSheetInfo: (info) => set((state) => ({ sheetInfo: { ...state.sheetInfo, ...info } })),
 }))

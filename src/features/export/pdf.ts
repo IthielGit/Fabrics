@@ -2,6 +2,7 @@ import { FILL_COLORS, paintBatches, type Drawing, type DrawPolygon } from '../bu
 import { printedTextSize } from './printedText'
 import {
   cartoucheArea,
+  columnArea,
   PDF_MARGIN_MM,
   scaleBarSpec,
   type Rect,
@@ -66,6 +67,23 @@ export interface PlanPdfLabels {
   northLabel?: string
   /** Note imprimée en petit juste au-dessus du cartouche (note sur les baies d'un document d'exécution). */
   note?: string
+  /**
+   * Gabarit `column` (M20 20.4, D20-3 : A) : colonne de droite et cartouche de la référence. Absent :
+   * cartouche en bande en bas (gabarit `band`).
+   */
+  column?: ColumnSheet
+}
+
+/** Contenu de la colonne de droite et du cartouche du gabarit `column` (textes déjà en français). */
+export interface ColumnSheet {
+  /** Type de plan en tête de colonne (« PLAN DE NIVEAU »). */
+  kind: string
+  /** Émetteur (bureau d'études, architecte) ; vide : ligne laissée vide. */
+  issuer: string
+  /** Lignes intitulé / valeur du bas du cartouche, deux par ligne : N° de plan, Indice, Date, Statut, Échelle, Format. */
+  cells: CartoucheField[]
+  /** Tableaux et légende de la feuille, en mm réels à l'échelle du plan (posés dans la colonne). */
+  side?: Drawing | null
 }
 
 /** Le jeu de caractères des polices standard de PDF n'a pas le vrai signe moins : on met un trait d'union. */
@@ -242,6 +260,127 @@ export function drawCartouche(
   )
 }
 
+/** Rose des vents : huit branches, la branche du nord pleine et plus longue, orientée selon l'angle. */
+function drawCompassRose(pdf: Pdf, cx: number, cy: number, radius: number, angle: number, letter: string): void {
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.divider)
+  for (let k = 0; k < 8; k++) {
+    const a = ((angle + k * 45) * Math.PI) / 180
+    const long = k % 2 === 0 ? radius : radius * 0.55
+    const dir = { x: Math.sin(a), y: -Math.cos(a) }
+    const perp = { x: Math.cos(a), y: Math.sin(a) }
+    const w = radius * 0.12
+    const tip = { x: cx + dir.x * long, y: cy + dir.y * long }
+    const left = { x: cx + perp.x * w, y: cy + perp.y * w }
+    const right = { x: cx - perp.x * w, y: cy - perp.y * w }
+    // Moitié gauche pleine, moitié droite blanche (la rose se lit en relief) ; le nord tout plein.
+    pdf.setFillColor(...INK)
+    pdf.triangle(cx, cy, tip.x, tip.y, left.x, left.y, 'FD')
+    if (k === 0) pdf.setFillColor(...INK)
+    else pdf.setFillColor(255, 255, 255)
+    pdf.triangle(cx, cy, tip.x, tip.y, right.x, right.y, 'FD')
+  }
+  const a = (angle * Math.PI) / 180
+  pdf.setFont('helvetica', 'bold')
+  pdf.setFontSize(9)
+  pdf.setTextColor(...INK)
+  pdf.text(letter, cx + Math.sin(a) * (radius + 3.5), cy - Math.cos(a) * (radius + 3.5) + 1.2, { align: 'center' })
+}
+
+/**
+ * Gabarit `column` (M20 20.4, gabarit de Villa ROOMIT) : cadre, colonne de droite avec le type de plan,
+ * la rose des vents orientée selon le nord, les tableaux de la feuille ; barre d'échelle et cartouche en
+ * bas de la colonne (projet, émetteur, titre, puis N° de plan / Indice, Date / Statut, Échelle / Format).
+ */
+export function drawColumnSheet(pdf: Pdf, sheet: SheetSize, scale: number | null, labels: PlanPdfLabels, column: ColumnSheet): void {
+  const col = columnArea(sheet)
+  const pad = 3
+  const textW = col.width - pad * 2
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.rule)
+  pdf.line(col.x, col.y, col.x, col.y + col.height)
+
+  // Type de plan, souligné.
+  pdf.setTextColor(...INK)
+  pdf.setFont('helvetica', 'bold')
+  pdf.setFontSize(12)
+  const kind = truncate(pdf, column.kind.toUpperCase(), textW)
+  const kx = col.x + col.width / 2
+  pdf.text(kind, kx, col.y + 12, { align: 'center' })
+  const kw = pdf.getTextWidth(kind)
+  pdf.setLineWidth(LINE.divider)
+  pdf.line(kx - kw / 2, col.y + 13.2, kx + kw / 2, col.y + 13.2)
+
+  // Rose des vents.
+  let top = col.y + 20
+  if (labels.northAngle !== undefined) {
+    const r = Math.min(14, col.width / 4)
+    drawCompassRose(pdf, kx, top + r + 4, r, labels.northAngle, labels.northLabel ?? 'N')
+    top += r * 2 + 12
+  }
+
+  // Cartouche : hauteur fixe en bas de la colonne.
+  const rowH = 7
+  const cellRows = Math.ceil(column.cells.length / 2)
+  const boxH = 12 + 7 + 10 + cellRows * rowH
+  const boxY = col.y + col.height - boxH
+
+  // Tableaux de la feuille : à l'échelle du plan, réduits s'ils sont trop larges pour la colonne.
+  if (column.side) {
+    const side = column.side
+    const k = Math.min(1 / (scale ?? 1), textW / side.width)
+    const maxH = boxY - 30 - top
+    const kk = side.height * k > maxH ? maxH / side.height : k
+    drawDrawing(pdf, side, { x: col.x + pad, y: top, width: side.width * kk, height: side.height * kk })
+  }
+
+  // Barre d'échelle et note, juste au-dessus du cartouche.
+  if (scale !== null) drawScaleBar(pdf, col.x + pad + 2, boxY - 10, textW - 12, scale, labels.scaleBarUnit)
+  if (labels.note) {
+    pdf.setFont('helvetica', 'italic')
+    pdf.setFontSize(5.5)
+    pdf.setTextColor(...MUTED)
+    const lines: string[] = pdf.splitTextToSize(pdfText(labels.note), textW)
+    lines.forEach((line, i) => pdf.text(line, col.x + pad, boxY - 14 - (lines.length - 1 - i) * 2.4))
+  }
+
+  // Cartouche.
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.rule)
+  pdf.rect(col.x, boxY, col.width, boxH, 'S')
+  pdf.setTextColor(...INK)
+  pdf.setFont('helvetica', 'bold')
+  pdf.setFontSize(11)
+  pdf.text(truncate(pdf, labels.projectName, textW), kx, boxY + 8, { align: 'center' })
+  pdf.setLineWidth(LINE.divider)
+  pdf.line(col.x, boxY + 12, col.x + col.width, boxY + 12)
+  pdf.setFont('helvetica', 'normal')
+  pdf.setFontSize(7)
+  pdf.text(truncate(pdf, column.issuer, textW), kx, boxY + 16.8, { align: 'center' })
+  pdf.line(col.x, boxY + 19, col.x + col.width, boxY + 19)
+  pdf.setFont('helvetica', 'bold')
+  pdf.setFontSize(10)
+  pdf.text(truncate(pdf, labels.subtitle ?? '', textW), kx, boxY + 25.5, { align: 'center' })
+  let y = boxY + 29
+  for (let r = 0; r < cellRows; r++) {
+    pdf.line(col.x, y, col.x + col.width, y)
+    pdf.line(col.x + col.width / 2, y, col.x + col.width / 2, y + rowH)
+    for (let c = 0; c < 2; c++) {
+      const cell = column.cells[r * 2 + c]
+      if (!cell) continue
+      pdf.setFont('helvetica', 'normal')
+      pdf.setFontSize(6.5)
+      pdf.text(truncate(pdf, `${cell.label} : ${cell.value}`, col.width / 2 - 4), col.x + c * (col.width / 2) + 2, y + 4.6)
+    }
+    y += rowH
+  }
+
+  // Cadre de la feuille, par-dessus tout.
+  pdf.setDrawColor(...INK)
+  pdf.setLineWidth(LINE.frame)
+  pdf.rect(PDF_MARGIN_MM, PDF_MARGIN_MM, sheet.width - PDF_MARGIN_MM * 2, sheet.height - PDF_MARGIN_MM * 2, 'S')
+}
+
 /**
  * PDF d'un plan à l'échelle : l'image de l'emprise à l'emplacement donné, puis le cadre de la feuille
  * et le cartouche (nord, barre d'échelle, projet, échelle, date). `scale` est le dénominateur de
@@ -288,7 +427,8 @@ export async function buildDrawingPdf(
   const pdf = await createPdf(sheet)
   pdf.setProperties({ title: labels.projectName, subject: labels.subtitle ?? '', creator: 'Fabrics' })
   drawDrawing(pdf, drawing, placement)
-  drawCartouche(pdf, sheet, scale, labels)
+  if (labels.column) drawColumnSheet(pdf, sheet, scale, labels, labels.column)
+  else drawCartouche(pdf, sheet, scale, labels)
   return pdf.output('blob')
 }
 
