@@ -159,6 +159,12 @@ mêmes valeurs, sur demande. (Option B non retenue : métrés par pan inchangés
 neuf catégories de visibilité plus les hachures, réglage commun à toutes les vues pendant la session, masques
 blancs sous les noms de pièces seulement. À confirmer à l'essai de fin de M20 (impression à 100 %).
 
+## D20-17 · Sorties vectorielles (2026-11-22, 20.6) — proposé par Claude, à valider
+
+PDF de feuilles avec Liberation Sans intégrée (OFL), notes en romain ; SVG = dessin seul à l'échelle, sans
+cartouche, en calques par catégorie. Option écartée : SVG de la feuille complète (refaire le cartouche du PDF
+en SVG, deux codes à tenir).
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et

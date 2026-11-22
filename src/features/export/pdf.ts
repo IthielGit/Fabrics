@@ -1,5 +1,6 @@
 import { FILL_COLORS, paintBatches, type Drawing, type DrawPolygon } from '../building/views/drawing'
 import { lineWeights, textMask } from '../building/views/graphicStyles'
+import { embedSheetFonts, setSheetFont } from './pdfFonts'
 import { printedTextSize } from './printedText'
 import {
   cartoucheArea,
@@ -19,6 +20,8 @@ export async function createPdf(sheet: SheetSize) {
     format: [sheet.width, sheet.height],
     orientation: sheet.width > sheet.height ? 'landscape' : 'portrait',
     compress: true,
+    // Seules les polices employées sont déclarées (pas les 14 polices standard d'office, M20 20.6).
+    putOnlyUsedFonts: true,
   })
 }
 
@@ -124,7 +127,7 @@ function drawNorthArrow(pdf: Pdf, cx: number, cy: number, angle: number, letter:
     cy - dir.y * 1.8 - perp.y * 2.2,
     'F',
   )
-  pdf.setFont('helvetica', 'bold')
+  setSheetFont(pdf, 'bold')
   pdf.setFontSize(7)
   pdf.setTextColor(...INK)
   pdf.text(letter, cx + dir.x * (radius + 2.6), cy + dir.y * (radius + 2.6) + 1, { align: 'center' })
@@ -141,7 +144,7 @@ function drawScaleBar(pdf: Pdf, x: number, y: number, available: number, scale: 
   pdf.rect(x, y, segment, height, 'FD')
   pdf.setFillColor(255, 255, 255)
   pdf.rect(x + segment, y, segment, height, 'FD')
-  pdf.setFont('helvetica', 'normal')
+  setSheetFont(pdf, 'normal')
   pdf.setFontSize(6.5)
   pdf.setTextColor(...INK)
   const labelY = y + height + 3.2
@@ -167,7 +170,7 @@ export function drawCartouche(
 
   // Largeur des cellules de droite : celle de leur contenu, bornée.
   const widths = labels.fields.map((field) => {
-    pdf.setFont('helvetica', 'normal')
+    setSheetFont(pdf, 'normal')
     pdf.setFontSize(6)
     const labelWidth = pdf.getTextWidth(pdfText(field.label.toUpperCase()))
     pdf.setFontSize(9)
@@ -217,11 +220,11 @@ export function drawCartouche(
   const textX = midX + 4
   const textWidth = Math.max(10, midWidth - 8)
   pdf.setTextColor(...INK)
-  pdf.setFont('helvetica', 'bold')
+  setSheetFont(pdf, 'bold')
   pdf.setFontSize(11)
   pdf.text(truncate(pdf, labels.projectName, textWidth), textX, labels.subtitle ? strip.y + 8.5 : strip.y + 12)
   if (labels.subtitle) {
-    pdf.setFont('helvetica', 'normal')
+    setSheetFont(pdf, 'normal')
     pdf.setFontSize(8.5)
     pdf.setTextColor(...MUTED)
     pdf.text(truncate(pdf, labels.subtitle, textWidth), textX, strip.y + 14.5)
@@ -231,7 +234,7 @@ export function drawCartouche(
   let x = fieldsX
   labels.fields.forEach((field, index) => {
     const width = widths[index]
-    pdf.setFont('helvetica', 'normal')
+    setSheetFont(pdf, 'normal')
     pdf.setFontSize(6)
     pdf.setTextColor(...MUTED)
     pdf.text(truncate(pdf, field.label.toUpperCase(), width - 5), x + 3, strip.y + 6.5)
@@ -243,7 +246,7 @@ export function drawCartouche(
 
   // Note (documents d'exécution) : en petit, sur toute la largeur, juste au-dessus du cartouche.
   if (labels.note) {
-    pdf.setFont('helvetica', 'italic')
+    setSheetFont(pdf, 'italic')
     pdf.setFontSize(6.5)
     pdf.setTextColor(...MUTED)
     const lines: string[] = pdf.splitTextToSize(pdfText(labels.note), strip.width - 4)
@@ -285,7 +288,7 @@ function drawCompassRose(pdf: Pdf, cx: number, cy: number, radius: number, angle
     pdf.triangle(cx, cy, tip.x, tip.y, right.x, right.y, 'FD')
   }
   const a = (angle * Math.PI) / 180
-  pdf.setFont('helvetica', 'bold')
+  setSheetFont(pdf, 'bold')
   pdf.setFontSize(9)
   pdf.setTextColor(...INK)
   pdf.text(letter, cx + Math.sin(a) * (radius + 3.5), cy - Math.cos(a) * (radius + 3.5) + 1.2, { align: 'center' })
@@ -306,7 +309,7 @@ export function drawColumnSheet(pdf: Pdf, sheet: SheetSize, scale: number | null
 
   // Type de plan, souligné.
   pdf.setTextColor(...INK)
-  pdf.setFont('helvetica', 'bold')
+  setSheetFont(pdf, 'bold')
   pdf.setFontSize(12)
   const kind = truncate(pdf, column.kind.toUpperCase(), textW)
   const kx = col.x + col.width / 2
@@ -341,7 +344,7 @@ export function drawColumnSheet(pdf: Pdf, sheet: SheetSize, scale: number | null
   // Barre d'échelle et note, juste au-dessus du cartouche.
   if (scale !== null) drawScaleBar(pdf, col.x + pad + 2, boxY - 10, textW - 12, scale, labels.scaleBarUnit)
   if (labels.note) {
-    pdf.setFont('helvetica', 'italic')
+    setSheetFont(pdf, 'italic')
     pdf.setFontSize(5.5)
     pdf.setTextColor(...MUTED)
     const lines: string[] = pdf.splitTextToSize(pdfText(labels.note), textW)
@@ -353,16 +356,16 @@ export function drawColumnSheet(pdf: Pdf, sheet: SheetSize, scale: number | null
   pdf.setLineWidth(LINE.rule)
   pdf.rect(col.x, boxY, col.width, boxH, 'S')
   pdf.setTextColor(...INK)
-  pdf.setFont('helvetica', 'bold')
+  setSheetFont(pdf, 'bold')
   pdf.setFontSize(11)
   pdf.text(truncate(pdf, labels.projectName, textW), kx, boxY + 8, { align: 'center' })
   pdf.setLineWidth(LINE.divider)
   pdf.line(col.x, boxY + 12, col.x + col.width, boxY + 12)
-  pdf.setFont('helvetica', 'normal')
+  setSheetFont(pdf, 'normal')
   pdf.setFontSize(7)
   pdf.text(truncate(pdf, column.issuer, textW), kx, boxY + 16.8, { align: 'center' })
   pdf.line(col.x, boxY + 19, col.x + col.width, boxY + 19)
-  pdf.setFont('helvetica', 'bold')
+  setSheetFont(pdf, 'bold')
   pdf.setFontSize(10)
   pdf.text(truncate(pdf, labels.subtitle ?? '', textW), kx, boxY + 25.5, { align: 'center' })
   let y = boxY + 29
@@ -372,7 +375,7 @@ export function drawColumnSheet(pdf: Pdf, sheet: SheetSize, scale: number | null
     for (let c = 0; c < 2; c++) {
       const cell = column.cells[r * 2 + c]
       if (!cell) continue
-      pdf.setFont('helvetica', 'normal')
+      setSheetFont(pdf, 'normal')
       pdf.setFontSize(6.5)
       pdf.text(truncate(pdf, `${cell.label} : ${cell.value}`, col.width / 2 - 4), col.x + c * (col.width / 2) + 2, y + 4.6)
     }
@@ -430,6 +433,8 @@ export async function buildDrawingPdf(
 ): Promise<Blob> {
   const pdf = await createPdf(sheet)
   pdf.setProperties({ title: labels.projectName, subject: labels.subtitle ?? '', creator: 'Fabrics' })
+  // Liberation Sans intégrée (M20 20.6) ; Helvetica si les fichiers ne se chargent pas.
+  await embedSheetFonts(pdf)
   drawDrawing(pdf, drawing, placement)
   if (labels.column) drawColumnSheet(pdf, sheet, scale, labels, labels.column)
   else drawCartouche(pdf, sheet, scale, labels)
@@ -521,7 +526,7 @@ export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
   pdf.setFillColor(255, 255, 255)
   for (const text of drawing.texts) {
     if (!text.mask) continue
-    pdf.setFont('helvetica', text.bold ? 'bold' : 'normal')
+    setSheetFont(pdf, text.bold ? 'bold' : 'normal')
     const size = printedTextSize(text, 1 / k) * k
     pdf.setFontSize(size * MM_TO_PT)
     const rect = textMask({ ...text, x: px(text.x), y: py(text.y) }, size, pdf.getTextWidth(pdfText(text.text)))
@@ -530,7 +535,7 @@ export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
 
   for (const text of drawing.texts) {
     pdf.setTextColor(...(text.muted ? MUTED : INK))
-    pdf.setFont('helvetica', text.bold ? 'bold' : 'normal')
+    setSheetFont(pdf, text.bold ? 'bold' : 'normal')
     pdf.setFontSize(printedTextSize(text, 1 / k) * k * MM_TO_PT)
     const content = pdfText(text.text)
     if (text.angle) {

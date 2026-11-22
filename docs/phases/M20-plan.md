@@ -266,3 +266,23 @@ Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-16).
 - Limites : façades et coupes sans catégories ni cases « Visibilité » ;
   réglage de visibilité commun à toutes les vues, non enregistré dans le projet ; calques des fichiers
   vectoriels (groupes par catégorie) avec l'export SVG de 20.6.
+
+## 20.6 — PDF et SVG à l'échelle
+
+Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-17).
+
+- **Polices intégrées au PDF** (`export/pdfFonts.ts`) : **Liberation Sans** normal et gras (SIL OFL 1.1, fichiers
+  livrés avec Pascal, notice déjà dans `THIRD_PARTY_NOTICES.md`), intégrée en sous-ensemble (environ +27 Ko
+  sur la feuille R+1). Mêmes chasses qu'Helvetica et Arial : mises en page et détection des conflits
+  inchangées. Le PDF ne déclare plus que les polices employées (`putOnlyUsedFonts`). Si les fichiers ne se
+  chargent pas, la feuille garde Helvetica. Les notes en italique s'écrivent en romain (pas de fichier italique).
+- **Export SVG** (`export/svg.ts`, bouton « Exporter en SVG » de la fenêtre d'export) : le **dessin seul, à
+  l'échelle choisie** (taille du papier en mm : 1:50 → 1000 mm = 20 mm), sans cadre ni cartouche, avec les
+  épaisseurs de la table de 20.5, les tailles de texte imprimées et les masques du PDF. **Calques par
+  catégorie** (Murs, Cotes, Mobilier…, « Fond » pour le reste), lus comme calques par Inkscape.
+- Les PDF de feuilles restent vectoriels (jsPDF) ; leur exactitude à 1:50, 1:100 et 1:200 est vérifiée
+  depuis 20.1b (`printScale*.test.ts`, `sheetTemplate.test.ts`), et l'est encore avec la police intégrée.
+- Tests : `export/vectorOutput.test.ts` (SVG à 1:50, 1:100, 1:200 : taille du papier, chaque trait à sa
+  place à 0,01 mm, épaisseurs ; calques ; PDF : Liberation Sans seule police, intégrée ; repli Helvetica).
+- Limites : SVG sans cartouche (la feuille complète est le PDF) ; police non intégrée dans le SVG
+  (Liberation Sans, Arial ou Helvetica du poste) ; PDF des métrés (M12) inchangé, en Helvetica.

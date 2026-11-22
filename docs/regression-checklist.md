@@ -375,3 +375,9 @@ droite de la 3D) et onglet **Paramètres**.
 | Épaisseurs imprimées selon l'échelle (coupé 0,5 / 0,35 / 0,25 mm à 1:50 / 1:100 / 1:200), coupé > vu > filet > hachure | Auto : `building/views/graphicStyles.test.ts` |
 | Chaque élément du plan est rangé dans une catégorie ; décocher une case de « Visibilité » retire ces éléments à l'écran et dans le PDF, et rien d'autre | Auto : `building/views/graphicStyles.test.ts` ; Nav. |
 | Masque blanc sous les noms de pièces (mobilier caché), pas sous les repères ni les cotes | Auto : `building/views/graphicStyles.test.ts` ; Nav. (PDF) |
+
+### M20 · 20.6 — PDF et SVG à l'échelle
+| Critère | Vérification |
+|---|---|
+| PDF de feuille : Liberation Sans normal et gras intégrées, aucune autre police déclarée ; repli Helvetica sans fichier ; plan toujours à l'échelle | Auto : `export/vectorOutput.test.ts` |
+| SVG du dessin à 1:50, 1:100, 1:200 : taille du papier exacte, chaque trait à sa place (≤ 0,01 mm), épaisseurs de la table, calques par catégorie | Auto : `export/vectorOutput.test.ts` ; Nav. (ouvrir le SVG) |

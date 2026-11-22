@@ -1647,6 +1647,10 @@ export const fr = {
     pdfTitle: (view: string) => `Exporter en PDF : ${view}`,
     pdfDoesNotFit: (scale: number) => `Cette vue ne tient pas sur la feuille à l’échelle 1:${scale}.`,
     pdfFallbackName: 'vue',
+    /** Export SVG du dessin seul, à l'échelle choisie (M20 20.6). */
+    exportSvg: 'Exporter en SVG',
+    svgNote: 'SVG : le dessin seul à l’échelle choisie, sans cartouche, en calques (Murs, Cotes…).',
+    svgBaseLayer: 'Fond',
     levelPlan: (name: string) => `Plan de niveau ${name}`,
     levelPlanNote: 'Plan du niveau seul, à l’échelle, avec ses cotes : une feuille par niveau.',
     levelMissing: 'Ce niveau n’existe plus. Choisissez une autre vue.',

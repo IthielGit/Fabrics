@@ -18,7 +18,7 @@ export type ExportFileType = 'png' | 'jpg' | 'pdf' | 'csv' | 'xlsx' | 'dxf' | 'i
  * Nom complet : ajoute l'extension si l'utilisateur ne l'a pas déjà saisie. `suffix` (« -client »)
  * s'ajoute après le nettoyage et avant l'extension, sans doublon si le nom le porte déjà.
  */
-export function exportFileName(name: string, type: ExportFileType, fallback: string, suffix = ''): string {
+export function exportFileName(name: string, type: ExportFileType | 'svg', fallback: string, suffix = ''): string {
   let base = sanitizeFileName(name, fallback)
   const extension = `.${type}`
   const hasExtension = base.toLowerCase().endsWith(extension) && base.length > extension.length

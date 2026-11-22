@@ -1345,7 +1345,7 @@ rappelle s'il tourne sur un autre modèle).
 | 20.3 Nomenclatures et plans dérivés — **fait le 2026-11-22** (menuiseries, pièces, plan de plafond ; plan de toiture en 20.1b) | Nomenclatures, plan de plafond, plan de toiture | `/model sonnet` |
 | 20.4 Feuilles — **fait le 2026-11-22** (gabarit de la référence : colonne de droite, rose des vents, cartouche avec statut ; A4 à A1) | Formats A4 à A1, cartouche, échelle, unités, orientation, nord, indice, date, émetteur, statut | `/model sonnet` |
 | 20.5 Styles graphiques — **fait le 2026-11-22** (épaisseurs ISO selon l'échelle, catégories et visibilité, masques sous les noms de pièces) | Épaisseurs de traits, éléments coupés et vus, hachures, calques, masques, visibilité | `/model sonnet` |
-| 20.6 PDF et SVG à l'échelle | Sorties vectorielles exactes à 1:50, 1:100, 1:200 ; polices intégrées si la licence le permet | `/model opus` |
+| 20.6 PDF et SVG à l'échelle — **fait le 2026-11-22** (Liberation Sans intégrée au PDF, export SVG à l'échelle en calques) | Sorties vectorielles exactes à 1:50, 1:100, 1:200 ; polices intégrées si la licence le permet | `/model opus` |
 | 20.7 Révisions | Jeu de feuilles figé par version (M15), numérotation, comparaison avec le jeu précédent | `/model opus` |
 | 20.8 Étude `ifcopenshell.draw` | Essai comme outil complémentaire, limites documentées | `/model sonnet` |
 | 20.9 Vérification et gate G3 | Impression à 100 %, mise à jour des vues après modification d'un mur, liste de contrôle pour la revue d'un professionnel, rapport | `/model opus` |

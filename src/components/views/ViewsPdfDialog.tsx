@@ -3,6 +3,7 @@ import { PAPER_TEXT_MM, type Drawing } from '../../features/building/views/drawi
 import { columnCartoucheCells, SHEET_STATUSES, type SheetStatus } from '../../features/export/cartouche'
 import { useViewsStore } from '../../stores/viewsStore'
 import { buildDrawingPdf } from '../../features/export/pdf'
+import { drawingToSvg } from '../../features/export/svg'
 import { exportFileName } from '../../features/export/fileName'
 import {
   defaultOrientation,
@@ -142,6 +143,18 @@ export default function ViewsPdfDialog({
     } finally {
       setBusy(false)
     }
+  }
+
+  // SVG (M20 20.6) : le dessin seul, à la même échelle que le PDF, en calques par catégorie.
+  const submitSvg = () => {
+    if (blocking.length > 0) return
+    const svg = drawingToSvg(drawing, {
+      scale: placement.scale,
+      title: `${projectName} ${viewTitle}`.trim(),
+      layerNames: { ...fr.views.visibility.keys, base: fr.views.svgBaseLayer },
+    })
+    downloadBlob(new Blob([svg], { type: 'image/svg+xml' }), exportFileName(fileName, 'svg', fr.views.pdfFallbackName))
+    onClose()
   }
 
   return (
@@ -285,8 +298,12 @@ export default function ViewsPdfDialog({
           interactive
           onNavigate={onClose}
         />
+        <p className="text-xs text-slate-500">{fr.views.svgNote}</p>
         <div className="flex justify-end gap-2 pt-2">
           <Button onClick={onClose}>{fr.common.cancel}</Button>
+          <Button onClick={submitSvg} disabled={busy || blocking.length > 0}>
+            {fr.views.exportSvg}
+          </Button>
           <Button variant="primary" onClick={submit} disabled={busy || doesNotFit || blocking.length > 0}>
             {busy ? fr.export.working : fr.export.submit}
           </Button>
