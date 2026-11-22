@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3), 20.0 fait ; 20.1a en cours (étape 1 faite : exemple ROOMIT-RDC) ; étape 2 faite (essai des deux moteurs, `docs/phases/M20-engine-trial.md`) ; moteur de Fabrics choisi (ADR 0007) ; étape 3 faite (escaliers, mobilier, murs hachurés, poteaux, étiquettes allégées, repères `PP` / `All.`, cotes intérieures par pièce : D20-9 ; rendu accepté par l'utilisateur le 2026-11-22) ; étape 4 faite (lien au modèle) ; étape 5 : test fait, impression à 100 % par l'utilisateur en attente. M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-22 — M20 · 20.1a terminé, feu vert pour 20.1b
+- Impression à 100 % à 1:50 mesurée à la règle par l'utilisateur : 20.1a est fait (roadmap, `docs/regression-checklist.md` section 3).
+- Décisions de l'utilisateur pour 20.1b (`docs/phases/M20-decisions.md`) :
+  - **D20-10 : A**, le total d'un niveau inclut le balcon (R+1 de ROOMIT : 144,16 m²) ; surfaces de toiture sur la feuille seulement sur demande.
+  - **D20-11 : A**, l'escalier d'accès au toit est un escalier natif de Pascal, même symbole que sur le plan de niveau.
+- Feu vert pour 20.1b (`docs/phases/M20-plan.md`). Étape suivante : exemple ROOMIT-R1.
 
 ### 2026-11-22 — M20 · 20.1a étape 5 : exactitude imprimée (test)
 - Test `src/features/export/printScale.test.ts` : le plan de niveau ROOMIT-RDC (cotes Exécution, escaliers, mobilier) est exporté par `buildDrawingPdf`, puis le **contenu du PDF est relu** (flux décompressés, traits `m` / `l` en points convertis en mm de papier).

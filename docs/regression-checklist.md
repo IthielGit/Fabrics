@@ -25,7 +25,7 @@ apportent les outils de Pascal.
 |---|---|
 | Accueil : créer un plan, un Visuel ; ouvrir, renommer, dupliquer, supprimer | M0, M1, M12 |
 | Ouvrir un plan : 3D, 2D, niveaux, rendu, onglets Scène / Peinture / Objets / Métrés / Paramètres | M8, M19 A5 |
-| Métrés Client / Exécution, cotation, repères `M01` / `P01` / `F01`, points à vérifier | M3, M10 ter |
+| Métrés Client / Exécution, cotation, repères `M01` / `P01` / `F01` dans les métrés (sur le plan : `PP: …` / `All. …`, D20-9), points à vérifier | M3, M10 ter, M20 |
 | Vues : façades, coupes, planche ; exporter PNG, JPG, PDF, métrés, DXF, IFC | M4, M10, M11 |
 | Visuel : texte, formes, image, annuler, enregistrer, exporter | M1, M2, M4 |
 | Comptes, partage (lien, invitations), lecture seule d'un plan (lecteur, lien public) | M13, A7 |
@@ -150,7 +150,7 @@ apportent les outils de Pascal.
 |---|---|
 | Chambre 4000 × 3000 → « Chambre », `4000 × 3000`, `12,00 m²` en Client | Auto : `measurements/clientView.test.ts`, `dimensioning/clientDimensions.test.ts` |
 | Bâtiment 8000 × 6000 aux axes, murs 200 → cotes `8200` et `6200` | Auto : `dimensioning/clientDimensions.test.ts`, `dimensioning/executionDimensions.test.ts` |
-| Façade 6000 + fenêtre 1200 centrée → `2400 · 1200 · 2400`, `6000`, `F01`, `1200 / 1350`, `All. 900` | Auto : `dimensioning/facadeChains.test.ts`, `dimensioning/executionDimensions.test.ts` |
+| Façade 6000 + fenêtre 1200 centrée → `2400 · 1200 · 2400`, `6000` ; repère de plan `1200 x 1350` + `All. 900`, porte `PP: 900 x 2100` (D20-9 : plus de `F01` / `P01` sur le plan, ils restent dans les métrés) | Auto : `dimensioning/facadeChains.test.ts`, `dimensioning/executionDimensions.test.ts` |
 | Même repère sur le plan et dans les métrés ; ouverture 400 × 400 déduite | Auto : `measurements/references.test.ts`, `measurements/measurements.test.ts` |
 | Client ↔ Exécution sans entrée d'historique ; cote « Exécution » absente en Client | Auto : `dimensioning/visibility.test.ts` ; Nav. |
 | « Total du niveau » en export « niveau affiché » | Auto : `measurements/clientView.test.ts` |
@@ -313,3 +313,15 @@ droite de la 3D) et onglet **Paramètres**.
 | CLI `pascal` | Auto : `packages/cli` (14 échecs connus sous Windows) |
 | Script de géométrie | Auto : `packages/geometry-script` |
 | Traductions (Lingui, 5 langues dont le français) | Auto : tests `scripts/i18n*.test.ts` de la racine de Pascal |
+
+## 3. Fabrics + Pascal — critères M20 et suivants
+
+### M20 · 20.1a — Plan de niveau lié au modèle (exemple ROOMIT-RDC)
+| Critère | Vérification |
+|---|---|
+| Surfaces des 12 pièces du RDC = tableau de la référence (écarts expliqués dans `fixtures/ROOMIT-RDC/spec.json`), aucun avertissement de métré | Auto : `scene/roomit.test.ts` |
+| Escalier, mobilier et poteaux de Pascal dessinés sur le plan de niveau ; murs hachurés d'après leur composition | Auto : `scene/roomit.test.ts`, `scene/view/wallMaterial.test.ts` ; Nav. |
+| Étiquette de pièce : nom + surface ; baies `PP: 900 x 2100`, `1500 x 1000` + `All. 1100` ; une largeur et une profondeur par pièce (D20-9) | Auto : `dimensioning/executionDimensions.test.ts`, baseline `sheet-execution.svg` ; Nav. |
+| Cloison SDB_G avancée de 500 mm dans Pascal → cote SDB 1475 → 975 mm, SDB 6,47 → 4,28 m², Séjour 36,18 → 38,37 m² ; annuler rétablit ; rien du plan enregistré hors de la scène | Auto : `scene/modelLink.test.ts` ; Nav. |
+| PDF relu : à 1:50, 1000 mm = 20,0 mm, 14473 mm = 289,46 mm, les 1 214 traits du plan à ≤ 0,1 mm ; à 1:100 sur A3, 1000 mm = 10,0 mm | Auto : `export/printScale.test.ts` |
+| Impression à 100 % mesurée à la règle | Nav. (validé par l'utilisateur le 2026-11-22) |

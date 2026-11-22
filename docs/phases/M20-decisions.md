@@ -112,6 +112,17 @@ Choix de l'utilisateur (modifie les usages validés en M10 ter, lot B) :
 - **Cotes intérieures : une largeur et une profondeur par pièce**, au nu des murs, au lieu des chaînes
   par rangée de pièces (qui répétaient des valeurs).
 
+## D20-10 · Balcon et surfaces de toiture (2026-11-22, 20.1b)
+
+**Retenu : A.** Le total d'un niveau reprend la référence : **balcon inclus** (Villa ROOMIT R+1 :
+144,16 m²). Les surfaces et périmètres de toiture ne s'affichent sur la feuille de toiture **que si
+l'utilisateur le demande** (valeurs reprises des métrés, `roofQuantities.ts`).
+
+## D20-11 · Escalier d'accès au toit (2026-11-22, 20.1b)
+
+**Retenu : A.** L'escalier d'accès au toit est un **escalier natif de Pascal** (avec sa 3D), dessiné
+sur le plan de toiture avec le même symbole que l'escalier du plan de niveau.
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et
