@@ -53,6 +53,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-22 — M20 · 20.1b tâche 4c : cotes du plan de toiture
+- Étape 4b validée par l'utilisateur.
+- `src/features/dimensioning/roofChains.ts` (fonction pure, testée) : de chaque côté du plan de toiture, une chaîne dont les graduations sont les extrémités des bords tournés vers ce côté (elle suit les redents), puis la cote d'ensemble plus loin. Mêmes écarts (800 / 600 mm) et même dessin que les cotes des plans de niveau (`annotationGraphics`).
+- R+1 de ROOMIT : **les 4 côtés redonnent exactement les cotes de la page 7** (au cm de la référence) : haut `4504 · 7777 · 2791` / `15072`, bas `5304 · 9768` / `15072`, gauche `1670 · 11402` / `13072`, droite `6688 · 5390 · 994` / `13072`.
+- Pas encore : les cotes intérieures de la page 7 (`450 · 758`, `510 · 698 · 279`, `1021`, `669`, `519`, `99`), tracées à l'intérieur du contour ; ce qu'elles mesurent reste à lire sur la référence.
+
 ### 2026-11-22 — M20 · 20.1b tâche 4b : dessin du plan de toiture
 - Choix de l'utilisateur **D20-14 : A** : l'escalier d'accès au toit est gardé sur le balcon, le canapé du balcon est retiré de ROOMIT-R1.
 - **Écran Vues : onglet « Plan de toiture R+1 »**, pour chaque niveau qui porte une toiture de Pascal ; PDF avec flèche du nord.

@@ -18,6 +18,7 @@ import { fixtureBuildingScene, type FixtureSpec } from './fixturePlan'
 import { pascalLevelSymbols, pascalRoofStairSymbols } from './view/levelPlanSymbols'
 import { pascalRoofPlan } from './view/roofPlanData'
 import { roofPlanDrawing } from '../building/views/roofPlan'
+import { roofChains } from '../dimensioning/roofChains'
 import { sceneToFabricsView } from './view/toFabricsView'
 import type { SceneNodeData } from './sceneTypes'
 
@@ -142,5 +143,17 @@ describe('Villa ROOMIT, RDC + R+1 dans une seule scène', () => {
     const drawing = roofPlanDrawing(plan, { slope: fr.views.roofSlope }, 125, [stair])!
     expect(drawing.texts.map((t) => t.text)).toEqual(['Pente 1 %', 'Pente 1 %'])
     expect(drawing.texts.some((t) => /m²/.test(t.text))).toBe(false)
+  })
+
+  it('cotes du plan de toiture = page 7 de la référence (cm → mm) : 450 · 778 · 279 et 1507 en haut, 167 · 1140 et 1307 à gauche…', () => {
+    const plan = pascalRoofPlan(scene.nodes, 'R1')!
+    const dims = roofChains(plan.outlines)
+    const side = (s: string) =>
+      dims.filter((d) => d.id.startsWith(`roof-${s}-`)).map((d) => Math.round(Math.hypot(d.points[2] - d.points[0], d.points[3] - d.points[1]) / 10))
+    // La référence arrondit au cm : 4504 → 450, 7777 → 778, 2791 → 279, 15072 → 1507.
+    expect(side('top')).toEqual([450, 778, 279, 1507])
+    expect(side('bottom')).toEqual([530, 977, 1507])
+    expect(side('left')).toEqual([167, 1140, 1307])
+    expect(side('right')).toEqual([669, 539, 99, 1307])
   })
 })

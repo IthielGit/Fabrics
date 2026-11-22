@@ -4,6 +4,8 @@ import { useMemo, useState } from 'react'
 import { autoFontMm, drawingFromView, levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
 import { levelAreaTable, withAreaTable } from '../../features/building/views/areaTable'
 import { roofPlanDrawing } from '../../features/building/views/roofPlan'
+import { annotationGraphics } from '../../features/dimensioning/annotationGraphics'
+import { roofChains } from '../../features/dimensioning/roofChains'
 import { useRoofPlans } from '../../pascal/useRoofPlans'
 import { computeBuildingMeasurements } from '../../features/measurements/measurements'
 import { buildElevation } from '../../features/building/views/elevation'
@@ -69,7 +71,11 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
       return {
         title,
         note: fr.views.roofPlanNote,
-        build: (fontMm) => roofPlanDrawing(roof.plan, { slope: fr.views.roofSlope }, fontMm, [roof.stair]),
+        build: (fontMm) =>
+          roofPlanDrawing(roof.plan, { slope: fr.views.roofSlope }, fontMm, [
+            roof.stair,
+            (font) => annotationGraphics({ dimensions: roofChains(roof.plan.outlines), labels: [] }, font),
+          ]),
         emptyText: fr.views.empty,
       }
     }

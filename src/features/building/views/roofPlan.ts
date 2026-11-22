@@ -107,14 +107,14 @@ function slopeArrow(s: RoofPlanInput['slopes'][number], font: number, label: str
 }
 
 /**
- * Dessin du plan de toiture. `extras` : escalier d'accès (traits de Pascal) et cotes, en coordonnées
- * du plan. `null` si rien à dessiner.
+ * Dessin du plan de toiture. `extras` : escalier d'accès (traits de Pascal) et cotes (fonction de la
+ * hauteur de texte), en coordonnées du plan. `null` si rien à dessiner.
  */
 export function roofPlanDrawing(
   input: RoofPlanInput,
   labels: RoofPlanLabels,
   fontMm?: number,
-  extras: readonly (PlanOverlay | null | undefined)[] = [],
+  extras: readonly (PlanOverlay | ((fontMm: number) => PlanOverlay | null) | null | undefined)[] = [],
 ): Drawing | null {
   const rings = input.outlines.flatMap((o) => [o.outer, ...o.holes])
   if (rings.length === 0) return null
@@ -136,7 +136,9 @@ export function roofPlanDrawing(
     lines.push(...arrow.lines)
     texts.push(...arrow.texts)
   }
-  for (const extra of extras) {
+  for (const item of extras) {
+    // Cotes : construites avec la hauteur de texte du dessin.
+    const extra = typeof item === 'function' ? item(font) : item
     if (!extra) continue
     lines.push(...extra.lines)
     texts.push(...extra.texts)
