@@ -66,6 +66,17 @@ function levelBelow(nodes: Readonly<Record<string, SceneNodeData>>, levelId: str
   return candidates.sort((a, b) => rank(b)! - rank(a)!)[0] ?? null
 }
 
+/** Niveau directement au-dessus (même parent, rang `level` juste supérieur) ; `null` s'il n'y en a pas. */
+function levelAbove(nodes: Readonly<Record<string, SceneNodeData>>, levelId: string): SceneNodeData | null {
+  const rank = (n: SceneNodeData) => (n as unknown as { level?: number }).level
+  const level = nodes[levelId]
+  const own = rank(level) ?? 0
+  const candidates = Object.values(nodes).filter(
+    (n) => n.type === 'level' && n.parentId === level.parentId && typeof rank(n) === 'number' && rank(n)! > own,
+  )
+  return candidates.sort((a, b) => rank(a)! - rank(b)!)[0] ?? null
+}
+
 /**
  * Escaliers qui arrivent sur ce niveau depuis le niveau du dessous (M20 20.1b) : comme sur les plans
  * de la référence (Villa ROOMIT, R+1), l'escalier qui monte du RDC est dessiné sur le plan du R+1.
@@ -111,4 +122,34 @@ export function pascalLevelSymbols(nodes: Readonly<Record<string, SceneNodeData>
   }
   if (entries.length === 0) return null
   return mergeSymbols(entries.map((e) => floorplanToDrawing(e.model, { cut: CUT_TYPES.has(e.type) })))
+}
+
+/**
+ * Escaliers d'accès au toit d'un niveau, pour le plan de toiture (M20 20.1b, D20-11) : ceux qui montent
+ * jusqu'en haut du niveau (au moins 90 % de sa hauteur) sans arriver sur un niveau au-dessus (pas de
+ * `toLevelId`, pas de niveau directement au-dessus). Dessinés comme sur le plan de niveau ; `null` s'il n'y en a pas.
+ */
+export function pascalRoofStairSymbols(nodes: Readonly<Record<string, SceneNodeData>>, fabricsLevelId: string): PlanSymbols | null {
+  const levelId = levelNodeIdOf(nodes, fabricsLevelId)
+  if (!levelId) return null
+  const height = (nodes[levelId] as { height?: number }).height ?? 0
+  if (levelAbove(nodes, levelId)) return null
+  const ids = new Set(
+    Object.values(nodes)
+      .filter((n) => n.type === 'stair' && n.parentId === levelId && (n as { toLevelId?: string | null }).toLevelId == null && height > 0 && stairRise(nodes, n) >= 0.9 * height)
+      .map((n) => n.id),
+  )
+  if (ids.size === 0) return null
+  ensureBuiltinNodes()
+  const entries = collectSheetGeometry({
+    nodes: nodes as unknown as Record<string, AnyNode>,
+    levelId: levelId as AnyNodeId,
+    drawingType: 'floor-plan',
+    annotationVisibility: NO_ANNOTATIONS,
+    accept: (node) => ids.has(node.id),
+    unit: 'metric',
+    metricNotation: 'millimeters',
+  })
+  if (entries.length === 0) return null
+  return mergeSymbols(entries.map((e) => floorplanToDrawing(e.model, { cut: false })))
 }

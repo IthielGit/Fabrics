@@ -102,7 +102,6 @@
     {"ref": "LIT_CH2", "assetId": "double-bed", "name": "Lit double", "x": 1216, "y": 10587, "rotation": 90, "size": [1600, 500, 2000]},
     {"ref": "LIT_SUITE", "assetId": "double-bed", "name": "Lit double", "x": 12101, "y": 10278, "rotation": 180, "size": [1600, 500, 2000]},
     {"ref": "TABLE_BIB", "assetId": "dining-table", "name": "Table", "x": 8275, "y": 5400, "size": [1120, 750, 530]},
-    {"ref": "CANAPE_BAL", "assetId": "sofa", "name": "Canapé", "x": 13800, "y": 3330, "rotation": 90, "size": [2260, 800, 950]},
     {"ref": "WC_SDB2", "assetId": "toilet", "name": "WC", "x": 550, "y": 6300, "rotation": 90, "size": [400, 800, 700]},
     {"ref": "WC_SDB1", "assetId": "toilet", "name": "WC", "x": 550, "y": 7230, "rotation": 90, "size": [400, 800, 700]},
     {"ref": "WC_SDB3", "assetId": "toilet", "name": "WC", "x": 6465, "y": 10915, "rotation": 180, "size": [400, 800, 700]}

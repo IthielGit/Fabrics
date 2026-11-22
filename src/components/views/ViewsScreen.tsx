@@ -3,6 +3,8 @@ import { FileDown, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { autoFontMm, drawingFromView, levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
 import { levelAreaTable, withAreaTable } from '../../features/building/views/areaTable'
+import { roofPlanDrawing } from '../../features/building/views/roofPlan'
+import { useRoofPlans } from '../../pascal/useRoofPlans'
 import { computeBuildingMeasurements } from '../../features/measurements/measurements'
 import { buildElevation } from '../../features/building/views/elevation'
 import { buildSection } from '../../features/building/views/section'
@@ -28,6 +30,7 @@ function isSameTab(a: ViewsTab, b: ViewsTab): boolean {
   if (a.kind === 'elevation' && b.kind === 'elevation') return a.cardinal === b.cardinal
   if (a.kind === 'section' && b.kind === 'section') return a.sectionId === b.sectionId
   if (a.kind === 'level' && b.kind === 'level') return a.levelId === b.levelId
+  if (a.kind === 'roof' && b.kind === 'roof') return a.levelId === b.levelId
   return true
 }
 
@@ -53,9 +56,23 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
   const sheetDimensioning = useViewsStore((state) => state.sheetDimensioning)
   // Scène de Pascal : escaliers et mobilier dessinés avec sa géométrie de plan (ADR 0007).
   const levelSymbols = useLevelPlanSymbols()
+  const roofPlans = useRoofPlans()
 
   return useMemo(() => {
     const allLevels = levels ?? []
+    if (tab.kind === 'roof') {
+      // Plan de toiture (M20 20.1b) : contour, débords, pentes lues dans les pans, escalier d'accès.
+      const level = allLevels.find((l) => l.id === tab.levelId)
+      const roof = level ? roofPlans(level.id) : null
+      if (!level || !roof) return { title: '', note: '', build: () => null, emptyText: fr.views.levelMissing }
+      const title = fr.views.roofPlan(level.name)
+      return {
+        title,
+        note: fr.views.roofPlanNote,
+        build: (fontMm) => roofPlanDrawing(roof.plan, { slope: fr.views.roofSlope }, fontMm, [roof.stair]),
+        emptyText: fr.views.empty,
+      }
+    }
     if (tab.kind === 'level') {
       // Plan d'un niveau seul (M20 20.1b) : même dessin que sur la planche, une feuille par niveau.
       const level = allLevels.find((l) => l.id === tab.levelId)
@@ -131,7 +148,7 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
       },
       emptyText: fr.views.empty,
     }
-  }, [tab, sections, model, levels, northAngle, elements, sheetDimensioning, levelSymbols])
+  }, [tab, sections, model, levels, northAngle, elements, sheetDimensioning, levelSymbols, roofPlans])
 }
 
 const MODES: readonly DimensioningMode[] = ['none', 'client', 'execution']
@@ -194,7 +211,8 @@ function ScreenBody() {
   const hasExecution = (levels ?? [])
     .filter((level) => tab.kind !== 'level' || level.id === tab.levelId)
     .some((level) => sheetDimensioning[level.id] === 'execution')
-  const showsPlans = tab.kind === 'sheet' || tab.kind === 'level'
+  const showsPlans = tab.kind === 'sheet' || tab.kind === 'level' || tab.kind === 'roof'
+  const roofPlans = useRoofPlans()
 
   const tabs: { key: string; label: string; value: ViewsTab }[] = [
     ...[...(levels ?? [])]
@@ -203,6 +221,14 @@ function ScreenBody() {
         key: `level-${level.id}`,
         label: fr.views.levelPlan(level.name),
         value: { kind: 'level', levelId: level.id } as ViewsTab,
+      })),
+    ...[...(levels ?? [])]
+      .sort((a, b) => a.elevation - b.elevation)
+      .filter((level) => roofPlans(level.id) !== null)
+      .map((level) => ({
+        key: `roof-${level.id}`,
+        label: fr.views.roofPlan(level.name),
+        value: { kind: 'roof', levelId: level.id } as ViewsTab,
       })),
     ...CARDINALS.map((cardinal) => ({
       key: `elevation-${cardinal}`,
@@ -275,7 +301,7 @@ function ScreenBody() {
           build={active.build}
           viewTitle={view.title}
           showNorth={showsPlans}
-          dimensioning={showsPlans ? { hasExecution } : undefined}
+          dimensioning={tab.kind === 'sheet' || tab.kind === 'level' ? { hasExecution } : undefined}
           onClose={() => setPdfOpen(false)}
         />
       )}

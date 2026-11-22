@@ -53,12 +53,20 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-22 — M20 · 20.1b tâche 4b : dessin du plan de toiture
+- Choix de l'utilisateur **D20-14 : A** : l'escalier d'accès au toit est gardé sur le balcon, le canapé du balcon est retiré de ROOMIT-R1.
+- **Écran Vues : onglet « Plan de toiture R+1 »**, pour chaque niveau qui porte une toiture de Pascal ; PDF avec flèche du nord.
+- Lecture dans le modèle (`scene/view/roofPlanData.ts`) : contour de la toiture = réunion des pans, débords compris (fonction `union` de Pascal, aucune nouvelle dépendance) ; **une flèche par sens de pente**, au centre du plus grand pan de ce sens ; la pente en % vient du `pitch` des pans (jamais saisie).
+- Dessin (`building/views/roofPlan.ts`, fonctions pures) : contour en trait fort, bord de 100 mm en second trait (décalage à angles vifs), flèches « Pente 1 % » avec le texte le long de la flèche (lu de bas en haut pour une flèche verticale, comme une cote). Pas de pièce ni de surface.
+- **Escalier d'accès au toit** (`pascalRoofStairSymbols`) : escalier du niveau qui monte jusqu'en haut du niveau sans arriver sur un niveau au-dessus. L'escalier du RDC (qui monte au R+1) n'est donc jamais pris pour un accès au toit (défaut trouvé et corrigé pendant le test).
+- R+1 de ROOMIT, comparé à la page 7 : même contour à redents, double trait, deux flèches « Pente 1 % » (nord et ouest), escalier sur le balcon. Différences : l'escalier de Pascal a moins de marches dessinées que les 14 de la référence ; le texte de la flèche verticale est un peu décalé vers la pointe. Les cotes viennent à l'étape 4c.
+
 ### 2026-11-22 — M20 · 20.1b tâche 4a : toiture et escalier d'accès dans le modèle ROOMIT
 - Choix de l'utilisateur **D20-13 : A** : la toiture à 1 % est une toiture **native de Pascal** (la toiture de Fabrics refuse une pente sous 1°).
 - Relevé de la page 7 : la toiture couvre le R+1 sans le balcon, avec un débord de 300 mm de tous les côtés (15072 × 13072 mm, cotes `1507` / `1307`). Elle a deux sens de pente (ouest et nord) et un escalier droit sur le balcon.
 - `fixturePlan.ts` : les exemples acceptent des toitures de Pascal (`roofs` : pans « un pan » sur des rectangles de murs, débord, pente en %, sens de la descente). ROOMIT-R1 a 4 pans à 1 % et l'escalier `ESC_TOIT` (2340 × 6389 mm, monte de 3000 mm).
 - Tests (`scene/roomitBuilding.test.ts`) : pente lue dans le modèle = 1 %, débord 300 mm, emprise −300 → 14772 × −300 → 12772 mm, escalier à sa place sur le plan du R+1.
-- **Incohérence de la référence** : la page 6 ne montre pas l'escalier sur le balcon (des meubles à sa place), la page 7 le montre (2340 mm de large sur un balcon de 2791 mm). Question posée à l'utilisateur.
+- **Incohérence de la référence** : la page 6 ne montre pas l'escalier sur le balcon (des meubles à sa place), la page 7 le montre (2340 mm de large sur un balcon de 2791 mm). **Choix de l'utilisateur D20-14 : A** : escalier gardé, canapé du balcon retiré.
 - À régler à la tâche 5 : les débords des pans se chevauchent aux jonctions ; la somme des surfaces des pans compte ces bandes deux fois.
 - Les façades et coupes de Fabrics ne voient pas encore cette toiture de 4 pans (20.1c).
 

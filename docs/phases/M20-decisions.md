@@ -138,6 +138,12 @@ vers le nord, partie sud vers l'ouest. Le plan de toiture lit contour, cotes et 
 la 3D de Pascal montre la pente. Les façades et coupes de Fabrics liront cette toiture en 20.1c.
 (Option B non retenue : toiture plate de Fabrics avec un réglage « pente d'écoulement ».)
 
+## D20-14 · Escalier d'accès au toit et meubles du balcon (2026-11-22, 20.1b tâche 4)
+
+La référence se contredit : la page 7 dessine l'escalier d'accès au toit sur le balcon (2340 mm de large
+sur 2791 mm), la page 6 montre des meubles à sa place et pas d'escalier. **Retenu : A**, l'escalier est
+gardé (un plan montre ce qui est construit) et le canapé du balcon est retiré de l'exemple ROOMIT-R1.
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et

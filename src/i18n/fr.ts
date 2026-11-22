@@ -1647,6 +1647,10 @@ export const fr = {
     levelPlan: (name: string) => `Plan de niveau ${name}`,
     levelPlanNote: 'Plan du niveau seul, à l’échelle, avec ses cotes : une feuille par niveau.',
     levelMissing: 'Ce niveau n’existe plus. Choisissez une autre vue.',
+    /** Plan de toiture d'un niveau (M20 20.1b, référence Villa ROOMIT page 7). */
+    roofPlan: (level: string) => `Plan de toiture ${level}`,
+    roofPlanNote: 'Contour de la toiture et débords, sens de la pente, escalier d’accès, cotes. La pente est lue dans les pans de la toiture.',
+    roofSlope: (percent: number) => `Pente ${percent.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} %`,
     /** Tableau des surfaces à droite du plan d'un niveau (format de la référence, D20-3). */
     areaTable: {
       title: (level: string) => `Pièces Niveau ${level}`,

@@ -15,7 +15,9 @@ import { computeBuildingMeasurements } from '../measurements/measurements'
 import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
 import { getRoofSegmentDeckReach } from '@pascal-app/core'
 import { fixtureBuildingScene, type FixtureSpec } from './fixturePlan'
-import { pascalLevelSymbols } from './view/levelPlanSymbols'
+import { pascalLevelSymbols, pascalRoofStairSymbols } from './view/levelPlanSymbols'
+import { pascalRoofPlan } from './view/roofPlanData'
+import { roofPlanDrawing } from '../building/views/roofPlan'
 import { sceneToFabricsView } from './view/toFabricsView'
 import type { SceneNodeData } from './sceneTypes'
 
@@ -120,5 +122,25 @@ describe('Villa ROOMIT, RDC + R+1 dans une seule scène', () => {
     const xs = lines.flatMap((l) => [l.x1, l.x2])
     const ys = lines.flatMap((l) => [l.y1, l.y2])
     expect([Math.round(Math.min(...xs)), Math.round(Math.max(...xs)), Math.round(Math.min(...ys)), Math.round(Math.max(...ys))]).toEqual([11981, 14321, 0, 6389])
+  })
+
+  it('plan de toiture lu dans les pans : contour réuni à 10 sommets, deux flèches « Pente 1 % » (nord et ouest), escalier d’accès', () => {
+    const plan = pascalRoofPlan(scene.nodes, 'R1')!
+    expect(plan.outlines).toHaveLength(1)
+    expect(plan.outlines[0].holes).toEqual([])
+    const ring = plan.outlines[0].outer.map(([x, y]) => [Math.round(x), Math.round(y)])
+    const unique = ring.filter((p, i) => i === 0 || p[0] !== ring[0][0] || p[1] !== ring[0][1])
+    expect(unique.map((p) => p.join(',')).sort()).toEqual(
+      ['4204,-300', '11981,-300', '11981,6388', '14772,6388', '14772,11778', '5004,11778', '5004,12772', '-300,12772', '-300,1370', '4204,1370'].sort(),
+    )
+    const arrows = plan.slopes.map((s) => [Math.round(s.dx), Math.round(s.dy), Math.round(s.percent * 1000) / 1000]).sort()
+    expect(arrows).toEqual([[-1, 0, 1], [0, -1, 1]].sort())
+    const stair = pascalRoofStairSymbols(scene.nodes, 'R1')!
+    expect(stair.lines.length).toBeGreaterThan(10)
+    // L'escalier du RDC monte au R+1, pas au toit : il n'est jamais un escalier d'accès au toit.
+    expect(pascalRoofStairSymbols(scene.nodes, 'RDC')).toBeNull()
+    const drawing = roofPlanDrawing(plan, { slope: fr.views.roofSlope }, 125, [stair])!
+    expect(drawing.texts.map((t) => t.text)).toEqual(['Pente 1 %', 'Pente 1 %'])
+    expect(drawing.texts.some((t) => /m²/.test(t.text))).toBe(false)
   })
 })
