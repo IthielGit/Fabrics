@@ -93,7 +93,7 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
 3. **[fait le 2026-11-22 : `building/views/areaTable.ts`, à droite du plan dans l'onglet « Plan de niveau … » et son PDF ; total dans un second tableau « Total Niveau R+1 »]** **Tableau de surfaces sur la feuille** : un tableau « Pièces Niveau R+1 » (pièce, surface) et un
    total, lus des métrés. Format de la référence (D20-3, colonne droite). Le tableau du RDC sera
    réutilisé (20.4 le place sur le gabarit final).
-4. **Plan de toiture** (nouveau) : contour de la toiture à partir des pans Pascal (projection en
+4. **[4a fait le 2026-11-22 : toiture native de Pascal (4 pans à 1 %, débord 300 mm) et escalier d'accès sur le balcon ajoutés à ROOMIT-R1 (`roofs`, `stairs`), tests dans `scene/roomitBuilding.test.ts` ; reste 4b dessin du contour, 4c cotes, 4d escalier et flèches de pente ; à régler à la tâche 5 : les débords des pans se chevauchent aux jonctions (surfaces à prendre sur la réunion des pans, pas sur leur somme)]** **Plan de toiture** (nouveau) : contour de la toiture à partir des pans Pascal (projection en
    plan), débord de toiture, trois chaînes de cotes extérieures, escalier d'accès au toit (même
    symbole que l'escalier du plan de niveau), **flèches « Pente x % »** (valeur lue dans le modèle,
    jamais saisie à la main). Pas de pièces ni de surfaces sur ce plan.
@@ -122,7 +122,7 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
 - **Contour en L à redents** : un pan de Pascal est un rectangle ; il faut 4 pans réunis dans une
   toiture. Fabrics ne sait aujourd'hui lire qu'une toiture d'un seul pan (`roofFromPascal`) : ses
   façades et coupes ne verraient pas cette toiture (à traiter en 20.1c).
-- Décision à prendre : **D20-13** (ci-dessous).
+- Décision : **D20-13 : A** (ci-dessous).
 
 ### Points à vérifier avant de coder (inconnus pour l'instant)
 
@@ -145,8 +145,8 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
   - **A (retenue)** : escalier natif de Pascal, dessiné avec le même symbole que l'escalier du niveau.
   - B : simple symbole de plan, sans géométrie 3D.
 
-- **D20-13 · Modèle de la toiture à 1 % (proposée le 2026-11-22, en attente)**
-  - **A (recommandée)** : toiture **native de Pascal**, 4 pans « un pan » de 1 % (0,573°), débord
+- **D20-13 · Modèle de la toiture à 1 % — retenu : A (2026-11-22)**
+  - **A (retenue)** : toiture **native de Pascal**, 4 pans « un pan » de 1 % (0,573°), débord
     300 mm. Partie nord pente vers le nord, partie sud vers l'ouest. Le plan de toiture dessine le
     contour, les cotes et une flèche par sens de pente, tout lu dans les pans. La 3D de Pascal montre la
     vraie pente. Les façades et coupes de Fabrics la liront en 20.1c.

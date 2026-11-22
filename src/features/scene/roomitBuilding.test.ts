@@ -13,6 +13,7 @@ import { fr } from '../../i18n/fr'
 import { planOverlay } from '../dimensioning/planOverlay'
 import { computeBuildingMeasurements } from '../measurements/measurements'
 import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
+import { getRoofSegmentDeckReach } from '@pascal-app/core'
 import { fixtureBuildingScene, type FixtureSpec } from './fixturePlan'
 import { pascalLevelSymbols } from './view/levelPlanSymbols'
 import { sceneToFabricsView } from './view/toFabricsView'
@@ -47,9 +48,12 @@ describe('Villa ROOMIT, RDC + R+1 dans une seule scène', () => {
     const above = pascalLevelSymbols(scene.nodes, 'R1')!.lines.filter(inBox)
     expect(below.length).toBeGreaterThan(10)
     expect(above.length).toBe(below.length)
-    // L'escalier reste un seul nœud, dans le RDC.
+    // L'escalier du RDC reste un seul nœud, dans le RDC (le R+1 n'a que l'escalier d'accès au toit).
     const stairs = Object.values(scene.nodes).filter((n) => n.type === 'stair')
-    expect(stairs).toHaveLength(1)
+    expect(stairs.map((n) => [n.name, n.parentId]).sort()).toEqual([
+      ['ESC', 'level_RDC'],
+      ['ESC_TOIT', 'level_R1'],
+    ])
   })
 
   it('un escalier qui ne monte pas jusqu’au niveau du dessus n’y est pas dessiné', () => {
@@ -82,5 +86,39 @@ describe('Villa ROOMIT, RDC + R+1 dans une seule scène', () => {
     expect(table.rows).toContainEqual(['Balcon', '18,63 m²'])
     expect(table.rows).toContainEqual(['Suite parentale', '20,16 m²'])
     expect(table.total).toEqual(['Niveau R+1', '144,36 m²'])
+  })
+
+  it('toiture native de Pascal (D20-13 : A) : 4 pans à 1 %, débord 300 mm, contour du R+1 sans le balcon', () => {
+    const segs = Object.values(scene.nodes).filter((n) => n.type === 'roof-segment') as unknown as {
+      position: [number, number, number]; rotation: number; width: number; depth: number; pitch: number; roofType: string
+    }[]
+    expect(segs).toHaveLength(4)
+    for (const seg of segs) {
+      expect(seg.roofType).toBe('shed')
+      expect(Math.tan((seg.pitch * Math.PI) / 180) * 100).toBeCloseTo(1, 9)
+      const reach = getRoofSegmentDeckReach(seg as never)
+      expect(reach.x).toBeCloseTo(0.3, 9)
+      expect(reach.z).toBeCloseTo(0.3, 9)
+    }
+    // Emprise du toit (débords compris) : 15072 × 13072 mm, de (−300, −300) à (14772, 12772).
+    const corners = segs.flatMap((seg) => {
+      const across = Math.abs(Math.sin(seg.rotation)) < 0.5
+      const hx = (across ? seg.width : seg.depth) / 2 + 0.3
+      const hz = (across ? seg.depth : seg.width) / 2 + 0.3
+      return [[seg.position[0] - hx, seg.position[2] - hz], [seg.position[0] + hx, seg.position[2] + hz]]
+    })
+    const mm = (v: number) => Math.round(v * 1000)
+    expect([mm(Math.min(...corners.map((c) => c[0]))), mm(Math.min(...corners.map((c) => c[1]))), mm(Math.max(...corners.map((c) => c[0]))), mm(Math.max(...corners.map((c) => c[1])))]).toEqual([-300, -300, 14772, 12772])
+  })
+
+  it('escalier d’accès au toit (D20-11 : A) : escalier de Pascal sur le balcon, 2340 × 6389 mm, monte de 3000 mm', () => {
+    const stair = Object.values(scene.nodes).find((n) => n.type === 'stair' && n.name === 'ESC_TOIT')!
+    expect(stair.parentId).toBe('level_R1')
+    const rise = (stair.children ?? []).reduce((sum, id) => sum + ((scene.nodes[id] as { height?: number }).height ?? 0), 0)
+    expect(Math.round(rise * 1000)).toBe(3000)
+    const lines = pascalLevelSymbols(scene.nodes, 'R1')!.lines.filter((l) => Math.min(l.x1, l.x2) > 11900 && Math.max(l.y1, l.y2) < 6500)
+    const xs = lines.flatMap((l) => [l.x1, l.x2])
+    const ys = lines.flatMap((l) => [l.y1, l.y2])
+    expect([Math.round(Math.min(...xs)), Math.round(Math.max(...xs)), Math.round(Math.min(...ys)), Math.round(Math.max(...ys))]).toEqual([11981, 14321, 0, 6389])
   })
 })

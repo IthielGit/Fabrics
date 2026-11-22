@@ -334,3 +334,4 @@ droite de la 3D) et onglet **Paramètres**.
 | RDC + R+1 dans une scène : surfaces de chaque niveau inchangées ; l'escalier qui monte du RDC est dessiné sur le R+1 (un seul nœud, dans le RDC) ; un escalier trop court n'y est pas | Auto : `scene/roomitBuilding.test.ts` |
 | Écran Vues : un onglet « Plan de niveau RDC / R+1 » par niveau, cotation réglable, export PDF du niveau seul avec flèche du nord | Nav. |
 | Tableau « Pièces Niveau … » à droite du plan d'un niveau (onglet Vues et PDF) : une ligne par pièce, surfaces des métrés, second tableau « Total Niveau … » (R+1 de ROOMIT : 144,36 m², balcon compris) | Auto : `building/views/areaTable.test.ts`, `scene/roomitBuilding.test.ts` ; Nav. |
+| Toiture native de Pascal du R+1 : 4 pans à 1 % (pente lue 0,573°), débord 300 mm, emprise −300 → 14772 × −300 → 12772 mm ; escalier d'accès au toit sur le balcon (2340 × 6389 mm, monte de 3000 mm) | Auto : `scene/roomitBuilding.test.ts` |

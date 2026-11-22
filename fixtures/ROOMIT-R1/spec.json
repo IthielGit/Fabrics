@@ -91,6 +91,12 @@
     {"ref": "P20", "x": 100, "y": 12372, "width": 200, "depth": 200},
     {"ref": "P21", "x": 4604, "y": 12372, "width": 200, "depth": 200}
   ],
+  "stairs": [
+    {"ref": "ESC_TOIT", "x": 14321, "y": 6389, "rotation": 180, "shape": "straight", "width": 2340, "length": 6389, "note": "escalier d'accès au toit (page 7, D20-11 : A), posé sur le balcon : 14 marches de 445 mm, monte du nord du balcon vers le sud, arrive sur la toiture de la Suite parentale ; largeur relevée 2341 mm"}
+  ],
+  "roofs": [
+    {"ref": "TOITURE", "overhang": 300, "slopePercent": 1, "note": "page 7 : contour du R+1 sans le balcon, débord 300 mm, « Pente 1 % » vers l'ouest (partie sud) et vers le nord (partie nord) ; D20-13 : A", "segments": [{"ref": "NORD_BAR", "rect": [4504, 0, 11681, 1670], "downhill": "N"}, {"ref": "NORD", "rect": [0, 1670, 11681, 6688], "downhill": "N"}, {"ref": "SUD", "rect": [0, 6688, 14472, 11478], "downhill": "O"}, {"ref": "SUD_CH2", "rect": [0, 11478, 4704, 12472], "downhill": "O"}]}
+  ],
   "items": [
     {"ref": "LIT_CH3", "assetId": "double-bed", "name": "Lit double", "x": 1216, "y": 3388, "rotation": 90, "size": [1600, 500, 2000]},
     {"ref": "LIT_CH2", "assetId": "double-bed", "name": "Lit double", "x": 1216, "y": 10587, "rotation": 90, "size": [1600, 500, 2000]},

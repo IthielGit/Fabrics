@@ -48,4 +48,11 @@ Test : `src/features/scene/roomitR1.test.ts`.
 - Balcon : pièce sans mur sur ses deux côtés ouverts ; garde-corps non modélisés.
 - Mobilier du catalogue de Pascal placé à l'œil : 3 lits, la table de la Bibliothèque, le canapé du
   balcon, 3 WC. Pas encore : fauteuils, bureaux, lavabos, douches, baignoire, rangements.
-- Toiture : pas dans cet exemple. Elle sera ajoutée avec le plan de toiture (20.1b, tâche 4).
+- **Toiture** (page 7, D20-13 : A) : toiture native de Pascal, 4 pans « un pan » à 1 % sur le contour du
+  R+1 sans le balcon, débord 300 mm. Pans nord (BAR et Chambre 3 → Bibliothèque) vers le nord, pans sud
+  vers l'ouest, comme les deux flèches « Pente 1 % ». Bord de 100 mm (double trait) pas encore modélisé.
+- **Escalier d'accès au toit** (page 7, D20-11 : A) : escalier droit de Pascal sur le balcon, 2340 × 6389 mm,
+  monte de 3000 mm du nord du balcon vers le sud, jusqu'à la toiture de la Suite parentale.
+  **Incohérence de la référence** : la page 6 (R+1) ne dessine pas cet escalier et montre des meubles à sa
+  place (canapé, fauteuils) ; l'escalier occupe 2340 mm des 2791 mm du balcon. L'escalier est gardé
+  (il est sur la page 7), le canapé aussi, en attendant l'avis de l'utilisateur.

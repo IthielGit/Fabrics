@@ -130,6 +130,14 @@ déduite de la surface de la pièce par Pascal ; la référence la déduit (+0,0
 **Retenu : A**, on garde la règle de Pascal et l'écart est accepté. L'option B (déduire ces cloisons,
 comme Revit) est notée dans les Idées de `docs/PROGRESS.md`.
 
+## D20-13 · Modèle de la toiture à 1 % (2026-11-22, 20.1b tâche 4)
+
+La toiture de Villa ROOMIT a une pente de 1 % (0,573°) ; la toiture de Fabrics refuse une pente sous 1°.
+**Retenu : A**, toiture **native de Pascal** : 4 pans « un pan » de 1 %, débord 300 mm, partie nord
+vers le nord, partie sud vers l'ouest. Le plan de toiture lit contour, cotes et flèches dans les pans ;
+la 3D de Pascal montre la pente. Les façades et coupes de Fabrics liront cette toiture en 20.1c.
+(Option B non retenue : toiture plate de Fabrics avec un réglage « pente d'écoulement ».)
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et
