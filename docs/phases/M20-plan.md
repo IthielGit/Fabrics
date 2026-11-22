@@ -107,6 +107,23 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
 8. **Suivi** : roadmap (20.1b), `PROGRESS.md`, `docs/regression-checklist.md`, `npm run check:all`,
    `packages/pascal/FABRICS_CHANGES.md` si un fichier de Pascal est touché (règle E-001 de Pascal).
 
+### Constats avant la tâche 4 (2026-11-22)
+
+- **Relevé de la page 7** (même méthode que les pages 5 et 6) : la toiture est le contour du R+1
+  **sans le balcon**, agrandi d'un **débord de 300 mm** de tous les côtés (largeur 14472 + 2 × 300 =
+  15072 mm, cote `1507`). Le double trait est un bord de 100 mm d'épaisseur (acrotère ou rive).
+  L'escalier d'accès est posé **sur le balcon** : droit, environ 2340 mm de large, 14 marches sur
+  6390 mm, du bas du balcon jusqu'au bord de la toiture. Deux flèches « Pente 1 % » : une vers
+  l'ouest (partie sud du toit), une vers le nord (partie nord).
+- **Pente lisible** : oui, `pitch` des pans de Pascal (degrés, 0 à 75°). 1 % = 0,573°.
+- **Pente faible** : les métrés de Pascal (`roofQuantities`) acceptent 0,573° sans erreur
+  (surface réelle = surface en plan × 1,00005). Mais **la toiture de Fabrics refuse un toit en pente
+  sous 1°** (`MIN_PITCH`) : à 1 %, elle n'existe qu'en toiture plate, sans pente.
+- **Contour en L à redents** : un pan de Pascal est un rectangle ; il faut 4 pans réunis dans une
+  toiture. Fabrics ne sait aujourd'hui lire qu'une toiture d'un seul pan (`roofFromPascal`) : ses
+  façades et coupes ne verraient pas cette toiture (à traiter en 20.1c).
+- Décision à prendre : **D20-13** (ci-dessous).
+
 ### Points à vérifier avant de coder (inconnus pour l'instant)
 
 - La pente d'un toit Pascal est-elle un champ lisible (pente en degrés, `pitch` dans `roofQuantities`) ?
@@ -127,6 +144,15 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
 - **D20-11 · Escalier d'accès au toit**
   - **A (retenue)** : escalier natif de Pascal, dessiné avec le même symbole que l'escalier du niveau.
   - B : simple symbole de plan, sans géométrie 3D.
+
+- **D20-13 · Modèle de la toiture à 1 % (proposée le 2026-11-22, en attente)**
+  - **A (recommandée)** : toiture **native de Pascal**, 4 pans « un pan » de 1 % (0,573°), débord
+    300 mm. Partie nord pente vers le nord, partie sud vers l'ouest. Le plan de toiture dessine le
+    contour, les cotes et une flèche par sens de pente, tout lu dans les pans. La 3D de Pascal montre la
+    vraie pente. Les façades et coupes de Fabrics la liront en 20.1c.
+  - B : **toiture plate** de Fabrics (toiture-terrasse) avec un réglage « pente d'écoulement » (%) et
+    son sens, gardé dans le modèle. Façades et coupes la voient tout de suite, la 3D reste plate.
+    Il faut ajouter ce réglage au modèle.
 
 ### Critères d'acceptation (20.1b)
 
