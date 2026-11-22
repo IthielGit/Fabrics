@@ -59,7 +59,7 @@ Garder les deux ferait **deux moteurs de dessin et deux bibliothèques PDF** (in
 
 ## 20.1b — Plan de niveau R+1 et plan de toiture (feuilles 06 et 07 de Villa ROOMIT)
 
-Proposé le 2026-11-22, **feu vert de l'utilisateur le 2026-11-22** (D20-10 : A, D20-11 : A). Modèle : `/model opus`.
+Proposé le 2026-11-22, **feu vert de l'utilisateur le 2026-11-22** (D20-10 : A, D20-11 : A). **Fait le 2026-11-22** (essai final dans le navigateur à la fin de M20). Modèle : `/model opus`.
 Référence : `Villa ROOMIT_B.pdf`, pages 6 (plan de niveau R+1, n° 06) et 7 (plan de toiture, n° 07), A2 1:50.
 Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 mm).
 
@@ -102,9 +102,9 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
    Reprise de `roofQuantities.ts`, sans nouveau calcul.
 6. **[fait le 2026-11-22 : `scene/roofModelLink.test.ts` : pente 1 → 2 % (flèches), débord 300 → 400 mm (cote d'ensemble 15072 → 15272 mm, surface en plan), rien d'enregistré hors de la scène ; aucun code à changer]** **Lien au modèle** : déplacer un débord ou changer la pente dans Pascal met à jour le plan de
    toiture (cotes, flèches) sans autre action. Test automatisé.
-7. **Exactitude imprimée** : à 1:50, les cotes des pages 6 et 7 se mesurent à la règle comme sur la
+7. **[fait le 2026-11-22 : `export/printScaleR1.test.ts` (lecture du PDF : tous les traits du R+1 et de la toiture à ≤ 0,1 mm à 1:50 ; toiture aussi à 1:100 sur A3 et 1:200 sur A4) ; aide commune `export/printedPdf.ts`]** **Exactitude imprimée** : à 1:50, les cotes des pages 6 et 7 se mesurent à la règle comme sur la
    référence (écart ≤ 0,1 mm, test de `printScale` étendu).
-8. **Suivi** : roadmap (20.1b), `PROGRESS.md`, `docs/regression-checklist.md`, `npm run check:all`,
+8. **[fait le 2026-11-22 ; `check:all` et essai dans le navigateur reportés à la fin de M20, demande de l'utilisateur]** **Suivi** : roadmap (20.1b), `PROGRESS.md`, `docs/regression-checklist.md`, `npm run check:all`,
    `packages/pascal/FABRICS_CHANGES.md` si un fichier de Pascal est touché (règle E-001 de Pascal).
 
 ### Constats avant la tâche 4 (2026-11-22)

@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1 (validé dans le navigateur), tableau des surfaces, validé dans le navigateur ; tâche 4 plan de toiture faite (D20-13 : A) ; tâche 5 surfaces de toiture sur demande faite (D20-15 : A)). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1 (validé dans le navigateur), tableau des surfaces, validé dans le navigateur ; tâche 4 plan de toiture faite (D20-13 : A) ; tâche 5 surfaces de toiture sur demande faite (D20-15 : A)) ; **20.1b fait le 2026-11-22** ; suite : 20.1c à 20.9 (demande de l'utilisateur : tout M20, essai dans le navigateur à la fin). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-22 — M20 · 20.1b tâches 7 et 8 : exactitude imprimée, 20.1b terminé
+- Test `src/features/export/printScaleR1.test.ts` : le PDF est relu (`export/printedPdf.ts`, aide commune avec le test du RDC). R+1 à 1:50 sur A2 (plan, cotes, tableau des surfaces) : **tous les traits** à leur place et à l'échelle (≤ 0,1 mm), 4304 mm = 86,08 mm. Toiture à 1:50 (15072 mm = 301,44 mm, 4504 mm = 90,08 mm), 1:100 sur A3 et 1:200 sur A4.
+- **20.1b terminé.** `npm run check:all` et l'essai complet dans le navigateur sont faits à la fin de M20 (demande de l'utilisateur).
 
 ### 2026-11-22 — M20 · 20.1b tâche 6 : plan de toiture lié au modèle
 - Demande de l'utilisateur : **terminer tout M20**, commit à chaque fin de tâche, tests dans le navigateur à la fin de M20. Les choix rencontrés en route sont pris par Claude (option la plus sûre), notés « proposé par Claude, à valider » dans `docs/phases/M20-decisions.md`.
