@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étape 1 faite : exemple ROOMIT-R1). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,16 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-22 — M20 · 20.1b étape 1 : exemple ROOMIT-R1 (R+1 de la Villa ROOMIT)
+- Relevé au mm de la page 6 du PDF (PyMuPDF, outil local hors projet), **dans le même repère que le RDC** (les deux pages ont la même emprise, 14472 × 12472 mm) : 22 murs, 19 ouvertures, 21 poteaux, 11 pièces, une séparation de pièces, l'escalier en L, 8 meubles du catalogue de Pascal. Fichiers : `fixtures/ROOMIT-R1/spec.json`, `README.md` ; test `src/features/scene/roomitR1.test.ts`.
+- Surfaces recalculées à travers la scène Pascal : **7 pièces sur 11 identiques** au tableau « Pièces Niveau R+1 ». Total balcon compris (D20-10 : A) : **144,36 m²** pour 144,16 m².
+  - SDB 1 et SDB 2 : 4,64 au lieu de 4,55 m². La référence déduit la petite cloison de la douche (100 × 912 mm) ; Pascal ne déduit pas une cloison dont un bout est libre. **Choix à faire par l'utilisateur.**
+  - BAR : 18,46 au lieu de 18,47 (18,4645 m², arrondi).
+  - Bibliothèque : 21,52 au lieu de 21,50. Bibliothèque et Dégagement forment un seul espace ouvert, sans ligne de séparation sur la référence : la séparation de pièces est placée pour garder 5,65 m² au Dégagement.
+- Appris : Pascal détecte les pièces à partir des **axes** des murs. Un mur arrêté sur la face d'un autre fusionne deux pièces (au premier essai, Bibliothèque et Dégagement donnaient une seule pièce de 27,17 m²). Tous les murs de l'exemple se rejoignent donc sur leurs axes.
+- Hypothèses à vérifier (README) : fenêtre d'angle du BAR modélisée par deux fenêtres de 1400 × 1500 mm, portes sans étiquette, escalier repris du RDC pour dessiner le niveau seul. La toiture viendra avec le plan de toiture (tâche 4).
+- Vérification : build ✓ lint ✓ 3 225 tests ✓. Contrôle visuel : plan R+1 exporté en PDF A2 1:50, comparé à la page 6 (mêmes murs, poteaux, pièces, repères `PP` / `All.`).
 
 ### 2026-11-22 — M20 · 20.1a terminé, feu vert pour 20.1b
 - Impression à 100 % à 1:50 mesurée à la règle par l'utilisateur : 20.1a est fait (roadmap, `docs/regression-checklist.md` section 3).

@@ -1,0 +1,139 @@
+{
+  "id": "ROOMIT-R1",
+  "status": "Relevé par Claude le 2026-11-22 (M20 20.1b) dans le PDF vectoriel « Villa ROOMIT_B.pdf », page 6 (plan de niveau R+1, A2, 1:50) : traits des murs et poteaux mesurés au mm (voir README.md). À vérifier par l'utilisateur.",
+  "source": "C:/Users/My PC/Downloads/Villa ROOMIT_B.pdf, page 6 (fichier de l'utilisateur, non versionné)",
+  "units": {
+    "length": "mm",
+    "area": "m² (2 décimales)"
+  },
+  "conventions": {
+    "origin": "même repère que ROOMIT-RDC : face extérieure du mur gauche (x = 0) et face extérieure du mur haut (y = 0) ; les pages 5 et 6 ont la même emprise (14472 × 12472 mm)",
+    "walls": "axe des murs ; murs porteurs 200 mm (poteaux 200 × 200 compris), cloisons 100 mm",
+    "roomArea": "surface au tracé, au nu intérieur des murs (comme ROOMIT-RDC)",
+    "openingOffset": "distance du début du côté du mur au milieu de l'ouverture",
+    "openingWidth": "dimension « PP » de la référence ; sans étiquette : vide mesuré moins 50 mm (portes battantes) ou vide mesuré (coulissants) ; fenêtres : largeur et hauteur des chaînes de cotes, allège « All. »"
+  },
+  "level": {
+    "id": "R1",
+    "name": "R+1",
+    "elevation": 3000,
+    "height": 3000,
+    "slabThickness": 120
+  },
+  "walls": [
+    {"ref": "GAUCHE", "thickness": 200, "height": 3000, "material": "brick", "axis": [100, 1770, 100, 12372]},
+    {"ref": "CH3_H", "thickness": 200, "height": 3000, "material": "brick", "axis": [100, 1770, 4604, 1770]},
+    {"ref": "AXE_G", "thickness": 200, "height": 3000, "material": "brick", "axis": [4604, 100, 4604, 5192]},
+    {"ref": "BAR_H", "thickness": 200, "height": 3000, "material": "brick", "axis": [4604, 100, 11581, 100]},
+    {"ref": "BAL_G", "thickness": 200, "height": 3000, "material": "brick", "axis": [11581, 100, 11581, 6788]},
+    {"ref": "BAR_B", "thickness": 200, "height": 3000, "material": "brick", "axis": [6324, 2600, 11581, 2600]},
+    {"ref": "ALC_D", "thickness": 200, "height": 3000, "material": "brick", "axis": [6324, 2600, 6324, 4493]},
+    {"ref": "ALC_B", "thickness": 200, "height": 3000, "material": "brick", "axis": [4604, 4493, 6324, 4493]},
+    {"ref": "CH3_B", "thickness": 100, "height": 3000, "material": "brick", "axis": [100, 5142, 4604, 5142]},
+    {"ref": "SDB_SEP", "thickness": 200, "height": 3000, "material": "brick", "axis": [100, 6788, 3400, 6788]},
+    {"ref": "SDB2_CL", "thickness": 100, "height": 3000, "material": "brick", "axis": [1153, 6788, 1153, 5776]},
+    {"ref": "SDB1_CL", "thickness": 100, "height": 3000, "material": "brick", "axis": [1153, 6788, 1153, 7801]},
+    {"ref": "DEG_G", "thickness": 200, "height": 3000, "material": "brick", "axis": [3400, 5142, 3400, 8434]},
+    {"ref": "DEG_B", "thickness": 200, "height": 3000, "material": "brick", "axis": [3400, 8384, 4604, 8384]},
+    {"ref": "CH2_H", "thickness": 100, "height": 3000, "material": "brick", "axis": [100, 8434, 3400, 8434]},
+    {"ref": "AXE_G_B", "thickness": 200, "height": 3000, "material": "brick", "axis": [4604, 6788, 4604, 12372]},
+    {"ref": "CH2_B", "thickness": 200, "height": 3000, "material": "brick", "axis": [100, 12372, 4604, 12372]},
+    {"ref": "DRE_H", "thickness": 200, "height": 3000, "material": "brick", "axis": [4604, 6788, 14372, 6788]},
+    {"ref": "DRE_B", "thickness": 100, "height": 3000, "material": "brick", "axis": [4604, 9693, 9580, 9693]},
+    {"ref": "DRE_D", "thickness": 200, "height": 3000, "material": "brick", "axis": [9580, 6788, 9580, 11378]},
+    {"ref": "SUI_D", "thickness": 200, "height": 3000, "material": "brick", "axis": [14372, 6788, 14372, 11378]},
+    {"ref": "BAS", "thickness": 200, "height": 3000, "material": "brick", "axis": [4604, 11378, 14372, 11378]}
+  ],
+  "openings": [
+    {"ref": "F_CH3", "kind": "window", "wall": "CH3_H", "segment": 0, "offset": 2252, "width": 1500, "height": 1000, "sillHeight": 1100},
+    {"ref": "F_SDB2", "kind": "window", "wall": "GAUCHE", "segment": 0, "offset": 4170, "width": 600, "height": 600, "sillHeight": 1500},
+    {"ref": "F_SDB1", "kind": "window", "wall": "GAUCHE", "segment": 0, "offset": 5866, "width": 600, "height": 600, "sillHeight": 1500},
+    {"ref": "F_CH2", "kind": "window", "wall": "CH2_B", "segment": 0, "offset": 2252, "width": 1500, "height": 1000, "sillHeight": 1100},
+    {"ref": "F_BAR", "kind": "window", "wall": "BAR_H", "segment": 0, "offset": 2499, "width": 1500, "height": 1000, "sillHeight": 1100},
+    {"ref": "F_ANGLE_H", "kind": "window", "wall": "BAR_H", "segment": 0, "offset": 6174, "width": 1400, "height": 1500, "sillHeight": 800},
+    {"ref": "F_ANGLE_D", "kind": "window", "wall": "BAL_G", "segment": 0, "offset": 800, "width": 1400, "height": 1500, "sillHeight": 800},
+    {"ref": "P_BIB_BAL", "kind": "door", "wall": "BAL_G", "segment": 0, "offset": 5523, "width": 2000, "height": 2100, "sillHeight": 0},
+    {"ref": "P_BAR_BIB", "kind": "door", "wall": "ALC_D", "segment": 0, "offset": 930, "width": 1500, "height": 2100, "sillHeight": 0},
+    {"ref": "P_SDB2", "kind": "door", "wall": "CH3_B", "segment": 0, "offset": 2824, "width": 700, "height": 2100, "sillHeight": 0},
+    {"ref": "P_CH3", "kind": "door", "wall": "CH3_B", "segment": 0, "offset": 3902, "width": 900, "height": 2100, "sillHeight": 0},
+    {"ref": "P_SDB1", "kind": "door", "wall": "CH2_H", "segment": 0, "offset": 2824, "width": 700, "height": 2100, "sillHeight": 0},
+    {"ref": "P_CH2", "kind": "door", "wall": "DEG_B", "segment": 0, "offset": 602, "width": 900, "height": 2100, "sillHeight": 0},
+    {"ref": "P_SUITE", "kind": "door", "wall": "DRE_H", "segment": 0, "offset": 5936, "width": 1400, "height": 2100, "sillHeight": 0},
+    {"ref": "P_SUITE_BAL", "kind": "door", "wall": "DRE_H", "segment": 0, "offset": 8410, "width": 2000, "height": 2100, "sillHeight": 0},
+    {"ref": "P_DRE_SDB3", "kind": "door", "wall": "DRE_B", "segment": 0, "offset": 2591, "width": 1200, "height": 2100, "sillHeight": 0},
+    {"ref": "P_DRE_SUITE", "kind": "door", "wall": "DRE_D", "segment": 0, "offset": 1980, "width": 1200, "height": 2100, "sillHeight": 0},
+    {"ref": "F_SUITE", "kind": "window", "wall": "SUI_D", "segment": 0, "offset": 2295, "width": 1500, "height": 1000, "sillHeight": 1100},
+    {"ref": "F_SDB3", "kind": "window", "wall": "BAS", "segment": 0, "offset": 1839, "width": 600, "height": 600, "sillHeight": 1500}
+  ],
+  "separators": [
+    {"ref": "DEG_BIB", "line": [5776, 4493, 5776, 6788], "note": "aucune ligne sur la référence : position déduite des surfaces du Dégagement (5,65 m²) et de la Bibliothèque (21,50 m²), qui forment un seul espace ouvert"}
+  ],
+  "columns": [
+    {"ref": "P01", "x": 4604, "y": 100, "width": 200, "depth": 200},
+    {"ref": "P02", "x": 9580, "y": 100, "width": 200, "depth": 200},
+    {"ref": "P03", "x": 14372, "y": 100, "width": 200, "depth": 200},
+    {"ref": "P04", "x": 100, "y": 1770, "width": 200, "depth": 200},
+    {"ref": "P05", "x": 4604, "y": 1770, "width": 200, "depth": 200},
+    {"ref": "P06", "x": 6324, "y": 2600, "width": 200, "depth": 200},
+    {"ref": "P07", "x": 11581, "y": 2600, "width": 200, "depth": 200},
+    {"ref": "P08", "x": 4604, "y": 4493, "width": 200, "depth": 200},
+    {"ref": "P09", "x": 100, "y": 4593, "width": 200, "depth": 200},
+    {"ref": "P10", "x": 100, "y": 6788, "width": 200, "depth": 200},
+    {"ref": "P11", "x": 4604, "y": 6788, "width": 200, "depth": 200},
+    {"ref": "P12", "x": 9580, "y": 6788, "width": 200, "depth": 200},
+    {"ref": "P13", "x": 11581, "y": 6788, "width": 200, "depth": 200},
+    {"ref": "P14", "x": 14372, "y": 6788, "width": 200, "depth": 200},
+    {"ref": "P15", "x": 100, "y": 8384, "width": 200, "depth": 200},
+    {"ref": "P16", "x": 4604, "y": 8384, "width": 200, "depth": 200},
+    {"ref": "P17", "x": 4604, "y": 11378, "width": 200, "depth": 200},
+    {"ref": "P18", "x": 9580, "y": 11378, "width": 200, "depth": 200},
+    {"ref": "P19", "x": 14372, "y": 11378, "width": 200, "depth": 200},
+    {"ref": "P20", "x": 100, "y": 12372, "width": 200, "depth": 200},
+    {"ref": "P21", "x": 4604, "y": 12372, "width": 200, "depth": 200}
+  ],
+  "stairs": [
+    {"ref": "ESC", "x": 8460, "y": 2700, "shape": "l", "width": 950, "length": 940, "length2": 2071, "mirrored": true, "note": "escalier en L qui monte du RDC (même emprise que ROOMIT-RDC), repris ici pour dessiner le niveau seul"}
+  ],
+  "items": [
+    {"ref": "LIT_CH3", "assetId": "double-bed", "name": "Lit double", "x": 1216, "y": 3388, "rotation": 90, "size": [1600, 500, 2000]},
+    {"ref": "LIT_CH2", "assetId": "double-bed", "name": "Lit double", "x": 1216, "y": 10587, "rotation": 90, "size": [1600, 500, 2000]},
+    {"ref": "LIT_SUITE", "assetId": "double-bed", "name": "Lit double", "x": 12101, "y": 10278, "rotation": 180, "size": [1600, 500, 2000]},
+    {"ref": "TABLE_BIB", "assetId": "dining-table", "name": "Table", "x": 8275, "y": 5400, "size": [1120, 750, 530]},
+    {"ref": "CANAPE_BAL", "assetId": "sofa", "name": "Canapé", "x": 13800, "y": 3330, "rotation": 90, "size": [2260, 800, 950]},
+    {"ref": "WC_SDB2", "assetId": "toilet", "name": "WC", "x": 550, "y": 6300, "rotation": 90, "size": [400, 800, 700]},
+    {"ref": "WC_SDB1", "assetId": "toilet", "name": "WC", "x": 550, "y": 7230, "rotation": 90, "size": [400, 800, 700]},
+    {"ref": "WC_SDB3", "assetId": "toilet", "name": "WC", "x": 6465, "y": 10915, "rotation": 180, "size": [400, 800, 700]}
+  ],
+  "rooms": [
+    {"name": "BAR", "polygon": [4704, 200, 11481, 200, 11481, 2500, 6224, 2500, 6224, 4393, 4704, 4393]},
+    {"name": "Dressing", "polygon": [4704, 6888, 9480, 6888, 9480, 9643, 4704, 9643]},
+    {"name": "Chambre 3", "polygon": [200, 1870, 4504, 1870, 4504, 5092, 200, 5092]},
+    {"name": "SDB 2", "polygon": [200, 5192, 3300, 5192, 3300, 6688, 1203, 6688, 1203, 5776, 1103, 5776, 1103, 6688, 200, 6688]},
+    {"name": "SDB 1", "polygon": [200, 6888, 1103, 6888, 1103, 7801, 1203, 7801, 1203, 6888, 3300, 6888, 3300, 8384, 200, 8384]},
+    {"name": "Chambre 2", "polygon": [200, 8484, 4504, 8484, 4504, 12272, 200, 12272]},
+    {"name": "Balcon", "polygon": [11681, 0, 14272, 0, 14272, 200, 14472, 200, 14472, 6688, 11681, 6688]},
+    {"name": "Suite parentale", "polygon": [9680, 6888, 14272, 6888, 14272, 11278, 9680, 11278]},
+    {"name": "SDB 3", "polygon": [4704, 9743, 9480, 9743, 9480, 11278, 4704, 11278]},
+    {"name": "Bibliothèque", "polygon": [6424, 2700, 11481, 2700, 11481, 6688, 5776, 6688, 5776, 4593, 6424, 4593]},
+    {"name": "Dégagement", "polygon": [3500, 5192, 4704, 5192, 4704, 4593, 5776, 4593, 5776, 6688, 4504, 6688, 4504, 8284, 3500, 8284]}
+  ],
+  "expected": {
+    "reference": "tableau « Pièces Niveau R+1 » de la page 6",
+    "levelTotal_reference_m2": 144.16,
+    "rooms": [
+      {"name": "BAR", "reference_m2": 18.47, "area_m2": 18.46, "calc": "6777 × 2300 + 1520 × 1893 = 18,4645 m² (renfoncement de gauche, ouvert sur le BAR) ; arrondi 18,46, la référence affiche 18,47"},
+      {"name": "Dressing", "reference_m2": 13.16, "area_m2": 13.16, "calc": "4776 × 2755"},
+      {"name": "Chambre 3", "reference_m2": 13.87, "area_m2": 13.87, "calc": "4304 × 3222"},
+      {"name": "SDB 2", "reference_m2": 4.55, "area_m2": 4.64, "calc": "3100 × 1496 = 4,64 m² ; la référence déduit la cloison de la douche (100 × 912 = 0,09 m²), Pascal ne déduit pas une cloison isolée (bout libre) : écart +0,09"},
+      {"name": "SDB 1", "reference_m2": 4.55, "area_m2": 4.64, "calc": "3100 × 1496 = 4,64 m² ; la référence déduit la cloison de la douche (100 × 913 = 0,09 m²), Pascal ne déduit pas une cloison isolée (bout libre) : écart +0,09"},
+      {"name": "Chambre 2", "reference_m2": 16.3, "area_m2": 16.3, "calc": "4304 × 3788"},
+      {"name": "Balcon", "reference_m2": 18.63, "area_m2": 18.63, "calc": "2791 × 6688 − 200 × 200 (poteau d'angle) ; balcon compté dans le total du niveau (D20-10 : A)"},
+      {"name": "Suite parentale", "reference_m2": 20.16, "area_m2": 20.16, "calc": "4592 × 4390"},
+      {"name": "SDB 3", "reference_m2": 7.33, "area_m2": 7.33, "calc": "4776 × 1535"},
+      {"name": "Bibliothèque", "reference_m2": 21.5, "area_m2": 21.52, "calc": "5057 × 3988 + 648 × 2095 (jusqu'à la séparation x = 5776) ; +0,02 m² : la référence arrête le couloir du Dégagement 19 mm plus bas (8265 au lieu de la face du mur, 8284), la séparation est placée pour garder 5,65 m² au Dégagement"},
+      {"name": "Dégagement", "reference_m2": 5.65, "area_m2": 5.65, "calc": "1004 × 3092 (couloir) + 200 × 1496 (passage) + 1072 × 2095 (jusqu'à la séparation x = 5776)"}
+    ],
+    "roomsTotal_m2": 144.36,
+    "roomsTotalCalc": "somme des surfaces non arrondies ; comme la référence, le total inclut le balcon (D20-10 : A) ; 144,16 + 0,09 + 0,09 (cloisons des douches) + 0,02 (Bibliothèque) ≈ 144,36"
+  }
+}

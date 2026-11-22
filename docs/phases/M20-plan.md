@@ -84,10 +84,10 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
 
 ### Tâches
 
-1. **Exemple ROOMIT-R1** (`fixtures/ROOMIT-R1/`) : scène Pascal du R+1 saisie au mm (murs, poteaux,
+1. **[fait le 2026-11-22 : 7 pièces sur 11 identiques, total 144,36 m² pour 144,16 ; SDB 1 et 2 +0,09 m² (cloison de douche non déduite par Pascal, à trancher), BAR −0,01 (arrondi), Bibliothèque +0,02 ; toiture reportée à la tâche 4]** **Exemple ROOMIT-R1** (`fixtures/ROOMIT-R1/`) : scène Pascal du R+1 saisie au mm (murs, poteaux,
    portes, fenêtres, escalier, pièces, mobilier, balcon, toiture avec ses pentes), sur le modèle de
    `fixtures/ROOMIT-RDC`. Valeurs attendues : les 11 surfaces de la page 6 et le total 144,16 m².
-   Test : `src/features/scene/migrate/fixtures.test.ts` (étendu).
+   Test : `src/features/scene/roomitR1.test.ts` (sur le modèle de `roomit.test.ts`).
 2. **Plan de niveau R+1** : même chaîne que le RDC (20.1a). Sélection du niveau R+1 dans la vue
    de la feuille. Contrôle : mêmes éléments, mêmes cotes, mêmes repères que la page 6.
 3. **Tableau de surfaces sur la feuille** : un tableau « Pièces Niveau R+1 » (pièce, surface) et un

@@ -325,3 +325,9 @@ droite de la 3D) et onglet **Paramètres**.
 | Cloison SDB_G avancée de 500 mm dans Pascal → cote SDB 1475 → 975 mm, SDB 6,47 → 4,28 m², Séjour 36,18 → 38,37 m² ; annuler rétablit ; rien du plan enregistré hors de la scène | Auto : `scene/modelLink.test.ts` ; Nav. |
 | PDF relu : à 1:50, 1000 mm = 20,0 mm, 14473 mm = 289,46 mm, les 1 214 traits du plan à ≤ 0,1 mm ; à 1:100 sur A3, 1000 mm = 10,0 mm | Auto : `export/printScale.test.ts` |
 | Impression à 100 % mesurée à la règle | Nav. (validé par l'utilisateur le 2026-11-22) |
+
+### M20 · 20.1b — R+1 et toiture (exemple ROOMIT-R1)
+| Critère | Vérification |
+|---|---|
+| Surfaces des 11 pièces du R+1 = tableau de la référence à l'écart expliqué près (`fixtures/ROOMIT-R1/spec.json`), total balcon compris 144,36 m² (référence 144,16, D20-10 : A), aucun avertissement de métré | Auto : `scene/roomitR1.test.ts` |
+| 21 poteaux, escalier et mobilier de Pascal dessinés sur le plan R+1 | Auto : `scene/roomitR1.test.ts` ; Nav. |
