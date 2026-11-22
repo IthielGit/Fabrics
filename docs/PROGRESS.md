@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1 (validé dans le navigateur), tableau des surfaces, validé dans le navigateur ; tâche 4 plan de toiture en cours, D20-13 : A). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1 (validé dans le navigateur), tableau des surfaces, validé dans le navigateur ; tâche 4 plan de toiture faite (D20-13 : A) ; tâche 5 surfaces de toiture sur demande faite (D20-15 : A)). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -53,10 +53,22 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-22 — M20 · 20.1b tâche 5 : surfaces de toiture sur demande, métrés sur la réunion des pans
+- Choix de l'utilisateur **D20-15 : A** : une toiture de plusieurs pans de Pascal est comptée sur la réunion de ses pans.
+- `src/features/scene/roofUnion.ts` (fonction pure, testée), branché dans `view/pascalQuantities.ts` :
+  - chaque morceau du toit appartient au premier pan qui le couvre ;
+  - surface réelle = surface en plan × facteur de pente du pan ;
+  - égouts : seulement les bouts sur le vrai bord du toit, comptés une fois.
+  - Exact pour plat, un pan, deux pans, croupe. Faîtage, arêtiers, ou forme à plusieurs pentes recouverte : remarque « Pans qui se recouvrent : faîtage et arêtiers à vérifier » dans les métrés.
+  - Une toiture d'un seul pan, ou des pans qui ne se recouvrent pas : métrés inchangés.
+- R+1 de ROOMIT : **161,12 m² en plan** (exactement l'aire du contour de la toiture), 161,13 m² réels, égouts 18065 mm. Avant : les 4 pans entiers, bandes de recouvrement comptées deux fois.
+- Onglet « Plan de toiture » : case **« Afficher les surfaces de toiture »**, décochée par défaut (D20-10). Cochée : tableau « Toiture R+1 » à droite du plan (une ligne par pan, surface réelle) et « Total toiture » (surface réelle, surface en plan, égouts, périmètre du contour 56288 mm), lus dans les métrés.
+
 ### 2026-11-22 — M20 · 20.1b tâche 4c : cotes du plan de toiture
 - Étape 4b validée par l'utilisateur.
 - `src/features/dimensioning/roofChains.ts` (fonction pure, testée) : de chaque côté du plan de toiture, une chaîne dont les graduations sont les extrémités des bords tournés vers ce côté (elle suit les redents), puis la cote d'ensemble plus loin. Mêmes écarts (800 / 600 mm) et même dessin que les cotes des plans de niveau (`annotationGraphics`).
 - R+1 de ROOMIT : **les 4 côtés redonnent exactement les cotes de la page 7** (au cm de la référence) : haut `4504 · 7777 · 2791` / `15072`, bas `5304 · 9768` / `15072`, gauche `1670 · 11402` / `13072`, droite `6688 · 5390 · 994` / `13072`.
+- **Validé par l'utilisateur le 2026-11-22.**
 - Pas encore : les cotes intérieures de la page 7 (`450 · 758`, `510 · 698 · 279`, `1021`, `669`, `519`, `99`), tracées à l'intérieur du contour ; ce qu'elles mesurent reste à lire sur la référence.
 
 ### 2026-11-22 — M20 · 20.1b tâche 4b : dessin du plan de toiture

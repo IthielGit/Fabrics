@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { fr } from '../../../i18n/fr'
 import type { Measurements } from '../../measurements/measurements'
-import { areaTableDrawing, levelAreaTable, withAreaTable } from './areaTable'
+import { areaTableDrawing, levelAreaTable, roofAreaTable, withAreaTable } from './areaTable'
+import type { NativeRoofQuantity } from '../../../types/document'
 import type { Drawing } from './drawing'
 
 const metres = (rooms: { name: string; area: number }[]) => ({ rooms }) as unknown as Measurements
@@ -40,5 +41,23 @@ describe('tableau des surfaces d’un niveau (M20 20.1b)', () => {
     expect(out.width).toBeGreaterThan(plan.width)
     expect(Math.min(...out.lines.slice(1).map((l) => Math.min(l.x1, l.x2)))).toBeGreaterThan(plan.width)
     expect(withAreaTable(plan, null, 100)).toBe(plan)
+  })
+
+  it('tableau de toiture : une ligne par pan, total de la surface réelle, puis surface en plan, égouts et périmètre', () => {
+    const roof = (realArea: number, projectedArea: number, eaveLength: number) => ({ realArea, projectedArea, eaveLength }) as NativeRoofQuantity
+    const table = roofAreaTable([roof(20e6, 19e6, 5000), roof(10e6, 9.5e6, 2500)], 30_000, 'R+1', fr.views.roofAreaTable)!
+    expect(table.rows).toEqual([
+      ['Pan 1', '20,00 m²'],
+      ['Pan 2', '10,00 m²'],
+    ])
+    expect(table.total).toEqual(['Surface réelle', '30,00 m²'])
+    expect(table.extraTotals).toEqual([
+      ['Surface en plan', '28,50 m²'],
+      ['Égouts', '7500 mm'],
+      ['Périmètre', '30000 mm'],
+    ])
+    const d = areaTableDrawing(table, 0, 0, 100)
+    expect(d.texts.map((t) => t.text)).toContain('Périmètre')
+    expect(roofAreaTable([], 0, 'R+1', fr.views.roofAreaTable)).toBeNull()
   })
 })

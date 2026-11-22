@@ -1,4 +1,5 @@
-import { formatArea } from '../../units/format'
+import { formatArea, formatLength } from '../../units/format'
+import type { NativeRoofQuantity } from '../../../types/document'
 import type { Measurements } from '../../measurements/measurements'
 import type { DrawLine, DrawText, Drawing } from './drawing'
 
@@ -22,6 +23,8 @@ export interface AreaTable {
   rows: [string, string][]
   totalTitle: string
   total: [string, string]
+  /** Lignes ajoutées sous le total (tableau de toiture : surface en plan, égouts, périmètre). */
+  extraTotals?: [string, string][]
 }
 
 /** Contenu du tableau à partir des métrés d'un niveau ; `null` si le niveau n'a pas de pièce. */
@@ -37,6 +40,40 @@ export function levelAreaTable(measurements: Measurements, levelName: string, la
   }
 }
 
+export interface RoofAreaTableLabels {
+  title: (levelName: string) => string
+  pan: string
+  area: string
+  panRow: (index: number) => string
+  totalTitle: string
+  real: string
+  plan: string
+  eaves: string
+  perimeter: string
+}
+
+/**
+ * Tableau des surfaces de toiture d'un niveau, affiché sur la feuille de toiture seulement sur demande
+ * (D20-10 : A). Valeurs des métrés (pans comptés sur leur réunion, D20-15) ; le périmètre est la
+ * longueur du contour de la toiture (mm). `null` sans pan.
+ */
+export function roofAreaTable(roofs: readonly NativeRoofQuantity[], perimeter: number, levelName: string, labels: RoofAreaTableLabels): AreaTable | null {
+  if (roofs.length === 0) return null
+  const sum = (f: (r: NativeRoofQuantity) => number) => roofs.reduce((s, r) => s + f(r), 0)
+  return {
+    title: labels.title(levelName),
+    header: [labels.pan, labels.area],
+    rows: roofs.map((r, i) => [labels.panRow(i + 1), formatArea(r.realArea)]),
+    totalTitle: labels.totalTitle,
+    total: [labels.real, formatArea(sum((r) => r.realArea))],
+    extraTotals: [
+      [labels.plan, formatArea(sum((r) => r.projectedArea))],
+      [labels.eaves, formatLength(sum((r) => r.eaveLength))],
+      [labels.perimeter, formatLength(perimeter)],
+    ],
+  }
+}
+
 /** Largeur approximative d'un texte (police sans empattement, gras compris), en mm, pour une hauteur `size`. */
 function textWidth(text: string, size: number): number {
   return text.length * size * 0.68
@@ -49,8 +86,8 @@ function textWidth(text: string, size: number): number {
 export function areaTableDrawing(table: AreaTable, x: number, y: number, font: number): { lines: DrawLine[]; texts: DrawText[]; width: number; height: number } {
   const rowH = font * 1.8
   const pad = font * 0.8
-  const col0 = Math.max(...[table.header[0], table.total[0], ...table.rows.map((r) => r[0])].map((t) => textWidth(t, font))) + pad * 2
-  const col1 = Math.max(...[table.header[1], table.total[1], ...table.rows.map((r) => r[1])].map((t) => textWidth(t, font))) + pad * 2
+  const col0 = Math.max(...[table.header[0], table.total[0], ...(table.extraTotals ?? []).map((r) => r[0]), ...table.rows.map((r) => r[0])].map((t) => textWidth(t, font))) + pad * 2
+  const col1 = Math.max(...[table.header[1], table.total[1], ...(table.extraTotals ?? []).map((r) => r[1]), ...table.rows.map((r) => r[1])].map((t) => textWidth(t, font))) + pad * 2
   const width = Math.max(col0 + col1, textWidth(table.title, font * 1.3) + pad * 2)
   const c0 = width * (col0 / (col0 + col1))
   const lines: DrawLine[] = []
@@ -85,7 +122,7 @@ export function areaTableDrawing(table: AreaTable, x: number, y: number, font: n
   }
   const end1 = block(y, table.title, table.header, table.rows, false)
   const top2 = end1 + rowH
-  const end2 = block(top2, table.totalTitle, table.header, [table.total], true)
+  const end2 = block(top2, table.totalTitle, table.header, [table.total, ...(table.extraTotals ?? [])], true)
   return { lines, texts, width, height: end2 - y }
 }
 

@@ -42,6 +42,11 @@ interface SegmentPlan {
   percent: number
 }
 
+/** Emprise d'un pan de Pascal (débords compris), 4 coins en mm dans l'ordre de son repère : (−x,−z), (+x,−z), (+x,+z), (−x,+z). */
+export function segmentDeckCorners(roof: SceneNodeData, seg: SceneNodeData): Pt[] | null {
+  return segmentPlan(roof, seg)?.corners ?? null
+}
+
 function segmentPlan(roof: SceneNodeData, seg: SceneNodeData): SegmentPlan | null {
   const width = seg.width as number | undefined
   const depth = seg.depth as number | undefined
@@ -102,4 +107,10 @@ export function pascalRoofPlan(nodes: Readonly<Record<string, SceneNodeData>>, f
   }
   const slopes = [...groups.values()].map((s) => ({ x: s.center[0], y: s.center[1], dx: s.downhill[0], dy: s.downhill[1], percent: s.percent }))
   return { outlines, slopes }
+}
+
+/** Longueur du contour de la toiture (mm) : anneaux extérieurs et trous. */
+export function roofPerimeter(plan: RoofPlanData): number {
+  const ring = (r: Pt[]) => r.reduce((sum, p, i) => sum + Math.hypot(r[(i + 1) % r.length][0] - p[0], r[(i + 1) % r.length][1] - p[1]), 0)
+  return plan.outlines.reduce((sum, o) => sum + ring(o.outer) + o.holes.reduce((s, h) => s + ring(h), 0), 0)
 }

@@ -97,7 +97,7 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
    plan), débord de toiture, trois chaînes de cotes extérieures, escalier d'accès au toit (même
    symbole que l'escalier du plan de niveau), **flèches « Pente x % »** (valeur lue dans le modèle,
    jamais saisie à la main). Pas de pièces ni de surfaces sur ce plan.
-5. **Surfaces et périmètres de toiture** : la surface réelle de chaque pan (surface en plan × √(1 + pente²))
+5. **[fait le 2026-11-22 : case « Afficher les surfaces de toiture » dans l'onglet Plan de toiture ; tableau `roofAreaTable` (pans, surface réelle, surface en plan, égouts, périmètre) lu dans les métrés ; métrés d'une toiture de plusieurs pans comptés sur la réunion des pans, D20-15 : A, `scene/roofUnion.ts`]** **Surfaces et périmètres de toiture** : la surface réelle de chaque pan (surface en plan × √(1 + pente²))
    est affichée sur la feuille de toiture **seulement si** l'utilisateur le demande (D20-10).
    Reprise de `roofQuantities.ts`, sans nouveau calcul.
 6. **Lien au modèle** : déplacer un débord ou changer la pente dans Pascal met à jour le plan de

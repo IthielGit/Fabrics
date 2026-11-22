@@ -10,6 +10,8 @@ import { type PascalRoofKind, roofQuantities } from '../roofQuantities'
 import type { PlanScene, SceneNodeData } from '../sceneTypes'
 import { mToMm } from '../units'
 import { pascalDisplayName } from './pascalDisplayName'
+import { adjustRoofPans } from '../roofUnion'
+import { segmentDeckCorners } from './roofPlanData'
 
 const ROOF_KINDS = new Set<PascalRoofKind>(['flat', 'shed', 'gable', 'hip', 'gambrel', 'mansard', 'dutch', 'conical', 'barrel'])
 
@@ -123,10 +125,21 @@ export function pascalQuantitiesOf(scene: PlanScene): PascalQuantities | undefin
     if (node.type === 'roof') {
       // Toiture de Pascal, ou convertie mais devenue une forme que Fabrics ne sait pas représenter.
       if (!isNative(node) && roofFromPascal(node, nodes)) continue
+      const pans: { q: NativeRoofQuantity; corners: [number, number][] | null }[] = []
       for (const segment of childrenOf(node, nodes, 'roof-segment')) {
         const q = roofQuantity(segment, node, nodes)
-        if (q) roofs.push(q)
+        if (q) pans.push({ q: { ...q, roofId: node.id }, corners: segmentDeckCorners(node, segment) })
       }
+      // Plusieurs pans : comptés sur leur réunion, les débords qui se recouvrent une seule fois (D20-15).
+      const geometric = pans.filter((p): p is { q: NativeRoofQuantity; corners: [number, number][] } => p.corners !== null && p.q.kind !== 'conical' && p.q.kind !== 'barrel')
+      if (geometric.length > 1) {
+        const adjusted = adjustRoofPans(geometric.map((p) => ({ ...p.q, corners: p.corners })))
+        geometric.forEach((p, i) => {
+          const a = adjusted[i]
+          if (a.overlapping) Object.assign(p.q, { projectedArea: a.projectedArea, realArea: a.realArea, eaveLength: a.eaveLength, overlapping: true, toCheck: a.toCheck })
+        })
+      }
+      roofs.push(...pans.map((p) => p.q))
     } else if (node.type === 'stair') {
       if (!isNative(node) && stairFromPascal(node, nodes)) continue
       stairs.push(stairQuantity(node, nodes))

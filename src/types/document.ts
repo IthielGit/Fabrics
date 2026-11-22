@@ -49,6 +49,9 @@ export interface NativeRoofQuantity {
   hipLength: number;
   gableCount: number;
   trimmed: boolean;          // pan découpé dans Pascal : quantités du pan entier
+  roofId?: string;           // toiture qui porte le pan (plusieurs pans : comptés sur leur réunion, D20-15)
+  overlapping?: boolean;     // pan recouvert en partie par un autre pan de la même toiture
+  toCheck?: boolean;         // pan recouvert : faîtage, arêtiers ou surface au prorata à vérifier
 }
 
 // Escalier de Pascal (M19 B6) ; longueurs en mm.

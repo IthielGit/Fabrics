@@ -100,7 +100,7 @@ export interface RoofMeasure {
   gableCount: number
   /** Toiture non valable (quantités à 0) : pourquoi. */
   /** `trimmed` (M19 B6) : pan découpé dans Pascal, quantités du pan entier. */
-  problem: RoofProblem | 'trimmed' | null
+  problem: RoofProblem | 'trimmed' | 'overlapCheck' | null
 }
 
 export interface StairMeasure {
@@ -582,7 +582,7 @@ function withPascalQuantities(measurements: Measurements, quantities: PascalQuan
     eaveLength: roof.eaveLength,
     hipLength: roof.hipLength,
     gableCount: roof.gableCount,
-    problem: roof.trimmed ? 'trimmed' : null,
+    problem: roof.trimmed ? 'trimmed' : roof.toCheck ? 'overlapCheck' : null,
   }))
   const stairMeasures: StairMeasure[] = stairs.map((stair) => ({
     id: stair.id,

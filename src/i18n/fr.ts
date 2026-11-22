@@ -733,6 +733,7 @@ export const fr = {
           'not-rectangle': 'Toit en pente sur un contour non rectangulaire : non compté',
           'bad-pitch': 'Pente hors de 1° à 75° : non comptée',
           trimmed: 'Pan découpé dans Pascal : quantités du pan entier',
+          overlapCheck: 'Pans qui se recouvrent : faîtage et arêtiers à vérifier',
         },
       },
       meta: {
@@ -1536,6 +1537,8 @@ export const fr = {
         'Un toit en pente demande un contour rectangulaire : choisissez « Plat » ou redessinez la toiture en rectangle.',
       'bad-pitch': 'La pente doit être comprise entre 1° et 75°.',
       trimmed: 'Pan découpé dans Pascal : les quantités sont celles du pan entier.',
+      overlapCheck:
+        'Ce pan est recouvert en partie par un autre pan de la même toiture : surfaces et égouts comptés une seule fois ; faîtage et arêtiers à vérifier.',
     },
     slopeLabel: (pitch: number) => `${pitch}°`,
   },
@@ -1651,6 +1654,19 @@ export const fr = {
     roofPlan: (level: string) => `Plan de toiture ${level}`,
     roofPlanNote: 'Contour de la toiture et débords, sens de la pente, escalier d’accès, cotes. La pente est lue dans les pans de la toiture.',
     roofSlope: (percent: number) => `Pente ${percent.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} %`,
+    /** Surfaces de toiture sur la feuille de toiture, seulement sur demande (D20-10). */
+    roofAreasToggle: 'Afficher les surfaces de toiture',
+    roofAreaTable: {
+      title: (level: string) => `Toiture ${level}`,
+      pan: 'Pans',
+      area: 'Surface réelle',
+      panRow: (index: number) => `Pan ${index}`,
+      totalTitle: 'Total toiture',
+      real: 'Surface réelle',
+      plan: 'Surface en plan',
+      eaves: 'Égouts',
+      perimeter: 'Périmètre',
+    },
     /** Tableau des surfaces à droite du plan d'un niveau (format de la référence, D20-3). */
     areaTable: {
       title: (level: string) => `Pièces Niveau ${level}`,

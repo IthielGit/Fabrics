@@ -8,7 +8,7 @@ import rdc from '../../../fixtures/ROOMIT-RDC/spec.json'
 import r1 from '../../../fixtures/ROOMIT-R1/spec.json'
 import { buildBuildingModel } from '../building/model'
 import { levelPlanDrawing } from '../building/views/drawing'
-import { levelAreaTable } from '../building/views/areaTable'
+import { levelAreaTable, roofAreaTable } from '../building/views/areaTable'
 import { fr } from '../../i18n/fr'
 import { planOverlay } from '../dimensioning/planOverlay'
 import { computeBuildingMeasurements } from '../measurements/measurements'
@@ -16,9 +16,10 @@ import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
 import { getRoofSegmentDeckReach } from '@pascal-app/core'
 import { fixtureBuildingScene, type FixtureSpec } from './fixturePlan'
 import { pascalLevelSymbols, pascalRoofStairSymbols } from './view/levelPlanSymbols'
-import { pascalRoofPlan } from './view/roofPlanData'
+import { pascalRoofPlan, roofPerimeter } from './view/roofPlanData'
 import { roofPlanDrawing } from '../building/views/roofPlan'
 import { roofChains } from '../dimensioning/roofChains'
+import { pascalQuantitiesOf } from './view/pascalQuantities'
 import { sceneToFabricsView } from './view/toFabricsView'
 import type { SceneNodeData } from './sceneTypes'
 
@@ -155,5 +156,35 @@ describe('Villa ROOMIT, RDC + R+1 dans une seule scène', () => {
     expect(side('bottom')).toEqual([530, 977, 1507])
     expect(side('left')).toEqual([167, 1140, 1307])
     expect(side('right')).toEqual([669, 539, 99, 1307])
+  })
+
+  it('métrés de la toiture sur la réunion des pans (D20-15 : A) : 161,12 m² en plan, égouts 18065 mm, rien de compté deux fois', () => {
+    const roofs = pascalQuantitiesOf(scene)!.roofs.filter((r) => r.levelId === 'R1')
+    expect(roofs).toHaveLength(4)
+    const plan = roofs.reduce((s, r) => s + r.projectedArea, 0)
+    const real = roofs.reduce((s, r) => s + r.realArea, 0)
+    // Aire du contour de la toiture (10 sommets) : 161 123 904 mm².
+    expect(Math.round(plan)).toBe(161_123_904)
+    expect(real / plan).toBeCloseTo(Math.sqrt(1 + 0.01 ** 2), 9)
+    expect(m2(real)).toBe(161.13)
+    // Égouts : bord nord du BAR 7777 + bord nord de la Chambre 3 4504 + bord ouest 4790 + 994.
+    expect(Math.round(roofs.reduce((s, r) => s + r.eaveLength, 0))).toBe(18065)
+    // Un pan à une seule pente, sans faîtage : rien à vérifier.
+    expect(roofs.every((r) => !r.toCheck)).toBe(true)
+  })
+
+  it('surfaces de toiture sur demande (D20-10) : tableau lu dans les métrés, mêmes valeurs', () => {
+    const plan = pascalRoofPlan(scene.nodes, 'R1')!
+    expect(Math.round(roofPerimeter(plan))).toBe(56288)
+    const pans = pascalQuantitiesOf(scene)!.roofs.filter((r) => r.levelId === 'R1')
+    const table = roofAreaTable(pans, roofPerimeter(plan), 'R+1', fr.views.roofAreaTable)!
+    expect(table.title).toBe('Toiture R+1')
+    expect(table.rows.map((r) => r[0])).toEqual(['Pan 1', 'Pan 2', 'Pan 3', 'Pan 4'])
+    expect(table.total).toEqual(['Surface réelle', '161,13 m²'])
+    expect(table.extraTotals).toEqual([
+      ['Surface en plan', '161,12 m²'],
+      ['Égouts', '18065 mm'],
+      ['Périmètre', '56288 mm'],
+    ])
   })
 })

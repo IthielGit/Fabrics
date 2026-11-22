@@ -2,7 +2,8 @@ import clsx from 'clsx'
 import { FileDown, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { autoFontMm, drawingFromView, levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
-import { levelAreaTable, withAreaTable } from '../../features/building/views/areaTable'
+import { levelAreaTable, roofAreaTable, withAreaTable } from '../../features/building/views/areaTable'
+import { roofPerimeter } from '../../features/scene/view/roofPlanData'
 import { roofPlanDrawing } from '../../features/building/views/roofPlan'
 import { annotationGraphics } from '../../features/dimensioning/annotationGraphics'
 import { roofChains } from '../../features/dimensioning/roofChains'
@@ -56,6 +57,8 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
   const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
   const elements = useEditorStore((state) => state.project?.document.elements)
   const sheetDimensioning = useViewsStore((state) => state.sheetDimensioning)
+  const roofAreas = useViewsStore((state) => state.roofAreas)
+  const pascalQuantities = useEditorStore((state) => state.project?.document.pascalQuantities)
   // Scène de Pascal : escaliers et mobilier dessinés avec sa géométrie de plan (ADR 0007).
   const levelSymbols = useLevelPlanSymbols()
   const roofPlans = useRoofPlans()
@@ -71,11 +74,17 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
       return {
         title,
         note: fr.views.roofPlanNote,
-        build: (fontMm) =>
-          roofPlanDrawing(roof.plan, { slope: fr.views.roofSlope }, fontMm, [
+        build: (fontMm) => {
+          const drawing = roofPlanDrawing(roof.plan, { slope: fr.views.roofSlope }, fontMm, [
             roof.stair,
             (font) => annotationGraphics({ dimensions: roofChains(roof.plan.outlines), labels: [] }, font),
-          ]),
+          ])
+          if (!drawing || !roofAreas) return drawing
+          // Surfaces de toiture sur demande (D20-10) : valeurs des métrés, pans comptés sur leur réunion (D20-15).
+          const pans = (pascalQuantities?.roofs ?? []).filter((r) => r.levelId === level.id)
+          const table = roofAreaTable(pans, roofPerimeter(roof.plan), level.name, fr.views.roofAreaTable)
+          return withAreaTable(drawing, table, fontMm ?? autoFontMm(drawing.width, drawing.height))
+        },
         emptyText: fr.views.empty,
       }
     }
@@ -154,7 +163,7 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
       },
       emptyText: fr.views.empty,
     }
-  }, [tab, sections, model, levels, northAngle, elements, sheetDimensioning, levelSymbols, roofPlans])
+  }, [tab, sections, model, levels, northAngle, elements, sheetDimensioning, levelSymbols, roofPlans, roofAreas, pascalQuantities])
 }
 
 const MODES: readonly DimensioningMode[] = ['none', 'client', 'execution']
@@ -191,6 +200,18 @@ function SheetDimensioning({ levelId }: { levelId?: string }) {
         </label>
       ))}
     </div>
+  )
+}
+
+/** Plan de toiture : afficher ou non les surfaces de toiture (D20-10 : seulement sur demande). */
+function RoofAreasToggle() {
+  const on = useViewsStore((state) => state.roofAreas)
+  const setOn = useViewsStore((state) => state.setRoofAreas)
+  return (
+    <label className="flex items-center gap-2 px-4 pt-2 text-sm text-slate-700">
+      <input type="checkbox" checked={on} onChange={(event) => setOn(event.target.checked)} className="h-4 w-4" />
+      {fr.views.roofAreasToggle}
+    </label>
   )
 }
 
@@ -293,6 +314,7 @@ function ScreenBody() {
         {view.note && <p className="px-4 pt-3 text-sm text-slate-600">{view.note}</p>}
         {tab.kind === 'sheet' && <SheetDimensioning />}
         {tab.kind === 'level' && <SheetDimensioning levelId={tab.levelId} />}
+        {tab.kind === 'roof' && <RoofAreasToggle />}
         <div className="min-h-0 flex-1 p-4">
           {view.drawing ? (
             <ViewDrawing drawing={view.drawing} />

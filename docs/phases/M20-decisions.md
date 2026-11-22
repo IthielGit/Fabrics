@@ -144,6 +144,15 @@ La référence se contredit : la page 7 dessine l'escalier d'accès au toit sur 
 sur 2791 mm), la page 6 montre des meubles à sa place et pas d'escalier. **Retenu : A**, l'escalier est
 gardé (un plan montre ce qui est construit) et le canapé du balcon est retiré de l'exemple ROOMIT-R1.
 
+## D20-15 · Métrés d'une toiture de plusieurs pans (2026-11-22, 20.1b tâche 5)
+
+Les débords de pans voisins se recouvrent : compter chaque pan entier compte ces bandes deux fois.
+**Retenu : A**, une toiture de Pascal est comptée **sur la réunion de ses pans** : chaque morceau appartient
+au premier pan qui le couvre ; surface réelle = surface en plan × facteur de pente du pan ; égouts : seulement
+les bouts sur le vrai bord du toit, une fois. Exact pour plat, un pan, deux pans, croupe ; faîtage, arêtiers et
+formes à plusieurs pentes recouverts : point « à vérifier » dans les métrés. La feuille de toiture affiche ces
+mêmes valeurs, sur demande. (Option B non retenue : métrés par pan inchangés, avec un avertissement.)
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et

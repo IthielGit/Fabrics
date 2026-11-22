@@ -20,6 +20,9 @@ interface ViewsState {
   /** Cotation du plan de chaque niveau sur la planche (identifiant du niveau → réglage) ; absent : aucune. */
   sheetDimensioning: Record<string, DimensioningMode>
   setSheetDimensioning: (levelId: string, mode: DimensioningMode) => void
+  /** Surfaces de toiture sur le plan de toiture (D20-10 : seulement sur demande) ; non par défaut. */
+  roofAreas: boolean
+  setRoofAreas: (on: boolean) => void
 }
 
 export const useViewsStore = create<ViewsState>()((set) => ({
@@ -31,4 +34,6 @@ export const useViewsStore = create<ViewsState>()((set) => ({
   sheetDimensioning: {},
   setSheetDimensioning: (levelId, mode) =>
     set((state) => ({ sheetDimensioning: { ...state.sheetDimensioning, [levelId]: mode } })),
+  roofAreas: false,
+  setRoofAreas: (on) => set({ roofAreas: on }),
 }))
