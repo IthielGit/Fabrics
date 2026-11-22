@@ -53,6 +53,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-22 — M20 · 20.1b tâche 6 : plan de toiture lié au modèle
+- Demande de l'utilisateur : **terminer tout M20**, commit à chaque fin de tâche, tests dans le navigateur à la fin de M20. Les choix rencontrés en route sont pris par Claude (option la plus sûre), notés « proposé par Claude, à valider » dans `docs/phases/M20-decisions.md`.
+- Test `src/features/scene/roofModelLink.test.ts` (ROOMIT, RDC + R+1) : pente des pans 1 → 2 % dans Pascal → flèches « Pente 2 % » ; débord 300 → 400 mm → cote d'ensemble 15072 → 15272 mm et surface en plan des métrés à jour ; le projet enregistré ne contient que la scène.
+- Aucun code à changer : le plan de toiture est recalculé depuis les pans à chaque affichage.
+
 ### 2026-11-22 — M20 · 20.1b tâche 5 : surfaces de toiture sur demande, métrés sur la réunion des pans
 - Choix de l'utilisateur **D20-15 : A** : une toiture de plusieurs pans de Pascal est comptée sur la réunion de ses pans.
 - `src/features/scene/roofUnion.ts` (fonction pure, testée), branché dans `view/pascalQuantities.ts` :
@@ -62,6 +67,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
   - Exact pour plat, un pan, deux pans, croupe. Faîtage, arêtiers, ou forme à plusieurs pentes recouverte : remarque « Pans qui se recouvrent : faîtage et arêtiers à vérifier » dans les métrés.
   - Une toiture d'un seul pan, ou des pans qui ne se recouvrent pas : métrés inchangés.
 - R+1 de ROOMIT : **161,12 m² en plan** (exactement l'aire du contour de la toiture), 161,13 m² réels, égouts 18065 mm. Avant : les 4 pans entiers, bandes de recouvrement comptées deux fois.
+- **Validé par l'utilisateur le 2026-11-22.**
 - Onglet « Plan de toiture » : case **« Afficher les surfaces de toiture »**, décochée par défaut (D20-10). Cochée : tableau « Toiture R+1 » à droite du plan (une ligne par pan, surface réelle) et « Total toiture » (surface réelle, surface en plan, égouts, périmètre du contour 56288 mm), lus dans les métrés.
 
 ### 2026-11-22 — M20 · 20.1b tâche 4c : cotes du plan de toiture

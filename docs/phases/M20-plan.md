@@ -100,7 +100,7 @@ Les cotes de la référence sont en cm : elles deviennent des mm (450 cm = 4500 
 5. **[fait le 2026-11-22 : case « Afficher les surfaces de toiture » dans l'onglet Plan de toiture ; tableau `roofAreaTable` (pans, surface réelle, surface en plan, égouts, périmètre) lu dans les métrés ; métrés d'une toiture de plusieurs pans comptés sur la réunion des pans, D20-15 : A, `scene/roofUnion.ts`]** **Surfaces et périmètres de toiture** : la surface réelle de chaque pan (surface en plan × √(1 + pente²))
    est affichée sur la feuille de toiture **seulement si** l'utilisateur le demande (D20-10).
    Reprise de `roofQuantities.ts`, sans nouveau calcul.
-6. **Lien au modèle** : déplacer un débord ou changer la pente dans Pascal met à jour le plan de
+6. **[fait le 2026-11-22 : `scene/roofModelLink.test.ts` : pente 1 → 2 % (flèches), débord 300 → 400 mm (cote d'ensemble 15072 → 15272 mm, surface en plan), rien d'enregistré hors de la scène ; aucun code à changer]** **Lien au modèle** : déplacer un débord ou changer la pente dans Pascal met à jour le plan de
    toiture (cotes, flèches) sans autre action. Test automatisé.
 7. **Exactitude imprimée** : à 1:50, les cotes des pages 6 et 7 se mesurent à la règle comme sur la
    référence (écart ≤ 0,1 mm, test de `printScale` étendu).
