@@ -179,3 +179,27 @@ Fait le 2026-11-22 (demande de l'utilisateur : tout M20, essai dans le navigateu
   étage de 2500 mm = 50,0 mm sur une façade imprimée à 1:50, PDF relu).
 - Limite : les escaliers de Pascal que Fabrics ne sait pas reprendre (hélicoïdaux…) ne sont pas dessinés en
   coupe ; détails (1:20, 1:10) : pas de vue de détail, noté pour 20.9.
+
+## 20.2 — Annotations
+
+Fait le 2026-11-22. Déjà en place avant 20.2 : cotes chaînées (M10 ter, `facadeChains`), repères des
+baies `PP` / `All.` et noms + surfaces des pièces (D20-9), nord (cartouche, `planMarks`), cotes du plan
+de toiture (20.1b).
+
+- **Conflits d'annotations** (critère G3) : `dimensioning/conflicts.ts` détecte deux textes qui se
+  recouvrent **à leur taille imprimée** (`export/printedText.ts` : 7 pt, 10 pt en gras). Sur ROOMIT,
+  4 conflits trouvés, tous corrigés :
+  - nom de pièce contre chiffre d'une cote intérieure : le nom (gras) était imprimé 1,4 fois plus grand
+    que prévu par le placement ; il est maintenant dessiné à cette taille et placé en conséquence
+    (`LABEL_TITLE_EM`, `layout.ts`) ;
+  - chiffre contre chiffre : un chiffre qui touche un chiffre déjà placé prend un autre rang
+    (`annotationGraphics.ts`).
+- **Défaut du PDF corrigé** : jsPDF décalait les textes tournés centrés (cotes verticales) d'une
+  demi-longueur ; le centrage est fait par Fabrics (`pdf.ts`).
+- **Axes** du quadrillage porteur sur les feuilles de l'écran Vues : trait mixte, bulles et repères
+  (`dimensioning/axes.ts`, `sheetPlanOverlay`). L'éditeur, l'export d'image et le DXF les dessinaient déjà.
+- **Légende des hachures** sous le tableau des surfaces du plan de niveau (`building/views/legend.ts`).
+- Tests : `dimensioning/conflicts.test.ts`, `scene/roomitAnnotations.test.ts` (0 conflit : RDC et R+1 en
+  Client et Exécution, plan de toiture, à 1:50), `dimensioning/axes.test.ts`, `building/views/legend.test.ts`.
+- Limites : un texte qui recouvre un trait (repère sur un mur) n'est pas compté comme conflit critique ;
+  symboles de plan (flèche de montée d'escalier, repères de coupe sur le plan) non ajoutés.

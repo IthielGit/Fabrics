@@ -1,4 +1,5 @@
 import { FILL_COLORS, paintBatches, type Drawing, type DrawPolygon } from '../building/views/drawing'
+import { printedTextSize } from './printedText'
 import {
   cartoucheArea,
   PDF_MARGIN_MM,
@@ -262,8 +263,6 @@ export async function buildPlanPdf(
 
 const MM_TO_PT = 72 / 25.4
 /** Plus petits corps de texte imprimés (pt) : cotes et légendes, puis titres des dessins. */
-const MIN_TEXT_PT = 7
-const MIN_TITLE_PT = 10
 
 function hexToRgb(hex: string): Rgb {
   const value = hex.replace('#', '')
@@ -374,11 +373,17 @@ export function drawDrawing(pdf: Pdf, drawing: Drawing, placement: Rect): void {
   for (const text of drawing.texts) {
     pdf.setTextColor(...(text.muted ? MUTED : INK))
     pdf.setFont('helvetica', text.bold ? 'bold' : 'normal')
-    pdf.setFontSize(Math.max(text.size * k * MM_TO_PT, text.bold ? MIN_TITLE_PT : MIN_TEXT_PT))
-    pdf.text(pdfText(text.text), px(text.x), py(text.y), {
-      align: text.anchor === 'middle' ? 'center' : 'left',
-      // Angle du dessin : sens horaire à l'écran (y vers le bas) ; jsPDF tourne dans l'autre sens.
-      ...(text.angle ? { angle: -text.angle } : {}),
-    })
+    pdf.setFontSize(printedTextSize(text, 1 / k) * k * MM_TO_PT)
+    const content = pdfText(text.text)
+    if (text.angle) {
+      // Texte tourné : jsPDF centre à l'horizontale avant de tourner (texte décalé d'une demi-longueur,
+      // corrigé en M20 20.2) ; on recule nous-mêmes le point de départ de la moitié du texte, le long
+      // de sa direction. Angle du dessin : sens horaire à l'écran ; jsPDF tourne dans l'autre sens.
+      const a = (text.angle * Math.PI) / 180
+      const half = text.anchor === 'middle' ? pdf.getTextWidth(content) / 2 : 0
+      pdf.text(content, px(text.x) - Math.cos(a) * half, py(text.y) - Math.sin(a) * half, { angle: -text.angle })
+    } else {
+      pdf.text(content, px(text.x), py(text.y), { align: text.anchor === 'middle' ? 'center' : 'left' })
+    }
   }
 }

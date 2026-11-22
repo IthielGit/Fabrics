@@ -2,6 +2,7 @@ import { formatArea, formatLength } from '../../units/format'
 import type { NativeRoofQuantity } from '../../../types/document'
 import type { Measurements } from '../../measurements/measurements'
 import type { DrawLine, DrawText, Drawing } from './drawing'
+import type { LegendBlock } from './legend'
 
 /**
  * Tableau des surfaces d'un niveau, posé à droite de son plan (M20 20.1b, format de la référence
@@ -128,17 +129,27 @@ export function areaTableDrawing(table: AreaTable, x: number, y: number, font: n
 
 /**
  * Plan d'un niveau avec son tableau des surfaces à droite, aligné en haut, séparé d'un intervalle de
- * quatre hauteurs de texte. Le plan n'est pas déplacé : ses coordonnées (et son échelle) restent les mêmes.
+ * quatre hauteurs de texte, et éventuellement la légende des hachures dessous (`legend` reçoit sa
+ * position). Le plan n'est pas déplacé : ses coordonnées (et son échelle) restent les mêmes.
  */
-export function withAreaTable(plan: Drawing, table: AreaTable | null, font: number): Drawing {
-  if (!table) return plan
+export function withAreaTable(
+  plan: Drawing,
+  table: AreaTable | null,
+  font: number,
+  legend?: (x: number, y: number) => LegendBlock | null,
+): Drawing {
   const gap = font * 4
-  const t = areaTableDrawing(table, plan.width + gap, font * 2, font)
+  const x = plan.width + gap
+  const t = table ? areaTableDrawing(table, x, font * 2, font) : null
+  const l = legend?.(x, font * 2 + (t ? t.height + font * 3 : 0)) ?? null
+  if (!t && !l) return plan
+  const right = Math.max(t?.width ?? 0, l?.width ?? 0)
+  const bottom = Math.max(t ? font * 2 + t.height : 0, l ? font * 2 + (t ? t.height + font * 3 : 0) + l.height : 0)
   return {
-    width: plan.width + gap + t.width + font * 2,
-    height: Math.max(plan.height, t.height + font * 4),
-    polygons: plan.polygons,
-    lines: [...plan.lines, ...t.lines],
-    texts: [...plan.texts, ...t.texts],
+    width: plan.width + gap + right + font * 2,
+    height: Math.max(plan.height, bottom + font * 2),
+    polygons: [...plan.polygons, ...(l?.polygons ?? [])],
+    lines: [...plan.lines, ...(t?.lines ?? []), ...(l?.lines ?? [])],
+    texts: [...plan.texts, ...(t?.texts ?? []), ...(l?.texts ?? [])],
   }
 }

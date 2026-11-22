@@ -37,10 +37,24 @@ export interface LabelBox {
   maxY: number
 }
 
-/** Rectangle occupé par une étiquette centrée en (x, y), en mm. */
+/**
+ * Première ligne d'une étiquette (nom de la pièce, en gras) : 1,4 fois la hauteur des cotes, la taille à
+ * laquelle le PDF l'imprime (10 pt en gras contre 7 pt, `export/printedText.ts`), M20 20.2.
+ */
+export const LABEL_TITLE_EM = 1.4
+/** Un texte en gras est environ 15 % plus large. */
+export const BOLD_WIDTH = 1.15
+
+/** Hauteur d'une étiquette de `count` lignes (titre agrandi), en multiples de la hauteur du texte. */
+export function labelHeightEm(count: number): number {
+  return count === 0 ? 0 : LABEL_TITLE_EM + (count - 1) * LINE_HEIGHT_EM
+}
+
+/** Rectangle occupé par une étiquette centrée en (x, y), en mm (titre en gras agrandi compris). */
 export function labelBox(lines: readonly string[], x: number, y: number, fontMm: number): LabelBox {
-  const width = Math.max(0, ...lines.map((line) => textWidth(line, fontMm))) + fontMm * 0.4
-  const height = lines.length * LINE_HEIGHT_EM * fontMm + fontMm * 0.2
+  const widths = lines.map((line, i) => textWidth(line, fontMm) * (i === 0 ? LABEL_TITLE_EM * BOLD_WIDTH : 1))
+  const width = Math.max(0, ...widths) + fontMm * 0.4
+  const height = labelHeightEm(lines.length) * fontMm + fontMm * 0.2
   return { minX: x - width / 2, minY: y - height / 2, maxX: x + width / 2, maxY: y + height / 2 }
 }
 

@@ -12,10 +12,12 @@ describe('mise en page des textes des cotes', () => {
     expect(dimensionTextRow(200, '200', 180, 2)).toBe('above2')
   })
 
-  it('une étiquette occupe la largeur de sa plus longue ligne', () => {
+  it('une étiquette occupe la largeur de sa plus longue ligne (titre en gras agrandi 1,4 × compris)', () => {
     const box = labelBox(['F01', '1200 / 1350'], 0, 0, 100)
     expect(box.maxX - box.minX).toBeCloseTo(11 * 0.56 * 100 + 40)
-    expect(box.maxY - box.minY).toBeCloseTo(2 * 125 + 20)
+    expect(box.maxY - box.minY).toBeCloseTo((1.4 + 1.25) * 100 + 20)
+    const wide = labelBox(['Bibliothèque', '21,52 m²'], 0, 0, 100)
+    expect(wide.maxX - wide.minX).toBeCloseTo(12 * 0.56 * 100 * 1.4 * 1.15 + 40)
   })
 
   it('une étiquette qui en chevauche une autre prend son autre emplacement', () => {
@@ -34,11 +36,11 @@ describe('mise en page des textes des cotes', () => {
     const placed = placeLabels(
       [
         { id: 'a', x: 0, y: 0, lines: ['AAAAAAAA'] },
-        { id: 'b', x: 0, y: 0, lines: ['B'], alternatives: [{ x: 300, y: 0 }] },
+        { id: 'b', x: 0, y: 0, lines: ['B'], alternatives: [{ x: 600, y: 0 }] },
       ],
       100,
     )
-    expect(placed[1].x).toBe(300)
+    expect(placed[1].x).toBe(600)
   })
 
   it('une étiquette évite les lignes et les chiffres des cotes', () => {

@@ -1,6 +1,7 @@
 import type { PlanOverlay } from '../building/views/drawing'
 import type { FabricsDocument } from '../../types/document'
 import { annotationGraphics } from './annotationGraphics'
+import { axisGraphics } from './axes'
 import type { ExecutionLabels } from './executionDimensions'
 import { levelAnnotations } from './levelAnnotations'
 import { planDecorations } from './planDecorations'
@@ -29,6 +30,21 @@ export function planOverlay(
     annotationGraphics(annotations, mode === 'client' ? fontMm * CLIENT_TEXT_FACTOR : fontMm),
     marks,
   )
+}
+
+/**
+ * Annotations d'un plan de niveau sur une feuille de l'écran Vues (planche, plan de niveau) : celles de
+ * `planOverlay` plus les axes du quadrillage porteur (M20 20.2). L'éditeur, l'export d'image et le DXF
+ * dessinent déjà les axes eux-mêmes : ils gardent `planOverlay`.
+ */
+export function sheetPlanOverlay(
+  document: Pick<FabricsDocument, 'elements' | 'levels' | 'plan'>,
+  levelId: string,
+  mode: DimensioningMode,
+  labels: ExecutionLabels,
+  fontMm: number,
+): PlanOverlay | null {
+  return mergeOverlays(planOverlay(document, levelId, mode, labels, fontMm), axisGraphics(document.elements, levelId, fontMm))
 }
 
 interface Region {

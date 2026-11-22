@@ -348,3 +348,11 @@ droite de la 3D) et onglet **Paramètres**.
 | Toiture de Pascal de plusieurs pans (ou pente < 1°) dessinée en façade et en coupe ; pas de toit plat automatique dessous ; métrés de toiture sans doublon | Auto : `scene/roomitViews.test.ts` |
 | Coupe : une seule cote « Faîtage » pour des faîtages à moins de 300 mm | Auto : `scene/roomitViews.test.ts` |
 | Étage de 2500 mm = 50,0 mm sur une façade imprimée à 1:50 (G3) | Auto : `scene/roomitViews.test.ts` ; Nav. (règle) |
+
+### M20 · 20.2 — Annotations
+| Critère | Vérification |
+|---|---|
+| Aucun conflit d'annotations (texte sur texte, taille imprimée) sur ROOMIT à 1:50 : RDC et R+1 en Client et Exécution, plan de toiture | Auto : `scene/roomitAnnotations.test.ts`, `dimensioning/conflicts.test.ts` |
+| Nom de pièce en gras 1,4 × la hauteur des cotes ; chiffres de cotes qui se touchent : un autre rang | Auto : `dimensioning/layout.test.ts` ; baseline SVG |
+| PDF : texte tourné centré sur son point (cotes verticales, flèche de pente) | Nav. (PDF) |
+| Axes du quadrillage (bulles, repères) sur les feuilles de l'écran Vues ; légende des hachures sous le tableau des surfaces | Auto : `dimensioning/axes.test.ts`, `building/views/legend.test.ts` ; Nav. |

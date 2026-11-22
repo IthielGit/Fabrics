@@ -5,6 +5,7 @@ import { autoFontMm, drawingFromView, levelPlanDrawing, type Drawing } from '../
 import { levelAreaTable, roofAreaTable, withAreaTable } from '../../features/building/views/areaTable'
 import { roofPerimeter } from '../../features/scene/view/roofPlanData'
 import { roofPlanDrawing } from '../../features/building/views/roofPlan'
+import { levelWallMaterials, materialLegend } from '../../features/building/views/legend'
 import { annotationGraphics } from '../../features/dimensioning/annotationGraphics'
 import { roofChains } from '../../features/dimensioning/roofChains'
 import { useRoofPlans } from '../../pascal/useRoofPlans'
@@ -13,7 +14,7 @@ import { buildElevation } from '../../features/building/views/elevation'
 import { buildSection } from '../../features/building/views/section'
 import { buildSheet } from '../../features/building/views/sheet'
 import type { Cardinal } from '../../features/building/north'
-import { planOverlay } from '../../features/dimensioning/planOverlay'
+import { sheetPlanOverlay } from '../../features/dimensioning/planOverlay'
 import type { DimensioningMode } from '../../features/dimensioning/types'
 import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
 import { fr } from '../../i18n/fr'
@@ -102,14 +103,17 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
             model,
             level,
             fontMm,
-            (font) => planOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
+            (font) => sheetPlanOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
             levelSymbols(level.id),
           )
           if (!plan) return null
           // Tableau des surfaces du niveau, lu dans les métrés (balcon compris, D20-10).
           const metres = computeBuildingMeasurements(document).levels.find((l) => l.level.id === level.id)
           const table = metres ? levelAreaTable(metres.measurements, level.name, fr.views.areaTable) : null
-          return withAreaTable(plan, table, fontMm ?? autoFontMm(plan.width, plan.height))
+          const font = fontMm ?? autoFontMm(plan.width, plan.height)
+          // Légende des hachures des murs du niveau, sous le tableau (M20 20.2).
+          const materials = levelWallMaterials(document.elements, level.id)
+          return withAreaTable(plan, table, font, (x, y) => materialLegend(materials, fr.materials.walls, fr.views.legendTitle, x, y, font))
         },
         emptyText: fr.views.empty,
       }
@@ -156,7 +160,7 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
           labels: { elevation: fr.views.elevation, section: fr.views.section, ridge: fr.views.ridge },
           fontMm,
           levelOverlay: (level, font) =>
-            planOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
+            sheetPlanOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
           levelSymbols: (level) => levelSymbols(level.id),
         })
         return sheet.drawing.width > 0 ? sheet.drawing : null

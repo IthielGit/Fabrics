@@ -1654,6 +1654,8 @@ export const fr = {
     roofPlan: (level: string) => `Plan de toiture ${level}`,
     roofPlanNote: 'Contour de la toiture et débords, sens de la pente, escalier d’accès, cotes. La pente est lue dans les pans de la toiture.',
     roofSlope: (percent: number) => `Pente ${percent.toLocaleString('fr-FR', { maximumFractionDigits: 1 })} %`,
+    /** Légende des hachures à droite du plan d'un niveau (M20 20.2). */
+    legendTitle: 'Légende',
     /** Surfaces de toiture sur la feuille de toiture, seulement sur demande (D20-10). */
     roofAreasToggle: 'Afficher les surfaces de toiture',
     roofAreaTable: {
