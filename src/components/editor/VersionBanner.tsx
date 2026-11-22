@@ -3,6 +3,8 @@ import { Link } from 'react-router'
 import { colorForUser } from '../../features/collab/presence'
 import { CHANGE_COLORS, countChanges, type VersionChanges } from '../../features/versions/versionDiff'
 import type { ProjectPerson, ProjectVersion } from '../../features/versions/versionsLogic'
+import type { SheetComparison } from '../../features/sheets/sheetSet'
+import type { SheetSetSettings } from '../../types/document'
 import { fr } from '../../i18n/fr'
 import Button from '../ui/Button'
 import UserAvatar from '../ui/UserAvatar'
@@ -19,6 +21,11 @@ interface VersionBannerProps {
   busy: 'restore' | 'copy' | null
   onRestore: () => void
   onCopy: () => void
+  /**
+   * Jeu de feuilles d'un plan (M20 20.7) : indice et statut de la version, feuilles comparées à la
+   * version précédente (`null` : première version). Absent : pas un plan, ou calcul impossible.
+   */
+  sheets?: { settings: SheetSetSettings; changes: SheetComparison[] | null }
 }
 
 function Legend({ color, label }: { color: string; label: string }) {
@@ -40,6 +47,7 @@ export default function VersionBanner({
   busy,
   onRestore,
   onCopy,
+  sheets,
 }: VersionBannerProps) {
   const t = fr.history.preview
   const when = t.when(version.savedAt)
@@ -89,6 +97,8 @@ export default function VersionBanner({
         )}
       </div>
 
+      {sheets && <SheetSetSummary sheets={sheets} />}
+
       <div className="ml-auto flex flex-wrap items-center gap-2">
         {canRestore && (
           <Button
@@ -123,5 +133,30 @@ export default function VersionBanner({
         </Link>
       </div>
     </section>
+  )
+}
+
+/** Jeu de feuilles de la version : indice, statut, et liste des feuilles modifiées depuis la précédente. */
+function SheetSetSummary({ sheets }: { sheets: NonNullable<VersionBannerProps['sheets']> }) {
+  const t = fr.history.preview.sheets
+  const title = t.title(sheets.settings.revision, fr.views.sheetInfo.statuses[sheets.settings.status])
+  const changed = (sheets.changes ?? []).filter((c) => c.change !== 'unchanged')
+  if (sheets.changes === null) return <p className="text-xs text-slate-700">{title}</p>
+  return (
+    <details className="text-xs text-slate-700">
+      <summary className="cursor-pointer">
+        {title} · {t.summary(changed.length)}
+      </summary>
+      {changed.length > 0 && (
+        <ul aria-label={t.listLabel} className="mt-1 space-y-0.5">
+          {changed.map((c) => (
+            <li key={c.key}>
+              <span className="font-medium tabular-nums">{c.number}</span> {c.title} — {t.changes[c.change]}
+              {c.previousNumber ? ` (${t.renumbered(c.previousNumber)})` : ''}
+            </li>
+          ))}
+        </ul>
+      )}
+    </details>
   )
 }

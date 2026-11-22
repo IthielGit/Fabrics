@@ -5,6 +5,8 @@
 import { supabase } from '../../lib/supabase'
 import type { FabricsDocument } from '../../types/document'
 import { migrateDocument, type StoredProject } from '../documents/migrations'
+import type { PlanScene } from '../scene/sceneTypes'
+import { isSceneDocument } from '../scene/storedScene'
 import {
   rowToPerson,
   rowToVersion,
@@ -39,6 +41,14 @@ export async function listVersions(projectId: string): Promise<ProjectVersion[]>
 
 /** Document d'une version, mis au format actuel ; `null` si la version n'existe plus. */
 export async function fetchVersionDocument(versionId: string): Promise<FabricsDocument | null> {
+  return (await fetchVersionContent(versionId))?.document ?? null
+}
+
+/**
+ * Document d'une version et, pour un plan, sa scène Pascal (escaliers, mobilier et toitures des
+ * feuilles, M20 20.7) ; `null` si la version n'existe plus.
+ */
+export async function fetchVersionContent(versionId: string): Promise<{ document: FabricsDocument; scene: PlanScene | null } | null> {
   const { data, error } = await client()
     .from('project_versions')
     .select('document')
@@ -46,7 +56,9 @@ export async function fetchVersionDocument(versionId: string): Promise<FabricsDo
     .maybeSingle()
     .overrideTypes<{ document: StoredProject['document'] } | null, { merge: false }>()
   if (error) throw error
-  return data ? migrateDocument(data.document) : null
+  if (!data) return null
+  const stored = data.document
+  return { document: migrateDocument(stored), scene: isSceneDocument(stored) ? stored.scene : null }
 }
 
 /** Nomme l'état enregistré du projet ; renvoie l'identifiant de la nouvelle version. */

@@ -1369,6 +1369,15 @@ export const fr = {
       copyHint: 'Crée un nouveau projet à votre nom à partir de cette version.',
       copyName: (projectName: string, when: string) => `${projectName} (version du ${when})`,
       copyError: 'La copie n’a pas pu être créée. Vérifiez votre connexion.',
+      /** Jeu de feuilles de la version et comparaison avec la précédente (M20 20.7). */
+      sheets: {
+        title: (revision: string, status: string) => `Jeu de feuilles · indice ${revision} · ${status}`,
+        summary: (count: number) =>
+          count === 0 ? 'aucune feuille modifiée' : `${count} feuille${count > 1 ? 's' : ''} modifiée${count > 1 ? 's' : ''}`,
+        changes: { added: 'nouvelle', removed: 'supprimée', changed: 'modifiée', unchanged: 'identique' },
+        renumbered: (previous: string) => `ancien n° ${previous}`,
+        listLabel: 'Feuilles modifiées depuis la version précédente',
+      },
     },
     restore: {
       running: 'Restauration de la version…',

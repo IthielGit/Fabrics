@@ -165,6 +165,13 @@ PDF de feuilles avec Liberation Sans intégrée (OFL), notes en romain ; SVG = d
 cartouche, en calques par catégorie. Option écartée : SVG de la feuille complète (refaire le cartouche du PDF
 en SVG, deux codes à tenir).
 
+## D20-18 · Révisions du jeu de feuilles (2026-11-22, 20.7) — proposé par Claude, à valider
+
+Jeu recalculé depuis chaque version (aucun PDF stocké), renseignements du cartouche enregistrés avec le plan,
+numérotation automatique dans l'ordre du dossier avec n° saisi possible, un indice courant par jeu ; comparaison
+par empreinte du dessin, affichée dans l'aperçu d'une version. Option écartée : stocker les PDF de chaque
+version (stockage Supabase, et une deuxième vérité à côté de la scène).
+
 ## Après les choix
 
 Les décisions retenues sont reportées ici (« retenu le … »), dans `docs/03-ROADMAP.md` (M20) et

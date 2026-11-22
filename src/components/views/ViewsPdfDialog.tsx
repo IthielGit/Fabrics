@@ -1,7 +1,8 @@
 import { useCallback, useMemo, useState } from 'react'
 import { PAPER_TEXT_MM, type Drawing } from '../../features/building/views/drawing'
-import { columnCartoucheCells, SHEET_STATUSES, type SheetStatus } from '../../features/export/cartouche'
-import { useViewsStore } from '../../stores/viewsStore'
+import { columnCartoucheCells, SHEET_STATUSES, type SheetInfo, type SheetStatus } from '../../features/export/cartouche'
+import { DEFAULT_SHEET_SET } from '../../features/sheets/sheetSet'
+import type { SheetSetSettings } from '../../types/document'
 import { buildDrawingPdf } from '../../features/export/pdf'
 import { drawingToSvg } from '../../features/export/svg'
 import { exportFileName } from '../../features/export/fileName'
@@ -45,6 +46,9 @@ interface ViewsPdfDialogProps {
    * le dessin de `build`, sans tableau.
    */
   parts?: (fontMm?: number, version?: 'client' | 'execution') => { main: Drawing | null; side: Drawing | null }
+  /** Feuille dans le jeu (M20 20.7) : identifiant stable et numéro automatique (« 06 »). */
+  sheetKey: string
+  autoNumber: string
   onClose: () => void
 }
 
@@ -63,10 +67,32 @@ export default function ViewsPdfDialog({
   dimensioning,
   sheetKind,
   parts,
+  sheetKey,
+  autoNumber,
   onClose,
 }: ViewsPdfDialogProps) {
-  const sheetInfo = useViewsStore((state) => state.sheetInfo)
-  const setSheetInfo = useViewsStore((state) => state.setSheetInfo)
+  // Renseignements du jeu de feuilles, enregistrés avec le plan (donc gardés dans chaque version, M20 20.7).
+  const storedSheets = useEditorStore((state) => state.project?.document.plan?.sheets)
+  const updatePlanSettings = useEditorStore((state) => state.updatePlanSettings)
+  const [sheetInfo, setInfo] = useState<SheetInfo>(() => {
+    const stored = storedSheets ?? DEFAULT_SHEET_SET
+    return { issuer: stored.issuer, revision: stored.revision, status: stored.status, sheetNumber: stored.numbers?.[sheetKey] ?? autoNumber }
+  })
+  const setSheetInfo = (patch: Partial<SheetInfo>) => setInfo((previous) => ({ ...previous, ...patch }))
+  // À l'export : émetteur, indice, statut et n° saisi à la main (s'il diffère du numéro automatique).
+  const saveSheetInfo = () => {
+    const numbers = { ...(storedSheets?.numbers ?? {}) }
+    const typed = sheetInfo.sheetNumber.trim()
+    if (typed && typed !== autoNumber) numbers[sheetKey] = typed
+    else delete numbers[sheetKey]
+    const next: SheetSetSettings = {
+      issuer: sheetInfo.issuer.trim(),
+      revision: sheetInfo.revision.trim() || DEFAULT_SHEET_SET.revision,
+      status: sheetInfo.status,
+      ...(Object.keys(numbers).length > 0 ? { numbers } : {}),
+    }
+    if (JSON.stringify(next) !== JSON.stringify(storedSheets ?? DEFAULT_SHEET_SET)) updatePlanSettings({ sheets: next })
+  }
   // Dessin principal : sans ses tableaux quand la vue les pose dans la colonne de droite.
   const mainOf = useCallback(
     (fontMm?: number, version?: 'client' | 'execution') => (parts ? parts(fontMm, version).main : build(fontMm, version)),
@@ -137,6 +163,7 @@ export default function ViewsPdfDialog({
         note: execution ? fr.dimensioning.baysNote : undefined,
       })
       downloadBlob(blob, exportFileName(fileName, 'pdf', fr.views.pdfFallbackName))
+      saveSheetInfo()
       onClose()
     } catch {
       setFailed(true)

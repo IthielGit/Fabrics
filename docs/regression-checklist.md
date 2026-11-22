@@ -381,3 +381,10 @@ droite de la 3D) et onglet **Paramètres**.
 |---|---|
 | PDF de feuille : Liberation Sans normal et gras intégrées, aucune autre police déclarée ; repli Helvetica sans fichier ; plan toujours à l'échelle | Auto : `export/vectorOutput.test.ts` |
 | SVG du dessin à 1:50, 1:100, 1:200 : taille du papier exacte, chaque trait à sa place (≤ 0,01 mm), épaisseurs de la table, calques par catégorie | Auto : `export/vectorOutput.test.ts` ; Nav. (ouvrir le SVG) |
+
+### M20 · 20.7 — Révisions
+| Critère | Vérification |
+|---|---|
+| Jeu de feuilles numéroté 01, 02… dans l'ordre du dossier ; un n° saisi à l'export l'emporte | Auto : `features/sheets/sheetSet.test.ts` ; Nav. (PDF) |
+| Émetteur, indice, statut et n° saisis enregistrés avec le plan (gardés dans chaque version) | Auto : `features/sheets/sheetSet.test.ts` ; Nav. (rouvrir le projet) |
+| Aperçu d'une version : indice, statut et feuilles modifiées depuis la version précédente | Auto : `features/sheets/sheetSet.test.ts` ; Nav. (Historique) |

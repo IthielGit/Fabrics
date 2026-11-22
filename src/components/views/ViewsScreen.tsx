@@ -1,25 +1,13 @@
 import clsx from 'clsx'
 import { FileDown, X } from 'lucide-react'
 import { useMemo, useState } from 'react'
-import { autoFontMm, drawingFromView, levelPlanDrawing, type Drawing } from '../../features/building/views/drawing'
-import { levelAreaTable, roofAreaTable, withAreaTable } from '../../features/building/views/areaTable'
+import type { Drawing } from '../../features/building/views/drawing'
 import { applyVisibility, VISIBILITY_KEYS, type VisibilityKey } from '../../features/building/views/graphicStyles'
-import { roofPerimeter } from '../../features/scene/view/roofPlanData'
-import { roofPlanDrawing } from '../../features/building/views/roofPlan'
-import { levelWallMaterials, materialLegend } from '../../features/building/views/legend'
-import { openingSchedule, roomSchedule, scheduleDrawing } from '../../features/building/views/schedule'
-import { ceilingPlanOverlay } from '../../features/dimensioning/ceilingPlan'
-import { annotationGraphics } from '../../features/dimensioning/annotationGraphics'
-import { roofChains } from '../../features/dimensioning/roofChains'
-import { useRoofPlans } from '../../pascal/useRoofPlans'
-import { computeBuildingMeasurements } from '../../features/measurements/measurements'
-import { buildElevation } from '../../features/building/views/elevation'
-import { buildSection } from '../../features/building/views/section'
-import { buildSheet } from '../../features/building/views/sheet'
 import type { Cardinal } from '../../features/building/north'
-import { sheetPlanOverlay } from '../../features/dimensioning/planOverlay'
 import type { DimensioningMode } from '../../features/dimensioning/types'
-import { EXECUTION_LABELS } from '../../i18n/dimensioningLabels'
+import { sheetView, type SheetView } from '../../features/sheets/sheetViews'
+import { sheetKey, sheetSet } from '../../features/sheets/sheetSet'
+import { useRoofPlans } from '../../pascal/useRoofPlans'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 import { useViewsStore, type ViewsTab } from '../../stores/viewsStore'
@@ -32,9 +20,6 @@ import ViewsPdfDialog from './ViewsPdfDialog'
 
 const CARDINALS: Cardinal[] = ['N', 'E', 'S', 'O']
 
-/** Dessin vide : support des tableaux posés seuls dans la colonne de droite du PDF (M20 20.4). */
-const EMPTY_SIDE: Drawing = { width: 0, height: 0, polygons: [], lines: [], texts: [] }
-
 function isSameTab(a: ViewsTab, b: ViewsTab): boolean {
   if (a.kind !== b.kind) return false
   if (a.kind === 'elevation' && b.kind === 'elevation') return a.cardinal === b.cardinal
@@ -45,28 +30,13 @@ function isSameTab(a: ViewsTab, b: ViewsTab): boolean {
   return true
 }
 
-interface ActiveView {
-  /** Titre de la vue (cartouche et nom du fichier). */
-  title: string
-  note: string
-  /**
-   * Dessin construit avec cette hauteur de texte (mm réels) ; sans argument, hauteur automatique.
-   * `version` impose une cotation à tous les plans de la planche (export PDF) ; absente : réglage de chaque vue.
-   */
-  build: (fontMm?: number, version?: 'client' | 'execution') => Drawing | null
-  /** Message quand il n'y a rien à dessiner. */
-  emptyText: string
-  /** Type de plan en tête de la colonne de droite du PDF (« Plan de niveau »), M20 20.4. */
-  kind: string
-  /** PDF : dessin sans ses tableaux, et tableaux posés dans la colonne de droite (plan de niveau, toiture). */
-  parts?: (fontMm?: number, version?: 'client' | 'execution') => { main: Drawing | null; side: Drawing | null }
-}
+type ActiveView = SheetView
 
 /** Dessin de l'onglet affiché : le plan d'un niveau, une façade, une coupe ou la planche. */
 function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): ActiveView {
   const model = useBuildingModel(undefined)
   const levels = useEditorStore((state) => state.project?.document.levels)
-  const northAngle = useEditorStore((state) => state.project?.document.plan?.northAngle ?? 0)
+  const plan = useEditorStore((state) => state.project?.document.plan)
   const elements = useEditorStore((state) => state.project?.document.elements)
   const sheetDimensioning = useViewsStore((state) => state.sheetDimensioning)
   const roofAreas = useViewsStore((state) => state.roofAreas)
@@ -75,164 +45,19 @@ function useActiveView(tab: ViewsTab, sections: readonly SectionLineElement[]): 
   const levelSymbols = useLevelPlanSymbols()
   const roofPlans = useRoofPlans()
 
-  return useMemo(() => {
-    const allLevels = levels ?? []
-    if (tab.kind === 'schedules') {
-      // Nomenclatures (M20 20.3) : tirées des métrés, comme l'onglet Métrés.
-      const document = { elements: elements ?? [], levels: allLevels, pascalQuantities }
-      const labels = { ...fr.views.schedule, kinds: fr.measurements.csv.kinds, styles: fr.measurements.csv.styles }
-      return {
-        title: fr.views.schedules,
-        note: fr.views.schedulesNote,
-        kind: fr.views.sheetKinds.schedules,
-        build: (fontMm) => {
-          const building = computeBuildingMeasurements(document)
-          return scheduleDrawing([openingSchedule(building, labels), roomSchedule(building, labels)], fontMm ?? 125)
-        },
-        emptyText: fr.views.empty,
-      }
-    }
-    if (tab.kind === 'ceiling') {
-      // Plan de plafond (M20 20.3) : murs du niveau, hauteur sous plafond et faux plafond par pièce.
-      const level = allLevels.find((l) => l.id === tab.levelId)
-      if (!level) return { title: '', note: '', build: () => null, emptyText: fr.views.levelMissing, kind: '' }
-      const document = { elements: elements ?? [], levels: allLevels, pascalQuantities }
-      return {
-        title: fr.views.ceilingPlan(level.name),
-        note: fr.views.ceilingPlanNote,
-        kind: fr.views.sheetKinds.ceiling,
-        build: (fontMm) => {
-          const metres = computeBuildingMeasurements(document).levels.find((l) => l.level.id === level.id)
-          return levelPlanDrawing(model, level, fontMm, (font) => (metres ? ceilingPlanOverlay(document, level.id, metres.measurements, fr.views.ceiling, font) : null))
-        },
-        emptyText: fr.views.empty,
-      }
-    }
-    if (tab.kind === 'roof') {
-      // Plan de toiture (M20 20.1b) : contour, débords, pentes lues dans les pans, escalier d'accès.
-      const level = allLevels.find((l) => l.id === tab.levelId)
-      const roof = level ? roofPlans(level.id) : null
-      if (!level || !roof) return { title: '', note: '', build: () => null, emptyText: fr.views.levelMissing, kind: '' }
-      const title = fr.views.roofPlan(level.name)
-      // Surfaces de toiture sur demande (D20-10) : valeurs des métrés, pans comptés sur leur réunion (D20-15).
-      const roofTable = () =>
-        roofAreas
-          ? roofAreaTable((pascalQuantities?.roofs ?? []).filter((r) => r.levelId === level.id), roofPerimeter(roof.plan), level.name, fr.views.roofAreaTable)
-          : null
-      const roofParts = (fontMm?: number) => {
-        const main = roofPlanDrawing(roof.plan, { slope: fr.views.roofSlope }, fontMm, [
-          roof.stair,
-          (font) => annotationGraphics({ dimensions: roofChains(roof.plan.outlines), labels: [] }, font),
-        ])
-        const table = roofTable()
-        const font = fontMm ?? (main ? autoFontMm(main.width, main.height) : 125)
-        return { main, side: table ? withAreaTable(EMPTY_SIDE, table, font) : null }
-      }
-      return {
-        title,
-        note: fr.views.roofPlanNote,
-        kind: fr.views.sheetKinds.roof,
-        build: (fontMm) => {
-          const { main, side } = roofParts(fontMm)
-          if (!main || !side) return main
-          return withAreaTable(main, roofTable(), fontMm ?? autoFontMm(main.width, main.height))
-        },
-        parts: (fontMm) => roofParts(fontMm),
-        emptyText: fr.views.empty,
-      }
-    }
-    if (tab.kind === 'level') {
-      // Plan d'un niveau seul (M20 20.1b) : même dessin que sur la planche, une feuille par niveau.
-      const level = allLevels.find((l) => l.id === tab.levelId)
-      if (!level) return { title: '', note: '', build: () => null, emptyText: fr.views.levelMissing, kind: '' }
-      const title = fr.views.levelPlan(level.name)
-      const document = { elements: elements ?? [], levels: allLevels }
-      const levelParts = (fontMm?: number, version?: 'client' | 'execution') => {
-        const main = levelPlanDrawing(
-          model,
-          level,
-          fontMm,
-          (font) => sheetPlanOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
-          levelSymbols(level.id),
-        )
-        if (!main) return { main: null, side: null }
-        // Tableau des surfaces (métrés, balcon compris, D20-10) et légende des hachures (M20 20.2).
-        const metres = computeBuildingMeasurements(document).levels.find((l) => l.level.id === level.id)
-        const table = metres ? levelAreaTable(metres.measurements, level.name, fr.views.areaTable) : null
-        const font = fontMm ?? autoFontMm(main.width, main.height)
-        const materials = levelWallMaterials(document.elements, level.id)
-        const legend = (x: number, y: number) => materialLegend(materials, fr.materials.walls, fr.views.legendTitle, x, y, font)
-        return { main, side: table || materials.length > 0 ? withAreaTable(EMPTY_SIDE, table, font, legend) : null, table, legend, font }
-      }
-      return {
-        title,
-        note: fr.views.levelPlanNote,
-        kind: fr.views.sheetKinds.level,
-        build: (fontMm, version) => {
-          const p = levelParts(fontMm, version)
-          if (!p.main) return null
-          return withAreaTable(p.main, p.table ?? null, p.font!, p.legend)
-        },
-        parts: (fontMm, version) => {
-          const { main, side } = levelParts(fontMm, version)
-          return { main, side }
-        },
-        emptyText: fr.views.empty,
-      }
-    }
-    if (tab.kind === 'elevation') {
-      const title = fr.views.elevation[tab.cardinal]
-      const view = buildElevation(model, allLevels, tab.cardinal, northAngle)
-      return {
-        title,
-        note: `${title} · ${fr.views.lookFrom(fr.views.sides[tab.cardinal])}`,
-        kind: fr.views.sheetKinds.elevation,
-        build: (fontMm) => drawingFromView(view, fontMm),
-        emptyText: fr.views.empty,
-      }
-    }
-    if (tab.kind === 'section') {
-      const section = sections.find((s) => s.id === tab.sectionId)
-      if (!section) {
-        return { title: '', note: '', build: () => null, emptyText: fr.views.sectionMissing, kind: '' }
-      }
-      const view = buildSection(model, allLevels, {
-        points: section.points,
-        lookLeft: section.lookLeft,
-        label: section.label,
-        ridgeLabel: fr.views.ridge,
-      })
-      const title = fr.views.section(section.label)
-      return {
-        title,
-        note: `${title} · ${fr.views.sectionLook}`,
-        kind: fr.views.sheetKinds.section,
-        build: (fontMm) => (view ? drawingFromView(view, fontMm) : null),
-        emptyText: fr.views.sectionEmpty,
-      }
-    }
-    return {
-      title: fr.views.sheet,
-      note: fr.views.sheetNote,
-      kind: fr.views.sheetKinds.sheet,
-      build: (fontMm, version) => {
-        const document = { elements: elements ?? [], levels: allLevels }
-        const sheet = buildSheet({
-          model,
-          levels: allLevels,
-          sections: sections.map((s) => ({ points: s.points, lookLeft: s.lookLeft, label: s.label })),
-          northAngle,
-          labels: { elevation: fr.views.elevation, section: fr.views.section, ridge: fr.views.ridge },
-          fontMm,
-          levelOverlay: (level, font) =>
-            sheetPlanOverlay(document, level.id, version ?? sheetDimensioning[level.id] ?? 'none', EXECUTION_LABELS, font),
-          levelSymbols: (level) => levelSymbols(level.id),
-        })
-        return sheet.drawing.width > 0 ? sheet.drawing : null
-      },
-      emptyText: fr.views.empty,
-    }
-  }, [tab, sections, model, levels, northAngle, elements, sheetDimensioning, levelSymbols, roofPlans, roofAreas, pascalQuantities])
+  return useMemo(
+    () =>
+      sheetView(tab, {
+        model,
+        document: { elements: elements ?? [], levels: levels ?? [], plan, pascalQuantities },
+        sections,
+        levelSymbols,
+        roofPlans,
+        sheetDimensioning,
+        roofAreas,
+      }),
+    [tab, sections, model, levels, plan, elements, sheetDimensioning, levelSymbols, roofPlans, roofAreas, pascalQuantities],
+  )
 }
 
 const MODES: readonly DimensioningMode[] = ['none', 'client', 'execution']
@@ -350,6 +175,12 @@ function ScreenBody() {
     .some((level) => sheetDimensioning[level.id] === 'execution')
   const showsPlans = tab.kind === 'sheet' || tab.kind === 'level' || tab.kind === 'roof'
   const roofPlans = useRoofPlans()
+  // Numéro automatique de la feuille dans le jeu (M20 20.7) : niveaux, toitures, plafonds, façades…
+  const activeKey = sheetKey(tab)
+  const autoNumber = useMemo(
+    () => sheetSet({ document: { elements: [], levels: levels ?? [] }, sections, roofPlans }).find((e) => e.key === activeKey)?.number ?? '01',
+    [levels, sections, roofPlans, activeKey],
+  )
 
   const tabs: { key: string; label: string; value: ViewsTab }[] = [
     ...[...(levels ?? [])]
@@ -449,6 +280,8 @@ function ScreenBody() {
           viewTitle={view.title}
           sheetKind={active.kind}
           parts={active.parts}
+          sheetKey={activeKey}
+          autoNumber={autoNumber}
           showNorth={showsPlans}
           dimensioning={tab.kind === 'sheet' || tab.kind === 'level' ? { hasExecution } : undefined}
           onClose={() => setPdfOpen(false)}

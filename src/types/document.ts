@@ -95,6 +95,15 @@ export interface PlanSettings {
   defaultWallHeight: number;    // mm, défaut 2500 — plus utilisé depuis M6 (la hauteur d'un nouveau mur vient du niveau actif) ; conservé pour les anciens projets
   showAnnotations?: boolean;    // M11 bis : flèche du nord et repère de niveau sur le plan et dans les exports ; absent = non
   northAngle: number;           // M8 : degrés, de 0 à 359 ; sens horaire depuis le haut du plan vers la direction du nord (0 = le nord est en haut)
+  sheets?: SheetSetSettings;    // M20 20.7 : renseignements du jeu de feuilles, gardés dans chaque version ; absent = valeurs par défaut
+}
+
+// Jeu de feuilles d'un projet Plan (M20 20.7) : enregistré avec le plan, donc figé dans chaque version.
+export interface SheetSetSettings {
+  issuer: string;            // émetteur (cartouche)
+  revision: string;          // indice du jeu (« 0 », « A »…)
+  status: 'esquisse' | 'aps' | 'apd' | 'pc' | 'dce' | 'exe';
+  numbers?: Record<string, string>; // n° de plan saisi à la main, par feuille (clé `level-<id>`, `elevation-N`…) ; absent = numéro automatique
 }
 
 interface BaseElement {

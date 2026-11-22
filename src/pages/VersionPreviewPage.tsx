@@ -9,7 +9,9 @@ import { fetchMyRole } from '../features/sharing/membersApi'
 import { canEdit } from '../features/sharing/membersLogic'
 import { setPendingRestore } from '../features/versions/pendingRestore'
 import { diffVersions, type VersionChanges } from '../features/versions/versionDiff'
-import { fetchVersionDocument, listProjectPeople, listVersions } from '../features/versions/versionsApi'
+import { fetchVersionContent, listProjectPeople, listVersions } from '../features/versions/versionsApi'
+import { compareSheetSets, DEFAULT_SHEET_SET, sheetSnapshotsOf, type SheetComparison } from '../features/sheets/sheetSet'
+import type { SheetSetSettings } from '../types/document'
 import { previousVersionOf, type ProjectPerson, type ProjectVersion } from '../features/versions/versionsLogic'
 import { fr } from '../i18n/fr'
 import { useEditorStore } from '../stores/editorStore'
@@ -25,6 +27,7 @@ interface Loaded {
   changes?: VersionChanges | null
   people?: ReadonlyMap<string, ProjectPerson>
   canName?: boolean
+  sheets?: { settings: SheetSetSettings; changes: SheetComparison[] | null }
 }
 
 /**
@@ -56,11 +59,26 @@ export default function VersionPreviewPage() {
       const version = versions.find((candidate) => candidate.id === versionId)
       if (!project || !version) return { key, state: 'not-found' }
       const previous = previousVersionOf(versions, versionId)
-      const [document, previousDocument] = await Promise.all([
-        fetchVersionDocument(versionId),
-        previous ? fetchVersionDocument(previous.id) : Promise.resolve(null),
+      const [content, previousContent] = await Promise.all([
+        fetchVersionContent(versionId),
+        previous ? fetchVersionContent(previous.id) : Promise.resolve(null),
       ])
-      if (!document) return { key, state: 'not-found' }
+      if (!content) return { key, state: 'not-found' }
+      const document = content.document
+      const previousDocument = previousContent?.document ?? null
+      // Jeu de feuilles d'un plan (M20 20.7) : recalculé depuis la version, comparé à la précédente.
+      let sheets: Loaded['sheets']
+      if (project.kind === 'plan') {
+        try {
+          const settings = document.plan?.sheets ?? DEFAULT_SHEET_SET
+          const changes = previousContent
+            ? compareSheetSets(sheetSnapshotsOf(previousContent.document, previousContent.scene), sheetSnapshotsOf(document, content.scene))
+            : null
+          sheets = { settings, changes }
+        } catch {
+          sheets = undefined
+        }
+      }
       if (cancelled) return { key, state: 'error' }
       const changes = previous && previousDocument ? diffVersions(previousDocument, document) : null
       // Le nom et le type viennent du projet ; le contenu, de la version.
@@ -73,6 +91,7 @@ export default function VersionPreviewPage() {
         changes,
         people: new Map(people.map((person) => [person.id, person])),
         canName: canEdit(role),
+        sheets,
       }
     }
     load()
@@ -145,6 +164,7 @@ export default function VersionPreviewPage() {
       busy={busy}
       onRestore={restore}
       onCopy={() => void copy()}
+      sheets={loaded.sheets}
     />
   )
   if (useEditorStore.getState().project?.kind === 'plan') {

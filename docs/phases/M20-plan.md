@@ -286,3 +286,28 @@ Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-17).
   place à 0,01 mm, épaisseurs ; calques ; PDF : Liberation Sans seule police, intégrée ; repli Helvetica).
 - Limites : SVG sans cartouche (la feuille complète est le PDF) ; police non intégrée dans le SVG
   (Liberation Sans, Arial ou Helvetica du poste) ; PDF des métrés (M12) inchangé, en Helvetica.
+
+## 20.7 — Révisions
+
+Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-18).
+
+- **Jeu de feuilles** (`features/sheets/sheetSet.ts`) : toutes les feuilles du projet dans l'ordre d'un dossier
+  de plans (plans de niveau du plus bas au plus haut, toitures, plafonds, façades N, E, S, O, coupes,
+  nomenclatures, planche), **numérotées automatiquement** 01, 02… ; un n° saisi à l'export (« 06 ») l'emporte
+  et est gardé pour cette feuille.
+- **Figé par version** : les renseignements du jeu (émetteur, indice, statut, n° saisis) sont enregistrés
+  **avec le plan** (`PlanSettings.sheets`, dans la scène Pascal), donc dans chaque version de M15. Le jeu
+  d'une version se **recalcule depuis son document** (scène = seule source de vérité, D79) : aucun PDF stocké.
+- **Comparaison avec le jeu précédent** : l'aperçu d'une version (Historique → une version) affiche
+  « Jeu de feuilles · indice B · APD · 2 feuilles modifiées », et la liste des feuilles nouvelles, modifiées
+  ou supprimées, avec l'ancien n° s'il a changé. Une feuille est « modifiée » si son dessin change (empreinte
+  du dessin au dixième de mm, dessiné toujours de la même façon : 1:100, cotes Exécution).
+- Les builders des vues sont sortis de l'écran Vues dans `features/sheets/sheetViews.ts` (fonction pure
+  `sheetView`), utilisée par l'écran et par la comparaison : même dessin, mêmes numéros.
+- La fenêtre d'export lit et enregistre ces renseignements dans le projet (avant : gardés pendant la session).
+- Tests : `features/sheets/sheetSet.test.ts` (numérotation de ROOMIT, n° saisi, renseignements gardés par la
+  scène, empreintes stables, pièce renommée au R+1 → plan, plafond R+1 et nomenclatures modifiés, RDC et
+  façades identiques ; coupe ajoutée ; n° changé ; feuilles supprimées).
+- Limites : le dessin d'une ancienne version est refait avec le code actuel (une évolution du dessin de
+  Fabrics change l'aspect d'une ancienne feuille, pas ses données) ; pas de tableau des indices sur la feuille
+  (un seul indice courant par jeu) ; la comparaison dit quelle feuille a changé, pas où sur la feuille.
