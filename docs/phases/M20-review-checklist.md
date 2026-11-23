@@ -1,15 +1,17 @@
 # M20 · Liste de contrôle pour la revue d'un professionnel du bâtiment (gate G3)
 
 À remplir par un architecte ou un ingénieur, sur les feuilles **imprimées à 100 %** (« Taille réelle »,
-jamais « Ajuster à la page »). Cas de revue : l'exemple **ROOMIT** (RDC, R+1, toiture), comparé à la
-référence `Villa ROOMIT_B.pdf` (pages 5, 6 et 7).
+jamais « Ajuster à la page »). Cas de revue : un projet réel de l'utilisateur, ou l'exemple « maison à
+étage » de l'application avec une toiture ajoutée dans Pascal. L'exemple **ROOMIT** (RDC, R+1, toiture),
+comparé à la référence `Villa ROOMIT_B.pdf` (pages 5, 6 et 7), est vérifié par les tests automatiques ;
+ses PDF peuvent être produits pour la revue avec `tmp/m20-dev/renderSheet.test.ts`.
 
 Pour chaque ligne, cocher **Oui** ou **Non** et noter la remarque. Tout « Non » sur une ligne marquée
 **(bloquant)** empêche de valider le gate G3.
 
 ## Préparer les feuilles
 
-1. Ouvrir le projet ROOMIT, puis **Vues**.
+1. Ouvrir le projet à revoir, puis **Vues**.
 2. Exporter en PDF, en **A2 paysage à 1:50** : Plan de niveau RDC, Plan de niveau R+1, Plan de toiture R+1,
    une façade et une coupe. Pour les plans de niveau, régler la cotation sur **Exécution**.
 3. Exporter le Plan de niveau R+1 une fois à 1:100 (A3) et une fois à 1:200 (A4).
