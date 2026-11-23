@@ -29,7 +29,7 @@ Rédigé le 2026-11-23, à la fin de 20.9. Sous-lots 20.0 à 20.8 faits du 2026-
   (`tools/ifc/draw_plans.py`).
 - **20.9** Test du gate G3, liste de contrôle de la revue, ce rapport.
 
-## Décisions proposées par Claude, à valider par l'utilisateur
+## Décisions proposées par Claude, validées par l'utilisateur le 2026-11-23
 
 | N° | Sujet | Proposition |
 |---|---|---|

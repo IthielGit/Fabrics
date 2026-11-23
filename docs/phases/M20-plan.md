@@ -241,7 +241,7 @@ Fait le 2026-11-22 (D20-3 : A, gabarit de Villa ROOMIT).
 
 ## 20.5 — Styles graphiques
 
-Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-16).
+Fait le 2026-11-22. Choix proposés par Claude, validé le 2026-11-23 (D20-16).
 
 - **Épaisseurs imprimées selon l'échelle** (`building/views/graphicStyles.ts`, `lineWeights`), série ISO 128,
   une seule table pour tous les PDF de l'écran Vues :
@@ -269,7 +269,7 @@ Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-16).
 
 ## 20.6 — PDF et SVG à l'échelle
 
-Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-17).
+Fait le 2026-11-22. Choix proposés par Claude, validé le 2026-11-23 (D20-17).
 
 - **Polices intégrées au PDF** (`export/pdfFonts.ts`) : **Liberation Sans** normal et gras (SIL OFL 1.1, fichiers
   livrés avec Pascal, notice déjà dans `THIRD_PARTY_NOTICES.md`), intégrée en sous-ensemble (environ +27 Ko
@@ -289,7 +289,7 @@ Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-17).
 
 ## 20.7 — Révisions
 
-Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-18).
+Fait le 2026-11-22. Choix proposés par Claude, validé le 2026-11-23 (D20-18).
 
 - **Jeu de feuilles** (`features/sheets/sheetSet.ts`) : toutes les feuilles du projet dans l'ordre d'un dossier
   de plans (plans de niveau du plus bas au plus haut, toitures, plafonds, façades N, E, S, O, coupes,
@@ -314,7 +314,7 @@ Fait le 2026-11-22. Choix proposés par Claude, à valider (D20-18).
 
 ## 20.8 — Étude de `ifcopenshell.draw`
 
-Faite le 2026-11-22. Rapport : `docs/phases/M20-ifcopenshell-draw.md` (D20-19, proposé par Claude, à valider).
+Faite le 2026-11-22. Rapport : `docs/phases/M20-ifcopenshell-draw.md` (D20-19, proposé par Claude, validé le 2026-11-23).
 
 - Essai sur ROOMIT exporté par Fabrics (IFC2X3) et par Pascal (IFC4), et sur l'exemple de référence :
   plans, façades et coupes à 1:50, échelle exacte, en 1 à 5 s.

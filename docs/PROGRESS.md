@@ -53,11 +53,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-23 — M20 : choix D20-16 à D20-19 validés
+- L'utilisateur valide les styles graphiques (D20-16), les sorties vectorielles (D20-17), les révisions (D20-18) et l'étude de `ifcopenshell.draw` (D20-19). Reste avant de fermer le gate G3 : l'essai dans le navigateur, l'impression à 100 % et la revue d'un professionnel.
+
 ### 2026-11-23 — M20 · 20.9 : vérification et gate G3
 - Nouveau test : un mur de ROOMIT déplacé dans Pascal met à jour le plan du RDC, son plafond, la coupe, les façades nord et sud et les nomenclatures. Les feuilles du R+1 et de la toiture ne bougent pas.
 - **Liste de contrôle** pour la revue d'un architecte ou d'un ingénieur : `docs/phases/M20-review-checklist.md`. **Rapport** : `docs/phases/M20-report.md`.
 - `npm run check:all` : build, lint et tests de Fabrics réussis. Les tests de Pascal ont 3 échecs de plus que la référence Windows : ce sont des dépassements de délai sur ce poste, et ils réussissent avec un délai plus long (le code de Pascal n'a pas changé).
-- Reste à faire avant de fermer le gate G3 : l'essai dans le navigateur et l'impression à 100 % par l'utilisateur, la revue d'un professionnel, et la validation des choix D20-16 à D20-19.
+- Reste à faire avant de fermer le gate G3 : l'essai dans le navigateur et l'impression à 100 % par l'utilisateur, la revue d'un professionnel, et la validation des choix D20-16 à D20-19 (faite le 2026-11-23).
 
 ### 2026-11-22 — M20 · 20.8 : étude de `ifcopenshell.draw`
 - Essai d'IfcOpenShell pour dessiner les plans et façades à partir des fichiers IFC de ROOMIT (exports de Fabrics et de Pascal). L'échelle est juste, mais il n'y a ni cotes, ni repères, ni cartouche, ni hachures, et l'outil plante avec ses réglages par défaut (version 0.9.0.post1).
