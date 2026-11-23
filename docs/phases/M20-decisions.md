@@ -153,26 +153,26 @@ les bouts sur le vrai bord du toit, une fois. Exact pour plat, un pan, deux pans
 formes à plusieurs pentes recouverts : point « à vérifier » dans les métrés. La feuille de toiture affiche ces
 mêmes valeurs, sur demande. (Option B non retenue : métrés par pan inchangés, avec un avertissement.)
 
-## D20-16 · Styles graphiques (2026-11-22, 20.5) — proposé par Claude, **validé par l\'utilisateur le 2026-11-23**
+## D20-16 · Styles graphiques (2026-11-22, 20.5) — proposé par Claude, **validé par l’utilisateur le 2026-11-23**
 
 Épaisseurs imprimées de la série ISO 128 selon l'échelle (coupé 0,5 / 0,35 / 0,25 mm à 1:50 / 1:100 / 1:200),
 neuf catégories de visibilité plus les hachures, réglage commun à toutes les vues pendant la session, masques
 blancs sous les noms de pièces seulement. À confirmer à l'essai de fin de M20 (impression à 100 %).
 
-## D20-17 · Sorties vectorielles (2026-11-22, 20.6) — proposé par Claude, **validé par l\'utilisateur le 2026-11-23**
+## D20-17 · Sorties vectorielles (2026-11-22, 20.6) — proposé par Claude, **validé par l’utilisateur le 2026-11-23**
 
 PDF de feuilles avec Liberation Sans intégrée (OFL), notes en romain ; SVG = dessin seul à l'échelle, sans
 cartouche, en calques par catégorie. Option écartée : SVG de la feuille complète (refaire le cartouche du PDF
 en SVG, deux codes à tenir).
 
-## D20-18 · Révisions du jeu de feuilles (2026-11-22, 20.7) — proposé par Claude, **validé par l\'utilisateur le 2026-11-23**
+## D20-18 · Révisions du jeu de feuilles (2026-11-22, 20.7) — proposé par Claude, **validé par l’utilisateur le 2026-11-23**
 
 Jeu recalculé depuis chaque version (aucun PDF stocké), renseignements du cartouche enregistrés avec le plan,
 numérotation automatique dans l'ordre du dossier avec n° saisi possible, un indice courant par jeu ; comparaison
 par empreinte du dessin, affichée dans l'aperçu d'une version. Option écartée : stocker les PDF de chaque
 version (stockage Supabase, et une deuxième vérité à côté de la scène).
 
-## D20-19 · `ifcopenshell.draw` (2026-11-22, 20.8) — proposé par Claude, **validé par l\'utilisateur le 2026-11-23**
+## D20-19 · `ifcopenshell.draw` (2026-11-22, 20.8) — proposé par Claude, **validé par l’utilisateur le 2026-11-23**
 
 Pas de moteur de feuilles (pas d'usages français, de cotes ni de cartouche, et serveur Python obligatoire) ;
 gardé comme **outil de contrôle des exports IFC** hors application (`tools/ifc/draw_plans.py`). Rapport :
