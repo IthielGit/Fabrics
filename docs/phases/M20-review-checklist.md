@@ -3,8 +3,8 @@
 À remplir par un architecte ou un ingénieur, sur les feuilles **imprimées à 100 %** (« Taille réelle »,
 jamais « Ajuster à la page »). Cas de revue : un projet réel de l'utilisateur, ou l'exemple « maison à
 étage » de l'application avec une toiture ajoutée dans Pascal. L'exemple **ROOMIT** (RDC, R+1, toiture),
-comparé à la référence `Villa ROOMIT_B.pdf` (pages 5, 6 et 7), est vérifié par les tests automatiques ;
-ses PDF peuvent être produits pour la revue avec `tmp/m20-dev/renderSheet.test.ts`.
+comparé à la référence `Villa ROOMIT_B.pdf` (pages 5, 6 et 7), est vérifié par les tests automatiques
+(`export/sheetTemplate.test.ts`, `export/printScaleR1.test.ts`) ; ses PDF de revue sont à demander à Claude.
 
 Pour chaque ligne, cocher **Oui** ou **Non** et noter la remarque. Tout « Non » sur une ligne marquée
 **(bloquant)** empêche de valider le gate G3.
