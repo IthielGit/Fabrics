@@ -1378,7 +1378,7 @@ rappelle s'il tourne sur un autre modèle).
 
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
-| 21.0 Décisions | Conventions de métré et seuils de déduction des ouvertures, en options, choisis par l'utilisateur | `/model opus` |
+| 21.0 Décisions — **fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) | Conventions de métré et seuils de déduction des ouvertures, en options, choisis par l'utilisateur | `/model opus` |
 | 21.1 Deux familles de quantités | Quantités géométriques et quantités de métré distinguées dans le modèle de données | `/model opus` |
 | 21.2 Règles versionnées | Par catégorie et composition : longueurs, surfaces brutes et nettes, volumes, nombres, revêtements, déductions (union des ouvertures) | `/model opus` |
 | 21.3 Traçabilité | Quantité → éléments sources → dimensions → formule → déductions → règle et version | `/model opus` |

@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M20 Plans professionnels et mise en page (gate G3). 20.0 fait ; **20.1a fait le 2026-11-22** (plan de niveau RDC lié au modèle, moteur de Fabrics : ADR 0007, impression à 100 % validée par l'utilisateur) ; **20.1b en cours** (R+1 et toiture, feu vert le 2026-11-22, D20-10 : A, D20-11 : A ; étapes 1 à 3 faites : exemple ROOMIT-R1, plan de niveau R+1 (validé dans le navigateur), tableau des surfaces, validé dans le navigateur ; tâche 4 plan de toiture faite (D20-13 : A) ; tâche 5 surfaces de toiture sur demande faite (D20-15 : A)) ; **20.1b fait le 2026-11-22** ; **20.1c fait le 2026-11-22** ; **20.2 fait le 2026-11-22** ; **20.3 fait le 2026-11-22** ; **20.4 fait le 2026-11-22** ; **20.5 fait le 2026-11-22** ; **20.6 fait le 2026-11-22** ; **20.7 fait le 2026-11-22** ; **20.8 fait le 2026-11-22** ; **20.9 fait le 2026-11-23** ; essai de l'utilisateur dans le navigateur OK le 2026-11-23 (reste : mesure à la règle confirmée, revue d'un professionnel ; gate G3 ouvert) (demande de l'utilisateur : tout M20, essai dans le navigateur à la fin). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M21 Quantitatif automatique et traçabilité (gate G4), feu vert de l'utilisateur le 2026-11-23 ; **21.0 fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) ; prochain sous-lot : 21.1 (deux familles de quantités, `/model opus`). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -44,14 +44,19 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M17 Audit et intégration de Pascal (G0) | terminé, gate G0 validé PASS | 2026-11-18 |
 | M18 Modèle BIM unifié (G1) | en cours (lots A à E faits) | |
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | terminé, gate G2 validé PASS | 2026-11-21 |
-| M20 Plans professionnels et mise en page (G3) | en cours (20.0 fait) | |
-| M21 Quantitatif automatique et traçabilité (G4) | à faire | |
+| M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
+| M21 Quantitatif automatique et traçabilité (G4) | en cours (21.0 fait) | |
 | M22 Échanges IFC (G5) | à faire | |
 | M23 Bibliothèque de prix et DQE (G6) | à faire | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-23 — M21 · 21.0 : décisions de métré
+- Feu vert de l'utilisateur pour M21. Décisions proposées en options et **choisies par l'utilisateur** (option recommandée partout), dans `docs/phases/M21-decisions.md` :
+  usages français (D21-1) ; seuils de déduction des vides réglables par catégorie, 0 m² par défaut, à faire confirmer par un métreur (D21-2) ; tableaux des ouvertures en quantité séparée (D21-3) ; longueur des murs à l'axe, inchangée (D21-4) ; toute la scène, éléments natifs de Pascal compris (D21-5) ; tolérances ±1 mm et < 0,1 % provisoires (D21-6) ; comparaison avec un IFC4 de l'exportateur de Pascal, relu par IfcOpenShell (D21-7) ; traçabilité dans le panneau Métrés et les exports CSV / XLSX (D21-8).
+- Aucun code modifié.
 
 ### 2026-11-23 — M20 : essai de fin de jalon
 - L'utilisateur a fait l'essai de fin de M20 dans le navigateur : **tout est correct**. Reste pour fermer le gate G3 : la confirmation de la mesure à la règle sur une feuille imprimée à 100 % et la revue d'un professionnel (`docs/phases/M20-review-checklist.md`).
