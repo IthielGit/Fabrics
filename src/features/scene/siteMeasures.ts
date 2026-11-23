@@ -142,3 +142,20 @@ export function siteMeasures(scene: PlanScene): SiteMeasures {
     levels: levels.map((l) => l.altitude),
   }
 }
+
+/**
+ * Emprise de chaque niveau (M21) : surface du contour extérieur des murs du niveau, en mm², par
+ * identifiant de niveau Fabrics. Même calcul que l'emprise au sol (`levelFootprintLoops` de Pascal).
+ * Un niveau sans mur a une emprise de 0.
+ */
+export function levelFootprintAreas(scene: PlanScene): Map<string, number> {
+  const { nodes } = scene
+  const building = (nodes[BUILDING_ID] ?? Object.values(nodes).find((n) => n.type === 'building')) as SceneNodeData | undefined
+  const out = new Map<string, number>()
+  for (const { node, altitude } of levelAltitudes(nodes)) {
+    const loops = levelFootprintLoops(nodes as never, node as never, (building ?? null) as never)
+    const outline = loops.length > 0 ? footprintOutline(loops) : []
+    out.set(altitude.id, outline.reduce((sum, ring) => sum + polygonAreaM2(ring), 0) * 1e6)
+  }
+  return out
+}

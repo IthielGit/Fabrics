@@ -96,6 +96,7 @@ export interface PlanSettings {
   showAnnotations?: boolean;    // M11 bis : flèche du nord et repère de niveau sur le plan et dans les exports ; absent = non
   northAngle: number;           // M8 : degrés, de 0 à 359 ; sens horaire depuis le haut du plan vers la direction du nord (0 = le nord est en haut)
   sheets?: SheetSetSettings;    // M20 20.7 : renseignements du jeu de feuilles, gardés dans chaque version ; absent = valeurs par défaut
+  takeoff?: { thresholds?: Partial<Record<'masonry' | 'plaster' | 'paint', number>> }; // M21 21.2 : seuils de déduction des vides du métré, en mm² (scène : m²) ; absent = 0, tout est déduit
 }
 
 // Jeu de feuilles d'un projet Plan (M20 20.7) : enregistré avec le plan, donc figé dans chaque version.

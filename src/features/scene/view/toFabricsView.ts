@@ -23,7 +23,7 @@ import { pascalQuantitiesOf } from './pascalQuantities'
 import { nativeRoofElements } from './nativeRoofs'
 import { roomClearOutlines } from './roomClearFloor'
 import { BUILDING_ID, type FabricsNodeMeta, type PlanScene, type SceneNodeData } from '../sceneTypes'
-import { mToMm, pascalRotationToDegrees, planPointsToFlat } from '../units'
+import { mToMm, pascalRotationToDegrees, planPointsToFlat, takeoffFromScene } from '../units'
 
 type Vec2 = [number, number]
 type Vec3 = [number, number, number]
@@ -297,6 +297,7 @@ export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
     gridSize: mToMm(settings.plan.gridSize),
     defaultWallThickness: mToMm(settings.plan.defaultWallThickness),
     defaultWallHeight: mToMm(settings.plan.defaultWallHeight),
+    ...(settings.plan.takeoff && { takeoff: takeoffFromScene(settings.plan.takeoff) }),
   }
   return defined({
     version: settings.version,

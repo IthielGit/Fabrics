@@ -504,6 +504,14 @@ export const fr = {
       roles: { base: 'Dalle de base', platform: 'Estrade', sunken: 'Dalle en creux' } as Record<string, string>,
       unnamed: 'Dalle',
     },
+    // Règles du quantitatif (M21, 21.2) : seuils de déduction des vides, réglés par projet.
+    takeoffRules: {
+      title: 'Règles de métré',
+      hint:
+        'Une ouverture n’est déduite du métré que si sa surface dépasse le seuil de la catégorie. 0 m² : toutes les ouvertures sont déduites. Valeurs à faire confirmer par un métreur.',
+      categories: { masonry: 'Seuil maçonnerie', plaster: 'Seuil enduits', paint: 'Seuil peinture' },
+      version: (version: string) => `Règles « avant-métré à la française », version ${version}`,
+    },
     // Couches des murs (M19 B3) : composition donnée au mur dans Pascal.
     wallLayers: 'Couches des murs',
     layer: 'Couche',

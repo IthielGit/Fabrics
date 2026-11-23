@@ -306,7 +306,7 @@ function openingMeasure(opening: OpeningElement, wall: WallElement, outside = fa
 }
 
 /** Rectangle d'une ouverture dans l'élévation du mur : de `from` à `to` en long, de `bottom` à `top` en hauteur. */
-interface Rectangle {
+export interface Rectangle {
   from: number
   to: number
   bottom: number
@@ -314,7 +314,7 @@ interface Rectangle {
 }
 
 /** Surface de l'union de rectangles (mm²) : on découpe en bandes verticales aux abscisses des bords. */
-function unionArea(rectangles: readonly Rectangle[]): number {
+export function unionArea(rectangles: readonly Rectangle[]): number {
   const xs = [...new Set(rectangles.flatMap((r) => [r.from, r.to]))].sort((a, b) => a - b)
   let area = 0
   for (let i = 0; i + 1 < xs.length; i++) {
@@ -333,6 +333,63 @@ function unionArea(rectangles: readonly Rectangle[]): number {
     area += covered * (x1 - x0)
   }
   return area
+}
+
+/** Ouverture mesurée posée dans l'élévation de son mur (surface > 0 seulement). */
+export interface PlacedOpening {
+  openingId: string
+  wallId: string
+  segmentIndex: number
+  /** Surface de l'ouverture dans le mur, en mm². */
+  area: number
+  rectangle: Rectangle
+}
+
+/**
+ * Mesure des ouvertures posées sur un mur connu (les orphelines sont ignorées) et leurs rectangles
+ * dans l'élévation du mur. EDGE-01 (M18) : une ouverture hors de son mur n'est pas déduite (surface 0,
+ * signalée par ailleurs). Seule source de ces rectangles (métrés et quantités de métré, M21).
+ */
+export function measureOpenings(
+  elements: readonly CanvasElement[],
+  wallById: ReadonlyMap<string, WallElement>,
+): { measures: OpeningMeasure[]; rectangles: PlacedOpening[] } {
+  const measures: OpeningMeasure[] = []
+  const rectangles: PlacedOpening[] = []
+  for (const element of elements) {
+    if (element.type !== 'opening') continue
+    const wall = wallById.get(element.wallId)
+    if (!wall) continue // ouverture orpheline : rien à mesurer
+    const measure = openingMeasure(element, wall, isOpeningOutside(element, wall))
+    measures.push(measure)
+    if (measure.area > 0) {
+      rectangles.push({
+        openingId: element.id,
+        wallId: wall.id,
+        segmentIndex: element.segmentIndex,
+        area: measure.area,
+        rectangle: { ...openingInterval(element), bottom: element.sillHeight, top: element.sillHeight + measure.area / element.width },
+      })
+    }
+  }
+  return { measures, rectangles }
+}
+
+/**
+ * Surface déduite de chaque mur (mm²) : deux ouvertures qui se chevauchent ne sont déduites qu'une
+ * fois (surface de leur union, côté par côté du mur).
+ */
+export function deductedOpeningsArea(placed: readonly PlacedOpening[]): Map<string, number> {
+  const bySegment = new Map<string, { wallId: string; rectangles: Rectangle[] }>()
+  for (const p of placed) {
+    const key = `${p.wallId}\u0000${p.segmentIndex}`
+    const list = bySegment.get(key) ?? { wallId: p.wallId, rectangles: [] }
+    list.rectangles.push(p.rectangle)
+    bySegment.set(key, list)
+  }
+  const out = new Map<string, number>()
+  for (const { wallId, rectangles } of bySegment.values()) out.set(wallId, (out.get(wallId) ?? 0) + unionArea(rectangles))
+  return out
 }
 
 /**
@@ -359,26 +416,9 @@ export function computeMeasurements(
     elements.filter((el): el is WallElement => el.type === 'wall').map((wall) => [wall.id, wall]),
   )
   const tJunctions = tJunctionAdjustments([...wallById.values()])
-  const openingsArea = new Map<string, number>()
-  const rectanglesBySegment = new Map<string, { wallId: string; rectangles: Rectangle[] }>()
-  for (const element of elements) {
-    if (element.type !== 'opening') continue
-    const wall = wallById.get(element.wallId)
-    if (!wall) continue // ouverture orpheline : rien à mesurer
-    // EDGE-01 (M18) : une ouverture hors de son mur n'est pas déduite (elle est signalée par ailleurs).
-    const measure = openingMeasure(element, wall, isOpeningOutside(element, wall))
-    openings.push(measure)
-    if (measure.area > 0) {
-      const key = `${wall.id} ${element.segmentIndex}`
-      const list = rectanglesBySegment.get(key) ?? { wallId: wall.id, rectangles: [] }
-      list.rectangles.push({ ...openingInterval(element), bottom: element.sillHeight, top: element.sillHeight + measure.area / element.width })
-      rectanglesBySegment.set(key, list)
-    }
-  }
-  // Deux ouvertures qui se chevauchent ne sont déduites qu'une fois : surface de leur union.
-  for (const { wallId, rectangles } of rectanglesBySegment.values()) {
-    openingsArea.set(wallId, (openingsArea.get(wallId) ?? 0) + unionArea(rectangles))
-  }
+  const measured = measureOpenings(elements, wallById)
+  openings.push(...measured.measures)
+  const openingsArea = deductedOpeningsArea(measured.rectangles)
 
   const roofElements = elements.filter((el): el is RoofElement => el.type === 'roof')
 

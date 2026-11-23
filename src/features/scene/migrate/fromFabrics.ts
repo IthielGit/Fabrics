@@ -45,7 +45,7 @@ import {
   type PlanScene,
   type SceneNodeData,
 } from '../sceneTypes'
-import { degreesToPascalRotation, flatToPlanPoints, mmToM } from '../units'
+import { degreesToPascalRotation, flatToPlanPoints, mmToM, takeoffToScene } from '../units'
 import { LENGTH_FIELDS, lengthsToMetres } from './lengthFields'
 import { dimensionFrame, furnitureCentre } from './geometry'
 import { nodeIdOf } from './nodeIds'
@@ -111,6 +111,7 @@ export function fabricsToScene(doc: FabricsDocument): FabricsToSceneResult {
     gridSize: mmToM(doc.plan.gridSize),
     defaultWallThickness: mmToM(doc.plan.defaultWallThickness),
     defaultWallHeight: mmToM(doc.plan.defaultWallHeight),
+    ...(doc.plan.takeoff && { takeoff: takeoffToScene(doc.plan.takeoff) }),
   }
   const page = { ...doc.page, width: mmToM(doc.page.width), height: mmToM(doc.page.height) }
   add(asData(SiteNode.parse({ id: SITE_ID, children: [] })))

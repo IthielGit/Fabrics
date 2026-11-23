@@ -9,15 +9,16 @@
  * Les valeurs sont gardées sans arrondi, dans l'unité de base : mm, mm², mm³ ou nombre. L'arrondi
  * (m² à 2 décimales, m³ à 3) se fait seulement à l'affichage (D21-6).
  *
- * Règle versionnée, traçabilité et statut s'ajoutent en 21.2, 21.3 et 21.4.
+ * Règle versionnée : 21.2 (`rules.ts`) ; traçabilité et statut : 21.3 et 21.4.
  */
+import type { QuantityRule } from './rules'
 
 export type QuantityFamily = 'geometric' | 'takeoff'
 
 /** Grandeur d'une quantité ; l'unité de base en découle (mm, mm², mm³, nombre). */
 export type QuantityDimension = 'length' | 'area' | 'volume' | 'count'
 
-export type QuantityCategory = 'wall' | 'wallLayer' | 'opening' | 'room' | 'platform' | 'roof' | 'stair' | 'chimney'
+export type QuantityCategory = 'wall' | 'wallLayer' | 'opening' | 'room' | 'slab' | 'platform' | 'roof' | 'stair' | 'chimney'
 
 /** Code d'une quantité : catégorie, puis ce qui est mesuré. */
 export type QuantityCode =
@@ -30,15 +31,27 @@ export type QuantityCode =
   | 'wall.facesNetArea'
   | 'wall.grossVolume'
   | 'wall.netVolume'
+  /** Métré seulement : faces des murs à enduire et à peindre (seuils propres, D21-2). */
+  | 'wall.plasterArea'
+  | 'wall.paintArea'
   | 'wallLayer.area'
   | 'wallLayer.volume'
   | 'opening.count'
   | 'opening.area'
+  /** Métré seulement : tableaux (pourtour × épaisseur du mur, D21-3). */
+  | 'opening.revealArea'
   | 'room.area'
   | 'room.perimeter'
   | 'room.voidArea'
   | 'room.netArea'
   | 'room.habitableArea'
+  /** Métré seulement : revêtement de sol, plafond, plinthes (portes déduites). */
+  | 'room.floorCoveringArea'
+  | 'room.ceilingArea'
+  | 'room.skirtingLength'
+  | 'slab.area'
+  | 'slab.perimeter'
+  | 'slab.volume'
   | 'platform.area'
   | 'platform.volume'
   | 'roof.projectedArea'
@@ -68,6 +81,8 @@ export interface QuantityResult {
   partId: string | null
   /** Niveau de l'élément, `null` s'il n'en a pas. */
   levelId: string | null
+  /** Règle et version qui ont produit la valeur (21.2). */
+  rule: QuantityRule
 }
 
 /** Grandeur de chaque code (une seule table : pas de grandeur saisie à la main ailleurs). */
@@ -81,15 +96,24 @@ export const QUANTITY_DIMENSIONS: Record<QuantityCode, QuantityDimension> = {
   'wall.facesNetArea': 'area',
   'wall.grossVolume': 'volume',
   'wall.netVolume': 'volume',
+  'wall.plasterArea': 'area',
+  'wall.paintArea': 'area',
   'wallLayer.area': 'area',
   'wallLayer.volume': 'volume',
   'opening.count': 'count',
   'opening.area': 'area',
+  'opening.revealArea': 'area',
   'room.area': 'area',
   'room.perimeter': 'length',
   'room.voidArea': 'area',
   'room.netArea': 'area',
   'room.habitableArea': 'area',
+  'room.floorCoveringArea': 'area',
+  'room.ceilingArea': 'area',
+  'room.skirtingLength': 'length',
+  'slab.area': 'area',
+  'slab.perimeter': 'length',
+  'slab.volume': 'volume',
   'platform.area': 'area',
   'platform.volume': 'volume',
   'roof.projectedArea': 'area',

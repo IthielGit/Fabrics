@@ -16,6 +16,7 @@ import { exportMetres } from './exportMetres'
 import MetresWarningList from './MetresWarningList'
 import SiteMeasuresTable from './SiteMeasuresTable'
 import SlabsTable from './SlabsTable'
+import TakeoffRulesSection from './TakeoffRulesSection'
 import WallLayersTable from './WallLayersTable'
 
 /** À corriger (manque, débord : bloque l'export) en rouge, puis le reste à vérifier en orange. */
@@ -589,6 +590,7 @@ export default function MeasurementsPanel() {
       )}
         </>
       )}
+      <TakeoffRulesSection />
     </section>
   )
 }

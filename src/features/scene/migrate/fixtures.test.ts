@@ -9,7 +9,7 @@
  */
 import { describe, expect, it } from 'vitest'
 import { computeBuildingMeasurements } from '../../measurements/measurements'
-import { buildingQuantities } from '../../measurements/quantities/takeoff'
+import { computeQuantities, sumQuantity } from '../../measurements/quantities/quantitySet'
 import type { QuantityCode } from '../../measurements/quantities/types'
 import { isBlockingWarning, metresWarnings } from '../../measurements/warnings'
 import { parseLength } from '../../units/format'
@@ -26,6 +26,7 @@ function spec(id: string): Spec {
 
 const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
 const m2 = (mm2: number) => Math.round(mm2 / 1e4) / 100
+const m3 = (mm3: number) => Math.round(mm3 / 1e6) / 1000
 
 /** Plan → scène Pascal → chargement par Pascal → vue calculée : le chemin de tout plan à partir de M18. */
 function viaScene(doc: FabricsDocument): FabricsDocument {
@@ -144,9 +145,8 @@ describe('HOUSE-01 passé par la scène Pascal', () => {
   })
 
   it('quantités géométriques (M21, 21.1) : volumes des murs, brut 21,12 m³ et net 19,394 m³ pour ENV', () => {
-    const { geometric } = buildingQuantities(computeBuildingMeasurements(doc))
+    const { geometric } = computeQuantities({ document: doc })
     const value = (code: QuantityCode, id: string) => geometric.find((q) => q.code === code && q.elementIds[0] === id)!.value
-    const m3 = (mm3: number) => Math.round(mm3 / 1e6) / 1000
     const e = s.expected.walls
     expect(m3(value('wall.grossVolume', 'ENV'))).toBe(e.ENV.volumeGross_m3)
     expect(m3(value('wall.netVolume', 'ENV'))).toBe(e.ENV.volumeNet_m3)
@@ -154,7 +154,14 @@ describe('HOUSE-01 passé par la scène Pascal', () => {
     expect(m3(['C1', 'C2', 'C3'].reduce((sum, ref) => sum + value('wall.netVolume', ref), 0))).toBe(e.partitionsTotal.volume_m3)
   })
 
-  it.todo('dalle (80 m², 16 m³) : M21, 21.2 (dalles de la scène dans les métrés, D21-5)')
+  it('dalle de niveau (M21, 21.2) : 80 m², 16 m³', () => {
+    const scene = settleScene(fabricsToScene(house01()).scene)
+    const { geometric, takeoff } = computeQuantities({ document: doc, scene })
+    for (const list of [geometric, takeoff]) {
+      expect(m2(sumQuantity(list, 'slab.area'))).toBe(s.expected.slab.area_m2)
+      expect(m3(sumQuantity(list, 'slab.volume'))).toBe(s.expected.slab.volume_m3)
+    }
+  })
 })
 
 describe('HOUSE-02 passé par la scène Pascal', () => {
@@ -197,7 +204,22 @@ describe('HOUSE-02 passé par la scène Pascal', () => {
     expect(m2(all.flatMap((m) => m.walls).reduce((sum, w) => sum + w.netArea, 0))).toBe(b.wallsNetArea_m2)
   })
 
-  it.todo('volumes nets des murs (48,838 m³), dalles découpées (146,74 m², 29,348 m³), escalier : M21')
+  it('quantités (M21, 21.2) : volumes nets des murs, dalles découpées par les murs du dessous et la trémie', () => {
+    const scene = settleScene(fabricsToScene(house02()).scene)
+    const { geometric } = computeQuantities({ document: doc, scene })
+    const b = s.expected.building
+    const ofLevel = (name: string) => geometric.filter((q) => q.levelId === building.levels.find((l) => l.level.name === name)!.level.id)
+    for (const name of ['Rez-de-chaussée', 'Étage 1']) {
+      const e = s.expected.perLevel[name]
+      expect(m3(sumQuantity(ofLevel(name), 'wall.netVolume')), name).toBe(e.walls.netVolume_m3)
+      expect(m2(sumQuantity(ofLevel(name), 'slab.area')), name).toBe(e.slab.area_m2)
+      expect(m3(sumQuantity(ofLevel(name), 'slab.volume')), name).toBe(e.slab.volume_m3)
+    }
+    expect(m3(sumQuantity(geometric, 'wall.netVolume'))).toBe(b.wallsNetVolume_m3)
+    expect(m2(sumQuantity(geometric, 'slab.area'))).toBe(b.slabsArea_m2)
+    expect(m3(sumQuantity(geometric, 'slab.volume'))).toBe(b.slabsVolume_m3)
+    expect(m3(sumQuantity(geometric, 'wall.netVolume') + sumQuantity(geometric, 'slab.volume'))).toBe(b.wallsAndSlabsVolume_m3)
+  })
 })
 
 describe('EDGE-01 : jamais un résultat faux en silence', () => {

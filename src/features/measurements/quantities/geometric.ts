@@ -3,7 +3,10 @@
  * forme de `QuantityResult`, sans aucun nouveau calcul de forme. Les valeurs sont donc exactement
  * celles des tableaux de métrés (anti-régression). Fonctions pures.
  */
+import type { SlabMeasure } from '../../scene/slabMeasures'
 import type { BuildingMeasurements, Measurements } from '../measurements'
+import type { LevelSlab } from './levelSlabs'
+import { ruleOf } from './rules'
 import { QUANTITY_DIMENSIONS, categoryOf, quantityKey, type QuantityCode, type QuantityResult } from './types'
 
 function result(code: QuantityCode, value: number, elementId: string, levelId: string | null, partId: string | null = null): QuantityResult {
@@ -17,6 +20,7 @@ function result(code: QuantityCode, value: number, elementId: string, levelId: s
     elementIds: [elementId],
     partId,
     levelId,
+    rule: ruleOf('geometric', code),
   }
 }
 
@@ -80,7 +84,38 @@ export function geometricQuantitiesOfLevel(m: Measurements, levelId: string | nu
   return out
 }
 
-/** Quantités géométriques de tout le bâtiment, niveau par niveau (du plus bas au plus haut). */
-export function geometricQuantities(building: BuildingMeasurements): QuantityResult[] {
-  return building.levels.flatMap((entry) => geometricQuantitiesOfLevel(entry.measurements, entry.level.id))
+/** Quantités des dalles de la scène Pascal (`scene/slabMeasures.ts`, M19 B6). */
+export function slabQuantities(slabs: readonly SlabMeasure[]): QuantityResult[] {
+  return slabs.flatMap((slab) => [
+    result('slab.area', slab.area, slab.id, slab.levelId),
+    result('slab.perimeter', slab.perimeter, slab.id, slab.levelId),
+    result('slab.volume', slab.volume, slab.id, slab.levelId),
+  ])
+}
+
+/** Partie « dalle de niveau » d'un niveau (la quantité est rattachée au niveau). */
+export const LEVEL_SLAB_PART = 'levelSlab'
+
+/** Quantités des dalles de niveau (`levelSlabs.ts`), quand le niveau n'a pas de dalle dessinée. */
+export function levelSlabQuantities(slabs: readonly LevelSlab[]): QuantityResult[] {
+  return slabs.flatMap((slab) => [
+    result('slab.area', slab.area, slab.levelId, slab.levelId, LEVEL_SLAB_PART),
+    result('slab.volume', slab.volume, slab.levelId, slab.levelId, LEVEL_SLAB_PART),
+  ])
+}
+
+/**
+ * Quantités géométriques de tout le bâtiment, niveau par niveau (du plus bas au plus haut), puis
+ * les dalles de la scène (dans l'ordre de la scène) et les dalles de niveau.
+ */
+export function geometricQuantities(
+  building: BuildingMeasurements,
+  slabs: readonly SlabMeasure[] = [],
+  levelSlabList: readonly LevelSlab[] = [],
+): QuantityResult[] {
+  return [
+    ...building.levels.flatMap((entry) => geometricQuantitiesOfLevel(entry.measurements, entry.level.id)),
+    ...slabQuantities(slabs),
+    ...levelSlabQuantities(levelSlabList),
+  ]
 }
