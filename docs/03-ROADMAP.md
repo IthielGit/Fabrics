@@ -1348,18 +1348,18 @@ rappelle s'il tourne sur un autre modèle).
 | 20.6 PDF et SVG à l'échelle — **fait le 2026-11-22** (Liberation Sans intégrée au PDF, export SVG à l'échelle en calques) | Sorties vectorielles exactes à 1:50, 1:100, 1:200 ; polices intégrées si la licence le permet | `/model opus` |
 | 20.7 Révisions — **fait le 2026-11-22** (jeu de feuilles numéroté, gardé dans chaque version, comparé au précédent dans l'aperçu d'une version) | Jeu de feuilles figé par version (M15), numérotation, comparaison avec le jeu précédent | `/model opus` |
 | 20.8 Étude `ifcopenshell.draw` — **fait le 2026-11-22** (outil de contrôle des IFC hors application ; moteur de feuilles inchangé, `docs/phases/M20-ifcopenshell-draw.md`) | Essai comme outil complémentaire, limites documentées | `/model sonnet` |
-| 20.9 Vérification et gate G3 | Impression à 100 %, mise à jour des vues après modification d'un mur, liste de contrôle pour la revue d'un professionnel, rapport | `/model opus` |
+| 20.9 Vérification et gate G3 — **fait le 2026-11-23** sauf l'essai de l'utilisateur et la revue d'un professionnel (`docs/phases/M20-report.md`, `docs/phases/M20-review-checklist.md`) | Impression à 100 %, mise à jour des vues après modification d'un mur, liste de contrôle pour la revue d'un professionnel, rapport | `/model opus` |
 
-- [ ] Vues liées au modèle : plans de niveau, coupes, façades, détails ; façades, coupes, planche et
-      cotes Client / Exécution de Fabrics étendues au modèle Pascal
-- [ ] Annotations : cotes chaînées, repères portes et fenêtres, noms et surfaces de pièces, axes,
-      symboles, légendes, **nomenclatures** ; plan de plafond, plan de toiture
-- [ ] Feuilles A4, A3, A2, A1 : cartouche, échelle, unités, orientation, nord, indice, date, émetteur,
-      statut
-- [ ] Styles graphiques : épaisseurs de traits, éléments coupés et vus, hachures, calques, masques,
-      visibilité
-- [ ] PDF et SVG vectoriels à l'échelle, polices intégrées si la licence le permet
-- [ ] Révisions : jeu de feuilles figé par version (M15), numérotation, comparaison avec le jeu précédent
+- [x] Vues liées au modèle : plans de niveau, coupes, façades, détails ; façades, coupes, planche et
+      cotes Client / Exécution de Fabrics étendues au modèle Pascal — fait (2026-11-22)
+- [x] Annotations : cotes chaînées, repères portes et fenêtres, noms et surfaces de pièces, axes,
+      symboles, légendes, **nomenclatures** ; plan de plafond, plan de toiture — fait (2026-11-22)
+- [x] Feuilles A4, A3, A2, A1 : cartouche, échelle, unités, orientation, nord, indice, date, émetteur,
+      statut — fait (2026-11-22)
+- [x] Styles graphiques : épaisseurs de traits, éléments coupés et vus, hachures, calques, masques,
+      visibilité — fait (2026-11-22)
+- [x] PDF et SVG vectoriels à l'échelle, polices intégrées si la licence le permet — fait (2026-11-22)
+- [x] Révisions : jeu de feuilles figé par version (M15), numérotation, comparaison avec le jeu précédent — fait (2026-11-22)
 - [x] Étude de `ifcopenshell.draw` comme outil complémentaire (limites documentées) — fait le 2026-11-22
 
 **Critères d'acceptation (G3)**

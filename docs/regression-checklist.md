@@ -393,3 +393,10 @@ droite de la 3D) et onglet **Paramètres**.
 | Critère | Vérification |
 |---|---|
 | `tools/ifc/draw_plans.py` dessine plans et façades d'un IFC à l'échelle (un SVG par dessin) | Manuel : `tools/ifc/.venv/Scripts/python.exe -I tools/ifc/draw_plans.py baseline/fabrics/example/export.ifc tmp/draw` |
+
+### M20 · 20.9 — Gate G3
+| Critère | Vérification |
+|---|---|
+| Un mur modifié dans la scène met à jour plans, plafond, coupe, façades, nomenclatures ; les autres feuilles ne changent pas | Auto : `features/sheets/gateG3.test.ts` |
+| Cotes justes imprimées à 100 % (1:50, 1:100, 1:200), étage de 2500 mm = 50 mm | Auto (PDF relu) ; Manuel : règle, `docs/phases/M20-review-checklist.md` A1-A3 |
+| Revue d'un professionnel | Manuel : `docs/phases/M20-review-checklist.md` |

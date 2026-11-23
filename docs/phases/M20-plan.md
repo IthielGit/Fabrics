@@ -327,3 +327,15 @@ Faite le 2026-11-22. Rapport : `docs/phases/M20-ifcopenshell-draw.md` (D20-19, p
   OpenCascade côté serveur.
 - Conclusion : le moteur de feuilles reste Fabrics (ADR 0007). Nouvel outil complémentaire hors application
   `tools/ifc/draw_plans.py` : un second dessin indépendant pour contrôler un export IFC (utile en M22).
+
+## 20.9 — Vérification et gate G3
+
+Fait le 2026-11-23, sauf l'essai dans le navigateur avec l'utilisateur et la revue d'un professionnel.
+
+- Test `features/sheets/gateG3.test.ts` : un mur de ROOMIT déplacé dans la scène Pascal met à jour le plan
+  et le plafond du RDC, la coupe, les façades, les nomenclatures et la planche. Le R+1 et la toiture ne
+  changent pas.
+- Liste de contrôle pour la revue d'un professionnel : `docs/phases/M20-review-checklist.md`.
+- Rapport de fin de jalon : `docs/phases/M20-report.md` (critères G3, décisions à valider D20-16 à D20-19,
+  limites, résultat de `check:all`).
+- **Gate G3 ouvert** jusqu'à l'impression à 100 % par l'utilisateur et la revue d'un professionnel.
