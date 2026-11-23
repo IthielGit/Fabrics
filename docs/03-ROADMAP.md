@@ -1379,7 +1379,7 @@ rappelle s'il tourne sur un autre modèle).
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
 | 21.0 Décisions — **fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) | Conventions de métré et seuils de déduction des ouvertures, en options, choisis par l'utilisateur | `/model opus` |
-| 21.1 Deux familles de quantités | Quantités géométriques et quantités de métré distinguées dans le modèle de données | `/model opus` |
+| 21.1 Deux familles de quantités — **fait le 2026-11-23** (`measurements/quantities/`) | Quantités géométriques et quantités de métré distinguées dans le modèle de données | `/model opus` |
 | 21.2 Règles versionnées | Par catégorie et composition : longueurs, surfaces brutes et nettes, volumes, nombres, revêtements, déductions (union des ouvertures) | `/model opus` |
 | 21.3 Traçabilité | Quantité → éléments sources → dimensions → formule → déductions → règle et version | `/model opus` |
 | 21.4 Statut des quantités | Validé, provisoire, non pris en charge, données manquantes ; un quantitatif incomplet n'est jamais présenté comme fiable | `/model sonnet` |
@@ -1388,7 +1388,7 @@ rappelle s'il tourne sur un autre modèle).
 | 21.7 Contrôles qualité | Géométrie incohérente, propriétés manquantes, unités incompatibles | `/model sonnet` |
 | 21.8 Vérification et gate G4 | Toutes les fixtures (HOUSE-01, HOUSE-02, EDGE-01), tolérances, sources visibles dans les exports, rapport | `/model opus` |
 
-- [ ] Quantités géométriques et quantités de métré distinguées
+- [x] Quantités géométriques et quantités de métré distinguées — fait (2026-11-23)
 - [ ] Règles versionnées par catégorie et composition : longueur, surface brute et nette, volume brut
       et net, nombre, pièces, revêtements, déductions ; volume d'ouvrage et surface de pose
 - [ ] Traçabilité : quantité → éléments sources → dimensions → formule → déductions → règle et version

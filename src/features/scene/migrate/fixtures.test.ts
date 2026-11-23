@@ -9,6 +9,8 @@
  */
 import { describe, expect, it } from 'vitest'
 import { computeBuildingMeasurements } from '../../measurements/measurements'
+import { buildingQuantities } from '../../measurements/quantities/takeoff'
+import type { QuantityCode } from '../../measurements/quantities/types'
 import { isBlockingWarning, metresWarnings } from '../../measurements/warnings'
 import { parseLength } from '../../units/format'
 import type { CanvasElement, FabricsDocument, Level } from '../../../types/document'
@@ -141,7 +143,18 @@ describe('HOUSE-01 passé par la scène Pascal', () => {
     expect(metresWarnings(doc, computeBuildingMeasurements(doc))).toEqual([])
   })
 
-  it.todo('volumes des murs (brut 21,12 m³, net 19,394 m³) et dalle (80 m², 16 m³) : M21')
+  it('quantités géométriques (M21, 21.1) : volumes des murs, brut 21,12 m³ et net 19,394 m³ pour ENV', () => {
+    const { geometric } = buildingQuantities(computeBuildingMeasurements(doc))
+    const value = (code: QuantityCode, id: string) => geometric.find((q) => q.code === code && q.elementIds[0] === id)!.value
+    const m3 = (mm3: number) => Math.round(mm3 / 1e6) / 1000
+    const e = s.expected.walls
+    expect(m3(value('wall.grossVolume', 'ENV'))).toBe(e.ENV.volumeGross_m3)
+    expect(m3(value('wall.netVolume', 'ENV'))).toBe(e.ENV.volumeNet_m3)
+    for (const ref of ['C1', 'C2', 'C3']) expect(m3(value('wall.netVolume', ref)), ref).toBe(e[ref].volume_m3)
+    expect(m3(['C1', 'C2', 'C3'].reduce((sum, ref) => sum + value('wall.netVolume', ref), 0))).toBe(e.partitionsTotal.volume_m3)
+  })
+
+  it.todo('dalle (80 m², 16 m³) : M21, 21.2 (dalles de la scène dans les métrés, D21-5)')
 })
 
 describe('HOUSE-02 passé par la scène Pascal', () => {

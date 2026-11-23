@@ -867,6 +867,13 @@ sont remplacées à partir de M18 par la scène Pascal (après migration testée
   version, empreinte de la géométrie, déductions, avertissements, statut `validated | provisional |
   unsupported | missing_data`) ; `EstimateLine` (poste, libellé, quantités sources, quantité, unité,
   prix unitaire, devise, version du bordereau, montant).
+- **Quantités (M21, 21.1)** : `src/features/measurements/quantities/`. `QuantityResult` porte une
+  famille (`geometric` : forme exacte, toutes les ouvertures déduites par union ; `takeoff` : quantité
+  de métré selon la convention, `docs/phases/M21-decisions.md`), un code (`wall.netArea`…), une grandeur
+  (longueur, surface, volume, nombre), la valeur exacte en mm, mm², mm³ ou nombre, les éléments sources,
+  la couche éventuelle et le niveau. Les quantités géométriques sont lues dans les métrés
+  (`computeBuildingMeasurements`), sans second calcul de forme ; avec les réglages par défaut, la famille
+  `takeoff` redonne les mêmes valeurs. Règle et version, traçabilité et statut : 21.2 à 21.4.
 - **Règles numériques** : quantités calculées avant tout arrondi d'affichage ; brut et net distingués ;
   montants exacts (centimes entiers ou décimal exact, jamais de flottants), arrondis aux seuls points
   documentés.
