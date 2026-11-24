@@ -522,6 +522,7 @@ export const fr = {
         inputs: 'Dimensions',
         formula: 'Formule',
         deductions: 'Déductions',
+        status: 'Statut',
       },
       codes: {
         'wall.length': 'Longueur à l’axe',
@@ -564,6 +565,7 @@ export const fr = {
         'stair.treads': 'Girons',
         'chimney.count': 'Nombre',
         'chimney.area': 'Emprise',
+        'other.count': 'Élément non pris en charge',
       },
       formulas: {
         'wall.length': 'somme des segments de l’axe',
@@ -606,6 +608,7 @@ export const fr = {
         'stair.treads': 'contremarches − 1',
         'chimney.count': '1 par cheminée',
         'chimney.area': 'largeur × profondeur',
+        'other.count': 'élément de la scène que les règles actuelles ne quantifient pas',
       },
       inputs: {
         length: 'longueur',
@@ -633,6 +636,28 @@ export const fr = {
         treads: 'girons',
       },
       units: { length: 'mm', area: 'm²', volume: 'm³', count: 'u' },
+      statuses: {
+        validated: 'Validé',
+        provisional: 'Provisoire',
+        unsupported: 'Non pris en charge',
+        missing_data: 'Données manquantes',
+      },
+      reasons: {
+        zeroHeight: 'mur de hauteur nulle',
+        openingOutside: 'ouverture hors de son mur : rejetée, rien n’est déduit',
+        openingOverflow: 'ouverture plus haute que le mur : seule la partie dans le mur est déduite',
+        wallWithRejectedOpening: 'le mur porte une ouverture rejetée (hors du mur)',
+        noLevelAbove: 'escalier sans niveau au-dessus : hauteur à monter inconnue',
+        stairTooShort: 'escalier trop court pour ses marches',
+        roofInvalid: 'toiture impossible à calculer',
+        roofTrimmed: 'pan découpé : quantités du pan entier',
+        roofToCheck: 'pan recouvert par un autre : à vérifier',
+        voidOverflow: 'trémie qui déborde de la pièce',
+        unsupportedElement: 'élément que le métré ne quantifie pas encore',
+      },
+      complete: (total: number) => `Quantitatif complet : ${total} quantités, toutes validées.`,
+      incomplete: (provisional: number, missing: number, unsupported: number) =>
+        `Quantitatif incomplet, à ne pas utiliser tel quel : ${provisional} provisoire(s), ${missing} avec données manquantes, ${unsupported} non pris en charge.`,
       belowThreshold: 'sous le seuil, non déduite',
       union: 'ouvertures qui se chevauchent : union déduite',
       levelSlab: (levelName: string) => `Dalle du niveau ${levelName}`,

@@ -73,9 +73,9 @@ export function geometricQuantitiesOfLevel(m: Measurements, levelId: string | nu
   }
   for (const stair of m.stairs) {
     push('stair.count', 1, stair.id)
-    // Sans niveau au-dessus, le nombre de marches n'est pas connu : pas de quantité (statut en 21.4).
-    if (stair.risers !== null) push('stair.risers', stair.risers, stair.id)
-    if (stair.treads !== null) push('stair.treads', stair.treads, stair.id)
+    // Sans niveau au-dessus, le nombre de marches n'est pas connu : 0, statut « données manquantes » (21.4).
+    push('stair.risers', stair.risers ?? 0, stair.id)
+    push('stair.treads', stair.treads ?? 0, stair.id)
   }
   for (const chimney of m.chimneys) {
     push('chimney.count', 1, chimney.id)

@@ -6,6 +6,7 @@
  */
 import { formatDecimal, mm2ToM2, mm3ToM3 } from '../../units/format'
 import { ncount, nm2, nmm, type MetresCell, type MetresNumber, type MetresTable } from '../tables'
+import type { Quantity, QuantityStatus, QuantitySummary, StatusReason } from './status'
 import type { TraceInput, TraceInputName, TracedQuantity } from './trace'
 import type { QuantityCode, QuantityDimension } from './types'
 
@@ -24,7 +25,12 @@ export interface QuantityLabels {
     inputs: string
     formula: string
     deductions: string
+    status: string
   }
+  statuses: Record<QuantityStatus, string>
+  reasons: Record<StatusReason, string>
+  complete: (total: number) => string
+  incomplete: (provisional: number, missing: number, unsupported: number) => string
   codes: Record<QuantityCode, string>
   formulas: Record<QuantityCode, string>
   inputs: Record<TraceInputName, string>
@@ -96,11 +102,25 @@ export function elementName(q: TracedQuantity, labels: QuantityLabels, levelName
   return q.category === 'wallLayer' && q.partId ? `${name} – ${q.partId}` : name
 }
 
+/** Statut en texte, avec sa raison. */
+export function statusText(q: Quantity, labels: QuantityLabels): string {
+  const status = labels.statuses[q.status]
+  return q.statusReason ? `${status} : ${labels.reasons[q.statusReason]}` : status
+}
+
+/** Phrase de synthèse : un quantitatif incomplet n'est jamais présenté comme fiable. */
+export function summaryText(summary: QuantitySummary, labels: QuantityLabels): string {
+  return summary.complete
+    ? labels.complete(summary.total)
+    : labels.incomplete(summary.counts.provisional, summary.counts.missing_data, summary.counts.unsupported)
+}
+
 /** Tableau des quantités de métré (famille `takeoff`), dans l'ordre du quantitatif. */
 export function buildQuantityTable(
-  list: readonly TracedQuantity[],
+  list: readonly Quantity[],
   labels: QuantityLabels,
   levelName: (id: string) => string,
+  summary?: QuantitySummary,
 ): MetresTable {
   const c = labels.columns
   const rows: MetresCell[][] = list
@@ -117,11 +137,12 @@ export function buildQuantityTable(
       inputsText(q.trace.inputs, labels),
       labels.formulas[q.code],
       deductionsText(q, labels),
+      statusText(q, labels),
     ])
   return {
     id: 'quantities',
     title: labels.title,
-    note: labels.note,
+    note: summary ? `${summaryText(summary, labels)} ${labels.note}` : labels.note,
     columns: [
       { header: c.level, align: 'left' },
       { header: c.element, align: 'left' },
@@ -134,6 +155,7 @@ export function buildQuantityTable(
       { header: c.inputs, align: 'left' },
       { header: c.formula, align: 'left' },
       { header: c.deductions, align: 'left' },
+      { header: c.status, align: 'left' },
     ],
     rows,
   }

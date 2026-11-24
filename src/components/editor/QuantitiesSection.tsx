@@ -2,12 +2,21 @@ import { ChevronDown } from 'lucide-react'
 import { Fragment, useMemo, useState } from 'react'
 import type { BuildingMeasurements } from '../../features/measurements/measurements'
 import { computeQuantities } from '../../features/measurements/quantities/quantitySet'
-import { deductionsText, elementName, inputsText, ruleText, valueText } from '../../features/measurements/quantities/quantityTable'
+import { deductionsText, elementName, inputsText, ruleText, statusText, summaryText, valueText } from '../../features/measurements/quantities/quantityTable'
+import type { QuantityStatus } from '../../features/measurements/quantities/status'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 
 const HEAD = 'px-1 py-1 text-left text-xs font-medium text-slate-600'
 const NUMBER = 'whitespace-nowrap px-1 py-1 text-right tabular-nums'
+
+/** Couleur du statut : vert validé, orange provisoire, rouge données manquantes, gris non pris en charge. */
+const STATUS_DOT: Record<QuantityStatus, string> = {
+  validated: 'bg-emerald-500',
+  provisional: 'bg-amber-500',
+  missing_data: 'bg-red-500',
+  unsupported: 'bg-slate-400',
+}
 
 /**
  * Quantitatif traçable du niveau affiché (M21, 21.3) : chaque quantité de métré ; un clic ouvre son
@@ -18,15 +27,16 @@ export default function QuantitiesSection({ building, levelId }: { building: Bui
   const scene = useEditorStore((state) => state.project?.scene ?? null)
   const setSelection = useEditorStore((state) => state.setSelection)
   const [openKey, setOpenKey] = useState<string | null>(null)
-  const quantities = useMemo(
-    () => (document ? computeQuantities({ document, scene, building }).takeoff : []),
+  const set = useMemo(
+    () => (document ? computeQuantities({ document, scene, building }) : null),
     [document, scene, building],
   )
+  const quantities = set?.takeoff ?? []
   const t = fr.measurements.quantities
   const levelNames = new Map(building.levels.map((entry) => [entry.level.id, entry.level.name]))
   const levelName = (id: string) => levelNames.get(id) ?? ''
   const shown = quantities.filter((q) => q.levelId === levelId)
-  if (shown.length === 0) return null
+  if (shown.length === 0 || !set) return null
 
   return (
     <details className="group mt-4 border-t border-slate-200 pt-4">
@@ -34,6 +44,17 @@ export default function QuantitiesSection({ building, levelId }: { building: Bui
         {t.title}
         <ChevronDown size={16} aria-hidden="true" className="transition-transform group-open:rotate-180" />
       </summary>
+      {/* Synthèse de tout le bâtiment : un quantitatif incomplet n'est jamais présenté comme fiable. */}
+      <p
+        role="status"
+        className={
+          set.summary.complete
+            ? 'mt-2 rounded-md border border-emerald-300 bg-emerald-50 p-2 text-xs text-emerald-900'
+            : 'mt-2 rounded-md border border-amber-300 bg-amber-50 p-2 text-xs text-amber-900'
+        }
+      >
+        {summaryText(set.summary, t)}
+      </p>
       <p className="mt-2 text-xs leading-relaxed text-slate-600">{t.note}</p>
       <table className="mt-2 w-full text-sm">
         <thead>
@@ -57,7 +78,14 @@ export default function QuantitiesSection({ building, levelId }: { building: Bui
                     if (q.partId !== 'levelSlab') setSelection([q.elementIds[0]])
                   }}
                 >
-                  <td className="px-1 py-1">{elementName(q, t, levelName)}</td>
+                  <td className="px-1 py-1">
+                    <span
+                      className={`mr-1 inline-block h-2 w-2 rounded-full ${STATUS_DOT[q.status]}`}
+                      title={t.statuses[q.status]}
+                      aria-label={t.statuses[q.status]}
+                    />
+                    {elementName(q, t, levelName)}
+                  </td>
                   <td className="px-1 py-1 text-slate-700">{t.codes[q.code]}</td>
                   <td className={NUMBER}>{valueText(q.value, q.dimension, t)}</td>
                 </tr>
@@ -77,6 +105,8 @@ export default function QuantitiesSection({ building, levelId }: { building: Bui
                             <dd>{deductions}</dd>
                           </>
                         )}
+                        <dt className="font-medium">{t.columns.status}</dt>
+                        <dd>{statusText(q, t)}</dd>
                         <dt className="font-medium">{t.columns.rule}</dt>
                         <dd>
                           {ruleText(q, t)} · {q.rule.version}

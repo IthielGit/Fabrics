@@ -18,7 +18,7 @@ import { isBlockingWarning, metresWarnings } from '../../features/measurements/w
 import { buildExecutionTables } from '../../features/measurements/executionView'
 import { computeQuantities } from '../../features/measurements/quantities/quantitySet'
 import { buildQuantityTable } from '../../features/measurements/quantities/quantityTable'
-import type { TracedQuantity } from '../../features/measurements/quantities/trace'
+import { quantitySummary, type Quantity } from '../../features/measurements/quantities/status'
 import type { MetresTable, MetresVersion } from '../../features/measurements/tables'
 import { buildBuildingModel } from '../../features/building/model'
 import { levelPlanDrawing } from '../../features/building/views/drawing'
@@ -119,12 +119,12 @@ export function metresTables(
   furniture: ReturnType<typeof prepareMetres>['furniture'],
   version: MetresVersion,
   scope: MetresScope = 'building',
-  quantities: readonly TracedQuantity[] = [],
+  quantities: readonly Quantity[] = [],
 ): MetresTable[] {
   const labels = fr.measurements.csv
   const levelNames = new Map(building.levels.map((entry) => [entry.level.id, entry.level.name]))
   const extra = quantities.length > 0
-    ? [buildQuantityTable(quantities, fr.measurements.quantities, (id) => levelNames.get(id) ?? '')]
+    ? [buildQuantityTable(quantities, fr.measurements.quantities, (id) => levelNames.get(id) ?? '', quantitySummary(quantities))]
     : []
   return version === 'client'
     ? buildClientTables(building, fr.measurements.client, scope)

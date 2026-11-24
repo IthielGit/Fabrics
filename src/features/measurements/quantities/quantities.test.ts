@@ -11,7 +11,7 @@ import { GEOMETRY_VERSION, RULESET_VERSION, takeoffSettingsOf } from './rules'
 import { computeQuantities, sumQuantity } from './quantitySet'
 import { revealPerimeter } from './takeoff'
 import { buildQuantityTable } from './quantityTable'
-import type { TracedQuantity } from './trace'
+import type { Quantity } from './status'
 import type { QuantityCode } from './types'
 import { fr } from '../../../i18n/fr'
 
@@ -47,13 +47,14 @@ function g4Wall() {
   return { wall, door, document: plan([wall, door]) }
 }
 
-const find = (list: readonly TracedQuantity[], code: QuantityCode, id: string) =>
+const find = (list: readonly Quantity[], code: QuantityCode, id: string) =>
   list.find((q) => q.code === code && q.elementIds[0] === id)!
 
 describe('quantités géométriques et de métré (M21, 21.1)', () => {
   it('mur témoin G4 : brut 15,00 m², ouverture 1,89 m², net 13,11 m², volume net 2,622 m³', () => {
     const { wall, door, document } = g4Wall()
-    for (const list of Object.values(computeQuantities({ document }))) {
+    const { geometric, takeoff } = computeQuantities({ document })
+    for (const list of [geometric, takeoff]) {
       expect(find(list, 'wall.grossArea', wall.id).value).toBe(15_000_000)
       expect(find(list, 'wall.openingsArea', wall.id).value).toBe(1_890_000)
       expect(find(list, 'opening.area', door.id).value).toBe(1_890_000)
@@ -66,7 +67,7 @@ describe('quantités géométriques et de métré (M21, 21.1)', () => {
   it('chaque quantité a une famille, une grandeur, un niveau, ses sources et sa règle versionnée', () => {
     const { wall, document } = g4Wall()
     const { geometric, takeoff } = computeQuantities({ document })
-    const { trace: _trace, ...length } = find(geometric, 'wall.length', wall.id)
+    const { trace: _trace, status: _status, statusReason: _reason, ...length } = find(geometric, 'wall.length', wall.id)
     expect(length).toEqual({
       key: `geometric:wall.length:${wall.id}`,
       family: 'geometric',
@@ -283,7 +284,7 @@ describe('traçabilité (M21, 21.3)', () => {
     const { takeoff } = computeQuantities({ document })
     const table = buildQuantityTable(takeoff, fr.measurements.quantities, () => 'RDC')
     expect(table.rows).toHaveLength(takeoff.length)
-    expect(table.columns).toHaveLength(11)
+    expect(table.columns).toHaveLength(12)
     const row = table.rows.find((r) => r[2] === fr.measurements.quantities.codes['wall.netArea'])!
     expect(row.map((cell) => (typeof cell === 'string' ? cell : cell.text))).toEqual([
       'RDC',
@@ -297,6 +298,7 @@ describe('traçabilité (M21, 21.3)', () => {
       'longueur 5000 mm ; hauteur 3000 mm ; épaisseur 200 mm',
       'longueur × hauteur − ouvertures déduites',
       'door 1,89 m²',
+      'Validé',
     ])
     const volume = table.rows.find((r) => r[2] === fr.measurements.quantities.codes['wall.netVolume'])!
     expect(volume[3]).toMatchObject({ text: '2,622', unit: 'm3p' })
@@ -306,5 +308,57 @@ describe('traçabilité (M21, 21.3)', () => {
     const scene = settleScene(fabricsToScene(createLargeHouseProject(new Date('2026-11-17T00:00:00Z')).document).scene)
     const { takeoff } = computeQuantities({ document: sceneToFabricsView(scene), scene })
     expect(takeoff.filter((q) => q.trace.sources.length === 0).map((q) => q.key)).toEqual([])
+  })
+})
+
+describe('statut des quantités (M21, 21.4)', () => {
+  it('mur témoin G4 : tout est validé, le quantitatif est complet', () => {
+    const { summary, takeoff } = computeQuantities({ document: g4Wall().document })
+    expect(takeoff.every((q) => q.status === 'validated' && q.statusReason === null)).toBe(true)
+    expect(summary).toEqual({ total: takeoff.length, counts: { validated: takeoff.length, provisional: 0, unsupported: 0, missing_data: 0 }, complete: true })
+  })
+
+  it('mur de hauteur nulle : données manquantes, le quantitatif est incomplet', () => {
+    const wall = wallOf([0, 0, 4000, 0], 200, 0)
+    const { takeoff, summary } = computeQuantities({ document: plan([wall]) })
+    expect(find(takeoff, 'wall.netArea', wall.id)).toMatchObject({ status: 'missing_data', statusReason: 'zeroHeight' })
+    expect(summary.complete).toBe(false)
+  })
+
+  it('ouverture hors du mur : rejetée (données manquantes) ; les déductions du mur sont provisoires', () => {
+    const wall = wallOf([0, 0, 4000, 0])
+    const off = openingOn(wall, 'window', 300, 1200, 1350, 900)
+    const { takeoff } = computeQuantities({ document: plan([wall, off]) })
+    expect(find(takeoff, 'opening.area', off.id)).toMatchObject({ value: 0, status: 'missing_data', statusReason: 'openingOutside' })
+    expect(find(takeoff, 'wall.netArea', wall.id)).toMatchObject({ value: 12_000_000, status: 'provisional', statusReason: 'wallWithRejectedOpening' })
+    expect(find(takeoff, 'wall.length', wall.id).status).toBe('validated')
+  })
+
+  it('ouverture plus haute que le mur : seule la partie dans le mur est déduite, provisoire', () => {
+    const wall = wallOf([0, 0, 4000, 0], 200, 2500)
+    const door = openingOn(wall, 'door', 2000, 900, 2700, 0)
+    const { takeoff } = computeQuantities({ document: plan([wall, door]) })
+    expect(find(takeoff, 'opening.area', door.id)).toMatchObject({ value: 900 * 2500, status: 'provisional', statusReason: 'openingOverflow' })
+    expect(find(takeoff, 'wall.netArea', wall.id)).toMatchObject({ value: 4000 * 2500 - 900 * 2500, status: 'provisional' })
+  })
+
+  it('élément de la scène non quantifié : une ligne « non pris en charge »', () => {
+    const scene = settleScene(fabricsToScene(createExamplePlanProject(new Date('2026-11-17T00:00:00Z')).document).scene)
+    const level = Object.values(scene.nodes).find((n) => n.type === 'level')!
+    const column = { id: 'column_test', type: 'column', name: 'Poteau', parentId: level.id, metadata: {} }
+    const withColumn = { ...scene, nodes: { ...scene.nodes, [column.id]: column } }
+    const { takeoff, summary } = computeQuantities({ document: sceneToFabricsView(scene), scene: withColumn })
+    const other = takeoff.find((q) => q.code === 'other.count')!
+    expect(other).toMatchObject({ elementIds: ['column_test'], status: 'unsupported', statusReason: 'unsupportedElement' })
+    expect(other.trace.sources).toEqual([{ id: 'column_test', name: 'Poteau' }])
+    expect(summary.counts.unsupported).toBe(1)
+    expect(summary.complete).toBe(false)
+  })
+
+  it('tableau : la synthèse en tête dit si le quantitatif est incomplet', () => {
+    const wall = wallOf([0, 0, 4000, 0], 200, 0)
+    const { takeoff, summary } = computeQuantities({ document: plan([wall]) })
+    const table = buildQuantityTable(takeoff, fr.measurements.quantities, () => 'RDC', summary)
+    expect(table.note).toMatch(/^Quantitatif incomplet/)
   })
 })

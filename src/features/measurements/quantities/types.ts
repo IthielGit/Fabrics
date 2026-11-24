@@ -18,7 +18,7 @@ export type QuantityFamily = 'geometric' | 'takeoff'
 /** Grandeur d'une quantité ; l'unité de base en découle (mm, mm², mm³, nombre). */
 export type QuantityDimension = 'length' | 'area' | 'volume' | 'count'
 
-export type QuantityCategory = 'wall' | 'wallLayer' | 'opening' | 'room' | 'slab' | 'platform' | 'roof' | 'stair' | 'chimney'
+export type QuantityCategory = 'wall' | 'wallLayer' | 'opening' | 'room' | 'slab' | 'platform' | 'roof' | 'stair' | 'chimney' | 'other'
 
 /** Code d'une quantité : catégorie, puis ce qui est mesuré. */
 export type QuantityCode =
@@ -65,6 +65,8 @@ export type QuantityCode =
   | 'stair.treads'
   | 'chimney.count'
   | 'chimney.area'
+  /** Élément de la scène que le métré ne quantifie pas (statut « non pris en charge », 21.4). */
+  | 'other.count'
 
 export interface QuantityResult {
   /** Identifiant stable : famille, code, élément et, pour une couche, la couche. */
@@ -127,6 +129,7 @@ export const QUANTITY_DIMENSIONS: Record<QuantityCode, QuantityDimension> = {
   'stair.treads': 'count',
   'chimney.count': 'count',
   'chimney.area': 'area',
+  'other.count': 'count',
 }
 
 export function quantityKey(family: QuantityFamily, code: QuantityCode, elementId: string, partId: string | null): string {

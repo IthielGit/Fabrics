@@ -1382,7 +1382,7 @@ rappelle s'il tourne sur un autre modèle).
 | 21.1 Deux familles de quantités — **fait le 2026-11-23** (`measurements/quantities/`) | Quantités géométriques et quantités de métré distinguées dans le modèle de données | `/model opus` |
 | 21.2 Règles versionnées — **fait le 2026-11-23** (`quantities/rules.ts`) | Par catégorie et composition : longueurs, surfaces brutes et nettes, volumes, nombres, revêtements, déductions (union des ouvertures) | `/model opus` |
 | 21.3 Traçabilité — **fait le 2026-11-23** (`quantities/trace.ts`, tableau « Quantitatif ») | Quantité → éléments sources → dimensions → formule → déductions → règle et version | `/model opus` |
-| 21.4 Statut des quantités | Validé, provisoire, non pris en charge, données manquantes ; un quantitatif incomplet n'est jamais présenté comme fiable | `/model sonnet` |
+| 21.4 Statut des quantités — **fait le 2026-11-23** (`quantities/status.ts`) | Validé, provisoire, non pris en charge, données manquantes ; un quantitatif incomplet n'est jamais présenté comme fiable | `/model sonnet` |
 | 21.5 Recalcul ciblé | Seules les quantités touchées par un élément modifié sont recalculées | `/model opus` |
 | 21.6 Comparaison IFC | Quantités comparées avec IfcOpenShell sur un jeu d'échange | `/model sonnet` |
 | 21.7 Contrôles qualité | Géométrie incohérente, propriétés manquantes, unités incompatibles | `/model sonnet` |
@@ -1392,7 +1392,7 @@ rappelle s'il tourne sur un autre modèle).
 - [x] Règles versionnées par catégorie et composition : longueur, surface brute et nette, volume brut
       et net, nombre, pièces, revêtements, déductions ; volume d'ouvrage et surface de pose
 - [x] Traçabilité : quantité → éléments sources → dimensions → formule → déductions → règle et version
-- [ ] Statut de chaque quantité : validé, provisoire, non pris en charge, données manquantes ; un
+- [x] Statut de chaque quantité : validé, provisoire, non pris en charge, données manquantes ; un
       quantitatif incomplet n'est jamais présenté comme fiable
 - [ ] Recalcul ciblé après la modification d'un élément
 - [ ] Comparaison avec les quantités IFC (IfcOpenShell) sur un jeu d'échange
