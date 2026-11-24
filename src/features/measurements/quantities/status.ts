@@ -6,7 +6,9 @@
  * - `missing_data` : la valeur ne peut pas être calculée (mur de hauteur nulle, ouverture hors de son
  *   mur — rejetée, EDGE-01 —, escalier sans niveau au-dessus, toiture invalide) ;
  * - `provisional` : valeur calculée mais à vérifier (ouverture qui dépasse en hauteur — seule la partie
- *   dans le mur est déduite —, mur qui porte une ouverture rejetée, escalier trop court, pan de
+ *   dans le mur est déduite —, mur qui porte une ouverture rejetée, volume et faces d'un mur pris dans
+ *   un raccord de trois murs ou plus — la règle à l'axe y compte en double une pointe d'angle, écart
+ *   mesuré avec IfcOpenShell en 21.6 —, escalier trop court, pan de
  *   toiture découpé ou recouvert, trémie qui déborde de la pièce) ;
  * - `unsupported` : élément de la scène que le métré ne sait pas quantifier (D21-5) ;
  * - `validated` : tout le reste.
@@ -27,6 +29,7 @@ export type StatusReason =
   | 'openingOutside'
   | 'openingOverflow'
   | 'wallWithRejectedOpening'
+  | 'multiWallJunction'
   | 'noLevelAbove'
   | 'stairTooShort'
   | 'roofInvalid'
@@ -90,6 +93,44 @@ export function unsupportedQuantities(scene: PlanScene | null | undefined, famil
     })
 }
 
+/**
+ * Murs pris dans un raccord de trois murs ou plus au même point (extrémités ou angles de murs du même
+ * niveau). Les raccords en T (extrémité au milieu d'un autre mur) sont traités par la règle et ne
+ * comptent pas ici.
+ */
+export function wallsAtMultiJunctions(walls: readonly WallElement[]): Set<string> {
+  const ends = new Map<string, { count: number; walls: Set<string> }>()
+  for (const wall of walls) {
+    const n = wall.points.length / 2
+    const closed = n > 2 && wall.points[0] === wall.points[2 * n - 2] && wall.points[1] === wall.points[2 * n - 1]
+    for (let i = 0; i < n; i++) {
+      if (closed && i === n - 1) continue
+      // Un angle intérieur (ou le début d'un mur fermé) rejoint deux côtés ; une extrémité, un seul.
+      const sides = closed || (i > 0 && i < n - 1) ? 2 : 1
+      const key = `${wall.levelId ?? ''}|${Math.round(wall.points[2 * i])}|${Math.round(wall.points[2 * i + 1])}`
+      const entry = ends.get(key) ?? { count: 0, walls: new Set<string>() }
+      entry.count += sides
+      entry.walls.add(wall.id)
+      ends.set(key, entry)
+    }
+  }
+  const out = new Set<string>()
+  for (const { count, walls: ids } of ends.values()) if (count >= 3 && ids.size >= 2) for (const id of ids) out.add(id)
+  return out
+}
+
+/** Quantités d'un mur que la pointe d'angle d'un raccord multiple fausse (volume et faces). */
+const JUNCTION_CODES = new Set([
+  'wall.grossVolume',
+  'wall.netVolume',
+  'wall.facesLength',
+  'wall.facesGrossArea',
+  'wall.facesNetArea',
+  'wall.plasterArea',
+  'wall.paintArea',
+  'wallLayer.volume',
+])
+
 export interface StatusContext {
   building: BuildingMeasurements
   elements: readonly CanvasElement[]
@@ -106,6 +147,7 @@ export function withStatus(list: readonly TracedQuantity[], context: StatusConte
   )
   const wallsWithRejected = new Set(openings.filter((o) => outside.has(o.id)).map((o) => o.wallId))
   const wallsWithOverflow = new Set(openings.filter((o) => overflow.has(o.id)).map((o) => o.wallId))
+  const multiJunction = wallsAtMultiJunctions([...walls.values()])
   const stairs = new Map(all.flatMap((m) => m.stairs).map((s) => [s.id, s]))
   const roofs = new Map(all.flatMap((m) => m.roofs).map((r) => [r.id, r]))
   const rooms = new Map(all.flatMap((m) => m.rooms).map((r) => [r.id, r]))
@@ -122,6 +164,7 @@ export function withStatus(list: readonly TracedQuantity[], context: StatusConte
           if (wallsWithRejected.has(id)) return ['provisional', 'wallWithRejectedOpening']
           if (wallsWithOverflow.has(id)) return ['provisional', 'openingOverflow']
         }
+        if (multiJunction.has(id) && JUNCTION_CODES.has(q.code)) return ['provisional', 'multiWallJunction']
         return ['validated', null]
       }
       case 'opening':

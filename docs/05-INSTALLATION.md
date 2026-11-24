@@ -94,7 +94,11 @@ Contrôle IFC avec IfcOpenShell (facultatif, environnement Python séparé) :
 python -m venv tools/ifc/.venv
 tools/ifc/.venv/Scripts/python.exe -m pip install -r tools/ifc/requirements.txt
 tools/ifc/.venv/Scripts/python.exe -I tools/ifc/validate.py baseline/fabrics/example/export.ifc
+npm run check:ifc-quantities   # M21 : compare le quantitatif avec l'IFC4 de Pascal relu par IfcOpenShell
 ```
+
+`npm run check:ifc-quantities` écrit les fichiers de comparaison et le rapport dans `tmp/ifc-exchange/`
+(`report.md`). Il échoue si une quantité validée s'écarte de plus de 0,1 % de l'IFC.
 
 ## Mise en ligne de M18 : base de données et Cloudflare Pages
 

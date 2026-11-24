@@ -11,7 +11,7 @@ import { GEOMETRY_VERSION, RULESET_VERSION, takeoffSettingsOf } from './rules'
 import { computeQuantities, sumQuantity } from './quantitySet'
 import { revealPerimeter } from './takeoff'
 import { buildQuantityTable } from './quantityTable'
-import type { Quantity } from './status'
+import { wallsAtMultiJunctions, type Quantity } from './status'
 import type { QuantityCode } from './types'
 import { fr } from '../../../i18n/fr'
 
@@ -365,5 +365,25 @@ describe('statut des quantités (M21, 21.4)', () => {
     const { takeoff, summary } = computeQuantities({ document: plan([wall]) })
     const table = buildQuantityTable(takeoff, fr.measurements.quantities, () => 'RDC', summary)
     expect(table.note).toMatch(/^Quantitatif incomplet/)
+  })
+})
+
+describe('raccord de trois murs ou plus (M21, 21.6 : écart mesuré avec IfcOpenShell)', () => {
+  it('un mur qui se raccorde à l’angle d’un autre : volumes et faces provisoires, longueur validée', () => {
+    const outer = wallOf([0, 0, 6000, 0, 6000, 4000, 0, 4000, 0, 0])
+    const annex = wallOf([6000, 0, 9000, 0, 9000, 4000, 6000, 4000])
+    const lone = wallOf([0, 8000, 3000, 8000])
+    expect(wallsAtMultiJunctions([outer, annex, lone])).toEqual(new Set([outer.id, annex.id]))
+    const { takeoff } = computeQuantities({ document: plan([outer, annex, lone]) })
+    expect(find(takeoff, 'wall.netVolume', annex.id)).toMatchObject({ status: 'provisional', statusReason: 'multiWallJunction' })
+    expect(find(takeoff, 'wall.length', annex.id).status).toBe('validated')
+    expect(find(takeoff, 'wall.netVolume', lone.id).status).toBe('validated')
+  })
+
+  it('un angle simple (deux murs) ou un raccord en T ne sont pas concernés', () => {
+    const a = wallOf([0, 0, 4000, 0])
+    const b = wallOf([4000, 0, 4000, 3000])
+    const t = wallOf([2000, 0, 2000, 3000])
+    expect(wallsAtMultiJunctions([a, b, t])).toEqual(new Set())
   })
 })

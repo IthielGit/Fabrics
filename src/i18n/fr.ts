@@ -647,6 +647,7 @@ export const fr = {
         openingOutside: 'ouverture hors de son mur : rejetée, rien n’est déduit',
         openingOverflow: 'ouverture plus haute que le mur : seule la partie dans le mur est déduite',
         wallWithRejectedOpening: 'le mur porte une ouverture rejetée (hors du mur)',
+        multiWallJunction: 'raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)',
         noLevelAbove: 'escalier sans niveau au-dessus : hauteur à monter inconnue',
         stairTooShort: 'escalier trop court pour ses marches',
         roofInvalid: 'toiture impossible à calculer',

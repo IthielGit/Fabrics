@@ -14,6 +14,7 @@
     "lint:pascal": "bun run --cwd packages/pascal lint",
     "check:duplicates": "jscpd",
     "check:all": "node scripts/check-all.mjs",
+    "check:ifc-quantities": "node scripts/ifc-quantities.mjs",
     "preview": "vite preview",
     "check:security": "node --env-file=.env.local scripts/check-security.mjs",
     "migrate:plans": "vite build --ssr scripts/migrate-plans-m18.ts --outDir scripts/.build --emptyOutDir --logLevel warn && node --env-file=.env.local scripts/.build/migrate-plans-m18.js"
