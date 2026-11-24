@@ -28,6 +28,7 @@ n'est pas reprise.
 
 Interprétation à confirmer : le fichier d'origine n'est jamais modifié. À l'import, l'application
 normalise les valeurs et signale chaque correction dans le rapport d'import. Anomalies relevées :
+
 - nombres à très longues décimales (ex. `208333.33…`) : arrondi à une règle unique (voir point ouvert 1) ;
 - liens mal écrits (`VOIR_SPD_003` au lieu de `VOIR_SDP_003`, espaces parasites dans `🔗 VOIR_SDP_004`).
 
