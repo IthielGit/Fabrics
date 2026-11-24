@@ -8248,8 +8248,8 @@
         "Séjour",
         "Plinthes",
         {
-          "text": "20200",
-          "value": 20200,
+          "text": "24700",
+          "value": 24700,
           "unit": "mm"
         },
         "mm",
@@ -8258,7 +8258,7 @@
         "Séjour",
         "surface 42,24 m² ; périmètre 28000 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Baie Séjour 4 2400 mm ; Porte Chambre 1 – 1 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Suite parentale 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Salle de jeux 1 900 mm",
+        "Porte Séjour 1 900 mm ; Baie Séjour 4 2400 mm",
         "Validé"
       ],
       [
@@ -8392,8 +8392,8 @@
         "Hall",
         "Plinthes",
         {
-          "text": "11300",
-          "value": 11300,
+          "text": "21200",
+          "value": 21200,
           "unit": "mm"
         },
         "mm",
@@ -8402,7 +8402,7 @@
         "Hall",
         "surface 26,88 m² ; périmètre 24800 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Porte Hall 1 900 mm ; Porte Hall 2 900 mm ; Porte Hall 3 900 mm ; Porte Chambre 1 – 1 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Suite parentale 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Salle de jeux 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm",
+        "Porte Séjour 1 900 mm ; Porte Hall 1 900 mm ; Porte Hall 2 900 mm ; Porte Hall 3 900 mm",
         "Validé"
       ],
       [
@@ -8536,8 +8536,8 @@
         "Cuisine",
         "Plinthes",
         {
-          "text": "10500",
-          "value": 10500,
+          "text": "15600",
+          "value": 15600,
           "unit": "mm"
         },
         "mm",
@@ -8546,7 +8546,7 @@
         "Cuisine",
         "surface 18,80 m² ; périmètre 17400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Cuisine 1 900 mm ; Porte Hall 1 900 mm ; Baie Chambre 3 – 1 2400 mm ; Porte Palier 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 1 900 mm",
+        "Porte Cuisine 1 900 mm ; Porte Hall 1 900 mm",
         "Validé"
       ],
       [
@@ -8680,8 +8680,8 @@
         "Buanderie",
         "Plinthes",
         {
-          "text": "8700",
-          "value": 8700,
+          "text": "11400",
+          "value": 11400,
           "unit": "mm"
         },
         "mm",
@@ -8690,7 +8690,7 @@
         "Buanderie",
         "surface 8,93 m² ; périmètre 13200 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Hall 2 900 mm ; Porte Buanderie 1 900 mm ; Porte Palier 2 900 mm ; Porte Palier 2 900 mm ; Porte Palier 2 900 mm",
+        "Porte Hall 2 900 mm ; Porte Buanderie 1 900 mm",
         "Validé"
       ],
       [
@@ -8968,8 +8968,8 @@
         "Garage",
         "Plinthes",
         {
-          "text": "15700",
-          "value": 15700,
+          "text": "18100",
+          "value": 18100,
           "unit": "mm"
         },
         "mm",
@@ -8978,7 +8978,7 @@
         "Garage",
         "surface 36,00 m² ; périmètre 24000 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Cuisine 1 900 mm ; Porte Garage 1 5000 mm ; Baie Chambre 3 – 1 2400 mm",
+        "Porte Cuisine 1 900 mm ; Porte Garage 1 5000 mm",
         "Validé"
       ],
       [
@@ -10966,8 +10966,8 @@
         "Chambre 1",
         "Plinthes",
         {
-          "text": "16400",
-          "value": 16400,
+          "text": "17300",
+          "value": 17300,
           "unit": "mm"
         },
         "mm",
@@ -10976,7 +10976,7 @@
         "Chambre 1",
         "surface 20,68 m² ; périmètre 18200 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Chambre 1 – 1 900 mm ; Porte Suite parentale 1 900 mm",
+        "Porte Chambre 1 – 1 900 mm",
         "Validé"
       ],
       [
@@ -11110,8 +11110,8 @@
         "Chambre 2",
         "Plinthes",
         {
-          "text": "12200",
-          "value": 12200,
+          "text": "17300",
+          "value": 17300,
           "unit": "mm"
         },
         "mm",
@@ -11120,7 +11120,7 @@
         "Chambre 2",
         "surface 20,68 m² ; périmètre 18200 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Baie Séjour 4 2400 mm ; Porte Chambre 2 – 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Salle de jeux 1 900 mm",
+        "Porte Chambre 2 – 1 900 mm",
         "Validé"
       ],
       [
@@ -11254,8 +11254,8 @@
         "Palier",
         "Plinthes",
         {
-          "text": "11300",
-          "value": 11300,
+          "text": "21200",
+          "value": 21200,
           "unit": "mm"
         },
         "mm",
@@ -11264,7 +11264,7 @@
         "Palier",
         "surface 26,88 m² ; périmètre 24800 mm ; trémies 6,27 m²",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Porte Hall 1 900 mm ; Porte Hall 2 900 mm ; Porte Hall 3 900 mm ; Porte Chambre 1 – 1 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Suite parentale 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Salle de jeux 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm",
+        "Porte Chambre 1 – 1 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm",
         "Validé"
       ],
       [
@@ -11398,8 +11398,8 @@
         "Chambre 3",
         "Plinthes",
         {
-          "text": "10500",
-          "value": 10500,
+          "text": "14100",
+          "value": 14100,
           "unit": "mm"
         },
         "mm",
@@ -11408,7 +11408,7 @@
         "Chambre 3",
         "surface 18,80 m² ; périmètre 17400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Cuisine 1 900 mm ; Porte Hall 1 900 mm ; Baie Chambre 3 – 1 2400 mm ; Porte Palier 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 1 900 mm",
+        "Baie Chambre 3 – 1 2400 mm ; Porte Palier 1 900 mm",
         "Validé"
       ],
       [
@@ -11542,8 +11542,8 @@
         "Salle de bains",
         "Plinthes",
         {
-          "text": "13800",
-          "value": 13800,
+          "text": "16500",
+          "value": 16500,
           "unit": "mm"
         },
         "mm",
@@ -11552,7 +11552,7 @@
         "Salle de bains",
         "surface 18,80 m² ; périmètre 17400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Hall 2 900 mm ; Porte Palier 2 900 mm ; Porte Palier 2 900 mm ; Porte Palier 2 900 mm",
+        "Porte Palier 2 900 mm",
         "Validé"
       ],
       [
@@ -13414,8 +13414,8 @@
         "Suite parentale",
         "Plinthes",
         {
-          "text": "16400",
-          "value": 16400,
+          "text": "17300",
+          "value": 17300,
           "unit": "mm"
         },
         "mm",
@@ -13424,7 +13424,7 @@
         "Suite parentale",
         "surface 20,68 m² ; périmètre 18200 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Chambre 1 – 1 900 mm ; Porte Suite parentale 1 900 mm",
+        "Porte Suite parentale 1 900 mm",
         "Validé"
       ],
       [
@@ -13558,8 +13558,8 @@
         "Chambre des enfants",
         "Plinthes",
         {
-          "text": "12200",
-          "value": 12200,
+          "text": "17300",
+          "value": 17300,
           "unit": "mm"
         },
         "mm",
@@ -13568,7 +13568,7 @@
         "Chambre des enfants",
         "surface 20,68 m² ; périmètre 18200 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Baie Séjour 4 2400 mm ; Porte Chambre 2 – 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Salle de jeux 1 900 mm",
+        "Porte Chambre des enfants 1 900 mm",
         "Validé"
       ],
       [
@@ -13702,8 +13702,8 @@
         "Palier",
         "Plinthes",
         {
-          "text": "11300",
-          "value": 11300,
+          "text": "21200",
+          "value": 21200,
           "unit": "mm"
         },
         "mm",
@@ -13712,7 +13712,7 @@
         "Palier",
         "surface 26,88 m² ; périmètre 24800 mm ; trémies 6,27 m²",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Porte Hall 1 900 mm ; Porte Hall 2 900 mm ; Porte Hall 3 900 mm ; Porte Chambre 1 – 1 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Suite parentale 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Salle de jeux 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm",
+        "Porte Suite parentale 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm",
         "Validé"
       ],
       [
@@ -13846,8 +13846,8 @@
         "Salle de bains parentale",
         "Plinthes",
         {
-          "text": "10500",
-          "value": 10500,
+          "text": "16500",
+          "value": 16500,
           "unit": "mm"
         },
         "mm",
@@ -13856,7 +13856,7 @@
         "Salle de bains parentale",
         "surface 18,80 m² ; périmètre 17400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Cuisine 1 900 mm ; Porte Hall 1 900 mm ; Baie Chambre 3 – 1 2400 mm ; Porte Palier 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 1 900 mm",
+        "Porte Palier 1 900 mm",
         "Validé"
       ],
       [
@@ -13990,8 +13990,8 @@
         "Chambre 5",
         "Plinthes",
         {
-          "text": "13800",
-          "value": 13800,
+          "text": "16500",
+          "value": 16500,
           "unit": "mm"
         },
         "mm",
@@ -14000,7 +14000,7 @@
         "Chambre 5",
         "surface 18,80 m² ; périmètre 17400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Hall 2 900 mm ; Porte Palier 2 900 mm ; Porte Palier 2 900 mm ; Porte Palier 2 900 mm",
+        "Porte Palier 2 900 mm",
         "Validé"
       ],
       [
@@ -15574,8 +15574,8 @@
         "Salle de jeux",
         "Plinthes",
         {
-          "text": "20200",
-          "value": 20200,
+          "text": "27100",
+          "value": 27100,
           "unit": "mm"
         },
         "mm",
@@ -15584,7 +15584,7 @@
         "Salle de jeux",
         "surface 42,24 m² ; périmètre 28000 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Baie Séjour 4 2400 mm ; Porte Chambre 1 – 1 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Suite parentale 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Salle de jeux 1 900 mm",
+        "Porte Salle de jeux 1 900 mm",
         "Validé"
       ],
       [
@@ -15718,8 +15718,8 @@
         "Palier",
         "Plinthes",
         {
-          "text": "11300",
-          "value": 11300,
+          "text": "22100",
+          "value": 22100,
           "unit": "mm"
         },
         "mm",
@@ -15728,7 +15728,7 @@
         "Palier",
         "surface 26,88 m² ; périmètre 24800 mm ; trémies 6,27 m²",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Porte Hall 1 900 mm ; Porte Hall 2 900 mm ; Porte Hall 3 900 mm ; Porte Chambre 1 – 1 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Suite parentale 1 900 mm ; Porte Chambre des enfants 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Salle de jeux 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm",
+        "Porte Salle de jeux 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm",
         "Validé"
       ],
       [
@@ -15862,8 +15862,8 @@
         "Bureau",
         "Plinthes",
         {
-          "text": "10500",
-          "value": 10500,
+          "text": "16500",
+          "value": 16500,
           "unit": "mm"
         },
         "mm",
@@ -15872,7 +15872,7 @@
         "Bureau",
         "surface 18,80 m² ; périmètre 17400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Cuisine 1 900 mm ; Porte Hall 1 900 mm ; Baie Chambre 3 – 1 2400 mm ; Porte Palier 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 1 900 mm",
+        "Porte Palier 1 900 mm",
         "Validé"
       ],
       [
@@ -16006,8 +16006,8 @@
         "Chambre d’amis",
         "Plinthes",
         {
-          "text": "13800",
-          "value": 13800,
+          "text": "16500",
+          "value": 16500,
           "unit": "mm"
         },
         "mm",
@@ -16016,7 +16016,7 @@
         "Chambre d’amis",
         "surface 18,80 m² ; périmètre 17400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Hall 2 900 mm ; Porte Palier 2 900 mm ; Porte Palier 2 900 mm ; Porte Palier 2 900 mm",
+        "Porte Palier 2 900 mm",
         "Validé"
       ],
       [

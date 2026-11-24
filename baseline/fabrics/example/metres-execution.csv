@@ -215,7 +215,7 @@ Rez-de-chaussée;Séjour;Surface nette;31,85;m²;takeoff.room.netArea;fr-2026.1;
 Rez-de-chaussée;Séjour;Surface habitable;31,85;m²;takeoff.room.habitableArea;fr-2026.1;Séjour;"surface 31,85 m² ; périmètre 22800 mm";surface nette − partie sous 1800 mm de hauteur;;Validé
 Rez-de-chaussée;Séjour;Revêtement de sol;31,85;m²;takeoff.room.floorCoveringArea;fr-2026.1;Séjour;"surface 31,85 m² ; périmètre 22800 mm";surface nette;;Validé
 Rez-de-chaussée;Séjour;Plafond;31,85;m²;takeoff.room.ceilingArea;fr-2026.1;Séjour;"surface 31,85 m² ; périmètre 22800 mm";surface nette;;Validé
-Rez-de-chaussée;Séjour;Plinthes;16800;mm;takeoff.room.skirtingLength;fr-2026.1;Séjour;"surface 31,85 m² ; périmètre 22800 mm";périmètre − largeur des portes de la pièce;"Baie Séjour 3 2400 mm ; Porte Séjour 1 900 mm ; Porte Séjour 2 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Chambre 2 – 1 900 mm";Validé
+Rez-de-chaussée;Séjour;Plinthes;18600;mm;takeoff.room.skirtingLength;fr-2026.1;Séjour;"surface 31,85 m² ; périmètre 22800 mm";périmètre − largeur des portes de la pièce;"Baie Séjour 3 2400 mm ; Porte Séjour 1 900 mm ; Porte Séjour 2 900 mm";Validé
 Rez-de-chaussée;Cuisine;Surface au tracé;18,29;m²;takeoff.room.area;fr-2026.1;Cuisine;"surface 18,29 m² ; périmètre 18000 mm";surface du contour tracé;;Validé
 Rez-de-chaussée;Cuisine;Périmètre;18000;mm;takeoff.room.perimeter;fr-2026.1;Cuisine;"surface 18,29 m² ; périmètre 18000 mm";longueur du contour tracé;;Validé
 Rez-de-chaussée;Cuisine;Trémies;0,00;m²;takeoff.room.voidArea;fr-2026.1;Cuisine;"surface 18,29 m² ; périmètre 18000 mm";trémies d’escalier dans la pièce;;Validé
@@ -223,7 +223,7 @@ Rez-de-chaussée;Cuisine;Surface nette;18,29;m²;takeoff.room.netArea;fr-2026.1;
 Rez-de-chaussée;Cuisine;Surface habitable;18,29;m²;takeoff.room.habitableArea;fr-2026.1;Cuisine;"surface 18,29 m² ; périmètre 18000 mm";surface nette − partie sous 1800 mm de hauteur;;Validé
 Rez-de-chaussée;Cuisine;Revêtement de sol;18,29;m²;takeoff.room.floorCoveringArea;fr-2026.1;Cuisine;"surface 18,29 m² ; périmètre 18000 mm";surface nette;;Validé
 Rez-de-chaussée;Cuisine;Plafond;18,29;m²;takeoff.room.ceilingArea;fr-2026.1;Cuisine;"surface 18,29 m² ; périmètre 18000 mm";surface nette;;Validé
-Rez-de-chaussée;Cuisine;Plinthes;13500;mm;takeoff.room.skirtingLength;fr-2026.1;Cuisine;"surface 18,29 m² ; périmètre 18000 mm";périmètre − largeur des portes de la pièce;"Porte Séjour 1 900 mm ; Porte Entrée 1 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm";Validé
+Rez-de-chaussée;Cuisine;Plinthes;16200;mm;takeoff.room.skirtingLength;fr-2026.1;Cuisine;"surface 18,29 m² ; périmètre 18000 mm";périmètre − largeur des portes de la pièce;"Porte Séjour 1 900 mm ; Porte Entrée 1 900 mm";Validé
 Rez-de-chaussée;Entrée;Surface au tracé;13,44;m²;takeoff.room.area;fr-2026.1;Entrée;"surface 13,44 m² ; périmètre 14800 mm";surface du contour tracé;;Validé
 Rez-de-chaussée;Entrée;Périmètre;14800;mm;takeoff.room.perimeter;fr-2026.1;Entrée;"surface 13,44 m² ; périmètre 14800 mm";longueur du contour tracé;;Validé
 Rez-de-chaussée;Entrée;Trémies;0,00;m²;takeoff.room.voidArea;fr-2026.1;Entrée;"surface 13,44 m² ; périmètre 14800 mm";trémies d’escalier dans la pièce;;Validé
@@ -231,7 +231,7 @@ Rez-de-chaussée;Entrée;Surface nette;13,44;m²;takeoff.room.netArea;fr-2026.1;
 Rez-de-chaussée;Entrée;Surface habitable;13,44;m²;takeoff.room.habitableArea;fr-2026.1;Entrée;"surface 13,44 m² ; périmètre 14800 mm";surface nette − partie sous 1800 mm de hauteur;;Validé
 Rez-de-chaussée;Entrée;Revêtement de sol;13,44;m²;takeoff.room.floorCoveringArea;fr-2026.1;Entrée;"surface 13,44 m² ; périmètre 14800 mm";surface nette;;Validé
 Rez-de-chaussée;Entrée;Plafond;13,44;m²;takeoff.room.ceilingArea;fr-2026.1;Entrée;"surface 13,44 m² ; périmètre 14800 mm";surface nette;;Validé
-Rez-de-chaussée;Entrée;Plinthes;7600;mm;takeoff.room.skirtingLength;fr-2026.1;Entrée;"surface 13,44 m² ; périmètre 14800 mm";périmètre − largeur des portes de la pièce;"Porte Entrée 3 900 mm ; Porte Séjour 2 900 mm ; Porte Entrée 1 900 mm ; Porte Entrée 2 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Palier 3 900 mm";Validé
+Rez-de-chaussée;Entrée;Plinthes;11200;mm;takeoff.room.skirtingLength;fr-2026.1;Entrée;"surface 13,44 m² ; périmètre 14800 mm";périmètre − largeur des portes de la pièce;"Porte Entrée 3 900 mm ; Porte Séjour 2 900 mm ; Porte Entrée 1 900 mm ; Porte Entrée 2 900 mm";Validé
 Rez-de-chaussée;WC et buanderie;Surface au tracé;4,80;m²;takeoff.room.area;fr-2026.1;WC et buanderie;"surface 4,80 m² ; périmètre 9400 mm";surface du contour tracé;;Validé
 Rez-de-chaussée;WC et buanderie;Périmètre;9400;mm;takeoff.room.perimeter;fr-2026.1;WC et buanderie;"surface 4,80 m² ; périmètre 9400 mm";longueur du contour tracé;;Validé
 Rez-de-chaussée;WC et buanderie;Trémies;0,00;m²;takeoff.room.voidArea;fr-2026.1;WC et buanderie;"surface 4,80 m² ; périmètre 9400 mm";trémies d’escalier dans la pièce;;Validé
@@ -239,7 +239,7 @@ Rez-de-chaussée;WC et buanderie;Surface nette;4,80;m²;takeoff.room.netArea;fr-
 Rez-de-chaussée;WC et buanderie;Surface habitable;4,80;m²;takeoff.room.habitableArea;fr-2026.1;WC et buanderie;"surface 4,80 m² ; périmètre 9400 mm";surface nette − partie sous 1800 mm de hauteur;;Validé
 Rez-de-chaussée;WC et buanderie;Revêtement de sol;4,80;m²;takeoff.room.floorCoveringArea;fr-2026.1;WC et buanderie;"surface 4,80 m² ; périmètre 9400 mm";surface nette;;Validé
 Rez-de-chaussée;WC et buanderie;Plafond;4,80;m²;takeoff.room.ceilingArea;fr-2026.1;WC et buanderie;"surface 4,80 m² ; périmètre 9400 mm";surface nette;;Validé
-Rez-de-chaussée;WC et buanderie;Plinthes;7600;mm;takeoff.room.skirtingLength;fr-2026.1;WC et buanderie;"surface 4,80 m² ; périmètre 9400 mm";périmètre − largeur des portes de la pièce;"Porte Entrée 2 900 mm ; Porte Palier 3 900 mm";Validé
+Rez-de-chaussée;WC et buanderie;Plinthes;8500;mm;takeoff.room.skirtingLength;fr-2026.1;WC et buanderie;"surface 4,80 m² ; périmètre 9400 mm";périmètre − largeur des portes de la pièce;Porte Entrée 2 900 mm;Validé
 Rez-de-chaussée;Escalier;Nombre;1;u;takeoff.stair.count;fr-2026.1;Escalier;"largeur 1000 mm ; hauteur 2700 mm";1 par escalier;;Validé
 Rez-de-chaussée;Escalier;Contremarches;15;u;takeoff.stair.risers;fr-2026.1;Escalier;"largeur 1000 mm ; hauteur 2700 mm";hauteur à monter ÷ hauteur de marche (au plus 180 mm);;Validé
 Rez-de-chaussée;Escalier;Girons;14;u;takeoff.stair.treads;fr-2026.1;Escalier;"largeur 1000 mm ; hauteur 2700 mm";contremarches − 1;;Validé
@@ -352,7 +352,7 @@ Rez-de-chaussée;Escalier;Girons;14;u;takeoff.stair.treads;fr-2026.1;Escalier;"l
 Étage 1;Chambre parentale;Surface habitable;15,19;m²;takeoff.room.habitableArea;fr-2026.1;Chambre parentale;"surface 15,19 m² ; périmètre 16000 mm";surface nette − partie sous 1800 mm de hauteur;;Validé
 Étage 1;Chambre parentale;Revêtement de sol;15,19;m²;takeoff.room.floorCoveringArea;fr-2026.1;Chambre parentale;"surface 15,19 m² ; périmètre 16000 mm";surface nette;;Validé
 Étage 1;Chambre parentale;Plafond;15,19;m²;takeoff.room.ceilingArea;fr-2026.1;Chambre parentale;"surface 15,19 m² ; périmètre 16000 mm";surface nette;;Validé
-Étage 1;Chambre parentale;Plinthes;14200;mm;takeoff.room.skirtingLength;fr-2026.1;Chambre parentale;"surface 15,19 m² ; périmètre 16000 mm";périmètre − largeur des portes de la pièce;"Porte Séjour 1 900 mm ; Porte Chambre parentale 1 900 mm";Validé
+Étage 1;Chambre parentale;Plinthes;15100;mm;takeoff.room.skirtingLength;fr-2026.1;Chambre parentale;"surface 15,19 m² ; périmètre 16000 mm";périmètre − largeur des portes de la pièce;Porte Chambre parentale 1 900 mm;Validé
 Étage 1;Chambre 2;Surface au tracé;15,68;m²;takeoff.room.area;fr-2026.1;Chambre 2;"surface 15,68 m² ; périmètre 16200 mm";surface du contour tracé;;Validé
 Étage 1;Chambre 2;Périmètre;16200;mm;takeoff.room.perimeter;fr-2026.1;Chambre 2;"surface 15,68 m² ; périmètre 16200 mm";longueur du contour tracé;;Validé
 Étage 1;Chambre 2;Trémies;0,00;m²;takeoff.room.voidArea;fr-2026.1;Chambre 2;"surface 15,68 m² ; périmètre 16200 mm";trémies d’escalier dans la pièce;;Validé
@@ -360,7 +360,7 @@ Rez-de-chaussée;Escalier;Girons;14;u;takeoff.stair.treads;fr-2026.1;Escalier;"l
 Étage 1;Chambre 2;Surface habitable;15,68;m²;takeoff.room.habitableArea;fr-2026.1;Chambre 2;"surface 15,68 m² ; périmètre 16200 mm";surface nette − partie sous 1800 mm de hauteur;;Validé
 Étage 1;Chambre 2;Revêtement de sol;15,68;m²;takeoff.room.floorCoveringArea;fr-2026.1;Chambre 2;"surface 15,68 m² ; périmètre 16200 mm";surface nette;;Validé
 Étage 1;Chambre 2;Plafond;15,68;m²;takeoff.room.ceilingArea;fr-2026.1;Chambre 2;"surface 15,68 m² ; périmètre 16200 mm";surface nette;;Validé
-Étage 1;Chambre 2;Plinthes;12000;mm;takeoff.room.skirtingLength;fr-2026.1;Chambre 2;"surface 15,68 m² ; périmètre 16200 mm";périmètre − largeur des portes de la pièce;"Baie Séjour 3 2400 mm ; Porte Séjour 2 900 mm ; Porte Chambre 2 – 1 900 mm";Validé
+Étage 1;Chambre 2;Plinthes;15300;mm;takeoff.room.skirtingLength;fr-2026.1;Chambre 2;"surface 15,68 m² ; périmètre 16200 mm";périmètre − largeur des portes de la pièce;Porte Chambre 2 – 1 900 mm;Validé
 Étage 1;Salle de bains;Surface au tracé;8,68;m²;takeoff.room.area;fr-2026.1;Salle de bains;"surface 8,68 m² ; périmètre 11800 mm";surface du contour tracé;;Validé
 Étage 1;Salle de bains;Périmètre;11800;mm;takeoff.room.perimeter;fr-2026.1;Salle de bains;"surface 8,68 m² ; périmètre 11800 mm";longueur du contour tracé;;Validé
 Étage 1;Salle de bains;Trémies;0,00;m²;takeoff.room.voidArea;fr-2026.1;Salle de bains;"surface 8,68 m² ; périmètre 11800 mm";trémies d’escalier dans la pièce;;Validé
@@ -368,7 +368,7 @@ Rez-de-chaussée;Escalier;Girons;14;u;takeoff.stair.treads;fr-2026.1;Escalier;"l
 Étage 1;Salle de bains;Surface habitable;8,68;m²;takeoff.room.habitableArea;fr-2026.1;Salle de bains;"surface 8,68 m² ; périmètre 11800 mm";surface nette − partie sous 1800 mm de hauteur;;Validé
 Étage 1;Salle de bains;Revêtement de sol;8,68;m²;takeoff.room.floorCoveringArea;fr-2026.1;Salle de bains;"surface 8,68 m² ; périmètre 11800 mm";surface nette;;Validé
 Étage 1;Salle de bains;Plafond;8,68;m²;takeoff.room.ceilingArea;fr-2026.1;Salle de bains;"surface 8,68 m² ; périmètre 11800 mm";surface nette;;Validé
-Étage 1;Salle de bains;Plinthes;8200;mm;takeoff.room.skirtingLength;fr-2026.1;Salle de bains;"surface 8,68 m² ; périmètre 11800 mm";périmètre − largeur des portes de la pièce;"Porte Séjour 1 900 mm ; Porte Entrée 1 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Palier 1 900 mm";Validé
+Étage 1;Salle de bains;Plinthes;10000;mm;takeoff.room.skirtingLength;fr-2026.1;Salle de bains;"surface 8,68 m² ; périmètre 11800 mm";périmètre − largeur des portes de la pièce;"Porte Chambre parentale 1 900 mm ; Porte Palier 1 900 mm";Validé
 Étage 1;Bureau;Surface au tracé;8,99;m²;takeoff.room.area;fr-2026.1;Bureau;"surface 8,99 m² ; périmètre 12000 mm";surface du contour tracé;;Validé
 Étage 1;Bureau;Périmètre;12000;mm;takeoff.room.perimeter;fr-2026.1;Bureau;"surface 8,99 m² ; périmètre 12000 mm";longueur du contour tracé;;Validé
 Étage 1;Bureau;Trémies;0,00;m²;takeoff.room.voidArea;fr-2026.1;Bureau;"surface 8,99 m² ; périmètre 12000 mm";trémies d’escalier dans la pièce;;Validé
@@ -384,7 +384,7 @@ Rez-de-chaussée;Escalier;Girons;14;u;takeoff.stair.treads;fr-2026.1;Escalier;"l
 Étage 1;Palier;Surface habitable;8,38;m²;takeoff.room.habitableArea;fr-2026.1;Palier;"surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²";surface nette − partie sous 1800 mm de hauteur;;Validé
 Étage 1;Palier;Revêtement de sol;8,38;m²;takeoff.room.floorCoveringArea;fr-2026.1;Palier;"surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²";surface nette;;Validé
 Étage 1;Palier;Plafond;8,38;m²;takeoff.room.ceilingArea;fr-2026.1;Palier;"surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²";surface nette;;Validé
-Étage 1;Palier;Plinthes;7600;mm;takeoff.room.skirtingLength;fr-2026.1;Palier;"surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²";périmètre − largeur des portes de la pièce;"Porte Entrée 3 900 mm ; Porte Séjour 2 900 mm ; Porte Entrée 1 900 mm ; Porte Entrée 2 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Palier 3 900 mm";Validé
+Étage 1;Palier;Plinthes;11200;mm;takeoff.room.skirtingLength;fr-2026.1;Palier;"surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²";périmètre − largeur des portes de la pièce;"Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Palier 3 900 mm";Validé
 Étage 1;Dressing;Surface au tracé;4,80;m²;takeoff.room.area;fr-2026.1;Dressing;"surface 4,80 m² ; périmètre 9400 mm";surface du contour tracé;;Validé
 Étage 1;Dressing;Périmètre;9400;mm;takeoff.room.perimeter;fr-2026.1;Dressing;"surface 4,80 m² ; périmètre 9400 mm";longueur du contour tracé;;Validé
 Étage 1;Dressing;Trémies;0,00;m²;takeoff.room.voidArea;fr-2026.1;Dressing;"surface 4,80 m² ; périmètre 9400 mm";trémies d’escalier dans la pièce;;Validé
@@ -392,7 +392,7 @@ Rez-de-chaussée;Escalier;Girons;14;u;takeoff.stair.treads;fr-2026.1;Escalier;"l
 Étage 1;Dressing;Surface habitable;4,80;m²;takeoff.room.habitableArea;fr-2026.1;Dressing;"surface 4,80 m² ; périmètre 9400 mm";surface nette − partie sous 1800 mm de hauteur;;Validé
 Étage 1;Dressing;Revêtement de sol;4,80;m²;takeoff.room.floorCoveringArea;fr-2026.1;Dressing;"surface 4,80 m² ; périmètre 9400 mm";surface nette;;Validé
 Étage 1;Dressing;Plafond;4,80;m²;takeoff.room.ceilingArea;fr-2026.1;Dressing;"surface 4,80 m² ; périmètre 9400 mm";surface nette;;Validé
-Étage 1;Dressing;Plinthes;7600;mm;takeoff.room.skirtingLength;fr-2026.1;Dressing;"surface 4,80 m² ; périmètre 9400 mm";périmètre − largeur des portes de la pièce;"Porte Entrée 2 900 mm ; Porte Palier 3 900 mm";Validé
+Étage 1;Dressing;Plinthes;8500;mm;takeoff.room.skirtingLength;fr-2026.1;Dressing;"surface 4,80 m² ; périmètre 9400 mm";périmètre − largeur des portes de la pièce;Porte Palier 3 900 mm;Validé
 Étage 1;Toiture;Surface en plan;97,96;m²;takeoff.roof.projectedArea;fr-2026.1;Toiture;"surface en plan 97,96 m² ; pente 35,0°";surface au sol, débord compris;;Validé
 Étage 1;Toiture;Surface des versants;119,59;m²;takeoff.roof.realArea;fr-2026.1;Toiture;"surface en plan 97,96 m² ; pente 35,0°";surface en plan ÷ cos(pente);;Validé
 Étage 1;Toiture;Faîtage;12400;mm;takeoff.roof.ridgeLength;fr-2026.1;Toiture;"surface en plan 97,96 m² ; pente 35,0°";longueur du faîtage;;Validé
