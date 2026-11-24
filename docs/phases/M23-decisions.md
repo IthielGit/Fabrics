@@ -94,3 +94,11 @@ Point non tranché par cette réponse : le devis appartient-il à l'espace (prop
 
 Modifie D23-2 : le prix de référence de calcul est désormais le HT dérivé du TTC livré chantier.
 D23-3 (règles de prix de vente) reste ouvert : ni la proposition A, B ou C, ni le choix entre 1,1025 et 1,10 n'ont été tranchés.
+
+## D23-3 · Règles de prix de vente (décidé le 2026-11-24 : option A)
+
+- **Prix de vente HT = débours sec HT × K1.** Le débours sec est la somme des matériaux, du matériel et de la main-d'œuvre, en HT (D23-10).
+- **K1 se décompose en trois parts réglables** par un admin de l'espace : frais généraux (A1), bénéfice et aléas (A2), frais proportionnels à la TVA (A3). Les valeurs de départ sont celles du classeur (A1 = 5 %, A2 = 5 %, A3 = 0 %), marquées « valeurs du classeur, à confirmer ».
+- **Cumul des parts : multiplication**, soit K1 = (1 + A1) × (1 + A2) × (1 + A3) = 1,1025 avec les valeurs du classeur. **Proposition retenue par défaut, à confirmer** : la réponse explicite n'a pas encore été donnée.
+- **Le DQE affiche chaque part** (débours, frais généraux, bénéfice, aléas, prix de vente HT, TVA, prix TTC).
+- **Aucune marge n'est imposée** : les pourcentages restent à la main de l'admin.
