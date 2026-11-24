@@ -739,6 +739,7 @@ export {
   editorHostTreeChildrenRegistry,
   registerEditorHostTreeChildren,
 } from './lib/host-tree-children'
+export { type IfcExportHost, setIfcExportHost } from './lib/ifc-export'
 export {
   DRAFTING_SURFACE_EXTENSION_KEY,
   type DraftingSurfaceExtension,

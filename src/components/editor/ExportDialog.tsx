@@ -21,7 +21,7 @@ import Button from '../ui/Button'
 import Choice from '../ui/Choice'
 import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
-import { exportProject } from './exportProject'
+import { exportIfcFile, exportProject } from './exportProject'
 import MetresWarningList from './MetresWarningList'
 import { VERSION_FILE_SUFFIX, type MetresFormat, type MetresScope, type MetresVersion } from './exportMetres'
 
@@ -109,6 +109,8 @@ function ExportForm({ onClose }: { onClose: () => void }) {
     return type === 'csv' ? all : all.filter(isBlockingWarning)
   }, [isPlan, type, document, measurements, metresScope, dxfScope, activeLevelId])
   const [failed, setFailed] = useState(false)
+  // Remarques d'un export IFC réussi (M22) : la fenêtre reste ouverte pour les lire.
+  const [notes, setNotes] = useState<string[]>([])
 
   if (!project) return null
 
@@ -153,7 +155,14 @@ function ExportForm({ onClose }: { onClose: () => void }) {
   const handleSubmit = async () => {
     setBusy(true)
     setFailed(false)
+    setNotes([])
     try {
+      if (type === 'ifc') {
+        const found = await exportIfcFile(project, { fileName })
+        if (found.length > 0) setNotes(found)
+        else onClose()
+        return
+      }
       await exportProject(project, {
         type,
         fileName,
@@ -420,6 +429,16 @@ function ExportForm({ onClose }: { onClose: () => void }) {
           <p role="alert" className="text-sm text-red-600">
             {fr.export.failed}
           </p>
+        )}
+        {notes.length > 0 && (
+          <div role="status" className="rounded border border-amber-300 bg-amber-50 p-2 text-sm text-amber-900">
+            <p className="font-medium">{fr.export.ifc.doneTitle}</p>
+            <ul className="mt-1 list-disc pl-5">
+              {notes.map((note) => (
+                <li key={note}>{note}</li>
+              ))}
+            </ul>
+          </div>
         )}
 
         <div className="flex justify-end gap-2 pt-2">

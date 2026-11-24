@@ -123,5 +123,6 @@ export default defineConfig({
   },
   // collab-server/ a ses propres dépendances et ses propres tests (npm test dans ce dossier).
   // packages/pascal/ : tests de Pascal sous bun (npm run test:pascal), jamais sous Vitest (ADR 0002).
-  test: { exclude: [...configDefaults.exclude, 'collab-server/**', 'packages/pascal/**'] },
+  // `tmp/` : brouillons hors de Git (jamais lancés par la CI).
+  test: { exclude: [...configDefaults.exclude, 'collab-server/**', 'packages/pascal/**', 'tmp/**'] },
 })

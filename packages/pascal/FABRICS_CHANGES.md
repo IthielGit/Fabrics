@@ -109,3 +109,6 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
 - `step.ts` : `StepWriter` retient le type et le premier attribut de chaque entité (`typeOf`,
   `firstStringOf`) pour ce résumé.
 - Tests : `tests/export-extensions.test.ts` ; `tests/export-step-check.ts` connaît les nouvelles entités.
+- `packages/editor/src/lib/ifc-export.ts` : crochet `setIfcExportHost` (exporté par `src/index.tsx`). L'hôte
+  reçoit les nœuds de la scène et rend la copie à exporter, ses ajouts, des types exclus et ses propres
+  remarques (en français dans Fabrics). Sans hôte, rien ne change.

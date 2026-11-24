@@ -30,8 +30,27 @@ export declare const useEditor: {
     setMode(mode: string): void
     setPhase(phase: string): void
     armMaterialPaint(): void
+    /** Export d'un modèle depuis la vue 3D ; `null` tant que la vue 3D n'est pas montée. */
+    modelExport:
+      | ((
+          format: 'ifc',
+          options?: { projectName?: string; download?: boolean },
+        ) => Promise<{ blob: Blob; filename: string; warnings?: readonly string[] } | null>)
+      | null
   }
 }
+
+/** Ajouts de l'application hôte à tout export IFC de l'éditeur (M22). */
+export type IfcExportHost = (nodes: Record<string, import('@pascal-app/core').AnyNode>) => {
+  nodes: Record<string, import('@pascal-app/core').AnyNode>
+  extensions?: import('@pascal-app/ifc-converter/export').IfcExportExtensions
+  excludedNodeTypes?: readonly string[]
+  warnings?: (
+    summary: import('@pascal-app/ifc-converter/export').IfcExportSummary,
+    missing: import('@pascal-app/ifc-converter/export').IfcExportSkip[],
+  ) => string[]
+}
+export declare function setIfcExportHost(host: IfcExportHost | null): void
 
 /** Géométrie de plan d'un niveau, sans interface (M20 20.1a, ADR 0007 : escaliers et mobilier sur les feuilles). */
 export interface SheetGeometryEntry {

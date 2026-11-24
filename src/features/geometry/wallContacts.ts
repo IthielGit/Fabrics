@@ -152,6 +152,8 @@ function isConnected(end: WallEnd, analysis: Analysis): boolean {
 export interface TAdjustment {
   /** Surface du mur comptée à tort dans l'épaisseur d'un autre mur, en mm² (à multiplier par la hauteur). */
   overlapArea: number
+  /** Part de `overlapArea` due au dernier bout du tracé (le reste vient du premier bout), en mm². */
+  overlapAtEnd: number
   /** Longueur des faces cachée dans un autre mur, en mm (deux faces de chaque bout qui y entre). */
   hiddenFaces: number
   /** Longueur de face recouverte par un mur qui s'y raccorde, en mm. */
@@ -171,7 +173,7 @@ export function tJunctionAdjustments(walls: readonly WallElement[]): Map<string,
   const entry = (id: string): TAdjustment => {
     const found = result.get(id)
     if (found) return found
-    const created = { overlapArea: 0, hiddenFaces: 0, coveredFace: 0 }
+    const created = { overlapArea: 0, overlapAtEnd: 0, hiddenFaces: 0, coveredFace: 0 }
     result.set(id, created)
     return created
   }
@@ -191,6 +193,7 @@ export function tJunctionAdjustments(walls: readonly WallElement[]): Map<string,
       const depth = Math.min(Math.max(beyond + half, 0), target.wall.thickness)
       const own = entry(end.wall.id)
       own.overlapArea += end.wall.thickness * depth
+      if (end.pointIndex > 0) own.overlapAtEnd += end.wall.thickness * depth
       own.hiddenFaces += 2 * depth
       entry(target.wall.id).coveredFace += end.wall.thickness
     }

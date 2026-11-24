@@ -9,7 +9,7 @@ describe('raccords en T', () => {
     const through = wall([0, 0, 6000, 0])
     const branch = wall([3000, 4000, 3000, 0])
     const adjustments = tJunctionAdjustments([through, branch])
-    expect(adjustments.get(branch.id)).toEqual({ overlapArea: 200 * 100, hiddenFaces: 200, coveredFace: 0 })
+    expect(adjustments.get(branch.id)).toEqual({ overlapArea: 200 * 100, overlapAtEnd: 200 * 100, hiddenFaces: 200, coveredFace: 0 })
     expect(adjustments.get(through.id)?.coveredFace).toBe(200)
   })
 

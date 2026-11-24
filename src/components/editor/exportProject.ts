@@ -70,18 +70,32 @@ async function exportDxf(project: Project, options: ExportOptions): Promise<void
 }
 
 /**
- * IFC du plan, pour Revit : tous les niveaux dans un seul fichier. Refusé comme les autres exports
- * du plan si une pièce laisse un manque ou déborde (D55).
+ * IFC4 du plan (M22) : tous les niveaux dans un seul fichier, écrit par l'exportateur de Pascal avec
+ * les ajouts de Fabrics (`features/ifc/exportIfc.ts`). Depuis la vue 3D de l'éditeur quand elle est
+ * montée (toitures, escaliers et mobilier avec leur forme) ; sinon depuis la scène seule, et les objets
+ * sans forme sont signalés. Refusé comme les autres exports du plan si une pièce laisse un manque ou
+ * déborde (D55). Rend les remarques à montrer (vide si tout est complet).
  */
-async function exportIfc(project: Project, options: ExportOptions): Promise<void> {
+export async function exportIfcFile(project: Project, options: Pick<ExportOptions, 'fileName'>): Promise<string[]> {
   const { document: doc } = project
   if (blockingSurfaceWarnings(doc, null).length > 0) throw new MetresCoverageError()
-  // Chargé à la demande, comme le DXF.
-  const { buildIfc } = await import('../../features/export/ifc')
+  if (!project.scene) throw new Error(fr.export.planEmpty)
   const fileName = exportFileName(options.fileName, 'ifc', fr.export.planFallbackName)
-  const text = buildIfc(doc, { projectName: project.name, fileName, labels: fr.export.ifc })
-  if (!text) throw new Error(fr.export.planEmpty)
-  downloadBlob(new Blob([text], { type: 'application/x-step' }), fileName)
+  const { useEditor } = await import('@pascal-app/editor')
+  const modelExport = useEditor.getState().modelExport
+  if (modelExport) {
+    const artifact = await modelExport('ifc', { projectName: project.name, download: false })
+    if (!artifact) throw new Error(fr.export.planEmpty)
+    downloadBlob(artifact.blob, fileName)
+    return [...(artifact.warnings ?? [])]
+  }
+  const { buildFabricsIfc, ifcExportNotes } = await import('../../features/ifc/exportIfc')
+  const { ifc, summary, additions } = buildFabricsIfc(project.scene, {
+    projectName: project.name,
+    labels: { levelSlab: fr.export.ifc.levelSlab },
+  })
+  downloadBlob(new Blob([ifc], { type: 'application/x-step' }), fileName)
+  return ifcExportNotes(summary, summary.skipped, additions, fr.export.ifc)
 }
 
 /**
@@ -114,7 +128,7 @@ export async function exportProject(project: Project, options: ExportOptions): P
   }
 
   if (options.type === 'ifc') {
-    await exportIfc(project, options)
+    await exportIfcFile(project, options)
     return
   }
 

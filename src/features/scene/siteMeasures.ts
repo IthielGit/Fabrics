@@ -149,13 +149,25 @@ export function siteMeasures(scene: PlanScene): SiteMeasures {
  * Un niveau sans mur a une emprise de 0.
  */
 export function levelFootprintAreas(scene: PlanScene): Map<string, number> {
+  const out = new Map<string, number>()
+  for (const [levelId, { rings }] of levelFootprintRings(scene)) {
+    out.set(levelId, rings.reduce((sum, ring) => sum + polygonAreaM2(ring), 0) * 1e6)
+  }
+  return out
+}
+
+/**
+ * Contour extérieur des murs de chaque niveau (M22 : dalle de niveau exportée en IFC), en points de
+ * plan Pascal (m), par identifiant de niveau Fabrics, avec l'identifiant du nœud de niveau.
+ */
+export function levelFootprintRings(scene: PlanScene): Map<string, { levelNodeId: string; rings: Pt[][] }> {
   const { nodes } = scene
   const building = (nodes[BUILDING_ID] ?? Object.values(nodes).find((n) => n.type === 'building')) as SceneNodeData | undefined
-  const out = new Map<string, number>()
+  const out = new Map<string, { levelNodeId: string; rings: Pt[][] }>()
   for (const { node, altitude } of levelAltitudes(nodes)) {
     const loops = levelFootprintLoops(nodes as never, node as never, (building ?? null) as never)
-    const outline = loops.length > 0 ? footprintOutline(loops) : []
-    out.set(altitude.id, outline.reduce((sum, ring) => sum + polygonAreaM2(ring), 0) * 1e6)
+    const rings = (loops.length > 0 ? footprintOutline(loops) : []) as Pt[][]
+    out.set(altitude.id, { levelNodeId: node.id, rings })
   }
   return out
 }

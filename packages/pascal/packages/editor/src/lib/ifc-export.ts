@@ -1,5 +1,11 @@
 import { type AnyNode, bakePolicyOf, type Collection, sceneRegistry } from '@pascal-app/core'
-import { buildIfcExport, type IfcMeshPart } from '@pascal-app/ifc-converter/export'
+import {
+  buildIfcExport,
+  type IfcExportExtensions,
+  type IfcExportSkip,
+  type IfcExportSummary,
+  type IfcMeshPart,
+} from '@pascal-app/ifc-converter/export'
 import { SCENE_LAYER } from '@pascal-app/viewer'
 import * as THREE from 'three'
 import { isIfcRolePart } from './ifc-parts'
@@ -161,6 +167,24 @@ function drawnInEditor(nodeId: string, nodes: Record<string, AnyNode>): boolean 
   return drawn
 }
 
+/**
+ * Host additions to every IFC export (Fabrics, M22): the nodes to write (a
+ * copy, never the live scene), extensions and extra excluded kinds.
+ */
+export type IfcExportHost = (nodes: Record<string, AnyNode>) => {
+  nodes: Record<string, AnyNode>
+  extensions?: IfcExportExtensions
+  excludedNodeTypes?: readonly string[]
+  /** Replaces the default warnings: `missing` lists on-screen objects left out of the file. */
+  warnings?: (summary: IfcExportSummary, missing: IfcExportSkip[]) => string[]
+}
+
+let ifcExportHost: IfcExportHost | null = null
+
+export function setIfcExportHost(host: IfcExportHost | null): void {
+  ifcExportHost = host
+}
+
 export function ifcFileName(projectName: string | undefined, fallback: string): string {
   const base = projectName?.replace(/[\\/:*?"<>|]+/g, '-').trim()
   return `${base || fallback}.ifc`
@@ -177,22 +201,26 @@ export function exportPreparedSceneToIfc(
   },
 ): { data: string; warnings: string[] } {
   const { meshes, renderedNodeIds } = collectIfcMeshes(root, nodes)
+  const hosted = ifcExportHost?.(nodes)
   const { ifc, summary } = buildIfcExport({
-    nodes,
+    nodes: hosted?.nodes ?? nodes,
     collections: options.collections,
     meshes,
     projectName: options.projectName,
     // Same default as scene preparation, which already pruned hidden meshes.
     onlyVisible: options.onlyVisible ?? true,
-    excludedNodeTypes: options.excludedNodeTypes,
+    excludedNodeTypes: [...(options.excludedNodeTypes ?? []), ...(hosted?.excludedNodeTypes ?? [])],
+    extensions: hosted?.extensions,
   })
   // Report everything that is on screen yet did not reach the file; markers
   // that draw nothing (spawn point, camera shots) are skipped silently.
-  const missing = summary.skipped.filter(
+  const missingSkips = summary.skipped.filter(
     (skip) => renderedNodeIds.has(skip.nodeId) || drawnInEditor(skip.nodeId, nodes),
-  ).length
-  const warnings =
-    missing > 0
+  )
+  const missing = missingSkips.length
+  const warnings = hosted?.warnings
+    ? hosted.warnings(summary, missingSkips)
+    : missing > 0
       ? [
           `${missing} ${missing === 1 ? 'object has' : 'objects have'} no exportable geometry and ${missing === 1 ? 'was' : 'were'} left out of the IFC file.`,
         ]

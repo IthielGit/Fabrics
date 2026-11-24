@@ -17,6 +17,7 @@ import { environmentHostPanel, environmentPlugin, environmentPresentation } from
 import { treesHostPanel, treesPlugin } from '@pascal-app/plugin-trees'
 import { configureViewer, registerViewerPresentation } from '@pascal-app/viewer'
 import { pascalTexts } from '../i18n/pascalTexts'
+import { registerFabricsIfcExport } from './ifcExportHost'
 import { pinMillimetres } from './millimetreUnits'
 
 // Longueurs en mm, surfaces en m² (règle « Métrique architectural », M19 B1).
@@ -88,6 +89,8 @@ extendPluginDiscovery(async () => {
 
 loadBuiltins()
 void loadExternalPlugins()
+// Export IFC : ajouts de Fabrics (M22).
+registerFabricsIfcExport()
 
 // Textes de l'interface de Pascal : un seul fichier, en français (`scripts/compile-pascal-texts.mjs`).
 // Aucune autre langue n'est chargée (choix de l'utilisateur du 2026-11-18).

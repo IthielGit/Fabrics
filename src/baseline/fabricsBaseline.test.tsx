@@ -15,7 +15,7 @@ import { buildSheet } from '../features/building/views/sheet'
 import { planOverlay } from '../features/dimensioning/planOverlay'
 import type { DimensioningMode } from '../features/dimensioning/types'
 import { createExamplePlanProject, createLargeHouseProject } from '../features/documents/createProject'
-import { buildIfc } from '../features/export/ifc'
+import { buildFabricsIfc } from '../features/ifc/exportIfc'
 import { buildMetresXlsx } from '../features/export/metresXlsx'
 import { clientMetaLabels } from '../features/measurements/clientView'
 import { measurementsToCsv, measurementsToFlatCsv, type CsvLabels } from '../features/measurements/csv'
@@ -151,14 +151,15 @@ describe.each(FIXTURES)('baseline $key ($route)', ({ key, create }) => {
     await expect(xlsxText(bytes)).toMatchFileSnapshot(file(`metres-${version}.xlsx.txt`))
   })
 
+  // M22 : IFC4 de l'exportateur de Pascal avec les ajouts de Fabrics (sans vue 3D : sans toitures,
+  // escaliers ni mobilier, qui demandent leur forme affichée).
   it('export IFC', async () => {
-    const ifc = buildIfc(project.document, {
+    const scene = project.scene ?? settleScene(fabricsToScene(project.document).scene)
+    const { ifc } = buildFabricsIfc(scene, {
       projectName: project.name,
-      fileName: `${key}.ifc`,
-      labels: fr.export.ifc,
-      now: NOW,
+      labels: { levelSlab: fr.export.ifc.levelSlab },
+      timestamp: NOW,
     })
-    expect(ifc).not.toBeNull()
     await expect(`${ifc}\n`).toMatchFileSnapshot(file('export.ifc'))
   })
 

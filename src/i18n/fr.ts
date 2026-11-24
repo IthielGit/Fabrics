@@ -1060,22 +1060,23 @@ export const fr = {
       csv: 'Surfaces, longueurs et volumes du bâtiment : fichier Excel, document PDF ou CSV.',
       xlsx: 'Classeur Excel des métrés.',
       dxf: 'Plan pour un logiciel de DAO (AutoCAD, LibreCAD…), en mm : murs, pièces, ouvertures, cotes, axes et mobilier sur des calques séparés.',
-      ifc: 'Maquette pour Revit et les autres logiciels BIM (IFC2x3), en mm : niveaux, murs, ouvertures, pièces et sols. Escaliers, toitures et mobilier : pas encore.',
+      ifc: 'Maquette BIM IFC4 pour Revit, Archicad et les visionneuses : niveaux, murs, dalles, portes, fenêtres, pièces, toitures, escaliers et mobilier, avec les quantités des métrés et la classification Uniclass 2015.',
       zip: 'Archive de fichiers DXF.',
       glb: 'Modèle 3D glTF.',
     },
     formatDxf: 'DXF',
-    formatIfc: 'IFC (Revit)',
-    // Noms des objets écrits dans le fichier IFC.
+    formatIfc: 'IFC (BIM)',
+    // Export IFC (M22) : nom de la dalle de niveau écrite dans le fichier, remarques après l'export.
     ifc: {
-      site: 'Terrain',
-      building: 'Bâtiment',
-      wall: 'Mur',
-      room: 'Pièce',
-      floor: 'Sol',
-      door: 'Porte',
-      window: 'Fenêtre',
-      opening: 'Ouverture',
+      levelSlab: 'Dalle',
+      doneTitle: 'Fichier IFC exporté. À savoir :',
+      close: 'Fermer',
+      missing: (count: number, names: string) =>
+        `${count} objet${count > 1 ? 's' : ''} sans forme 3D, laissé${count > 1 ? 's' : ''} hors du fichier : ${names}.`,
+      provisional: (count: number) =>
+        `${count} élément${count > 1 ? 's ont' : ' a'} des quantités provisoires ou incomplètes (panneau Métrés, « Quantitatif ») : leur statut est écrit dans la propriété Fabrics.QuantityStatus.`,
+      unmatched: (count: number) =>
+        `${count} élément${count > 1 ? 's' : ''} sans objet dans le fichier : ${count > 1 ? 'leurs quantités ne sont pas écrites' : 'ses quantités ne sont pas écrites'}.`,
     },
     dxf: {
       scope: 'Niveaux',
