@@ -84,3 +84,13 @@ Point non tranché par cette réponse : le devis appartient-il à l'espace (prop
 
 - **Le devis appartient à l'espace**, et non à la personne qui l'a créé. Un départ ne bloque donc ni les montants ni les exports.
 - Les admins de l'espace peuvent gérer les devis ; les membres voient les devis de l'espace selon les règles de D23-7 et D23-8.
+
+## D23-10 · Base de calcul HT, TVA à la fin (validé le 2026-11-24)
+
+- **Le TTC livré chantier est conservé tel qu'il est dans le classeur** (valeur source, pour la vérification).
+- **Le prix HT est calculé à partir du TTC** (÷ 1,20), avec la règle d'arrondi de D23-5, en un seul endroit.
+- **Tous les calculs de devis se font en HT**. La TVA est ajoutée à la fin.
+- **Le taux de TVA (20 %) est un réglage unique**, modifiable.
+
+Modifie D23-2 : le prix de référence de calcul est désormais le HT dérivé du TTC livré chantier.
+D23-3 (règles de prix de vente) reste ouvert : ni la proposition A, B ou C, ni le choix entre 1,1025 et 1,10 n'ont été tranchés.
