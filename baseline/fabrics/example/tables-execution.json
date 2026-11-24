@@ -3005,7 +3005,7 @@
   {
     "id": "quantities",
     "title": "Quantitatif",
-    "note": "Chaque quantité montre ses éléments sources, les dimensions utilisées, la formule, les déductions et la règle de métré avec sa version. Valeurs exactes, arrondies à l’affichage (mm entiers, m² à 2 décimales, m³ à 3).",
+    "note": "Quantitatif complet : 268 quantités, toutes validées. Chaque quantité montre ses éléments sources, les dimensions utilisées, la formule, les déductions et la règle de métré avec sa version. Valeurs exactes, arrondies à l’affichage (mm entiers, m² à 2 décimales, m³ à 3).",
     "columns": [
       {
         "header": "Niveau",
@@ -3050,6 +3050,10 @@
       {
         "header": "Déductions",
         "align": "left"
+      },
+      {
+        "header": "Statut",
+        "align": "left"
       }
     ],
     "rows": [
@@ -3068,7 +3072,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3085,7 +3090,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3102,7 +3108,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²"
+        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3119,7 +3126,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²"
+        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3136,7 +3144,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70800 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3153,7 +3162,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70800 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3170,7 +3180,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70800 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²"
+        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3187,7 +3198,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70800 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²"
+        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3204,7 +3216,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70800 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²"
+        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3221,7 +3234,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3238,7 +3252,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²"
+        "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Fenêtre Cuisine 2 1,20 m² ; Fenêtre WC et buanderie 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Baie Séjour 3 5,16 m² ; Porte Entrée 3 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3255,7 +3270,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3272,7 +3288,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3289,7 +3306,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²"
+        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3306,7 +3324,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²"
+        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3323,7 +3342,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12800 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3340,7 +3360,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12800 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3357,7 +3378,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12800 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²"
+        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3374,7 +3396,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12800 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²"
+        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3391,7 +3414,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12800 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²"
+        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3408,7 +3432,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3425,7 +3450,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²"
+        "Porte Séjour 1 1,89 m² ; Porte Séjour 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3442,7 +3468,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3459,7 +3486,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3476,7 +3504,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        "Porte Entrée 1 1,89 m²"
+        "Porte Entrée 1 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3493,7 +3522,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        "Porte Entrée 1 1,89 m²"
+        "Porte Entrée 1 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3510,7 +3540,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11600 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3527,7 +3558,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11600 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3544,7 +3576,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11600 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        "Porte Entrée 1 1,89 m²"
+        "Porte Entrée 1 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3561,7 +3594,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11600 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        "Porte Entrée 1 1,89 m²"
+        "Porte Entrée 1 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3578,7 +3612,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11600 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        "Porte Entrée 1 1,89 m²"
+        "Porte Entrée 1 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3595,7 +3630,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3612,7 +3648,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        "Porte Entrée 1 1,89 m²"
+        "Porte Entrée 1 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3629,7 +3666,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3646,7 +3684,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3663,7 +3702,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        "Porte Entrée 2 1,89 m²"
+        "Porte Entrée 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3680,7 +3720,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        "Porte Entrée 2 1,89 m²"
+        "Porte Entrée 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3697,7 +3738,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3714,7 +3756,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3731,7 +3774,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        "Porte Entrée 2 1,89 m²"
+        "Porte Entrée 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3748,7 +3792,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        "Porte Entrée 2 1,89 m²"
+        "Porte Entrée 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3765,7 +3810,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        "Porte Entrée 2 1,89 m²"
+        "Porte Entrée 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3782,7 +3828,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3799,7 +3846,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        "Porte Entrée 2 1,89 m²"
+        "Porte Entrée 2 1,89 m²",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3816,7 +3864,8 @@
         "Fenêtre Séjour 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3833,7 +3882,8 @@
         "Fenêtre Séjour 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3850,7 +3900,8 @@
         "Fenêtre Séjour 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3867,7 +3918,8 @@
         "Fenêtre Cuisine 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3884,7 +3936,8 @@
         "Fenêtre Cuisine 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3901,7 +3954,8 @@
         "Fenêtre Cuisine 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3918,7 +3972,8 @@
         "Fenêtre Cuisine 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3935,7 +3990,8 @@
         "Fenêtre Cuisine 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3952,7 +4008,8 @@
         "Fenêtre Cuisine 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3969,7 +4026,8 @@
         "Fenêtre WC et buanderie 1, Mur extérieur",
         "largeur 600 mm ; hauteur 600 mm ; allège 1500 mm ; hauteur dans le mur 600 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -3986,7 +4044,8 @@
         "Fenêtre WC et buanderie 1, Mur extérieur",
         "largeur 600 mm ; hauteur 600 mm ; allège 1500 mm ; hauteur dans le mur 600 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4003,7 +4062,8 @@
         "Fenêtre WC et buanderie 1, Mur extérieur",
         "largeur 600 mm ; hauteur 600 mm ; allège 1500 mm ; hauteur dans le mur 600 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4020,7 +4080,8 @@
         "Fenêtre Séjour 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4037,7 +4098,8 @@
         "Fenêtre Séjour 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4054,7 +4116,8 @@
         "Fenêtre Séjour 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4071,7 +4134,8 @@
         "Baie Séjour 3, Mur extérieur",
         "largeur 2400 mm ; hauteur 2150 mm ; allège 0 mm ; hauteur dans le mur 2150 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4088,7 +4152,8 @@
         "Baie Séjour 3, Mur extérieur",
         "largeur 2400 mm ; hauteur 2150 mm ; allège 0 mm ; hauteur dans le mur 2150 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4105,7 +4170,8 @@
         "Baie Séjour 3, Mur extérieur",
         "largeur 2400 mm ; hauteur 2150 mm ; allège 0 mm ; hauteur dans le mur 2150 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4122,7 +4188,8 @@
         "Porte Entrée 3, Mur extérieur",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4139,7 +4206,8 @@
         "Porte Entrée 3, Mur extérieur",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4156,7 +4224,8 @@
         "Porte Entrée 3, Mur extérieur",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4173,7 +4242,8 @@
         "Porte Séjour 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4190,7 +4260,8 @@
         "Porte Séjour 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4207,7 +4278,8 @@
         "Porte Séjour 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4224,7 +4296,8 @@
         "Porte Séjour 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4241,7 +4314,8 @@
         "Porte Séjour 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4258,7 +4332,8 @@
         "Porte Séjour 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4275,7 +4350,8 @@
         "Porte Entrée 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4292,7 +4368,8 @@
         "Porte Entrée 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4309,7 +4386,8 @@
         "Porte Entrée 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4326,7 +4404,8 @@
         "Porte Entrée 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4343,7 +4422,8 @@
         "Porte Entrée 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4360,7 +4440,8 @@
         "Porte Entrée 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4377,7 +4458,8 @@
         "Séjour",
         "surface 31,85 m² ; périmètre 22800 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4394,7 +4476,8 @@
         "Séjour",
         "surface 31,85 m² ; périmètre 22800 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4411,7 +4494,8 @@
         "Séjour",
         "surface 31,85 m² ; périmètre 22800 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4428,7 +4512,8 @@
         "Séjour",
         "surface 31,85 m² ; périmètre 22800 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4445,7 +4530,8 @@
         "Séjour",
         "surface 31,85 m² ; périmètre 22800 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4462,7 +4548,8 @@
         "Séjour",
         "surface 31,85 m² ; périmètre 22800 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4479,7 +4566,8 @@
         "Séjour",
         "surface 31,85 m² ; périmètre 22800 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4496,7 +4584,8 @@
         "Séjour",
         "surface 31,85 m² ; périmètre 22800 mm",
         "périmètre − largeur des portes de la pièce",
-        "Baie Séjour 3 2400 mm ; Porte Séjour 1 900 mm ; Porte Séjour 2 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Chambre 2 – 1 900 mm"
+        "Baie Séjour 3 2400 mm ; Porte Séjour 1 900 mm ; Porte Séjour 2 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Chambre 2 – 1 900 mm",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4513,7 +4602,8 @@
         "Cuisine",
         "surface 18,29 m² ; périmètre 18000 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4530,7 +4620,8 @@
         "Cuisine",
         "surface 18,29 m² ; périmètre 18000 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4547,7 +4638,8 @@
         "Cuisine",
         "surface 18,29 m² ; périmètre 18000 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4564,7 +4656,8 @@
         "Cuisine",
         "surface 18,29 m² ; périmètre 18000 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4581,7 +4674,8 @@
         "Cuisine",
         "surface 18,29 m² ; périmètre 18000 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4598,7 +4692,8 @@
         "Cuisine",
         "surface 18,29 m² ; périmètre 18000 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4615,7 +4710,8 @@
         "Cuisine",
         "surface 18,29 m² ; périmètre 18000 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4632,7 +4728,8 @@
         "Cuisine",
         "surface 18,29 m² ; périmètre 18000 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Porte Entrée 1 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm"
+        "Porte Séjour 1 900 mm ; Porte Entrée 1 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4649,7 +4746,8 @@
         "Entrée",
         "surface 13,44 m² ; périmètre 14800 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4666,7 +4764,8 @@
         "Entrée",
         "surface 13,44 m² ; périmètre 14800 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4683,7 +4782,8 @@
         "Entrée",
         "surface 13,44 m² ; périmètre 14800 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4700,7 +4800,8 @@
         "Entrée",
         "surface 13,44 m² ; périmètre 14800 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4717,7 +4818,8 @@
         "Entrée",
         "surface 13,44 m² ; périmètre 14800 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4734,7 +4836,8 @@
         "Entrée",
         "surface 13,44 m² ; périmètre 14800 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4751,7 +4854,8 @@
         "Entrée",
         "surface 13,44 m² ; périmètre 14800 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4768,7 +4872,8 @@
         "Entrée",
         "surface 13,44 m² ; périmètre 14800 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Entrée 3 900 mm ; Porte Séjour 2 900 mm ; Porte Entrée 1 900 mm ; Porte Entrée 2 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Palier 3 900 mm"
+        "Porte Entrée 3 900 mm ; Porte Séjour 2 900 mm ; Porte Entrée 1 900 mm ; Porte Entrée 2 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Palier 3 900 mm",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4785,7 +4890,8 @@
         "WC et buanderie",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4802,7 +4908,8 @@
         "WC et buanderie",
         "surface 4,80 m² ; périmètre 9400 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4819,7 +4926,8 @@
         "WC et buanderie",
         "surface 4,80 m² ; périmètre 9400 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4836,7 +4944,8 @@
         "WC et buanderie",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4853,7 +4962,8 @@
         "WC et buanderie",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4870,7 +4980,8 @@
         "WC et buanderie",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4887,7 +4998,8 @@
         "WC et buanderie",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4904,7 +5016,8 @@
         "WC et buanderie",
         "surface 4,80 m² ; périmètre 9400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Entrée 2 900 mm ; Porte Palier 3 900 mm"
+        "Porte Entrée 2 900 mm ; Porte Palier 3 900 mm",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4921,7 +5034,8 @@
         "Escalier",
         "largeur 1000 mm ; hauteur 2700 mm",
         "1 par escalier",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4938,7 +5052,8 @@
         "Escalier",
         "largeur 1000 mm ; hauteur 2700 mm",
         "hauteur à monter ÷ hauteur de marche (au plus 180 mm)",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Rez-de-chaussée",
@@ -4955,7 +5070,8 @@
         "Escalier",
         "largeur 1000 mm ; hauteur 2700 mm",
         "contremarches − 1",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -4972,7 +5088,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -4989,7 +5106,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5006,7 +5124,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²"
+        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5023,7 +5142,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²"
+        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5040,7 +5160,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70400 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5057,7 +5178,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70400 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5074,7 +5196,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70400 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²"
+        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5091,7 +5214,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70400 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²"
+        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5108,7 +5232,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 70400 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²"
+        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5125,7 +5250,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5142,7 +5268,8 @@
         "Mur extérieur",
         "longueur 35800 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²"
+        "Fenêtre Chambre parentale 1 0,90 m² ; Fenêtre Salle de bains 1 1,20 m² ; Fenêtre Bureau 1 1,20 m² ; Fenêtre Bureau 2 1,20 m² ; Fenêtre Chambre 2 – 2 1,20 m² ; Fenêtre Chambre 2 – 1 1,20 m² ; Fenêtre Chambre parentale 2 1,20 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5159,7 +5286,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5176,7 +5304,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5193,7 +5322,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²"
+        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5210,7 +5340,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²"
+        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5227,7 +5358,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12600 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5244,7 +5376,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12600 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5261,7 +5394,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12600 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²"
+        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5278,7 +5412,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12600 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²"
+        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5295,7 +5430,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 12600 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²"
+        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5312,7 +5448,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5329,7 +5466,8 @@
         "Cloison",
         "longueur 6700 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²"
+        "Porte Chambre parentale 1 1,89 m² ; Porte Chambre 2 – 1 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5346,7 +5484,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5363,7 +5502,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5380,7 +5520,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5397,7 +5538,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5414,7 +5556,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 9800 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5431,7 +5574,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 9800 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5448,7 +5592,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 9800 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5465,7 +5610,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 9800 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5482,7 +5628,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 9800 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5499,7 +5646,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5516,7 +5664,8 @@
         "Cloison",
         "longueur 5100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5533,7 +5682,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5550,7 +5700,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5567,7 +5718,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²"
+        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5584,7 +5736,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²"
+        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5601,7 +5754,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11400 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5618,7 +5772,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11400 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5635,7 +5790,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11400 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²"
+        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5652,7 +5808,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11400 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²"
+        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5669,7 +5826,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 11400 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²"
+        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5686,7 +5844,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5703,7 +5862,8 @@
         "Cloison",
         "longueur 6100 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²"
+        "Porte Palier 1 1,89 m² ; Porte Palier 2 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5720,7 +5880,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5737,7 +5898,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5754,7 +5916,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5771,7 +5934,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5788,7 +5952,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6200 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5805,7 +5970,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6200 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5822,7 +5988,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6200 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5839,7 +6006,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6200 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5856,7 +6024,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6200 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5873,7 +6042,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5890,7 +6060,8 @@
         "Cloison",
         "longueur 3300 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5907,7 +6078,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "somme des segments de l’axe",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5924,7 +6096,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5941,7 +6114,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "union des ouvertures au-dessus du seuil",
-        "Porte Palier 3 1,89 m²"
+        "Porte Palier 3 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5958,7 +6132,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × hauteur − ouvertures déduites",
-        "Porte Palier 3 1,89 m²"
+        "Porte Palier 3 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5975,7 +6150,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -5992,7 +6168,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des faces × hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6009,7 +6186,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
-        "Porte Palier 3 1,89 m²"
+        "Porte Palier 3 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6026,7 +6204,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
-        "Porte Palier 3 1,89 m²"
+        "Porte Palier 3 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6043,7 +6222,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 6400 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
-        "Porte Palier 3 1,89 m²"
+        "Porte Palier 3 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6060,7 +6240,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6077,7 +6258,8 @@
         "Cloison",
         "longueur 3400 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
-        "Porte Palier 3 1,89 m²"
+        "Porte Palier 3 1,89 m²",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6094,7 +6276,8 @@
         "Fenêtre Chambre parentale 1, Mur extérieur",
         "largeur 900 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6111,7 +6294,8 @@
         "Fenêtre Chambre parentale 1, Mur extérieur",
         "largeur 900 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6128,7 +6312,8 @@
         "Fenêtre Chambre parentale 1, Mur extérieur",
         "largeur 900 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6145,7 +6330,8 @@
         "Fenêtre Salle de bains 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6162,7 +6348,8 @@
         "Fenêtre Salle de bains 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6179,7 +6366,8 @@
         "Fenêtre Salle de bains 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6196,7 +6384,8 @@
         "Fenêtre Bureau 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6213,7 +6402,8 @@
         "Fenêtre Bureau 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6230,7 +6420,8 @@
         "Fenêtre Bureau 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6247,7 +6438,8 @@
         "Fenêtre Bureau 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6264,7 +6456,8 @@
         "Fenêtre Bureau 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6281,7 +6474,8 @@
         "Fenêtre Bureau 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6298,7 +6492,8 @@
         "Fenêtre Chambre 2 – 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6315,7 +6510,8 @@
         "Fenêtre Chambre 2 – 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6332,7 +6528,8 @@
         "Fenêtre Chambre 2 – 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6349,7 +6546,8 @@
         "Fenêtre Chambre 2 – 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6366,7 +6564,8 @@
         "Fenêtre Chambre 2 – 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6383,7 +6582,8 @@
         "Fenêtre Chambre 2 – 1, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6400,7 +6600,8 @@
         "Fenêtre Chambre parentale 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6417,7 +6618,8 @@
         "Fenêtre Chambre parentale 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6434,7 +6636,8 @@
         "Fenêtre Chambre parentale 2, Mur extérieur",
         "largeur 1200 mm ; hauteur 1000 mm ; allège 900 mm ; hauteur dans le mur 1000 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6451,7 +6654,8 @@
         "Porte Chambre parentale 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6468,7 +6672,8 @@
         "Porte Chambre parentale 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6485,7 +6690,8 @@
         "Porte Chambre parentale 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6502,7 +6708,8 @@
         "Porte Chambre 2 – 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6519,7 +6726,8 @@
         "Porte Chambre 2 – 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6536,7 +6744,8 @@
         "Porte Chambre 2 – 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6553,7 +6762,8 @@
         "Porte Palier 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6570,7 +6780,8 @@
         "Porte Palier 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6587,7 +6798,8 @@
         "Porte Palier 1, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6604,7 +6816,8 @@
         "Porte Palier 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6621,7 +6834,8 @@
         "Porte Palier 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6638,7 +6852,8 @@
         "Porte Palier 2, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6655,7 +6870,8 @@
         "Porte Palier 3, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "1 par ouverture",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6672,7 +6888,8 @@
         "Porte Palier 3, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm",
         "largeur × hauteur dans le mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6689,7 +6906,8 @@
         "Porte Palier 3, Cloison",
         "largeur 900 mm ; hauteur 2100 mm ; allège 0 mm ; hauteur dans le mur 2100 mm ; épaisseur du mur 200 mm",
         "(2 × hauteur + largeur, + largeur si allège) × épaisseur du mur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6706,7 +6924,8 @@
         "Chambre parentale",
         "surface 15,19 m² ; périmètre 16000 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6723,7 +6942,8 @@
         "Chambre parentale",
         "surface 15,19 m² ; périmètre 16000 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6740,7 +6960,8 @@
         "Chambre parentale",
         "surface 15,19 m² ; périmètre 16000 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6757,7 +6978,8 @@
         "Chambre parentale",
         "surface 15,19 m² ; périmètre 16000 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6774,7 +6996,8 @@
         "Chambre parentale",
         "surface 15,19 m² ; périmètre 16000 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6791,7 +7014,8 @@
         "Chambre parentale",
         "surface 15,19 m² ; périmètre 16000 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6808,7 +7032,8 @@
         "Chambre parentale",
         "surface 15,19 m² ; périmètre 16000 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6825,7 +7050,8 @@
         "Chambre parentale",
         "surface 15,19 m² ; périmètre 16000 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Porte Chambre parentale 1 900 mm"
+        "Porte Séjour 1 900 mm ; Porte Chambre parentale 1 900 mm",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6842,7 +7068,8 @@
         "Chambre 2",
         "surface 15,68 m² ; périmètre 16200 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6859,7 +7086,8 @@
         "Chambre 2",
         "surface 15,68 m² ; périmètre 16200 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6876,7 +7104,8 @@
         "Chambre 2",
         "surface 15,68 m² ; périmètre 16200 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6893,7 +7122,8 @@
         "Chambre 2",
         "surface 15,68 m² ; périmètre 16200 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6910,7 +7140,8 @@
         "Chambre 2",
         "surface 15,68 m² ; périmètre 16200 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6927,7 +7158,8 @@
         "Chambre 2",
         "surface 15,68 m² ; périmètre 16200 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6944,7 +7176,8 @@
         "Chambre 2",
         "surface 15,68 m² ; périmètre 16200 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6961,7 +7194,8 @@
         "Chambre 2",
         "surface 15,68 m² ; périmètre 16200 mm",
         "périmètre − largeur des portes de la pièce",
-        "Baie Séjour 3 2400 mm ; Porte Séjour 2 900 mm ; Porte Chambre 2 – 1 900 mm"
+        "Baie Séjour 3 2400 mm ; Porte Séjour 2 900 mm ; Porte Chambre 2 – 1 900 mm",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6978,7 +7212,8 @@
         "Salle de bains",
         "surface 8,68 m² ; périmètre 11800 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -6995,7 +7230,8 @@
         "Salle de bains",
         "surface 8,68 m² ; périmètre 11800 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7012,7 +7248,8 @@
         "Salle de bains",
         "surface 8,68 m² ; périmètre 11800 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7029,7 +7266,8 @@
         "Salle de bains",
         "surface 8,68 m² ; périmètre 11800 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7046,7 +7284,8 @@
         "Salle de bains",
         "surface 8,68 m² ; périmètre 11800 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7063,7 +7302,8 @@
         "Salle de bains",
         "surface 8,68 m² ; périmètre 11800 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7080,7 +7320,8 @@
         "Salle de bains",
         "surface 8,68 m² ; périmètre 11800 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7097,7 +7338,8 @@
         "Salle de bains",
         "surface 8,68 m² ; périmètre 11800 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Séjour 1 900 mm ; Porte Entrée 1 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Palier 1 900 mm"
+        "Porte Séjour 1 900 mm ; Porte Entrée 1 900 mm ; Porte Chambre parentale 1 900 mm ; Porte Palier 1 900 mm",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7114,7 +7356,8 @@
         "Bureau",
         "surface 8,99 m² ; périmètre 12000 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7131,7 +7374,8 @@
         "Bureau",
         "surface 8,99 m² ; périmètre 12000 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7148,7 +7392,8 @@
         "Bureau",
         "surface 8,99 m² ; périmètre 12000 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7165,7 +7410,8 @@
         "Bureau",
         "surface 8,99 m² ; périmètre 12000 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7182,7 +7428,8 @@
         "Bureau",
         "surface 8,99 m² ; périmètre 12000 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7199,7 +7446,8 @@
         "Bureau",
         "surface 8,99 m² ; périmètre 12000 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7216,7 +7464,8 @@
         "Bureau",
         "surface 8,99 m² ; périmètre 12000 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7233,7 +7482,8 @@
         "Bureau",
         "surface 8,99 m² ; périmètre 12000 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Palier 2 900 mm"
+        "Porte Palier 2 900 mm",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7250,7 +7500,8 @@
         "Palier",
         "surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7267,7 +7518,8 @@
         "Palier",
         "surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7284,7 +7536,8 @@
         "Palier",
         "surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7301,7 +7554,8 @@
         "Palier",
         "surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7318,7 +7572,8 @@
         "Palier",
         "surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7335,7 +7590,8 @@
         "Palier",
         "surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7352,7 +7608,8 @@
         "Palier",
         "surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7369,7 +7626,8 @@
         "Palier",
         "surface 13,44 m² ; périmètre 14800 mm ; trémies 5,06 m²",
         "périmètre − largeur des portes de la pièce",
-        "Porte Entrée 3 900 mm ; Porte Séjour 2 900 mm ; Porte Entrée 1 900 mm ; Porte Entrée 2 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Palier 3 900 mm"
+        "Porte Entrée 3 900 mm ; Porte Séjour 2 900 mm ; Porte Entrée 1 900 mm ; Porte Entrée 2 900 mm ; Porte Chambre 2 – 1 900 mm ; Porte Palier 1 900 mm ; Porte Palier 2 900 mm ; Porte Palier 3 900 mm",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7386,7 +7644,8 @@
         "Dressing",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7403,7 +7662,8 @@
         "Dressing",
         "surface 4,80 m² ; périmètre 9400 mm",
         "longueur du contour tracé",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7420,7 +7680,8 @@
         "Dressing",
         "surface 4,80 m² ; périmètre 9400 mm",
         "trémies d’escalier dans la pièce",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7437,7 +7698,8 @@
         "Dressing",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface au tracé − trémies",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7454,7 +7716,8 @@
         "Dressing",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface nette − partie sous 1800 mm de hauteur",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7471,7 +7734,8 @@
         "Dressing",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7488,7 +7752,8 @@
         "Dressing",
         "surface 4,80 m² ; périmètre 9400 mm",
         "surface nette",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7505,7 +7770,8 @@
         "Dressing",
         "surface 4,80 m² ; périmètre 9400 mm",
         "périmètre − largeur des portes de la pièce",
-        "Porte Entrée 2 900 mm ; Porte Palier 3 900 mm"
+        "Porte Entrée 2 900 mm ; Porte Palier 3 900 mm",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7522,7 +7788,8 @@
         "Toiture",
         "surface en plan 97,96 m² ; pente 35,0°",
         "surface au sol, débord compris",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7539,7 +7806,8 @@
         "Toiture",
         "surface en plan 97,96 m² ; pente 35,0°",
         "surface en plan ÷ cos(pente)",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7556,7 +7824,8 @@
         "Toiture",
         "surface en plan 97,96 m² ; pente 35,0°",
         "longueur du faîtage",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7573,7 +7842,8 @@
         "Toiture",
         "surface en plan 97,96 m² ; pente 35,0°",
         "longueur des égouts",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7590,7 +7860,8 @@
         "Toiture",
         "surface en plan 97,96 m² ; pente 35,0°",
         "longueur réelle des arêtiers",
-        ""
+        "",
+        "Validé"
       ],
       [
         "Étage 1",
@@ -7607,7 +7878,8 @@
         "Toiture",
         "surface en plan 97,96 m² ; pente 35,0°",
         "nombre de pignons",
-        ""
+        "",
+        "Validé"
       ]
     ]
   },
