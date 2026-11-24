@@ -658,17 +658,24 @@ function withPascalQuantities(measurements: Measurements, quantities: PascalQuan
 
 export function computeBuildingMeasurements(
   document: Pick<FabricsDocument, 'elements' | 'levels' | 'pascalQuantities'>,
+  /**
+   * Recalcul ciblé (M21, 21.5) : métrés déjà calculés d'un niveau, repris tels quels. Seuls les
+   * niveaux absents de cette table sont recalculés.
+   */
+  reuse?: ReadonlyMap<string, Measurements>,
 ): BuildingMeasurements {
   const voids = collectStairVoids(document.elements, document.levels)
   // Murs et ouvertures sous leur nom affiché (automatique ou tapé) : les mêmes que dans les calques.
   const elements = withDisplayNames(document.elements)
   const levels = (document.levels ?? []).map((level) => ({
     level,
-    measurements: withPascalQuantities(
-      computeMeasurements(elementsOfLevel(elements, level.id), document.levels, voids.filter((v) => v.levelId === level.id)),
-      document.pascalQuantities,
-      level.id,
-    ),
+    measurements:
+      reuse?.get(level.id) ??
+      withPascalQuantities(
+        computeMeasurements(elementsOfLevel(elements, level.id), document.levels, voids.filter((v) => v.levelId === level.id)),
+        document.pascalQuantities,
+        level.id,
+      ),
   }))
   return { levels, total: sumMeasurements(levels.map((l) => l.measurements)), refs: buildReferences(document) }
 }

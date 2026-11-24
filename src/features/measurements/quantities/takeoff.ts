@@ -66,18 +66,19 @@ function distanceToOutline(x: number, y: number, points: readonly number[]): num
 }
 
 /**
- * Ouvertures qui partent du sol (allège 0) posées sur le contour d'une pièce : leur centre, sur l'axe
+ * Ouvertures qui partent du sol (allège 0) posées sur le contour d'une pièce du même niveau : leur centre, sur l'axe
  * du mur, est à moins d'une demi-épaisseur de mur (+ 1 mm) du contour. La pièce peut être tracée à
  * l'axe des murs ou sur leurs faces.
  */
 export function floorOpeningsOfRoom(
-  room: Pick<RoomElement, 'points'>,
+  room: Pick<RoomElement, 'points' | 'levelId'>,
   openings: readonly OpeningElement[],
   wallById: ReadonlyMap<string, WallElement>,
 ): OpeningElement[] {
   return openings.filter((opening) => {
     const wall = wallById.get(opening.wallId)
-    if (!wall || opening.sillHeight !== 0) return false
+    // Même niveau seulement : une porte du dessous, à la même place en plan, n'est pas dans la pièce.
+    if (!wall || opening.sillHeight !== 0 || (opening.levelId ?? null) !== (room.levelId ?? null)) return false
     const c = openingCentre(opening, wall)
     return distanceToOutline(c.x, c.y, room.points) <= wall.thickness / 2 + 1
   })

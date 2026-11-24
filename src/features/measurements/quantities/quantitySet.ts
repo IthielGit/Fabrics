@@ -29,6 +29,11 @@ export interface QuantityInput {
   scene?: PlanScene | null
   /** Métrés déjà calculés pour ce document (évite de les refaire). */
   building?: BuildingMeasurements
+  /**
+   * Recalcul ciblé (21.5) : seuls les éléments de cet ensemble ont leurs quantités recalculées
+   * (dalles et éléments non pris en charge de la scène : toujours recalculés). Absent : tout.
+   */
+  only?: ReadonlySet<string>
 }
 
 /** Les deux familles de quantités d'un plan. */
@@ -45,7 +50,9 @@ export function computeQuantities(input: QuantityInput): QuantitySet {
         drawnSlabLevels: new Set(slabs.flatMap((slab) => (slab.levelId ? [slab.levelId] : []))),
       })
     : []
-  const geometric = geometricQuantities(building, slabs, levelSlabList)
+  const all = geometricQuantities(building, slabs, levelSlabList)
+  const only = input.only
+  const geometric = only ? all.filter((q) => q.category === 'slab' || only.has(q.elementIds[0])) : all
   const takeoff = takeoffQuantities(geometric, {
     building,
     elements: input.document.elements,

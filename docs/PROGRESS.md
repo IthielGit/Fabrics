@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M21 Quantitatif automatique et traçabilité (gate G4), feu vert de l'utilisateur le 2026-11-23 ; **21.0 fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) ; **21.1 à 21.4 faits le 2026-11-23** ; en cours : 21.3 à 21.8 (demande de l'utilisateur : tout M21, essai dans le navigateur à la fin). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M21 Quantitatif automatique et traçabilité (gate G4), feu vert de l'utilisateur le 2026-11-23 ; **21.0 fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) ; **21.1 à 21.4 faits le 2026-11-23, 21.5 le 2026-11-24** ; en cours : 21.3 à 21.8 (demande de l'utilisateur : tout M21, essai dans le navigateur à la fin). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-24 — M21 · 21.5 : recalcul ciblé
+- `quantities/incremental.ts` : après une modification, seules les quantités des éléments touchés sont recalculées, les autres sont reprises telles quelles (même objet). Éléments touchés : ajoutés, supprimés ou changés (empreinte de leurs données et de leur nom affiché), puis leurs dépendants (un mur → ses ouvertures, les murs qui le touchent, les pièces de son niveau ; une ouverture → son mur et les pièces du niveau ; escalier, toiture, plateforme → les pièces). Les métrés ne sont refaits que pour les niveaux concernés (`computeBuildingMeasurements` accepte les niveaux à reprendre). Niveaux ou seuils de métré changés : recalcul complet. Dalles et éléments non pris en charge : toujours recalculés.
+- Panneau Métrés : le bloc Quantitatif utilise ce recalcul ciblé (`createQuantityTracker`).
+- Tests (`incremental.test.ts`) : pour chaque modification (mur allongé, fenêtre ajoutée, mur supprimé, pièce renommée, suite de modifications), le recalcul ciblé donne **exactement** le même quantitatif qu'un recalcul complet ; les murs des autres niveaux ne sont pas recalculés.
+- **Défaut corrigé, trouvé par ces tests** : les plinthes d'une pièce déduisaient aussi les portes du niveau du dessus placées au même endroit en plan. Seules les portes du même niveau sont déduites maintenant. **Écart voulu de la baseline** : plinthes du quantitatif Exécution des deux plans d'exemple (ex. Séjour 16 800 → 18 600 mm). Référence mise à jour dans un commit séparé.
+- Build, lint, tests OK.
 
 ### 2026-11-23 — M21 · 21.4 : statut des quantités
 - `quantities/status.ts` : chaque quantité a un statut et une raison : **données manquantes** (mur de hauteur nulle, ouverture hors de son mur — rejetée, EDGE-01 —, escalier sans niveau au-dessus, toiture impossible), **provisoire** (ouverture plus haute que le mur — seule la partie dans le mur est déduite —, mur qui porte une ouverture rejetée, escalier trop court, pan de toiture découpé ou recouvert, trémie qui déborde), **non pris en charge** (élément de la scène que le métré ne quantifie pas : une ligne « Élément non pris en charge » par élément, D21-5), **validé** sinon.

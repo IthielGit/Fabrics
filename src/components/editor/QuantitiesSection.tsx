@@ -1,7 +1,7 @@
 import { ChevronDown } from 'lucide-react'
 import { Fragment, useMemo, useState } from 'react'
 import type { BuildingMeasurements } from '../../features/measurements/measurements'
-import { computeQuantities } from '../../features/measurements/quantities/quantitySet'
+import { createQuantityTracker } from '../../features/measurements/quantities/incremental'
 import { deductionsText, elementName, inputsText, ruleText, statusText, summaryText, valueText } from '../../features/measurements/quantities/quantityTable'
 import type { QuantityStatus } from '../../features/measurements/quantities/status'
 import { fr } from '../../i18n/fr'
@@ -27,10 +27,9 @@ export default function QuantitiesSection({ building, levelId }: { building: Bui
   const scene = useEditorStore((state) => state.project?.scene ?? null)
   const setSelection = useEditorStore((state) => state.setSelection)
   const [openKey, setOpenKey] = useState<string | null>(null)
-  const set = useMemo(
-    () => (document ? computeQuantities({ document, scene, building }) : null),
-    [document, scene, building],
-  )
+  // Recalcul ciblé (M21, 21.5) : seules les quantités des éléments touchés sont refaites.
+  const [track] = useState(createQuantityTracker)
+  const set = useMemo(() => (document ? track(document, scene).cache.set : null), [track, document, scene])
   const quantities = set?.takeoff ?? []
   const t = fr.measurements.quantities
   const levelNames = new Map(building.levels.map((entry) => [entry.level.id, entry.level.name]))

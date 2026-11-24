@@ -168,6 +168,11 @@ describe('règles versionnées (M21, 21.2)', () => {
     expect(find(takeoff, 'room.ceilingArea', 'room').value).toBe(3800 * 2800)
     // La fenêtre (allège) et la porte d'une autre pièce ne sont pas déduites.
     expect(find(takeoff, 'room.skirtingLength', 'room').value).toBe(2 * (3800 + 2800) - 900)
+    // La même pièce à l'étage, au-dessus de la porte : la porte du dessous n'est pas déduite.
+    const upper = { ...level, id: 'upper', elevation: 3000 }
+    const roomUp = { ...room, id: 'roomUp', levelId: 'upper' } as RoomElement
+    const both = computeQuantities({ document: { ...plan([south, north, door, window, roomUp]), levels: [level, upper] } })
+    expect(find(both.takeoff, 'room.skirtingLength', 'roomUp').value).toBe(2 * (3800 + 2800))
   })
 
   it('les réglages enregistrés : valeurs par défaut, valeurs invalides ignorées', () => {
