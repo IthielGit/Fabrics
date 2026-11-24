@@ -74,3 +74,23 @@ lignes (matériau, matériel, main-d'œuvre), voir la version. Pas de montant ca
 ## Modèle de sous-lot
 
 `/model opus` (décision de la roadmap pour 23.1).
+
+## Mise à jour 2026-11-24 : espaces partagés (décision D23-7)
+
+Le modèle de la section « Proposition de modèle » est remplacé par le suivant :
+
+- **`workspaces`** : `id`, `name`, `created_at`, `created_by`.
+- **`workspace_members`** : `workspace_id`, `user_id`, `role` (`admin` ou `member`), `joined_at`, `left_at` (vide tant que le membre est présent).
+- **`price_libraries`** : `workspace_id` (et non plus `owner_id`), `name`, `version`, `currency` = `'MGA'`, `vat_rate` = 20, `created_at`.
+- **`price_items`** : `workspace_id`, `library_id`, `kind`, `code`, `category`, `designation`, `unit`, `unit_price_ar` (dixièmes d'Ariary), `price_basis`, `supplier`, `region`, `effective_date`, `source_row`, `updated_by`, `updated_at`.
+- **`price_item_history`** : `item_id`, `unit_price_ar`, `changed_by`, `changed_at` (une ligne par modification, valeur précédente conservée).
+
+**Règles de sécurité (RLS)** :
+- Lecture : tout membre de l'espace, anciens membres exclus. Les anciens membres gardent seulement leurs modifications dans l'historique.
+- Écriture (ajout, modification, suppression de lignes) : admins de l'espace seulement.
+- Gestion des membres : admins seulement.
+- Aucune copie personnelle : pas de fonction de duplication de bibliothèque pour un membre.
+
+**Page 23.1** : affiche l'espace courant, la liste des membres (pour les admins : inviter et retirer), et la bibliothèque. Les membres voient les prix sans pouvoir les modifier.
+
+**Questions levées** : qui voit les prix et qui les modifie (D23-7). Restent ouverts : les règles de partage des devis hors espace (D23-8, à venir).

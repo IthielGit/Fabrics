@@ -57,3 +57,17 @@ Arrondi **ligne par ligne**, confirmé le 2026-11-24 (« par ligne »).
 
 Aucun point bloquant pour 23.1. Les décisions de 23.0 restant à prendre sont celles du point D23-3
 (règles de prix de vente), reportées par l'utilisateur.
+
+## D23-7 · Bibliothèque de prix partagée (décidé le 2026-11-24)
+
+- **Une bibliothèque appartient à un espace** (équipe ou entreprise), pas à un compte personnel.
+- **Deux rôles** :
+  - **Admin** : seul rôle qui modifie les prix ; gère aussi les membres.
+  - **Membre** : consulte tous les prix, sans les modifier.
+- **Tout le monde voit les prix** de l'espace, y compris les membres.
+- **Un membre qui quitte l'espace** : ses modifications restent dans la bibliothèque, avec son nom dans l'historique.
+- **Pas de copie personnelle** : un membre ne peut pas dupliquer la bibliothèque pour travailler à part.
+- **Historique par ligne** : chaque modification garde son auteur et sa date ; l'ancienne valeur reste consultable.
+
+Conséquence : la proposition précédente (« les invités voient les quantités sans les prix ») ne s'applique
+pas aux prix de la bibliothèque de l'espace. Les règles pour les projets partagés hors espace restent à décider.
