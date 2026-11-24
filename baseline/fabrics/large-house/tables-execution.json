@@ -5707,7 +5707,7 @@
   {
     "id": "quantities",
     "title": "Quantitatif",
-    "note": "Quantitatif complet : 576 quantités, toutes validées. Chaque quantité montre ses éléments sources, les dimensions utilisées, la formule, les déductions et la règle de métré avec sa version. Valeurs exactes, arrondies à l’affichage (mm entiers, m² à 2 décimales, m³ à 3).",
+    "note": "Quantitatif incomplet, à ne pas utiliser tel quel : 21 provisoire(s), 0 avec données manquantes, 0 non pris en charge. Chaque quantité montre ses éléments sources, les dimensions utilisées, la formule, les déductions et la règle de métré avec sa version. Valeurs exactes, arrondies à l’affichage (mm entiers, m² à 2 décimales, m³ à 3).",
     "columns": [
       {
         "header": "Niveau",
@@ -5847,7 +5847,7 @@
         "longueur 43200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 84800 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -5865,7 +5865,7 @@
         "longueur 43200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 84800 mm",
         "longueur des faces × hauteur",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -5883,7 +5883,7 @@
         "longueur 43200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 84800 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
         "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Porte Cuisine 1 1,89 m² ; Fenêtre WC 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Fenêtre Séjour 3 1,20 m² ; Baie Séjour 4 5,16 m² ; Porte Hall 3 1,89 m² ; Fenêtre Buanderie 1 1,20 m² ; Fenêtre WC 2 1,20 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -5901,7 +5901,7 @@
         "longueur 43200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 84800 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
         "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Porte Cuisine 1 1,89 m² ; Fenêtre WC 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Fenêtre Séjour 3 1,20 m² ; Baie Séjour 4 5,16 m² ; Porte Hall 3 1,89 m² ; Fenêtre Buanderie 1 1,20 m² ; Fenêtre WC 2 1,20 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -5919,7 +5919,7 @@
         "longueur 43200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 84800 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
         "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Porte Cuisine 1 1,89 m² ; Fenêtre WC 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Fenêtre Séjour 3 1,20 m² ; Baie Séjour 4 5,16 m² ; Porte Hall 3 1,89 m² ; Fenêtre Buanderie 1 1,20 m² ; Fenêtre WC 2 1,20 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -5937,7 +5937,7 @@
         "longueur 43200 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -5955,7 +5955,7 @@
         "longueur 43200 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
         "Fenêtre Séjour 1 1,20 m² ; Fenêtre Cuisine 1 1,20 m² ; Porte Cuisine 1 1,89 m² ; Fenêtre WC 1 0,36 m² ; Fenêtre Séjour 2 1,20 m² ; Fenêtre Séjour 3 1,20 m² ; Baie Séjour 4 5,16 m² ; Porte Hall 3 1,89 m² ; Fenêtre Buanderie 1 1,20 m² ; Fenêtre WC 2 1,20 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -6837,7 +6837,7 @@
         "longueur 18600 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 37000 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -6855,7 +6855,7 @@
         "longueur 18600 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 37000 mm",
         "longueur des faces × hauteur",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -6873,7 +6873,7 @@
         "longueur 18600 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 37000 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
         "Porte Garage 1 11,00 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -6891,7 +6891,7 @@
         "longueur 18600 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 37000 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
         "Porte Garage 1 11,00 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -6909,7 +6909,7 @@
         "longueur 18600 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 37000 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
         "Porte Garage 1 11,00 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -6927,7 +6927,7 @@
         "longueur 18600 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -6945,7 +6945,7 @@
         "longueur 18600 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
         "Porte Garage 1 11,00 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -7035,7 +7035,7 @@
         "longueur 13200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 26200 mm",
         "longueur des deux faces, onglets compris, sans la part cachée par un mur en T",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -7053,7 +7053,7 @@
         "longueur 13200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 26200 mm",
         "longueur des faces × hauteur",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -7071,7 +7071,7 @@
         "longueur 13200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 26200 mm",
         "longueur des faces × hauteur − 2 × ouvertures",
         "Baie Véranda 1 6,45 m² ; Baie Véranda 3 9,46 m² ; Baie Véranda 2 6,45 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -7089,7 +7089,7 @@
         "longueur 13200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 26200 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil enduits",
         "Baie Véranda 1 6,45 m² ; Baie Véranda 3 9,46 m² ; Baie Véranda 2 6,45 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -7107,7 +7107,7 @@
         "longueur 13200 mm ; hauteur 2500 mm ; épaisseur 200 mm ; longueur des faces 26200 mm",
         "longueur des faces × hauteur − 2 × ouvertures au-dessus du seuil peinture",
         "Baie Véranda 1 6,45 m² ; Baie Véranda 3 9,46 m² ; Baie Véranda 2 6,45 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -7125,7 +7125,7 @@
         "longueur 13200 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "longueur × épaisseur × hauteur, raccords en T comptés une fois",
         "",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
@@ -7143,7 +7143,7 @@
         "longueur 13200 mm ; hauteur 2500 mm ; épaisseur 200 mm",
         "volume brut − ouvertures déduites × épaisseur",
         "Baie Véranda 1 6,45 m² ; Baie Véranda 3 9,46 m² ; Baie Véranda 2 6,45 m²",
-        "Validé"
+        "Provisoire : raccord de trois murs ou plus : la pointe d’angle peut être comptée deux fois (écart mesuré avec IfcOpenShell jusqu’à 0,6 %)"
       ],
       [
         "Rez-de-chaussée",
