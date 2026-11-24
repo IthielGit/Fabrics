@@ -79,3 +79,8 @@ pas aux prix de la bibliothèque de l'espace. Les règles pour les projets parta
 - Le **lien public en lecture** n'affiche jamais de prix.
 
 Point non tranché par cette réponse : le devis appartient-il à l'espace (proposition : oui, pour qu'un départ ne bloque pas les montants) ou à la personne qui l'a créé ? À confirmer avant 23.5.
+
+## D23-9 · Propriétaire du devis (décidé le 2026-11-24)
+
+- **Le devis appartient à l'espace**, et non à la personne qui l'a créé. Un départ ne bloque donc ni les montants ni les exports.
+- Les admins de l'espace peuvent gérer les devis ; les membres voient les devis de l'espace selon les règles de D23-7 et D23-8.
