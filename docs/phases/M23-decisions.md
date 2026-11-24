@@ -71,3 +71,11 @@ Aucun point bloquant pour 23.1. Les décisions de 23.0 restant à prendre sont c
 
 Conséquence : la proposition précédente (« les invités voient les quantités sans les prix ») ne s'applique
 pas aux prix de la bibliothèque de l'espace. Les règles pour les projets partagés hors espace restent à décider.
+
+## D23-8 · Devis partagé hors de l'espace (décidé le 2026-11-24, option A)
+
+- Une personne **hors de l'espace** qui reçoit un projet voit les **quantités, les postes et les descriptions**, **sans les prix ni les montants**.
+- Un montant ne sort de l'application que par un **export PDF ou XLSX** créé par un **admin** de l'espace. L'export porte la date des prix.
+- Le **lien public en lecture** n'affiche jamais de prix.
+
+Point non tranché par cette réponse : le devis appartient-il à l'espace (proposition : oui, pour qu'un départ ne bloque pas les montants) ou à la personne qui l'a créé ? À confirmer avant 23.5.
