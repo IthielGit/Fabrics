@@ -16,6 +16,7 @@ import { exportMetres } from './exportMetres'
 import MetresWarningList from './MetresWarningList'
 import SiteMeasuresTable from './SiteMeasuresTable'
 import SlabsTable from './SlabsTable'
+import QuantitiesSection from './QuantitiesSection'
 import TakeoffRulesSection from './TakeoffRulesSection'
 import WallLayersTable from './WallLayersTable'
 
@@ -590,6 +591,7 @@ export default function MeasurementsPanel() {
       )}
         </>
       )}
+      <QuantitiesSection building={building} levelId={active?.level.id ?? null} />
       <TakeoffRulesSection />
     </section>
   )

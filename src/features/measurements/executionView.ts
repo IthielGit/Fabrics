@@ -20,9 +20,12 @@ export function buildExecutionTables(
   labels: CsvLabels,
   furniture: readonly FurnitureCsvRow[],
   execution: ExecutionLabels,
+  /** Tableaux ajoutés avant le rappel des règles (quantitatif traçable, M21). */
+  extra: readonly MetresTable[] = [],
 ): MetresTable[] {
   return [
     ...buildMetresTables(building, labels, furniture),
+    ...extra,
     {
       id: 'rules',
       title: execution.rulesTitle,

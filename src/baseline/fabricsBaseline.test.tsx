@@ -118,12 +118,12 @@ describe.each(FIXTURES)('baseline $key ($route)', ({ key, create }) => {
   })
 
   it.each<MetresVersion>(['client', 'execution'])('tableaux, CSV et XLSX %s', async (version) => {
-    const { building, furniture } = prepareMetres(project, {
+    const { building, furniture, quantities } = prepareMetres(project, {
       scope: 'building',
       includeFurniture: version === 'execution',
       activeLevelId: null,
     })
-    const tables = metresTables(building, furniture, version)
+    const tables = metresTables(building, furniture, version, 'building', quantities)
     await expect(json(tables)).toMatchFileSnapshot(file(`tables-${version}.json`))
 
     const labels = csvLabels(version)

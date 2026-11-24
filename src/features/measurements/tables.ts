@@ -9,7 +9,8 @@ export interface MetresColumn {
 }
 
 /** Unité d'une grandeur : sert au format de cellule (mm entiers, m² et m³ à 2 décimales) dans Excel. */
-export type MetresUnit = 'mm' | 'm2' | 'm3' | 'count' | 'deg'
+/** `m3p` : volume au millième (quantitatif, D21-6). */
+export type MetresUnit = 'mm' | 'm2' | 'm3' | 'm3p' | 'count' | 'deg'
 
 /** Une grandeur : le texte affiché (virgule décimale, arrondi) et sa valeur exacte, avant arrondi. */
 export interface MetresNumber {

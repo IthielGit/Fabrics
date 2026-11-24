@@ -35,6 +35,8 @@ const STYLE = {
   totalDecimal: 10,
   totalCount: 11,
   label: 12,
+  thousandth: 13,
+  totalThousandth: 14,
 } as const
 
 /** Retire les caractères interdits en XML 1.0 et échappe les cinq caractères réservés. */
@@ -83,6 +85,7 @@ const numberCell = (ref: string, value: number, style: number, formula?: string)
 const numberStyle = (unit: MetresUnit, total: boolean): number => {
   if (unit === 'mm') return total ? STYLE.totalMm : STYLE.mm
   if (unit === 'count') return total ? STYLE.totalCount : STYLE.count
+  if (unit === 'm3p') return total ? STYLE.totalThousandth : STYLE.thousandth
   return total ? STYLE.totalDecimal : STYLE.decimal
 }
 
@@ -195,6 +198,7 @@ function infoSheet(info: XlsxInfo, name: string): SheetXml {
 const STYLES_XML =
   `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
   `<styleSheet xmlns="${NS}">` +
+  `<numFmts count="1"><numFmt numFmtId="164" formatCode="0.000"/></numFmts>` +
   `<fonts count="5">` +
   `<font><sz val="10"/><color rgb="FF1A1A1A"/><name val="Calibri"/><family val="2"/></font>` +
   `<font><b/><sz val="10"/><color rgb="FF1A1A1A"/><name val="Calibri"/><family val="2"/></font>` +
@@ -208,7 +212,7 @@ const STYLES_XML =
   `<border><left/><right/><top/><bottom style="thin"><color rgb="FF1A1A1A"/></bottom><diagonal/></border>` +
   `<border><left/><right/><top style="thin"><color rgb="FF1A1A1A"/></top><bottom/><diagonal/></border></borders>` +
   `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>` +
-  `<cellXfs count="13">` +
+  `<cellXfs count="15">` +
   `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>` + // 0 texte
   `<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>` + // 1 titre
   `<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/>` + // 2 note
@@ -222,6 +226,8 @@ const STYLES_XML =
   `<xf numFmtId="2" fontId="1" fillId="0" borderId="2" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>` + // 10 total décimal
   `<xf numFmtId="1" fontId="1" fillId="0" borderId="2" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>` + // 11 total nombre
   `<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>` + // 12 intitulé
+  `<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>` + // 13 m³ au millième
+  `<xf numFmtId="164" fontId="1" fillId="0" borderId="2" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>` + // 14 total m³ au millième
   `</cellXfs>` +
   `<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>` +
   `</styleSheet>`

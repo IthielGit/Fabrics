@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M21 Quantitatif automatique et traçabilité (gate G4), feu vert de l'utilisateur le 2026-11-23 ; **21.0 fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) ; **21.1 et 21.2 faits le 2026-11-23** ; en cours : 21.3 à 21.8 (demande de l'utilisateur : tout M21, essai dans le navigateur à la fin). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M21 Quantitatif automatique et traçabilité (gate G4), feu vert de l'utilisateur le 2026-11-23 ; **21.0 fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) ; **21.1 à 21.3 faits le 2026-11-23** ; en cours : 21.3 à 21.8 (demande de l'utilisateur : tout M21, essai dans le navigateur à la fin). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-23 — M21 · 21.3 : traçabilité
+- `quantities/trace.ts` : chaque quantité porte sa trace (éléments sources sous leur nom affiché, dimensions utilisées, déductions — ouvertures déduites ou gardées sous le seuil, union quand elles se chevauchent, portes des plinthes, murs du dessous et trémies des dalles). Règle et version : déjà sur la quantité (21.2).
+- Tableau « Quantitatif » (`quantities/quantityTable.ts`) : une ligne par quantité de métré avec niveau, élément, quantité, valeur, unité, règle (et seuil), version, sources, dimensions, formule, déductions. Ajouté aux exports **Exécution** (CSV, Excel — nouvel onglet —, PDF). m³ au millième (D21-6) : nouveau format Excel `0.000`.
+- Panneau Métrés : bloc « Quantitatif » (`QuantitiesSection.tsx`) ; un clic sur une ligne ouvre son détail et sélectionne l'élément.
+- **Écart voulu de la baseline** : exports Exécution (nouvel onglet / tableau « Quantitatif ») et styles Excel de tous les classeurs (format `0.000` ajouté). Aucun chiffre existant ne change. Référence mise à jour dans un commit séparé.
+- Tests : trace du mur témoin G4, ouverture sous le seuil, union, tableau (valeurs arrondies), chaque quantité a une source. Build, lint OK.
 
 ### 2026-11-23 — M21 · 21.2 : règles versionnées
 - `quantities/rules.ts` : jeu de règles « avant-métré à la française » version `fr-2026.1` (géométrie : `geo-2026.1`) ; chaque quantité porte sa règle (identifiant, version, seuil appliqué).

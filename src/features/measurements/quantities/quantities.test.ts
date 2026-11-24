@@ -10,7 +10,10 @@ import { computeBuildingMeasurements, type Measurements } from '../measurements'
 import { GEOMETRY_VERSION, RULESET_VERSION, takeoffSettingsOf } from './rules'
 import { computeQuantities, sumQuantity } from './quantitySet'
 import { revealPerimeter } from './takeoff'
-import type { QuantityCode, QuantityResult } from './types'
+import { buildQuantityTable } from './quantityTable'
+import type { TracedQuantity } from './trace'
+import type { QuantityCode } from './types'
+import { fr } from '../../../i18n/fr'
 
 const level = createLevel('RDC', 0, 3000, 200)
 const BASE = { rotation: 0, opacity: 1, locked: false, hidden: false, x: 0, y: 0 }
@@ -44,7 +47,7 @@ function g4Wall() {
   return { wall, door, document: plan([wall, door]) }
 }
 
-const find = (list: readonly QuantityResult[], code: QuantityCode, id: string) =>
+const find = (list: readonly TracedQuantity[], code: QuantityCode, id: string) =>
   list.find((q) => q.code === code && q.elementIds[0] === id)!
 
 describe('quantités géométriques et de métré (M21, 21.1)', () => {
@@ -63,7 +66,8 @@ describe('quantités géométriques et de métré (M21, 21.1)', () => {
   it('chaque quantité a une famille, une grandeur, un niveau, ses sources et sa règle versionnée', () => {
     const { wall, document } = g4Wall()
     const { geometric, takeoff } = computeQuantities({ document })
-    expect(find(geometric, 'wall.length', wall.id)).toEqual({
+    const { trace: _trace, ...length } = find(geometric, 'wall.length', wall.id)
+    expect(length).toEqual({
       key: `geometric:wall.length:${wall.id}`,
       family: 'geometric',
       category: 'wall',
@@ -239,5 +243,68 @@ describe.each([
     const all = [...geometric, ...takeoff]
     expect(new Set(all.map((q) => q.key)).size).toBe(all.length)
     expect(all.every((q) => q.levelId !== null && levelIds.has(q.levelId))).toBe(true)
+  })
+})
+
+describe('traçabilité (M21, 21.3)', () => {
+  it('mur témoin G4 : sources, dimensions, déductions et règle', () => {
+    const { wall, door, document } = g4Wall()
+    const net = computeQuantities({ document }).takeoff.find((q) => q.code === 'wall.netArea')!
+    expect(net.trace.sources).toEqual([{ id: wall.id, name: 'Mur isolé' }]) // nom affiché, comme dans les calques
+    expect(net.trace.inputs).toEqual([
+      { name: 'length', value: 5000, dimension: 'length' },
+      { name: 'height', value: 3000, dimension: 'length' },
+      { name: 'thickness', value: 200, dimension: 'length' },
+    ])
+    expect(net.trace.deductions).toEqual([{ elementId: door.id, name: 'door', value: 1_890_000, dimension: 'area', deducted: true }])
+    expect(net.trace.union).toBe(false)
+    expect(net.rule.id).toBe('takeoff.wall.netArea')
+  })
+
+  it('ouverture sous le seuil : visible dans la trace, marquée non déduite', () => {
+    const wall = wallOf([0, 0, 5000, 0])
+    const small = openingOn(wall, 'window', 1000, 600, 600, 1200)
+    const { geometric, takeoff } = computeQuantities({ document: plan([wall, small], { thresholds: { masonry: 500_000 } }) })
+    expect(find(takeoff, 'wall.netArea', wall.id).trace.deductions[0]).toMatchObject({ elementId: small.id, deducted: false })
+    expect(find(geometric, 'wall.netArea', wall.id).trace.deductions[0]).toMatchObject({ elementId: small.id, deducted: true })
+  })
+
+  it('ouvertures qui se chevauchent : la trace le dit (union)', () => {
+    const wall = wallOf([0, 0, 4000, 0])
+    const a = openingOn(wall, 'window', 1400, 1200, 1350, 900)
+    const b = openingOn(wall, 'window', 2200, 1200, 1350, 900)
+    const { takeoff } = computeQuantities({ document: plan([wall, a, b]) })
+    expect(find(takeoff, 'wall.netArea', wall.id).trace.union).toBe(true)
+    expect(find(takeoff, 'wall.length', wall.id).trace.union).toBe(false)
+  })
+
+  it('tableau « Quantitatif » : une ligne par quantité de métré, valeurs arrondies à l’affichage', () => {
+    const { document } = g4Wall()
+    const { takeoff } = computeQuantities({ document })
+    const table = buildQuantityTable(takeoff, fr.measurements.quantities, () => 'RDC')
+    expect(table.rows).toHaveLength(takeoff.length)
+    expect(table.columns).toHaveLength(11)
+    const row = table.rows.find((r) => r[2] === fr.measurements.quantities.codes['wall.netArea'])!
+    expect(row.map((cell) => (typeof cell === 'string' ? cell : cell.text))).toEqual([
+      'RDC',
+      'Mur isolé',
+      'Surface nette (une face)',
+      '13,11',
+      'm²',
+      'takeoff.wall.netArea (seuil maçonnerie 0,00 m²)',
+      RULESET_VERSION,
+      'Mur isolé',
+      'longueur 5000 mm ; hauteur 3000 mm ; épaisseur 200 mm',
+      'longueur × hauteur − ouvertures déduites',
+      'door 1,89 m²',
+    ])
+    const volume = table.rows.find((r) => r[2] === fr.measurements.quantities.codes['wall.netVolume'])!
+    expect(volume[3]).toMatchObject({ text: '2,622', unit: 'm3p' })
+  })
+
+  it('chaque quantité de métré a au moins une source', () => {
+    const scene = settleScene(fabricsToScene(createLargeHouseProject(new Date('2026-11-17T00:00:00Z')).document).scene)
+    const { takeoff } = computeQuantities({ document: sceneToFabricsView(scene), scene })
+    expect(takeoff.filter((q) => q.trace.sources.length === 0).map((q) => q.key)).toEqual([])
   })
 })

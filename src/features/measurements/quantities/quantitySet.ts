@@ -12,11 +12,12 @@ import { geometricQuantities } from './geometric'
 import { levelSlabs } from './levelSlabs'
 import { takeoffSettingsOf } from './rules'
 import { takeoffQuantities } from './takeoff'
+import { traceQuantities, type TracedQuantity } from './trace'
 import type { QuantityResult } from './types'
 
 export interface QuantitySet {
-  geometric: QuantityResult[]
-  takeoff: QuantityResult[]
+  geometric: TracedQuantity[]
+  takeoff: TracedQuantity[]
 }
 
 export interface QuantityInput {
@@ -47,7 +48,8 @@ export function computeQuantities(input: QuantityInput): QuantitySet {
     elements: input.document.elements,
     settings: takeoffSettingsOf(input.document.plan?.takeoff),
   })
-  return { geometric, takeoff }
+  const traceContext = { building, elements: input.document.elements, levels: input.document.levels ?? [], slabs, levelSlabs: levelSlabList }
+  return { geometric: traceQuantities(geometric, traceContext), takeoff: traceQuantities(takeoff, traceContext) }
 }
 
 /** Somme d'un code sur une liste de quantités (valeur exacte, sans arrondi). */

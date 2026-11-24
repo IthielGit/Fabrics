@@ -16,6 +16,9 @@ import {
 import { buildClientTables, clientMetaLabels } from '../../features/measurements/clientView'
 import { isBlockingWarning, metresWarnings } from '../../features/measurements/warnings'
 import { buildExecutionTables } from '../../features/measurements/executionView'
+import { computeQuantities } from '../../features/measurements/quantities/quantitySet'
+import { buildQuantityTable } from '../../features/measurements/quantities/quantityTable'
+import type { TracedQuantity } from '../../features/measurements/quantities/trace'
 import type { MetresTable, MetresVersion } from '../../features/measurements/tables'
 import { buildBuildingModel } from '../../features/building/model'
 import { levelPlanDrawing } from '../../features/building/views/drawing'
@@ -74,7 +77,8 @@ export interface MetresExportOptions {
  */
 export function prepareMetres(project: Project, options: Pick<MetresExportOptions, 'scope' | 'includeFurniture' | 'activeLevelId'>) {
   const doc = project.document
-  let building = computeBuildingMeasurements(doc)
+  const fullBuilding = computeBuildingMeasurements(doc)
+  let building = fullBuilding
   let furnitureSource = doc.elements
   if (options.scope === 'level') {
     const restricted = options.activeLevelId ? restrictToLevel(building, options.activeLevelId) : null
@@ -84,7 +88,10 @@ export function prepareMetres(project: Project, options: Pick<MetresExportOption
   }
   if (metresWarnings(doc, building).some(isBlockingWarning)) throw new MetresCoverageError()
   const furniture: FurnitureCsvRow[] = options.includeFurniture ? furnitureCsvRows(furnitureSource) : []
-  return { building, furniture }
+  // Quantitatif traçable (M21) : quantités de métré du bâtiment, ou du niveau exporté.
+  const { takeoff } = computeQuantities({ document: doc, scene: project.scene ?? null, building: fullBuilding })
+  const quantities = options.scope === 'level' ? takeoff.filter((q) => q.levelId === options.activeLevelId) : takeoff
+  return { building, furniture, quantities }
 }
 
 /**
@@ -112,23 +119,28 @@ export function metresTables(
   furniture: ReturnType<typeof prepareMetres>['furniture'],
   version: MetresVersion,
   scope: MetresScope = 'building',
+  quantities: readonly TracedQuantity[] = [],
 ): MetresTable[] {
   const labels = fr.measurements.csv
+  const levelNames = new Map(building.levels.map((entry) => [entry.level.id, entry.level.name]))
+  const extra = quantities.length > 0
+    ? [buildQuantityTable(quantities, fr.measurements.quantities, (id) => levelNames.get(id) ?? '')]
+    : []
   return version === 'client'
     ? buildClientTables(building, fr.measurements.client, scope)
-    : buildExecutionTables(building, labels, furniture, fr.measurements.execution)
+    : buildExecutionTables(building, labels, furniture, fr.measurements.execution, extra)
 }
 
 /** Exporte les métrés du projet (CSV en tableaux, CSV à plat, Excel ou PDF) et fait télécharger le fichier. */
 export async function exportMetres(project: Project, options: MetresExportOptions): Promise<void> {
-  const { building, furniture } = prepareMetres(project, options)
+  const { building, furniture, quantities } = prepareMetres(project, options)
   const version = options.version ?? 'execution'
   const client = version === 'client'
   // En-tête des fichiers : la version Client a son titre et sa remarque, sans la note technique.
   const labels: CsvLabels = client && fr.measurements.csv.meta
     ? { ...fr.measurements.csv, meta: clientMetaLabels(fr.measurements.csv.meta, fr.measurements.client) }
     : fr.measurements.csv
-  const tables = metresTables(building, furniture, version, options.scope)
+  const tables = metresTables(building, furniture, version, options.scope, quantities)
   const date = formatDate(new Date())
   const meta: CsvMeta = { projectName: project.name, date }
   const suffix = VERSION_FILE_SUFFIX[version]
