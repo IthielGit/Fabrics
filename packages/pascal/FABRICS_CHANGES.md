@@ -95,3 +95,17 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
   pronoms `it/them`). `deleteConfirmationContent` et `hostedSummary` prennent un traducteur facultatif
   (anglais par défaut : les tests existants vérifient le même texte) ; noms de pièces par `displayRoomName` ;
   surface perdue formatée selon la langue (`formatNumber`).
+
+## M22 — exportateur IFC : ajouts de l'application hôte
+
+- `packages/ifc-converter/src/export/extensions.ts` (nouveau) : `IfcExportExtensions` (jeux de propriétés,
+  jeux de quantités `IfcElementQuantity` en longueur, surface, volume ou nombre, et classification
+  `IfcClassification` + `IfcClassificationReference`), indexés par identifiant de nœud et écrits sur les
+  produits IFC du nœud. Fabrics y met ses quantités de métré, sa propriété `Fabrics.ElementId` et les
+  codes Uniclass 2015.
+- `scene-to-ifc.ts` : entrée facultative `extensions` ; le résumé donne aussi `products` (classe IFC et
+  GlobalId de chaque produit écrit, par nœud) et `unmatchedExtensions` (nœuds sans produit). Sans
+  `extensions`, le fichier écrit est inchangé.
+- `step.ts` : `StepWriter` retient le type et le premier attribut de chaque entité (`typeOf`,
+  `firstStringOf`) pour ce résumé.
+- Tests : `tests/export-extensions.test.ts` ; `tests/export-step-check.ts` connaît les nouvelles entités.

@@ -65,6 +65,11 @@ export default defineConfig({
         find: /^@pascal-app\/viewer$/,
         replacement: fileURLToPath(new URL('./packages/pascal/packages/viewer/dist/index.js', import.meta.url)),
       },
+      // Exportateur IFC4 de Pascal (M22) : version compilée, comme `core` ; l'éditeur de Pascal l'importe aussi.
+      {
+        find: /^@pascal-app\/ifc-converter\/export$/,
+        replacement: fileURLToPath(new URL('./packages/pascal/packages/ifc-converter/dist/export/index.js', import.meta.url)),
+      },
       {
         find: /^@pascal-app\/nodes$/,
         replacement: fileURLToPath(new URL('./packages/pascal/packages/nodes/dist/index.js', import.meta.url)),

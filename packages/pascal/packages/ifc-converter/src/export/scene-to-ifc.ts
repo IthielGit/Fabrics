@@ -43,6 +43,7 @@ import {
   type ZoneNode,
 } from '@pascal-app/core'
 import { doorGlazingFraction, doorOperationForIfc } from './door-operation'
+import { type IfcExportExtensions, writeExtensions } from './extensions'
 import {
   bool,
   cleanRing,
@@ -91,6 +92,8 @@ export interface IfcExportInput {
   onlyVisible?: boolean
   /** Node kinds left out entirely, with their descendants. */
   excludedNodeTypes?: readonly string[]
+  /** Host property sets, quantity sets and classification (Fabrics, M22). */
+  extensions?: IfcExportExtensions
 }
 
 export interface IfcExportSkip {
@@ -103,6 +106,15 @@ export interface IfcExportSummary {
   /** Exported building elements and spaces, by IFC class. */
   elements: Record<string, number>
   skipped: IfcExportSkip[]
+  /** IFC products written for each node: class and GlobalId (Fabrics, M22). */
+  products: Record<string, IfcExportProduct[]>
+  /** Nodes given extensions that wrote no product (Fabrics, M22). */
+  unmatchedExtensions: string[]
+}
+
+export interface IfcExportProduct {
+  entity: string
+  globalId: string
 }
 
 export interface IfcExportResult {
@@ -1678,6 +1690,17 @@ export function buildIfcExport(input: IfcExportInput): IfcExportResult {
     )
   }
 
+  const unmatchedExtensions = input.extensions
+    ? writeExtensions(model, input.extensions, productsByNodeId, project)
+    : []
+  const products: Record<string, IfcExportProduct[]> = {}
+  for (const [nodeId, refs] of productsByNodeId) {
+    products[nodeId] = refs.map((ref) => ({
+      entity: step.typeOf(ref) ?? '',
+      globalId: step.firstStringOf(ref) ?? '',
+    }))
+  }
+
   const ifc = step.serialize({
     description: 'ViewDefinition [DesignTransferView_V1.0]',
     fileName: `${projectName}.ifc`,
@@ -1689,7 +1712,7 @@ export function buildIfcExport(input: IfcExportInput): IfcExportResult {
     schema: 'IFC4',
   })
 
-  return { ifc, summary: { elements: elementCounts, skipped } }
+  return { ifc, summary: { elements: elementCounts, skipped, products, unmatchedExtensions } }
 }
 
 const CEILING_THICKNESS = 0.01

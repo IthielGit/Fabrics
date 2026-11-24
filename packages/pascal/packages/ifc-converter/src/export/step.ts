@@ -125,12 +125,25 @@ export class StepWriter {
   private readonly shared = new Map<string, StepRef>()
   private nextId = 1
   readonly counts = new Map<string, number>()
+  private readonly entities = new Map<number, { type: string; first: StepValue }>()
 
   add(type: string, ...args: StepValue[]): StepRef {
     const ref = new StepRef(this.nextId++)
     this.lines.push(`#${ref.id}=${type}(${args.map(formatValue).join(',')});`)
     this.counts.set(type, (this.counts.get(type) ?? 0) + 1)
+    this.entities.set(ref.id, { type, first: args[0] ?? null })
     return ref
+  }
+
+  /** Entity type of an added entity (e.g. `IFCWALL`). */
+  typeOf(ref: StepRef): string | undefined {
+    return this.entities.get(ref.id)?.type
+  }
+
+  /** First attribute when it is a string: the GlobalId of a rooted entity. */
+  firstStringOf(ref: StepRef): string | undefined {
+    const first = this.entities.get(ref.id)?.first
+    return typeof first === 'string' ? first : undefined
   }
 
   /** Reuse one entity for identical simple values (points, directions, styles). */
