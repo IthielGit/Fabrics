@@ -102,3 +102,8 @@ D23-3 (règles de prix de vente) reste ouvert : ni la proposition A, B ou C, ni 
 - **Cumul des parts : multiplication**, soit K1 = (1 + A1) × (1 + A2) × (1 + A3) = 1,1025 avec les valeurs du classeur. **Proposition retenue par défaut, à confirmer** : la réponse explicite n'a pas encore été donnée.
 - **Le DQE affiche chaque part** (débours, frais généraux, bénéfice, aléas, prix de vente HT, TVA, prix TTC).
 - **Aucune marge n'est imposée** : les pourcentages restent à la main de l'admin.
+
+## D23-3 · Cumul des parts de K1 : multiplication (confirmé le 2026-11-24)
+
+- **K1 = (1 + A1) × (1 + A2) × (1 + A3)**, soit 1,1025 avec les valeurs du classeur.
+- Le point « à confirmer » ci-dessus est levé.
