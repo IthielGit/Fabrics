@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M22 Échanges IFC (gate G5), feu vert de l'utilisateur le 2026-11-24 ; **22.0 à 22.2 faits le 2026-11-24** (`docs/phases/M22-decisions.md`, `M22-classes.md`) ; tout M22 d'une traite, essai dans le navigateur à la fin. M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M22 Échanges IFC (gate G5), feu vert de l'utilisateur le 2026-11-24 ; **22.0 à 22.3 faits le 2026-11-24** (`docs/phases/M22-decisions.md`, `M22-classes.md`) ; tout M22 d'une traite, essai dans le navigateur à la fin. M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-24 — M22 · 22.3 : GlobalId stables
+
+- Le GlobalId d'un objet IFC vient de l'identifiant de son nœud (enregistré avec le projet), ou du GlobalId d'origine d'un élément importé (`metadata.globalId`). Ceux des propriétés, quantités et relations viennent du même nœud.
+- `src/features/ifc/globalIds.ts` : table élément Fabrics ↔ nœud ↔ classe ↔ GlobalId (un mur à plusieurs côtés : une ligne par côté).
+- `globalIds.test.ts` (HOUSE-01, HOUSE-02, grande maison) : deux exports à des dates différentes donnent les mêmes GlobalId partout, tous distincts ; idem après enregistrement et rechargement ; déplacer un mur ne change aucun GlobalId ; un élément importé garde le sien.
+- Incident Git : le commit `2554589` d'une autre session (M23) a emporté la suppression de l'ancien export IFC que j'avais préparée ; la branche ne compilait pas entre ce commit et `7648479`. Désormais, préparation et commit en une seule commande.
 
 ### 2026-11-24 — M22 · 22.2 : export IFC4 par Pascal
 
