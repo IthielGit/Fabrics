@@ -1424,7 +1424,7 @@ rappelle s'il tourne sur un autre modèle).
 | 22.2 Export — **fait le 2026-11-24** | Par l'`ifc-converter` de Pascal : placements, unités, relations spatiales, matériaux et compositions, types, propriétés, quantités | `/model opus` |
 | 22.3 Identifiants stables — **fait le 2026-11-24** | Correspondance `elementId ↔ GlobalId` identique d'un export à l'autre | `/model sonnet` |
 | 22.4 Import contrôlé — **fait le 2026-11-24** | Rapport d'import : objets inconnus et géométries non prises en charge signalés, jamais modifiés en silence | `/model opus` |
-| 22.5 Contrôles et gate G5 | Schéma, IDS si applicable, réimport et comparaison géométrique (IfcOpenShell), ouverture dans 2 visionneuses, rapport | `/model opus` |
+| 22.5 Contrôles et gate G5 — **fait le 2026-11-24** (`docs/phases/M22-report.md`) | Schéma, IDS si applicable, réimport et comparaison géométrique (IfcOpenShell), ouverture dans 2 visionneuses, rapport | `/model opus` |
 
 - [x] Classes cibles : projet, site, bâtiment, niveau, mur, dalle, porte, fenêtre, ouverture, pièce
 - [x] Export par l'`ifc-converter` de Pascal : placements, unités, relations spatiales, matériaux et
@@ -1432,7 +1432,7 @@ rappelle s'il tourne sur un autre modèle).
 - [x] Correspondance `elementId ↔ GlobalId` stable d'un export à l'autre
 - [x] Import contrôlé avec rapport : objets inconnus et géométries non prises en charge signalés,
       jamais modifiés en silence
-- [ ] Contrôle de schéma, IDS si applicable, réimport et comparaison géométrique (script IfcOpenShell)
+- [x] Contrôle de schéma, IDS si applicable, réimport et comparaison géométrique (script IfcOpenShell)
 
 **Critères d'acceptation (G5)**
 - HOUSE-01 exporté s'ouvre dans 2 visionneuses indépendantes avec les mêmes niveaux, hauteurs,

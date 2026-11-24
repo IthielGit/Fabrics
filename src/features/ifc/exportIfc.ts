@@ -25,11 +25,11 @@ import { LEVEL_SLAB_PART } from '../measurements/quantities/geometric'
 import type { Quantity, QuantityStatus } from '../measurements/quantities/status'
 import type { QuantityCode } from '../measurements/quantities/types'
 import type { PlanScene, SceneNodeData } from '../scene/sceneTypes'
-import { levelSlabNode } from '../scene/levelSlabNode'
-import { levelFootprintRings } from '../scene/siteMeasures'
+import { levelSlabNode, levelSlabPieces } from '../scene/levelSlabNode'
+import { levelFootprintRings, polygonAreaM2 } from '../scene/siteMeasures'
 import { flatToPlanPoints } from '../scene/units'
 import { sceneToFabricsView } from '../scene/view/toFabricsView'
-import { collectStairVoids, polygonInside } from '../stairs/voids'
+import { collectStairVoids } from '../stairs/voids'
 import { ifcClassOf, NOT_EXPORTED, UNICLASS } from './classes'
 import { wallSegmentQuantities } from './segmentQuantities'
 
@@ -159,42 +159,57 @@ export function fabricsIfcAdditions(scene: PlanScene, labels: FabricsIfcLabels, 
     }
   }
 
-  // Dalles de niveau (M21) : une dalle par contour extérieur des murs, dessus au plancher du niveau.
+  // Dalles de niveau (M21) : emprise du niveau moins les murs du dessous qui la traversent et les
+  // trémies (règle des fixtures) ; dessus au plancher du niveau. Un `IfcSlab` par morceau.
   const rings = levelFootprintRings(scene)
   const voids = collectStairVoids(view.elements, view.levels)
-  for (const level of view.levels ?? []) {
+  const sortedLevels = [...(view.levels ?? [])].sort((a, b) => a.elevation - b.elevation)
+  sortedLevels.forEach((level, levelIndex) => {
     const area = get('slab.area', level.id, LEVEL_SLAB_PART)
     const footprint = rings.get(level.id)
-    if (!area || !footprint || footprint.rings.length === 0) continue
+    if (!area || !footprint || footprint.rings.length === 0) return
     const volume = get('slab.volume', level.id, LEVEL_SLAB_PART)
+    const below = levelIndex > 0 ? sortedLevels[levelIndex - 1] : undefined
+    const slabBottom = level.elevation - level.slabThickness
+    const crossing = new Set(
+      below
+        ? view.elements
+            .filter((el) => el.type === 'wall' && el.levelId === below.id && el.height > 0 && below.elevation + el.height > slabBottom)
+            .map((el) => el.id)
+        : [],
+    )
+    const wallsBelow = Object.values(scene.nodes).filter((node) => node.type === 'wall' && crossing.has(fabricsMeta(node).id ?? node.id))
+    const pieces = levelSlabPieces({
+      rings: footprint.rings,
+      wallsBelow,
+      voids: voids.filter((v) => v.levelId === level.id).map((v) => v.polygon.map((p): [number, number] => [p.x * M, p.y * M])),
+    })
     const levelNode = nodes[footprint.levelNodeId]
-    footprint.rings.forEach((ring, index) => {
-      const outline = ring.map(([x, z]) => ({ x: x / M, y: z / M }))
-      const holes = voids
-        .filter((v) => v.levelId === level.id && polygonInside(v.polygon, outline))
-        .map((v) => v.polygon.map((p): [number, number] => [p.x * M, p.y * M]))
-      const id = `${LEVEL_SLAB_NODE_PREFIX}${footprint.levelNodeId}${footprint.rings.length > 1 ? `-${index + 1}` : ''}`
-      const slab = levelSlabNode({
+    const pieceAreas = pieces.map((piece) => polygonAreaM2(piece.outer) - piece.holes.reduce((sum, hole) => sum + polygonAreaM2(hole), 0))
+    const totalPieceArea = pieceAreas.reduce((a, b) => a + b, 0) || 1
+    pieces.forEach((piece, index) => {
+      const id = `${LEVEL_SLAB_NODE_PREFIX}${footprint.levelNodeId}${pieces.length > 1 ? `-${index + 1}` : ''}`
+      nodes[id] = levelSlabNode({
         id,
         levelNodeId: footprint.levelNodeId,
         name: `${labels.levelSlab} ${level.name}`,
-        polygon: ring,
-        holes,
+        polygon: piece.outer,
+        holes: piece.holes,
         thickness: level.slabThickness * M,
         levelId: level.id,
       })
-      nodes[id] = slab
-      if (levelNode) nodes[levelNode.id] = { ...levelNode, children: [...(nodes[levelNode.id].children ?? []), id] }
+      if (levelNode) nodes[levelNode.id] = { ...nodes[levelNode.id], children: [...(nodes[levelNode.id].children ?? []), id] }
       references[id] = { ...ifcClassOf('slab')!.uniclass! }
       describe(id, level.id, [area.status, ...(volume ? [volume.status] : [])])
-      // Plusieurs contours : la quantité du niveau n'est pas partagée entre eux, seule l'épaisseur est donnée.
+      // Quantités de M21 réparties entre les morceaux au prorata de leur surface (somme = M21).
+      const netArea = area.value * (pieceAreas[index] / totalPieceArea)
       quantities(id, 'Qto_SlabBaseQuantities', [
         q('Width', 'length', level.slabThickness, M),
-        footprint.rings.length === 1 ? q('NetArea', 'area', area.value, M2) : null,
-        footprint.rings.length === 1 && volume ? q('NetVolume', 'volume', volume.value, M3) : null,
+        q('NetArea', 'area', netArea, M2),
+        q('NetVolume', 'volume', volume ? volume.value * (pieceAreas[index] / totalPieceArea) : undefined, M3),
       ])
     })
-  }
+  })
 
   return {
     nodes,

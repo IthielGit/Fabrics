@@ -95,8 +95,10 @@ python -m venv tools/ifc/.venv
 tools/ifc/.venv/Scripts/python.exe -m pip install -r tools/ifc/requirements.txt
 tools/ifc/.venv/Scripts/python.exe -I tools/ifc/validate.py baseline/fabrics/example/export.ifc
 npm run check:ifc-quantities   # M21 : compare le quantitatif avec l'IFC4 de Pascal relu par IfcOpenShell
+npm run check:ifc              # M22 (gate G5) : schéma, IDS, quantités ↔ géométrie, niveaux, matériaux, Uniclass
 ```
 
+`npm run check:ifc` écrit les IFC exportés par Fabrics et le rapport dans `tmp/ifc-g5/` (le contrôle IDS demande `ifctester`, installé par `requirements.txt` depuis M22 : relancer la commande `pip install` ci-dessus).
 `npm run check:ifc-quantities` écrit les fichiers de comparaison et le rapport dans `tmp/ifc-exchange/`
 (`report.md`). Il échoue si une quantité validée s'écarte de plus de 0,1 % de l'IFC.
 

@@ -1,5 +1,5 @@
 /** M19 B6 — Dalles de Pascal dans les métrés : surface moins trémies, épaisseur, volume. */
-import { SlabNode } from '@pascal-app/core'
+import { FloorOpeningNode, SlabNode } from '@pascal-app/core'
 import { describe, expect, it } from 'vitest'
 import type { FabricsDocument } from '../../types/document'
 import { fabricsToScene } from './migrate/fromFabrics'
@@ -36,5 +36,30 @@ describe('slabMeasures', () => {
     expect(m.thickness).toBe(160)
     expect(m.elevation).toBe(50)
     expect(m.volume / 1e9).toBeCloseTo(3.68, 9) // 23 × 0,16 m³
+  })
+  it('M22 : une trémie de Pascal posée sur le plancher est déduite de la dalle, sans double compte', () => {
+    const slab = SlabNode.parse({
+      id: 'slab_plancher', parentId: 'level_L0', name: 'Plancher', thickness: 0.2, elevation: 0,
+      polygon: [[0, 0], [6, 0], [6, 4], [0, 4]],
+      holes: [[[1, 1], [2, 1], [2, 2], [1, 2]]],
+    })
+    // Trémie 2 × 1 m qui recouvre le trou de 1 m² et déborde de la dalle de 0,5 m².
+    const opening = FloorOpeningNode.parse({ id: 'floor-opening_t', parentId: 'level_L0', polygon: [[1, 1], [3, 1], [3, 2], [1, 2]] })
+    const outside = FloorOpeningNode.parse({ id: 'floor-opening_o', parentId: 'level_L0', polygon: [[5.5, 3], [6.5, 3], [6.5, 4], [5.5, 4]] })
+    const scene = sceneWithSlab(slab)
+    const level = scene.nodes.level_L0
+    const withOpenings: PlanScene = {
+      ...scene,
+      nodes: {
+        ...scene.nodes,
+        [opening.id]: opening as unknown as SceneNodeData,
+        [outside.id]: outside as unknown as SceneNodeData,
+        level_L0: { ...level, children: [...(level.children ?? []), opening.id, outside.id] },
+      },
+    }
+    const [m] = slabMeasures(withOpenings).filter((x) => x.id === 'slab_plancher')
+    // 24 − 1 (trou) − 1 (reste de la trémie) − 0,5 (trémie qui déborde) = 21,5 m²
+    expect(m.area / 1e6).toBeCloseTo(21.5, 6)
+    expect(m.holesArea / 1e6).toBeCloseTo(2.5, 6)
   })
 })

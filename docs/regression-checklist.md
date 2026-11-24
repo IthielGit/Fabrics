@@ -411,3 +411,15 @@ droite de la 3D) et onglet **Paramètres**.
 | Recalcul ciblé identique au recalcul complet | Auto : `features/measurements/quantities/incremental.test.ts` |
 | Quantitatif ↔ IFC4 de Pascal relu par IfcOpenShell | Manuel : `npm run check:ifc-quantities` (rapport `tmp/ifc-exchange/report.md`) |
 | Contrôles qualité (géométrie, propriétés manquantes, unités) | Auto : `features/measurements/qualityChecks.test.ts` ; Nav. (Métrés → Quantitatif → Contrôles qualité) |
+
+### M22 — Échanges IFC (gate G5)
+| Critère | Vérification |
+|---|---|
+| Chaque nœud devient la classe IFC4 de la table (Uniclass, quantités) | Auto : `features/ifc/classes.test.ts` |
+| Export : pièces au contour tracé, dalles de niveau découpées autour des murs du dessous, quantités de M21, `Fabrics.*`, Uniclass, annotations exclues | Auto : `features/ifc/exportIfc.test.ts`, baseline `export.ifc` ; Nav. (Exporter → IFC (BIM), remarques après l'export) |
+| Mêmes GlobalId d'un export à l'autre, après rechargement, après modification d'un autre élément | Auto : `features/ifc/globalIds.test.ts` |
+| Import contrôlé : nouveau projet Plan, bilan objet par objet (repris, forme seule, non importé) | Auto : `features/ifc/importIfc.test.ts` ; Nav. (Accueil → Importer un IFC) |
+| Réimport : mêmes niveaux et métrés | Auto : `features/ifc/reimport.test.ts` |
+| Trémie de Pascal déduite de la dalle | Auto : `features/scene/slabMeasures.test.ts` |
+| Schéma, IDS, quantités ↔ géométrie, niveaux, matériaux, Uniclass relus par IfcOpenShell | Manuel : `npm run check:ifc` (rapport `tmp/ifc-g5/report.md`) |
+| HOUSE-01 ouvert dans 2 visionneuses indépendantes | Manuel : `tmp/ifc-g5/HOUSE-01.ifc` (voir `docs/phases/M22-report.md`) |

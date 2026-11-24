@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M22 Échanges IFC (gate G5), feu vert de l'utilisateur le 2026-11-24 ; **22.0 à 22.4 faits le 2026-11-24** (`docs/phases/M22-decisions.md`, `M22-classes.md`) ; tout M22 d'une traite, essai dans le navigateur à la fin. M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M22 Échanges IFC (gate G5), feu vert de l'utilisateur le 2026-11-24 ; **22.0 à 22.5 faits le 2026-11-24** (`docs/phases/M22-decisions.md`, `M22-classes.md`, `M22-report.md`) ; reste l'essai de l'utilisateur dans le navigateur et l'ouverture de HOUSE-01 dans 2 visionneuses (gate G5 ouvert). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -46,12 +46,22 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | terminé, gate G2 validé PASS | 2026-11-21 |
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
-| M22 Échanges IFC (G5) | en cours | |
+| M22 Échanges IFC (G5) | sous-lots faits ; essai de l'utilisateur et 2 visionneuses à faire (gate G5 ouvert) | |
 | M23 Bibliothèque de prix et DQE (G6) | à faire | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-24 — M22 · 22.5 : contrôles et gate G5
+
+- `tools/ifc/fabrics-g5.ids` (IDS 1.0 : niveaux, murs avec matériau, quantités, Uniclass, `Fabrics.ElementId`, dalles, portes, fenêtres, pièces) ; `tools/ifc/check_g5.py` (schéma, IDS par ifctester, quantités écrites ↔ géométrie relue, niveaux, matériaux, classification) ; `npm run check:ifc` (`scripts/ifc-g5.mjs`, fichiers et rapport dans `tmp/ifc-g5/`). `ifctester==0.9.0` ajouté à `tools/ifc/requirements.txt` (module IDS d'IfcOpenShell, LGPL, environnement Python local seulement).
+- Résultat : HOUSE-01, HOUSE-02, plan d'exemple, grande maison : schéma IFC4 0 erreur, IDS 6/6, niveaux identiques, tous les murs avec matériau, tous les objets classés ; quantités ↔ géométrie dans 0,1 % (au plus 0,020 %), sauf 6 murs « provisoires » de la grande maison (raccords de 3 murs, M21).
+- `reimport.test.ts` : export puis réimport (web-ifc) des quatre plans : mêmes niveaux ; murs, ouvertures, pièces (surface et périmètre) identiques ; dalles à moins de 0,1 %.
+- Corrigé grâce au réimport : la dalle de niveau ajoutée à l'export faisait arrêter les murs du dessous sous elle (HOUSE-02 : 2,80 m au lieu de 3,00 m). Elle est maintenant découpée autour des murs du dessous et percée des trémies (`scene/levelSlabNode.ts`, règle des fixtures), avec 0,2 mm de marge (arrondi des découpes de Pascal) et `boundary: 'auto'` (contour non recalé par Pascal) ; quantité de M21 répartie au prorata des morceaux.
+- Corrigé : les trémies dessinées dans Pascal (`floor-opening`) sont déduites des dalles de leur niveau dans les métrés (`scene/slabMeasures.ts`, test).
+- Rapport : `docs/phases/M22-report.md` ; liste de non-régression (M22) ; `docs/05-INSTALLATION.md`.
+- Baseline : `export.ifc` régénérés (commit séparé).
 
 ### 2026-11-24 — M22 · 22.4 : import IFC contrôlé
 
@@ -2306,7 +2316,11 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 ## Idées (hors jalon en cours)
 - **Plans d'exemple (M21 21.7)** : donner un matériau aux quelques cloisons qui n'en ont pas, pour que le contrôle « mur sans matériau » ne s'y affiche plus (change leurs dessins et la 3D : baseline).
 - **Métrés, raccord de trois murs ou plus (M21 21.6)** : couper la pointe d'angle comme Pascal (volume et faces exacts), au lieu de marquer ces quantités « provisoires ». Change les métrés existants (baseline) : à décider. Voir `docs/phases/M21-ifc-comparison.md`.
-- **M22, IfcSpace** : exporter le contour et la surface de la pièce Fabrics (contour tracé), pas la zone recalculée par Pascal sur l'axe des murs (écart de 5 à 20 % mesuré en 21.6).
+- ~~**M22, IfcSpace**~~ : fait en 22.2 (contour tracé, D22-5).
+- **Pièces et trémies de Pascal (M22 22.5)** : déduire de la surface nette d'une pièce les trémies dessinées dans Pascal (`floor-opening`), comme celles des escaliers de Fabrics ; au réimport d'un IFC, la trémie d'escalier ne revient que comme trou de dalle.
+- **Trémies tracées au plafond (M22 22.5)** : les déduire de la dalle du niveau du dessus (`drawnOn: 'ceiling'`).
+- **IFC, quantités des toitures et escaliers (M22)** : écrire leurs `Qto_RoofBaseQuantities` / `Qto_StairFlightBaseQuantities` depuis les quantités de M21.
+- **Essai dans Revit (M22, D22-3)** : ouvrir HOUSE-01 dans Revit quand une licence est disponible.
 - **Performance, lot 2 Alléger (remis à plus tard le 2026-11-18)** : l'accueil charge encore le moteur de Pascal (1,7 Mo) par le chemin enregistrement → conversion des scènes (`storedScene` → `sceneBinding` / `toFabricsView`) ; modules arbres, environnement et ossature chargés même quand le projet ne les utilise pas ; regrouper les ~1 100 petits fichiers JavaScript ; budget de poids dans `npm run check:all`.
 - **Performance, lot 3 Fluidité (remis à plus tard le 2026-11-18)** : mesurer avec le profileur de React ce que Fabrics refait à chaque modification dans Pascal (métrés, enregistrement, collaboration), regrouper les calculs, supprimer les rendus inutiles ; mesures sur une machine avec carte graphique.
 - Saisie de longueur au clavier pour les autres outils de tracé (pièce, cote, plateforme, rectangle largeur × hauteur).

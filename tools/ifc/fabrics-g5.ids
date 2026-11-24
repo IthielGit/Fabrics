@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Exigences d'un IFC exporté par Fabrics (M22, gate G5, décision D22-8). Vérifié par
+  tools/ifc/check_g5.py (ifctester, IfcOpenShell). Chaque exigence vise les objets d'un plan :
+  niveaux nommés, murs avec matériau, quantités de métré, classification Uniclass 2015, lien vers
+  l'élément Fabrics.
+-->
+<ids:ids xmlns:ids="http://standards.buildingsmart.org/IDS" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://standards.buildingsmart.org/IDS http://standards.buildingsmart.org/IDS/1.0/ids.xsd">
+  <ids:info>
+    <ids:title>Fabrics — échange IFC4 (gate G5)</ids:title>
+    <ids:version>2026.1</ids:version>
+    <ids:description>Niveaux, murs, dalles, portes, fenêtres et pièces exportés par Fabrics.</ids:description>
+    <ids:date>2026-11-24</ids:date>
+    <ids:purpose>Contrôle de l'export IFC de Fabrics</ids:purpose>
+  </ids:info>
+  <ids:specifications>
+    <ids:specification name="Niveaux nommés, avec altitude" ifcVersion="IFC4">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity><ids:name><ids:simpleValue>IFCBUILDINGSTOREY</ids:simpleValue></ids:name></ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:attribute cardinality="required"><ids:name><ids:simpleValue>Name</ids:simpleValue></ids:name></ids:attribute>
+        <ids:attribute cardinality="required"><ids:name><ids:simpleValue>Elevation</ids:simpleValue></ids:name></ids:attribute>
+      </ids:requirements>
+    </ids:specification>
+
+    <ids:specification name="Murs : matériau, quantités de métré, Uniclass, élément Fabrics" ifcVersion="IFC4">
+      <ids:applicability minOccurs="1" maxOccurs="unbounded">
+        <ids:entity><ids:name><ids:simpleValue>IFCWALL</ids:simpleValue></ids:name></ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:material cardinality="required"/>
+        <ids:property dataType="IFCLENGTHMEASURE" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Qto_WallBaseQuantities</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>Length</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:property dataType="IFCAREAMEASURE" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Qto_WallBaseQuantities</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>NetSideArea</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:property dataType="IFCVOLUMEMEASURE" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Qto_WallBaseQuantities</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>NetVolume</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:classification cardinality="required">
+          <ids:value><ids:simpleValue>EF_25_10</ids:simpleValue></ids:value>
+          <ids:system><ids:simpleValue>Uniclass 2015</ids:simpleValue></ids:system>
+        </ids:classification>
+        <ids:property dataType="IFCIDENTIFIER" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Fabrics</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>ElementId</ids:simpleValue></ids:baseName>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+
+    <ids:specification name="Dalles : quantités de métré, Uniclass" ifcVersion="IFC4">
+      <ids:applicability minOccurs="0" maxOccurs="unbounded">
+        <ids:entity>
+          <ids:name><ids:simpleValue>IFCSLAB</ids:simpleValue></ids:name>
+          <ids:predefinedType><ids:simpleValue>FLOOR</ids:simpleValue></ids:predefinedType>
+        </ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:property dataType="IFCAREAMEASURE" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Qto_SlabBaseQuantities</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>NetArea</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:classification cardinality="required">
+          <ids:value><ids:simpleValue>EF_30_20</ids:simpleValue></ids:value>
+          <ids:system><ids:simpleValue>Uniclass 2015</ids:simpleValue></ids:system>
+        </ids:classification>
+      </ids:requirements>
+    </ids:specification>
+
+    <ids:specification name="Portes : dimensions, surface, Uniclass" ifcVersion="IFC4">
+      <ids:applicability minOccurs="0" maxOccurs="unbounded">
+        <ids:entity><ids:name><ids:simpleValue>IFCDOOR</ids:simpleValue></ids:name></ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:attribute cardinality="required"><ids:name><ids:simpleValue>OverallWidth</ids:simpleValue></ids:name></ids:attribute>
+        <ids:attribute cardinality="required"><ids:name><ids:simpleValue>OverallHeight</ids:simpleValue></ids:name></ids:attribute>
+        <ids:property dataType="IFCAREAMEASURE" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Qto_DoorBaseQuantities</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>Area</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:classification cardinality="required">
+          <ids:value><ids:simpleValue>EF_25_30</ids:simpleValue></ids:value>
+          <ids:system><ids:simpleValue>Uniclass 2015</ids:simpleValue></ids:system>
+        </ids:classification>
+      </ids:requirements>
+    </ids:specification>
+
+    <ids:specification name="Fenêtres : dimensions, surface, Uniclass" ifcVersion="IFC4">
+      <ids:applicability minOccurs="0" maxOccurs="unbounded">
+        <ids:entity><ids:name><ids:simpleValue>IFCWINDOW</ids:simpleValue></ids:name></ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:attribute cardinality="required"><ids:name><ids:simpleValue>OverallWidth</ids:simpleValue></ids:name></ids:attribute>
+        <ids:attribute cardinality="required"><ids:name><ids:simpleValue>OverallHeight</ids:simpleValue></ids:name></ids:attribute>
+        <ids:property dataType="IFCAREAMEASURE" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Qto_WindowBaseQuantities</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>Area</ids:simpleValue></ids:baseName>
+        </ids:property>
+        <ids:classification cardinality="required">
+          <ids:value><ids:simpleValue>EF_25_30</ids:simpleValue></ids:value>
+          <ids:system><ids:simpleValue>Uniclass 2015</ids:simpleValue></ids:system>
+        </ids:classification>
+      </ids:requirements>
+    </ids:specification>
+
+    <ids:specification name="Pièces : nom, surface au sol" ifcVersion="IFC4">
+      <ids:applicability minOccurs="0" maxOccurs="unbounded">
+        <ids:entity><ids:name><ids:simpleValue>IFCSPACE</ids:simpleValue></ids:name></ids:entity>
+      </ids:applicability>
+      <ids:requirements>
+        <ids:attribute cardinality="required"><ids:name><ids:simpleValue>LongName</ids:simpleValue></ids:name></ids:attribute>
+        <ids:property dataType="IFCAREAMEASURE" cardinality="required">
+          <ids:propertySet><ids:simpleValue>Qto_SpaceBaseQuantities</ids:simpleValue></ids:propertySet>
+          <ids:baseName><ids:simpleValue>GrossFloorArea</ids:simpleValue></ids:baseName>
+        </ids:property>
+      </ids:requirements>
+    </ids:specification>
+  </ids:specifications>
+</ids:ids>
