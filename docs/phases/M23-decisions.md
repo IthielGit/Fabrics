@@ -36,10 +36,18 @@ normalise les valeurs et signale chaque correction dans le rapport d'import. Ano
 Les prix saisis étant TTC, le DQE doit montrer le HT et la TVA, calculés à partir du TTC (voir point
 ouvert 1).
 
-## Points ouverts (à trancher avant le sous-lot 23.1)
+## Réponses de l'utilisateur (2026-11-24)
 
-1. **Passage TTC → HT et arrondis** : HT = TTC / 1,20 ne donne pas toujours un entier en Ar. Règle à
-   choisir : arrondi à l'Ar le plus proche, ligne par ligne, puis sommes ; ou calcul sur le total.
-2. **Centimes** : les montants sont-ils en Ar entiers (pas de centimes), ou faut-il garder une décimale ?
-3. **Licence du classeur** : usage personnel seulement, à vérifier avant tout partage ou intégration
-   du contenu dans l'application (CLAUDE.md, « Licences »).
+1. **Arrondi : au-dessus, à l'Ar entier** (« arrondit à ,00 au-dessus »). Choix de Claude à confirmer :
+   l'arrondi se fait **ligne par ligne**, puis les lignes sont additionnées (le total est donc la somme
+   des lignes arrondies).
+2. **Décimale : une décimale** (« décimale »). **Point à préciser** : l'arrondi à l'Ar entier et une
+   décimale sur les montants se contredisent. Question ouverte : une décimale sur les **prix unitaires
+   et les quantités**, et les montants arrondis à l'Ar entier ?
+3. **Licence : classeur acheté par l'utilisateur, destiné à un usage professionnel.** Il peut être
+   utilisé dans l'application pour son compte. Toute redistribution à d'autres personnes exige une
+   vérification de la licence (CLAUDE.md, « Licences »).
+
+## Point ouvert (à trancher avant le sous-lot 23.1)
+
+- **Décimale** : une décimale sur les prix unitaires et quantités seulement, ou ailleurs ?
