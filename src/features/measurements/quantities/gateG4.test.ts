@@ -2,11 +2,10 @@
  * Gate G4 (M21, 21.8) : les critères d'acceptation de `docs/03-ROADMAP.md`, réunis ici. Tout passe
  * par la scène Pascal, comme un vrai projet.
  *
- * Note (contradiction signalée à l'utilisateur) : le roadmap dit « ouverture qui dépasse du mur :
- * seule la partie dans le mur est déduite » ; la décision 1 d'EDGE-01 (2026-11-18) dit « rejet,
- * aucune surface déduite » pour une ouverture qui dépasse **en longueur**. Appliqué : la décision
- * d'EDGE-01 en longueur ; en hauteur, seule la partie dans le mur est déduite. Dans les deux cas,
- * l'élément est signalé et sa quantité n'est pas « validée ».
+ * Ouverture qui dépasse du mur (option A choisie par l'utilisateur le 2026-11-24, critère précisé
+ * dans le roadmap) : en longueur, rejet sans déduction (décision 1 d'EDGE-01) ; en hauteur, seule la
+ * partie dans le mur est déduite. Dans les deux cas, l'élément est signalé et sa quantité n'est pas
+ * « validée ».
  */
 import { describe, expect, it } from 'vitest'
 import type { CanvasElement, FabricsDocument, Level } from '../../../types/document'

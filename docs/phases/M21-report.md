@@ -10,12 +10,15 @@ L'utilisateur a demandé tout M21 d'une traite, avec un essai dans le navigateur
 |---|---|---|
 | Mur 5000 × 3000 × 200 mm avec une ouverture 900 × 2100 mm : brut 15,00 m², ouverture 1,89 m², net 13,11 m², volume net 2,622 m³ | `quantities/gateG4.test.ts`, dans les deux familles (géométrie et métré), sur un plan passé par la scène Pascal | Essai dans le navigateur |
 | Deux ouvertures qui se chevauchent : déduction de leur **union** | `gateG4.test.ts` : 2,70 m² déduits, pas 3,24 m² ; la trace le dit (« union »), l'avertissement « ouvertures qui se chevauchent » est levé | — |
-| Ouverture qui dépasse du mur : seule la partie dans le mur est déduite, l'élément est signalé | `gateG4.test.ts`. **En hauteur** : seule la partie dans le mur est déduite (statut provisoire, contrôle « plus haute que le mur »). **En longueur** : l'ouverture est rejetée, rien n'est déduit (statut « données manquantes », avertissement « hors du mur ») | **Contradiction à trancher** (voir plus bas) |
+| Ouverture qui dépasse du mur : seule la partie dans le mur est déduite, l'élément est signalé | `gateG4.test.ts`. **En hauteur** : seule la partie dans le mur est déduite (statut provisoire, contrôle « plus haute que le mur »). **En longueur** : l'ouverture est rejetée, rien n'est déduit (statut « données manquantes », avertissement « hors du mur ») | Contradiction tranchée le 2026-11-24 : option A (voir plus bas) |
 | Écart de ±1 mm au plus sur les longueurs, moins de 0,1 % sur les quantités simples | `gateG4.test.ts` (HOUSE-01 élément par élément, totaux de HOUSE-02) ; écart réel 0 sur toutes les fixtures. IfcOpenShell : 0,000 % sur les murs et ouvertures de HOUSE-01, HOUSE-02 et du plan d'exemple | **Tolérances à confirmer par un métreur** (D21-6) |
 | 100 % des fixtures passent | HOUSE-01 (pièces, murs, volumes, dalle), HOUSE-02 (deux niveaux, trémie, dalles découpées, volumes) et EDGE-01 (6 cas sur 7) : `scene/migrate/fixtures.test.ts`. Le 7ᵉ cas d'EDGE-01 (`ifc-nested-placements`) relève de l'import IFC : M22 | — |
 | Chaque quantité exportée montre ses sources et sa règle | `gateG4.test.ts` : chaque ligne du tableau « Quantitatif » de HOUSE-01 et HOUSE-02 a ses sources, sa règle, sa version, sa formule et son statut ; tableau présent dans le CSV, l'Excel et le PDF Exécution (baseline) | Ouvrir un export dans le navigateur |
 
-### Contradiction à trancher (signalée, pas résolue en silence)
+### Contradiction tranchée : option A (choix de l'utilisateur, 2026-11-24)
+
+Le fonctionnement ci-dessous est gardé et le critère G4 de `docs/03-ROADMAP.md` a été précisé
+(hauteur : partie contenue déduite ; longueur : rejet). La décision 1 d'EDGE-01 reste inchangée.
 
 - Le roadmap dit, critère G4 : « Ouverture qui dépasse du mur : seule la partie dans le mur est
   déduite, l'élément est signalé ».

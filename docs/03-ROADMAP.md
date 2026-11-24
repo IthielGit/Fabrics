@@ -1402,7 +1402,9 @@ rappelle s'il tourne sur un autre modèle).
 - Mur 5000 × 3000 × 200 mm avec une ouverture 900 × 2100 mm : brut 15,00 m², ouverture 1,89 m², net
   13,11 m², volume net 2,622 m³
 - Deux ouvertures qui se chevauchent : déduction de leur **union**, pas de la somme
-- Ouverture qui dépasse du mur : seule la partie dans le mur est déduite, l'élément est signalé
+- Ouverture qui dépasse du mur, toujours signalée et jamais « validée » : **en hauteur**, seule la
+  partie dans le mur est déduite ; **en longueur**, l'ouverture est rejetée et rien n'est déduit
+  (décision 1 d'EDGE-01 ; texte précisé le 2026-11-24, option A choisie par l'utilisateur)
 - Écart de ±1 mm au plus sur les longueurs et de moins de 0,1 % sur les quantités simples (tolérances
   à confirmer par un métreur)
 - 100 % des fixtures passent ; chaque quantité exportée montre ses sources et sa règle
