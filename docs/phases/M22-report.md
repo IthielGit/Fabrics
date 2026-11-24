@@ -1,5 +1,7 @@
 # M22 — Rapport de fin de jalon (gate G5)
 
+**Validé par l'utilisateur le 2026-11-24** : essai dans le navigateur et HOUSE-01 ouvert dans 2 visionneuses (« tout est validé »). Gate G5 validé.
+
 Rédigé le 2026-11-24, à la fin de 22.5. Sous-lots 22.0 à 22.5 faits le 2026-11-24, d'une traite
 (demande de l'utilisateur : essai dans le navigateur à la fin). Décisions : `M22-decisions.md`.
 Classes : `M22-classes.md`.

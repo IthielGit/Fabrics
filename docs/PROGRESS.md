@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M22 Échanges IFC (gate G5), feu vert de l'utilisateur le 2026-11-24 ; **22.0 à 22.5 faits le 2026-11-24** (`docs/phases/M22-decisions.md`, `M22-classes.md`, `M22-report.md`) ; reste l'essai de l'utilisateur dans le navigateur et l'ouverture de HOUSE-01 dans 2 visionneuses (gate G5 ouvert). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** aucun ; M23 attend le feu vert de l'utilisateur. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -46,12 +46,16 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M19 Interface Pascal et édition 2D/3D professionnelle (G2) | terminé, gate G2 validé PASS | 2026-11-21 |
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
-| M22 Échanges IFC (G5) | sous-lots faits ; essai de l'utilisateur et 2 visionneuses à faire (gate G5 ouvert) | |
+| M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
 | M23 Bibliothèque de prix et DQE (G6) | à faire | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-24 — M22 : validé par l'utilisateur, gate G5 validé
+
+- L'utilisateur a fait l'essai de fin de jalon (export IFC de la grande maison, import IFC avec bilan, HOUSE-01 dans 2 visionneuses) : « tout est validé ». Gate G5 validé. Restent ouverts : G4 (revue d'un métreur), G3 (revue d'un professionnel) ; relecture des codes Uniclass par un praticien BIM et essai Revit notés dans les Idées.
 
 ### 2026-11-24 — M22 · 22.5 : contrôles et gate G5
 

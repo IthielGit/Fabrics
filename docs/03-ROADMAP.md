@@ -1409,7 +1409,7 @@ rappelle s'il tourne sur un autre modèle).
   à confirmer par un métreur)
 - 100 % des fixtures passent ; chaque quantité exportée montre ses sources et sa règle
 
-## M22 — Échanges IFC (gate G5)
+## M22 — Échanges IFC (gate G5) — **terminé, gate G5 validé par l'utilisateur le 2026-11-24**
 
 À décider avant de commencer : IFC4 ou IFC4x3, classification, échange avec Revit.
 
