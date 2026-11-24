@@ -39,7 +39,9 @@ ouvert 1).
 
 ## Réponses de l'utilisateur (2026-11-24)
 
-1. **Arrondi : au-dessus, à l'Ar entier** (« arrondit à ,00 au-dessus »). Choix de Claude à confirmer :
+1. **Arrondi : au centaine d'Ariary supérieure (100 Ar)**. Précisé le 2026-11-24 : « on arrondit à 100 Ar
+   au-dessus ». Exemple de l'utilisateur : 153 555 Ar → **153 600 Ar**. Un montant déjà multiple de 100 Ar
+   ne change pas. Ce point remplace la première réponse « à l'Ar entier ». Choix de Claude à confirmer :
    l'arrondi se fait **ligne par ligne**, puis les lignes sont additionnées (le total est donc la somme
    des lignes arrondies).
 2. **Décimale : une décimale** (« décimale »). **Point à préciser** : l'arrondi à l'Ar entier et une
