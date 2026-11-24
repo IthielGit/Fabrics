@@ -1419,7 +1419,7 @@ rappelle s'il tourne sur un autre modèle).
 
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
-| 22.0 Décisions | IFC4 ou IFC4x3, classification, échange avec Revit, en options, choisis par l'utilisateur | `/model opus` |
+| 22.0 Décisions — **fait le 2026-11-24** (`docs/phases/M22-decisions.md`, option recommandée partout) | IFC4 ou IFC4x3, classification, échange avec Revit, en options, choisis par l'utilisateur | `/model opus` |
 | 22.1 Classes et correspondances | Projet, site, bâtiment, niveau, mur, dalle, porte, fenêtre, ouverture, pièce ; table nœud Pascal → classe IFC | `/model opus` |
 | 22.2 Export | Par l'`ifc-converter` de Pascal : placements, unités, relations spatiales, matériaux et compositions, types, propriétés, quantités | `/model opus` |
 | 22.3 Identifiants stables | Correspondance `elementId ↔ GlobalId` identique d'un export à l'autre | `/model sonnet` |
