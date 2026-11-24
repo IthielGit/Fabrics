@@ -44,13 +44,16 @@ ouvert 1).
    ne change pas. Ce point remplace la première réponse « à l'Ar entier ». Choix de Claude à confirmer :
    l'arrondi se fait **ligne par ligne**, puis les lignes sont additionnées (le total est donc la somme
    des lignes arrondies).
-2. **Décimale : une décimale** (« décimale »). **Point à préciser** : l'arrondi à l'Ar entier et une
-   décimale sur les montants se contredisent. Question ouverte : une décimale sur les **prix unitaires
-   et les quantités**, et les montants arrondis à l'Ar entier ?
+2. **Décimale : sur les prix unitaires seulement, une décimale** (précisé le 2026-11-24 : « prix unitaires
+   seulement, pas sur la quantité »). Les quantités ne reçoivent pas cette règle. Les montants restent
+   arrondis à la centaine d'Ar supérieure (point 1).
+
+Arrondi **ligne par ligne**, confirmé le 2026-11-24 (« par ligne »).
 3. **Licence : classeur acheté par l'utilisateur, destiné à un usage professionnel.** Il peut être
    utilisé dans l'application pour son compte. Toute redistribution à d'autres personnes exige une
    vérification de la licence (CLAUDE.md, « Licences »).
 
-## Point ouvert (à trancher avant le sous-lot 23.1)
+## Points ouverts
 
-- **Décimale** : une décimale sur les prix unitaires et quantités seulement, ou ailleurs ?
+Aucun point bloquant pour 23.1. Les décisions de 23.0 restant à prendre sont celles du point D23-3
+(règles de prix de vente), reportées par l'utilisateur.
