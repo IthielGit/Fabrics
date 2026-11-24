@@ -26,6 +26,8 @@ interface ProjectsState {
   createExample: () => Promise<string>
   /** Crée une copie de l'exemple « grande maison R+3 » et renvoie son identifiant. */
   createLargeHouse: () => Promise<string>
+  /** Enregistre un projet importé (IFC, M22) et renvoie son identifiant. */
+  importPlan: (project: Project) => Promise<string>
   rename: (id: string, name: string) => Promise<void>
   duplicate: (id: string) => Promise<string | null>
   remove: (id: string) => Promise<void>
@@ -80,6 +82,8 @@ export function createProjectsStore(repo: ProjectRepository) {
         const project = createLargeHouseProject()
         return saveNew(project)
       },
+
+      importPlan: (project) => saveNew(project),
 
       rename: async (id, name) => {
         const trimmed = name.trim()

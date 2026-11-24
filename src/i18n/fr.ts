@@ -1149,6 +1149,36 @@ export const fr = {
       scaleBarUnit: 'mm',
     },
   },
+  // Import d'un fichier IFC en nouveau projet Plan (M22, 22.4, D22-6), avec son bilan.
+  importIfc: {
+    title: 'Importer un fichier IFC',
+    intro:
+      'Le fichier devient un nouveau projet Plan ; aucun projet existant n’est modifié. Un bilan dit ce qui a été repris, et ce qui ne l’a pas été.',
+    choose: 'Choisir un fichier .ifc',
+    working: (percent: number) => `Lecture du fichier… ${Math.round(percent)} %`,
+    failed: 'Le fichier n’a pas pu être lu comme un IFC. Vérifiez qu’il s’agit bien d’un fichier .ifc (IFC2x3 ou IFC4).',
+    reportTitle: 'Bilan de l’import IFC',
+    allGood: 'Tout le fichier a été repris comme éléments de plan.',
+    open: 'Ouvrir le projet',
+    download: 'Télécharger le bilan',
+    native: (count: number) =>
+      `${count} objet${count > 1 ? 's' : ''} repris comme éléments de plan (niveaux, murs, dalles, portes, fenêtres, pièces…).`,
+    filledOpenings: (count: number) => `${count} percement${count > 1 ? 's' : ''} repris avec leur porte ou leur fenêtre.`,
+    shapeOnly: (count: number) =>
+      `${count} objet${count > 1 ? 's' : ''} repris avec leur seule forme 3D : visible${count > 1 ? 's' : ''}, mais ni modifiable${count > 1 ? 's' : ''} comme élément de plan, ni compté${count > 1 ? 's' : ''} dans les métrés.`,
+    missing: (count: number) => `${count} objet${count > 1 ? 's' : ''} du fichier non importé${count > 1 ? 's' : ''} :`,
+    derived: (count: number, types: string) =>
+      `${count} élément${count > 1 ? 's' : ''} ajouté${count > 1 ? 's' : ''} par la conversion, sans objet dans le fichier (${types}).`,
+    skippedElements: (count: number) =>
+      `${count} objet${count > 1 ? 's' : ''} laissé${count > 1 ? 's' : ''} de côté : aucune géométrie lisible.`,
+    skippedPieces: (count: number) => `${count} morceau${count > 1 ? 'x' : ''} de géométrie illisible${count > 1 ? 's' : ''} ignoré${count > 1 ? 's' : ''}.`,
+    unitFactor: 'Unité de longueur illisible : le mètre a été supposé. Vérifiez les dimensions.',
+    originOffset: 'Origine du modèle illisible : 0 a été supposé.',
+    levelElevations: (count: number) =>
+      `${count} altitude${count > 1 ? 's' : ''} de niveau illisible${count > 1 ? 's' : ''} : remplacée${count > 1 ? 's' : ''} par une valeur calculée. Vérifiez les niveaux.`,
+    object: (entity: string, name: string, globalId: string) => `${entity}${name ? ` « ${name} »` : ''} (GlobalId ${globalId})`,
+    group: (entity: string, count: number) => `${entity} × ${count}`,
+  },
   calibrate: {
     noImage: 'Cliquez le premier point sur une image importée.',
     title: 'Calibrer l’image',

@@ -69,6 +69,19 @@ function asData(node: unknown): SceneNodeData {
 
 const AXIS_LABEL = /^.{1,12}$/
 
+/** Réglages du document Fabrics (page, plan, en m) rangés sur le nœud bâtiment (`metadata.fabrics`). */
+export function documentSettingsOf(doc: Pick<FabricsDocument, 'version' | 'unit' | 'page' | 'plan' | 'levels'>): Record<string, unknown> {
+  const plan = doc.plan && {
+    ...doc.plan,
+    gridSize: mmToM(doc.plan.gridSize),
+    defaultWallThickness: mmToM(doc.plan.defaultWallThickness),
+    defaultWallHeight: mmToM(doc.plan.defaultWallHeight),
+    ...(doc.plan.takeoff && { takeoff: takeoffToScene(doc.plan.takeoff) }),
+  }
+  const page = { ...doc.page, width: mmToM(doc.page.width), height: mmToM(doc.page.height) }
+  return defined({ version: doc.version, unit: doc.unit, page, plan, levelsAbsent: doc.levels ? undefined : true })
+}
+
 /** Plan refusé : deux éléments (ou deux niveaux) ont le même identifiant (EDGE-01, `duplicate-id`).
  * La conversion n'écrase jamais un élément par un autre en silence. */
 export class DuplicateElementIdError extends Error {
@@ -106,14 +119,6 @@ export function fabricsToScene(doc: FabricsDocument): FabricsToSceneResult {
   }
 
   // --- Site, bâtiment, réglages du document ---
-  const plan = doc.plan && {
-    ...doc.plan,
-    gridSize: mmToM(doc.plan.gridSize),
-    defaultWallThickness: mmToM(doc.plan.defaultWallThickness),
-    defaultWallHeight: mmToM(doc.plan.defaultWallHeight),
-    ...(doc.plan.takeoff && { takeoff: takeoffToScene(doc.plan.takeoff) }),
-  }
-  const page = { ...doc.page, width: mmToM(doc.page.width), height: mmToM(doc.page.height) }
   add(asData(SiteNode.parse({ id: SITE_ID, children: [] })))
   add(
     asData(
@@ -122,7 +127,7 @@ export function fabricsToScene(doc: FabricsDocument): FabricsToSceneResult {
         parentId: SITE_ID,
         children: [],
         metadata: {
-          fabrics: defined({ version: doc.version, unit: doc.unit, page, plan, levelsAbsent: doc.levels ? undefined : true }),
+          fabrics: documentSettingsOf(doc),
         },
       }),
     ),

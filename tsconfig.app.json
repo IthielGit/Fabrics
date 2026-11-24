@@ -35,6 +35,7 @@
       "@webxr/plugin/pascal-editor": ["./src/pascal/plugin-types.d.ts"],
       "@pascal-app/viewer": ["./packages/pascal/packages/viewer/dist/index.d.ts"],
       "@pascal-app/nodes": ["./packages/pascal/packages/nodes/dist/index.d.ts"],
+      "@pascal-app/ifc-converter": ["./packages/pascal/packages/ifc-converter/dist/index.d.ts"],
       "@pascal-app/ifc-converter/export": ["./packages/pascal/packages/ifc-converter/dist/export/index.d.ts"],
       "zod": ["./packages/pascal/node_modules/zod/index.d.ts"]
     }

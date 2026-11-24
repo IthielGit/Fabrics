@@ -16,7 +16,9 @@ const SOURCES = import.meta.glob<string>(['./**/*.{ts,tsx}', '!./**/*.test.{ts,t
 })
 
 /** Modules retirés : motif d'import interdit et raison (ADR). Vide en M17 : rien n'est retiré. */
-const RETIRED: readonly { pattern: RegExp; reason: string }[] = []
+const RETIRED: readonly { pattern: RegExp; reason: string }[] = [
+  { pattern: /features\/export\/ifc$/, reason: 'M22 (D22-4) : export IFC2x3 de Fabrics remplacé par l’exportateur IFC4 de Pascal' },
+]
 
 const IMPORT = /(?:import|export)\s[^'"]*?from\s*['"]([^'"]+)['"]|import\(\s*['"]([^'"]+)['"]\s*\)/g
 

@@ -1,8 +1,9 @@
-import { BookOpen, Building2, ChevronRight, Image, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
+import { BookOpen, Building2, ChevronRight, FileUp, Image, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
 import DeleteDialog from '../components/home/DeleteDialog'
+import ImportIfcDialog from '../components/home/ImportIfcDialog'
 import ImportLocalDialog from '../components/home/ImportLocalDialog'
 import LeaveDialog from '../components/home/LeaveDialog'
 import NewDesignDialog from '../components/home/NewDesignDialog'
@@ -27,12 +28,13 @@ type Dialog =
   | { type: 'delete'; project: ProjectSummary }
   | { type: 'leave'; project: SharedProjectSummary }
   | { type: 'newDesign' }
+  | { type: 'importIfc' }
 
 /** Accueil des projets, d'après `app/page.tsx` de Pascal (M19 A1) : en-tête, création, grille de cartes. */
 export default function HomePage() {
   const t = useT()
   const navigate = useNavigate()
-  const { projects, status, refresh, createPlan, createDesign, createExample, createLargeHouse, rename, duplicate, remove } =
+  const { projects, status, refresh, createPlan, createDesign, createExample, createLargeHouse, importPlan, rename, duplicate, remove } =
     useProjectsStore()
   const [dialog, setDialog] = useState<Dialog | null>(null)
   const [query, setQuery] = useState('')
@@ -109,6 +111,10 @@ export default function HomePage() {
         >
           {opening === 'design' ? <Loader2 size={16} aria-hidden="true" className="animate-spin" /> : <Image size={16} aria-hidden="true" />}
           {t('home.newDesign')}
+        </button>
+        <button type="button" className={SECONDARY_PILL} disabled={opening !== null} onClick={() => setDialog({ type: 'importIfc' })}>
+          <FileUp size={16} aria-hidden="true" />
+          {t('home.importIfc')}
         </button>
         <Link to="/reglages" aria-label={t('home.settings')} title={t('home.settings')} className={ICON_BUTTON}>
           <Settings size={16} aria-hidden="true" />
@@ -266,6 +272,9 @@ export default function HomePage() {
             if (imported) void refresh()
           }}
         />
+      )}
+      {dialog?.type === 'importIfc' && (
+        <ImportIfcDialog onImport={importPlan} onClose={closeDialog} onOpen={(id) => navigate(`/p/${id}`)} />
       )}
       {dialog?.type === 'newDesign' && (
         <NewDesignDialog

@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M22 Échanges IFC (gate G5), feu vert de l'utilisateur le 2026-11-24 ; **22.0 à 22.3 faits le 2026-11-24** (`docs/phases/M22-decisions.md`, `M22-classes.md`) ; tout M22 d'une traite, essai dans le navigateur à la fin. M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M22 Échanges IFC (gate G5), feu vert de l'utilisateur le 2026-11-24 ; **22.0 à 22.4 faits le 2026-11-24** (`docs/phases/M22-decisions.md`, `M22-classes.md`) ; tout M22 d'une traite, essai dans le navigateur à la fin. M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,15 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-24 — M22 · 22.4 : import IFC contrôlé
+
+- Accueil : bouton « Importer un IFC ». Le fichier est lu par la conversion de Pascal (web-ifc, fichiers `.wasm` servis par Vite) et devient un **nouveau projet Plan** (D22-6) ; aucun projet existant n'est modifié.
+- Bilan (`src/features/ifc/importReport.ts`) : le fichier est relu (texte STEP) et chaque objet est retrouvé dans la scène par son GlobalId : repris comme élément de plan, repris avec sa seule forme 3D (ni modifiable comme élément, ni dans les métrés), percement repris avec sa porte ou fenêtre, ou **non importé** (classe, nom, GlobalId). S'y ajoutent les éléments créés par la conversion (trémies…) et ce que la conversion a dû remplacer (unité, origine, altitudes illisibles). Affiché après l'import, téléchargeable en texte.
+- `scene/foreignScene.ts` : le terrain et le bâtiment de la scène importée prennent les identifiants de Fabrics et les réglages d'un plan neuf ; rien d'autre ne change (identifiants et GlobalId d'origine gardés). `fromFabrics.ts` : `documentSettingsOf` (même calcul qu'avant, partagé).
+- Tests (`importIfc.test.ts`, conversion réelle par web-ifc) : aller-retour HOUSE-01, HOUSE-02, grande maison sans aucune perte (mêmes GlobalId) ; IFC d'essai de Pascal (poutres en forme seule, assemblage non importé signalé ; percement compté avec sa porte ; objet générique en forme seule) ; un objet inconnu glissé dans un fichier est listé avec sa classe, son nom et son GlobalId.
+- `architecture.test.ts` : l'ancien `features/export/ifc` est un module retiré (interdit à l'import).
+- Vérifié : build (fichiers `web-ifc*.wasm` dans `dist/assets`), lint, tests ; le test de durée « 600 murs » a échoué une fois machine chargée, réussi seul (problème connu).
 
 ### 2026-11-24 — M22 · 22.3 : GlobalId stables
 

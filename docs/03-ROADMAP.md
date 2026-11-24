@@ -1423,14 +1423,14 @@ rappelle s'il tourne sur un autre modèle).
 | 22.1 Classes et correspondances — **fait le 2026-11-24** (`docs/phases/M22-classes.md`) | Projet, site, bâtiment, niveau, mur, dalle, porte, fenêtre, ouverture, pièce ; table nœud Pascal → classe IFC | `/model opus` |
 | 22.2 Export — **fait le 2026-11-24** | Par l'`ifc-converter` de Pascal : placements, unités, relations spatiales, matériaux et compositions, types, propriétés, quantités | `/model opus` |
 | 22.3 Identifiants stables — **fait le 2026-11-24** | Correspondance `elementId ↔ GlobalId` identique d'un export à l'autre | `/model sonnet` |
-| 22.4 Import contrôlé | Rapport d'import : objets inconnus et géométries non prises en charge signalés, jamais modifiés en silence | `/model opus` |
+| 22.4 Import contrôlé — **fait le 2026-11-24** | Rapport d'import : objets inconnus et géométries non prises en charge signalés, jamais modifiés en silence | `/model opus` |
 | 22.5 Contrôles et gate G5 | Schéma, IDS si applicable, réimport et comparaison géométrique (IfcOpenShell), ouverture dans 2 visionneuses, rapport | `/model opus` |
 
 - [x] Classes cibles : projet, site, bâtiment, niveau, mur, dalle, porte, fenêtre, ouverture, pièce
 - [x] Export par l'`ifc-converter` de Pascal : placements, unités, relations spatiales, matériaux et
       compositions, ouvertures, types, propriétés, quantités
 - [x] Correspondance `elementId ↔ GlobalId` stable d'un export à l'autre
-- [ ] Import contrôlé avec rapport : objets inconnus et géométries non prises en charge signalés,
+- [x] Import contrôlé avec rapport : objets inconnus et géométries non prises en charge signalés,
       jamais modifiés en silence
 - [ ] Contrôle de schéma, IDS si applicable, réimport et comparaison géométrique (script IfcOpenShell)
 

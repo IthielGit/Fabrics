@@ -14,6 +14,7 @@ export const fabricsFr = {
   'home.startTitle': ['Par où commencer ?'],
   'home.newPlan': ['Nouveau plan'],
   'home.newDesign': ['Nouveau visuel'],
+  'home.importIfc': ['Importer un IFC'],
   'home.examplesFamily': ['Maisons d’exemple à ouvrir'],
   'home.plan.title': ['Dessiner un plan'],
   'home.plan.text': ['Murs, pièces, portes : les surfaces se calculent toutes seules.'],
