@@ -659,6 +659,7 @@ export const fr = {
       complete: (total: number) => `Quantitatif complet : ${total} quantités, toutes validées.`,
       incomplete: (provisional: number, missing: number, unsupported: number) =>
         `Quantitatif incomplet, à ne pas utiliser tel quel : ${provisional} provisoire(s), ${missing} avec données manquantes, ${unsupported} non pris en charge.`,
+      qualityTitle: 'Contrôles qualité',
       belowThreshold: 'sous le seuil, non déduite',
       union: 'ouvertures qui se chevauchent : union déduite',
       levelSlab: (levelName: string) => `Dalle du niveau ${levelName}`,
@@ -756,6 +757,13 @@ export const fr = {
         wallGap: 'Cliquez le bouton de correction : le mur est prolongé jusqu’à l’autre mur (annulable).',
         wallOverlap:
           'Cliquez le bouton de correction s’il est proposé, sinon supprimez le mur en double ou mettez les deux murs bout à bout.',
+        openingTooTall: 'Réduisez la hauteur ou l’allège de l’ouverture, ou rehaussez le mur, dans l’onglet Propriétés.',
+        openingInvalidSize: 'Donnez une largeur et une hauteur à l’ouverture dans l’onglet Propriétés.',
+        roomSelfIntersecting: 'Redessinez la pièce : son contour se croise, sa surface est fausse.',
+        roofInvalid: 'Vérifiez le contour et la pente de la toiture : ses quantités ne peuvent pas être calculées.',
+        wallNoMaterial: 'Choisissez un matériau ou une composition pour ce mur (panneau du mur) : il en faut un pour le chiffrer.',
+        roomNoName: 'Donnez un nom à la pièce dans l’onglet Propriétés.',
+        suspiciousUnit: 'Vérifiez la valeur : les dimensions se saisissent en mm (200, pas 0,2 ni 20).',
       },
       showOnPlan: 'Cliquez pour voir la zone sur le plan.',
       more: (count: number) => `… et ${count} autre${count > 1 ? 's' : ''}.`,
@@ -778,6 +786,23 @@ export const fr = {
         `Le mur ${ref} ne touche pas le mur ${otherRef} (écart de ${gap}) : les angles et les longueurs seront faussés.`,
       wallOverlap: (first: string, second: string, length: string) =>
         `Les murs ${first} et ${second} se superposent sur ${length} : cette partie est comptée deux fois.`,
+      // Contrôles qualité (M21, 21.7).
+      openingTooTall: (opening: string, wall: string) =>
+        `L’ouverture ${opening} est plus haute que le mur ${wall} : seule la partie dans le mur est déduite.`,
+      openingInvalidSize: (opening: string) => `L’ouverture ${opening} n’a pas de largeur ou pas de hauteur.`,
+      roomSelfIntersecting: (name: string) => `Le contour de la pièce ${name} se croise : sa surface est fausse.`,
+      roofInvalid: (name: string) => `La toiture ${name} ne peut pas être calculée : ses quantités sont à 0.`,
+      wallNoMaterial: (wall: string) => `Le mur ${wall} n’a ni matériau ni composition (propriété manquante).`,
+      roomNoName: (name: string) => `La pièce ${name} n’a pas de nom (propriété manquante).`,
+      suspiciousUnit: (element: string, field: string, value: string) =>
+        `${element} : ${field} de ${value}, valeur inhabituelle — saisie en m ou en cm au lieu de mm ?`,
+      unitFields: {
+        wallThickness: 'épaisseur',
+        wallHeight: 'hauteur',
+        openingWidth: 'largeur',
+        openingHeight: 'hauteur',
+        levelHeight: 'hauteur d’étage',
+      },
       fixGap: 'Joindre',
       fixGapHint: 'Prolonge le mur jusqu’à l’autre mur. Vous pouvez annuler avec Ctrl+Z.',
       fixOverlap: 'Corriger',

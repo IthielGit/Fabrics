@@ -11,7 +11,8 @@ const room = (id: string, points: number[], extra: Partial<RoomElement> = {}): R
   ...BASE, id, name: id, type: 'room', points, fill: '#0a0', showLabel: true, levelId: 'L0', ...extra,
 })
 const wall = (id: string, points: number[], extra: Partial<WallElement> = {}): WallElement => ({
-  ...BASE, id, name: id, type: 'wall', points, thickness: 200, height: 2500, fill: '#444', levelId: 'L0', ...extra,
+  // Avec un matériau : le contrôle « matériau manquant » (M21) a ses propres tests.
+  ...BASE, id, name: id, type: 'wall', points, thickness: 200, height: 2500, fill: '#444', levelId: 'L0', material: 'masonry', ...extra,
 })
 const opening = (id: string, offset: number, width: number): OpeningElement => ({
   ...BASE, id, name: id, type: 'opening', kind: 'window', wallId: 'nord', segmentIndex: 0, offset,

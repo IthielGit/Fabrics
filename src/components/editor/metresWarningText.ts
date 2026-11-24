@@ -1,5 +1,5 @@
 import type { MetresWarning } from '../../features/measurements/warnings'
-import { formatArea, formatLength } from '../../features/units/format'
+import { formatArea, formatDecimal, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
 
 /** Texte français d'un avertissement des métrés. */
@@ -32,6 +32,21 @@ export function metresWarningText(warning: MetresWarning): string {
       return t.wallGap(warning.wallRef, warning.otherWallRef, formatLength(warning.gap))
     case 'wallOverlap':
       return t.wallOverlap(warning.wallRefs[0], warning.wallRefs[1], formatLength(warning.length))
+    case 'openingTooTall':
+      return t.openingTooTall(warning.openingRef, warning.wallRef)
+    case 'openingInvalidSize':
+      return t.openingInvalidSize(warning.openingRef)
+    case 'roomSelfIntersecting':
+      return t.roomSelfIntersecting(warning.roomName)
+    case 'roofInvalid':
+      return t.roofInvalid(warning.roofName)
+    case 'wallNoMaterial':
+      return t.wallNoMaterial(warning.wallRef)
+    case 'roomNoName':
+      return t.roomNoName(warning.roomName)
+    case 'suspiciousUnit':
+      // Valeur telle que saisie (0,2 mm reste lisible, pas arrondie à 0).
+      return t.suspiciousUnit(warning.elementRef, t.unitFields[warning.field], `${formatDecimal(warning.value, Number.isInteger(warning.value) ? 0 : 2)} mm`)
   }
 }
 
@@ -58,6 +73,18 @@ export function metresWarningTargets(warning: MetresWarning): string[] {
       return [warning.wallId]
     case 'wallOverlap':
       return [...warning.wallIds]
+    case 'openingTooTall':
+    case 'openingInvalidSize':
+      return [warning.openingId]
+    case 'roomSelfIntersecting':
+    case 'roomNoName':
+      return [warning.roomId]
+    case 'roofInvalid':
+      return [warning.roofId]
+    case 'wallNoMaterial':
+      return [warning.wallId]
+    case 'suspiciousUnit':
+      return [warning.elementId]
   }
 }
 

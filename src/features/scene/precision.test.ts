@@ -99,9 +99,9 @@ describe.each(['T1', 'T2'])('%s : plan → scène Pascal (2D → 3D)', (id) => {
     check(id, 'emprise (m²)', m2(siteMeasures(scene).footprintArea), s.expected.footprint_m2)
   })
 
-  it('aucun avertissement de métré', () => {
+  it('aucun avertissement de métré, sauf le matériau que la fixture ne donne pas (contrôle M21)', () => {
     const view = sceneToFabricsView(scene)
-    expect(metresWarnings(view, computeBuildingMeasurements(view))).toEqual([])
+    expect(metresWarnings(view, computeBuildingMeasurements(view)).filter((w) => w.kind !== 'wallNoMaterial')).toEqual([])
   })
 })
 

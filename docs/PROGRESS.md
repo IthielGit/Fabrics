@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M21 Quantitatif automatique et traçabilité (gate G4), feu vert de l'utilisateur le 2026-11-23 ; **21.0 fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) ; **21.1 à 21.4 faits le 2026-11-23, 21.5 et 21.6 le 2026-11-24** ; en cours : 21.3 à 21.8 (demande de l'utilisateur : tout M21, essai dans le navigateur à la fin). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M21 Quantitatif automatique et traçabilité (gate G4), feu vert de l'utilisateur le 2026-11-23 ; **21.0 fait le 2026-11-23** (`docs/phases/M21-decisions.md`, option recommandée partout) ; **21.1 à 21.4 faits le 2026-11-23, 21.5 à 21.7 le 2026-11-24** ; en cours : 21.3 à 21.8 (demande de l'utilisateur : tout M21, essai dans le navigateur à la fin). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,15 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-24 — M21 · 21.7 : contrôles qualité
+- `measurements/qualityChecks.ts`, ajouté au système d'avertissements existant (`warnings.ts`, un seul système) :
+  - **géométrie incohérente** : ouverture plus haute que son mur, ouverture sans largeur ou sans hauteur, contour de pièce qui se croise, toiture impossible à calculer (s'ajoutent aux contrôles existants : mur de hauteur nulle, sans épaisseur, réduit à un point, ouverture hors du mur, chevauchements, murs disjoints ou superposés) ;
+  - **propriétés manquantes** : mur sans matériau ni composition (cas « missing-material » d'EDGE-01), pièce sans nom ;
+  - **unités incompatibles** : épaisseur, hauteur, largeur ou hauteur d'étage hors des valeurs plausibles en mm (ex. épaisseur 0,2 ou 15) : saisie probable en m ou en cm.
+- Panneau Métrés : liste « Contrôles qualité » dans le bloc Quantitatif (cliquer un point sélectionne l'élément) ; aussi dans la fenêtre Exporter, comme les autres avertissements. Rien n'est corrigé ni bloqué.
+- Tests : `qualityChecks.test.ts`. Les tests « aucun avertissement » des fixtures et des plans d'exemple ignorent maintenant « mur sans matériau » : ces plans ont des murs sans matériau (HOUSE-01, T1, T2 ; 5 cloisons de la grande maison), signalés à juste titre (voir Idées).
+- Build, lint, tests OK ; baseline inchangée.
 
 ### 2026-11-24 — M21 · 21.6 : comparaison avec IfcOpenShell
 - `npm run check:ifc-quantities` (`scripts/ifc-quantities.mjs`) : quatre jeux d'échange (HOUSE-01, HOUSE-02, plan d'exemple, grande maison) passés par la scène Pascal, exportés en IFC4 par l'exportateur de Pascal (chargé depuis ses sources, dans un test : `quantities/ifcExchange.test.ts`), puis relus par IfcOpenShell (`tools/ifc/compare_quantities.py`). Rapport : `tmp/ifc-exchange/report.md`. Compte rendu : `docs/phases/M21-ifc-comparison.md`.
@@ -2236,6 +2245,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Correctif : `image.crossOrigin = 'anonymous'` dans `useAssetImage.ts` (Supabase Storage renvoie bien `Access-Control-Allow-Origin: *`). La cause d'un échec est désormais écrite dans la console (`ExportDialog.tsx`). Build, lint, 2978 tests OK.
 
 ## Idées (hors jalon en cours)
+- **Plans d'exemple (M21 21.7)** : donner un matériau aux quelques cloisons qui n'en ont pas, pour que le contrôle « mur sans matériau » ne s'y affiche plus (change leurs dessins et la 3D : baseline).
 - **Métrés, raccord de trois murs ou plus (M21 21.6)** : couper la pointe d'angle comme Pascal (volume et faces exacts), au lieu de marquer ces quantités « provisoires ». Change les métrés existants (baseline) : à décider. Voir `docs/phases/M21-ifc-comparison.md`.
 - **M22, IfcSpace** : exporter le contour et la surface de la pièce Fabrics (contour tracé), pas la zone recalculée par Pascal sur l'axe des murs (écart de 5 à 20 % mesuré en 21.6).
 - **Performance, lot 2 Alléger (remis à plus tard le 2026-11-18)** : l'accueil charge encore le moteur de Pascal (1,7 Mo) par le chemin enregistrement → conversion des scènes (`storedScene` → `sceneBinding` / `toFabricsView`) ; modules arbres, environnement et ossature chargés même quand le projet ne les utilise pas ; regrouper les ~1 100 petits fichiers JavaScript ; budget de poids dans `npm run check:all`.

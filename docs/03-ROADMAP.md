@@ -1385,7 +1385,7 @@ rappelle s'il tourne sur un autre modèle).
 | 21.4 Statut des quantités — **fait le 2026-11-23** (`quantities/status.ts`) | Validé, provisoire, non pris en charge, données manquantes ; un quantitatif incomplet n'est jamais présenté comme fiable | `/model sonnet` |
 | 21.5 Recalcul ciblé — **fait le 2026-11-24** (`quantities/incremental.ts`) | Seules les quantités touchées par un élément modifié sont recalculées | `/model opus` |
 | 21.6 Comparaison IFC — **fait le 2026-11-24** (`docs/phases/M21-ifc-comparison.md`) | Quantités comparées avec IfcOpenShell sur un jeu d'échange | `/model sonnet` |
-| 21.7 Contrôles qualité | Géométrie incohérente, propriétés manquantes, unités incompatibles | `/model sonnet` |
+| 21.7 Contrôles qualité — **fait le 2026-11-24** (`measurements/qualityChecks.ts`) | Géométrie incohérente, propriétés manquantes, unités incompatibles | `/model sonnet` |
 | 21.8 Vérification et gate G4 | Toutes les fixtures (HOUSE-01, HOUSE-02, EDGE-01), tolérances, sources visibles dans les exports, rapport | `/model opus` |
 
 - [x] Quantités géométriques et quantités de métré distinguées — fait (2026-11-23)
@@ -1396,7 +1396,7 @@ rappelle s'il tourne sur un autre modèle).
       quantitatif incomplet n'est jamais présenté comme fiable
 - [x] Recalcul ciblé après la modification d'un élément
 - [x] Comparaison avec les quantités IFC (IfcOpenShell) sur un jeu d'échange
-- [ ] Contrôles qualité : géométrie incohérente, propriétés manquantes, unités incompatibles
+- [x] Contrôles qualité : géométrie incohérente, propriétés manquantes, unités incompatibles
 
 **Critères d'acceptation (G4)**
 - Mur 5000 × 3000 × 200 mm avec une ouverture 900 × 2100 mm : brut 15,00 m², ouverture 1,89 m², net

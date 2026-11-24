@@ -5,6 +5,7 @@ import { isOpeningOutside, openingInterval, OPENING_TOLERANCE } from '../geometr
 import { wallIssues, type WallFix } from '../geometry/wallContacts'
 import type { Point } from '../geometry/viewport'
 import { computeBuildingMeasurements, type BuildingMeasurements } from './measurements'
+import { qualityChecks, type QualityWarning } from './qualityChecks'
 import { createCoverageChecker } from './roomCoverage'
 import { withDisplayNames } from '../naming/autoNames'
 
@@ -59,6 +60,8 @@ export type MetresWarning =
       /** Correction proposée, ou `null` quand le choix revient à l'utilisateur. */
       fix: WallFix | null
     }
+  // M21 21.7 : contrôles qualité (géométrie incohérente, propriétés manquantes, unités douteuses).
+  | QualityWarning
 
 /** Nom affiché d'une pièce (le nom vide reste reconnaissable). */
 const roomLabel = (room: RoomElement, index: number) => room.name.trim() || `#${index + 1}`
@@ -209,6 +212,7 @@ export function metresWarnings(
     }
     warnings.push(...openingChecks(level.id, elements, building))
     warnings.push(...wallChecks(level.id, elements, building))
+    warnings.push(...qualityChecks(level, elements, measurements, building))
   }
 
   // Sans niveau, un élément mesurable n'est compté nulle part (les axes et les coupes n'ont jamais de niveau).

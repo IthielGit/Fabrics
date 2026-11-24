@@ -174,7 +174,9 @@ describe('createLargeHouseProject', () => {
 
   it('ne déclenche aucune alerte de métrés', () => {
     const document = createLargeHouseProject(NOW).document
-    expect(metresWarnings(document, computeBuildingMeasurements(document))).toEqual([])
+    // Quelques cloisons sans matériau : signalées par le contrôle qualité M21 (voir Idées), rien d'autre.
+    const warnings = metresWarnings(document, computeBuildingMeasurements(document))
+    expect(warnings.filter((w) => w.kind !== 'wallNoMaterial')).toEqual([])
   })
 })
 
@@ -221,7 +223,7 @@ describe('plan d’exemple : contrôle des métrés', () => {
   it('ne déclenche aucune alerte (surfaces, ouvertures, murs, trémie)', () => {
     const document = createExamplePlanProject(NOW).document
     const warnings = metresWarnings(document, computeBuildingMeasurements(document))
-    expect(warnings).toEqual([])
+    expect(warnings.filter((w) => w.kind !== 'wallNoMaterial')).toEqual([])
     expect(warnings.filter(isSurfaceWarning)).toEqual([])
   })
 })

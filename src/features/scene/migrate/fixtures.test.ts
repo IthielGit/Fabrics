@@ -67,8 +67,10 @@ describe('HOUSE-01 passé par la scène Pascal', () => {
     expect(m2(m.openings.reduce((sum, x) => sum + x.area, 0))).toBe(o.total_m2)
   })
 
-  it('aucun avertissement de métré', () => {
-    expect(metresWarnings(doc, computeBuildingMeasurements(doc))).toEqual([])
+  it('aucun avertissement de métré, sauf le matériau que la fixture ne donne pas (contrôle M21)', () => {
+    const warnings = metresWarnings(doc, computeBuildingMeasurements(doc))
+    expect(warnings.filter((w) => w.kind !== 'wallNoMaterial')).toEqual([])
+    expect(warnings.map((w) => w.kind === 'wallNoMaterial' && w.wallId).sort()).toEqual(['C1', 'C2', 'C3', 'ENV'])
   })
 
   it('quantités géométriques (M21, 21.1) : volumes des murs, brut 21,12 m³ et net 19,394 m³ pour ENV', () => {

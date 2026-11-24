@@ -4,6 +4,8 @@ import type { BuildingMeasurements } from '../../features/measurements/measureme
 import { createQuantityTracker } from '../../features/measurements/quantities/incremental'
 import { deductionsText, elementName, inputsText, ruleText, statusText, summaryText, valueText } from '../../features/measurements/quantities/quantityTable'
 import type { QuantityStatus } from '../../features/measurements/quantities/status'
+import { isSurfaceWarning, metresWarnings } from '../../features/measurements/warnings'
+import MetresWarningList from './MetresWarningList'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
 
@@ -31,6 +33,11 @@ export default function QuantitiesSection({ building, levelId }: { building: Bui
   const [track] = useState(createQuantityTracker)
   const set = useMemo(() => (document ? track(document, scene).cache.set : null), [track, document, scene])
   const quantities = set?.takeoff ?? []
+  // Contrôles qualité (M21, 21.7) : les points sur les surfaces sont déjà en tête du panneau.
+  const quality = useMemo(
+    () => (document ? metresWarnings(document, building).filter((w) => !isSurfaceWarning(w)) : []),
+    [document, building],
+  )
   const t = fr.measurements.quantities
   const levelNames = new Map(building.levels.map((entry) => [entry.level.id, entry.level.name]))
   const levelName = (id: string) => levelNames.get(id) ?? ''
@@ -54,6 +61,11 @@ export default function QuantitiesSection({ building, levelId }: { building: Bui
       >
         {summaryText(set.summary, t)}
       </p>
+      {quality.length > 0 && (
+        <div className="mt-2">
+          <MetresWarningList warnings={quality} title={t.qualityTitle} interactive />
+        </div>
+      )}
       <p className="mt-2 text-xs leading-relaxed text-slate-600">{t.note}</p>
       <table className="mt-2 w-full text-sm">
         <thead>
