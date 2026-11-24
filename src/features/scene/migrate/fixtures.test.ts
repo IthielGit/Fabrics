@@ -203,6 +203,11 @@ describe('EDGE-01 : jamais un résultat faux en silence', () => {
     expect(() => fabricsToScene(doc)).toThrow('Identifiants en double dans le plan : w')
   })
 
-  it.todo('missing-material : signalé « matériau manquant » dans les contrôles (M21, M24)')
+  it('missing-material : signalé « matériau manquant » dans les contrôles qualité (M21)', () => {
+    const doc = viaScene(planDocument(levels, [wall()]))
+    const warnings = metresWarnings(doc, computeBuildingMeasurements(doc))
+    expect(warnings).toContainEqual(expect.objectContaining({ kind: 'wallNoMaterial', wallId: 'w' }))
+    expect(isBlockingWarning(warnings.find((x) => x.kind === 'wallNoMaterial')!)).toBe(false)
+  })
   it.todo('ifc-nested-placements : coordonnées absolues après import IFC (M22)')
 })

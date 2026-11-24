@@ -1386,7 +1386,7 @@ rappelle s'il tourne sur un autre modèle).
 | 21.5 Recalcul ciblé — **fait le 2026-11-24** (`quantities/incremental.ts`) | Seules les quantités touchées par un élément modifié sont recalculées | `/model opus` |
 | 21.6 Comparaison IFC — **fait le 2026-11-24** (`docs/phases/M21-ifc-comparison.md`) | Quantités comparées avec IfcOpenShell sur un jeu d'échange | `/model sonnet` |
 | 21.7 Contrôles qualité — **fait le 2026-11-24** (`measurements/qualityChecks.ts`) | Géométrie incohérente, propriétés manquantes, unités incompatibles | `/model sonnet` |
-| 21.8 Vérification et gate G4 | Toutes les fixtures (HOUSE-01, HOUSE-02, EDGE-01), tolérances, sources visibles dans les exports, rapport | `/model opus` |
+| 21.8 Vérification et gate G4 — **fait le 2026-11-24** sauf l'essai de l'utilisateur et la revue d'un métreur (`docs/phases/M21-report.md`) | Toutes les fixtures (HOUSE-01, HOUSE-02, EDGE-01), tolérances, sources visibles dans les exports, rapport | `/model opus` |
 
 - [x] Quantités géométriques et quantités de métré distinguées — fait (2026-11-23)
 - [x] Règles versionnées par catégorie et composition : longueur, surface brute et nette, volume brut

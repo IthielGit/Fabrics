@@ -400,3 +400,14 @@ droite de la 3D) et onglet **Paramètres**.
 | Un mur modifié dans la scène met à jour plans, plafond, coupe, façades, nomenclatures ; les autres feuilles ne changent pas | Auto : `features/sheets/gateG3.test.ts` |
 | Cotes justes imprimées à 100 % (1:50, 1:100, 1:200), étage de 2500 mm = 50 mm | Auto (PDF relu) ; Manuel : règle, `docs/phases/M20-review-checklist.md` A1-A3 |
 | Revue d'un professionnel | Manuel : `docs/phases/M20-review-checklist.md` |
+
+### M21 — Quantitatif automatique et traçabilité (gate G4)
+| Critère | Vérification |
+|---|---|
+| Mur témoin G4, union des ouvertures, ouverture qui dépasse (hauteur : partie déduite ; longueur : rejetée), tolérances, sources visibles | Auto : `features/measurements/quantities/gateG4.test.ts` |
+| Fixtures HOUSE-01, HOUSE-02, EDGE-01 (volumes, dalles, matériau manquant) | Auto : `features/scene/migrate/fixtures.test.ts` |
+| Deux familles, règles versionnées, seuils, tableaux, revêtements, plinthes | Auto : `features/measurements/quantities/quantities.test.ts` ; Nav. (Métrés → Règles de métré) |
+| Traçabilité et statut dans le panneau et les exports Exécution | Auto : baseline `tables-execution.json`, `metres-execution.*` ; Nav. (Métrés → Quantitatif, export Excel) |
+| Recalcul ciblé identique au recalcul complet | Auto : `features/measurements/quantities/incremental.test.ts` |
+| Quantitatif ↔ IFC4 de Pascal relu par IfcOpenShell | Manuel : `npm run check:ifc-quantities` (rapport `tmp/ifc-exchange/report.md`) |
+| Contrôles qualité (géométrie, propriétés manquantes, unités) | Auto : `features/measurements/qualityChecks.test.ts` ; Nav. (Métrés → Quantitatif → Contrôles qualité) |
