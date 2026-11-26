@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M23 Bibliothèque de prix et DQE : 23.0 Décisions fait le 2026-11-26 ; plan du jalon (`docs/phases/M23-plan.md`) en attente du feu vert. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0 et 23.1 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -47,11 +47,22 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
 | M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
-| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 fait) | |
+| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0, 23.1 faits) | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-26 — M23 · 23.1 Espaces et bibliothèque de prix : fait
+
+- Feu vert de l'utilisateur pour le plan du jalon (« prix brut » = débours sec HT, confirmé implicitement par le feu vert).
+- **Montants exacts** (`src/features/pricing/money.ts`) : prix en dixièmes d'Ariary (`bigint`) ; lecture d'un nombre de tableur sans calcul flottant ; prix saisi refusé au-delà d'une décimale ; HT = TTC ÷ (1 + TVA) au dixième le plus proche ; arrondi d'un montant à la centaine d'Ar supérieure (153 555 → 153 600 ; 589 950 → 590 000).
+- **Modèle et contrôles** (`model.ts`, `validate.ts`, `units.ts`) : matériaux, matériel, main-d'œuvre, postes avec sous-détail ; désignation et unité obligatoires ; « sans prix » signalé ; unités normalisées (« m2 » → « m² »).
+- **Base** (`supabase/m23-pricing.sql`, à lancer par l'utilisateur) : espaces, membres (admin / membre, départ sans effacement), invitations par lien, bibliothèque, lignes, postes, historique par ligne écrit par la base. Le taux de TVA ne change que par une fonction qui recalcule aussi les HT tirés d'un TTC. **Script exécuté dans un vrai Postgres (PGlite, banc d'essai hors dépôt) : 28 contrôles d'accès sur 28 conformes**, script relançable.
+- **Dépôts** : Supabase (connecté) et local (sans compte, un seul espace, IndexedDB).
+- **Page « Bibliothèque de prix »** (`/prix`, icône pièces sur l'accueil) : onglets Matériaux, Matériel, Main-d'œuvre, Postes de travaux (sous-détail dépliable), Membres (liens d'invitation, rôles, départ), Réglages (nom, TVA, date des prix) ; historique de chaque ligne ; lecture seule pour un membre. Page `/espace/<jeton>` pour rejoindre un espace.
+- Vérifié dans Chromium (mode local) : TTC 42 000 → HT 35 000,0 ; « 42 000,55 » refusé ; TVA 10 % → 38 181,8 et ligne d'historique ; poste saisi à la main ; données gardées après rechargement ; aucune erreur dans la console.
+- Build, lint, 3 483 tests OK ; doublons : aucun dans le nouveau code (factorisé), total 0,95 %.
 
 ### 2026-11-26 — M23 · 23.0 Décisions : fait
 

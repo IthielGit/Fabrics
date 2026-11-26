@@ -1451,7 +1451,7 @@ rappelle s'il tourne sur un autre modèle).
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
 | 23.0 Décisions — **fait le 2026-11-26** (`docs/phases/M23-decisions.md`) | Nomenclature des postes, base de prix, devise, taxes, en options, choisies par l'utilisateur | `/model opus` |
-| 23.1 Bibliothèque de prix | Postes, prix des matériaux, main-d'œuvre, matériel, compositions, date d'effet, fournisseur, région, version ; tables Supabase avec RLS | `/model opus` |
+| 23.1 Bibliothèque de prix — **fait le 2026-11-26** | Postes, prix des matériaux, main-d'œuvre, matériel, compositions, date d'effet, fournisseur, région, version ; tables Supabase avec RLS | `/model opus` |
 | 23.2 Import des prix | CSV et XLSX avec contrôle des unités et des devises ; aucun prix inventé ni implicite | `/model sonnet` |
 | 23.3 Correspondance vers les postes | Élément + matériau + règle → poste ; plusieurs postes par élément sans double comptage | `/model opus` |
 | 23.4 Calcul des montants | Pertes, frais, marge, taxes ; arrondis documentés ; montants exacts, sans nombres à virgule flottante | `/model opus` |
@@ -1460,7 +1460,7 @@ rappelle s'il tourne sur un autre modèle).
 | 23.7 Exports | XLSX et PDF : en-tête, cartouche, synthèse, détail, hypothèses, date des prix | `/model sonnet` |
 | 23.8 Contrôles et gate G6 | Postes sans prix bloquants, totaux identiques à l'écran, en XLSX et en PDF, rapport | `/model opus` |
 
-- [ ] Bibliothèque de prix : postes (code, libellé, unité, lot, ouvrage type), prix des matériaux,
+- [x] Bibliothèque de prix : postes (code, libellé, unité, lot, ouvrage type), prix des matériaux,
       main-d'œuvre, matériel, compositions de prix, date d'effet, fournisseur, région, version ;
       tables Supabase avec RLS
 - [ ] Import CSV et XLSX avec contrôle des unités et devises ; **aucun prix inventé ni implicite**

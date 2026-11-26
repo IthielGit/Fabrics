@@ -1,4 +1,4 @@
-import { BookOpen, Building2, ChevronRight, FileUp, Image, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
+import { BookOpen, Building2, ChevronRight, Coins, FileUp, Image, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
@@ -116,6 +116,9 @@ export default function HomePage() {
           <FileUp size={16} aria-hidden="true" />
           {t('home.importIfc')}
         </button>
+        <Link to="/prix" aria-label={t('home.priceLibrary')} title={t('home.priceLibrary')} className={ICON_BUTTON}>
+          <Coins size={16} aria-hidden="true" />
+        </Link>
         <Link to="/reglages" aria-label={t('home.settings')} title={t('home.settings')} className={ICON_BUTTON}>
           <Settings size={16} aria-hidden="true" />
         </Link>

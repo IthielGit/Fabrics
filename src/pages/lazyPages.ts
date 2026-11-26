@@ -14,6 +14,8 @@ export const SettingsPage = lazy(() => import('./SettingsPage'))
 export const IntroPage = lazy(() => import('./IntroPage'))
 export const InvitePage = lazy(() => import('./InvitePage'))
 export const SharePage = lazy(() => import('./SharePage'))
+export const PriceLibraryPage = lazy(() => import('./PriceLibraryPage'))
+export const WorkspaceInvitePage = lazy(() => import('./WorkspaceInvitePage'))
 export const ResetPasswordPage = lazy(() => import('./ResetPasswordPage'))
 
 /** Précharge l'éditeur d'un projet (plan → Pascal, visuel → Konva), sans l'afficher. */

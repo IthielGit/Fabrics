@@ -6,11 +6,13 @@ import HomePage from './pages/HomePage'
 import {
   IntroPage,
   InvitePage,
+  PriceLibraryPage,
   ProjectPage,
   ResetPasswordPage,
   SettingsPage,
   SharePage,
   VersionPreviewPage,
+  WorkspaceInvitePage,
 } from './pages/lazyPages'
 import LoginPage from './pages/LoginPage'
 import { useAuthStore } from './stores/authStore'
@@ -38,6 +40,8 @@ export default function App() {
           <Route path="/p/:projectId/pascal" element={<PascalRedirect />} />
           <Route path="/p/:projectId/versions/:versionId" element={<VersionPreviewPage />} />
           <Route path="/i/:token" element={<InvitePage />} />
+          <Route path="/prix" element={<PriceLibraryPage />} />
+          <Route path="/espace/:token" element={<WorkspaceInvitePage />} />
         </Route>
         <Route path="/bienvenue" element={<IntroPage />} />
         <Route path="/s/:token" element={<SharePage />} />
