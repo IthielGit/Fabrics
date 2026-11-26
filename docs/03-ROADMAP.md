@@ -1450,7 +1450,7 @@ rappelle s'il tourne sur un autre modèle).
 
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
-| 23.0 Décisions | Nomenclature des postes, base de prix, devise, taxes, en options, choisies par l'utilisateur | `/model opus` |
+| 23.0 Décisions — **fait le 2026-11-26** (`docs/phases/M23-decisions.md`) | Nomenclature des postes, base de prix, devise, taxes, en options, choisies par l'utilisateur | `/model opus` |
 | 23.1 Bibliothèque de prix | Postes, prix des matériaux, main-d'œuvre, matériel, compositions, date d'effet, fournisseur, région, version ; tables Supabase avec RLS | `/model opus` |
 | 23.2 Import des prix | CSV et XLSX avec contrôle des unités et des devises ; aucun prix inventé ni implicite | `/model sonnet` |
 | 23.3 Correspondance vers les postes | Élément + matériau + règle → poste ; plusieurs postes par élément sans double comptage | `/model opus` |
@@ -1475,7 +1475,8 @@ rappelle s'il tourne sur un autre modèle).
 - [ ] Contrôle : postes sans prix
 
 **Critères d'acceptation (G6)**
-- 13,11 m² × 45,00 €/m² (prix d'exemple) = 589,95 € HT
+- 13,11 m² × 45 000,0 Ar/m² HT (prix d'exemple) = 589 950 Ar, arrondi à la centaine supérieure : 590 000 Ar HT
+  (D23-1 et D23-5, exemple remplacé le 2026-11-26)
 - Même révision + même bordereau = même DQE
 - Un poste sans prix empêche de marquer le devis comme définitif
 - Les totaux sont identiques à l'écran, en XLSX et en PDF ; chaque poste affiche sa source et son unité

@@ -107,3 +107,62 @@ D23-3 (règles de prix de vente) reste ouvert : ni la proposition A, B ou C, ni 
 
 - **K1 = (1 + A1) × (1 + A2) × (1 + A3)**, soit 1,1025 avec les valeurs du classeur.
 - Le point « à confirmer » ci-dessus est levé.
+
+## Clôture de 23.0 (réponses de l'utilisateur le 2026-11-26)
+
+M22 étant fermé (gate G5 validé le 2026-11-24), l'utilisateur a demandé de commencer M23 (« 1 », le
+2026-11-26). Les décisions ci-dessous ferment 23.0.
+
+### D23-11 · Nomenclature des postes — **retenu : postes du classeur**
+
+Les postes de travaux de la feuille BIBLIOTHEQUE_TRAVAUX (codes `CAT-xx-yyy`, catégorie, désignation,
+unité) sont importés, **avec leur sous-détail** (feuille SDP : matériel, matériaux, main-d'œuvre,
+quantités, rendement). Un admin de l'espace peut ensuite ajouter, modifier ou retirer des postes dans
+l'application.
+
+### D23-12 · Prix d'un poste — **retenu : prix brut (débours sec HT)**
+
+Réponse de l'utilisateur : « je veux un prix brut, l'admin peut faire des mises à jour dans
+l'application ou en réimportant ». Constat dans le classeur : le « prix de référence » contient déjà le
+coefficient du sous-détail (SDP-001 : débours sec 7 844 766,67 Ar × K = 1,1 = 8 629 243 Ar, arrondi à
+8 629 300 Ar). Donc :
+
+- **Le prix d'un poste est son débours sec HT** (ligne « Total » du sous-détail : MTL + MTX + MO), avant
+  tout coefficient, avec une décimale (D23-5).
+- Ce prix est **enregistré** dans la bibliothèque. Il change seulement quand un admin le modifie dans
+  l'application ou réimporte le classeur. Il n'est **pas recalculé tout seul** quand le prix d'un
+  matériau change. La composition du sous-détail est conservée et affichée, pour la traçabilité.
+- Le coefficient K du sous-détail (1,1) et le « prix de référence » ne sont pas utilisés ; le rapport
+  d'import les mentionne pour information.
+
+### D23-13 · K1 réglé par projet — **amende D23-3**
+
+« Le coefficient K1 est dans l'Excel à titre d'exemple, on pourra modifier les pourcentages dans les
+projets réels. » Les parts A1, A2 et A3 se règlent **dans chaque devis** (par un admin de l'espace). Les
+valeurs du classeur (5 %, 5 %, 0 %) servent de **valeurs de départ**, affichées comme « exemple ». La
+règle de cumul ne change pas : K1 = (1 + A1) × (1 + A2) × (1 + A3).
+
+### D23-14 · Matériel et main-d'œuvre — **retenu : en HT**
+
+Matériel (MTL, « prix HT Tana ») : utilisé tel quel en HT. Main-d'œuvre (MO) : traitée en HT (les
+salaires ne portent pas de TVA). Hypothèse écrite dans le rapport d'import et dans les hypothèses du DQE.
+
+### D23-15 · Lien élément → poste — **retenu : règles de l'espace**
+
+Un admin définit des règles « type d'élément + matériau (+ épaisseur si utile) → un ou plusieurs postes
++ quantité de M21 utilisée ». Tous les projets de l'espace les appliquent. Dans un projet, on peut
+corriger le poste d'un élément à la main ; la correction est visible et tracée.
+
+### Choix par défaut de Claude (à contester au feu vert du plan)
+
+- **Région** (question 4 de 23.1) : texte libre par ligne, « Antananarivo » par défaut.
+- **Version** (question 5 de 23.1) : la bibliothèque prend une version de plus à chaque import ; les
+  modifications à la main sont tracées ligne par ligne (D23-7). Un DQE figé garde une copie des prix
+  utilisés (23.5).
+- **Travaux** (question 3 de 23.1) : remplacée par D23-11 et D23-12.
+- **Anomalies du classeur** (D23-5) : le fichier n'est jamais modifié ; l'import normalise et signale
+  chaque correction dans le rapport.
+- **Pertes** : les quantités des sous-détails les contiennent déjà. Une règle de lien peut ajouter un
+  coefficient de perte sur la quantité (0 % par défaut, toujours affiché).
+- **Exemple du gate G6 en Ariary** : 13,11 m² × 45 000,0 Ar/m² HT = 589 950 Ar, arrondi à la centaine
+  supérieure : **590 000 Ar HT**.

@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** aucun ; M23 attend le feu vert de l'utilisateur. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M23 Bibliothèque de prix et DQE : 23.0 Décisions fait le 2026-11-26 ; plan du jalon (`docs/phases/M23-plan.md`) en attente du feu vert. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -47,11 +47,18 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
 | M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
-| M23 Bibliothèque de prix et DQE (G6) | à faire | |
+| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 fait) | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-26 — M23 · 23.0 Décisions : fait
+
+- L'utilisateur a demandé de commencer M23. Quatre réponses ferment 23.0 (`docs/phases/M23-decisions.md`, D23-11 à D23-15) : postes du classeur avec leur sous-détail ; **prix d'un poste = prix brut (débours sec HT)**, modifié par un admin ou par réimport, jamais recalculé tout seul ; **K1 réglé dans chaque devis** (les valeurs du classeur ne sont qu'un exemple) ; matériel et main-d'œuvre en HT ; lien élément → postes par des règles de l'espace, avec correction à la main.
+- Vérifié dans le classeur : le « prix de référence » d'un poste contient déjà le coefficient K = 1,1 de son sous-détail (SDP-001 : 7 844 766,67 × 1,1 → 8 629 300 Ar) ; il n'est donc pas utilisé.
+- Exemple du gate G6 passé en Ariary dans la roadmap : 13,11 m² × 45 000,0 Ar/m² = 589 950 Ar → 590 000 Ar HT.
+- Plan complet du jalon (23.1 à 23.8) écrit dans `docs/phases/M23-plan.md`, en attente du feu vert. Aucun code.
 
 ### 2026-11-24 — M22 : validé par l'utilisateur, gate G5 validé
 
