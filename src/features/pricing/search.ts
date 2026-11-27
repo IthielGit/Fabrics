@@ -1,10 +1,13 @@
 /** Recherche dans la bibliothèque de prix : chaque mot doit apparaître (sans tenir compte des accents). */
 
-function fold(text: string): string {
+/** Texte sans accents, en minuscules (recherche, clés d'import). */
+export function fold(text: string): string {
   return text
     .normalize('NFD')
     .replace(/[̀-ͯ]/g, '')
     .toLowerCase()
+    .replace(/œ/g, 'oe')
+    .replace(/æ/g, 'ae')
 }
 
 export interface Searchable {

@@ -14,10 +14,32 @@ import type {
   WorkspaceRole,
   WorkspaceSummary,
 } from './model'
+import type { ImportPlan, ImportSummary } from './importPlan'
 
 export type AcceptWorkspaceInviteResult =
   | { status: 'ok'; workspaceId: string; role: WorkspaceRole }
   | { status: 'unavailable' }
+
+/** Un import appliqué (journal des imports). */
+export interface ImportBatch {
+  id: string
+  version: number
+  fileName: string
+  sha256: string
+  importedByEmail: string
+  importedAt: string
+  summary: Partial<ImportSummary>
+}
+
+export interface ApplyImportInput {
+  /** Version lue avant de calculer le plan ; l'import est refusé si elle a changé entre-temps. */
+  expectedVersion: number
+  priceDate: string | null
+  fileName: string
+  sha256: string
+  summary: ImportSummary
+  plan: ImportPlan
+}
 
 export interface LibraryPatch {
   name?: string
@@ -49,6 +71,11 @@ export interface PricingRepository {
   saveWorkItem(libraryId: string, fields: WorkItemFields, id?: string): Promise<WorkItem>
   deleteWorkItem(id: string): Promise<void>
 
+  /** Applique un import d'un bloc ; renvoie la nouvelle version de la bibliothèque. */
+  applyImport(libraryId: string, input: ApplyImportInput): Promise<number>
+  /** Imports de la bibliothèque, le plus récent d'abord. */
+  listImports(libraryId: string): Promise<ImportBatch[]>
+
   /** Historique d'une ligne, le plus récent d'abord. */
   listHistory(itemId: string): Promise<PriceHistoryEntry[]>
 
@@ -60,6 +87,14 @@ export interface PricingRepository {
   setMemberRole(workspaceId: string, userId: string, role: WorkspaceRole): Promise<void>
   /** Retire un membre, ou quitte l'espace si `userId` est la personne connectée. */
   removeMember(workspaceId: string, userId: string): Promise<void>
+}
+
+/** La bibliothèque a changé entre la lecture du fichier et l'application de l'import. */
+export class StaleLibraryError extends Error {
+  constructor() {
+    super('stale version')
+    this.name = 'StaleLibraryError'
+  }
 }
 
 /** Erreur nommée renvoyée par la base : il doit toujours rester un admin dans l'espace. */

@@ -15,7 +15,14 @@ import type {
   WorkspaceSummary,
 } from './model'
 import { DEFAULT_VAT_BP, htFromTtc } from './money'
-import type { AcceptWorkspaceInviteResult, LibraryPatch, PricingRepository } from './repository'
+import {
+  StaleLibraryError,
+  type AcceptWorkspaceInviteResult,
+  type ApplyImportInput,
+  type ImportBatch,
+  type LibraryPatch,
+  type PricingRepository,
+} from './repository'
 
 /** Tout l'état local, enregistré sous une seule clé (lectures et écritures atomiques). */
 export interface LocalPricingState {
@@ -24,6 +31,8 @@ export interface LocalPricingState {
   priceItems: PriceItem[]
   workItems: WorkItem[]
   history: PriceHistoryEntry[]
+  /** Journal des imports (absent des états enregistrés avant 23.2). */
+  imports?: ImportBatch[]
 }
 
 export interface LocalPricingStorage {
@@ -131,6 +140,7 @@ export class LocalPricingRepository implements PricingRepository {
       state.library = { ...state.library, vatRateBp, updatedAt: this.now() }
       state.priceItems = state.priceItems.map((item) => {
         if (item.libraryId !== libraryId || item.sourceBasis !== 'ttc_delivered' || item.sourcePrice === null) return item
+        if (item.vatExempt) return item
         const next = { ...item, priceHt: htFromTtc(item.sourcePrice, vatRateBp) }
         this.record(state, item, next)
         return next
@@ -200,6 +210,71 @@ export class LocalPricingRepository implements PricingRepository {
       state.workItems = state.workItems.filter((item) => item.id !== id)
       this.record(state, previous, null)
     })
+  }
+
+  async applyImport(libraryId: string, input: ApplyImportInput): Promise<number> {
+    return this.update((state) => {
+      const library = state.library
+      if (!library || library.id !== libraryId) throw new Error('library not found')
+      if (library.version !== input.expectedVersion) throw new StaleLibraryError()
+      const { plan } = input
+      const stamp = { updatedByEmail: LOCAL_AUTHOR, updatedAt: this.now() }
+      // Retraits (jamais une ligne saisie à la main), mises à jour, ajouts : même ordre que la base.
+      const removePrice = new Set(plan.price.remove)
+      for (const item of state.priceItems) {
+        if (removePrice.has(item.id) && item.sourceKey !== '') this.record(state, item, null)
+      }
+      state.priceItems = state.priceItems.filter((item) => !(removePrice.has(item.id) && item.sourceKey !== ''))
+      const removeWork = new Set(plan.work.remove)
+      for (const item of state.workItems) {
+        if (removeWork.has(item.id) && item.sourceKey !== '') this.record(state, item, null)
+      }
+      state.workItems = state.workItems.filter((item) => !(removeWork.has(item.id) && item.sourceKey !== ''))
+      for (const { id, fields } of plan.price.update) {
+        const index = state.priceItems.findIndex((item) => item.id === id)
+        if (index < 0) continue
+        const next: PriceItem = { ...fields, id, libraryId, ...stamp }
+        this.record(state, state.priceItems[index], next)
+        state.priceItems[index] = next
+      }
+      for (const { id, fields } of plan.work.update) {
+        const index = state.workItems.findIndex((item) => item.id === id)
+        if (index < 0) continue
+        const next: WorkItem = { ...fields, id, libraryId, ...stamp }
+        this.record(state, state.workItems[index], next)
+        state.workItems[index] = next
+      }
+      for (const fields of plan.price.insert) {
+        const next: PriceItem = { ...fields, id: this.newId(), libraryId, ...stamp }
+        state.priceItems.push(next)
+        this.record(state, null, next)
+      }
+      for (const fields of plan.work.insert) {
+        const next: WorkItem = { ...fields, id: this.newId(), libraryId, ...stamp }
+        state.workItems.push(next)
+        this.record(state, null, next)
+      }
+      const version = library.version + 1
+      state.library = { ...library, version, priceDate: input.priceDate ?? library.priceDate, updatedAt: stamp.updatedAt }
+      state.imports = [
+        {
+          id: this.newId(),
+          version,
+          fileName: input.fileName,
+          sha256: input.sha256,
+          importedByEmail: LOCAL_AUTHOR,
+          importedAt: stamp.updatedAt,
+          summary: input.summary,
+        },
+        ...(state.imports ?? []),
+      ]
+      return version
+    })
+  }
+
+  async listImports(libraryId: string): Promise<ImportBatch[]> {
+    const { library, imports } = await this.read()
+    return library?.id === libraryId ? (imports ?? []) : []
   }
 
   async listHistory(itemId: string): Promise<PriceHistoryEntry[]> {

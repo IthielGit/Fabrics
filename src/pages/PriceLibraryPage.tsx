@@ -1,8 +1,10 @@
-import { ArrowLeft, Plus } from 'lucide-react'
+import { ArrowLeft, FileUp, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
 import CreateWorkspaceForm from '../components/pricing/CreateWorkspaceForm'
+import ImportDialog from '../components/pricing/ImportDialog'
+import ImportHistorySection from '../components/pricing/ImportHistorySection'
 import LibrarySettingsSection from '../components/pricing/LibrarySettingsSection'
 import MembersSection from '../components/pricing/MembersSection'
 import PriceItemsTable from '../components/pricing/PriceItemsTable'
@@ -33,6 +35,7 @@ export default function PriceLibraryPage() {
   const selectWorkspace = usePricingStore((state) => state.selectWorkspace)
   const [tab, setTab] = useState<Tab>('material')
   const [creating, setCreating] = useState(false)
+  const [importing, setImporting] = useState(false)
 
   useEffect(() => {
     void load(userId)
@@ -102,13 +105,21 @@ export default function PriceLibraryPage() {
 
         {status === 'ready' && workspace && library && !creating && (
           <>
-            <p className="mb-4 text-xs text-muted-foreground">
-              {t('pricing.summary', {
-                version: library.version,
-                date: library.priceDate ? formatIsoDay(library.priceDate) : t('pricing.noDate'),
-                rate: formatRate(library.vatRateBp),
-              })}
-            </p>
+            <div className="mb-4 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs text-muted-foreground">
+                {t('pricing.summary', {
+                  version: library.version,
+                  date: library.priceDate ? formatIsoDay(library.priceDate) : t('pricing.noDate'),
+                  rate: formatRate(library.vatRateBp),
+                })}
+              </p>
+              {canEdit && (
+                <button type="button" className={SECONDARY_PILL} onClick={() => setImporting(true)}>
+                  <FileUp size={14} aria-hidden="true" />
+                  {t('pricing.import.button')}
+                </button>
+              )}
+            </div>
             {!canEdit && <p className="mb-4 rounded-lg bg-secondary px-3 py-2 text-sm">{t('pricing.readOnly')}</p>}
 
             <div role="tablist" className="mb-4 flex flex-wrap gap-1 border-b border-border">
@@ -136,8 +147,14 @@ export default function PriceLibraryPage() {
               )}
               {tab === 'work' && <WorkItemsTable canEdit={canEdit} />}
               {tab === 'members' && <MembersSection />}
-              {tab === 'settings' && <LibrarySettingsSection key={library.id} canEdit={canEdit} />}
+              {tab === 'settings' && (
+                <div className="grid gap-4">
+                  <LibrarySettingsSection key={library.id} canEdit={canEdit} />
+                  <ImportHistorySection />
+                </div>
+              )}
             </div>
+            {importing && <ImportDialog onClose={() => setImporting(false)} />}
           </>
         )}
       </main>

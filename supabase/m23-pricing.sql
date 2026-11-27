@@ -110,12 +110,16 @@ create table if not exists public.price_items (
   unit             text not null check (char_length(btrim(unit)) between 1 and 30),
   source_basis     text not null default 'ht' check (source_basis in ('ht', 'ttc_delivered')),
   source_price     bigint check (source_price is null or source_price >= 0),
+  -- Ligne achetée sans TVA (D23-16) : prix HT = prix TTC, quel que soit le taux.
+  vat_exempt       boolean not null default false,
   price_ht         bigint check (price_ht is null or price_ht >= 0),
   supplier         text not null default '',
   region           text not null default '',
   effective_date   date,
   details          jsonb not null default '{}'::jsonb,
   source_row       text not null default '',
+  -- Clé d'import (« MTX:1.1 ») : un réimport met à jour la ligne de même clé ; vide = saisie à la main.
+  source_key       text not null default '',
   updated_by       uuid references auth.users (id) on delete set null,
   updated_by_email text not null default '',
   updated_at       timestamptz not null default now(),
@@ -141,6 +145,7 @@ create table if not exists public.work_items (
   -- (montants en dixièmes d'Ar, écrits en texte).
   components         jsonb not null default '[]'::jsonb,
   source_row         text not null default '',
+  source_key         text not null default '',
   updated_by         uuid references auth.users (id) on delete set null,
   updated_by_email   text not null default '',
   updated_at         timestamptz not null default now()
@@ -279,13 +284,13 @@ grant update (name, price_date) on public.price_libraries to authenticated;
 
 revoke all on public.price_items from anon, authenticated;
 grant select, insert, delete on public.price_items to authenticated;
-grant update (kind, code, category, designation, unit, source_basis, source_price, price_ht, supplier,
-              region, effective_date, details, source_row) on public.price_items to authenticated;
+grant update (kind, code, category, designation, unit, source_basis, source_price, vat_exempt, price_ht, supplier,
+              region, effective_date, details, source_row, source_key) on public.price_items to authenticated;
 
 revoke all on public.work_items from anon, authenticated;
 grant select, insert, delete on public.work_items to authenticated;
 grant update (code, category, designation, unit, price_ht, reference_price, source_coefficient, output,
-              components, source_row) on public.work_items to authenticated;
+              components, source_row, source_key) on public.work_items to authenticated;
 
 -- L'historique n'est écrit que par les déclencheurs.
 revoke all on public.price_history from anon, authenticated;
@@ -484,6 +489,7 @@ grant execute on function public.set_workspace_member_role(uuid, uuid, text) to 
 grant execute on function public.remove_workspace_member(uuid, uuid) to authenticated;
 
 -- Change le taux de TVA et recalcule, dans la même transaction, le prix HT des lignes saisies en TTC
+-- (sauf les lignes « sans TVA », D23-16)
 -- (D23-10 : HT = TTC ÷ (1 + taux), au dixième d'Ar le plus proche, la moitié vers le haut).
 create or replace function public.set_library_vat_rate(p_library_id uuid, p_vat_rate_bp integer)
 returns void
@@ -504,9 +510,134 @@ begin
   update public.price_libraries set vat_rate_bp = p_vat_rate_bp where id = p_library_id;
   update public.price_items
      set price_ht = round(source_price::numeric * 10000 / (10000 + p_vat_rate_bp))::bigint
-   where library_id = p_library_id and source_basis = 'ttc_delivered' and source_price is not null;
+   where library_id = p_library_id and source_basis = 'ttc_delivered' and source_price is not null
+     and not vat_exempt;
 end;
 $$;
 
 revoke all on function public.set_library_vat_rate(uuid, integer) from public, anon;
 grant execute on function public.set_library_vat_rate(uuid, integer) to authenticated;
+
+-- =========================================================
+-- 23.2 · Import des prix (classeur XLSX ou CSV)
+-- =========================================================
+-- Le navigateur lit le fichier et calcule le plan (lignes à ajouter, modifier, retirer) ; la base
+-- l'applique d'un bloc, ou pas du tout. La bibliothèque prend une version de plus. Une ligne saisie
+-- à la main (source_key vide) n'est jamais retirée par un import.
+
+create table if not exists public.price_import_batches (
+  id                uuid primary key default gen_random_uuid(),
+  library_id        uuid not null references public.price_libraries (id) on delete cascade,
+  workspace_id      uuid not null references public.workspaces (id) on delete cascade,
+  version           integer not null,
+  file_name         text not null default '',
+  sha256            text not null default '',
+  imported_by       uuid references auth.users (id) on delete set null,
+  imported_by_email text not null default '',
+  imported_at       timestamptz not null default now(),
+  -- { added, updated, removed, unchanged, keptManual, priceChanges, warnings }
+  summary           jsonb not null default '{}'::jsonb
+);
+
+create index if not exists price_import_batches_library_idx on public.price_import_batches (library_id, imported_at desc);
+
+alter table public.price_import_batches enable row level security;
+
+drop policy if exists "price_import_batches_select" on public.price_import_batches;
+create policy "price_import_batches_select" on public.price_import_batches
+  for select to authenticated using (public.my_workspace_role(workspace_id) is not null);
+
+revoke all on public.price_import_batches from anon, authenticated;
+grant select on public.price_import_batches to authenticated;
+
+create or replace function public.apply_price_import(
+  p_library_id       uuid,
+  p_expected_version integer,
+  p_price_date       date,
+  p_file_name        text,
+  p_sha256           text,
+  p_summary          jsonb,
+  p_price_insert     jsonb,
+  p_price_update     jsonb,
+  p_price_delete     uuid[],
+  p_work_insert      jsonb,
+  p_work_update      jsonb,
+  p_work_delete      uuid[]
+) returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_library public.price_libraries;
+  v_version integer;
+begin
+  select * into v_library from public.price_libraries where id = p_library_id for update;
+  if not found or public.my_workspace_role(v_library.workspace_id) is distinct from 'admin' then
+    raise exception 'library not found' using errcode = '42501';
+  end if;
+  if v_library.version <> p_expected_version then
+    raise exception 'stale version' using errcode = 'P0001';
+  end if;
+
+  delete from public.price_items
+   where library_id = p_library_id and source_key <> '' and id = any(coalesce(p_price_delete, '{}'));
+  delete from public.work_items
+   where library_id = p_library_id and source_key <> '' and id = any(coalesce(p_work_delete, '{}'));
+
+  update public.price_items p set
+    kind = x.kind, code = x.code, category = x.category, designation = x.designation, unit = x.unit,
+    source_basis = x.source_basis, source_price = x.source_price, vat_exempt = x.vat_exempt,
+    price_ht = x.price_ht, supplier = x.supplier, region = x.region, effective_date = x.effective_date,
+    details = x.details, source_row = x.source_row, source_key = x.source_key
+  from jsonb_to_recordset(coalesce(p_price_update, '[]')) as x(
+    id uuid, kind text, code text, category text, designation text, unit text, source_basis text,
+    source_price bigint, vat_exempt boolean, price_ht bigint, supplier text, region text,
+    effective_date date, details jsonb, source_row text, source_key text)
+  where p.id = x.id and p.library_id = p_library_id;
+
+  insert into public.price_items (library_id, kind, code, category, designation, unit, source_basis,
+    source_price, vat_exempt, price_ht, supplier, region, effective_date, details, source_row, source_key)
+  select p_library_id, x.kind, x.code, x.category, x.designation, x.unit, x.source_basis,
+    x.source_price, x.vat_exempt, x.price_ht, x.supplier, x.region, x.effective_date,
+    coalesce(x.details, '{}'::jsonb), x.source_row, x.source_key
+  from jsonb_to_recordset(coalesce(p_price_insert, '[]')) as x(
+    kind text, code text, category text, designation text, unit text, source_basis text,
+    source_price bigint, vat_exempt boolean, price_ht bigint, supplier text, region text,
+    effective_date date, details jsonb, source_row text, source_key text);
+
+  update public.work_items w set
+    code = x.code, category = x.category, designation = x.designation, unit = x.unit,
+    price_ht = x.price_ht, reference_price = x.reference_price, source_coefficient = x.source_coefficient,
+    output = x.output, components = x.components, source_row = x.source_row, source_key = x.source_key
+  from jsonb_to_recordset(coalesce(p_work_update, '[]')) as x(
+    id uuid, code text, category text, designation text, unit text, price_ht bigint,
+    reference_price bigint, source_coefficient text, output text, components jsonb,
+    source_row text, source_key text)
+  where w.id = x.id and w.library_id = p_library_id;
+
+  insert into public.work_items (library_id, code, category, designation, unit, price_ht, reference_price,
+    source_coefficient, output, components, source_row, source_key)
+  select p_library_id, x.code, x.category, x.designation, x.unit, x.price_ht, x.reference_price,
+    x.source_coefficient, x.output, coalesce(x.components, '[]'::jsonb), x.source_row, x.source_key
+  from jsonb_to_recordset(coalesce(p_work_insert, '[]')) as x(
+    code text, category text, designation text, unit text, price_ht bigint, reference_price bigint,
+    source_coefficient text, output text, components jsonb, source_row text, source_key text);
+
+  update public.price_libraries
+     set version = version + 1, price_date = coalesce(p_price_date, price_date)
+   where id = p_library_id
+  returning version into v_version;
+
+  insert into public.price_import_batches (library_id, workspace_id, version, file_name, sha256,
+    imported_by, imported_by_email, summary)
+  values (p_library_id, v_library.workspace_id, v_version, coalesce(p_file_name, ''), coalesce(p_sha256, ''),
+    auth.uid(), coalesce((select u.email::text from auth.users u where u.id = auth.uid()), ''),
+    coalesce(p_summary, '{}'::jsonb));
+
+  return v_version;
+end;
+$$;
+
+revoke all on function public.apply_price_import(uuid, integer, date, text, text, jsonb, jsonb, jsonb, uuid[], jsonb, jsonb, uuid[]) from public, anon;
+grant execute on function public.apply_price_import(uuid, integer, date, text, text, jsonb, jsonb, jsonb, uuid[], jsonb, jsonb, uuid[]) to authenticated;

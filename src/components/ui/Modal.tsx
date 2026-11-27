@@ -6,9 +6,11 @@ interface ModalProps {
   title: string
   onClose: () => void
   children: ReactNode
+  /** « wide » : fenêtre plus large (aperçu d'un import). */
+  size?: 'normal' | 'wide'
 }
 
-export default function Modal({ title, onClose, children }: ModalProps) {
+export default function Modal({ title, onClose, children, size = 'normal' }: ModalProps) {
   const titleId = useId()
 
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function Modal({ title, onClose, children }: ModalProps) {
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="w-full max-w-lg rounded-xl border border-border bg-popover p-6 text-popover-foreground shadow-xl"
+        className={`w-full ${size === 'wide' ? 'max-h-[90vh] max-w-3xl overflow-y-auto' : 'max-w-lg'} rounded-xl border border-border bg-popover p-6 text-popover-foreground shadow-xl`}
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           <h2 id={titleId} className="text-lg font-semibold text-foreground">

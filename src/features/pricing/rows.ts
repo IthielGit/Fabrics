@@ -18,6 +18,7 @@ import {
   type WorkspaceMember,
   type WorkspaceSummary,
 } from './model'
+import type { ImportBatch } from './repository'
 import { tenthsFromStored, tenthsToText } from './money'
 
 export interface WorkspaceRow {
@@ -103,12 +104,14 @@ export interface PriceItemRow {
   unit: string
   source_basis: string
   source_price: number | string | null
+  vat_exempt: boolean
   price_ht: number | string | null
   supplier: string
   region: string
   effective_date: string | null
   details: Record<string, unknown> | null
   source_row: string
+  source_key: string
   updated_by_email: string
   updated_at: string
 }
@@ -130,12 +133,14 @@ export function rowToPriceItem(row: PriceItemRow): PriceItem {
     unit: row.unit,
     sourceBasis: row.source_basis === 'ttc_delivered' ? 'ttc_delivered' : 'ht',
     sourcePrice: tenthsFromStored(row.source_price),
+    vatExempt: row.vat_exempt,
     priceHt: tenthsFromStored(row.price_ht),
     supplier: row.supplier,
     region: row.region,
     effectiveDate: row.effective_date,
     details: stringRecord(row.details),
     sourceRow: row.source_row,
+    sourceKey: row.source_key,
     updatedByEmail: row.updated_by_email,
     updatedAt: row.updated_at,
   }
@@ -152,12 +157,14 @@ export function priceItemToRow(libraryId: string, fields: PriceItemFields) {
     unit: fields.unit.trim(),
     source_basis: fields.sourceBasis,
     source_price: tenthsToText(fields.sourcePrice),
+    vat_exempt: fields.vatExempt,
     price_ht: tenthsToText(fields.priceHt),
     supplier: fields.supplier.trim(),
     region: fields.region.trim(),
     effective_date: fields.effectiveDate,
     details: fields.details,
     source_row: fields.sourceRow,
+    source_key: fields.sourceKey,
   }
 }
 
@@ -200,6 +207,7 @@ export interface WorkItemRow {
   output: string
   components: unknown[] | null
   source_row: string
+  source_key: string
   updated_by_email: string
   updated_at: string
 }
@@ -218,6 +226,7 @@ export function rowToWorkItem(row: WorkItemRow): WorkItem {
     output: row.output,
     components: (row.components ?? []).map(componentFromJson),
     sourceRow: row.source_row,
+    sourceKey: row.source_key,
     updatedByEmail: row.updated_by_email,
     updatedAt: row.updated_at,
   }
@@ -236,6 +245,7 @@ export function workItemToRow(libraryId: string, fields: WorkItemFields) {
     output: fields.output,
     components: fields.components.map(componentToJson),
     source_row: fields.sourceRow,
+    source_key: fields.sourceKey,
   }
 }
 
@@ -274,4 +284,30 @@ export function parseAcceptWorkspaceInvite(
     return { status: 'ok', workspaceId: raw.workspace_id, role: raw.role }
   }
   return { status: 'unavailable' }
+}
+
+export interface ImportBatchRow {
+  id: string
+  version: number
+  file_name: string
+  sha256: string
+  imported_by_email: string
+  imported_at: string
+  summary: Record<string, unknown> | null
+}
+
+export function rowToImportBatch(row: ImportBatchRow): ImportBatch {
+  const summary: Record<string, number> = {}
+  for (const [key, value] of Object.entries(row.summary ?? {})) {
+    if (typeof value === 'number') summary[key] = value
+  }
+  return {
+    id: row.id,
+    version: row.version,
+    fileName: row.file_name,
+    sha256: row.sha256,
+    importedByEmail: row.imported_by_email,
+    importedAt: row.imported_at,
+    summary,
+  }
 }

@@ -4,11 +4,19 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { PriceItemFields, WorkItemFields, WorkspaceRole } from './model'
-import { LastAdminError, type LibraryPatch, type PricingRepository } from './repository'
+import {
+  LastAdminError,
+  StaleLibraryError,
+  type ApplyImportInput,
+  type ImportBatch,
+  type LibraryPatch,
+  type PricingRepository,
+} from './repository'
 import {
   parseAcceptWorkspaceInvite,
   priceItemToRow,
   rowToHistory,
+  rowToImportBatch,
   rowToInvite,
   rowToLibrary,
   rowToMember,
@@ -17,6 +25,7 @@ import {
   rowToWorkspace,
   workItemToRow,
   type HistoryRow,
+  type ImportBatchRow,
   type InviteRow,
   type LibraryRow,
   type MemberRow,
@@ -27,9 +36,9 @@ import {
 
 const LIBRARY_COLUMNS = 'id, workspace_id, name, version, currency, vat_rate_bp, price_date, updated_at'
 const ITEM_COLUMNS =
-  'id, library_id, kind, code, category, designation, unit, source_basis, source_price, price_ht, supplier, region, effective_date, details, source_row, updated_by_email, updated_at'
+  'id, library_id, kind, code, category, designation, unit, source_basis, source_price, vat_exempt, price_ht, supplier, region, effective_date, details, source_row, source_key, updated_by_email, updated_at'
 const WORK_COLUMNS =
-  'id, library_id, code, category, designation, unit, price_ht, reference_price, source_coefficient, output, components, source_row, updated_by_email, updated_at'
+  'id, library_id, code, category, designation, unit, price_ht, reference_price, source_coefficient, output, components, source_row, source_key, updated_by_email, updated_at'
 const HISTORY_COLUMNS =
   'id, item_id, code, designation, action, old_price_ht, new_price_ht, changed_by_email, changed_at'
 const INVITE_COLUMNS = 'id, workspace_id, token, role, active, expires_at, created_at'
@@ -40,6 +49,7 @@ const PAGE = 1000
 function rethrow(error: { message?: string } | null): void {
   if (!error) return
   if (error.message?.includes('last admin')) throw new LastAdminError()
+  if (error.message?.includes('stale version')) throw new StaleLibraryError()
   throw error
 }
 
@@ -148,6 +158,36 @@ export class SupabasePricingRepository implements PricingRepository {
   async deleteWorkItem(id: string) {
     const { error } = await this.client.from('work_items').delete().eq('id', id)
     rethrow(error)
+  }
+
+  async applyImport(libraryId: string, input: ApplyImportInput) {
+    const { plan } = input
+    const { data, error } = await this.client.rpc('apply_price_import', {
+      p_library_id: libraryId,
+      p_expected_version: input.expectedVersion,
+      p_price_date: input.priceDate,
+      p_file_name: input.fileName,
+      p_sha256: input.sha256,
+      p_summary: input.summary,
+      p_price_insert: plan.price.insert.map((fields) => priceItemToRow(libraryId, fields)),
+      p_price_update: plan.price.update.map(({ id, fields }) => ({ id, ...priceItemToRow(libraryId, fields) })),
+      p_price_delete: plan.price.remove,
+      p_work_insert: plan.work.insert.map((fields) => workItemToRow(libraryId, fields)),
+      p_work_update: plan.work.update.map(({ id, fields }) => ({ id, ...workItemToRow(libraryId, fields) })),
+      p_work_delete: plan.work.remove,
+    })
+    rethrow(error)
+    return Number(data)
+  }
+
+  async listImports(libraryId: string): Promise<ImportBatch[]> {
+    const { data, error } = await this.client
+      .from('price_import_batches')
+      .select('id, version, file_name, sha256, imported_by_email, imported_at, summary')
+      .eq('library_id', libraryId)
+      .order('imported_at', { ascending: false })
+    rethrow(error)
+    return ((data ?? []) as ImportBatchRow[]).map(rowToImportBatch)
   }
 
   async listHistory(itemId: string) {

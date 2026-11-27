@@ -1,6 +1,14 @@
 import { useState } from 'react'
-import { emptyPriceItem, PRICE_KINDS, type PriceItem, type PriceItemFields, type PriceKind, type SourceBasis } from '../../features/pricing/model'
-import { formatAriary, formatRate, htFromTtc, parseMoneyInput } from '../../features/pricing/money'
+import {
+  emptyPriceItem,
+  PRICE_KINDS,
+  priceHtFromSource,
+  type PriceItem,
+  type PriceItemFields,
+  type PriceKind,
+  type SourceBasis,
+} from '../../features/pricing/model'
+import { formatAriary, formatRate, parseMoneyInput } from '../../features/pricing/money'
 import { normalizeUnit } from '../../features/pricing/units'
 import { validatePriceItem } from '../../features/pricing/validate'
 import { useT } from '../../i18n/useT'
@@ -38,12 +46,14 @@ export default function PriceItemDialog({ item, kind, vatRateBp, onSave, onClose
 
   const money = priceText.trim() === '' ? null : parseMoneyInput(priceText)
   const entered = money?.ok ? money.value : null
-  const priceHt = entered === null ? null : basis === 'ttc_delivered' ? htFromTtc(entered, vatRateBp) : entered
+  const vatExempt = basis === 'ttc_delivered' && fields.vatExempt
+  const priceHt = priceHtFromSource(basis, entered, vatExempt, vatRateBp)
   const candidate: PriceItemFields = {
     ...fields,
     unit: normalizeUnit(fields.unit).unit,
     sourceBasis: basis,
     sourcePrice: basis === 'ttc_delivered' ? entered : null,
+    vatExempt,
     priceHt,
   }
   const { errors, warnings } = validatePriceItem(candidate)
@@ -108,9 +118,21 @@ export default function PriceItemDialog({ item, kind, vatRateBp, onSave, onClose
             </select>
           </label>
         </div>
+        {basis === 'ttc_delivered' && (
+          <label className="flex items-center gap-2 text-sm">
+            <input
+              type="checkbox"
+              checked={fields.vatExempt}
+              onChange={(event) => patch({ vatExempt: event.target.checked })}
+            />
+            {t('pricing.field.vatExempt')}
+          </label>
+        )}
         {basis === 'ttc_delivered' && priceHt !== null && (
           <p className="text-xs text-muted-foreground">
-            {t('pricing.computedHt', { price: formatAriary(priceHt), rate: formatRate(vatRateBp) })}
+            {vatExempt
+              ? t('pricing.computedHtExempt', { price: formatAriary(priceHt) })
+              : t('pricing.computedHt', { price: formatAriary(priceHt), rate: formatRate(vatRateBp) })}
           </p>
         )}
         <div className="grid grid-cols-2 gap-3">

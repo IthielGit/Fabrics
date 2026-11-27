@@ -7,7 +7,7 @@
  * - Prix d'un poste de travaux : **prix brut = débours sec HT** (D23-12) ; la composition du
  *   sous-détail est conservée pour la traçabilité.
  */
-import type { BasisPoints, Tenths } from './money'
+import { htFromTtc, type BasisPoints, type Tenths } from './money'
 
 export type WorkspaceRole = 'admin' | 'member'
 
@@ -64,6 +64,10 @@ export interface PriceItemFields {
   sourceBasis: SourceBasis
   /** Prix tel qu'il est dans la source (TTC livré pour un matériau du classeur), en dixièmes. */
   sourcePrice: Tenths | null
+  /**
+   * Ligne achetée sans TVA (D23-16) : son prix HT est égal à son prix TTC, quel que soit le taux.
+   */
+  vatExempt: boolean
   /** Prix HT utilisé par les calculs ; `null` : ligne sans prix. */
   priceHt: Tenths | null
   supplier: string
@@ -74,6 +78,11 @@ export interface PriceItemFields {
   details: Record<string, string>
   /** Origine : « MTX!12 » (feuille et ligne), ou vide pour une saisie à la main. */
   sourceRow: string
+  /**
+   * Clé d'import (« MTX:1.1 ») : un réimport met à jour la ligne de même clé. Vide pour une ligne
+   * saisie à la main, qu'un import ne touche jamais.
+   */
+  sourceKey: string
 }
 
 export interface Tracking {
@@ -114,6 +123,8 @@ export interface WorkItemFields {
   output: string
   components: WorkComponent[]
   sourceRow: string
+  /** Clé d'import (« TRAV:CAT-01-001 ») ; vide pour un poste saisi à la main. */
+  sourceKey: string
 }
 
 export interface WorkItem extends WorkItemFields, Tracking {
@@ -160,14 +171,31 @@ export function emptyPriceItem(kind: PriceKind, today: string): PriceItemFields 
     unit: '',
     sourceBasis: 'ht',
     sourcePrice: null,
+    vatExempt: false,
     priceHt: null,
     supplier: '',
     region: DEFAULT_REGION,
     effectiveDate: today,
     details: {},
     sourceRow: '',
+    sourceKey: '',
   }
 }
 
 /** Région par défaut d'une ligne (choix par défaut de 23.0). */
 export const DEFAULT_REGION = 'Antananarivo'
+
+/**
+ * Prix HT d'une ligne à partir de son prix source (D23-10, D23-16) : le prix lui-même s'il est HT ou
+ * si la ligne est sans TVA, sinon TTC ÷ (1 + taux). Seul endroit où ce calcul est fait.
+ */
+export function priceHtFromSource(
+  sourceBasis: SourceBasis,
+  sourcePrice: Tenths | null,
+  vatExempt: boolean,
+  vatRateBp: BasisPoints,
+): Tenths | null {
+  if (sourcePrice === null) return null
+  if (sourceBasis === 'ht' || vatExempt) return sourcePrice
+  return htFromTtc(sourcePrice, vatRateBp)
+}

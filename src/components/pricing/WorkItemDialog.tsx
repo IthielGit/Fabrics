@@ -26,6 +26,7 @@ const EMPTY: WorkItemFields = {
   output: '',
   components: [],
   sourceRow: '',
+  sourceKey: '',
 }
 
 /**

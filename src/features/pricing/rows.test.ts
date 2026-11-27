@@ -49,6 +49,7 @@ describe('lignes Supabase de la bibliothèque', () => {
       output: '',
       components: [{ group: 'material', designation: 'M', unit: 'kg', quantity: '2.5', unitPriceHt: 30n, amountHt: 75n }],
       sourceRow: '',
+      sourceKey: 'TRAV:C',
     })
     const back = rowToWorkItem({ ...row, id: 'w', updated_by_email: '', updated_at: '' })
     expect(back.priceHt).toBeNull()

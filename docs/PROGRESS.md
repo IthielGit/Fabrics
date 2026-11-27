@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0 et 23.1 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0, 23.1 et 23.2 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -47,11 +47,22 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
 | M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
-| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0, 23.1 faits) | |
+| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 à 23.2 faits) | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-27 — M23 · 23.2 Import des prix : fait
+
+- **Lecteur XLSX maison** (`xlsxRead.ts`, avec `fflate` déjà installé, aucune nouvelle dépendance) : nombres gardés en texte exact, valeurs calculées d'Excel, limites de taille, aucun contenu exécuté.
+- **Import du classeur « Expert BTP »** (`importWorkbook.ts`), colonnes trouvées par leur en-tête : MTX (TTC livré → HT), MTL et MO (en HT, y compris le second tableau de chaque feuille), BIBLIOTHEQUE_TRAVAUX + SDP (prix brut = débours sec, sous-détail gardé). **Import CSV** (`importCsv.ts`) en plus.
+- **Décisions de l'utilisateur prises en cours de route (2026-11-26)** : D23-16 les 53 matériaux dont le classeur donne un HT égal au TTC (bois, sable, gravillons…) sont marqués « sans TVA » (HT = TTC) ; D23-17 dans le DQE, la quantité s'écrit dans l'unité du poste (ml, m²…), seule exception à la règle des mm (CLAUDE.md et 02-ARCHITECTURE mis à jour). Choix de Claude D23-18 : matériel sans location par jour → prix HT de la feuille avec son unité.
+- **Rapport de lecture** (`importReport.ts`) : chaque correction et chaque manque, regroupés avec exemples (bloquant / à vérifier / information). **Plan d'import** (`importPlan.ts`) : ajouts, mises à jour (même ligne, historique gardé), retraits par source, lignes à la main jamais touchées. **Application d'un bloc** dans la base (`apply_price_import`, refus si la version a changé) et journal des imports.
+- **Classeur réel de l'utilisateur** (fichier local, jamais versionné) : 903 matériaux, 86 lignes de matériel, 20 de main-d'œuvre, 320 postes tous chiffrés avec sous-détail, date des prix 01/10/2026 ; seuls 4 matériaux à 0 Ar restent « sans prix ». Essai local `importWorkbook.local.test.ts`, sauté ailleurs.
+- **Écran** : bouton « Importer » (admins), aperçu avant application, journal des imports dans Réglages. Vérifié dans Chromium avec le vrai classeur : lecture 0,4 s, 1 329 lignes ajoutées, version 2, sable « sans TVA » à 70 000,0 Ar, réimport identique → « Rien à changer », aucune erreur.
+- **Script SQL** (`supabase/m23-pricing.sql`) exécuté dans PGlite : 42 contrôles sur 42 (accès, import atomique, version dépassée refusée, lignes à la main gardées, journal).
+- Build, lint, 3 505 tests OK ; doublons 0,87 %.
 
 ### 2026-11-26 — M23 · 23.1 Espaces et bibliothèque de prix : fait
 
@@ -2336,6 +2347,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Correctif : `image.crossOrigin = 'anonymous'` dans `useAssetImage.ts` (Supabase Storage renvoie bien `Access-Control-Allow-Origin: *`). La cause d'un échec est désormais écrite dans la console (`ExportDialog.tsx`). Build, lint, 2978 tests OK.
 
 ## Idées (hors jalon en cours)
+- **Contrôle du SQL dans `npm run check:all` (M23)** : le banc d'essai PGlite (Postgres dans Node) qui vérifie `supabase/m23-pricing.sql` vit hors du dépôt. L'y ajouter demande une dépendance de développement (`@electric-sql/pglite`, licence Apache 2.0 / PostgreSQL) : à décider (règle 6).
 - **Plans d'exemple (M21 21.7)** : donner un matériau aux quelques cloisons qui n'en ont pas, pour que le contrôle « mur sans matériau » ne s'y affiche plus (change leurs dessins et la 3D : baseline).
 - **Métrés, raccord de trois murs ou plus (M21 21.6)** : couper la pointe d'angle comme Pascal (volume et faces exacts), au lieu de marquer ces quantités « provisoires ». Change les métrés existants (baseline) : à décider. Voir `docs/phases/M21-ifc-comparison.md`.
 - ~~**M22, IfcSpace**~~ : fait en 22.2 (contour tracé, D22-5).

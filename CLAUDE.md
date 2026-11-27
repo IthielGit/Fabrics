@@ -126,6 +126,9 @@ L'utilisateur part de zéro sur VS Code. Il ne lit pas forcément le code.
   sans unité est en mm. Détail dans `docs/02-ARCHITECTURE.md` (« Unités et échelle »). La scène
   Pascal stocke en **mètres** (D79) : la conversion se fait à l'affichage et à la saisie, l'utilisateur
   ne voit jamais de mètres.
+  **Seule exception (D23-17, choix de l'utilisateur le 2026-11-26)** : dans le DQE et ses exports,
+  la quantité d'un poste s'écrit dans l'unité de ce poste (`12,50 ml × 8 500,0 Ar/ml`), comme dans les
+  devis du BTP. Plans, métrés, cotes et nomenclatures restent en mm.
 - Code de `packages/pascal/` : on y suit les conventions de Pascal (Biome, Lingui, règles E-001…) ;
   chaque modification de Fabrics y est notée dans `packages/pascal/FABRICS_CHANGES.md`.
 - Identifiants : `crypto.randomUUID()`.

@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { LocalPricingRepository, memoryPricingStorage } from './LocalPricingRepository'
+import { planImport, summarizePlan } from './importPlan'
+import { importWorkbook } from './importWorkbook'
 import { emptyPriceItem, type WorkItemFields } from './model'
+import { StaleLibraryError } from './repository'
+import { buildXlsx, syntheticWorkbook } from './testing/xlsxFixture'
+import { readXlsx } from './xlsxRead'
 
 function makeRepo() {
   let n = 0
@@ -73,6 +78,7 @@ describe('LocalPricingRepository', () => {
       output: '1',
       components: [{ group: 'labour', designation: 'Manœuvre', unit: 'H', quantity: '0.5', unitPriceHt: 20000n, amountHt: 10000n }],
       sourceRow: 'SDP!8',
+      sourceKey: '',
     }
     await repo.saveWorkItem(library.id, work)
     const [read] = await repo.listWorkItems(library.id)
@@ -107,6 +113,42 @@ describe('LocalPricingRepository', () => {
     expect(items.map((item) => item.priceHt)).toEqual([420000n, 100000n])
     expect((await repo.getLibrary(ws.id)).vatRateBp).toBe(0)
     expect((await repo.listHistory(ttc.id))[0]).toMatchObject({ action: 'update', oldPriceHt: 350000n, newPriceHt: 420000n })
+  })
+
+  it('applique un import, garde les lignes à la main, refuse un import sur une version dépassée', async () => {
+    const repo = makeRepo()
+    const ws = await repo.createWorkspace('E')
+    const library = await repo.getLibrary(ws.id)
+    const manual = await repo.savePriceItem(library.id, {
+      ...emptyPriceItem('material', '2026-10-01'),
+      designation: 'À la main',
+      unit: 'U',
+      priceHt: 1n,
+    })
+    const imported = importWorkbook(readXlsx(buildXlsx(syntheticWorkbook())), 2000)
+    const apply = async (expectedVersion: number) => {
+      const current = { priceItems: await repo.listPriceItems(library.id), workItems: await repo.listWorkItems(library.id) }
+      const plan = planImport(current, imported)
+      return repo.applyImport(library.id, {
+        expectedVersion,
+        priceDate: imported.priceDate,
+        fileName: 'essai.xlsx',
+        sha256: 'abc',
+        summary: summarizePlan(plan, 0),
+        plan,
+      })
+    }
+    expect(await apply(1)).toBe(2)
+    const items = await repo.listPriceItems(library.id)
+    expect(items).toHaveLength(imported.priceItems.length + 1)
+    expect(items.find((item) => item.id === manual.id)?.designation).toBe('À la main')
+    expect(await repo.listWorkItems(library.id)).toHaveLength(3)
+    expect((await repo.getLibrary(ws.id)).priceDate).toBe('2026-10-01')
+    // Réimport identique : nouvelle version, aucune ligne changée.
+    expect(await apply(2)).toBe(3)
+    const [last] = await repo.listImports(library.id)
+    expect(last).toMatchObject({ version: 3, fileName: 'essai.xlsx', summary: { added: 0, updated: 0, removed: 0 } })
+    await expect(apply(2)).rejects.toBeInstanceOf(StaleLibraryError)
   })
 
   it('refuse le partage sans compte', async () => {

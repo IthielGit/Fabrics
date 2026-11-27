@@ -296,6 +296,9 @@ du papier (voir « Export »).
   champs de saisie, les cotes, les exports (PDF, CSV) et la grille. Fonctions dans
   `src/features/units/`.
 - Saisie : un nombre sans unité est en mm. `m` et `cm` restent acceptés si l'utilisateur les écrit.
+- **Exception DQE (D23-17, 2026-11-26)** : dans le DQE (panneau, XLSX, PDF), la quantité d'un poste
+  s'écrit dans l'unité de son prix (`ml`, `m²`, `m³`, `U`, `FFT`…), avec 2 décimales pour `ml`, `m²`
+  et `m³`. Les métrés dont elle est tirée restent affichés en mm.
 
 ### Calibrage d'une image de plan
 1. L'utilisateur importe une image (élément `image`).

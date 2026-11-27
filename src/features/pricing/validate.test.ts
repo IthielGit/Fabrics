@@ -54,6 +54,7 @@ describe('validateWorkItem', () => {
     output: '1',
     components: [],
     sourceRow: '',
+    sourceKey: '',
   }
 
   it('accepte un poste complet', () => {

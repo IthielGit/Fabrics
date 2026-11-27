@@ -70,6 +70,7 @@ export default function PriceItemsTable({ kind, canEdit }: PriceItemsTableProps)
                       <>
                         {formatAriary(item.sourcePrice)}
                         <span className="block">{t(`pricing.basis.${item.sourceBasis}`)}</span>
+                        {item.vatExempt && <span className="block text-amber-600">{t('pricing.vatExempt')}</span>}
                       </>
                     )}
                   </td>

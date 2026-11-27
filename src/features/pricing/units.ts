@@ -27,6 +27,7 @@ export const KNOWN_UNITS = [
   'Feuille',
   'Paire',
   'Lot',
+  'Ferme',
 ] as const
 
 const ALIASES: Record<string, string> = {
@@ -68,6 +69,7 @@ const ALIASES: Record<string, string> = {
   feuille: 'Feuille',
   paire: 'Paire',
   lot: 'Lot',
+  ferme: 'Ferme',
 }
 
 export interface NormalizedUnit {

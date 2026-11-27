@@ -8,7 +8,7 @@ import type {
   WorkItemFields,
   WorkspaceSummary,
 } from '../features/pricing/model'
-import type { LibraryPatch, PricingRepository } from '../features/pricing/repository'
+import type { ApplyImportInput, LibraryPatch, PricingRepository } from '../features/pricing/repository'
 import { SupabasePricingRepository } from '../features/pricing/SupabasePricingRepository'
 import { supabase } from '../lib/supabase'
 
@@ -55,6 +55,8 @@ interface PricingState {
   createWorkspace: (name: string) => Promise<void>
   renameWorkspace: (name: string) => Promise<void>
   updateLibrary: (patch: LibraryPatch) => Promise<void>
+  /** Applique un import (plan calculé et montré avant) ; relit la bibliothèque. Renvoie la version. */
+  applyImport: (input: ApplyImportInput) => Promise<number>
   /** Change le taux de TVA ; les prix HT tirés d'un TTC sont recalculés et relus. */
   setVatRate: (vatRateBp: number) => Promise<void>
   savePriceItem: (fields: PriceItemFields, id?: string) => Promise<void>
@@ -152,6 +154,18 @@ export const usePricingStore = create<PricingState>((set, get) => {
         workspace: renamed,
         workspaces: state.workspaces.map((ws) => (ws.id === renamed.id ? renamed : ws)),
       }))
+    },
+
+    applyImport: async (input) => {
+      const { repository, library } = requireLibrary()
+      const version = await repository.applyImport(library.id, input)
+      const [updated, priceItems, workItems] = await Promise.all([
+        repository.getLibrary(library.workspaceId),
+        repository.listPriceItems(library.id),
+        repository.listWorkItems(library.id),
+      ])
+      set({ library: updated, priceItems: [...priceItems].sort(byCode), workItems: [...workItems].sort(byCode) })
+      return version
     },
 
     updateLibrary: async (patch) => {

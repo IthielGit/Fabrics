@@ -153,6 +153,26 @@ Un admin définit des règles « type d'élément + matériau (+ épaisseur si u
 + quantité de M21 utilisée ». Tous les projets de l'espace les appliquent. Dans un projet, on peut
 corriger le poste d'un élément à la main ; la correction est visible et tracée.
 
+### D23-16 · Matériaux achetés sans TVA — **retenu : respecter le classeur** (2026-11-26)
+
+Constat à l'import du classeur : 53 matériaux (bois de construction, gravillons, moellons, sable, remblai,
+tout-venant…) ont un « PU HT livré » égal au « TTC livré ». Choix de l'utilisateur : une telle ligne est
+marquée **« sans TVA »** et son prix HT est égal à son TTC. Le marquage est visible dans la bibliothèque
+et se change à la main ; un changement du taux de TVA ne touche pas ces lignes. Amende D23-10 pour ces
+seules lignes ; la TVA ajoutée à la fin du devis n'est pas concernée.
+
+### D23-17 · Quantités des postes au mètre linéaire — **retenu : unité du poste dans le DQE** (2026-11-26)
+
+Dans le DQE (panneau et exports), la quantité d'un poste s'écrit dans l'unité de son prix :
+« 12,50 ml × 8 500,0 Ar/ml ». Seule exception à la règle des longueurs en mm (CLAUDE.md mis à jour) ;
+plans, métrés, cotes et nomenclatures restent en mm.
+
+### D23-18 · Matériel sans prix de location (choix de Claude, 2026-11-26)
+
+Une ligne de la feuille MTL sans « location par jour » mais avec un « prix HT » (casques, lunettes,
+consommables) prend ce prix HT avec l'unité écrite dans la feuille. C'est un prix écrit dans le
+classeur, pas un prix déduit ; le rapport d'import le signale ligne par ligne.
+
 ### Choix par défaut de Claude (à contester au feu vert du plan)
 
 - **Région** (question 4 de 23.1) : texte libre par ligne, « Antananarivo » par défaut.
