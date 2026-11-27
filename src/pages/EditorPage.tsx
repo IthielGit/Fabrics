@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
 import EditorStage from '../components/editor/EditorStage'
@@ -15,14 +15,9 @@ import { useCollaboration } from '../components/editor/useCollaboration'
 import { useComments } from '../components/editor/useComments'
 import { useEditorShortcuts } from '../components/editor/useEditorShortcuts'
 import { usePendingRestore } from '../components/editor/usePendingRestore'
+import { useProjectLoader } from '../components/editor/useProjectLoader'
 import ZoomControls from '../components/editor/ZoomControls'
-import { forgetCreated, peekCreated } from '../features/persistence/justCreated'
-import { repository } from '../features/persistence/repository'
 import { fr } from '../i18n/fr'
-import { useAuthStore } from '../stores/authStore'
-import { useEditorStore } from '../stores/editorStore'
-
-type LoadState = 'loading' | 'ready' | 'not-found' | 'error'
 
 interface EditorPageProps {
   /** Faux pour un éditeur invité : il n'a pas le bouton « Partager ». */
@@ -31,8 +26,6 @@ interface EditorPageProps {
 
 export default function EditorPage({ isOwner = true }: EditorPageProps) {
   const { projectId } = useParams()
-  const loadProject = useEditorStore((state) => state.loadProject)
-  const closeProject = useEditorStore((state) => state.closeProject)
   useEditorShortcuts()
   useAutosave()
   // M19 A4 : l'éditeur Visuel porte les couleurs de Pascal (thème sombre) ; sur <body> aussi, pour les
@@ -42,48 +35,8 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
     document.body.classList.add(...classes)
     return () => document.body.classList.remove(...classes)
   }, [])
-  // Résultat du chargement, associé au projet demandé : tant qu'il ne correspond pas
-  // à l'adresse courante, on est en « chargement » (rien à remettre à zéro dans l'effet).
-  const [result, setResult] = useState<{ projectId: string; state: LoadState } | null>(null)
-
   // Les projets ne sont lus qu'une fois la session connue (local ou compte), et relus si le compte change.
-  const authStatus = useAuthStore((state) => state.status)
-  const userId = useAuthStore((state) => state.user?.id ?? null)
-  const authReady = authStatus !== 'loading'
-
-  useEffect(() => {
-    if (!projectId || !authReady) return
-    let cancelled = false
-    // Projet qu'on vient de créer depuis l'accueil : il est déjà en mémoire, pas besoin de le relire.
-    const justCreated = peekCreated(projectId)
-    const load = justCreated ? Promise.resolve(justCreated) : repository.get(projectId)
-    if (justCreated) forgetCreated(projectId)
-    load
-      .then((project) => {
-        if (cancelled) return
-        if (!project) {
-          setResult({ projectId, state: 'not-found' })
-          return
-        }
-        loadProject(project)
-        setResult({ projectId, state: 'ready' })
-      })
-      .catch(() => {
-        if (!cancelled) setResult({ projectId, state: 'error' })
-      })
-    return () => {
-      cancelled = true
-      closeProject()
-    }
-  }, [projectId, authReady, userId, loadProject, closeProject])
-
-  const loadState: LoadState = !projectId
-    ? 'not-found'
-    : !authReady
-      ? 'loading'
-      : result?.projectId === projectId
-      ? result.state
-      : 'loading'
+  const loadState = useProjectLoader(projectId)
 
   // M14 : collaboration temps réel une fois le projet chargé (sans effet en mode local).
   useCollaboration(projectId, loadState === 'ready')

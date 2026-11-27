@@ -12,9 +12,8 @@ import { useAutosave } from '../components/editor/useAutosave'
 import { useCollaboration } from '../components/editor/useCollaboration'
 import { useComments } from '../components/editor/useComments'
 import { usePendingRestore } from '../components/editor/usePendingRestore'
+import { useProjectLoader } from '../components/editor/useProjectLoader'
 import { commentsAvailable } from '../features/comments/commentsApi'
-import { forgetCreated, peekCreated } from '../features/persistence/justCreated'
-import { repository } from '../features/persistence/repository'
 import type { PlanScene } from '../features/scene/sceneTypes'
 import { versionsAvailable } from '../features/versions/versionsApi'
 import { useT } from '../i18n/useT'
@@ -37,8 +36,6 @@ const ViewsScreen = lazy(() => import('../components/views/ViewsScreen'))
 // Réalité virtuelle (A6) : chargée seulement quand le module WebXR est installé dans le projet.
 const PascalWebXRRuntime = lazy(() => import('../pascal/PascalWebXR'))
 const PascalVrButton = lazy(() => import('../pascal/PascalWebXR').then((m) => ({ default: m.PascalVrButton })))
-
-type LoadState = 'loading' | 'ready' | 'notFound' | 'notPlan' | 'error'
 
 
 /** Panneau de Fabrics dans la barre latérale de Pascal, ses couleurs claires passées en sombre. */
@@ -71,12 +68,7 @@ function toPlanScene(graph: SceneGraph): PlanScene {
 export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean }) {
   const t = useT()
   const { projectId } = useParams()
-  const loadProject = useEditorStore((state) => state.loadProject)
-  const closeProject = useEditorStore((state) => state.closeProject)
-  const authStatus = useAuthStore((state) => state.status)
   const userId = useAuthStore((state) => state.user?.id ?? null)
-  const authReady = authStatus !== 'loading'
-  const [result, setResult] = useState<{ projectId: string; state: LoadState } | null>(null)
   useAutosave()
 
   useEffect(() => {
@@ -84,34 +76,8 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
     return () => document.body.classList.remove('dark', 'pascal-tokens')
   }, [])
 
-  useEffect(() => {
-    if (!projectId || !authReady) return
-    let cancelled = false
-    const justCreated = peekCreated(projectId)
-    const load = justCreated ? Promise.resolve(justCreated) : repository.get(projectId)
-    if (justCreated) forgetCreated(projectId)
-    load
-      .then((project) => {
-        if (cancelled) return
-        if (!project) return setResult({ projectId, state: 'notFound' })
-        if (project.kind !== 'plan') return setResult({ projectId, state: 'notPlan' })
-        loadProject(project)
-        setResult({ projectId, state: 'ready' })
-      })
-      .catch(() => {
-        if (!cancelled) setResult({ projectId, state: 'error' })
-      })
-    return () => {
-      cancelled = true
-      closeProject()
-    }
-  }, [projectId, authReady, userId, loadProject, closeProject])
-
-  const loadState: LoadState = !projectId
-    ? 'notFound'
-    : !authReady || result?.projectId !== projectId
-      ? 'loading'
-      : result.state
+  // Un projet Visuel ouvert à cette adresse garde son éditeur (`not-plan`).
+  const loadState = useProjectLoader(projectId, { planOnly: true })
   const ready = loadState === 'ready'
 
   // Collaboration, restauration d'une version, commentaires : comme dans l'ancien éditeur.
@@ -199,7 +165,7 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
     return <p className="pascal-shell p-8 text-muted-foreground">{t('common.loading')}</p>
   }
   // Un projet Visuel garde son éditeur (Konva) : même adresse `/p/:id` pour tous les projets.
-  if (loadState === 'notPlan') return <EditorPage isOwner={isOwner} />
+  if (loadState === 'not-plan') return <EditorPage isOwner={isOwner} />
   if (loadState !== 'ready') {
     return (
       <main className="pascal-shell p-8">

@@ -1,9 +1,9 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { lazy, Suspense } from 'react'
 import { Link } from 'react-router'
 import ReadOnlySidePanel from '../components/editor/ReadOnlySidePanel'
 import ReadOnlyViewer from '../components/editor/ReadOnlyViewer'
 import { useComments } from '../components/editor/useComments'
-import { repository } from '../features/persistence/repository'
+import { useProjectLoader } from '../components/editor/useProjectLoader'
 import { fr } from '../i18n/fr'
 import PascalReadOnlyBar from '../pascal/PascalReadOnlyBar'
 import { useEditorStore } from '../stores/editorStore'
@@ -11,41 +11,14 @@ import { useEditorStore } from '../stores/editorStore'
 // Un plan s'ouvre en lecture seule dans l'éditeur de Pascal (M19 A7) ; un Visuel garde sa page.
 const PascalReadOnly = lazy(() => import('../pascal/PascalReadOnly'))
 
-type LoadState = 'loading' | 'ready' | 'not-found' | 'error'
-
 /**
  * Projet d'un autre compte ouvert en lecture seule (rôle « lecteur »). Rien n'est enregistré
  * depuis cette page : pas d'enregistrement automatique, pas de raccourcis d'édition, et la base
  * refuserait de toute façon une écriture d'un lecteur.
  */
 export default function SharedProjectPage({ projectId }: { projectId: string }) {
-  const loadProject = useEditorStore((state) => state.loadProject)
-  const closeProject = useEditorStore((state) => state.closeProject)
-  const [result, setResult] = useState<{ projectId: string; state: LoadState } | null>(null)
-
-  useEffect(() => {
-    let cancelled = false
-    repository
-      .get(projectId)
-      .then((project) => {
-        if (cancelled) return
-        if (!project) {
-          setResult({ projectId, state: 'not-found' })
-          return
-        }
-        loadProject(project)
-        setResult({ projectId, state: 'ready' })
-      })
-      .catch(() => {
-        if (!cancelled) setResult({ projectId, state: 'error' })
-      })
-    return () => {
-      cancelled = true
-      closeProject()
-    }
-  }, [projectId, loadProject, closeProject])
-
-  const state: LoadState = result?.projectId === projectId ? result.state : 'loading'
+  // Ne dépend pas du compte connecté : la lecture part tout de suite.
+  const state = useProjectLoader(projectId, { waitForAuth: false })
 
   // M16 : un membre lecteur voit et pose des commentaires (D74) ; ni nommer ni restaurer une version.
   useComments(projectId, state === 'ready')

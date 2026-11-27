@@ -13,6 +13,8 @@ import Button from '../ui/Button'
 import Modal from '../ui/Modal'
 import InviteSection from './InviteSection'
 import ShareItem from './ShareItem'
+import { SHARE_INPUT } from './shareStyles'
+import { useRunThenReload } from './useRunThenReload'
 
 interface ShareDialogProps {
   projectId: string
@@ -21,14 +23,11 @@ interface ShareDialogProps {
   onClose: () => void
 }
 
-const INPUT =
-  'rounded-md border border-slate-300 px-2 py-1.5 text-sm text-slate-900 focus:border-indigo-500 focus:outline-none'
 
 /** Fenêtre « Partager » : liens publics en lecture seule d'un plan, et invitation d'autres comptes. */
 export default function ShareDialog({ projectId, isPlan, onClose }: ShareDialogProps) {
   const [shares, setShares] = useState<Share[] | null>(null)
   const [loadFailed, setLoadFailed] = useState(false)
-  const [actionFailed, setActionFailed] = useState(false)
   const [password, setPassword] = useState('')
   const [expiry, setExpiry] = useState('')
   const [creating, setCreating] = useState(false)
@@ -45,6 +44,7 @@ export default function ShareDialog({ projectId, isPlan, onClose }: ShareDialogP
       setLoadFailed(true)
     }
   }, [projectId])
+  const { run, actionFailed } = useRunThenReload(reload)
 
   useEffect(() => {
     let cancelled = false
@@ -63,16 +63,6 @@ export default function ShareDialog({ projectId, isPlan, onClose }: ShareDialogP
     }
   }, [projectId])
 
-  /** Exécute une action puis relit la liste ; un échec affiche un message. */
-  const run = async (action: () => Promise<void>) => {
-    setActionFailed(false)
-    try {
-      await action()
-    } catch {
-      setActionFailed(true)
-    }
-    await reload()
-  }
 
   const handleCreate = async () => {
     setCreating(true)
@@ -102,7 +92,7 @@ export default function ShareDialog({ projectId, isPlan, onClose }: ShareDialogP
                   autoComplete="new-password"
                   value={password}
                   onChange={(event) => setPassword(event.target.value)}
-                  className={`${INPUT} w-44`}
+                  className={`${SHARE_INPUT} w-44`}
                 />
               </label>
               <label className="flex flex-col gap-1 text-xs text-slate-600">
@@ -111,7 +101,7 @@ export default function ShareDialog({ projectId, isPlan, onClose }: ShareDialogP
                   type="date"
                   value={expiry}
                   onChange={(event) => setExpiry(event.target.value)}
-                  className={INPUT}
+                  className={SHARE_INPUT}
                 />
               </label>
               <Button variant="primary" disabled={creating} onClick={() => void handleCreate()}>
