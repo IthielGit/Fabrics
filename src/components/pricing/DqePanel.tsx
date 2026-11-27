@@ -3,6 +3,7 @@ import { useT } from '../../i18n/useT'
 import { useEditorStore } from '../../stores/editorStore'
 import { usePricingStore } from '../../stores/pricingStore'
 import DqeChecks from './DqeChecks'
+import DqeExportSection from './DqeExportSection'
 import DqeLines from './DqeLines'
 import DqeOutline from './DqeOutline'
 import DqeOverrides from './DqeOverrides'
@@ -19,6 +20,7 @@ import { useProjectEstimate } from './useProjectEstimate'
 export default function DqePanel() {
   const t = useT()
   const projectId = useEditorStore((state) => state.project?.id ?? null)
+  const projectName = useEditorStore((state) => state.project?.name ?? '')
   const setSelection = useEditorStore((state) => state.setSelection)
   const dqe = useProjectEstimate()
   const repository = usePricingStore((state) => state.repository)
@@ -88,6 +90,15 @@ export default function DqePanel() {
         fingerprint={dqe.fingerprint}
         canEdit={dqe.canEdit}
         onFreeze={dqe.freeze}
+      />
+      <DqeExportSection
+        estimate={estimate}
+        projectName={projectName}
+        workspaceName={dqe.workspace.name}
+        library={dqe.library}
+        versions={dqe.versions}
+        fingerprint={dqe.fingerprint}
+        canEdit={dqe.canEdit}
       />
     </section>
   )

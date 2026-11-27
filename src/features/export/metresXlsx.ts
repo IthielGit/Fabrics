@@ -37,6 +37,11 @@ const STYLE = {
   label: 12,
   thousandth: 13,
   totalThousandth: 14,
+  // Formats en Ariary (DQE, M23) : présents seulement dans un classeur qui contient des montants.
+  ariary: 15,
+  ariaryTenth: 16,
+  totalAriary: 17,
+  totalAriaryTenth: 18,
 } as const
 
 /** Retire les caractères interdits en XML 1.0 et échappe les cinq caractères réservés. */
@@ -83,6 +88,8 @@ const numberCell = (ref: string, value: number, style: number, formula?: string)
   `<c r="${ref}" s="${style}">${formula ? `<f>${xmlEscape(formula)}</f>` : ''}<v>${Number.isFinite(value) ? value : 0}</v></c>`
 
 const numberStyle = (unit: MetresUnit, total: boolean): number => {
+  if (unit === 'ar') return total ? STYLE.totalAriary : STYLE.ariary
+  if (unit === 'ar1') return total ? STYLE.totalAriaryTenth : STYLE.ariaryTenth
   if (unit === 'mm') return total ? STYLE.totalMm : STYLE.mm
   if (unit === 'count') return total ? STYLE.totalCount : STYLE.count
   if (unit === 'm3p') return total ? STYLE.totalThousandth : STYLE.thousandth
@@ -195,10 +202,13 @@ function infoSheet(info: XlsxInfo, name: string): SheetXml {
 }
 
 /** Styles : police et encre neutres, en-tête gris clair souligné, totaux en gras avec un filet au-dessus. */
-const STYLES_XML =
+function stylesXml(money: boolean): string {
+  return (
   `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>` +
   `<styleSheet xmlns="${NS}">` +
-  `<numFmts count="1"><numFmt numFmtId="164" formatCode="0.000"/></numFmts>` +
+  (money
+    ? `<numFmts count="3"><numFmt numFmtId="164" formatCode="0.000"/><numFmt numFmtId="165" formatCode="#,##0"/><numFmt numFmtId="166" formatCode="#,##0.0"/></numFmts>`
+    : `<numFmts count="1"><numFmt numFmtId="164" formatCode="0.000"/></numFmts>`) +
   `<fonts count="5">` +
   `<font><sz val="10"/><color rgb="FF1A1A1A"/><name val="Calibri"/><family val="2"/></font>` +
   `<font><b/><sz val="10"/><color rgb="FF1A1A1A"/><name val="Calibri"/><family val="2"/></font>` +
@@ -212,7 +222,7 @@ const STYLES_XML =
   `<border><left/><right/><top/><bottom style="thin"><color rgb="FF1A1A1A"/></bottom><diagonal/></border>` +
   `<border><left/><right/><top style="thin"><color rgb="FF1A1A1A"/></top><bottom/><diagonal/></border></borders>` +
   `<cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>` +
-  `<cellXfs count="15">` +
+  `<cellXfs count="${money ? 19 : 15}">` +
   `<xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>` + // 0 texte
   `<xf numFmtId="0" fontId="2" fillId="0" borderId="0" xfId="0" applyFont="1"/>` + // 1 titre
   `<xf numFmtId="0" fontId="3" fillId="0" borderId="0" xfId="0" applyFont="1"/>` + // 2 note
@@ -228,9 +238,17 @@ const STYLES_XML =
   `<xf numFmtId="0" fontId="1" fillId="0" borderId="0" xfId="0" applyFont="1"/>` + // 12 intitulé
   `<xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>` + // 13 m³ au millième
   `<xf numFmtId="164" fontId="1" fillId="0" borderId="2" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>` + // 14 total m³ au millième
+  (money
+    ? `<xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>` + // 15 Ariary
+      `<xf numFmtId="166" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>` + // 16 Ariary au dixième
+      `<xf numFmtId="165" fontId="1" fillId="0" borderId="2" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>` + // 17 total Ariary
+      `<xf numFmtId="166" fontId="1" fillId="0" borderId="2" xfId="0" applyNumberFormat="1" applyFont="1" applyBorder="1"/>` // 18 total Ariary au dixième
+    : '') +
   `</cellXfs>` +
   `<cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>` +
   `</styleSheet>`
+  )
+}
 
 /**
  * Construit le classeur : un onglet d'information (si `info` est donné), puis un onglet par tableau.
@@ -302,7 +320,9 @@ export function buildMetresXlsx(
         `<Relationship Id="rId${sheets.length + 1}" Type="${REL_NS}/styles" Target="styles.xml"/>` +
         `</Relationships>`,
     ),
-    'xl/styles.xml': strToU8(STYLES_XML),
+    'xl/styles.xml': strToU8(
+      stylesXml(tables.some((t) => [...t.rows, ...(t.total ? [t.total] : [])].some((r) => r.some((c) => typeof c !== 'string' && (c.unit === 'ar' || c.unit === 'ar1'))))),
+    ),
   }
   sheets.forEach((s, i) => {
     files[`xl/worksheets/sheet${i + 1}.xml`] = strToU8(s.xml)

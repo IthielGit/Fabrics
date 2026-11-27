@@ -113,16 +113,22 @@ interface Layout {
 }
 
 /** Largeurs des colonnes : celles du contenu, ramenées à la largeur disponible si besoin. */
+/** Largeur minimale de la colonne de texte qui cède la place quand le tableau est trop large, mm. */
+const MIN_FLEX_COLUMN = 40
+
 function layoutTable(pdf: Pdf, table: MetresTable, available: number): Layout {
   const contentWidths: number[] = []
   const widths = table.columns.map((column, index) => {
     pdf.setFont('helvetica', 'normal')
     pdf.setFontSize(TEXT_PT)
-    const cells = [
-      ...table.rows.map((row) => cellText(row[index] ?? '')),
-      cellText(table.total?.[index] ?? ''),
-    ]
-    const content = Math.max(0, ...cells.map((cell) => pdf.getTextWidth(pdfText(cell))))
+    const cells = table.rows.map((row) => cellText(row[index] ?? ''))
+    let content = Math.max(0, ...cells.map((cell) => pdf.getTextWidth(pdfText(cell))))
+    // La ligne de total est en gras : mesurée en gras, pour qu'un total ne soit jamais tronqué.
+    const total = cellText(table.total?.[index] ?? '')
+    if (total) {
+      pdf.setFont('helvetica', 'bold')
+      content = Math.max(content, pdf.getTextWidth(pdfText(total)))
+    }
     contentWidths.push(content)
     pdf.setFont('helvetica', 'bold')
     pdf.setFontSize(HEADER_PT)
@@ -139,9 +145,26 @@ function layoutTable(pdf: Pdf, table: MetresTable, available: number): Layout {
     return width
   })
   const sum = widths.reduce((a, b) => a + b, 0)
-  // Trop large : on réduit toutes les colonnes dans la même proportion.
-  const factor = sum > available ? available / sum : 1
-  const scaled = widths.map((w) => w * factor)
+  // Trop large : on réduit les colonnes de texte dans la même proportion ; les colonnes de nombres
+  // (alignées à droite) gardent leur largeur, pour qu'un montant ou une quantité ne soit jamais coupé.
+  // Si les nombres seuls dépassent la largeur, tout est réduit (cas limite, comme avant).
+  const numeric = table.columns.reduce((acc, column, i) => acc + (column.align === 'right' ? widths[i] : 0), 0)
+  const textual = sum - numeric
+  let scaled: number[]
+  // La colonne de texte la plus large (souvent la désignation) cède d'abord la place, jusqu'à
+  // MIN_FLEX_COLUMN ; les codes et unités, courts, restent lisibles.
+  const widestText = table.columns.reduce(
+    (best, column, i) => (column.align === 'left' && (best < 0 || widths[i] > widths[best]) ? i : best),
+    -1,
+  )
+  const overflow = sum - available
+  if (sum <= available) scaled = widths
+  else if (widestText >= 0 && widths[widestText] - overflow >= MIN_FLEX_COLUMN) {
+    scaled = widths.map((w, i) => (i === widestText ? w - overflow : w))
+  } else if (numeric < available && textual > 0) {
+    const factor = (available - numeric) / textual
+    scaled = widths.map((w, i) => (table.columns[i].align === 'right' ? w : w * factor))
+  } else scaled = widths.map((w) => w * (available / sum))
   const extra = available - scaled.reduce((a, b) => a + b, 0)
   // L'espace restant va à la colonne de texte au contenu le plus long (souvent « Nom »), pas aux nombres.
   let flex = 0
