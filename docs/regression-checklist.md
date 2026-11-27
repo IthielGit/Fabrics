@@ -425,3 +425,16 @@ Cochée le 2026-11-27 : l'utilisateur confirme que chaque effet fonctionne comme
 | Trémie de Pascal déduite de la dalle | Auto : `features/scene/slabMeasures.test.ts` |
 | Schéma, IDS, quantités ↔ géométrie, niveaux, matériaux, Uniclass relus par IfcOpenShell | Manuel : `npm run check:ifc` (rapport `tmp/ifc-g5/report.md`) |
 | HOUSE-01 ouvert dans 2 visionneuses indépendantes | Manuel : `tmp/ifc-g5/HOUSE-01.ifc` (voir `docs/phases/M22-report.md`) |
+
+### M23 — Bibliothèque de prix et DQE (gate G6)
+| Critère | Vérification |
+|---|---|
+| Montants exacts (dixièmes d'Ar, `bigint`), arrondis D23-5 / D23-19 | Auto : `features/pricing/money.test.ts`, `estimate.test.ts` |
+| Import du classeur et du CSV, rapport, aucune correction silencieuse | Auto : `importWorkbook.test.ts`, `importCsv.test.ts`, `readPriceFile.test.ts` ; local : `importWorkbook.local.test.ts` (classeur réel) ; Nav. (Bibliothèque → Importer) |
+| Réimport : même ligne mise à jour, lignes à la main gardées, version dépassée refusée | Auto : `importPlan.test.ts`, `LocalPricingRepository.test.ts` |
+| Règles élément → postes, sans double comptage, unités contrôlées | Auto : `rules.test.ts` ; Nav. (Bibliothèque → Règles) |
+| Chaîne métré → règles → montants sur un plan passé par la scène | Auto : `projectEstimate.test.ts`, `gateG6.test.ts` |
+| Versions figées, empreinte, comparaison, définitif refusé sans prix | Auto : `estimateVersions.test.ts`, `gateG6.test.ts` ; Nav. (éditeur → DQE → Versions) |
+| Exports XLSX / PDF : mêmes totaux qu'à l'écran, aucun total tronqué ; classeur des métrés inchangé | Auto : `estimateTables.test.ts`, `gateG6.test.ts`, baseline `metres-*.xlsx.txt` ; Nav. (DQE → Excel / PDF) |
+| Accès : admin / membre / personne hors de l'espace (RLS) | Manuel : banc PGlite sur `supabase/m23-pricing.sql` (60 contrôles, voir `docs/phases/M23-report.md`) ; essai à deux comptes |
+

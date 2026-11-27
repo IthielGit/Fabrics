@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0 à 23.7 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M23 Bibliothèque de prix et DQE : **tous les sous-lots faits (23.0 à 23.8) le 2026-11-27 ; en attente de l'essai de l'utilisateur** (script SQL à lancer dans Supabase, puis essai décrit dans `docs/phases/M23-report.md`). M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -47,11 +47,17 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
 | M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
-| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 à 23.7 faits) | |
+| M23 Bibliothèque de prix et DQE (G6) | sous-lots faits, essai de l'utilisateur à faire | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-27 — M23 · 23.8 Contrôles et gate G6 : fait (essai de l'utilisateur à faire)
+
+- **Test du gate** (`src/features/pricing/gateG6.test.ts`), plan passé par la scène Pascal : (1) 13,11 m² × 45 000,0 Ar/m² → 590 000 Ar HT ; (2) même révision + même bordereau → même devis figé et même empreinte ; (3) un poste sans prix → « définitif » refusé (brouillon permis) ; (4) totaux identiques dans le calcul, les cellules XLSX et le texte du PDF, source et unité sur chaque ligne. **4 critères sur 4.**
+- **Rapport** `docs/phases/M23-report.md` (critères, livraison, base, essai pas à pas, limites) ; section M23 de `docs/regression-checklist.md`.
+- **`npm run check:all` réussi** (546 s) : build, lint, 3 536 tests Fabrics (référence comprise), tests de Pascal identiques à leur référence, Biome, doublons. Un premier passage avait signalé 2 échecs dans `@pascal-app/core` (tests qui parcourent les dossiers sources) alors que M23 ne touche pas à Pascal : relancé seul, le paquet est identique à la référence, et le second passage complet réussit. Échecs liés à la charge de la machine, à surveiller.
 
 ### 2026-11-27 — M23 · 23.7 Exports XLSX et PDF du DQE : fait
 

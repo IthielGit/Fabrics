@@ -1440,7 +1440,7 @@ rappelle s'il tourne sur un autre modèle).
 - Exporter deux fois le même plan donne les mêmes `GlobalId`
 - Aucune perte silencieuse : chaque écart figure dans le rapport
 
-## M23 — Bibliothèque de prix et DQE (gate G6)
+## M23 — Bibliothèque de prix et DQE (gate G6) — **sous-lots faits le 2026-11-27, en attente de l'essai de l'utilisateur** (`docs/phases/M23-report.md`)
 
 À décider avant de commencer : nomenclature des postes, base de prix, devise, taxes.
 
@@ -1458,7 +1458,7 @@ rappelle s'il tourne sur un autre modèle).
 | 23.5 Versions du DQE — **fait le 2026-11-27** (écran en 23.6) | DQE figé par version du modèle et du bordereau ; recalcul après modification ; comparaison des versions | `/model opus` |
 | 23.6 Panneau DQE — **fait le 2026-11-27** | Lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements | `/model sonnet` |
 | 23.7 Exports — **fait le 2026-11-27** | XLSX et PDF : en-tête, cartouche, synthèse, détail, hypothèses, date des prix | `/model sonnet` |
-| 23.8 Contrôles et gate G6 | Postes sans prix bloquants, totaux identiques à l'écran, en XLSX et en PDF, rapport | `/model opus` |
+| 23.8 Contrôles et gate G6 — **fait le 2026-11-27** (`docs/phases/M23-report.md`) | Postes sans prix bloquants, totaux identiques à l'écran, en XLSX et en PDF, rapport | `/model opus` |
 
 - [x] Bibliothèque de prix : postes (code, libellé, unité, lot, ouvrage type), prix des matériaux,
       main-d'œuvre, matériel, compositions de prix, date d'effet, fournisseur, région, version ;
@@ -1472,7 +1472,7 @@ rappelle s'il tourne sur un autre modèle).
       versions du devis
 - [x] Panneau DQE : lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements
 - [x] Exports XLSX et PDF : en-tête, cartouche, synthèse, détail, hypothèses, date des prix
-- [ ] Contrôle : postes sans prix
+- [x] Contrôle : postes sans prix
 
 **Critères d'acceptation (G6)**
 - 13,11 m² × 45 000,0 Ar/m² HT (prix d'exemple) = 589 950 Ar, arrondi à la centaine supérieure : 590 000 Ar HT
