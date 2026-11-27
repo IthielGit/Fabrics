@@ -9,6 +9,7 @@ import type {
   WorkspaceSummary,
 } from '../features/pricing/model'
 import type { ApplyImportInput, LibraryPatch, PricingRepository } from '../features/pricing/repository'
+import type { PricingRule, PricingRuleFields } from '../features/pricing/rules'
 import { SupabasePricingRepository } from '../features/pricing/SupabasePricingRepository'
 import { supabase } from '../lib/supabase'
 
@@ -48,6 +49,8 @@ interface PricingState {
   library: PriceLibrary | null
   priceItems: PriceItem[]
   workItems: WorkItem[]
+  /** Règles de l'espace (élément → postes), dans leur ordre. */
+  rules: PricingRule[]
 
   /** Charge les espaces et la bibliothèque de l'espace choisi. */
   load: (userId: string | null) => Promise<void>
@@ -63,6 +66,8 @@ interface PricingState {
   deletePriceItem: (id: string) => Promise<void>
   saveWorkItem: (fields: WorkItemFields, id?: string) => Promise<void>
   deleteWorkItem: (id: string) => Promise<void>
+  saveRule: (fields: PricingRuleFields, id?: string) => Promise<void>
+  deleteRule: (id: string) => Promise<void>
 }
 
 function byCode<T extends { code: string; designation: string }>(a: T, b: T): number {
@@ -78,9 +83,10 @@ export const usePricingStore = create<PricingState>((set, get) => {
   /** Lit la bibliothèque d'un espace et ses lignes. */
   const openWorkspace = async (repository: PricingRepository, workspace: WorkspaceSummary) => {
     const library = await repository.getLibrary(workspace.id)
-    const [priceItems, workItems] = await Promise.all([
+    const [priceItems, workItems, rules] = await Promise.all([
       repository.listPriceItems(library.id),
       repository.listWorkItems(library.id),
+      repository.listRules(library.id),
     ])
     rememberWorkspace(workspace.id)
     set({
@@ -88,6 +94,7 @@ export const usePricingStore = create<PricingState>((set, get) => {
       library,
       priceItems: [...priceItems].sort(byCode),
       workItems: [...workItems].sort(byCode),
+      rules,
       status: 'ready',
     })
   }
@@ -107,10 +114,11 @@ export const usePricingStore = create<PricingState>((set, get) => {
     library: null,
     priceItems: [],
     workItems: [],
+    rules: [],
 
     load: async (userId) => {
       const repository = pricingRepositoryFor(userId)
-      set({ status: 'loading', repository, userId, workspace: null, library: null, priceItems: [], workItems: [] })
+      set({ status: 'loading', repository, userId, workspace: null, library: null, priceItems: [], workItems: [], rules: [] })
       try {
         const workspaces = await repository.listWorkspaces()
         set({ workspaces })
@@ -159,12 +167,13 @@ export const usePricingStore = create<PricingState>((set, get) => {
     applyImport: async (input) => {
       const { repository, library } = requireLibrary()
       const version = await repository.applyImport(library.id, input)
-      const [updated, priceItems, workItems] = await Promise.all([
+      const [updated, priceItems, workItems, rules] = await Promise.all([
         repository.getLibrary(library.workspaceId),
         repository.listPriceItems(library.id),
         repository.listWorkItems(library.id),
+        repository.listRules(library.id),
       ])
-      set({ library: updated, priceItems: [...priceItems].sort(byCode), workItems: [...workItems].sort(byCode) })
+      set({ library: updated, priceItems: [...priceItems].sort(byCode), workItems: [...workItems].sort(byCode), rules })
       return version
     },
 
@@ -205,7 +214,22 @@ export const usePricingStore = create<PricingState>((set, get) => {
     deleteWorkItem: async (id) => {
       const { repository } = requireLibrary()
       await repository.deleteWorkItem(id)
-      set((state) => ({ workItems: state.workItems.filter((item) => item.id !== id) }))
+      set((state) => ({
+        workItems: state.workItems.filter((item) => item.id !== id),
+        rules: state.rules.map((rule) => (rule.workItemId === id ? { ...rule, workItemId: null } : rule)),
+      }))
+    },
+
+    saveRule: async (fields, id) => {
+      const { repository, library } = requireLibrary()
+      await repository.saveRule(library.id, fields, id)
+      set({ rules: await repository.listRules(library.id) })
+    },
+
+    deleteRule: async (id) => {
+      const { repository, library } = requireLibrary()
+      await repository.deleteRule(id)
+      set({ rules: await repository.listRules(library.id) })
     },
   }
 })

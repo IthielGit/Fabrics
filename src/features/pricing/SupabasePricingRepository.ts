@@ -4,6 +4,7 @@
  */
 import type { SupabaseClient } from '@supabase/supabase-js'
 import type { PriceItemFields, WorkItemFields, WorkspaceRole } from './model'
+import type { PricingRuleFields } from './rules'
 import {
   LastAdminError,
   StaleLibraryError,
@@ -17,6 +18,8 @@ import {
   priceItemToRow,
   rowToHistory,
   rowToImportBatch,
+  rowToRule,
+  ruleToRow,
   rowToInvite,
   rowToLibrary,
   rowToMember,
@@ -26,6 +29,7 @@ import {
   workItemToRow,
   type HistoryRow,
   type ImportBatchRow,
+  type PricingRuleRow,
   type InviteRow,
   type LibraryRow,
   type MemberRow,
@@ -41,6 +45,8 @@ const WORK_COLUMNS =
   'id, library_id, code, category, designation, unit, price_ht, reference_price, source_coefficient, output, components, source_row, source_key, updated_by_email, updated_at'
 const HISTORY_COLUMNS =
   'id, item_id, code, designation, action, old_price_ht, new_price_ht, changed_by_email, changed_at'
+const RULE_COLUMNS =
+  'id, library_id, name, quantity_code, filter, work_item_id, waste_bp, enabled, position, updated_by_email, updated_at'
 const INVITE_COLUMNS = 'id, workspace_id, token, role, active, expires_at, created_at'
 
 /** Supabase renvoie au plus 1 000 lignes par requête : on lit par pages. */
@@ -157,6 +163,32 @@ export class SupabasePricingRepository implements PricingRepository {
 
   async deleteWorkItem(id: string) {
     const { error } = await this.client.from('work_items').delete().eq('id', id)
+    rethrow(error)
+  }
+
+  async listRules(libraryId: string) {
+    const { data, error } = await this.client
+      .from('pricing_rules')
+      .select(RULE_COLUMNS)
+      .eq('library_id', libraryId)
+      .order('position')
+      .order('id')
+    rethrow(error)
+    return ((data ?? []) as PricingRuleRow[]).map(rowToRule)
+  }
+
+  async saveRule(libraryId: string, fields: PricingRuleFields, id?: string) {
+    const row = ruleToRow(libraryId, fields)
+    const query = id
+      ? this.client.from('pricing_rules').update(row).eq('id', id)
+      : this.client.from('pricing_rules').insert(row)
+    const { data, error } = await query.select(RULE_COLUMNS).single()
+    rethrow(error)
+    return rowToRule(data as unknown as PricingRuleRow)
+  }
+
+  async deleteRule(id: string) {
+    const { error } = await this.client.from('pricing_rules').delete().eq('id', id)
     rethrow(error)
   }
 

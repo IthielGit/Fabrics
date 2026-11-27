@@ -8,6 +8,7 @@ import ImportHistorySection from '../components/pricing/ImportHistorySection'
 import LibrarySettingsSection from '../components/pricing/LibrarySettingsSection'
 import MembersSection from '../components/pricing/MembersSection'
 import PriceItemsTable from '../components/pricing/PriceItemsTable'
+import RulesTable from '../components/pricing/RulesTable'
 import { FIELD_INPUT } from '../components/pricing/styles'
 import WorkItemsTable from '../components/pricing/WorkItemsTable'
 import { AppHeader, AppShell, ICON_BUTTON, SECONDARY_PILL } from '../components/shell/AppShell'
@@ -18,9 +19,9 @@ import { formatIsoDay } from '../lib/date'
 import { useAuthStore } from '../stores/authStore'
 import { usePricingStore } from '../stores/pricingStore'
 
-type Tab = PriceKind | 'work' | 'members' | 'settings'
+type Tab = PriceKind | 'work' | 'rules' | 'members' | 'settings'
 
-const TABS: readonly Tab[] = ['material', 'equipment', 'labour', 'work', 'members', 'settings']
+const TABS: readonly Tab[] = ['material', 'equipment', 'labour', 'work', 'rules', 'members', 'settings']
 
 /** Bibliothèque de prix de l'espace (M23, 23.1) : matériaux, matériel, main-d'œuvre et postes. */
 export default function PriceLibraryPage() {
@@ -146,6 +147,7 @@ export default function PriceLibraryPage() {
                 <PriceItemsTable key={tab} kind={tab} canEdit={canEdit} />
               )}
               {tab === 'work' && <WorkItemsTable canEdit={canEdit} />}
+              {tab === 'rules' && <RulesTable canEdit={canEdit} />}
               {tab === 'members' && <MembersSection />}
               {tab === 'settings' && (
                 <div className="grid gap-4">

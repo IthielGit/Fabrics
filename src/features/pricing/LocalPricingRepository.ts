@@ -23,6 +23,7 @@ import {
   type LibraryPatch,
   type PricingRepository,
 } from './repository'
+import type { PricingRule, PricingRuleFields } from './rules'
 
 /** Tout l'état local, enregistré sous une seule clé (lectures et écritures atomiques). */
 export interface LocalPricingState {
@@ -33,6 +34,8 @@ export interface LocalPricingState {
   history: PriceHistoryEntry[]
   /** Journal des imports (absent des états enregistrés avant 23.2). */
   imports?: ImportBatch[]
+  /** Règles de l'espace (absentes des états enregistrés avant 23.3). */
+  rules?: PricingRule[]
 }
 
 export interface LocalPricingStorage {
@@ -209,6 +212,36 @@ export class LocalPricingRepository implements PricingRepository {
       if (!previous) return
       state.workItems = state.workItems.filter((item) => item.id !== id)
       this.record(state, previous, null)
+      state.rules = (state.rules ?? []).map((rule) => (rule.workItemId === id ? { ...rule, workItemId: null } : rule))
+    })
+  }
+
+  async listRules(libraryId: string): Promise<PricingRule[]> {
+    const { rules } = await this.read()
+    return (rules ?? []).filter((rule) => rule.libraryId === libraryId).sort((a, b) => a.position - b.position)
+  }
+
+  async saveRule(libraryId: string, fields: PricingRuleFields, id?: string): Promise<PricingRule> {
+    return this.update((state) => {
+      const saved: PricingRule = {
+        ...fields,
+        name: fields.name.trim(),
+        id: id ?? this.newId(),
+        libraryId,
+        updatedByEmail: LOCAL_AUTHOR,
+        updatedAt: this.now(),
+      }
+      const rules = state.rules ?? []
+      state.rules = rules.some((rule) => rule.id === saved.id)
+        ? rules.map((rule) => (rule.id === saved.id ? saved : rule))
+        : [...rules, saved]
+      return saved
+    })
+  }
+
+  async deleteRule(id: string): Promise<void> {
+    await this.update((state) => {
+      state.rules = (state.rules ?? []).filter((rule) => rule.id !== id)
     })
   }
 
@@ -230,6 +263,9 @@ export class LocalPricingRepository implements PricingRepository {
         if (removeWork.has(item.id) && item.sourceKey !== '') this.record(state, item, null)
       }
       state.workItems = state.workItems.filter((item) => !(removeWork.has(item.id) && item.sourceKey !== ''))
+      state.rules = (state.rules ?? []).map((rule) =>
+        rule.workItemId && removeWork.has(rule.workItemId) ? { ...rule, workItemId: null } : rule,
+      )
       for (const { id, fields } of plan.price.update) {
         const index = state.priceItems.findIndex((item) => item.id === id)
         if (index < 0) continue

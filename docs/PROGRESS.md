@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0, 23.1 et 23.2 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0 à 23.3 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -47,11 +47,19 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
 | M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
-| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 à 23.2 faits) | |
+| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 à 23.3 faits) | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-27 — M23 · 23.3 Règles élément → postes : fait
+
+- **Règle de l'espace** (`src/features/pricing/rules.ts`, D23-15) : une quantité de métré de M21 (famille « métré », jamais recalculée), un filtre sur l'élément (matériau du mur, matériau et épaisseur de la couche, épaisseur du mur, type d'ouverture), un poste et une perte. Plusieurs postes par élément (maçonnerie, enduit, peinture) ; **une même quantité n'entre jamais deux fois dans un même poste** (doublon écarté et signalé). Unité du poste contrôlée (m² pour une surface, m³ pour un volume, ml ou m pour une longueur, U / FFT / Lot / Ferme / Paire pour un nombre).
+- **Corrections à la main** dans un projet (`QuantityOverride`) : poste remplacé, quantité retirée, ligne ajoutée, chacune tracée ; logique prête et testée, écran avec le panneau DQE (23.6). **Couverture** : éléments avec des quantités mais sans aucun poste.
+- **Base** : table `pricing_rules` (lecture par les membres, écriture par les admins, poste retiré → règle gardée sans poste). Banc d'essai PGlite : 48 contrôles sur 48.
+- **Écran** : onglet « Règles » de la bibliothèque (liste, ajout, modification, activation, suppression ; choix du poste avec recherche). Vérifié dans Chromium sur la bibliothèque importée : poste en FFT refusé pour une surface, règle « Maçonnerie en brique, ≥ 200 mm → CAT-05-001 (m²), perte 5 % » enregistrée, désactivation gardée après rechargement.
+- Build, lint, 3 512 tests OK ; doublons 0,88 %.
 
 ### 2026-11-27 — M23 · 23.2 Import des prix : fait
 

@@ -15,6 +15,7 @@ import type {
   WorkspaceSummary,
 } from './model'
 import type { ImportPlan, ImportSummary } from './importPlan'
+import type { PricingRule, PricingRuleFields } from './rules'
 
 export type AcceptWorkspaceInviteResult =
   | { status: 'ok'; workspaceId: string; role: WorkspaceRole }
@@ -70,6 +71,11 @@ export interface PricingRepository {
   listWorkItems(libraryId: string): Promise<WorkItem[]>
   saveWorkItem(libraryId: string, fields: WorkItemFields, id?: string): Promise<WorkItem>
   deleteWorkItem(id: string): Promise<void>
+
+  /** Règles de l'espace (élément → postes, D23-15), dans leur ordre d'application. */
+  listRules(libraryId: string): Promise<PricingRule[]>
+  saveRule(libraryId: string, fields: PricingRuleFields, id?: string): Promise<PricingRule>
+  deleteRule(id: string): Promise<void>
 
   /** Applique un import d'un bloc ; renvoie la nouvelle version de la bibliothèque. */
   applyImport(libraryId: string, input: ApplyImportInput): Promise<number>

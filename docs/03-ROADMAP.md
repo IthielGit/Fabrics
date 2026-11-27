@@ -1453,7 +1453,7 @@ rappelle s'il tourne sur un autre modèle).
 | 23.0 Décisions — **fait le 2026-11-26** (`docs/phases/M23-decisions.md`) | Nomenclature des postes, base de prix, devise, taxes, en options, choisies par l'utilisateur | `/model opus` |
 | 23.1 Bibliothèque de prix — **fait le 2026-11-26** | Postes, prix des matériaux, main-d'œuvre, matériel, compositions, date d'effet, fournisseur, région, version ; tables Supabase avec RLS | `/model opus` |
 | 23.2 Import des prix — **fait le 2026-11-27** | CSV et XLSX avec contrôle des unités et des devises ; aucun prix inventé ni implicite | `/model sonnet` |
-| 23.3 Correspondance vers les postes | Élément + matériau + règle → poste ; plusieurs postes par élément sans double comptage | `/model opus` |
+| 23.3 Correspondance vers les postes — **fait le 2026-11-27** | Élément + matériau + règle → poste ; plusieurs postes par élément sans double comptage | `/model opus` |
 | 23.4 Calcul des montants | Pertes, frais, marge, taxes ; arrondis documentés ; montants exacts, sans nombres à virgule flottante | `/model opus` |
 | 23.5 Versions du DQE | DQE figé par version du modèle et du bordereau ; recalcul après modification ; comparaison des versions | `/model opus` |
 | 23.6 Panneau DQE | Lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements | `/model sonnet` |
@@ -1464,7 +1464,7 @@ rappelle s'il tourne sur un autre modèle).
       main-d'œuvre, matériel, compositions de prix, date d'effet, fournisseur, région, version ;
       tables Supabase avec RLS
 - [x] Import CSV et XLSX avec contrôle des unités et devises ; **aucun prix inventé ni implicite**
-- [ ] Correspondance élément + matériau + règle → poste ; un élément peut alimenter plusieurs postes
+- [x] Correspondance élément + matériau + règle → poste ; un élément peut alimenter plusieurs postes
       (maçonnerie, enduit, peinture) sans double comptage dans un poste
 - [ ] Paramètres de chiffrage : pertes, frais, marge, taxes ; arrondis documentés ; montants exacts
       (jamais de nombres à virgule flottante)

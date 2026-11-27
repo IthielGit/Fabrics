@@ -19,6 +19,8 @@ import {
   type WorkspaceSummary,
 } from './model'
 import type { ImportBatch } from './repository'
+import { EMPTY_FILTER, type PricingRule, type PricingRuleFields, type RuleFilter } from './rules'
+import type { QuantityCode } from '../measurements/quantities/types'
 import { tenthsFromStored, tenthsToText } from './money'
 
 export interface WorkspaceRow {
@@ -309,5 +311,63 @@ export function rowToImportBatch(row: ImportBatchRow): ImportBatch {
     importedByEmail: row.imported_by_email,
     importedAt: row.imported_at,
     summary,
+  }
+}
+
+export interface PricingRuleRow {
+  id: string
+  library_id: string
+  name: string
+  quantity_code: string
+  filter: Record<string, unknown> | null
+  work_item_id: string | null
+  waste_bp: number
+  enabled: boolean
+  position: number
+  updated_by_email: string
+  updated_at: string
+}
+
+function filterFromJson(value: Record<string, unknown> | null): RuleFilter {
+  const raw = value ?? {}
+  const text = (v: unknown) => (typeof v === 'string' && v !== '' ? v : null)
+  const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) ? v : null)
+  const kind = raw.openingKind
+  return {
+    ...EMPTY_FILTER,
+    wallMaterial: text(raw.wallMaterial) as RuleFilter['wallMaterial'],
+    layerMaterial: text(raw.layerMaterial),
+    minThickness: num(raw.minThickness),
+    maxThickness: num(raw.maxThickness),
+    openingKind: kind === 'door' || kind === 'window' || kind === 'bay' ? kind : null,
+  }
+}
+
+export function rowToRule(row: PricingRuleRow): PricingRule {
+  return {
+    id: row.id,
+    libraryId: row.library_id,
+    name: row.name,
+    quantityCode: row.quantity_code as QuantityCode,
+    filter: filterFromJson(row.filter),
+    workItemId: row.work_item_id,
+    wasteBp: row.waste_bp,
+    enabled: row.enabled,
+    position: row.position,
+    updatedByEmail: row.updated_by_email,
+    updatedAt: row.updated_at,
+  }
+}
+
+export function ruleToRow(libraryId: string, fields: PricingRuleFields) {
+  return {
+    library_id: libraryId,
+    name: fields.name.trim(),
+    quantity_code: fields.quantityCode,
+    filter: fields.filter,
+    work_item_id: fields.workItemId,
+    waste_bp: fields.wasteBp,
+    enabled: fields.enabled,
+    position: fields.position,
   }
 }
