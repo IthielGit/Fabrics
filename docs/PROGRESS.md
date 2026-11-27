@@ -53,6 +53,10 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-27 — M19 · Lot A : suivi mis à jour
+- L'utilisateur confirme que les effets visuels de Pascal fonctionnent dans Fabrics (qualité, occlusion ambiante, bloom, contours encrés, heure et lumière…). Les 5 cases du lot A de M19 (roadmap) et les 12 cases « Fabrics = Pascal » de `docs/regression-checklist.md` sont cochées. Aucun code modifié.
+- Restent ouverts dans les jalons précédents : gate G3 (mesure à la règle, revue d'un professionnel), gate G4 (revue d'un métreur), M11 quater lot H (test avec une vraie personne) et lot I (essai sur tablette), choix des raccourcis.
+
 ### 2026-11-27 — M23 · 23.6 Panneau DQE : fait
 
 - **Onglet « DQE »** dans la barre latérale de l'éditeur (à côté de « Métrés »), recalculé à chaque modification du plan : espace et version de la bibliothèque ; réglage des parts de K1 pour ce projet (valeurs du classeur signalées « exemple » tant qu'elles ne sont pas réglées) ; points à vérifier (éléments sans poste, avec un bouton qui les sélectionne dans le plan ; postes sans prix ; lignes provisoires ; remarques sur les règles) ; lignes par lot (poste, quantité dans l'unité du poste D23-17, prix de vente, montant) ; **origine** de chaque ligne (quantité du métré, règle, perte, bouton « Sélectionner ») ; **correction à la main** « Retirer de ce poste », listée et annulable ; totaux HT, TVA, TTC et décomposition ; **versions** (figer en brouillon ou en définitif, définitif bloqué s'il manque un prix, « à jour » ou « a changé » selon l'empreinte, comparaison avec l'état actuel).

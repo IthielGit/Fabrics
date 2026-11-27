@@ -1264,15 +1264,15 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
 
 ### Lot A — Interface et prise en main de Pascal (D80)
 
-- [ ] Pages de `apps/editor` reprises dans l'app Vite : accueil des projets, éditeur, réglages,
+- [x] Pages de `apps/editor` reprises dans l'app Vite : accueil des projets, éditeur, réglages,
       import, connexion (Supabase Auth), aide et prise en main ; routes `react-router` (`/`,
       `/p/:projectId`, `/s/…`, `/i/…`, `/bienvenue` conservées)
-- [ ] Fonctions de Fabrics reconstruites dans ce cadre, d'après la carte des écrans : panneau Métrés
+- [x] Fonctions de Fabrics reconstruites dans ce cadre, d'après la carte des écrans : panneau Métrés
       (Client / Exécution, en direct), Commentaires, Historique et aperçu de version, présence et
       avatars, partage et invitations, Exporter, points à vérifier, cotation Aucune / Client / Exécution
-- [ ] Projets Visuel : leur éditeur reste à part, habillé dans le style de Pascal, accessible depuis
+- [x] Projets Visuel : leur éditeur reste à part, habillé dans le style de Pascal, accessible depuis
       le même accueil
-- [ ] **Expérience Pascal conservée telle quelle** (D81), reprise sans simplification :
+- [x] **Expérience Pascal conservée telle quelle** (D81), reprise sans simplification :
       - effets visuels : rendu WebGPU (repli WebGL2), occlusion ambiante, bloom, anticrénelage,
         contours encrés, surlignage de sélection, lumière du jour et atmosphère, environnement HDRI,
         animation de construction, transitions et animations d'interface (`motion`) ;
@@ -1284,7 +1284,7 @@ changer de modèle lui-même : il la rappelle au début du sous-lot si le modèl
       - prise en main : aide et parcours de découverte de Pascal
 - [x] Tous les textes en français (Lingui) ; unités affichées en mm, m², m³ (B7, vérifié le 2026-11-20 ;
       `apps/editor`, non utilisé par Fabrics, non traduit)
-- [ ] Anciens composants d'interface de Fabrics retirés une fois remplacés (registre mis à jour)
+- [x] Anciens composants d'interface de Fabrics retirés une fois remplacés (registre mis à jour)
 
 **Critères d'acceptation (lot A)**
 - Chaque ligne de la carte des écrans est cochée : aucune fonction de Fabrics n'a disparu

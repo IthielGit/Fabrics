@@ -290,18 +290,20 @@ droite de la 3D) et onglet **Paramètres**.
 
 | Effet | Où le régler | Fabrics = Pascal |
 |---|---|---|
-| Rendu WebGPU (Chrome, Edge récents), repli WebGL2 (autre navigateur) | automatique | [ ] |
-| Qualité Auto / Basse / Moyenne / Haute | Affichage → Qualité | [ ] |
-| Occlusion ambiante (qualité moyenne ou haute) | Affichage → Qualité | [ ] |
-| Bloom (qualité haute, lumière du jour) | Affichage → Qualité | [ ] |
-| Anticrénelage (TAA, ou FXAA en qualité basse) | Affichage → Qualité | [ ] |
-| Contours encrés, thèmes de couleurs | Affichage → Couleurs | [ ] |
-| Surlignage de la sélection | clic sur un mur | [ ] |
-| Lumière du jour, heure et météo, atmosphère | Affichage → Heure et météo ; pastille de l'heure en bas | [ ] |
-| Environnement HDRI | Affichage → Heure et météo | [ ] |
-| Ombres | Affichage → Ombres ; Paramètres → Viewer | [ ] |
-| Animation de construction | Paramètres → Préférences | [ ] |
-| Transitions et animations d'interface | ouverture des panneaux et menus | [ ] |
+| Rendu WebGPU (Chrome, Edge récents), repli WebGL2 (autre navigateur) | automatique | [x] |
+| Qualité Auto / Basse / Moyenne / Haute | Affichage → Qualité | [x] |
+| Occlusion ambiante (qualité moyenne ou haute) | Affichage → Qualité | [x] |
+| Bloom (qualité haute, lumière du jour) | Affichage → Qualité | [x] |
+| Anticrénelage (TAA, ou FXAA en qualité basse) | Affichage → Qualité | [x] |
+| Contours encrés, thèmes de couleurs | Affichage → Couleurs | [x] |
+| Surlignage de la sélection | clic sur un mur | [x] |
+| Lumière du jour, heure et météo, atmosphère | Affichage → Heure et météo ; pastille de l'heure en bas | [x] |
+| Environnement HDRI | Affichage → Heure et météo | [x] |
+| Ombres | Affichage → Ombres ; Paramètres → Viewer | [x] |
+| Animation de construction | Paramètres → Préférences | [x] |
+| Transitions et animations d'interface | ouverture des panneaux et menus | [x] |
+
+Cochée le 2026-11-27 : l'utilisateur confirme que chaque effet fonctionne comme dans Pascal (validation du lot A de M19).
 
 ### 2.4 Échanges et agents
 | Fonction | Vérification |
