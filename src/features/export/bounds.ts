@@ -2,7 +2,7 @@ import type { CanvasElement, OpeningElement, WallElement } from '../../types/doc
 import { axisBubblePoints } from '../geometry/axes'
 import { sectionBoundsPoints } from '../geometry/sections'
 import type { Box } from '../geometry/box'
-import { unionBoxes } from '../geometry/box'
+import { boxOfPoints, unionBoxes } from '../geometry/box'
 import { dimensionGeometry } from '../geometry/dimension'
 import { openingGeometry } from '../geometry/openings'
 import { openingSymbol } from '../geometry/openingSymbol'
@@ -15,15 +15,6 @@ import { wallFaces } from '../geometry/walls'
 
 /** Marge ajoutée de chaque côté de l'emprise d'un plan exporté, en mm réels. */
 export const PLAN_EXPORT_MARGIN_MM = 500
-
-function pointsBox(points: readonly Point[]): Box | null {
-  if (points.length === 0) return null
-  const xs = points.map((p) => p.x)
-  const ys = points.map((p) => p.y)
-  const x = Math.min(...xs)
-  const y = Math.min(...ys)
-  return { x, y, width: Math.max(...xs) - x, height: Math.max(...ys) - y }
-}
 
 /** Les points d'un élément posé en (x, y) puis tourné de `rotation` degrés autour de ce point. */
 function placed(element: CanvasElement, local: readonly Point[]): Point[] {
@@ -41,7 +32,7 @@ export function elementBounds(element: CanvasElement): Box | null {
   switch (element.type) {
     case 'rect':
     case 'image':
-      return pointsBox(
+      return boxOfPoints(
         placed(element, [
           { x: 0, y: 0 },
           { x: element.width, y: 0 },
@@ -50,7 +41,7 @@ export function elementBounds(element: CanvasElement): Box | null {
         ]),
       )
     case 'furniture':
-      return pointsBox(
+      return boxOfPoints(
         placed(element, [
           { x: 0, y: 0 },
           { x: element.width, y: 0 },
@@ -74,7 +65,7 @@ export function elementBounds(element: CanvasElement): Box | null {
       // Hauteur estimée : une ligne par retour à la ligne (le retour automatique n'est pas mesuré).
       const lines = element.text.split('\n').length
       const height = element.fontSize * 1.2 * lines
-      return pointsBox(
+      return boxOfPoints(
         placed(element, [
           { x: 0, y: 0 },
           { x: element.width, y: 0 },
@@ -84,22 +75,22 @@ export function elementBounds(element: CanvasElement): Box | null {
       )
     }
     case 'line':
-      return pointsBox(placed(element, toPoints(element.points)))
+      return boxOfPoints(placed(element, toPoints(element.points)))
     case 'wall': {
       const { left, right } = wallFaces(element.points, element.thickness)
       const outline = [...left, ...right]
-      return pointsBox(outline.length > 0 ? outline : toPoints(element.points))
+      return boxOfPoints(outline.length > 0 ? outline : toPoints(element.points))
     }
     case 'room':
     case 'platform':
-      return pointsBox(toPoints(element.points))
+      return boxOfPoints(toPoints(element.points))
     case 'roof':
       // Le débord dépasse du contour.
-      return pointsBox(roofPlanOutline(element))
+      return boxOfPoints(roofPlanOutline(element))
     case 'stair':
-      return pointsBox(stairFootprint(element))
+      return boxOfPoints(stairFootprint(element))
     case 'chimney':
-      return pointsBox(chimneyFootprint(element))
+      return boxOfPoints(chimneyFootprint(element))
     case 'dimension': {
       const geometry = dimensionGeometry(element.points, element.offset)
       const [ax, ay, bx, by] = element.points
@@ -110,15 +101,15 @@ export function elementBounds(element: CanvasElement): Box | null {
       if (geometry) {
         points.push(...geometry.line, ...geometry.extensions.flat())
       }
-      return pointsBox(points)
+      return boxOfPoints(points)
     }
     case 'axis': {
       // La ligne et ses deux bulles (qui dépassent des extrémités).
       const [ax, ay, bx, by] = element.points
-      return pointsBox([{ x: ax, y: ay }, { x: bx, y: by }, ...axisBubblePoints(element.points)])
+      return boxOfPoints([{ x: ax, y: ay }, { x: bx, y: by }, ...axisBubblePoints(element.points)])
     }
     case 'section':
-      return pointsBox(sectionBoundsPoints(element.points, element.lookLeft))
+      return boxOfPoints(sectionBoundsPoints(element.points, element.lookLeft))
     case 'opening':
       // Son emprise dépend du mur porteur (le battant d'une porte dépasse de l'épaisseur du mur) :
       // voir `openingBounds`, utilisé par `planExportExtent`.
@@ -143,7 +134,7 @@ export function openingBounds(opening: OpeningElement, wall: WallElement): Box |
 
   // Repère local (x le long du mur, y vers la normale) → document.
   const { center, direction, normal } = geometry
-  return pointsBox(
+  return boxOfPoints(
     local.map((p) => ({
       x: center.x + p.x * direction.x + p.y * normal.x,
       y: center.y + p.x * direction.y + p.y * normal.y,

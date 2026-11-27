@@ -10,6 +10,7 @@
 
 import * as Y from 'yjs'
 import type { CanvasElement, FabricsDocument, Level } from '../../types/document'
+import { createUndoStack } from '../collab/undoStack'
 import { isLaterThan } from '../collab/yDocument'
 import { fabricsToScene } from './migrate/fromFabrics'
 import { deepEqual } from './deepEqual'
@@ -129,14 +130,13 @@ export class SceneBinding {
     const parts = ySceneParts(ydoc)
     // Une étape d'annulation par geste : chaque écriture ferme l'étape précédente (`stopCapturing`),
     // sauf quand l'éditeur demande de prolonger le geste (appuis rapides sur les flèches).
-    this.undoManager = new Y.UndoManager([parts.meta, parts.nodes], {
-      trackedOrigins: new Set([SCENE_LOCAL_ORIGIN]),
-      captureTimeout: Number.MAX_SAFE_INTEGER,
-    })
     this.onStackChange = () => this.host.onHistoryChange?.(this.canUndo(), this.canRedo())
-    this.undoManager.on('stack-item-added', this.onStackChange)
-    this.undoManager.on('stack-item-popped', this.onStackChange)
-    this.undoManager.on('stack-cleared', this.onStackChange)
+    this.undoManager = createUndoStack(
+      [parts.meta, parts.nodes],
+      SCENE_LOCAL_ORIGIN,
+      Number.MAX_SAFE_INTEGER,
+      this.onStackChange,
+    )
     this.onAfterTransaction = (transaction) => this.receive(transaction)
     ydoc.on('afterTransaction', this.onAfterTransaction)
   }

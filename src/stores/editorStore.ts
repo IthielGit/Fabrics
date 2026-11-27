@@ -842,17 +842,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const selection = all.filter((el) => selectedIds.includes(el.id))
       const result = resizeBlock(selection, all, { width, depth })
       if (!result) return null
-      const byId = new Map(result.elements.map((el) => [el.id, el]))
-      const removed = new Set(result.removedIds)
-      commit(
-        (doc) => ({
-          ...doc,
-          elements: doc.elements.flatMap((el) => (removed.has(el.id) ? [] : [byId.get(el.id) ?? el])),
-        }),
-        undefined,
-        undefined,
-        false,
-      )
+      commit((doc) => ({ ...doc, elements: replaceElements(doc.elements, result) }), undefined, undefined, false)
       return result.removedIds.length
     },
 
@@ -862,17 +852,7 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const level = selectActiveElements(get())
       const result = stretchZone(level, zone, delta)
       if (!result) return null
-      const byId = new Map(result.elements.map((el) => [el.id, el]))
-      const removed = new Set(result.removedIds)
-      commit(
-        (doc) => ({
-          ...doc,
-          elements: doc.elements.flatMap((el) => (removed.has(el.id) ? [] : [byId.get(el.id) ?? el])),
-        }),
-        undefined,
-        undefined,
-        false,
-      )
+      commit((doc) => ({ ...doc, elements: replaceElements(doc.elements, result) }), undefined, undefined, false)
       return result.removedIds.length
     },
 
@@ -913,16 +893,14 @@ export const useEditorStore = create<EditorState>()((set, get) => {
       const level = activeLevelId === null ? base.elements : elementsOnLevel(base.elements, activeLevelId)
       const move = moveWallSide(level, wallId, sideIndex, distance)
       if (!move) return null
-      const changed = new Map((move.result?.elements ?? []).map((el) => [el.id, el]))
-      const removed = new Set(move.result?.removedIds ?? [])
-      const elements = base.elements.flatMap((el) => (removed.has(el.id) ? [] : [changed.get(el.id) ?? el]))
+      const elements = move.result ? replaceElements(base.elements, move.result) : base.elements
       set({
         project: { ...project, document: { ...project.document, elements } },
         revision: revision + 1,
       })
       return {
         blocked: move.blocked,
-        removedOpenings: removed.size,
+        removedOpenings: new Set(move.result?.removedIds).size,
         distance: move.delta.x + move.delta.y,
       }
     },
@@ -1155,6 +1133,19 @@ export const useEditorStore = create<EditorState>()((set, get) => {
     },
   }
 })
+
+/**
+ * Applique le résultat d'une modification de plusieurs éléments : les éléments renvoyés remplacent
+ * ceux de même identifiant, les `removedIds` disparaissent, les autres ne bougent pas (ordre gardé).
+ */
+function replaceElements(
+  elements: readonly CanvasElement[],
+  result: { elements: readonly CanvasElement[]; removedIds: readonly string[] },
+): CanvasElement[] {
+  const byId = new Map(result.elements.map((el) => [el.id, el]))
+  const removed = new Set(result.removedIds)
+  return elements.flatMap((el) => (removed.has(el.id) ? [] : [byId.get(el.id) ?? el]))
+}
 
 /**
  * Applique un réordonnancement aux seuls éléments du niveau actif : ils reprennent, dans le

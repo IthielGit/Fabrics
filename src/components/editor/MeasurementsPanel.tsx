@@ -19,6 +19,7 @@ import SlabsTable from './SlabsTable'
 import QuantitiesSection from './QuantitiesSection'
 import TakeoffRulesSection from './TakeoffRulesSection'
 import WallLayersTable from './WallLayersTable'
+import MeasureTable from './MeasureTable'
 
 /** À corriger (manque, débord : bloque l'export) en rouge, puis le reste à vérifier en orange. */
 function SurfaceWarnings({ warnings }: { warnings: readonly MetresWarning[] }) {
@@ -254,17 +255,15 @@ export default function MeasurementsPanel() {
       )}
 
       {rooms.length > 0 && (
-        <table className="mt-3 w-full text-sm">
-          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-            {fr.measurements.rooms}
-          </caption>
-          <thead>
-            <tr>
-              <th className={HEAD}>{fr.measurements.name}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.area}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.perimeter}</th>
-            </tr>
-          </thead>
+        <MeasureTable
+          className="mt-3"
+          title={fr.measurements.rooms}
+          columns={[
+            fr.measurements.name,
+            fr.measurements.area,
+            fr.measurements.perimeter,
+          ]}
+        >
           <tbody>
             {rooms.map((room) => (
               <Fragment key={room.id}>
@@ -298,7 +297,7 @@ export default function MeasurementsPanel() {
               <td />
             </tr>
           </tfoot>
-        </table>
+        </MeasureTable>
       )}
       {rooms.length > 0 && <p className="mt-1 text-xs text-slate-500">{fr.measurements.areaNote}</p>}
       {ceilingTable && (
@@ -342,18 +341,16 @@ export default function MeasurementsPanel() {
       )}
 
       {walls.length > 0 && (
-        <table className="mt-4 w-full text-sm">
-          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-            {fr.measurements.walls}
-          </caption>
-          <thead>
-            <tr>
-              <th className={HEAD}>{fr.measurements.name}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.length}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.wallGrossArea}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.wallNetArea}</th>
-            </tr>
-          </thead>
+        <MeasureTable
+          className="mt-4"
+          title={fr.measurements.walls}
+          columns={[
+            fr.measurements.name,
+            fr.measurements.length,
+            fr.measurements.wallGrossArea,
+            fr.measurements.wallNetArea,
+          ]}
+        >
           <tbody>
             {walls.map((wall) => (
               <tr key={wall.id} onClick={() => setSelection([wall.id])} className={rowClass(wall.id)}>
@@ -372,7 +369,7 @@ export default function MeasurementsPanel() {
               <td className={NUMBER}>{formatArea(totals.wallNetArea)}</td>
             </tr>
           </tfoot>
-        </table>
+        </MeasureTable>
       )}
       {walls.length > 0 && openings.length > 0 && (
         <p className="mt-1 text-xs text-slate-500">{fr.measurements.netAreaNote}</p>
@@ -382,18 +379,16 @@ export default function MeasurementsPanel() {
       <SiteMeasuresTable />
 
       {stairs.length > 0 && (
-        <table className="mt-4 w-full text-sm">
-          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-            {fr.measurements.stairs}
-          </caption>
-          <thead>
-            <tr>
-              <th className={HEAD}>{fr.measurements.name}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.stairRisers}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.stairRiserHeight}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.stairTreads}</th>
-            </tr>
-          </thead>
+        <MeasureTable
+          className="mt-4"
+          title={fr.measurements.stairs}
+          columns={[
+            fr.measurements.name,
+            fr.measurements.stairRisers,
+            fr.measurements.stairRiserHeight,
+            fr.measurements.stairTreads,
+          ]}
+        >
           <tbody>
             {stairs.map((stair) => (
               <tr
@@ -419,21 +414,19 @@ export default function MeasurementsPanel() {
               </tr>
             ))}
           </tbody>
-        </table>
+        </MeasureTable>
       )}
 
       {platforms.length > 0 && (
-        <table className="mt-4 w-full text-sm">
-          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-            {fr.measurements.platforms}
-          </caption>
-          <thead>
-            <tr>
-              <th className={HEAD}>{fr.measurements.name}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.area}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.platformVolume}</th>
-            </tr>
-          </thead>
+        <MeasureTable
+          className="mt-4"
+          title={fr.measurements.platforms}
+          columns={[
+            fr.measurements.name,
+            fr.measurements.area,
+            fr.measurements.platformVolume,
+          ]}
+        >
           <tbody>
             {platforms.map((platform) => (
               <tr
@@ -455,21 +448,19 @@ export default function MeasurementsPanel() {
               <td className={NUMBER}>{formatVolume(totals.platformVolume)}</td>
             </tr>
           </tfoot>
-        </table>
+        </MeasureTable>
       )}
 
       {roofs.length > 0 && (
-        <table className="mt-4 w-full text-sm">
-          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-            {fr.measurements.roofs}
-          </caption>
-          <thead>
-            <tr>
-              <th className={HEAD}>{fr.measurements.name}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.roofRealArea}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.roofRidge}</th>
-            </tr>
-          </thead>
+        <MeasureTable
+          className="mt-4"
+          title={fr.measurements.roofs}
+          columns={[
+            fr.measurements.name,
+            fr.measurements.roofRealArea,
+            fr.measurements.roofRidge,
+          ]}
+        >
           <tbody>
             {roofs.map((roof) => (
               <tr
@@ -500,21 +491,19 @@ export default function MeasurementsPanel() {
               <td className={NUMBER}>{formatLength(Math.round(totals.roofRidgeLength))}</td>
             </tr>
           </tfoot>
-        </table>
+        </MeasureTable>
       )}
 
       {openings.length > 0 && (
-        <table className="mt-4 w-full text-sm">
-          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-            {fr.measurements.openings}
-          </caption>
-          <thead>
-            <tr>
-              <th className={HEAD}>{fr.measurements.name}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.openingSize}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.area}</th>
-            </tr>
-          </thead>
+        <MeasureTable
+          className="mt-4"
+          title={fr.measurements.openings}
+          columns={[
+            fr.measurements.name,
+            fr.measurements.openingSize,
+            fr.measurements.area,
+          ]}
+        >
           <tbody>
             {openings.map((opening) => (
               <tr
@@ -538,7 +527,7 @@ export default function MeasurementsPanel() {
               <td className={NUMBER}>{formatArea(totals.openingsArea)}</td>
             </tr>
           </tfoot>
-        </table>
+        </MeasureTable>
       )}
       {openings.length > 0 && (
         <p className="mt-1 text-xs text-slate-500">
@@ -547,18 +536,16 @@ export default function MeasurementsPanel() {
       )}
 
       {building.levels.length > 1 && (
-        <table className="mt-5 w-full text-sm">
-          <caption className="pb-1 text-left text-xs font-semibold uppercase tracking-wide text-slate-500">
-            {fr.measurements.buildingTitle}
-          </caption>
-          <thead>
-            <tr>
-              <th className={HEAD}>{fr.measurements.level}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.levelRoomArea}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.levelWallLength}</th>
-              <th className={`${HEAD} text-right`}>{fr.measurements.levelWallNetArea}</th>
-            </tr>
-          </thead>
+        <MeasureTable
+          className="mt-5"
+          title={fr.measurements.buildingTitle}
+          columns={[
+            fr.measurements.level,
+            fr.measurements.levelRoomArea,
+            fr.measurements.levelWallLength,
+            fr.measurements.levelWallNetArea,
+          ]}
+        >
           <tbody>
             {building.levels.map(({ level, measurements: m }) => (
               <tr
@@ -584,7 +571,7 @@ export default function MeasurementsPanel() {
               <td className={NUMBER}>{formatArea(building.total.totals.wallNetArea)}</td>
             </tr>
           </tfoot>
-        </table>
+        </MeasureTable>
       )}
       {building.levels.length > 1 && (
         <p className="mt-1 text-xs text-slate-500">{fr.measurements.buildingNote}</p>

@@ -94,9 +94,10 @@ export interface ColumnSheet {
 }
 
 /** Le jeu de caractères des polices standard de PDF n'a pas le vrai signe moins : on met un trait d'union. */
-const pdfText = (text: string) => text.replace(/−/g, '-')
+export const pdfText = (text: string) => text.replace(/−/g, '-')
 
-function truncate(pdf: Pdf, text: string, maxWidth: number): string {
+/** Texte raccourci avec « … » pour tenir dans `maxWidth` (mm) avec la police courante. */
+export function truncate(pdf: Pdf, text: string, maxWidth: number): string {
   const full = pdfText(text)
   if (pdf.getTextWidth(full) <= maxWidth) return full
   let cut = full

@@ -1,6 +1,6 @@
 import gsap from 'gsap'
 import { ChevronsLeftRight } from 'lucide-react'
-import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import { measureDemoRooms, type DemoRoomId } from '../../features/intro/demoPlan'
 import { DEMO_FAULT, DIVIDER_AT, ROOM_SEQUENCE, type HeroMode } from '../../features/intro/heroModes'
 import { fr } from '../../i18n/fr'
@@ -9,6 +9,7 @@ import HeroModeTabs from './HeroModeTabs'
 import MeasuresCard from './MeasuresCard'
 import PlanDrawing from './PlanDrawing'
 import SketchDrawing from './SketchDrawing'
+import { useCompact } from './useCompact'
 
 /**
  * Repère commun aux deux calques, en mm / 10 : le plan occupe 0..870 × 0..420,
@@ -20,23 +21,6 @@ const VIEWBOX = '-90 -90 1050 600'
  * (redondante avec celle de droite) disparaît et les textes sont agrandis.
  */
 const VIEWBOX_COMPACT = '-28 -130 1000 750'
-
-/** Sous `sm` (téléphones) : dessins en version compacte. */
-const COMPACT_QUERY = '(max-width: 639px)'
-
-function subscribeCompact(onChange: () => void): () => void {
-  const mql = window.matchMedia(COMPACT_QUERY)
-  mql.addEventListener('change', onChange)
-  return () => mql.removeEventListener('change', onChange)
-}
-
-function useCompact(): boolean {
-  return useSyncExternalStore(
-    subscribeCompact,
-    () => window.matchMedia(COMPACT_QUERY).matches,
-    () => false,
-  )
-}
 
 const MEASURES = measureDemoRooms()
 

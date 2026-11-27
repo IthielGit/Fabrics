@@ -1,4 +1,4 @@
-import { circle, ellipse, ellipseArcPoints, line, polygon, rect } from '../primitives'
+import { circle, ellipse, ellipseArcPoints, line, polygon, rect, translatePrimitive } from '../primitives'
 import type { Primitive } from '../types'
 import { corner, countFor, edge, type DrawFn } from './common'
 
@@ -152,24 +152,10 @@ export const toiletPmr: DrawFn = (w, d) => {
   const bar = Math.min(40, d * 0.06)
   return [
     rect(0, 0, w, d, 'soft'),
-    ...toilet('floor')(bowlWidth, d).map((p) => moveBy(p, x0, 0)),
+    ...toilet('floor')(bowlWidth, d).map((p) => translatePrimitive(p, x0, 0)),
     rect(w * 0.04, d * 0.05, bar, d * 0.5, 'outline', bar / 2),
     rect(x0 - bar * 1.5, d * 0.05, w - x0 + bar * 1.5 - 4, bar, 'outline', bar / 2),
   ]
-}
-
-function moveBy(p: Primitive, dx: number, dy: number): Primitive {
-  switch (p.kind) {
-    case 'rect':
-      return { ...p, x: p.x + dx, y: p.y + dy }
-    case 'circle':
-    case 'ellipse':
-    case 'arc':
-      return { ...p, cx: p.cx + dx, cy: p.cy + dy }
-    case 'line':
-    case 'polygon':
-      return { ...p, points: p.points.map((v, i) => v + (i % 2 === 0 ? dx : dy)) }
-  }
 }
 
 /** Cabine de sanitaires : cloisons, WC et débattement de la porte. */
@@ -178,7 +164,7 @@ export const toiletCubicle: DrawFn = (w, d) => {
   const door = Math.min(w * 0.8, d * 0.5)
   return [
     rect(0, 0, w, d, 'outline', 10),
-    ...wc.map((p) => moveBy(p, (w - Math.min(w * 0.45, 400)) / 2, d * 0.04)),
+    ...wc.map((p) => translatePrimitive(p, (w - Math.min(w * 0.45, 400)) / 2, d * 0.04)),
     line([w - door - 20, d, w - 20, d], 'detail'),
     line(ellipseArcPoints(w - 20, d, door, door, 180, 270), 'detail'),
   ]

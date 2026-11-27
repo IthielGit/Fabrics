@@ -1,7 +1,7 @@
-import { useSyncExternalStore } from 'react'
 import { DEMO_ROOMS, measureDemoRooms } from '../../features/intro/demoPlan'
 import { formatArea, formatLength } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
+import { useCompact } from './useCompact'
 
 /** Échelle du dessin : unités SVG par mm (1000 mm → 100 unités). */
 const SCALE = 0.1
@@ -24,23 +24,6 @@ const MUTED = '#64748b' // slate-500
 /** Annotations : colonne de droite. */
 const NOTE_X = 540
 const NOTE_LEADER_END = 532
-
-/** Sous `sm` (téléphones), le dessin est rendu en version compacte, textes agrandis. */
-const COMPACT_QUERY = '(max-width: 639px)'
-
-function subscribeCompact(onChange: () => void): () => void {
-  const mql = window.matchMedia(COMPACT_QUERY)
-  mql.addEventListener('change', onChange)
-  return () => mql.removeEventListener('change', onChange)
-}
-
-function useCompact(): boolean {
-  return useSyncExternalStore(
-    subscribeCompact,
-    () => window.matchMedia(COMPACT_QUERY).matches,
-    () => false,
-  )
-}
 
 /** Petit trait oblique à 45° qui termine une ligne de cote. */
 function tick(x: number, y: number): string {

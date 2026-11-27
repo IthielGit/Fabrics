@@ -52,7 +52,8 @@ export function polygonAreaM2(points: readonly Pt[]): number {
   return Math.abs(twice) / 2
 }
 
-function perimeterM(points: readonly Pt[]): number {
+/** Périmètre d'un contour fermé, dans l'unité des points (m). */
+export function polygonPerimeterM(points: readonly Pt[]): number {
   let total = 0
   for (let i = 0; i < points.length; i++) {
     const [x1, y1] = points[i]
@@ -133,7 +134,7 @@ export function siteMeasures(scene: PlanScene): SiteMeasures {
   return {
     parcelDefined,
     parcelArea: parcelDefined ? parcelM2 * 1e6 : 0,
-    parcelPerimeter: parcelDefined ? mToMm(perimeterM(parcel)) : 0,
+    parcelPerimeter: parcelDefined ? mToMm(polygonPerimeterM(parcel)) : 0,
     footprintArea: footprintM2 * 1e6,
     coverageRatio: parcelDefined && parcelM2 > 0 ? footprintM2 / parcelM2 : null,
     insideParcel,

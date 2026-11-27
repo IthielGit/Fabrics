@@ -21,6 +21,7 @@ import type { BuildingMeasurements } from '../measurements'
 import { ruleOf } from './rules'
 import type { TracedQuantity } from './trace'
 import { quantityKey, type QuantityFamily } from './types'
+import { fabricsLevelIdOf } from '../../scene/sceneLevels'
 
 export type QuantityStatus = 'validated' | 'provisional' | 'unsupported' | 'missing_data'
 
@@ -72,9 +73,7 @@ export function unsupportedQuantities(scene: PlanScene | null | undefined, famil
   return Object.values(scene.nodes)
     .filter((node) => !HANDLED_NODE_TYPES.has(node.type) && !node.type.startsWith('fabrics:'))
     .map((node) => {
-      let current = node
-      while (current && current.type !== 'level') current = current.parentId ? scene.nodes[current.parentId] : (undefined as never)
-      const levelId = current ? ((current.metadata?.fabrics as { id?: string } | undefined)?.id ?? current.id) : null
+      const levelId = fabricsLevelIdOf(node, scene.nodes)
       return {
         key: quantityKey(family, 'other.count', node.id, null),
         family,

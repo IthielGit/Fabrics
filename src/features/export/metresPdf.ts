@@ -1,6 +1,6 @@
 import { cellText, type MetresCell, type MetresTable } from '../measurements/tables'
 import type { Drawing } from '../building/views/drawing'
-import { createPdf, drawCartouche, drawDrawing, type Pdf, type PlanPdfLabels } from './pdf'
+import { createPdf, drawCartouche, drawDrawing, pdfText, truncate, type Pdf, type PlanPdfLabels } from './pdf'
 import { cartoucheArea, PDF_MARGIN_MM, type SheetSize } from './pdfLayout'
 
 type Rgb = [number, number, number]
@@ -80,9 +80,6 @@ export function packThumbnails(
   if (row.length > 0) rows.push(row)
   return rows
 }
-
-/** Le jeu de caractères des polices standard de PDF n'a pas le vrai signe moins : trait d'union. */
-const pdfText = (text: string) => text.replace(/−/g, '-')
 
 export interface MetresPdfLabels {
   /** Titre du document (« Métrés »), en haut de la première page. */
@@ -183,14 +180,6 @@ function layoutTable(pdf: Pdf, table: MetresTable, available: number): Layout {
     (column, i) => pdf.splitTextToSize(pdfText(column.header), scaled[i] - CELL_PAD * 2) as string[],
   )
   return { widths: scaled, headerLines }
-}
-
-function truncate(pdf: Pdf, text: string, maxWidth: number): string {
-  const full = pdfText(text)
-  if (pdf.getTextWidth(full) <= maxWidth) return full
-  let cut = full
-  while (cut.length > 1 && pdf.getTextWidth(`${cut}…`) > maxWidth) cut = cut.slice(0, -1)
-  return `${cut.trimEnd()}…`
 }
 
 /**

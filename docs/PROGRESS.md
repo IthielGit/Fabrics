@@ -53,6 +53,13 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-27 — Hors jalon · Code en double réduit (demande de l'utilisateur)
+
+- Code recopié dans `src/` : **0,84 % → 0,13 %** (jscpd, seuil 1,2 %) ; 40 doublons → 10. Aucun changement de comportement ; les 3 536 tests passent ; `npm run check:all` réussi.
+- Regroupé : graphe plan (`geometry/planarGraph.ts`, utilisé par `regions.ts` et `polygonPieces.ts`), bloc commun des formes du plan (`shapes/elementNodeProps.ts`, `SelectionHalo`, `LabelBubble`), carte de projet (`ProjectCardBase`), liens de partage (`CopyLinkField`, `LinkExpiryField`, `shareStyles`, `useRunThenReload`), chargement d'un projet (`useProjectLoader`, pour les éditeurs Visuel et Pascal et la page d'un projet partagé), niveau d'un nœud de la scène (`scene/sceneLevels.ts`), tableaux du panneau Métrés (`MeasureTable`), historique d'annulation (`collab/undoStack.ts`), petits utilitaires (`boxOfPoints`, `polygonPerimeterM`, `translatePrimitive`, `truncate` du PDF, `useCompact` de l'introduction, `replaceElements` du magasin).
+- Laissés volontairement : 10 petits doublons (6 à 13 lignes de calcul) dont la fusion rendrait le code moins lisible, et la réception des changements dans `collabBinding` / `sceneBinding` (même forme, règles différentes).
+- À vérifier dans le navigateur : accueil (cartes, menu ⋯), fenêtre Partager (copier, date limite), ouverture d'un plan et d'un visuel, outil Pièce (clic dans une zone fermée), panneau Métrés.
+
 ### 2026-11-27 — Hors jalon · Raccourcis Fabrics + Revit (D82) : fait, à tester dans le navigateur
 - Demande de l'utilisateur : des raccourcis entre ceux de l'ancien Fabrics et ceux de Revit. Tableau validé ; fait tout de suite à sa demande (M23 clôturé en parallèle le même jour).
 - Une lettre par outil (anciennes touches) et les codes Revit à deux lettres ; une lettre qui commence un code attend 400 ms la suivante (`D` puis `R` = Porte, sans passer par Cote). La vue se déplace avec les flèches quand rien n'est sélectionné (W/A/S/D libérés). `ZF` cadre la vue, en 3D comme en 2D. Bulles d'aide « Mur (W · WA) ». Fenêtre **Paramètres → Raccourcis clavier** réécrite en français (elle était restée en anglais).

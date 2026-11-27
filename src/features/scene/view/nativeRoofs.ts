@@ -8,6 +8,7 @@ import { getRoofSegmentDeckReach } from '@pascal-app/core'
 import type { RoofElement } from '../../../types/document'
 import { roofFromPascal } from '../migrate/roofStairNodes'
 import type { SceneNodeData } from '../sceneTypes'
+import { fabricsLevelIdOf } from '../sceneLevels'
 
 const SHAPES = new Set(['flat', 'shed', 'gable', 'hip'])
 
@@ -16,13 +17,6 @@ function turn(x: number, z: number, yaw: number): [number, number] {
   const c = Math.cos(yaw)
   const s = Math.sin(yaw)
   return [c * x + s * z, -s * x + c * z]
-}
-
-function fabricsLevelIdOf(node: SceneNodeData, nodes: Readonly<Record<string, SceneNodeData>>): string | undefined {
-  let current: SceneNodeData | undefined = node
-  while (current && current.type !== 'level') current = current.parentId ? nodes[current.parentId] : undefined
-  if (!current) return undefined
-  return (current.metadata?.fabrics as { id?: string } | undefined)?.id ?? current.id
 }
 
 export function nativeRoofElements(nodes: Readonly<Record<string, SceneNodeData>>): RoofElement[] {

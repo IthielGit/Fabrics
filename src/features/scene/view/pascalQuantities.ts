@@ -12,18 +12,12 @@ import { mToMm } from '../units'
 import { pascalDisplayName } from './pascalDisplayName'
 import { adjustRoofPans } from '../roofUnion'
 import { segmentDeckCorners } from './roofPlanData'
+import { fabricsLevelIdOf } from '../sceneLevels'
 
 const ROOF_KINDS = new Set<PascalRoofKind>(['flat', 'shed', 'gable', 'hip', 'gambrel', 'mansard', 'dutch', 'conical', 'barrel'])
 
 const isNative = (node: SceneNodeData) => node.metadata?.fabrics === undefined
 const num = (value: unknown, fallback: number) => (typeof value === 'number' && Number.isFinite(value) ? value : fallback)
-
-function levelIdOf(node: SceneNodeData, nodes: Record<string, SceneNodeData>): string | null {
-  let current: SceneNodeData | undefined = node
-  while (current && current.type !== 'level') current = current.parentId ? nodes[current.parentId] : undefined
-  if (!current) return null
-  return (current.metadata?.fabrics as { id?: string } | undefined)?.id ?? current.id
-}
 
 const childrenOf = (node: SceneNodeData, nodes: Record<string, SceneNodeData>, type: string) =>
   (node.children ?? []).map((id) => nodes[id]).filter((child): child is SceneNodeData => child?.type === type)
@@ -63,7 +57,7 @@ function roofQuantity(segment: SceneNodeData, roof: SceneNodeData, nodes: Record
   return {
     id: segment.id,
     name: pascalDisplayName(segment.name || roof.name || ''),
-    levelId: levelIdOf(roof, nodes),
+    levelId: fabricsLevelIdOf(roof, nodes),
     kind,
     pitch: kind === 'flat' || kind === 'barrel' ? null : pitch,
     overhang: mToMm(reach.z),
@@ -79,7 +73,7 @@ function roofQuantity(segment: SceneNodeData, roof: SceneNodeData, nodes: Record
 
 function stairQuantity(stair: SceneNodeData, nodes: Record<string, SceneNodeData>): NativeStairQuantity {
   const type = (stair.stairType as string | undefined) ?? 'straight'
-  const base = { id: stair.id, name: pascalDisplayName(stair.name ?? ''), levelId: levelIdOf(stair, nodes) }
+  const base = { id: stair.id, name: pascalDisplayName(stair.name ?? ''), levelId: fabricsLevelIdOf(stair, nodes) }
   if (type === 'curved' || type === 'spiral') {
     // Une seule volée tournante : marches réparties sur la ligne de foulée (rayon intérieur + ½ largeur).
     const risers = Math.max(1, Math.round(num(stair.stepCount, 10)))

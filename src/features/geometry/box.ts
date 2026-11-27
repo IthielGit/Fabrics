@@ -22,6 +22,16 @@ export function distance(a: Point, b: Point): number {
   return Math.hypot(b.x - a.x, b.y - a.y)
 }
 
+/** Plus petite boîte contenant tous les points donnés (`null` si la liste est vide). */
+export function boxOfPoints(points: readonly Point[]): Box | null {
+  if (points.length === 0) return null
+  const xs = points.map((p) => p.x)
+  const ys = points.map((p) => p.y)
+  const x = Math.min(...xs)
+  const y = Math.min(...ys)
+  return { x, y, width: Math.max(...xs) - x, height: Math.max(...ys) - y }
+}
+
 /** Plus petite boîte contenant toutes les boîtes données (`null` si la liste est vide). */
 export function unionBoxes(boxes: readonly Box[]): Box | null {
   if (boxes.length === 0) return null

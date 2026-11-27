@@ -24,6 +24,7 @@ import { nativeRoofElements } from './nativeRoofs'
 import { roomClearOutlines } from './roomClearFloor'
 import { BUILDING_ID, type FabricsNodeMeta, type PlanScene, type SceneNodeData } from '../sceneTypes'
 import { mToMm, pascalRotationToDegrees, planPointsToFlat, takeoffFromScene } from '../units'
+import { levelNodeOf } from '../sceneLevels'
 
 type Vec2 = [number, number]
 type Vec3 = [number, number, number]
@@ -137,18 +138,11 @@ export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
     levelHeights.set(node.id, height)
   }
 
-  /** Nœud de niveau ancêtre d'un nœud. */
-  const levelNodeOf = (node: SceneNodeData): SceneNodeData | undefined => {
-    let current: SceneNodeData | undefined = node
-    while (current && current.type !== 'level') current = current.parentId ? nodes[current.parentId] : undefined
-    return current
-  }
-
   /** Niveau Fabrics d'un nœud : celui de son niveau ancêtre, sauf indication contraire. */
   const levelIdOf = (node: SceneNodeData): string | undefined => {
     const meta = metaOf(node)
     if (meta?.levelId !== undefined) return meta.levelId ?? undefined
-    const level = levelNodeOf(node)
+    const level = levelNodeOf(node, nodes)
     return level ? (metaOf(level)?.id ?? level.id) : undefined
   }
 
@@ -280,7 +274,7 @@ export function sceneToFabricsView(scene: PlanScene): FabricsDocument {
       thickness: mToMm((first.thickness as number | undefined) ?? PASCAL_WALL_THICKNESS),
       height:
         first.height === undefined || first.height === null
-          ? (levelHeights.get(levelNodeOf(first)?.id ?? '') ?? mToMm(PASCAL_LEVEL_HEIGHT))
+          ? (levelHeights.get(levelNodeOf(first, nodes)?.id ?? '') ?? mToMm(PASCAL_LEVEL_HEIGHT))
           : mToMm(first.height as number),
       ...(meta.props as { fill: string; material?: WallElement['material'] }),
       ...wallLayersOf(first),

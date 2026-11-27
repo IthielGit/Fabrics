@@ -3,6 +3,7 @@
 
 import * as Y from 'yjs'
 import type { FabricsDocument } from '../../types/document'
+import { createUndoStack } from './undoStack'
 import {
   applyDocumentDiff,
   changedIdsOf,
@@ -56,15 +57,14 @@ export class CollabBinding {
     this.ydoc = ydoc
     this.host = host
     const parts = yParts(ydoc)
-    this.undoManager = new Y.UndoManager(
-      [parts.meta, parts.page, parts.plan, parts.order, parts.elements, parts.levelOrder, parts.levels],
-      // Un pas d'annulation par modification de l'éditeur (pas de regroupement dans le temps).
-      { trackedOrigins: new Set([LOCAL_ORIGIN]), captureTimeout: 0 },
-    )
     this.onStackChange = () => this.host.onHistoryChange?.(this.canUndo(), this.canRedo())
-    this.undoManager.on('stack-item-added', this.onStackChange)
-    this.undoManager.on('stack-item-popped', this.onStackChange)
-    this.undoManager.on('stack-cleared', this.onStackChange)
+    // Un pas d'annulation par modification de l'éditeur (pas de regroupement dans le temps).
+    this.undoManager = createUndoStack(
+      [parts.meta, parts.page, parts.plan, parts.order, parts.elements, parts.levelOrder, parts.levels],
+      LOCAL_ORIGIN,
+      0,
+      this.onStackChange,
+    )
 
     this.onAfterTransaction = (transaction) => this.receive(transaction)
     ydoc.on('afterTransaction', this.onAfterTransaction)

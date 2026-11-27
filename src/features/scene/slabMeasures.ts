@@ -8,9 +8,10 @@
  */
 import { difference, intersection, type MultiPolygon, union } from '@pascal-app/core'
 import { roundMm } from './migrate/geometry'
-import type { PlanScene, SceneNodeData } from './sceneTypes'
-import { polygonAreaM2 } from './siteMeasures'
+import type { PlanScene } from './sceneTypes'
+import { polygonAreaM2, polygonPerimeterM } from './siteMeasures'
 import { mToMm } from './units'
+import { fabricsLevelIdOf } from './sceneLevels'
 
 type Pt = readonly [number, number]
 
@@ -33,23 +34,6 @@ export interface SlabMeasure {
   elevation: number
   /** Volume : surface × épaisseur, en mm³. */
   volume: number
-}
-
-function perimeterM(points: readonly Pt[]): number {
-  let total = 0
-  for (let i = 0; i < points.length; i++) {
-    const [x1, y1] = points[i]
-    const [x2, y2] = points[(i + 1) % points.length]
-    total += Math.hypot(x2 - x1, y2 - y1)
-  }
-  return total
-}
-
-function levelOf(node: SceneNodeData, nodes: Record<string, SceneNodeData>): string | null {
-  let current: SceneNodeData | undefined = node
-  while (current && current.type !== 'level') current = current.parentId ? nodes[current.parentId] : undefined
-  if (!current) return null
-  return (current.metadata?.fabrics as { id?: string } | undefined)?.id ?? current.id
 }
 
 const areaOf = (shape: MultiPolygon) =>
@@ -84,11 +68,11 @@ export function slabMeasures(scene: PlanScene): SlabMeasure[] {
     out.push({
       id: node.id,
       name: node.name ?? '',
-      levelId: levelOf(node, scene.nodes),
+      levelId: fabricsLevelIdOf(node, scene.nodes),
       role: (node.plateRole as string | undefined) ?? null,
       area: areaM2 * 1e6,
       holesArea: holesM2 * 1e6,
-      perimeter: roundMm(mToMm(perimeterM(polygon))),
+      perimeter: roundMm(mToMm(polygonPerimeterM(polygon))),
       thickness: mToMm(thicknessM),
       elevation: mToMm((node.elevation as number | undefined) ?? 0),
       volume: areaM2 * thicknessM * 1e9,

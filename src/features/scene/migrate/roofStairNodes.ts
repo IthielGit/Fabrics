@@ -17,6 +17,7 @@ import type { FabricsNodeMeta, SceneNodeData } from '../sceneTypes'
 import { mmToM, mToMm } from '../units'
 import { roundMm } from './geometry'
 import { LENGTH_FIELDS, lengthsToMetres, lengthsToMillimetres } from './lengthFields'
+import { levelNodeOf } from '../sceneLevels'
 
 type Vec2 = [number, number]
 const TOLERANCE_MM = 1e-3
@@ -296,12 +297,6 @@ function levelStack(nodes: Readonly<Record<string, SceneNodeData>>) {
     previous = level.id
   }
   return out
-}
-
-function levelNodeOf(node: SceneNodeData, nodes: Readonly<Record<string, SceneNodeData>>): SceneNodeData | undefined {
-  let current: SceneNodeData | undefined = node
-  while (current && current.type !== 'level') current = current.parentId ? nodes[current.parentId] : undefined
-  return current
 }
 
 /**
