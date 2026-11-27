@@ -641,3 +641,48 @@ $$;
 
 revoke all on function public.apply_price_import(uuid, integer, date, text, text, jsonb, jsonb, jsonb, uuid[], jsonb, jsonb, uuid[]) from public, anon;
 grant execute on function public.apply_price_import(uuid, integer, date, text, text, jsonb, jsonb, jsonb, uuid[], jsonb, jsonb, uuid[]) to authenticated;
+
+-- =========================================================
+-- 23.3 · Règles de l'espace : quantité de métré + filtre → poste (D23-15)
+-- =========================================================
+
+create table if not exists public.pricing_rules (
+  id               uuid primary key default gen_random_uuid(),
+  library_id       uuid not null references public.price_libraries (id) on delete cascade,
+  workspace_id     uuid not null references public.workspaces (id) on delete cascade,
+  name             text not null default '' check (char_length(name) <= 200),
+  -- Code de quantité du métré (M21), ex. « wall.netArea ».
+  quantity_code    text not null check (quantity_code ~ '^[a-zA-Z]+\.[a-zA-Z]+$'),
+  -- { wallMaterial, layerMaterial, minThickness, maxThickness, openingKind }
+  filter           jsonb not null default '{}'::jsonb,
+  work_item_id     uuid references public.work_items (id) on delete set null,
+  waste_bp         integer not null default 0 check (waste_bp between 0 and 10000),
+  enabled          boolean not null default true,
+  position         integer not null default 0,
+  updated_by       uuid references auth.users (id) on delete set null,
+  updated_by_email text not null default '',
+  updated_at       timestamptz not null default now()
+);
+
+create index if not exists pricing_rules_library_idx on public.pricing_rules (library_id, position);
+
+drop trigger if exists pricing_rules_stamp on public.pricing_rules;
+create trigger pricing_rules_stamp before insert or update on public.pricing_rules
+  for each row execute function public.price_rows_stamp();
+
+alter table public.pricing_rules enable row level security;
+
+drop policy if exists "pricing_rules_select" on public.pricing_rules;
+create policy "pricing_rules_select" on public.pricing_rules
+  for select to authenticated using (public.my_workspace_role(workspace_id) is not null);
+drop policy if exists "pricing_rules_write" on public.pricing_rules;
+create policy "pricing_rules_write" on public.pricing_rules
+  for all to authenticated
+  using (public.my_workspace_role(workspace_id) = 'admin')
+  with check (
+    public.my_workspace_role((select l.workspace_id from public.price_libraries l where l.id = library_id)) = 'admin'
+  );
+
+revoke all on public.pricing_rules from anon, authenticated;
+grant select, insert, delete on public.pricing_rules to authenticated;
+grant update (name, quantity_code, filter, work_item_id, waste_bp, enabled, position) on public.pricing_rules to authenticated;
