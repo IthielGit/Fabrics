@@ -6,6 +6,13 @@ import type { SupabaseClient } from '@supabase/supabase-js'
 import type { PriceItemFields, WorkItemFields, WorkspaceRole } from './model'
 import type { PricingRuleFields } from './rules'
 import {
+  canFinalize,
+  EstimateNotFinalError,
+  type FreezeInput,
+  type OutlineLine,
+  type ProjectEstimatePatch,
+} from './estimateVersions'
+import {
   LastAdminError,
   StaleLibraryError,
   type ApplyImportInput,
@@ -19,6 +26,8 @@ import {
   rowToHistory,
   rowToImportBatch,
   rowToRule,
+  rowToEstimate,
+  rowToEstimateVersion,
   ruleToRow,
   rowToInvite,
   rowToLibrary,
@@ -30,6 +39,8 @@ import {
   type HistoryRow,
   type ImportBatchRow,
   type PricingRuleRow,
+  type EstimateRow,
+  type EstimateVersionRow,
   type InviteRow,
   type LibraryRow,
   type MemberRow,
@@ -47,6 +58,7 @@ const HISTORY_COLUMNS =
   'id, item_id, code, designation, action, old_price_ht, new_price_ht, changed_by_email, changed_at'
 const RULE_COLUMNS =
   'id, library_id, name, quantity_code, filter, work_item_id, waste_bp, enabled, position, updated_by_email, updated_at'
+const ESTIMATE_COLUMNS = 'id, library_id, project_id, a1_bp, a2_bp, a3_bp, overrides, updated_by_email, updated_at'
 const INVITE_COLUMNS = 'id, workspace_id, token, role, active, expires_at, created_at'
 
 /** Supabase renvoie au plus 1 000 lignes par requête : on lit par pages. */
@@ -190,6 +202,57 @@ export class SupabasePricingRepository implements PricingRepository {
   async deleteRule(id: string) {
     const { error } = await this.client.from('pricing_rules').delete().eq('id', id)
     rethrow(error)
+  }
+
+  async getProjectEstimate(libraryId: string, projectId: string) {
+    const { data, error } = await this.client
+      .from('estimates')
+      .select(ESTIMATE_COLUMNS)
+      .eq('library_id', libraryId)
+      .eq('project_id', projectId)
+      .maybeSingle()
+    rethrow(error)
+    return data ? rowToEstimate(data as unknown as EstimateRow) : null
+  }
+
+  async saveProjectEstimate(libraryId: string, projectId: string, patch: ProjectEstimatePatch, id?: string) {
+    const row = { a1_bp: patch.a1Bp, a2_bp: patch.a2Bp, a3_bp: patch.a3Bp, overrides: patch.overrides }
+    const query = id
+      ? this.client.from('estimates').update(row).eq('id', id)
+      : this.client.from('estimates').insert({ ...row, library_id: libraryId, project_id: projectId })
+    const { data, error } = await query.select(ESTIMATE_COLUMNS).single()
+    rethrow(error)
+    return rowToEstimate(data as unknown as EstimateRow)
+  }
+
+  async listEstimateVersions(estimateId: string) {
+    const { data, error } = await this.client
+      .from('estimate_versions')
+      .select('id, number, status, library_version, fingerprint, snapshot, created_by_email, created_at, note')
+      .eq('estimate_id', estimateId)
+      .order('number', { ascending: false })
+    rethrow(error)
+    return ((data ?? []) as EstimateVersionRow[]).map(rowToEstimateVersion)
+  }
+
+  async freezeEstimateVersion(estimateId: string, input: FreezeInput) {
+    if (input.status === 'final' && !canFinalize(input.snapshot)) throw new EstimateNotFinalError()
+    const { data, error } = await this.client.rpc('freeze_estimate_version', {
+      p_estimate_id: estimateId,
+      p_status: input.status,
+      p_library_version: input.libraryVersion,
+      p_fingerprint: input.fingerprint,
+      p_snapshot: input.snapshot,
+      p_note: input.note,
+    })
+    rethrow(error)
+    return rowToEstimateVersion(data as EstimateVersionRow)
+  }
+
+  async projectEstimateOutline(projectId: string): Promise<OutlineLine[]> {
+    const { data, error } = await this.client.rpc('project_estimate_outline', { p_project_id: projectId })
+    rethrow(error)
+    return (data ?? []) as OutlineLine[]
   }
 
   async applyImport(libraryId: string, input: ApplyImportInput) {

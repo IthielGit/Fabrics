@@ -16,6 +16,13 @@ import type {
 } from './model'
 import type { ImportPlan, ImportSummary } from './importPlan'
 import type { PricingRule, PricingRuleFields } from './rules'
+import type {
+  EstimateVersion,
+  FreezeInput,
+  OutlineLine,
+  ProjectEstimatePatch,
+  ProjectEstimateRecord,
+} from './estimateVersions'
 
 export type AcceptWorkspaceInviteResult =
   | { status: 'ok'; workspaceId: string; role: WorkspaceRole }
@@ -76,6 +83,16 @@ export interface PricingRepository {
   listRules(libraryId: string): Promise<PricingRule[]>
   saveRule(libraryId: string, fields: PricingRuleFields, id?: string): Promise<PricingRule>
   deleteRule(id: string): Promise<void>
+
+  /** Devis d'un projet dans cette bibliothèque ; `null` s'il n'existe pas encore. */
+  getProjectEstimate(libraryId: string, projectId: string): Promise<ProjectEstimateRecord | null>
+  saveProjectEstimate(libraryId: string, projectId: string, patch: ProjectEstimatePatch, id?: string): Promise<ProjectEstimateRecord>
+  /** Versions figées d'un devis, la plus récente d'abord. */
+  listEstimateVersions(estimateId: string): Promise<EstimateVersion[]>
+  /** Fige une version (jamais modifiée ensuite). Refus nommé si « définitif » avec un poste sans prix. */
+  freezeEstimateVersion(estimateId: string, input: FreezeInput): Promise<EstimateVersion>
+  /** Résumé sans prix de la dernière version d'un projet, pour une personne hors de l'espace (D23-8). */
+  projectEstimateOutline(projectId: string): Promise<OutlineLine[]>
 
   /** Applique un import d'un bloc ; renvoie la nouvelle version de la bibliothèque. */
   applyImport(libraryId: string, input: ApplyImportInput): Promise<number>

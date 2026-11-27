@@ -4,6 +4,7 @@ import { planImport, summarizePlan } from './importPlan'
 import { importWorkbook } from './importWorkbook'
 import { emptyPriceItem, type WorkItemFields } from './model'
 import { StaleLibraryError } from './repository'
+import { EstimateNotFinalError } from './estimateVersions'
 import { buildXlsx, syntheticWorkbook } from './testing/xlsxFixture'
 import { readXlsx } from './xlsxRead'
 
@@ -149,6 +150,35 @@ describe('LocalPricingRepository', () => {
     const [last] = await repo.listImports(library.id)
     expect(last).toMatchObject({ version: 3, fileName: 'essai.xlsx', summary: { added: 0, updated: 0, removed: 0 } })
     await expect(apply(2)).rejects.toBeInstanceOf(StaleLibraryError)
+  })
+
+  it('devis d’un projet : réglages, versions numérotées, copie figée, définitif refusé sans prix', async () => {
+    const repo = makeRepo()
+    const ws = await repo.createWorkspace('E')
+    const library = await repo.getLibrary(ws.id)
+    expect(await repo.getProjectEstimate(library.id, 'p1')).toBeNull()
+    const record = await repo.saveProjectEstimate(library.id, 'p1', { a1Bp: 500, a2Bp: 500, a3Bp: 0, overrides: [] })
+    const again = await repo.saveProjectEstimate(library.id, 'p1', { a1Bp: 700, a2Bp: 500, a3Bp: 0, overrides: [] }, record.id)
+    expect(again.id).toBe(record.id)
+    expect((await repo.getProjectEstimate(library.id, 'p1'))?.a1Bp).toBe(700)
+    const snapshot = {
+      lines: [],
+      totalHt: '0',
+      vat: '0',
+      totalTtc: '0',
+      debours: '0',
+      settings: { a1Bp: 0, a2Bp: 0, a3Bp: 0, vatRateBp: 2000 },
+      linesWithoutPrice: 0,
+      provisionalLines: 0,
+    }
+    const withLine = { ...snapshot, lines: [{ workItemId: 'w', code: 'C', designation: 'D', category: '', unit: 'U', quantity: '1', quantityDecimals: 0, unitPriceHt: null, salePriceHt: null, amountHt: null, provisional: false, sources: [] }], linesWithoutPrice: 1 }
+    const v1 = await repo.freezeEstimateVersion(record.id, { status: 'draft', libraryVersion: 1, fingerprint: 'f', snapshot: withLine, note: '' })
+    await expect(repo.freezeEstimateVersion(record.id, { status: 'final', libraryVersion: 1, fingerprint: 'f', snapshot: withLine, note: '' })).rejects.toBeInstanceOf(EstimateNotFinalError)
+    withLine.totalHt = 'modifié après coup'
+    const versions = await repo.listEstimateVersions(record.id)
+    expect(versions.map((v) => v.number)).toEqual([1])
+    expect(versions[0].snapshot.totalHt).toBe('0')
+    expect(v1.status).toBe('draft')
   })
 
   it('refuse le partage sans compte', async () => {

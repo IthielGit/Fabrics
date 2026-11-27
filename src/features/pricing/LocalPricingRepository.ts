@@ -24,6 +24,15 @@ import {
   type PricingRepository,
 } from './repository'
 import type { PricingRule, PricingRuleFields } from './rules'
+import {
+  canFinalize,
+  EstimateNotFinalError,
+  type EstimateVersion,
+  type FreezeInput,
+  type OutlineLine,
+  type ProjectEstimatePatch,
+  type ProjectEstimateRecord,
+} from './estimateVersions'
 
 /** Tout l'état local, enregistré sous une seule clé (lectures et écritures atomiques). */
 export interface LocalPricingState {
@@ -36,6 +45,9 @@ export interface LocalPricingState {
   imports?: ImportBatch[]
   /** Règles de l'espace (absentes des états enregistrés avant 23.3). */
   rules?: PricingRule[]
+  /** Devis des projets et leurs versions figées (absents avant 23.5). */
+  estimates?: ProjectEstimateRecord[]
+  estimateVersions?: (EstimateVersion & { estimateId: string })[]
 }
 
 export interface LocalPricingStorage {
@@ -243,6 +255,62 @@ export class LocalPricingRepository implements PricingRepository {
     await this.update((state) => {
       state.rules = (state.rules ?? []).filter((rule) => rule.id !== id)
     })
+  }
+
+  async getProjectEstimate(libraryId: string, projectId: string): Promise<ProjectEstimateRecord | null> {
+    const { estimates } = await this.read()
+    return (estimates ?? []).find((e) => e.libraryId === libraryId && e.projectId === projectId) ?? null
+  }
+
+  async saveProjectEstimate(libraryId: string, projectId: string, patch: ProjectEstimatePatch, id?: string): Promise<ProjectEstimateRecord> {
+    return this.update((state) => {
+      const list = state.estimates ?? []
+      const current = list.find((e) => (id ? e.id === id : e.libraryId === libraryId && e.projectId === projectId))
+      const saved: ProjectEstimateRecord = {
+        ...patch,
+        id: current?.id ?? this.newId(),
+        libraryId,
+        projectId,
+        updatedByEmail: LOCAL_AUTHOR,
+        updatedAt: this.now(),
+      }
+      state.estimates = current ? list.map((e) => (e.id === saved.id ? saved : e)) : [...list, saved]
+      return saved
+    })
+  }
+
+  async listEstimateVersions(estimateId: string): Promise<EstimateVersion[]> {
+    const { estimateVersions } = await this.read()
+    return (estimateVersions ?? [])
+      .filter((v) => v.estimateId === estimateId)
+      .sort((a, b) => b.number - a.number)
+      .map(({ estimateId: _e, ...version }) => version)
+  }
+
+  async freezeEstimateVersion(estimateId: string, input: FreezeInput): Promise<EstimateVersion> {
+    if (input.status === 'final' && !canFinalize(input.snapshot)) throw new EstimateNotFinalError()
+    return this.update((state) => {
+      const versions = state.estimateVersions ?? []
+      const number = versions.filter((v) => v.estimateId === estimateId).reduce((max, v) => Math.max(max, v.number), 0) + 1
+      const version: EstimateVersion = {
+        id: this.newId(),
+        number,
+        status: input.status,
+        libraryVersion: input.libraryVersion,
+        fingerprint: input.fingerprint,
+        snapshot: structuredClone(input.snapshot),
+        createdByEmail: LOCAL_AUTHOR,
+        createdAt: this.now(),
+        note: input.note,
+      }
+      state.estimateVersions = [...versions, { ...version, estimateId }]
+      return version
+    })
+  }
+
+  async projectEstimateOutline(): Promise<OutlineLine[]> {
+    // Sans compte, aucun projet n'est partagé : pas de résumé pour une autre personne.
+    return []
   }
 
   async applyImport(libraryId: string, input: ApplyImportInput): Promise<number> {

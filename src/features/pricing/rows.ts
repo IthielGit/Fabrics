@@ -19,7 +19,8 @@ import {
   type WorkspaceSummary,
 } from './model'
 import type { ImportBatch } from './repository'
-import { EMPTY_FILTER, type PricingRule, type PricingRuleFields, type RuleFilter } from './rules'
+import { EMPTY_FILTER, type PricingRule, type PricingRuleFields, type QuantityOverride, type RuleFilter } from './rules'
+import type { EstimateVersion, FrozenEstimate, ProjectEstimateRecord } from './estimateVersions'
 import type { QuantityCode } from '../measurements/quantities/types'
 import { tenthsFromStored, tenthsToText } from './money'
 
@@ -369,5 +370,57 @@ export function ruleToRow(libraryId: string, fields: PricingRuleFields) {
     waste_bp: fields.wasteBp,
     enabled: fields.enabled,
     position: fields.position,
+  }
+}
+
+export interface EstimateRow {
+  id: string
+  library_id: string
+  project_id: string
+  a1_bp: number
+  a2_bp: number
+  a3_bp: number
+  overrides: QuantityOverride[] | null
+  updated_by_email: string
+  updated_at: string
+}
+
+export function rowToEstimate(row: EstimateRow): ProjectEstimateRecord {
+  return {
+    id: row.id,
+    libraryId: row.library_id,
+    projectId: row.project_id,
+    a1Bp: row.a1_bp,
+    a2Bp: row.a2_bp,
+    a3Bp: row.a3_bp,
+    overrides: Array.isArray(row.overrides) ? row.overrides : [],
+    updatedByEmail: row.updated_by_email,
+    updatedAt: row.updated_at,
+  }
+}
+
+export interface EstimateVersionRow {
+  id: string
+  number: number
+  status: string
+  library_version: number
+  fingerprint: string
+  snapshot: FrozenEstimate
+  created_by_email: string
+  created_at: string
+  note: string
+}
+
+export function rowToEstimateVersion(row: EstimateVersionRow): EstimateVersion {
+  return {
+    id: row.id,
+    number: row.number,
+    status: row.status === 'final' ? 'final' : 'draft',
+    libraryVersion: row.library_version,
+    fingerprint: row.fingerprint,
+    snapshot: row.snapshot,
+    createdByEmail: row.created_by_email,
+    createdAt: row.created_at,
+    note: row.note,
   }
 }

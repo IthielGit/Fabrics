@@ -686,3 +686,153 @@ create policy "pricing_rules_write" on public.pricing_rules
 revoke all on public.pricing_rules from anon, authenticated;
 grant select, insert, delete on public.pricing_rules to authenticated;
 grant update (name, quantity_code, filter, work_item_id, waste_bp, enabled, position) on public.pricing_rules to authenticated;
+
+-- =========================================================
+-- 23.5 · Devis d'un projet et versions figées (D23-8, D23-9, D23-13)
+-- =========================================================
+-- Le devis appartient à l'espace (D23-9). Une version figée ne change plus jamais (aucune
+-- modification ni suppression permise) ; elle ne peut être « définitive » que sans poste sans prix.
+
+create table if not exists public.estimates (
+  id               uuid primary key default gen_random_uuid(),
+  library_id       uuid not null references public.price_libraries (id) on delete cascade,
+  workspace_id     uuid not null references public.workspaces (id) on delete cascade,
+  project_id       uuid not null references public.projects (id) on delete cascade,
+  -- Parts de K1 réglées dans ce devis (D23-13), en points de base.
+  a1_bp            integer not null default 500 check (a1_bp between 0 and 10000),
+  a2_bp            integer not null default 500 check (a2_bp between 0 and 10000),
+  a3_bp            integer not null default 0 check (a3_bp between 0 and 10000),
+  -- Corrections à la main : [{ id, quantityKey, ruleId, workItemId, note }]
+  overrides        jsonb not null default '[]'::jsonb,
+  updated_by       uuid references auth.users (id) on delete set null,
+  updated_by_email text not null default '',
+  updated_at       timestamptz not null default now(),
+  unique (library_id, project_id)
+);
+
+drop trigger if exists estimates_stamp on public.estimates;
+create trigger estimates_stamp before insert or update on public.estimates
+  for each row execute function public.price_rows_stamp();
+
+create table if not exists public.estimate_versions (
+  id                  uuid primary key default gen_random_uuid(),
+  estimate_id         uuid not null references public.estimates (id) on delete cascade,
+  workspace_id        uuid not null references public.workspaces (id) on delete cascade,
+  number              integer not null,
+  status              text not null check (status in ('draft', 'final')),
+  library_version     integer not null,
+  fingerprint         text not null,
+  snapshot            jsonb not null,
+  total_ht            bigint not null,
+  total_ttc           bigint not null,
+  lines_without_price integer not null,
+  note                text not null default '',
+  created_by          uuid references auth.users (id) on delete set null,
+  created_by_email    text not null default '',
+  created_at          timestamptz not null default now(),
+  unique (estimate_id, number),
+  -- Gate G6 : un poste sans prix empêche le devis définitif.
+  check (status <> 'final' or lines_without_price = 0)
+);
+
+alter table public.estimates enable row level security;
+alter table public.estimate_versions enable row level security;
+
+drop policy if exists "estimates_select" on public.estimates;
+create policy "estimates_select" on public.estimates
+  for select to authenticated using (public.my_workspace_role(workspace_id) is not null);
+-- Écriture : admins de l'espace qui ont aussi accès au projet.
+drop policy if exists "estimates_write" on public.estimates;
+create policy "estimates_write" on public.estimates
+  for all to authenticated
+  using (public.my_workspace_role(workspace_id) = 'admin')
+  with check (
+    public.my_workspace_role((select l.workspace_id from public.price_libraries l where l.id = library_id)) = 'admin'
+    and public.my_project_role(project_id) is not null
+  );
+
+drop policy if exists "estimate_versions_select" on public.estimate_versions;
+create policy "estimate_versions_select" on public.estimate_versions
+  for select to authenticated using (public.my_workspace_role(workspace_id) is not null);
+
+revoke all on public.estimates from anon, authenticated;
+grant select, insert on public.estimates to authenticated;
+grant update (a1_bp, a2_bp, a3_bp, overrides) on public.estimates to authenticated;
+
+-- Versions : écrites seulement par freeze_estimate_version, jamais modifiées ni supprimées.
+revoke all on public.estimate_versions from anon, authenticated;
+grant select on public.estimate_versions to authenticated;
+
+create or replace function public.freeze_estimate_version(
+  p_estimate_id     uuid,
+  p_status          text,
+  p_library_version integer,
+  p_fingerprint     text,
+  p_snapshot        jsonb,
+  p_note            text
+) returns jsonb
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_estimate public.estimates;
+  v public.estimate_versions;
+begin
+  select * into v_estimate from public.estimates where id = p_estimate_id for update;
+  if not found or public.my_workspace_role(v_estimate.workspace_id) is distinct from 'admin' then
+    raise exception 'estimate not found' using errcode = '42501';
+  end if;
+  insert into public.estimate_versions (estimate_id, workspace_id, number, status, library_version, fingerprint,
+    snapshot, total_ht, total_ttc, lines_without_price, note, created_by, created_by_email)
+  values (
+    p_estimate_id, v_estimate.workspace_id,
+    coalesce((select max(number) from public.estimate_versions where estimate_id = p_estimate_id), 0) + 1,
+    p_status, p_library_version, p_fingerprint, p_snapshot,
+    (p_snapshot->>'totalHt')::bigint, (p_snapshot->>'totalTtc')::bigint,
+    (p_snapshot->>'linesWithoutPrice')::integer,
+    coalesce(p_note, ''), auth.uid(),
+    coalesce((select u.email::text from auth.users u where u.id = auth.uid()), '')
+  )
+  returning * into v;
+  return to_jsonb(v);
+end;
+$$;
+
+-- Personne qui a accès au projet mais pas à l'espace (D23-8) : postes, désignations et quantités de
+-- la dernière version figée, sans aucun prix ni montant.
+create or replace function public.project_estimate_outline(p_project_id uuid)
+returns jsonb
+language plpgsql
+stable
+security definer
+set search_path = public
+as $$
+declare
+  v_snapshot jsonb;
+begin
+  if public.my_project_role(p_project_id) is null then
+    raise exception 'project not found' using errcode = '42501';
+  end if;
+  select ev.snapshot into v_snapshot
+    from public.estimate_versions ev
+    join public.estimates e on e.id = ev.estimate_id
+   where e.project_id = p_project_id
+   order by ev.created_at desc
+   limit 1;
+  if v_snapshot is null then
+    return '[]'::jsonb;
+  end if;
+  return coalesce((
+    select jsonb_agg(jsonb_build_object(
+      'code', l->>'code', 'designation', l->>'designation', 'category', l->>'category',
+      'unit', l->>'unit', 'quantity', l->>'quantity', 'quantityDecimals', (l->>'quantityDecimals')::int))
+      from jsonb_array_elements(v_snapshot->'lines') as l
+  ), '[]'::jsonb);
+end;
+$$;
+
+revoke all on function public.freeze_estimate_version(uuid, text, integer, text, jsonb, text) from public, anon;
+revoke all on function public.project_estimate_outline(uuid) from public, anon;
+grant execute on function public.freeze_estimate_version(uuid, text, integer, text, jsonb, text) to authenticated;
+grant execute on function public.project_estimate_outline(uuid) to authenticated;
