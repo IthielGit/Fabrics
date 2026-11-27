@@ -1,6 +1,7 @@
 import {
   type AnyNode,
   type AnyNodeId,
+  computeSceneBoundsXZ,
   doorPositionForFacing,
   emitter,
   nodeRegistry,
@@ -28,6 +29,13 @@ import { steppedRotation } from '../components/tools/item/placement-math'
 import { keyCyclableContinuationContext } from '../lib/continuation'
 import { resolveDirectManipulationNode } from '../lib/direct-manipulation'
 import { isSceneView } from '../lib/editor-views'
+import {
+  decideLetter,
+  type PendingPrefix,
+  type ShortcutCommand,
+  SINGLE_DELAY_MS,
+  SINGLE_KEY_COMMANDS,
+} from '../lib/fabrics-shortcuts'
 import { cancelGestures } from '../lib/gesture-lifecycle'
 import { guideEmitter } from '../lib/guide-events'
 import { isHistoryShortcut, runRedo, runUndo, shouldCancelDraftOnHistoryJump } from '../lib/history'
@@ -251,6 +259,96 @@ export const armPaintFromShortcut = () => {
   openSidebarPanel(['paint', 'build'])
 }
 
+const MODIFIER_KEYS = new Set(['Shift', 'Control', 'Alt', 'AltGraph', 'Meta', 'CapsLock'])
+
+/** A bare letter a–z, lowercased (Caps Lock ignored), or null. Fabrics (D82). */
+export function bareLetter(
+  e: Pick<KeyboardEvent, 'key' | 'metaKey' | 'ctrlKey' | 'altKey' | 'shiftKey'>,
+): string | null {
+  if (e.metaKey || e.ctrlKey || e.altKey || e.shiftKey) return null
+  return /^[a-z]$/i.test(e.key) ? e.key.toLowerCase() : null
+}
+
+/** A build tool armed as its Build panel tile arms it. */
+const armBuildTool = (tool: string) => {
+  const editor = useEditor.getState()
+  editor.setPhase('building')
+  openSidebarPanel(['build'])
+  editor.setToolDefaults(tool, null)
+  editor.armToolMode({ mode: 'build', tool })
+}
+
+/**
+ * Runs a Fabrics shortcut (D82, `lib/fabrics-shortcuts`). In a version preview,
+ * only Select works, as before.
+ */
+export function runShortcutCommand(command: ShortcutCommand, isVersionPreviewMode = false): void {
+  if (isVersionPreviewMode && command !== 'select') return
+  const editor = useEditor.getState()
+  switch (command) {
+    case 'select':
+      editor.armToolMode({ mode: 'select' })
+      editor.setFloorplanSelectionTool('click')
+      return
+    case 'wall':
+      armWallToolFromShortcut()
+      return
+    case 'room':
+      armToolShortcut('zone')
+      return
+    case 'door':
+    case 'window':
+    case 'stair':
+    case 'roof':
+      armToolShortcut(command)
+      return
+    case 'grid':
+      armBuildTool('structural-grid')
+      return
+    case 'slab':
+      armBuildTool('slab')
+      return
+    case 'dimension':
+      editor.setToolDefaults('measurement', { kind: 'distance' })
+      editor.armToolMode({ mode: 'build', tool: 'measurement' })
+      return
+    case 'measure':
+      editor.setToolDefaults('measurement', { kind: editor.lastMeasurementKind })
+      editor.armToolMode({ mode: 'build', tool: 'measurement' })
+      return
+    case 'item':
+      openItemCatalogFromShortcut()
+      return
+    case 'paint':
+      armPaintFromShortcut()
+      return
+    case 'terrain':
+      // G for ground. The ToolMode transition moves to the site phase itself.
+      editor.armToolMode({ mode: 'terrain-sculpt' })
+      return
+    case 'delete-mode':
+      editor.armToolMode({ mode: 'delete' })
+      return
+    case 'copy':
+      // Revit's CO: a copy of the selection, picked up to be placed.
+      if (useViewer.getState().selection.selectedIds.length === 0) return
+      copySelectedNodesToEditorClipboard()
+      void pasteSelectionAndPickUp()
+      return
+    case 'rotate':
+      // RO: the R already turned the selection in Pascal's handler.
+      return
+    case 'delete-selection':
+      deleteSelection()
+      return
+    case 'fit': {
+      const bounds = computeSceneBoundsXZ(useScene.getState().nodes)
+      emitter.emit('camera-controls:fit-scene', bounds ? { bounds } : {})
+      return
+    }
+  }
+}
+
 /** Whether an armed tool owns the rotation keys (`R` / `T`) instead of the selection. */
 export const isToolOwnedRotation = () => {
   const editor = useEditor.getState()
@@ -343,7 +441,7 @@ export const useKeyboard = ({
     let ctrlTapClean = false
     let shiftTapClean = false
 
-    const handleKeyDown = (e: KeyboardEvent) => {
+    const handleSceneKeyDown = (e: KeyboardEvent) => {
       if (e.defaultPrevented || !hasSceneKeyboardFocus()) {
         ctrlTapClean = false
         shiftTapClean = false
@@ -507,44 +605,10 @@ export const useKeyboard = ({
         cancelActiveTool()
       } else if (!e.metaKey && !e.ctrlKey && switchPhaseFromShortcut(e.key)) {
         e.preventDefault()
-      } else if (e.key === 'f' && !e.metaKey && !e.ctrlKey) {
-        if (isVersionPreviewMode) return
-        if (isToolOwnedCanopyForm()) return
-        e.preventDefault()
-        openItemCatalogFromShortcut()
-      } else if (e.key === 'z' && !e.metaKey && !e.ctrlKey) {
-        if (isVersionPreviewMode) return
-        e.preventDefault()
-        useEditor.getState().armToolMode({ mode: 'build', tool: 'zone' })
-      } else if (e.key === 'm' && !e.metaKey && !e.ctrlKey) {
-        if (isVersionPreviewMode) return
-        e.preventDefault()
-        const editor = useEditor.getState()
-        editor.setToolDefaults('measurement', { kind: editor.lastMeasurementKind })
-        editor.armToolMode({ mode: 'build', tool: 'measurement' })
       }
-      if (e.key === 'v' && !e.metaKey && !e.ctrlKey) {
-        e.preventDefault()
-        useEditor.getState().armToolMode({ mode: 'select' })
-        useEditor.getState().setFloorplanSelectionTool('click')
-      } else if (e.key === 'b' && !e.metaKey && !e.ctrlKey) {
-        if (isVersionPreviewMode) return
-        e.preventDefault()
-        armWallToolFromShortcut()
-      } else if (e.key === 'x' && !e.metaKey && !e.ctrlKey) {
-        if (isVersionPreviewMode) return
-        e.preventDefault()
-        useEditor.getState().armToolMode({ mode: 'delete' })
-      } else if (e.key === 'p' && !e.metaKey && !e.ctrlKey) {
-        if (isVersionPreviewMode) return
-        e.preventDefault()
-        armPaintFromShortcut()
-      } else if (e.key === 'g' && !e.metaKey && !e.ctrlKey) {
-        if (isVersionPreviewMode) return
-        e.preventDefault()
-        // G for ground. The ToolMode transition moves to the site phase itself.
-        useEditor.getState().armToolMode({ mode: 'terrain-sculpt' })
-      } else if (e.key === 'c' && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
+      // Fabrics (D82): the single-letter tools (V, W, P, B, F, D, A, O, M, G, X, Z)
+      // and the Revit codes are read by `handleKeyDown` below, before this handler.
+      if (e.key === 'c' && (e.metaKey || e.ctrlKey) && !e.shiftKey) {
         if (isVersionPreviewMode) return
         e.preventDefault()
         copySelectedNodesToEditorClipboard()
@@ -839,6 +903,71 @@ export const useKeyboard = ({
         }
       }
     }
+    // Fabrics (D82): single letters and Revit codes, read before Pascal's handler.
+    // A code-starting letter (W, D, P, G, Z) waits `SINGLE_DELAY_MS` for its second
+    // letter; R, C and S act at once in Pascal's handler and leave the code window open.
+    let pendingPrefix: PendingPrefix | null = null
+    let pendingTimer: ReturnType<typeof setTimeout> | null = null
+    const dropPending = () => {
+      if (pendingTimer) clearTimeout(pendingTimer)
+      pendingTimer = null
+      pendingPrefix = null
+    }
+    const flushPending = () => {
+      const deferred = pendingPrefix?.deferred ?? null
+      dropPending()
+      if (deferred) runShortcutCommand(deferred, isVersionPreviewMode)
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const letter = bareLetter(e)
+      const ours =
+        letter !== null &&
+        !e.defaultPrevented &&
+        hasSceneKeyboardFocus() &&
+        !isTypingTarget(e.target) &&
+        !useDeleteConfirmation.getState().request &&
+        // The canopy tool's form owns F.
+        !(letter === 'f' && isToolOwnedCanopyForm())
+      if (!ours) {
+        if (e.key === 'Escape' || isTypingTarget(e.target) || letter !== null) dropPending()
+        else if (!MODIFIER_KEYS.has(e.key) && pendingPrefix) flushPending()
+        handleSceneKeyDown(e)
+        return
+      }
+      if (e.repeat) {
+        if (SINGLE_KEY_COMMANDS[letter]) e.preventDefault()
+        else handleSceneKeyDown(e)
+        return
+      }
+
+      const step = decideLetter(pendingPrefix, letter, performance.now())
+      if (pendingTimer) clearTimeout(pendingTimer)
+      pendingTimer = null
+      pendingPrefix = step.next
+      if (step.flush) runShortcutCommand(step.flush, isVersionPreviewMode)
+
+      const { decision } = step
+      if (decision.kind === 'code' || decision.kind === 'single') {
+        e.preventDefault()
+        runShortcutCommand(decision.command, isVersionPreviewMode)
+        return
+      }
+      if (decision.kind === 'defer') {
+        e.preventDefault()
+        const waiting = pendingPrefix
+        pendingTimer = setTimeout(() => {
+          pendingTimer = null
+          if (pendingPrefix !== waiting) return
+          pendingPrefix = null
+          if (!hasSceneKeyboardFocus() || useDeleteConfirmation.getState().request) return
+          if (waiting?.deferred) runShortcutCommand(waiting.deferred, isVersionPreviewMode)
+        }, SINGLE_DELAY_MS)
+        return
+      }
+      handleSceneKeyDown(e)
+    }
+
     const handleKeyUp = (e: KeyboardEvent) => {
       if (e.defaultPrevented || !hasSceneKeyboardFocus()) {
         ctrlTapClean = false
@@ -904,6 +1033,7 @@ export const useKeyboard = ({
     window.addEventListener('keyup', handleKeyUp)
     const unsubscribeWallKind = subscribeWallKindReset()
     return () => {
+      dropPending()
       unsubscribeWallKind()
       window.removeEventListener('keydown', handleSessionGroupKeyDown, true)
       window.removeEventListener('keydown', handleKeyDown)

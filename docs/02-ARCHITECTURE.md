@@ -450,24 +450,40 @@ pas sur une feuille, ce qui est normal puisque seule l'emprise du contenu est ex
 
 ## Raccourcis clavier
 
-| Touche | Action |
-|---|---|
-| `V` | Sélection |
-| `T` / `R` / `O` / `L` | Texte / Rectangle / Ellipse / Ligne |
-| `W` / `P` / `D` / `A` | Mur / Pièce / Cote / Axe de construction (plan) |
-| `B` / `F` | Porte / Fenêtre (plan) |
-| `Maj + R` | Pivoter la sélection de 90° (autour de son centre) |
-| `Échap` | Annuler le tracé en cours, puis désélectionner |
-| `Entrée` ou double-clic | Terminer un mur ou une pièce |
-| `Suppr` / `Retour arrière` | Supprimer la sélection |
-| `Ctrl/Cmd + Z` / `Ctrl/Cmd + Maj + Z` | Annuler / Rétablir |
-| `Ctrl/Cmd + C` / `V` / `D` | Copier / Coller / Dupliquer |
-| `Ctrl/Cmd + A` | Tout sélectionner |
-| Flèches (`+ Maj`) | Déplacer de 1 (10) unités d'affichage |
-| `Espace` + glisser, molette | Déplacer la vue, zoomer vers le curseur |
-| `Ctrl/Cmd + 0` | Ajuster la page à l'écran |
+**Décision D82 (2026-11-27)** : une lettre pour les débutants (anciennes touches de Fabrics) **et** les codes
+Revit à deux lettres pour les habitués, dans l'éditeur Plan (Pascal). Code : `packages/pascal/packages/editor/src/lib/fabrics-shortcuts.ts`.
 
-Les raccourcis sont ignorés quand le focus est dans un champ de saisie.
+| Lettre | Code Revit | Action |
+|---|---|---|
+| `V` | — | Sélection |
+| `W` | `WA` | Mur |
+| `P` (ou `Z`) | `RM` | Pièce |
+| `B` (ou `Maj + D`) | `DR` | Porte |
+| `F` (ou `Maj + W`) | `WN` | Fenêtre |
+| `D` | `DI` | Cote |
+| `A` | `GR` | Axes de construction |
+| `O` | `CM` | Objets (catalogue) |
+| `Maj + S` | `ST` | Escalier |
+| `Maj + R` | `RF` | Toiture |
+| — | `SB` | Dalle |
+| — | `PT` | Peinture |
+| `M` | — | Mesurer |
+| `G` | — | Terrain |
+| `X` | — | Mode suppression |
+| — | `CO` | Copier la sélection et poser la copie |
+| `R` | `RO` | Pivoter la sélection |
+| `Suppr` | `DE` | Supprimer la sélection |
+| — | `ZF` | Cadrer la vue sur le dessin |
+| Flèches | — | Déplacer la vue (rien de sélectionné) ; décaler le mur sélectionné |
+| `Ctrl + Z` / `Ctrl + Maj + Z` | — | Annuler / Rétablir |
+| `Ctrl + C` / `X` / `V` | — | Copier / Couper / Coller |
+
+Une lettre qui commence un code (`W`, `D`, `P`, `G`, `Z`) attend 400 ms la seconde lettre ; `R`, `C`, `S`
+agissent tout de suite et laissent 800 ms pour la seconde. Les raccourcis sont ignorés quand le focus est
+dans un champ de saisie. La liste complète est dans **Paramètres → Raccourcis clavier**.
+
+L'éditeur Visuel garde ses touches : `V` Sélection, `T` / `R` / `O` / `L` Texte / Rectangle / Ellipse / Ligne,
+`Suppr`, `Ctrl + Z`, `Ctrl + D`, `Ctrl + 0`.
 
 ## Mode bâtiment (jalons M5 à M11)
 

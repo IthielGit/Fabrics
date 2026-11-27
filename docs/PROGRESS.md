@@ -53,6 +53,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-27 — Hors jalon · Raccourcis Fabrics + Revit (D82) : fait, à tester dans le navigateur
+- Demande de l'utilisateur : des raccourcis entre ceux de l'ancien Fabrics et ceux de Revit. Tableau validé ; fait tout de suite à sa demande (M23 clôturé en parallèle le même jour).
+- Une lettre par outil (anciennes touches) et les codes Revit à deux lettres ; une lettre qui commence un code attend 400 ms la suivante (`D` puis `R` = Porte, sans passer par Cote). La vue se déplace avec les flèches quand rien n'est sélectionné (W/A/S/D libérés). `ZF` cadre la vue, en 3D comme en 2D. Bulles d'aide « Mur (W · WA) ». Fenêtre **Paramètres → Raccourcis clavier** réécrite en français (elle était restée en anglais).
+- Code dans `packages/pascal` (noté dans `FABRICS_CHANGES.md`) ; textes français dans `i18n/fabrics-fr.json`, compilés dans `src/i18n/pascalTexts.ts`. Table à jour dans `docs/02-ARCHITECTURE.md`.
+- Tests : `lib/fabrics-shortcuts.test.ts` (nouveau), `keyboard-pan.test.ts` et `use-keyboard.test.ts` mis à jour.
+
 ### 2026-11-27 — M11 quater · Lot I : essai sur tablette abandonné
 
 - Choix de l'utilisateur : la tablette est peu utilisée, l'essai sur une vraie tablette (lot I) n'est plus à faire. Le code du lot I (deux doigts, pincement, boutons agrandis) reste en place. Roadmap et tableau d'état mis à jour. Aucun code modifié.
@@ -82,7 +88,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ### 2026-11-27 — M19 · Lot A : suivi mis à jour
 - L'utilisateur confirme que les effets visuels de Pascal fonctionnent dans Fabrics (qualité, occlusion ambiante, bloom, contours encrés, heure et lumière…). Les 5 cases du lot A de M19 (roadmap) et les 12 cases « Fabrics = Pascal » de `docs/regression-checklist.md` sont cochées. Aucun code modifié.
-- Restent ouverts dans les jalons précédents : gate G3 (mesure à la règle, revue d'un professionnel), gate G4 (revue d'un métreur), M11 quater lot H (test avec une vraie personne) et lot I (essai sur tablette), choix des raccourcis.
+- Restent ouverts dans les jalons précédents : gate G3 (mesure à la règle, revue d'un professionnel), gate G4 (revue d'un métreur), M11 quater lot H (test avec une vraie personne) et lot I (essai sur tablette) ; choix des raccourcis fait le même jour (D82).
 
 ### 2026-11-27 — M23 · 23.6 Panneau DQE : fait
 
@@ -2258,6 +2264,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 | D79 | Source de vérité | **Choix de l'utilisateur le 2026-11-17** : la scène Pascal devient l'unique modèle des projets Plan (stockage en mètres, affichage toujours en mm, m², m³) ; migration testée des plans existants en M18 ; les projets Visuel gardent `FabricsDocument`. | Une seule source pour la 2D, la 3D, les métrés, l'IFC et le DQE, sans traduction permanente entre deux modèles. |
 | D80 | Interface et prise en main | **Choix de l'utilisateur le 2026-11-17** (précise D75) : on prend aussi **toute l'interface et la prise en main de Pascal** (accueil, éditeur, réglages, import, connexion, aide). Les fonctions de Fabrics y sont reconstruites (métrés Client / Exécution, commentaires, historique, présence, partage, export, DQE) ; l'éditeur Visuel reste à part, dans le même style. **On reste sur Vite** (composants de `apps/editor` repris sans Next.js). Remplace l'interface choisie en M15 bis et la prise en main de M11 quater : leurs **fonctions** restent exigées par la liste de non-régression. | Une seule interface cohérente, celle du moteur repris, sans perdre ce que fait Fabrics. |
 | D81 | Expérience de Pascal | **Souhait de l'utilisateur le 2026-11-18** (précise D80) : tous les effets visuels et sonores, la navigation, les options de navigation et l'UX de Pascal sont gardés tels quels dans Fabrics ; ils entrent dans la liste de non-régression (comparaison avec Pascal lancé seul). Les sons se coupent dans les réglages. | L'utilisateur apprécie l'expérience de Pascal : elle ne doit pas être appauvrie par l'intégration. |
+| D82 | Raccourcis clavier | **Choix de l’utilisateur le 2026-11-27** : entre les anciens raccourcis de Fabrics et ceux de Revit (« une version Revit plus facile pour tous »). Une lettre par outil (W mur, P pièce, B porte, F fenêtre, D cote, A axes, O objets…) **et** les codes Revit (WA, RM, DR, WN, DI, GR, CM…). La vue ne se déplace plus avec W/A/S/D mais avec les flèches, quand rien n’est sélectionné. Fait le même jour, hors jalon. | Les débutants retiennent une lettre ; les habitués de Revit gardent leurs réflexes. |
 | D67 | Miniature dans le cloud | La miniature (image encodée en texte) est stockée telle quelle dans la colonne `thumbnail_path` de `projects`, sans fichier Storage. | Évite une URL signée par carte de l'accueil ; le nom de la colonne est trompeur mais le schéma reste inchangé. À revoir si la base grossit trop. |
 | D66 | Étiquettes de cote automatiques | **Choix de l'utilisateur le 2026-11-12** : calculées à l'affichage et dans les exports, jamais enregistrées ; longueurs de murs et largeurs d'ouvertures ; seule la case `plan.showDimensionLabels` est enregistrée. | Elles suivent le plan sans alourdir le document (même principe que les cotes Client / Technique). |
 

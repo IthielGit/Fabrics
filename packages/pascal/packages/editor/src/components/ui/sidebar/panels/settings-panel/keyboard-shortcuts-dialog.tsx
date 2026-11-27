@@ -13,12 +13,14 @@ import {
   ShortcutToken,
   shortcutDisplayValue,
 } from './../../../../../components/ui/primitives/shortcut-token'
-import { TOOL_SHORTCUT_KEYS } from './../../../../../lib/tool-shortcuts'
 
+// Fabrics (D82): `keys` are the single key or chord; `code` is the Revit code
+// typed letter after letter (`WA`). Actions and notes go through Lingui.
 type Shortcut = {
   keys: readonly string[]
-  action: string
-  note?: string
+  code?: string
+  action: MessageDescriptor
+  note?: MessageDescriptor
 }
 
 type ShortcutCategory = {
@@ -28,239 +30,287 @@ type ShortcutCategory = {
 
 const SHORTCUT_CATEGORIES: ShortcutCategory[] = [
   {
-    title: /* i18n */ {
-      id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.editorNavigation',
-      message: 'Editor Navigation',
-    },
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabricsTools', message: 'Tools: one letter, or the Revit code' },
     shortcuts: [
-      { keys: ['1'], action: 'Switch to Site' },
-      { keys: ['2'], action: 'Switch to Building' },
-      { keys: ['\\'], action: 'Open or close the split view' },
-      { keys: TOOL_SHORTCUT_KEYS.item, action: 'Open the items catalog with the item tool' },
-      { keys: TOOL_SHORTCUT_KEYS.zone, action: 'Draw a zone' },
+      {
+        keys: ['V'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolSelect', message: 'Select' },
+      },
+      {
+        keys: ['W'],
+        code: 'WA',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolWall', message: 'Wall' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolWallNote', message: 'Draws with the shape picked last: Rectangle, Polygon or Walls.' },
+      },
+      {
+        keys: ['P'],
+        code: 'RM',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRoom', message: 'Room' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRoomNote', message: 'Z also works.' },
+      },
+      {
+        keys: ['B'],
+        code: 'DR',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDoor', message: 'Door' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDoorNote', message: 'Shift+D also works. While placing, R flips the door.' },
+      },
+      {
+        keys: ['F'],
+        code: 'WN',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolWindow', message: 'Window' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolWindowNote', message: 'Shift+W also works.' },
+      },
+      {
+        keys: ['D'],
+        code: 'DI',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDimension', message: 'Dimension' },
+      },
+      {
+        keys: ['A'],
+        code: 'GR',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolGrid', message: 'Construction grid' },
+      },
+      {
+        keys: ['O'],
+        code: 'CM',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolItem', message: 'Objects (catalog)' },
+      },
+      {
+        keys: ['Shift', 'S'],
+        code: 'ST',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolStair', message: 'Stairs' },
+      },
+      {
+        keys: ['Shift', 'R'],
+        code: 'RF',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRoof', message: 'Roof' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRoofNote', message: 'R alone rotates or flips the selection.' },
+      },
+      {
+        keys: [],
+        code: 'SB',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolSlab', message: 'Slab' },
+      },
+      {
+        keys: [],
+        code: 'PT',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolPaint', message: 'Paint' },
+      },
+      {
+        keys: ['M'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolMeasure', message: 'Measure (last measurement tool)' },
+      },
+      {
+        keys: ['G'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolTerrain', message: 'Sculpt the ground (terrain)' },
+      },
+      {
+        keys: ['X'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDeleteMode', message: 'Delete mode' },
+      },
+      {
+        keys: [],
+        code: 'CO',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolCopy', message: 'Copy the selection and place the copy' },
+      },
+      {
+        keys: ['R'],
+        code: 'RO',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRotate', message: 'Rotate the selection' },
+      },
+      {
+        keys: ['Delete / Backspace'],
+        code: 'DE',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDelete', message: 'Delete the selection' },
+      },
+      {
+        keys: [],
+        code: 'ZF',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolFit', message: 'Fit the view to the drawing' },
+      },
+    ],
+  },
+  {
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.editorNavigation', message: 'Editor Navigation' },
+    shortcuts: [
+      {
+        keys: ['1'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navSite', message: 'Switch to Site' },
+      },
+      {
+        keys: ['2'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navBuilding', message: 'Switch to Building' },
+      },
+      {
+        keys: ['\\'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navSplit', message: 'Open or close the split view' },
+      },
       {
         keys: ['Cmd/Ctrl', 'Arrow Up'],
-        action: 'Select next level in the active building',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navLevelUp', message: 'Next level of the building' },
       },
       {
         keys: ['Cmd/Ctrl', 'Arrow Down'],
-        action: 'Select previous level in the active building',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navLevelDown', message: 'Previous level of the building' },
       },
-      { keys: ['Cmd/Ctrl', 'B'], action: 'Toggle sidebar' },
+      {
+        keys: ['Cmd/Ctrl', 'B'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navSidebar', message: 'Show or hide the sidebar' },
+      },
     ],
   },
   {
-    title: /* i18n */ {
-      id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.modesHistory',
-      message: 'Modes & History',
-    },
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.modesHistory', message: 'Modes & History' },
     shortcuts: [
-      { keys: TOOL_SHORTCUT_KEYS.select, action: 'Switch to Select mode' },
-      {
-        keys: TOOL_SHORTCUT_KEYS.wall,
-        action: 'Switch to Build mode, drawing with the last Rooms shape',
-        note: 'Rectangle, Polygon or Walls, whichever you picked last; Rectangle the first time.',
-      },
-      { keys: TOOL_SHORTCUT_KEYS.measurement, action: 'Activate the last measurement tool' },
-      { keys: TOOL_SHORTCUT_KEYS.paint, action: 'Switch to Paint mode' },
-      { keys: TOOL_SHORTCUT_KEYS.terrain, action: 'Sculpt the ground (terrain)' },
-      { keys: TOOL_SHORTCUT_KEYS.delete, action: 'Switch to Delete mode' },
       {
         keys: ['Esc'],
-        action: 'Cancel the active tool and return to Select mode',
-        note: 'Mid-draw it cancels only the chain in progress and keeps the tool armed; press it again to leave the tool.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histEscape', message: 'Cancel the active tool and return to Select' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histEscapeNote', message: 'Mid-draw it cancels only the drawing in progress; press it again to leave the tool.' },
       },
-      { keys: ['Delete / Backspace'], action: 'Delete selected objects' },
-      { keys: ['Cmd/Ctrl', 'Z'], action: 'Undo' },
-      { keys: ['Cmd/Ctrl', 'Shift', 'Z'], action: 'Redo' },
-      { keys: ['Cmd/Ctrl', 'S'], action: 'Save' },
-    ],
-  },
-  {
-    title: /* i18n */ {
-      id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.buildTools',
-      message: 'Build Tools',
-    },
-    shortcuts: [
       {
-        keys: TOOL_SHORTCUT_KEYS.door,
-        action: 'Place a door',
-        note: 'D alone pans the view. While placing, the door swings toward the side of the wall the cursor is on; R flips it.',
+        keys: ['Cmd/Ctrl', 'Z'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histUndo', message: 'Undo' },
       },
-      { keys: TOOL_SHORTCUT_KEYS.window, action: 'Place a window', note: 'W alone pans the view.' },
-      { keys: TOOL_SHORTCUT_KEYS.stair, action: 'Place stairs', note: 'S alone pans the view.' },
       {
-        keys: TOOL_SHORTCUT_KEYS.roof,
-        action: 'Draw a roof',
-        note: "R alone still rotates or flips the selection, and while placing it stays the placement's own R.",
+        keys: ['Cmd/Ctrl', 'Shift', 'Z'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histRedo', message: 'Redo' },
+      },
+      {
+        keys: ['Cmd/Ctrl', 'S'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histSave', message: 'Save' },
       },
     ],
   },
   {
-    title: /* i18n */ {
-      id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.selection',
-      message: 'Selection',
-    },
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.selection', message: 'Selection' },
     shortcuts: [
       {
         keys: ['Cmd/Ctrl', 'C'],
-        action: 'Copy the selected objects',
-        note: 'The copied selection can be pasted into another level, project, or browser tab.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCopy', message: 'Copy the selected objects' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCopyNote', message: 'They can be pasted into another level, project or tab.' },
       },
       {
         keys: ['Cmd/Ctrl', 'X'],
-        action: 'Cut the selected objects',
-        note: 'Copies the selection to the clipboard, then removes it from this scene.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCut', message: 'Cut the selected objects' },
       },
       {
         keys: ['Cmd/Ctrl', 'V'],
-        action: 'Paste and place copied objects',
-        note: 'Carries a preview under the cursor. Click to place it, or press Escape to cancel.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selPaste', message: 'Paste and place the copied objects' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selPasteNote', message: 'Click to place, Esc to cancel.' },
       },
       {
         keys: ['Cmd/Ctrl', 'Left click'],
-        action: 'Add or remove an object from multi-selection',
-        note: 'Works in Select mode on the 3D canvas, the 2D floor plan, and the scene graph.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selToggle', message: 'Add or remove an object from the selection' },
       },
       {
         keys: ['Shift', 'Left click'],
-        action: 'Add or remove an object from canvas multi-selection',
-        note: 'In the scene graph, Shift-click selects the visible range like a file browser.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selShiftToggle', message: 'Add or remove an object (plan and 3D)' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selShiftToggleNote', message: 'In the scene tree, Shift-click selects a range.' },
       },
       {
         keys: ['Left click'],
-        action: 'Move the whole multi-selection',
-        note:
-          'With 2+ objects selected, in 2D and 3D alike: drag the selection (or its dashed box) to slide it; click it to pick it up and place with the next click.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selMoveGroup', message: 'Move a multi-selection' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selMoveGroupNote', message: 'Drag it, or click it to pick it up and click again to place it.' },
       },
       {
         keys: ['R', 'T'],
-        action: 'Rotate a multi-selection ±45° around its center',
-        note: 'Also works mid-move while carrying the selection.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selRotateGroup', message: 'Rotate a multi-selection by ±45°' },
       },
       {
         keys: ['Cmd/Ctrl', 'G'],
-        action: 'Group the multi-selection (session only)',
-        note: 'Editor-only. Plain click a member later to reselect the whole group. Not saved with the project.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selGroup', message: 'Group the selection (this session only)' },
       },
       {
         keys: ['Cmd/Ctrl', 'Shift', 'G'],
-        action: 'Ungroup the session selection',
-        note: 'Keeps the current selection; only dissolves the session group.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selUngroup', message: 'Ungroup' },
       },
       {
         keys: ['Arrow keys'],
-        action: 'Nudge the selected wall 1 in (1 cm in metric)',
-        note: 'In the floor plan. Stops where it lines up with a parallel wall; joined walls follow.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selNudge', message: 'Nudge the selected wall by 10 mm' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selNudgeNote', message: 'In the floor plan. Joined walls follow.' },
       },
       {
         keys: ['Tab'],
-        action: 'Select the next object under the pointer',
-        note: 'In the floor plan, for walls that overlap or hide under another. Shift+Tab goes back.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCycle', message: 'Select the next object under the pointer' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCycleNote', message: 'Shift+Tab goes back.' },
       },
       {
         keys: ['Esc'],
-        action: 'Clear the selection',
-        note: 'Clicking empty space does the same.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selClear', message: 'Clear the selection' },
       },
     ],
   },
   {
-    title: /* i18n */ {
-      id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.directManipulation',
-      message: 'Direct Manipulation',
-    },
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.directManipulation', message: 'Direct Manipulation' },
     shortcuts: [
       {
         keys: ['Cmd/Ctrl', 'Left click'],
-        action: 'Move the selected movable object under the cursor',
-        note: 'Drag in Select mode with a single object selected. Guided snapping and guides are enabled by default.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.dmMove', message: 'Move the selected object (drag)' },
       },
       {
         keys: ['Cmd/Ctrl', 'Right click'],
-        action: 'Rotate the selected object under the cursor',
-        note: 'Drag left or right in Select mode with a single object selected. Rotation snaps to 15° increments by default.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.dmRotate', message: 'Rotate the selected object by 15° steps (drag)' },
       },
       {
         keys: ['Cmd/Ctrl', 'Shift', 'Right click'],
-        action: 'Rotate freely',
-        note: 'Hold Shift during the drag to bypass the 15° rotation increment.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.dmRotateFree', message: 'Rotate freely' },
       },
     ],
   },
   {
-    title: /* i18n */ {
-      id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.drawingTools',
-      message: 'Drawing Tools',
-    },
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.drawingTools', message: 'Drawing Tools' },
     shortcuts: [
-      // Shift and Ctrl each mean one thing held and another tapped, and only
-      // the hold was documented — which read as the taps not existing. Both
-      // taps are listed first because they are the ones nobody discovers.
       {
         keys: ['Shift'],
-        action: 'Cycle the snapping mode',
-        note: 'Tap and release without pressing anything else, while a drawing or move gesture is available.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.drawSnap', message: 'Change the snapping mode (short tap)' },
       },
       {
         keys: ['Cmd/Ctrl'],
-        action: 'Cycle the grid step: 0.5 m → 0.25 m → 0.1 m → 0.05 m',
-        note: 'Tap and release on its own. Use it when the default half-metre grid is too coarse — placing a window, for instance.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.drawGrid', message: 'Change the grid step: 500 → 250 → 100 → 50 mm (short tap)' },
       },
       {
         keys: ['Alt'],
-        action: 'Bypass snapping, angle constraints and collisions',
-        note: 'Hold during the active gesture; release to snap again. Passive guide or measurement feedback may stay visible.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.drawFree', message: 'Ignore snapping and constraints (hold)' },
       },
       {
         keys: ['Shift'],
-        action: 'Rotate freely, bypassing the default 15° rotation snap',
-        note: 'Hold while dragging a rotate handle or direct-rotation gesture.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.drawRotateFree', message: 'Rotate freely while dragging a handle (hold)' },
       },
     ],
   },
   {
-    title: /* i18n */ {
-      id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.itemPlacement',
-      message: 'Item Placement',
-    },
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.itemPlacement', message: 'Item Placement' },
     shortcuts: [
       {
         keys: ['R', 'T'],
-        action: 'Rotate item; with a door selected, R toggles open/closed and T closes',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.placeRotate', message: 'Rotate the object being placed' },
       },
       {
         keys: ['E'],
-        action:
-          'Operate the selected node — doors, windows, and cabinet doors/drawers animate open/closed',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.placeOperate', message: 'Open or close the selected door, window or cabinet' },
       },
       {
         keys: ['Shift'],
-        action: 'Temporarily bypass placement validation constraints',
-        note: 'Hold while placing.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.placeForce', message: 'Place without the placement checks (hold)' },
       },
     ],
   },
   {
-    title: /* i18n */ {
-      id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.camera',
-      message: 'Camera',
-    },
+    title: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.camera', message: 'Camera' },
     shortcuts: [
       {
-        keys: ['W', 'A', 'S', 'D'],
-        action: 'Pan camera',
-        note: 'Moves in screen space, similar to dragging the camera view. With Shift, W, S and D place a window, stairs and a door instead.',
+        keys: ['Arrow keys'],
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camArrows', message: 'Move the view' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camArrowsNote', message: 'With nothing selected; with a wall selected, the arrows nudge it.' },
       },
       {
         keys: ['Middle click'],
-        action: 'Pan camera',
-        note: 'Drag with the middle mouse button, or hold Space while dragging with the left mouse button.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camPan', message: 'Move the view (drag)' },
+        note: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camPanNote', message: 'Or hold Space and drag with the left button.' },
       },
       {
         keys: ['Right click'],
-        action: 'Orbit camera',
-        note: 'Drag with the right mouse button.',
+        action: /* i18n */ { id: 'editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camOrbit', message: 'Orbit the camera (drag)' },
       },
     ],
   },
@@ -317,13 +367,18 @@ export function KeyboardShortcutsDialog() {
                 {category.shortcuts.map((shortcut, index) => (
                   <div
                     className="grid grid-cols-[minmax(130px,220px)_1fr] gap-3 px-3 py-2"
-                    key={`${category.title.id}-${shortcut.action}`}
+                    key={`${category.title.id}-${shortcut.action.id}`}
                   >
-                    <ShortcutKeys keys={shortcut.keys} />
+                    <div className="flex flex-wrap items-center gap-2">
+                      {shortcut.keys.length > 0 ? <ShortcutKeys keys={shortcut.keys} /> : null}
+                      {shortcut.code ? (
+                        <ShortcutToken displayValue={shortcut.code} value={shortcut.code} />
+                      ) : null}
+                    </div>
                     <div>
-                      <p className="text-sm">{shortcut.action}</p>
+                      <p className="text-sm">{i18n._(shortcut.action)}</p>
                       {shortcut.note ? (
-                        <p className="text-muted-foreground text-xs">{shortcut.note}</p>
+                        <p className="text-muted-foreground text-xs">{i18n._(shortcut.note)}</p>
                       ) : null}
                     </div>
                     {index < category.shortcuts.length - 1 ? (

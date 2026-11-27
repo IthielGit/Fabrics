@@ -1,4 +1,5 @@
 import { afterAll, beforeAll, expect, test } from 'bun:test'
+import { useViewer } from '@pascal-app/viewer'
 import {
   acceptsKeyboardPan,
   advanceKeyboardPanMotion,
@@ -28,7 +29,7 @@ const idle = (): KeyboardPanState => ({
  * travel in cruise-seconds and how long the glide lasted.
  */
 function simulate({
-  codes = ['KeyD'],
+  codes = ['ArrowRight'],
   holdMs,
   hz = 60,
   phaseMs = 0,
@@ -83,18 +84,19 @@ afterAll(() => {
   for (const name of stubbed) delete (globalThis as Record<string, unknown>)[name]
 })
 
-test('physical WASD keys drive a screen-space direction; letters on other layouts do not', () => {
+test('arrow keys drive a screen-space direction; W/A/S/D are tool letters (Fabrics D82)', () => {
   const state = idle()
-  expect(isKeyboardPanKey('KeyZ')).toBe(false)
-  expect(setKeyboardPanKey(state, 'KeyW', true)).toBe(true)
-  expect(setKeyboardPanKey(state, 'KeyW', true)).toBe(false)
-  setKeyboardPanKey(state, 'KeyD', true)
+  for (const code of ['KeyW', 'KeyA', 'KeyS', 'KeyD', 'KeyZ'])
+    expect(isKeyboardPanKey(code)).toBe(false)
+  expect(setKeyboardPanKey(state, 'ArrowUp', true)).toBe(true)
+  expect(setKeyboardPanKey(state, 'ArrowUp', true)).toBe(false)
+  setKeyboardPanKey(state, 'ArrowRight', true)
   const motion = createKeyboardPanMotion()
   syncKeyboardPanMotion(motion, state, 0)
   advanceKeyboardPanMotion(motion, state, 100)
   expect(motion.stepX).toBeGreaterThan(0)
   expect(motion.stepY).toBeCloseTo(motion.stepX)
-  setKeyboardPanKey(state, 'KeyA', true)
+  setKeyboardPanKey(state, 'ArrowLeft', true)
   advanceKeyboardPanMotion(motion, state, 200)
   expect(motion.stepX).toBe(0)
   expect(motion.stepY).toBeGreaterThan(0)
@@ -111,11 +113,12 @@ test('modifier chords stay shortcuts, and typing in a field never pans', () => {
   expect(acceptsKeyboardPan(key({ target: new Input() }))).toBe(false)
 })
 
-test('Shift with W, S or D arms a tool instead of panning; Shift with A still pans', () => {
-  for (const code of ['KeyW', 'KeyS', 'KeyD'])
-    expect(acceptsKeyboardPan(key({ code, shiftKey: true }))).toBe(false)
-  expect(acceptsKeyboardPan(key({ code: 'KeyA', shiftKey: true }))).toBe(true)
-  expect(acceptsKeyboardPan(key({ code: 'KeyD' }))).toBe(true)
+test('the arrows leave a selected wall to its nudge (Fabrics D82)', () => {
+  expect(acceptsKeyboardPan(key({ code: 'ArrowUp' }))).toBe(true)
+  useViewer.getState().setSelection({ selectedIds: ['wall_a' as never] })
+  expect(acceptsKeyboardPan(key({ code: 'ArrowUp' }))).toBe(false)
+  useViewer.getState().setSelection({ selectedIds: [] })
+  expect(acceptsKeyboardPan(key({ code: 'ArrowUp' }))).toBe(true)
 })
 
 test('cruise speed scales with the visible width within fixed bounds', () => {
@@ -156,7 +159,7 @@ test('a tap counts from the key events, not from the frames around them', () => 
 })
 
 test('release comes to rest within the stop time, with a barely visible glide', () => {
-  const hold = simulate({ codes: ['KeyW'], holdMs: 1000 })
+  const hold = simulate({ codes: ['ArrowUp'], holdMs: 1000 })
   expect(hold.glideMs).toBeLessThanOrEqual(KEYBOARD_PAN_STOP_SECONDS * 1000 + 1000 / 60)
   // Glide under 3% of a cruise-second: about 1% of the view width.
   const held1s = 1 - ((1 - KEYBOARD_PAN_START_FRACTION) * KEYBOARD_PAN_RAMP_SECONDS) / 3
@@ -173,7 +176,7 @@ test('travel does not depend on the frame rate', () => {
 
 test('diagonals move no faster than a straight press', () => {
   const straight = simulate({ holdMs: 1000 })
-  const diagonal = simulate({ codes: ['KeyD', 'KeyW'], holdMs: 1000 })
+  const diagonal = simulate({ codes: ['ArrowRight', 'ArrowUp'], holdMs: 1000 })
   expect(Math.hypot(diagonal.x, diagonal.y)).toBeCloseTo(straight.x)
   expect(diagonal.x).toBeCloseTo(diagonal.y)
 })

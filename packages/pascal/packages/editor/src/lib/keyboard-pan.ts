@@ -1,7 +1,8 @@
-// WASD navigation shared by the 3D camera and the 2D floor plan, so both views
-// move the same way. Keys match by physical position (`event.code`): the
-// cluster stays under the left hand on any layout (Z/Q/S/D on AZERTY).
+// Keyboard navigation shared by the 3D camera and the 2D floor plan, so both views
+// move the same way. Fabrics (D82): the arrow keys pan, with nothing selected (a
+// selected wall keeps them for its nudge); W/A/S/D are the Fabrics tool letters.
 
+import { useViewer } from '@pascal-app/viewer'
 import { claimsKeyboardPan } from './tool-shortcuts'
 
 export type KeyboardPanState = {
@@ -43,22 +44,22 @@ export function setKeyboardPanKey(
   code: string,
   pressed: boolean,
 ): boolean {
-  if (code === 'KeyW') {
+  if (code === 'ArrowUp') {
     const changed = state.forward !== pressed
     state.forward = pressed
     return changed
   }
-  if (code === 'KeyS') {
+  if (code === 'ArrowDown') {
     const changed = state.backward !== pressed
     state.backward = pressed
     return changed
   }
-  if (code === 'KeyA') {
+  if (code === 'ArrowLeft') {
     const changed = state.left !== pressed
     state.left = pressed
     return changed
   }
-  if (code === 'KeyD') {
+  if (code === 'ArrowRight') {
     const changed = state.right !== pressed
     state.right = pressed
     return changed
@@ -67,7 +68,7 @@ export function setKeyboardPanKey(
 }
 
 export function isKeyboardPanKey(code: string): boolean {
-  return code === 'KeyW' || code === 'KeyA' || code === 'KeyS' || code === 'KeyD'
+  return code === 'ArrowUp' || code === 'ArrowLeft' || code === 'ArrowDown' || code === 'ArrowRight'
 }
 
 export function hasKeyboardPanInput(state: KeyboardPanState): boolean {
@@ -83,13 +84,14 @@ export function clearKeyboardPanKeys(state: KeyboardPanState) {
 
 /**
  * Pan keys are ignored with a modifier held (shortcuts), for a Shift chord that
- * arms a tool (Shift+W window, Shift+S stairs, Shift+D door), and while typing.
+ * arms a tool, while typing, and while something is selected (the arrows nudge it).
  */
 export function acceptsKeyboardPan(event: KeyboardEvent) {
   return (
     !(event.metaKey || event.ctrlKey || event.altKey) &&
     !claimsKeyboardPan(event) &&
-    !isEditableKeyboardTarget(event.target)
+    !isEditableKeyboardTarget(event.target) &&
+    useViewer.getState().selection.selectedIds.length === 0
   )
 }
 

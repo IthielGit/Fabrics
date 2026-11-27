@@ -6839,6 +6839,20 @@ export function FloorplanPanel({
     return () => emitter.off('camera-controls:frame', frame)
   }, [])
 
+  // Fabrics (D82): "fit the view" (Revit's ZF) with no 3D view on screen refits the plan
+  // to its drawing, as on opening; with a 3D view the plan follows the camera's fit.
+  useEffect(() => {
+    const fitScene = () => {
+      if (!isFloorplanOpenRef.current || isViewVisible(useEditor.getState(), VIEW_3D)) return
+      const fitted = latestFittedViewportRef.current
+      if (!fitted) return
+      hasUserAdjustedViewportRef.current = false
+      setViewport(fitted)
+    }
+    emitter.on('camera-controls:fit-scene', fitScene)
+    return () => emitter.off('camera-controls:fit-scene', fitScene)
+  }, [])
+
   useEffect(() => {
     if (!pendingFrame) return
     setPendingFrame(null)

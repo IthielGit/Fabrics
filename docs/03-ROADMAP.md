@@ -802,7 +802,7 @@ extérieure. Aucun changement du format du document. Lots à valider un par un.
 
 - [x] **Lot A — Barre d'outils lisible** : libellés visibles à côté des icônes de base, flèche des familles
       bien visible, menu des familles aussi accessible au clic simple (2026-11-12). Raccourcis plus logiques :
-      non modifiés, à fixer avec l'utilisateur.
+      faits le 2026-11-27 (D82) : lettre de l'ancien Fabrics et code Revit à deux lettres, vue aux flèches.
 - [x] **Lot B — Accueil qui guide** (version « plan seulement » demandée par l'utilisateur le 2026-11-12 : deux cartes, « Dessiner un plan » et « Voir un exemple » ; plus de création de visuel depuis l'accueil) : cartes « Dessiner un plan », « Créer une affiche », « Voir un
       exemple » ; un plan d'exemple créé pour Fabrics ; rappel que les projets restent dans ce navigateur
       (2026-11-12).

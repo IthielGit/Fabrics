@@ -33,6 +33,7 @@ import { Euler, Mesh, Vector3 } from 'three'
 import gridTableRecipe from '../../../core/src/procedural-items/__fixtures__/grid-table.json'
 import { counterRecipe } from '../../../core/src/procedural-items/fixtures'
 import { CATALOG_ITEMS } from '../../../editor/src/components/ui/item-catalog/catalog-items'
+import { runShortcutCommand } from '../../../editor/src/hooks/use-keyboard'
 import {
   createFreshPlacementSubtree,
   duplicatesAsFreshSubtree,
@@ -948,7 +949,10 @@ for (const strict of [false, true]) {
                 await pointer.send(new Vector3(6, 0, 5), 'grid first', true)
               else await planPointer(6, 5, true)
             } else if (outcome === 'Escape') await key('Escape')
-            else if (outcome === 'tool') await key('p')
+            else if (outcome === 'tool')
+              // Fabrics D82: Paint is now the Revit code PT (P alone is Room), and a 3D move
+              // owns T; the switch goes through the shortcut command itself.
+              await act(async () => runShortcutCommand('paint'))
             else await act(async () => useEditor.getState().setMovingNode(null))
             await settle(renderer)
             await advance(20)
@@ -1473,7 +1477,9 @@ for (const kind of ['item', 'shelf', 'procedural-item', 'cabinet'])
       try {
         const copy = await duplicate(renderer)
         expect(useInteractionScope.getState().pendingSubtree?.rootId).toBe(copy.id)
-        if (cancel === 'tool') await key('p')
+        if (cancel === 'tool')
+          // Fabrics D82: Paint is now the Revit code PT (P alone is Room).
+          await act(async () => runShortcutCommand('paint'))
         else if (cancel === 'selection')
           await act(async () => useEditor.getState().setMovingNode(null))
         else

@@ -112,3 +112,26 @@ l'hôte, Pascal se comporte exactement comme avant (mètres, 1 décimale, menu d
 - `packages/editor/src/lib/ifc-export.ts` : crochet `setIfcExportHost` (exporté par `src/index.tsx`). L'hôte
   reçoit les nœuds de la scène et rend la copie à exporter, ses ajouts, des types exclus et ses propres
   remarques (en français dans Fabrics). Sans hôte, rien ne change.
+
+## Hors jalon (2026-11-27) — raccourcis Fabrics + Revit (D82)
+
+- `packages/editor/src/lib/fabrics-shortcuts.ts` (nouveau) + test : une lettre par outil (anciennes
+  touches de Fabrics : V, W, P/Z, B, F, D, A, O, M, G, X) et les codes Revit à deux lettres (WA, RM, DR,
+  WN, DI, GR, CM, ST, RF, SB, PT, CO, RO, DE, ZF). Une lettre qui commence un code attend 400 ms ; R, C et
+  S gardent leur action immédiate de Pascal et laissent 800 ms pour la seconde lettre.
+- `hooks/use-keyboard.ts` : `handleKeyDown` lit d'abord les lettres et les codes (`decideLetter`,
+  `runShortcutCommand`), puis passe la main à l'ancien gestionnaire (`handleSceneKeyDown`). Les branches
+  `f` (catalogue), `z`, `m`, `v`, `b` (mur), `x`, `p` (peinture), `g` sont retirées de l'ancien gestionnaire.
+  Maj+D, Maj+W, Maj+S, Maj+R restent.
+- `lib/keyboard-pan.ts` : la vue se déplace avec les **flèches** (et non plus W/A/S/D), seulement quand
+  rien n'est sélectionné (sinon les flèches décalent le mur sélectionné). Tests mis à jour.
+- `lib/tool-shortcuts.ts` : `TOOL_SHORTCUT_KEYS` aux lettres de Fabrics, `TOOL_REVIT_CODES` ; les bulles
+  d'aide affichent « Mur (W · WA) ».
+- `components/editor/floorplan-panel.tsx` : `camera-controls:fit-scene` recadre aussi le plan 2D quand la
+  3D n'est pas affichée (code ZF).
+- `keyboard-shortcuts-dialog.tsx` : liste réécrite (outils avec lettre et code Revit en tête), actions et
+  notes passées par Lingui (elles étaient en anglais en dur) ; traductions dans `i18n/fabrics-fr.json`.
+- `nodes/src/__tests__/duplicate-hosted-mounted.test.tsx` : le cas « changer d'outil » passait par la touche
+  `P` (Peinture) ; la Peinture est maintenant le code `PT`, et un déplacement en 3D garde `T` pour pivoter
+  l'objet tenu. Le test appelle `runShortcutCommand('paint')`. Limite connue : pendant un déplacement en 3D,
+  taper `P` `T` pivote l'objet au lieu d'ouvrir la Peinture.

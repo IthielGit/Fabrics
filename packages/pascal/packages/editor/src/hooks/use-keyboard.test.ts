@@ -549,8 +549,11 @@ describe('drafting tool shortcuts', () => {
       expect(useEditor.getState().tool).toBe(tool)
       expect(useEditor.getState().activeSidebarPanel).toBe('build')
     }
-    expect(withToolShortcut('Door', 'door')).toBe('Door (Shift+D)')
-    expect(withToolShortcut('Wall', 'wall')).toBe('Wall (B)')
+    // Fabrics (D82): the Fabrics letter and the Revit code.
+    expect(withToolShortcut('Door', 'door')).toBe('Door (B · DR)')
+    expect(withToolShortcut('Wall', 'wall')).toBe('Wall (W · WA)')
+    expect(withToolShortcut('Stairs', 'stair')).toBe('Stairs (Shift+S · ST)')
+    expect(withToolShortcut('Paint', 'paint')).toBe('Paint (PT)')
     expect(withToolShortcut('Fence', 'fence')).toBe('Fence')
   })
 })

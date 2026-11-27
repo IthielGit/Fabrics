@@ -7094,10 +7094,6 @@ msgid "editor.sidebar.panels.settingsPanel.keepAJsonCopyOfThe"
 msgstr "Keep a JSON copy of the scene, or restore one."
 
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
-msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.buildTools"
-msgstr "Build Tools"
-
-#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
 msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.camera"
 msgstr "Camera"
 
@@ -7112,6 +7108,282 @@ msgstr "Drawing Tools"
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
 msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.editorNavigation"
 msgstr "Editor Navigation"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camArrows"
+msgstr "Move the view"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camArrowsNote"
+msgstr "With nothing selected; with a wall selected, the arrows nudge it."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camOrbit"
+msgstr "Orbit the camera (drag)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camPan"
+msgstr "Move the view (drag)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.camPanNote"
+msgstr "Or hold Space and drag with the left button."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.dmMove"
+msgstr "Move the selected object (drag)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.dmRotate"
+msgstr "Rotate the selected object by 15° steps (drag)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.dmRotateFree"
+msgstr "Rotate freely"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.drawFree"
+msgstr "Ignore snapping and constraints (hold)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.drawGrid"
+msgstr "Change the grid step: 500 → 250 → 100 → 50 mm (short tap)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.drawRotateFree"
+msgstr "Rotate freely while dragging a handle (hold)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.drawSnap"
+msgstr "Change the snapping mode (short tap)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histEscape"
+msgstr "Cancel the active tool and return to Select"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histEscapeNote"
+msgstr "Mid-draw it cancels only the drawing in progress; press it again to leave the tool."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histRedo"
+msgstr "Redo"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histSave"
+msgstr "Save"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.histUndo"
+msgstr "Undo"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navBuilding"
+msgstr "Switch to Building"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navLevelDown"
+msgstr "Previous level of the building"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navLevelUp"
+msgstr "Next level of the building"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navSidebar"
+msgstr "Show or hide the sidebar"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navSite"
+msgstr "Switch to Site"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.navSplit"
+msgstr "Open or close the split view"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.placeForce"
+msgstr "Place without the placement checks (hold)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.placeOperate"
+msgstr "Open or close the selected door, window or cabinet"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.placeRotate"
+msgstr "Rotate the object being placed"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selClear"
+msgstr "Clear the selection"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCopy"
+msgstr "Copy the selected objects"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCopyNote"
+msgstr "They can be pasted into another level, project or tab."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCut"
+msgstr "Cut the selected objects"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCycle"
+msgstr "Select the next object under the pointer"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selCycleNote"
+msgstr "Shift+Tab goes back."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selGroup"
+msgstr "Group the selection (this session only)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selMoveGroup"
+msgstr "Move a multi-selection"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selMoveGroupNote"
+msgstr "Drag it, or click it to pick it up and click again to place it."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selNudge"
+msgstr "Nudge the selected wall by 10 mm"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selNudgeNote"
+msgstr "In the floor plan. Joined walls follow."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selPaste"
+msgstr "Paste and place the copied objects"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selPasteNote"
+msgstr "Click to place, Esc to cancel."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selRotateGroup"
+msgstr "Rotate a multi-selection by ±45°"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selShiftToggle"
+msgstr "Add or remove an object (plan and 3D)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selShiftToggleNote"
+msgstr "In the scene tree, Shift-click selects a range."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selToggle"
+msgstr "Add or remove an object from the selection"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.selUngroup"
+msgstr "Ungroup"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolCopy"
+msgstr "Copy the selection and place the copy"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDelete"
+msgstr "Delete the selection"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDeleteMode"
+msgstr "Delete mode"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDimension"
+msgstr "Dimension"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDoor"
+msgstr "Door"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolDoorNote"
+msgstr "Shift+D also works. While placing, R flips the door."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolFit"
+msgstr "Fit the view to the drawing"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolGrid"
+msgstr "Construction grid"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolItem"
+msgstr "Objects (catalog)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolMeasure"
+msgstr "Measure (last measurement tool)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolPaint"
+msgstr "Paint"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRoof"
+msgstr "Roof"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRoofNote"
+msgstr "R alone rotates or flips the selection."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRoom"
+msgstr "Room"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRoomNote"
+msgstr "Z also works."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolRotate"
+msgstr "Rotate the selection"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolSelect"
+msgstr "Select"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolSlab"
+msgstr "Slab"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolStair"
+msgstr "Stairs"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolTerrain"
+msgstr "Sculpt the ground (terrain)"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolWall"
+msgstr "Wall"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolWallNote"
+msgstr "Draws with the shape picked last: Rectangle, Polygon or Walls."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolWindow"
+msgstr "Window"
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabrics.toolWindowNote"
+msgstr "Shift+W also works."
+
+#: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
+msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.fabricsTools"
+msgstr "Tools: one letter, or the Revit code"
 
 #: packages/editor/src/components/ui/sidebar/panels/settings-panel/keyboard-shortcuts-dialog.tsx
 msgid "editor.sidebar.panels.settingsPanel.keyboardShortcutsDialog.itemPlacement"

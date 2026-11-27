@@ -6,10 +6,10 @@ import { openSidebarPanel } from './sidebar-panel'
  * The single-key tools of the editor, and the keys tooltips print for them.
  *
  * The drafting tools (Door, Window, Stairs, Roof) sit on Shift with their
- * letter, as the bare key was taken: W/A/S/D pan the view in 2D and 3D,
- * R flips or rotates the selection and the armed placement, and E operates the
- * selected door, window or cabinet. Pan stands down for those Shift chords
- * (`claimsKeyboardPan`), and R/E still work bare as before.
+ * letter: R flips or rotates the selection and the armed placement, and E
+ * operates the selected door, window or cabinet. Fabrics (D82): the bare letters
+ * are the Fabrics tools (`lib/fabrics-shortcuts`) and the arrows pan the view;
+ * the Shift chords stay as a second way in.
  */
 export type ToolShortcutId =
   | 'select'
@@ -31,20 +31,36 @@ type ArmedByChord = {
   shift: boolean
 }
 
-/** Keys as `ShortcutToken` names them. */
+/**
+ * Keys as `ShortcutToken` names them. Fabrics (D82): the former Fabrics letters
+ * (`lib/fabrics-shortcuts`); empty for a tool reached by its Revit code only.
+ * Shift+D and Shift+W still arm the door and the window.
+ */
 export const TOOL_SHORTCUT_KEYS: Record<ToolShortcutId, readonly string[]> = {
   select: ['V'],
   delete: ['X'],
-  wall: ['B'],
-  item: ['F'],
-  zone: ['Z'],
+  wall: ['W'],
+  item: ['O'],
+  zone: ['P'],
   measurement: ['M'],
-  paint: ['P'],
+  paint: [],
   terrain: ['G'],
-  door: ['Shift', 'D'],
-  window: ['Shift', 'W'],
+  door: ['B'],
+  window: ['F'],
   stair: ['Shift', 'S'],
   roof: ['Shift', 'R'],
+}
+
+/** Fabrics (D82): the Revit code typed for each tool, letter after letter. */
+export const TOOL_REVIT_CODES: Partial<Record<ToolShortcutId, string>> = {
+  wall: 'WA',
+  item: 'CM',
+  zone: 'RM',
+  paint: 'PT',
+  door: 'DR',
+  window: 'WN',
+  stair: 'ST',
+  roof: 'RF',
 }
 
 /** The tools this module arms itself; the older keys stay in `use-keyboard`. */
@@ -55,10 +71,12 @@ const CHORDS: Partial<Record<ToolShortcutId, ArmedByChord>> = {
   roof: { code: 'KeyR', shift: true },
 }
 
-/** A tool's shortcut as a tooltip prints it: `Shift+D`, `B`. Null for a tool without one. */
+/** A tool's shortcut as a tooltip prints it: `W · WA`, `Shift+S · ST`, `PT`. Null for a tool without one. */
 export function toolShortcutLabel(tool: string): string | null {
   const keys = TOOL_SHORTCUT_KEYS[tool as ToolShortcutId]
-  return keys ? keys.join('+') : null
+  if (!keys) return null
+  const parts = [keys.join('+'), TOOL_REVIT_CODES[tool as ToolShortcutId] ?? ''].filter(Boolean)
+  return parts.length > 0 ? parts.join(' · ') : null
 }
 
 /** A tool's tooltip with its shortcut: `Door (Shift+D)`; the bare label when it has none. */
