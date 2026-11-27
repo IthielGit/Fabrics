@@ -33,7 +33,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M11 Import et export | terminé, à tester dans le navigateur | |
 | M11 bis Dessin précis, bibliothèque et plafonds | terminé, à tester dans le navigateur (lots A à G) | |
 | M11 ter Boussole du plan | terminé, à tester dans le navigateur | |
-| M11 quater Prise en main naturelle | lots A à G, I et J faits ; lot H (test avec une vraie personne) à faire ; à essayer sur une vraie tablette (lot I) | |
+| M11 quater Prise en main naturelle | lots A à G, I et J faits ; lot H (test avec une vraie personne) à faire ; essai sur tablette abandonné (2026-11-27) | |
 | M11 quinquies Couper un mur ici, surface habitable | terminé, à tester dans le navigateur (lots A et B) | |
 | M12 Mise en ligne | terminé | 2026-11-12 |
 | M13 Comptes, sauvegarde cloud et partage | terminé (fin du MVP) | 2026-11-12 |
@@ -52,6 +52,11 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-27 — M11 quater · Lot I : essai sur tablette abandonné
+
+- Choix de l'utilisateur : la tablette est peu utilisée, l'essai sur une vraie tablette (lot I) n'est plus à faire. Le code du lot I (deux doigts, pincement, boutons agrandis) reste en place. Roadmap et tableau d'état mis à jour. Aucun code modifié.
+- Restent ouverts dans les jalons précédents : gate G3, gate G4, M11 quater lot H (test avec une vraie personne), choix des raccourcis.
 
 ### 2026-11-27 — M23 terminé : gate G6 validé par l'utilisateur ; contrôle SQL dans `check:all`
 
