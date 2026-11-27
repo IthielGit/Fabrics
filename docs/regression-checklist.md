@@ -436,5 +436,5 @@ Cochée le 2026-11-27 : l'utilisateur confirme que chaque effet fonctionne comme
 | Chaîne métré → règles → montants sur un plan passé par la scène | Auto : `projectEstimate.test.ts`, `gateG6.test.ts` |
 | Versions figées, empreinte, comparaison, définitif refusé sans prix | Auto : `estimateVersions.test.ts`, `gateG6.test.ts` ; Nav. (éditeur → DQE → Versions) |
 | Exports XLSX / PDF : mêmes totaux qu'à l'écran, aucun total tronqué ; classeur des métrés inchangé | Auto : `estimateTables.test.ts`, `gateG6.test.ts`, baseline `metres-*.xlsx.txt` ; Nav. (DQE → Excel / PDF) |
-| Accès : admin / membre / personne hors de l'espace (RLS) | Manuel : banc PGlite sur `supabase/m23-pricing.sql` (60 contrôles, voir `docs/phases/M23-report.md`) ; essai à deux comptes |
+| Accès : admin / membre / personne hors de l'espace (RLS) | Auto : `npm run check:sql` (PGlite, 55 contrôles, dans `check:all`) ; Manuel : essai à deux comptes |
 

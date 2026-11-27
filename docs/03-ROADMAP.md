@@ -1440,7 +1440,7 @@ rappelle s'il tourne sur un autre modèle).
 - Exporter deux fois le même plan donne les mêmes `GlobalId`
 - Aucune perte silencieuse : chaque écart figure dans le rapport
 
-## M23 — Bibliothèque de prix et DQE (gate G6) — **sous-lots faits le 2026-11-27, en attente de l'essai de l'utilisateur** (`docs/phases/M23-report.md`)
+## M23 — Bibliothèque de prix et DQE (gate G6) — **terminé, gate G6 validé par l'utilisateur le 2026-11-27** (`docs/phases/M23-report.md`)
 
 À décider avant de commencer : nomenclature des postes, base de prix, devise, taxes.
 

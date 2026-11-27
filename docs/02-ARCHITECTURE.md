@@ -34,6 +34,7 @@ Installe toujours la **dernière version stable** au moment de l'installation, s
 | Paquets Pascal Editor | `@pascal-app/core`, `viewer`, `editor`, `nodes`, `ifc-converter`, `geometry-script`, `mcp`, `cli` et **toutes leurs dépendances** (zod, zundo, mitt, nanoid, polygon-clipping, three-bvh-csg, three-mesh-bvh, manifold-3d, web-ifc, pdfkit, Lingui, Radix, cmdk, dnd-kit, motion, howler, SDK MCP, hono…) | M17 | accord D78 du 2026-11-17 ; workspaces npm sous `packages/pascal/` ; doublons avec Fabrics tranchés en M17 (voir « Intégration de Pascal Editor ») |
 | Outils Pascal | `bun` (tests Pascal), `turbo`, Biome, `patch-package`, Playwright | M17 | accord D78 ; outils de développement uniquement |
 | IfcOpenShell | Python 3.11+ (`ifcopenshell`) | M17, M22 | validation IFC hors application (script local et CI), LGPL ; service hébergé seulement par ADR |
+| Contrôle SQL | dev : `@electric-sql/pglite` (version exacte 0.5.15) | M23 | accord de l'utilisateur le 2026-11-27 ; Postgres dans Node pour exécuter `supabase/*.sql` et vérifier les règles d'accès (`npm run check:sql`, dans `check:all`) ; outil de développement, jamais dans l'application |
 
 Interdits sans accord : `html2canvas` (inutile, Konva exporte lui-même), `fabric`, bibliothèques
 d'UI complètes (MUI, Ant…), `uuid` (on utilise `crypto.randomUUID()`), `moment`,

@@ -2,7 +2,7 @@
 //
 // Enchaîne : build, lint (oxlint), tests Vitest (dont la baseline `src/baseline` et le test
 // d'architecture `src/architecture.test.ts`), tests de Pascal (bun, comparés à leur référence) et
-// lint de Pascal (Biome), puis détection de copier-coller dans `src/` (jscpd, accord de
+// lint de Pascal (Biome), contrôle des scripts SQL (PGlite, M23), puis détection de copier-coller dans `src/` (jscpd, accord de
 // l'utilisateur le 2026-11-18). S'arrête au premier échec.
 import { spawnSync } from 'node:child_process'
 
@@ -15,6 +15,8 @@ const STEPS = [
   ['Tests Fabrics (Vitest, baseline, architecture)', ['test']],
   ['Tests Pascal (bun)', ['run', 'test:pascal']],
   ['Lint Pascal (Biome)', ['run', 'lint:pascal']],
+  // M23 : scripts SQL de Supabase exécutés dans PGlite, règles d'accès vérifiées.
+  ['Scripts SQL et règles d’accès (PGlite)', ['run', 'check:sql']],
   ['Doublons de code (jscpd)', ['run', 'check:duplicates']],
 ]
 

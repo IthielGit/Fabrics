@@ -1,8 +1,11 @@
 # M23 — Rapport de fin de jalon (gate G6)
 
+**Validé par l'utilisateur le 2026-11-27 (« validé ») : gate G6 validé.** Clôture : contrôle SQL ajouté à `npm run check:all`
+(PGlite, demande de l'utilisateur).
+
 Rédigé le 2026-11-27, à la fin de 23.8. Sous-lots 23.0 à 23.8 faits du 2026-11-24 au 2026-11-27, d'une
 traite (essai de l'utilisateur à la fin). Décisions : `M23-decisions.md` (D23-1 à D23-19). Plan :
-`M23-plan.md`. **En attente de l'essai de l'utilisateur** (voir « Ce que l'utilisateur doit essayer »).
+`M23-plan.md`. Essai de l'utilisateur : fait, validé.
 
 ## Critères du gate G6
 
@@ -49,9 +52,10 @@ Tables : `workspaces`, `workspace_members`, `workspace_invites`, `price_librarie
 `work_items`, `price_history`, `price_import_batches`, `pricing_rules`, `estimates`,
 `estimate_versions`. RLS sur chacune : lecture par les membres présents de l'espace, écriture par les
 admins ; historique, journal et versions écrits seulement par la base. **Banc d'essai PGlite** (Postgres
-dans Node, avec le schéma complet de l'application) : **60 contrôles sur 60** (accès des admins, des
+dans Node, avec le schéma complet de l'application) : **55 contrôles sur 55** (accès des admins, des
 membres et des personnes extérieures, import atomique, version dépassée refusée, règles, versions
-immuables, définitif refusé sans prix, résumé sans prix). Le banc vit hors du dépôt (voir « Idées »).
+immuables, définitif refusé sans prix, résumé sans prix). Depuis la clôture, ce banc est dans le dépôt :
+`npm run check:sql` (`scripts/check-sql.mjs`), lancé aussi par `npm run check:all`.
 
 ## Ce que l'utilisateur doit essayer
 
@@ -79,4 +83,3 @@ immuables, définitif refusé sans prix, résumé sans prix). Le banc vit hors d
 - Correction à la main limitée à « Retirer de ce poste » dans l'écran (la logique « changer de poste »
   et « ajouter une ligne » existe).
 - Les 5 messages React « unmount a root » de la console de l'éditeur existaient avant M23.
-- Le banc d'essai SQL n'est pas dans `npm run check:all` (dépendance de développement à décider).

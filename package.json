@@ -16,6 +16,7 @@
     "check:all": "node scripts/check-all.mjs",
     "check:ifc-quantities": "node scripts/ifc-quantities.mjs",
     "check:ifc": "node scripts/ifc-g5.mjs",
+    "check:sql": "node scripts/check-sql.mjs",
     "preview": "vite preview",
     "check:security": "node --env-file=.env.local scripts/check-security.mjs",
     "migrate:plans": "vite build --ssr scripts/migrate-plans-m18.ts --outDir scripts/.build --emptyOutDir --logLevel warn && node --env-file=.env.local scripts/.build/migrate-plans-m18.js"
@@ -45,6 +46,7 @@
     "zustand": "^5.1.0"
   },
   "devDependencies": {
+    "@electric-sql/pglite": "0.5.15",
     "@types/node": "^24.19.2",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",

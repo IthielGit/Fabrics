@@ -55,6 +55,7 @@ adresse par défaut de `configureViewer`) et les décodeurs Draco / Basis depuis
 |---|---|---|
 | IfcOpenShell 0.9.0.post1 (Python) | **LGPL-3.0** | Contrôle des fichiers IFC (`tools/ifc/`), dans un environnement Python séparé. Ni inclus ni distribué avec l'application. Un service hébergé exigerait une ADR. |
 | Bun 1.4.4 | MIT | Lancement des tests de Pascal (développement seulement) |
+| PGlite 0.5.15 (`@electric-sql/pglite`) | Apache-2.0 (code) ; PostgreSQL License (Postgres compilé en WASM) | Contrôle des scripts SQL de Supabase (`npm run check:sql`), développement seulement : ni inclus ni distribué avec l'application |
 
 ## Dépendances npm
 

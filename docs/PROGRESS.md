@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M23 Bibliothèque de prix et DQE : **tous les sous-lots faits (23.0 à 23.8) le 2026-11-27 ; en attente de l'essai de l'utilisateur** (script SQL à lancer dans Supabase, puis essai décrit dans `docs/phases/M23-report.md`). M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** aucun ; M24 attend le feu vert de l'utilisateur. M23 Bibliothèque de prix et DQE **terminé et validé par l'utilisateur le 2026-11-27 : gate G6 validé** ; contrôle des scripts SQL ajouté à `npm run check:all` (PGlite). M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -47,11 +47,18 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
 | M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
-| M23 Bibliothèque de prix et DQE (G6) | sous-lots faits, essai de l'utilisateur à faire | |
+| M23 Bibliothèque de prix et DQE (G6) | terminé, gate G6 validé le 2026-11-27 | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-27 — M23 terminé : gate G6 validé par l'utilisateur ; contrôle SQL dans `check:all`
+
+- L'utilisateur a validé M23 (« validé ») et demandé d'ajouter PGlite au projet avant la clôture.
+- **`@electric-sql/pglite` 0.5.15** (version exacte, sortie le 2026-11-03, licence Apache-2.0 ; Postgres en WASM sous licence PostgreSQL) ajouté en **dépendance de développement** ; inscrit dans `docs/02-ARCHITECTURE.md` (dépendances autorisées) et `THIRD_PARTY_NOTICES.md`. La version 0.3.4 essayée au début plantait dès qu'une fonction SQL levait une erreur (Node 26) : écartée.
+- **`npm run check:sql`** (`scripts/check-sql.mjs`) : exécute `supabase/schema.sql` puis `supabase/m23-pricing.sql` (deux fois) dans PGlite, en imitant Supabase (rôles, `auth`, `storage`, droits par défaut), puis vérifie les règles d'accès avec trois comptes. **55 contrôles sur 55.** Ajouté à `npm run check:all` (avant la détection des doublons).
+- **Correction** : les rapports annonçaient « 60 contrôles » (et 42, 48 aux étapes intermédiaires) ; le script en compte réellement **55** (comptes intermédiaires mal additionnés). `M23-report.md` et la liste de non-régression sont corrigés.
 
 ### 2026-11-27 — M23 · 23.8 Contrôles et gate G6 : fait (essai de l'utilisateur à faire)
 
@@ -2401,7 +2408,7 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - **PDF des tableaux (M23)** : faire passer à la ligne une désignation trop longue au lieu de la couper par « … » (mise en page commune aux métrés et au DQE).
 - **Console de l'éditeur (vu en M23)** : 5 messages React « Attempted to synchronously unmount a root while React was already rendering » à l'ouverture d'un plan, présents avant M23 ; à examiner (sans effet visible constaté).
 - **DQE (M23)** : correction à la main « changer de poste » et « ajouter une ligne » (la logique existe, `QuantityOverride`) ; l'écran ne propose aujourd'hui que « Retirer de ce poste ».
-- **Contrôle du SQL dans `npm run check:all` (M23)** : le banc d'essai PGlite (Postgres dans Node) qui vérifie `supabase/m23-pricing.sql` vit hors du dépôt. L'y ajouter demande une dépendance de développement (`@electric-sql/pglite`, licence Apache 2.0 / PostgreSQL) : à décider (règle 6).
+- ~~**Contrôle du SQL dans `npm run check:all` (M23)**~~ : fait à la clôture de M23 (`npm run check:sql`, PGlite, accord de l'utilisateur le 2026-11-27).
 - **Plans d'exemple (M21 21.7)** : donner un matériau aux quelques cloisons qui n'en ont pas, pour que le contrôle « mur sans matériau » ne s'y affiche plus (change leurs dessins et la 3D : baseline).
 - **Métrés, raccord de trois murs ou plus (M21 21.6)** : couper la pointe d'angle comme Pascal (volume et faces exacts), au lieu de marquer ces quantités « provisoires ». Change les métrés existants (baseline) : à décider. Voir `docs/phases/M21-ifc-comparison.md`.
 - ~~**M22, IfcSpace**~~ : fait en 22.2 (contour tracé, D22-5).
