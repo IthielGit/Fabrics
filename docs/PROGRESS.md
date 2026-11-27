@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0 à 23.3 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0 à 23.4 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -47,11 +47,19 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
 | M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
-| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 à 23.3 faits) | |
+| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 à 23.4 faits) | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-27 — M23 · 23.4 Calcul des montants : fait
+
+- **Décision de l'utilisateur D23-19** : K1 appliqué **dans chaque prix** (comme le DEVIS_AUTOMATIQUE du classeur) ; sous le total, une décomposition débours sec / frais, bénéfice et aléas. Ordre des arrondis écrit dans `docs/phases/M23-decisions.md`.
+- **Calcul exact** (`src/features/pricing/estimate.ts`) : quantité d'un poste = somme des quantités de métré (perte comprise) convertie dans l'unité du poste, arrondie (2 décimales en m², ml, m ; 3 en m³ ; entier en U, FFT…) ; prix de vente = prix brut × (1 + A1)(1 + A2)(1 + A3) au dixième ; montant = quantité × prix de vente à la centaine d'Ar supérieure ; TVA à la centaine supérieure ; lots par catégorie de poste ; lignes sans prix et lignes provisoires comptées. Tout en `bigint`, aucun flottant.
+- **Gate G6, exemple** : 13,11 m² × 45 000,0 Ar/m² = 589 950 Ar → **590 000 Ar HT**, TVA 118 000 Ar, TTC 708 000 Ar (test). Avec les valeurs du classeur, K1 = 1,1025 et 45 000,0 → 49 612,5 Ar.
+- **Chaîne complète** (`projectEstimate.ts`) : métré de M21 → règles → montants. Testée sur un plan qui passe par la scène Pascal : mur de 5 000 × 3 000 mm avec une fenêtre de 1 000 × 1 200 mm → 13,80 m² → 621 000 Ar.
+- Build, lint, 3 523 tests OK ; doublons 0,87 %. Pas d'écran dans ce sous-lot (le panneau DQE est 23.6).
 
 ### 2026-11-27 — M23 · 23.3 Règles élément → postes : fait
 

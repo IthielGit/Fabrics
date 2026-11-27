@@ -173,6 +173,22 @@ Une ligne de la feuille MTL sans « location par jour » mais avec un « prix HT
 consommables) prend ce prix HT avec l'unité écrite dans la feuille. C'est un prix écrit dans le
 classeur, pas un prix déduit ; le rapport d'import le signale ligne par ligne.
 
+### D23-19 · K1 appliqué dans chaque prix (2026-11-27, option recommandée)
+
+Comme le DEVIS_AUTOMATIQUE du classeur : chaque ligne du DQE montre son **prix unitaire de vente HT**
+(prix brut × K1). Sous le total, une décomposition (pour l'entreprise) montre le débours sec et l'écart
+« frais généraux, bénéfice et aléas ». Règles d'arrondi, dans cet ordre (`src/features/pricing/estimate.ts`) :
+
+1. **Quantité d'un poste** : somme exacte des quantités du métré (perte de chaque règle comprise),
+   convertie dans l'unité du poste, puis arrondie au plus proche (moitié vers le haut) : 2 décimales pour
+   m², ml et m ; 3 pour m³ ; entier pour U, FFT, Lot, Ferme et Paire.
+2. **Prix unitaire de vente** = prix brut × (1 + A1) × (1 + A2) × (1 + A3), au dixième d'Ar le plus proche.
+3. **Montant d'une ligne** = quantité arrondie × prix de vente, arrondi à la centaine d'Ar supérieure.
+4. **Total HT** = somme des lignes ; **TVA** = total HT × taux, arrondie à la centaine d'Ar supérieure ;
+   **TTC** = HT + TVA.
+5. **Débours sec** (décomposition) = somme des lignes quantité × prix brut, chacune arrondie à la centaine
+   supérieure ; frais, bénéfice et aléas = total HT − débours sec.
+
 ### Choix par défaut de Claude (à contester au feu vert du plan)
 
 - **Région** (question 4 de 23.1) : texte libre par ligne, « Antananarivo » par défaut.
