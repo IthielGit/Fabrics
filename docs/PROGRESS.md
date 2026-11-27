@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0 à 23.5 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** M23 Bibliothèque de prix et DQE (feu vert du plan le 2026-11-26) : 23.0 à 23.6 faits ; sous-lots enchaînés, essai de l'utilisateur à la fin du jalon. M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -47,11 +47,18 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M20 Plans professionnels et mise en page (G3) | sous-lots faits ; gate G3 ouvert (revue d'un professionnel) | |
 | M21 Quantitatif automatique et traçabilité (G4) | sous-lots faits, essai OK ; revue d'un métreur à faire (gate G4 ouvert) | |
 | M22 Échanges IFC (G5) | terminé, gate G5 validé | 2026-11-24 |
-| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 à 23.5 faits) | |
+| M23 Bibliothèque de prix et DQE (G6) | en cours (23.0 à 23.6 faits) | |
 | M24 Contrôles qualité, performance et sécurité (G7) | à faire | |
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-27 — M23 · 23.6 Panneau DQE : fait
+
+- **Onglet « DQE »** dans la barre latérale de l'éditeur (à côté de « Métrés »), recalculé à chaque modification du plan : espace et version de la bibliothèque ; réglage des parts de K1 pour ce projet (valeurs du classeur signalées « exemple » tant qu'elles ne sont pas réglées) ; points à vérifier (éléments sans poste, avec un bouton qui les sélectionne dans le plan ; postes sans prix ; lignes provisoires ; remarques sur les règles) ; lignes par lot (poste, quantité dans l'unité du poste D23-17, prix de vente, montant) ; **origine** de chaque ligne (quantité du métré, règle, perte, bouton « Sélectionner ») ; **correction à la main** « Retirer de ce poste », listée et annulable ; totaux HT, TVA, TTC et décomposition ; **versions** (figer en brouillon ou en définitif, définitif bloqué s'il manque un prix, « à jour » ou « a changé » selon l'empreinte, comparaison avec l'état actuel).
+- Membre de l'espace : lecture seule. Personne hors de l'espace : postes et quantités de la dernière version figée, sans prix (D23-8).
+- Vérifié dans Chromium (mode local) sur la maison d'exemple R+1, avec la bibliothèque importée et une règle « murs → CAT-05-001 » : 243,68 m² × 40 262,0 Ar = 9 811 100 Ar HT (contrôlé à la main), TVA 1 962 300 Ar, TTC 11 773 400 Ar, débours 8 899 000 Ar, 37 éléments sans poste signalés ; version 1 figée, « À jour », comparaison sans différence. Les 5 messages React « unmount a root » de la console existaient déjà sans le DQE (éditeur de Pascal).
+- Build, lint, 3 528 tests OK ; doublons 0,86 %.
 
 ### 2026-11-27 — M23 · 23.5 Versions du devis : fait (écran en 23.6)
 
@@ -2372,6 +2379,8 @@ Docs mises à jour : `CLAUDE.md`, `docs/01-PRODUIT.md`, `docs/02-ARCHITECTURE.md
 - Correctif : `image.crossOrigin = 'anonymous'` dans `useAssetImage.ts` (Supabase Storage renvoie bien `Access-Control-Allow-Origin: *`). La cause d'un échec est désormais écrite dans la console (`ExportDialog.tsx`). Build, lint, 2978 tests OK.
 
 ## Idées (hors jalon en cours)
+- **Console de l'éditeur (vu en M23)** : 5 messages React « Attempted to synchronously unmount a root while React was already rendering » à l'ouverture d'un plan, présents avant M23 ; à examiner (sans effet visible constaté).
+- **DQE (M23)** : correction à la main « changer de poste » et « ajouter une ligne » (la logique existe, `QuantityOverride`) ; l'écran ne propose aujourd'hui que « Retirer de ce poste ».
 - **Contrôle du SQL dans `npm run check:all` (M23)** : le banc d'essai PGlite (Postgres dans Node) qui vérifie `supabase/m23-pricing.sql` vit hors du dépôt. L'y ajouter demande une dépendance de développement (`@electric-sql/pglite`, licence Apache 2.0 / PostgreSQL) : à décider (règle 6).
 - **Plans d'exemple (M21 21.7)** : donner un matériau aux quelques cloisons qui n'en ont pas, pour que le contrôle « mur sans matériau » ne s'y affiche plus (change leurs dessins et la 3D : baseline).
 - **Métrés, raccord de trois murs ou plus (M21 21.6)** : couper la pointe d'angle comme Pascal (volume et faces exacts), au lieu de marquer ces quantités « provisoires ». Change les métrés existants (baseline) : à décider. Voir `docs/phases/M21-ifc-comparison.md`.

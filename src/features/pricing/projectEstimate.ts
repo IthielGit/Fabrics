@@ -3,6 +3,7 @@
  * Aucune quantité n'est recalculée ici : le DQE dérive du même quantitatif que les métrés (D79).
  */
 import { computeQuantities, type QuantityInput } from '../measurements/quantities/quantitySet'
+import type { Quantity } from '../measurements/quantities/status'
 import { computeEstimate, type Estimate, type EstimateSettings } from './estimate'
 import type { WorkItem } from './model'
 import { elementFacts, matchQuantities, type PricingRule, type QuantityOverride } from './rules'
@@ -17,7 +18,13 @@ export interface ProjectEstimateInput {
   overrides?: readonly QuantityOverride[]
 }
 
-export function projectEstimate(input: ProjectEstimateInput): Estimate {
+export interface ProjectEstimateResult {
+  estimate: Estimate
+  /** Quantités de métré utilisées (empreinte d'une version, 23.5). */
+  quantities: Quantity[]
+}
+
+export function projectEstimate(input: ProjectEstimateInput): ProjectEstimateResult {
   const { takeoff } = computeQuantities({ document: input.document, scene: input.scene, building: input.building })
   const workItems = new Map(input.workItems.map((work) => [work.id, work]))
   const match = matchQuantities({
@@ -27,11 +34,12 @@ export function projectEstimate(input: ProjectEstimateInput): Estimate {
     workItems,
     overrides: input.overrides,
   })
-  return computeEstimate({
+  const estimate = computeEstimate({
     lines: match.lines,
     workItems,
     settings: input.settings,
     uncoveredElementIds: match.uncoveredElementIds,
     warnings: match.warnings,
   })
+  return { estimate, quantities: takeoff }
 }

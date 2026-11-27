@@ -1456,7 +1456,7 @@ rappelle s'il tourne sur un autre modèle).
 | 23.3 Correspondance vers les postes — **fait le 2026-11-27** | Élément + matériau + règle → poste ; plusieurs postes par élément sans double comptage | `/model opus` |
 | 23.4 Calcul des montants — **fait le 2026-11-27** | Pertes, frais, marge, taxes ; arrondis documentés ; montants exacts, sans nombres à virgule flottante | `/model opus` |
 | 23.5 Versions du DQE — **fait le 2026-11-27** (écran en 23.6) | DQE figé par version du modèle et du bordereau ; recalcul après modification ; comparaison des versions | `/model opus` |
-| 23.6 Panneau DQE | Lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements | `/model sonnet` |
+| 23.6 Panneau DQE — **fait le 2026-11-27** | Lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements | `/model sonnet` |
 | 23.7 Exports | XLSX et PDF : en-tête, cartouche, synthèse, détail, hypothèses, date des prix | `/model sonnet` |
 | 23.8 Contrôles et gate G6 | Postes sans prix bloquants, totaux identiques à l'écran, en XLSX et en PDF, rapport | `/model opus` |
 
@@ -1468,9 +1468,9 @@ rappelle s'il tourne sur un autre modèle).
       (maçonnerie, enduit, peinture) sans double comptage dans un poste
 - [x] Paramètres de chiffrage : pertes, frais, marge, taxes ; arrondis documentés ; montants exacts
       (jamais de nombres à virgule flottante)
-- [ ] DQE figé par version du modèle et du bordereau ; recalcul après modification ; comparaison des
+- [x] DQE figé par version du modèle et du bordereau ; recalcul après modification ; comparaison des
       versions du devis
-- [ ] Panneau DQE : lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements
+- [x] Panneau DQE : lots, postes, quantité, prix unitaire, montant, origine, couverture, avertissements
 - [ ] Exports XLSX et PDF : en-tête, cartouche, synthèse, détail, hypothèses, date des prix
 - [ ] Contrôle : postes sans prix
 

@@ -33,7 +33,7 @@ describe('projectEstimate (plan via la scène Pascal)', () => {
   const document = sceneToFabricsView(scene)
 
   it('chiffre la surface nette du mur et la fenêtre à partir du métré de M21', () => {
-    const estimate = projectEstimate({
+    const { estimate, quantities } = projectEstimate({
       document,
       scene,
       workItems: [work('MAC', 'm²', 450000n), work('FEN', 'U', 3000000n)],
@@ -51,5 +51,6 @@ describe('projectEstimate (plan via la scène Pascal)', () => {
     ])
     expect(estimate.totalHt).toBe(9210000n)
     expect(lines[1].sources[0].elementIds).toEqual(['w'])
+    expect(quantities.length).toBeGreaterThan(0)
   })
 })
