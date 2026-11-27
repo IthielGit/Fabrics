@@ -5,6 +5,7 @@ import { arcPoints } from '../../../features/library/primitives'
 import { STYLE_LOOKS } from '../../../features/library/style'
 import type { Primitive } from '../../../features/library/types'
 import type { FurnitureElement } from '../../../types/document'
+import { elementNodeProps } from './elementNodeProps'
 import type { ShapeInteraction } from './shapeTypes'
 
 interface FurnitureShapeProps extends ShapeInteraction {
@@ -15,15 +16,7 @@ interface FurnitureShapeProps extends ShapeInteraction {
 const MIN_STROKE_PX = 1
 
 /** Un objet de la bibliothèque : ses primitives de dessin, dans une boîte de la taille de l'objet. */
-export default function FurnitureShape({
-  element,
-  interactive,
-  viewScale,
-  onPointerDown,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-}: FurnitureShapeProps) {
+export default function FurnitureShape({ element, viewScale, ...interaction }: FurnitureShapeProps) {
   const def = getSymbol(element.symbol)
   const { width, depth } = element
 
@@ -81,20 +74,8 @@ export default function FurnitureShape({
 
   return (
     <Group
-      id={element.id}
-      name="element"
-      x={element.x}
-      y={element.y}
+      {...elementNodeProps(element, interaction)}
       rotation={element.rotation}
-      opacity={element.opacity}
-      visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
-      onMouseDown={onPointerDown}
-      onTouchStart={onPointerDown}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
     >
       {/* Zone de clic : toute la boîte de l'objet, même là où il est transparent. */}
       <Rect width={width} height={depth} fill="rgba(255,255,255,0.01)" />

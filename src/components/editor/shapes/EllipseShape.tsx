@@ -1,40 +1,22 @@
 import { Ellipse } from 'react-konva'
 import type { EllipseElement } from '../../../types/document'
+import { elementNodeProps } from './elementNodeProps'
 import type { ShapeInteraction } from './shapeTypes'
 
 interface EllipseShapeProps extends ShapeInteraction {
   element: EllipseElement
 }
 
-export default function EllipseShape({
-  element,
-  interactive,
-  onPointerDown,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-}: EllipseShapeProps) {
+export default function EllipseShape({ element, ...interaction }: EllipseShapeProps) {
   return (
     <Ellipse
-      id={element.id}
-      name="element"
-      x={element.x}
-      y={element.y}
+      {...elementNodeProps(element, interaction)}
       radiusX={element.radiusX}
       radiusY={element.radiusY}
       rotation={element.rotation}
-      opacity={element.opacity}
       fill={element.fill}
       stroke={element.stroke}
       strokeWidth={element.strokeWidth}
-      visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
-      onMouseDown={onPointerDown}
-      onTouchStart={onPointerDown}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
     />
   )
 }

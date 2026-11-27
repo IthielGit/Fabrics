@@ -6,6 +6,7 @@ import type { Point } from '../../../features/geometry/viewport'
 import { fr } from '../../../i18n/fr'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { RoofElement } from '../../../types/document'
+import { elementNodeProps } from './elementNodeProps'
 import type { ShapeInteraction } from './shapeTypes'
 
 interface RoofShapeProps extends ShapeInteraction {
@@ -36,15 +37,7 @@ function planCentroid(points: readonly { x: number; z: number }[]): Point {
  * degrés. Contour rouge si la toiture n'est pas valable (toit en pente sur un contour qui n'est pas
  * un rectangle). Pas de remplissage : on clique sur ses traits, et le plan reste lisible dessous.
  */
-export default function RoofShape({
-  element,
-  interactive,
-  viewScale,
-  onPointerDown,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-}: RoofShapeProps) {
+export default function RoofShape({ element, viewScale, ...interaction }: RoofShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
   const result = useMemo(() => computeRoof(element, 0), [element])
   const geometry = 'geometry' in result ? result.geometry : null
@@ -56,21 +49,7 @@ export default function RoofShape({
   const segments = geometry ? [...(geometry.ridge ? [geometry.ridge] : []), ...geometry.hips] : []
 
   return (
-    <Group
-      id={element.id}
-      name="element"
-      x={element.x}
-      y={element.y}
-      opacity={element.opacity}
-      visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
-      onMouseDown={onPointerDown}
-      onTouchStart={onPointerDown}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-    >
+    <Group {...elementNodeProps(element, interaction)}>
       <Line points={element.points} closed stroke={color} strokeWidth={thin} hitStrokeWidth={hit} />
       {element.overhang > 0 && (
         <Line

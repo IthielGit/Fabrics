@@ -3,6 +3,7 @@ import { polygonCentroid } from '../../../features/geometry/polygon'
 import { fr } from '../../../i18n/fr'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { PlatformElement } from '../../../types/document'
+import { elementNodeProps } from './elementNodeProps'
 import type { ShapeInteraction } from './shapeTypes'
 
 interface PlatformShapeProps extends ShapeInteraction {
@@ -15,15 +16,7 @@ const LABEL_MIN_PX = 10
 const LABEL_BOX_WIDTH_MM = 4000
 
 /** Plateforme (estrade) vue de dessus : aplat, contour renforcé et hauteur du dessus (`+450 mm`). */
-export default function PlatformShape({
-  element,
-  interactive,
-  viewScale,
-  onPointerDown,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-}: PlatformShapeProps) {
+export default function PlatformShape({ element, viewScale, ...interaction }: PlatformShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
   const centroid = polygonCentroid(element.points)
   const fontSize = Math.max(LABEL_FONT_MM, LABEL_MIN_PX / viewScale)
@@ -31,21 +24,7 @@ export default function PlatformShape({
 
   return (
     // Un groupe : l'étiquette suit la plateforme quand on la déplace.
-    <Group
-      id={element.id}
-      name="element"
-      x={element.x}
-      y={element.y}
-      opacity={element.opacity}
-      visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
-      onMouseDown={onPointerDown}
-      onTouchStart={onPointerDown}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-    >
+    <Group {...elementNodeProps(element, interaction)}>
       <Line
         points={element.points}
         closed

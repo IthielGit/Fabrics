@@ -1,4 +1,4 @@
-import { Arrow, Circle, Group, Line, Text } from 'react-konva'
+import { Arrow, Group, Line } from 'react-konva'
 import {
   SECTION_ARROW_MM,
   SECTION_BUBBLE_RADIUS_MM,
@@ -6,7 +6,10 @@ import {
 } from '../../../features/geometry/sections'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { SectionLineElement } from '../../../types/document'
+import { elementNodeProps } from './elementNodeProps'
 import type { ShapeInteraction } from './shapeTypes'
+import LabelBubble from './LabelBubble'
+import SelectionHalo from './SelectionHalo'
 
 interface SectionShapeProps extends ShapeInteraction {
   element: SectionLineElement
@@ -22,15 +25,7 @@ const MIN_HIT_WIDTH_PX = 12
  * Une ligne de coupe : trait mixte épais, une flèche à chaque bout vers le sens de vue, et une
  * bulle portant le repère (A, B…) au bout de chaque flèche.
  */
-export default function SectionShape({
-  element,
-  interactive,
-  viewScale,
-  onPointerDown,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-}: SectionShapeProps) {
+export default function SectionShape({ element, viewScale, ...interaction }: SectionShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
   const radius = Math.max(SECTION_BUBBLE_RADIUS_MM, MIN_BUBBLE_RADIUS_PX / viewScale)
   const arrow = Math.max(SECTION_ARROW_MM, (MIN_BUBBLE_RADIUS_PX * 2.4) / viewScale)
@@ -39,34 +34,11 @@ export default function SectionShape({
 
   const { line, arrows, bubbles } = geometry
   const thin = 1.2 / viewScale
-  const fontSize = Math.min(radius * 1.05, (radius * 1.7) / Math.max(element.label.length, 1))
   const dash = [600, 150, 80, 150]
 
   return (
-    <Group
-      id={element.id}
-      name="element"
-      x={element.x}
-      y={element.y}
-      opacity={element.opacity}
-      visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
-      onMouseDown={onPointerDown}
-      onTouchStart={onPointerDown}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-    >
-      {selected && (
-        <Line
-          points={[line[0].x, line[0].y, line[1].x, line[1].y]}
-          stroke="#6366f1"
-          strokeWidth={8 / viewScale}
-          opacity={0.35}
-          listening={false}
-        />
-      )}
+    <Group {...elementNodeProps(element, interaction)}>
+      {selected && <SelectionHalo line={line} viewScale={viewScale} />}
       <Line
         points={[line[0].x, line[0].y, line[1].x, line[1].y]}
         stroke={COLOR}
@@ -87,27 +59,15 @@ export default function SectionShape({
         />
       ))}
       {bubbles.map((center, i) => (
-        <Group key={i} x={center.x} y={center.y}>
-          <Circle
-            radius={radius}
-            fill="#ffffff"
-            stroke={selected ? '#4f46e5' : COLOR}
-            strokeWidth={selected ? thin * 2 : thin * 1.4}
-          />
-          <Text
-            x={-radius}
-            y={-radius}
-            width={radius * 2}
-            height={radius * 2}
-            align="center"
-            verticalAlign="middle"
-            text={element.label}
-            fontSize={fontSize}
-            fontStyle="bold"
-            fill={COLOR}
-            listening={false}
-          />
-        </Group>
+        <LabelBubble
+          key={i}
+          center={center}
+          radius={radius}
+          label={element.label}
+          color={COLOR}
+          selected={selected}
+          thin={thin}
+        />
       ))}
     </Group>
   )

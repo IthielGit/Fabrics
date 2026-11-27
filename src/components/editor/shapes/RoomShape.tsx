@@ -2,21 +2,14 @@ import { Group, Line } from 'react-konva'
 import { overlappingRoomIdsCached } from '../../../features/geometry/roomOverlap'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { RoomElement } from '../../../types/document'
+import { elementNodeProps } from './elementNodeProps'
 import type { ShapeInteraction } from './shapeTypes'
 
 interface RoomShapeProps extends ShapeInteraction {
   element: RoomElement
 }
 
-export default function RoomShape({
-  element,
-  interactive,
-  viewScale,
-  onPointerDown,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-}: RoomShapeProps) {
+export default function RoomShape({ element, viewScale, ...interaction }: RoomShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
   // L'étiquette (nom, surface) est dessinée au-dessus de tout par `RoomLabelsLayer`.
   // Pièce qui en recouvre une autre du même niveau : contour rouge (surface comptée en double).
@@ -26,21 +19,7 @@ export default function RoomShape({
 
   return (
     // Un groupe : l'étiquette suit la pièce quand on la déplace.
-    <Group
-      id={element.id}
-      name="element"
-      x={element.x}
-      y={element.y}
-      opacity={element.opacity}
-      visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
-      onMouseDown={onPointerDown}
-      onTouchStart={onPointerDown}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
-    >
+    <Group {...elementNodeProps(element, interaction)}>
       <Line
         points={element.points}
         closed

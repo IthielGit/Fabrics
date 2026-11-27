@@ -3,6 +3,7 @@ import { useEditorStore } from '../../../stores/editorStore'
 import { fr } from '../../../i18n/fr'
 import { stairLayout, stairStatus, type Flight } from '../../../features/stairs/stairs'
 import type { StairElement } from '../../../types/document'
+import { elementNodeProps } from './elementNodeProps'
 import type { ShapeInteraction } from './shapeTypes'
 
 interface StairShapeProps extends ShapeInteraction {
@@ -56,15 +57,7 @@ function arrowPoints(element: StairElement): number[] {
  * Escalier vu de dessus : volées avec leurs lignes de marche, palier, flèche de montée. En rouge
  * quand il est trop court (avec la longueur nécessaire) ou sans niveau au-dessus.
  */
-export default function StairShape({
-  element,
-  interactive,
-  viewScale,
-  onPointerDown,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-}: StairShapeProps) {
+export default function StairShape({ element, viewScale, ...interaction }: StairShapeProps) {
   const levels = useEditorStore((state) => state.project?.document.levels)
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
   const status = stairStatus(element, levels)
@@ -85,20 +78,8 @@ export default function StairShape({
 
   return (
     <Group
-      id={element.id}
-      name="element"
-      x={element.x}
-      y={element.y}
+      {...elementNodeProps(element, interaction)}
       rotation={element.rotation}
-      opacity={element.opacity}
-      visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
-      onMouseDown={onPointerDown}
-      onTouchStart={onPointerDown}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
     >
       {/* Retournement gauche / droite autour du milieu de l'emprise. */}
       <Group x={mirrored ? layout.width : 0} scaleX={mirrored ? -1 : 1}>

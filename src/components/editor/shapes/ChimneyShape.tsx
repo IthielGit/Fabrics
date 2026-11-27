@@ -1,6 +1,7 @@
 import { Group, Line, Rect } from 'react-konva'
 import { useEditorStore } from '../../../stores/editorStore'
 import type { ChimneyElement } from '../../../types/document'
+import { elementNodeProps } from './elementNodeProps'
 import type { ShapeInteraction } from './shapeTypes'
 
 interface ChimneyShapeProps extends ShapeInteraction {
@@ -8,15 +9,7 @@ interface ChimneyShapeProps extends ShapeInteraction {
 }
 
 /** Cheminée (conduit) vue de dessus : carré plein aux diagonales marquées (symbole de conduit). */
-export default function ChimneyShape({
-  element,
-  interactive,
-  viewScale,
-  onPointerDown,
-  onDragStart,
-  onDragMove,
-  onDragEnd,
-}: ChimneyShapeProps) {
+export default function ChimneyShape({ element, viewScale, ...interaction }: ChimneyShapeProps) {
   const selected = useEditorStore((state) => state.selectedIds.includes(element.id))
   const { width, depth } = element
   const stroke = selected ? '#4f46e5' : '#44403c'
@@ -24,20 +17,8 @@ export default function ChimneyShape({
 
   return (
     <Group
-      id={element.id}
-      name="element"
-      x={element.x}
-      y={element.y}
+      {...elementNodeProps(element, interaction)}
       rotation={element.rotation}
-      opacity={element.opacity}
-      visible={!element.hidden}
-      listening={interactive && !element.locked}
-      draggable={interactive && !element.locked}
-      onMouseDown={onPointerDown}
-      onTouchStart={onPointerDown}
-      onDragStart={onDragStart}
-      onDragMove={onDragMove}
-      onDragEnd={onDragEnd}
     >
       <Rect
         width={width}
