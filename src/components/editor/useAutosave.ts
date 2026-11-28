@@ -1,6 +1,8 @@
 import { useEffect } from 'react'
 import { markProjectSaved } from '../../features/collab/collabSession'
 import { createAutosaver } from '../../features/persistence/autosave'
+import { dropRescueCopy, keepRescueCopy, saveErrorReason } from '../../features/persistence/rescue'
+import { useSaveRecoveryStore } from '../../stores/saveRecoveryStore'
 import { repository } from '../../features/persistence/repository'
 import { useCollabStore } from '../../stores/collabStore'
 import { useEditorStore } from '../../stores/editorStore'
@@ -22,8 +24,19 @@ export function useAutosave() {
         const result = await repository.save({ ...project, thumbnail })
         // Lot F : la salle note l'heure serveur de l'enregistrement (voir `CollabBinding.start`).
         if (result?.updatedAt) markProjectSaved(project.id, result.updatedAt)
+        // Enregistré : plus besoin de la copie de secours ni du message.
+        if (useSaveRecoveryStore.getState().failed?.id === project.id) {
+          useSaveRecoveryStore.getState().clear()
+          void dropRescueCopy(project.id).catch(() => {})
+        }
       },
       onStatus: (status) => useEditorStore.getState().setSaveStatus(status),
+      // Refus (droits, données) : copie gardée sur l'appareil, message avec « Réessayer » (D24-8).
+      onError: (project, error) => {
+        console.error('Enregistrement refusé', error)
+        void keepRescueCopy(project).catch(() => {})
+        useSaveRecoveryStore.getState().setFailure(saveErrorReason(error), project, () => autosaver.retry())
+      },
     })
 
     // Lot F : une modification venue d'une autre personne n'est enregistrée que par l'enregistreur

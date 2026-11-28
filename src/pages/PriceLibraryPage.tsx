@@ -1,10 +1,12 @@
-import { ArrowLeft, FileUp, Plus } from 'lucide-react'
+import { ArrowLeft, FileDown, FileUp, Plus } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
 import CreateWorkspaceForm from '../components/pricing/CreateWorkspaceForm'
 import ImportDialog from '../components/pricing/ImportDialog'
 import ImportHistorySection from '../components/pricing/ImportHistorySection'
+import JournalPanel from '../components/editor/JournalPanel'
+import { libraryJournal } from '../components/pricing/libraryJournal'
 import LibrarySettingsSection from '../components/pricing/LibrarySettingsSection'
 import MembersSection from '../components/pricing/MembersSection'
 import PriceItemsTable from '../components/pricing/PriceItemsTable'
@@ -12,14 +14,16 @@ import RulesTable from '../components/pricing/RulesTable'
 import { FIELD_INPUT } from '../components/pricing/styles'
 import WorkItemsTable from '../components/pricing/WorkItemsTable'
 import { AppHeader, AppShell, ICON_BUTTON, SECONDARY_PILL } from '../components/shell/AppShell'
+import { buildLibraryWorkbook } from '../features/pricing/libraryExport'
 import { canEditPrices, type PriceKind } from '../features/pricing/model'
+import { downloadBlob } from '../lib/download'
 import { formatRate } from '../features/pricing/money'
 import { useT } from '../i18n/useT'
 import { formatIsoDay } from '../lib/date'
 import { useAuthStore } from '../stores/authStore'
 import { usePricingStore } from '../stores/pricingStore'
 
-type Tab = PriceKind | 'work' | 'rules' | 'members' | 'settings'
+type Tab = PriceKind | 'work' | 'rules' | 'members' | 'settings' | 'journal'
 
 const TABS: readonly Tab[] = ['material', 'equipment', 'labour', 'work', 'rules', 'members', 'settings']
 
@@ -115,16 +119,35 @@ export default function PriceLibraryPage() {
                 })}
               </p>
               {canEdit && (
-                <button type="button" className={SECONDARY_PILL} onClick={() => setImporting(true)}>
-                  <FileUp size={14} aria-hidden="true" />
-                  {t('pricing.import.button')}
-                </button>
+                <div className="flex flex-wrap gap-2">
+                  {/* Copie complète relisible par « Importer » (M24, 24.3, D24-3) ; admins seulement, comme l'export du DQE. */}
+                  <button
+                    type="button"
+                    className={SECONDARY_PILL}
+                    title={t('pricing.export.hint')}
+                    onClick={() => {
+                      const { priceItems, workItems } = usePricingStore.getState()
+                      const bytes = buildLibraryWorkbook(library, priceItems, workItems)
+                      downloadBlob(
+                        new Blob([bytes as Uint8Array<ArrayBuffer>], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
+                        `${library.name.replace(/[\\/:*?"<>|]+/g, ' ').trim() || 'bibliotheque'} - bibliothèque ${new Date().toISOString().slice(0, 10)}.xlsx`,
+                      )
+                    }}
+                  >
+                    <FileDown size={14} aria-hidden="true" />
+                    {t('pricing.export.button')}
+                  </button>
+                  <button type="button" className={SECONDARY_PILL} onClick={() => setImporting(true)}>
+                    <FileUp size={14} aria-hidden="true" />
+                    {t('pricing.import.button')}
+                  </button>
+                </div>
               )}
             </div>
             {!canEdit && <p className="mb-4 rounded-lg bg-secondary px-3 py-2 text-sm">{t('pricing.readOnly')}</p>}
 
             <div role="tablist" className="mb-4 flex flex-wrap gap-1 border-b border-border">
-              {TABS.map((id) => (
+              {(canEdit ? [...TABS, 'journal' as const] : TABS).map((id) => (
                 <button
                   key={id}
                   type="button"
@@ -149,6 +172,9 @@ export default function PriceLibraryPage() {
               {tab === 'work' && <WorkItemsTable canEdit={canEdit} />}
               {tab === 'rules' && <RulesTable canEdit={canEdit} />}
               {tab === 'members' && <MembersSection />}
+              {tab === 'journal' && repository && (
+                <JournalPanel key={workspace.id} load={() => libraryJournal(repository, workspace.id, library.id)} intro={t('journal.libraryIntro')} />
+              )}
               {tab === 'settings' && (
                 <div className="grid gap-4">
                   <LibrarySettingsSection key={library.id} canEdit={canEdit} />

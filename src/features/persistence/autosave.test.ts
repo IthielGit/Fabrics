@@ -81,6 +81,30 @@ describe('createAutosaver', () => {
     expect(statuses.at(-1)).toBe('error')
   })
 
+  it('un enregistrement refusé est gardé : « Réessayer » le renvoie, puis « Enregistré »', async () => {
+    const save = vi.fn().mockRejectedValueOnce(new Error('refusé')).mockResolvedValue(undefined)
+    const errors: string[] = []
+    const statuses: AutosaveStatus[] = []
+    const autosaver = createAutosaver({ delayMs: 1000, save, onStatus: (s) => statuses.push(s), onError: (p) => errors.push(p.name), now: () => NOW })
+    autosaver.schedule(createDesignProject('banner', 'Refusé'))
+    await vi.advanceTimersByTimeAsync(1000)
+    expect([statuses.at(-1), errors]).toEqual(['error', ['Refusé']])
+    await autosaver.retry()
+    expect(save).toHaveBeenCalledTimes(2)
+    expect(save.mock.calls[1][0].name).toBe('Refusé')
+    expect(statuses.at(-1)).toBe('saved')
+  })
+
+  it('fermeture brutale pendant la saisie : au plus 1 s de travail perdu (flush à la fermeture)', async () => {
+    const { autosaver, save } = setup()
+    const project = createDesignProject('banner', 'Saisie')
+    autosaver.schedule(project)
+    await vi.advanceTimersByTimeAsync(400)
+    await autosaver.flush() // « pagehide » / onglet caché
+    expect(save).toHaveBeenCalledTimes(1)
+    expect(save.mock.calls[0][0].name).toBe('Saisie')
+  })
+
   it('ne dit pas « Enregistré » si le projet a changé pendant l’écriture', async () => {
     let finishSave: () => void = () => {}
     const slowSave = vi.fn(

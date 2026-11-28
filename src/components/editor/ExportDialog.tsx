@@ -21,6 +21,8 @@ import Button from '../ui/Button'
 import Choice from '../ui/Choice'
 import Group from '../ui/ChoiceGroup'
 import Modal from '../ui/Modal'
+import { logAuditEvent } from '../../features/audit/auditApi'
+import { downloadProjectBackup } from './backupActions'
 import { exportIfcFile, exportProject } from './exportProject'
 import MetresWarningList from './MetresWarningList'
 import { VERSION_FILE_SUFFIX, type MetresFormat, type MetresScope, type MetresVersion } from './exportMetres'
@@ -159,6 +161,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
     try {
       if (type === 'ifc') {
         const found = await exportIfcFile(project, { fileName })
+        void logAuditEvent('export', project.id, { format: 'ifc', file: fileName })
         if (found.length > 0) setNotes(found)
         else onClose()
         return
@@ -173,6 +176,7 @@ function ExportForm({ onClose }: { onClose: () => void }) {
         metres: { format: metresFormat, version: metresVersion, scope: metresScope, includeFurniture },
         dxfScope,
       })
+      void logAuditEvent('export', project.id, { format: type, file: fileName })
       onClose()
     } catch (error) {
       // Gardé dans la console : sans lui, la vraie cause d'un échec est invisible.
@@ -441,7 +445,27 @@ function ExportForm({ onClose }: { onClose: () => void }) {
           </div>
         )}
 
-        <div className="flex justify-end gap-2 pt-2">
+        <div className="flex flex-wrap items-center justify-end gap-2 pt-2">
+          {/* Sauvegarde complète du projet (M24, 24.3, D24-3), relisible par « Restaurer » sur l'accueil. */}
+          <Button
+            className="mr-auto"
+            title={fr.backup.downloadHint}
+            onClick={() => {
+              const current = useEditorStore.getState().project
+              if (!current) return
+              void downloadProjectBackup(current)
+                .then(() => {
+                  useEditorStore.getState().setNotice(fr.backup.downloaded, 'success')
+                  void logAuditEvent('backup', current.id)
+                })
+                .catch((error: unknown) => {
+                  console.error('Sauvegarde :', error)
+                  useEditorStore.getState().setNotice(fr.backup.failed, 'error')
+                })
+            }}
+          >
+            {fr.backup.download}
+          </Button>
           <Button onClick={onClose}>{fr.common.cancel}</Button>
           <Button variant="primary" onClick={handleSubmit} disabled={!canSubmit}>
             {busy ? fr.export.working : fr.export.submit}

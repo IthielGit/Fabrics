@@ -1,3 +1,4 @@
+import RescueBanner from '../components/editor/RescueBanner'
 import { useEffect } from 'react'
 import { Link, useParams } from 'react-router'
 import EditorHeader from '../components/editor/EditorHeader'
@@ -80,6 +81,9 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
           <MiniMap />
           <ScrollBars />
           <Notice />
+          <div className="pointer-events-auto absolute inset-x-0 top-14 z-20">
+            <RescueBanner />
+          </div>
           <ToolHint />
         </div>
         <SidePanel />

@@ -1,14 +1,16 @@
 import { applySceneGraphToEditor, Editor, showSidebarPanel, type SceneGraph } from '@pascal-app/editor'
 import { EditorViewerToolbarLeft, EditorViewerToolbarRight } from '@pascal-app-host/viewer-toolbar'
-import { Calculator, Coins, History, ListChecks, MessageSquare } from 'lucide-react'
+import { Calculator, Coins, History, ListChecks, MessageSquare, ScrollText } from 'lucide-react'
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import { Link, useParams } from 'react-router'
 import HistoryPanel from '../components/editor/HistoryPanel'
 import ControlsPanel from '../components/editor/ControlsPanel'
 import MeasurementsPanel from '../components/editor/MeasurementsPanel'
+import ProjectJournalPanel from '../components/editor/ProjectJournalPanel'
 import DqePanel from '../components/pricing/DqePanel'
 import Notice from '../components/editor/Notice'
 import PlanSignals from '../components/editor/PlanSignals'
+import RescueBanner from '../components/editor/RescueBanner'
 import { useAutosave } from '../components/editor/useAutosave'
 import { useCollaboration } from '../components/editor/useCollaboration'
 import { useComments } from '../components/editor/useComments'
@@ -54,6 +56,7 @@ const ControlsTab = fabricsPanel(ControlsPanel)
 const MetresTab = fabricsPanel(() => <MeasurementsPanel onOpenControls={() => showSidebarPanel(CONTROLS_TAB_ID)} />)
 const HistoryTab = fabricsPanel(HistoryPanel)
 const DqeTab = fabricsPanel(DqePanel)
+const JournalTab = fabricsPanel(ProjectJournalPanel)
 
 /** Scène de l'éditeur de Pascal → scène d'un projet Plan (même forme : nœuds et racines). */
 function toPlanScene(graph: SceneGraph): PlanScene {
@@ -163,10 +166,19 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
           component: HistoryTab,
         },
       )
+      if (isOwner) {
+        tabs.push({
+          id: 'fabrics-journal',
+          label: t('pascalEditor.tabJournal'),
+          icon: <ScrollText className="h-5 w-5" />,
+          mobileIcon: <ScrollText className="h-5 w-5" />,
+          component: JournalTab,
+        })
+      }
     }
     const { leading, trailing } = pascalTabs(t)
     return [...leading, ...tabs, ...trailing]
-  }, [t, cloud])
+  }, [t, cloud, isOwner])
 
   const projectName = useEditorStore((state) => state.project?.name ?? '')
 
@@ -236,6 +248,7 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
       {/* Messages de Fabrics (enregistrement, export, versions) par-dessus l'éditeur. */}
       <div className="pointer-events-none absolute inset-x-0 top-14 z-50 [&>*]:pointer-events-auto">
         <Notice />
+        <RescueBanner />
       </div>
     </div>
   )

@@ -129,6 +129,19 @@ surveillé : la compilation de Pascal est lourde (environ 5 min, et la construct
 `nodes` demande environ 6 Go de mémoire). Si le build échoue pour cette raison, le signaler et ne
 pas le relancer en boucle.
 
+## Journal d'audit (M24) : script à lancer dans Supabase
+
+Une seule fois, après `supabase/schema.sql` et `supabase/m23-pricing.sql` :
+
+1. Ouvrir le projet sur https://supabase.com → menu **SQL Editor** → **New query**.
+2. Dans VS Code, ouvrir `supabase/m24-audit.sql`, tout sélectionner (Ctrl+A), copier (Ctrl+C).
+3. Coller dans l'éditeur de Supabase, puis cliquer **Run**. Le message doit être « Success. No rows returned ».
+4. Vérifier dans Fabrics : ouvrir un plan dont vous êtes propriétaire, exporter un PDF, puis ouvrir l'onglet
+   **Journal** de la barre latérale : la ligne « … a exporté le projet (pdf). » apparaît.
+
+Le script peut être relancé sans risque. Avant d'être livré, il est vérifié par `npm run check:sql` (Postgres
+dans Node, 64 contrôles).
+
 ## Problèmes fréquents
 
 | Symptôme | Solution |

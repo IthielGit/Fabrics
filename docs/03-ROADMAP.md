@@ -1495,7 +1495,7 @@ rappelle s'il tourne sur un autre modèle).
 | 24.3 Épreuves | Maison simple, villa à plusieurs niveaux, petit immeuble, modèles invalides, IFC externes | `/model sonnet` |
 | 24.4 Performance | Seuils fixés avec l'utilisateur, puis mesures sur 1 000, 5 000 et 10 000 éléments : chargement, modification, recalcul, export | `/model opus` |
 | 24.5 Sécurité des imports — **fait le 2026-11-28 en 24.2 du plan replanifié** | IFC et fichiers externes : taille, validation, aucun contenu exécuté | `/model opus` |
-| 24.6 Fiabilité | Exports atomiques, reprise après plantage, sauvegarde et restauration, journal d'audit | `/model opus` |
+| 24.6 Fiabilité — **fait le 2026-11-28 en 24.3 du plan replanifié** | Exports atomiques, reprise après plantage, sauvegarde et restauration, journal d'audit | `/model opus` |
 | 24.7 Revue humaine et gate G7 | Dossiers pour un architecte ou dessinateur BIM et un métreur indépendant, revue documentée, rapport | `/model sonnet` |
 
 - [x] Panneau unique de contrôles qualité (prolonge la pastille « points à vérifier ») : géométrie,
@@ -1505,7 +1505,7 @@ rappelle s'il tourne sur un autre modèle).
 - [ ] Performance mesurée sur 1 000, 5 000 et 10 000 éléments : chargement, modification, recalcul,
       export
 - [x] Imports IFC et fichiers externes sécurisés (taille, validation, aucun contenu exécuté) — fait le 2026-11-28 (24.2)
-- [ ] Exports atomiques, reprise après plantage, sauvegarde et restauration, journal d'audit
+- [x] Exports atomiques, reprise après plantage, sauvegarde et restauration, journal d'audit — fait le 2026-11-28 (24.3 ; script `m24-audit.sql` à lancer par l'utilisateur)
 - [ ] Revue par un architecte ou dessinateur BIM et par un métreur indépendant
 
 **Critères d'acceptation (G7)**

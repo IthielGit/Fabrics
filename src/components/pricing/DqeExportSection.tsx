@@ -3,7 +3,9 @@ import { useState } from 'react'
 import type { Estimate } from '../../features/pricing/estimate'
 import type { EstimateVersion } from '../../features/pricing/estimateVersions'
 import type { PriceLibrary } from '../../features/pricing/model'
+import { logAuditEvent } from '../../features/audit/auditApi'
 import { useT } from '../../i18n/useT'
+import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
 import { exportEstimate } from './exportEstimate'
 
@@ -37,6 +39,8 @@ export default function DqeExportSection(props: DqeExportSectionProps) {
         { projectName: props.projectName, workspaceName: props.workspaceName, library: props.library, version, now: new Date() },
         t,
       )
+      const projectId = useEditorStore.getState().project?.id
+      if (projectId) void logAuditEvent('export', projectId, { format: `dqe-${format}` })
     } catch (error) {
       console.error('Export du devis :', error)
       setFailed(true)

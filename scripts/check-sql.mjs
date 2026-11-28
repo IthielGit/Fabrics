@@ -42,6 +42,10 @@ await db.exec(readFileSync(`${repo}/supabase/schema.sql`, 'utf8').replace(/^crea
 const script = readFileSync(`${repo}/supabase/m23-pricing.sql`, 'utf8')
 await db.exec(script)
 await db.exec(script) // relançable sans erreur
+// M24, 24.3 : journal d'audit, chargé avant les essais pour que ses déclencheurs les enregistrent.
+const audit = readFileSync(`${repo}/supabase/m24-audit.sql`, 'utf8')
+await db.exec(audit)
+await db.exec(audit) // relançable sans erreur
 
 let failures = 0
 const check = (label, ok, detail = '') => {
@@ -188,6 +192,24 @@ check('C (hors espace) ne lit ni devis ni versions', (await as(C, `select * from
 const outline = (await as(C, `select public.project_estimate_outline($1) as o`, [proj])).rows[0].o
 check('C voit postes et quantités, sans aucun prix (D23-8)', outline.length === 1 && outline[0].quantity === '1311' && !JSON.stringify(outline).includes('450000') && !JSON.stringify(outline).includes('5900000'), JSON.stringify(outline))
 check('sans accès au projet, pas de résumé', (await fails(C, `select public.project_estimate_outline($1)`, [(await as(B, `insert into public.projects (name, kind, document) values ('R', 'plan', '{}') returning id`)).rows[0].id])) !== null)
+
+// ---- M24 24.3 : journal d'audit (D24-4)
+const LOG = `select public.log_audit_event($1, $2, $3::jsonb)`
+await as(B, LOG, ['export', proj, '{"format":"pdf"}'])
+await as(C, LOG, ['backup', proj, '{}']) // C est lecteur du projet : il peut sauvegarder
+const projEvents = (await as(B, `select kind, actor_email from public.audit_events where project_id = $1 order by id`, [proj])).rows
+check('journal du projet (propriétaire) : versions figées, entrée de C, export, sauvegarde', projEvents.map((e) => (e.kind === 'project_member_joined' ? e.kind : `${e.kind}:${e.actor_email}`)).join(' ') === 'estimate_draft:b@test estimate_final:b@test project_member_joined export:b@test backup:c@test', JSON.stringify(projEvents))
+check('un lecteur du projet ne lit pas son journal', (await as(C, `select * from public.audit_events where project_id = $1`, [proj])).rows.length === 0)
+check('sans accès au projet, rien n’est journalisé', (await fails(A, LOG, ['export', proj, '{}'])) !== null)
+check('type d’événement non permis refusé', (await fails(B, LOG, ['estimate_final', proj, '{}'])) !== null)
+check('écriture directe dans le journal refusée', (await fails(B, `insert into public.audit_events (project_id, kind) values ($1, 'export')`, [proj])) !== null)
+check('le journal ne se modifie ni ne s’efface', (await fails(B, `update public.audit_events set kind = 'export'`)) !== null && (await fails(B, `delete from public.audit_events`)) !== null)
+const wsEvents = (await as(B, `select kind, details->>'email' as email from public.audit_events where workspace_id = $1 and kind like 'workspace%' order by id`, [wsId])).rows
+check('journal de l’espace (admin) : entrées et sorties de membres', wsEvents.some((e) => e.kind === 'workspace_member_joined' && e.email === 'b@test') && wsEvents.some((e) => e.kind === 'workspace_member_left' && e.email === 'a@test'), JSON.stringify(wsEvents))
+check('un membre (non admin) ne lit pas le journal de l’espace', (await as(A, `select * from public.audit_events where workspace_id = $1`, [wsId])).rows.length === 0)
+await db.exec(`insert into public.audit_events (occurred_at, project_id, kind) values (now() - interval '13 months', '${proj}', 'export')`)
+await as(B, LOG, ['restore', proj, '{}'])
+check('événements de plus d’un an effacés', (await as(B, `select count(*)::int as n from public.audit_events where occurred_at < now() - interval '1 year'`)).rows[0].n === 0)
 
 console.log(failures === 0 ? '\nTout est conforme.' : `\n${failures} échec(s).`)
 process.exit(failures === 0 ? 0 : 1)

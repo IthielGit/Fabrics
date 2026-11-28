@@ -1,9 +1,11 @@
-import { BookOpen, Building2, ChevronRight, Coins, FileUp, Image, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
+import { ArchiveRestore, BookOpen, Building2, ChevronRight, Coins, FileUp, Image, Loader2, Plus, Ruler, Search, Settings } from 'lucide-react'
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
 import AccountButton from '../components/home/AccountButton'
 import DeleteDialog from '../components/home/DeleteDialog'
 import ImportIfcDialog from '../components/home/ImportIfcDialog'
+import RestoreBackupDialog from '../components/home/RestoreBackupDialog'
+import { fr } from '../i18n/fr'
 import ImportLocalDialog from '../components/home/ImportLocalDialog'
 import LeaveDialog from '../components/home/LeaveDialog'
 import NewDesignDialog from '../components/home/NewDesignDialog'
@@ -29,6 +31,7 @@ type Dialog =
   | { type: 'leave'; project: SharedProjectSummary }
   | { type: 'newDesign' }
   | { type: 'importIfc' }
+  | { type: 'restoreBackup' }
 
 /** Accueil des projets, d'après `app/page.tsx` de Pascal (M19 A1) : en-tête, création, grille de cartes. */
 export default function HomePage() {
@@ -115,6 +118,10 @@ export default function HomePage() {
         <button type="button" className={SECONDARY_PILL} disabled={opening !== null} onClick={() => setDialog({ type: 'importIfc' })}>
           <FileUp size={16} aria-hidden="true" />
           {t('home.importIfc')}
+        </button>
+        <button type="button" className={SECONDARY_PILL} disabled={opening !== null} onClick={() => setDialog({ type: 'restoreBackup' })}>
+          <ArchiveRestore size={16} aria-hidden="true" />
+          {fr.backup.restore}
         </button>
         <Link to="/prix" aria-label={t('home.priceLibrary')} title={t('home.priceLibrary')} className={ICON_BUTTON}>
           <Coins size={16} aria-hidden="true" />
@@ -278,6 +285,9 @@ export default function HomePage() {
       )}
       {dialog?.type === 'importIfc' && (
         <ImportIfcDialog onImport={importPlan} onClose={closeDialog} onOpen={(id) => navigate(`/p/${id}`)} />
+      )}
+      {dialog?.type === 'restoreBackup' && (
+        <RestoreBackupDialog onImport={importPlan} onClose={closeDialog} onOpen={(id) => navigate(`/p/${id}`)} />
       )}
       {dialog?.type === 'newDesign' && (
         <NewDesignDialog

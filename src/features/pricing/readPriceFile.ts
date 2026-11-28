@@ -5,6 +5,7 @@
 import { importCsv } from './importCsv'
 import { ImportReportBuilder } from './importReport'
 import { importWorkbook, type ImportedLibrary } from './importWorkbook'
+import { importLibraryWorkbook } from './libraryExport'
 import { readXlsx, XLSX_LIMITS, XlsxError } from './xlsxRead'
 
 export function readPriceFile(fileName: string, bytes: Uint8Array, vatRateBp: number): ImportedLibrary {
@@ -20,7 +21,9 @@ export function readPriceFile(fileName: string, bytes: Uint8Array, vatRateBp: nu
   // Classeurs à macros (.xlsm, .xlsb…) refusés : rien n'est jamais exécuté (D24-7).
   if (!/\.xlsx$/i.test(fileName)) return blocked('notXlsx')
   try {
-    return importWorkbook(readXlsx(bytes), vatRateBp)
+    const workbook = readXlsx(bytes)
+    // Classeur exporté par Fabrics (M24, 24.3) : relu à l'identique ; sinon classeur « Expert BTP ».
+    return importLibraryWorkbook(workbook) ?? importWorkbook(workbook, vatRateBp)
   } catch (error) {
     if (error instanceof XlsxError) return blocked(error.code === 'tooLarge' ? 'tooLarge' : 'notXlsx')
     throw error

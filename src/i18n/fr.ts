@@ -245,6 +245,23 @@ export const fr = {
     saved: 'Enregistré',
     saveError: 'Erreur d’enregistrement',
     saveErrorHint: 'Les dernières modifications n’ont pas pu être enregistrées dans ce navigateur.',
+    // Enregistrement refusé (M24, 24.3, D24-8) : rien n'est perdu, une copie reste sur l'appareil.
+    saveRefused: {
+      forbidden: 'Pas enregistré : vous n’avez plus le droit de modifier ce projet. Vos modifications restent sur cet appareil.',
+      rejected: 'Pas enregistré : le serveur a refusé les données. Vos modifications restent sur cet appareil.',
+      other: 'Pas enregistré. Vos modifications restent sur cet appareil.',
+      retry: 'Réessayer',
+      download: 'Télécharger une copie',
+    },
+    rescue: {
+      title: 'Reprendre là où vous en étiez ?',
+      text: (date: string) =>
+        `Cet appareil garde une version plus récente de ce projet (${date}), qui n’avait pas pu être enregistrée.`,
+      resume: 'Reprendre cette version',
+      download: 'Télécharger une copie',
+      ignore: 'Ignorer',
+      resumed: 'Version de cet appareil reprise : elle s’enregistre maintenant.',
+    },
   },
   presence: {
     anonymous: 'Quelqu’un',
@@ -1150,6 +1167,31 @@ export const fr = {
     },
   },
   // Import d'un fichier IFC en nouveau projet Plan (M22, 22.4, D22-6), avec son bilan.
+  // Sauvegarde et restauration d'un projet (M24, 24.3, D24-3).
+  backup: {
+    download: 'Télécharger une sauvegarde',
+    downloadHint:
+      'Un seul fichier .fabrics avec le plan, ses images, son devis et ses versions. Les prix n’y figurent que si vous êtes admin de l’espace de prix.',
+    downloaded: 'Sauvegarde téléchargée.',
+    failed: 'La sauvegarde n’a pas pu être fabriquée : rien n’a été téléchargé. Réessayez.',
+    restore: 'Restaurer une sauvegarde',
+    restoreTitle: 'Restaurer une sauvegarde',
+    restoreIntro:
+      'Choisissez un fichier .fabrics. Il devient toujours une copie « … (restauré le JJ/MM/AAAA) » : aucun projet existant n’est remplacé.',
+    choose: 'Choisir un fichier .fabrics',
+    working: 'Lecture de la sauvegarde…',
+    refused: {
+      tooLarge: 'Ce fichier dépasse 100 Mo : ce n’est pas une sauvegarde Fabrics.',
+      notBackup: 'Ce fichier n’est pas une sauvegarde Fabrics (.fabrics). Choisissez le fichier téléchargé avec « Télécharger une sauvegarde ».',
+      newerVersion: 'Cette sauvegarde vient d’une version plus récente de Fabrics. Rechargez la page pour mettre Fabrics à jour, puis réessayez.',
+      damaged: 'Cette sauvegarde est abîmée ou a été modifiée : elle ne peut pas être restaurée sans risque. Téléchargez-en une nouvelle.',
+      duplicateIds: 'Cette sauvegarde contient deux éléments au même identifiant : ses métrés seraient faux, elle n’est pas restaurée.',
+    },
+    done: (name: string) => `Copie restaurée : « ${name} ».`,
+    estimateNote:
+      'Le devis (réglages et corrections) est repris dans l’espace de prix ouvert si vous en êtes admin ; ses versions figées restent dans le fichier de sauvegarde.',
+    open: 'Ouvrir la copie',
+  },
   importIfc: {
     title: 'Importer un fichier IFC',
     intro:
