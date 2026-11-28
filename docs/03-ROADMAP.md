@@ -1490,13 +1490,12 @@ rappelle s'il tourne sur un autre modèle).
 
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
-| 24.1 Onglet « Contrôles » — **fait le 2026-11-28** (`measurements/controls.ts`) | Un seul panneau (suite des « points à vérifier ») : géométrie, propriétés manquantes, unités, postes sans prix, cas EDGE-01 | `/model sonnet` |
-| 24.2 Régression visuelle | Comparaisons 2D, 3D et PDF ; tests par propriétés sur la géométrie et les quantités | `/model sonnet` |
-| 24.3 Épreuves | Maison simple, villa à plusieurs niveaux, petit immeuble, modèles invalides, IFC externes | `/model sonnet` |
-| 24.4 Performance | Seuils fixés avec l'utilisateur, puis mesures sur 1 000, 5 000 et 10 000 éléments : chargement, modification, recalcul, export | `/model opus` |
-| 24.5 Sécurité des imports — **fait le 2026-11-28 en 24.2 du plan replanifié** | IFC et fichiers externes : taille, validation, aucun contenu exécuté | `/model opus` |
-| 24.6 Fiabilité — **fait le 2026-11-28 en 24.3 du plan replanifié** | Exports atomiques, reprise après plantage, sauvegarde et restauration, journal d'audit | `/model opus` |
-| 24.7 Revue humaine et gate G7 | Dossiers pour un architecte ou dessinateur BIM et un métreur indépendant, revue documentée, rapport | `/model sonnet` |
+| 24.1 Onglet « Contrôles » — **fait le 2026-11-28** (`measurements/controls.ts`) | Regrouper tous les contrôles en un seul panneau | `/model sonnet` |
+| 24.2 Imports et exports sûrs — **fait le 2026-11-28** | Limites (IFC 100 Mo), validation avant lecture, formules échappées | `/model opus` |
+| 24.3 Ne rien perdre — **fait le 2026-11-28** | Sauvegarde `.fabrics`, restauration, journal d'audit, export de la bibliothèque | `/model opus` |
+| 24.4 Plans d'essai et anti-régression | Référence étendue (PDF, 3D), générateur 1K / 5K / 10K éléments, petit immeuble | `/model sonnet` |
+| 24.5 Performance | Mesures contre les seuils D24-1, optimisations ciblées, barre de progression | `/model opus` |
+| 24.6 Revue et gate G7 | Dossier unique (G3, G4, G7), rapport, `capabilities.md`, `regression-checklist.md` | `/model sonnet` |
 
 - [x] Panneau unique de contrôles qualité (prolonge la pastille « points à vérifier ») : géométrie,
       propriétés manquantes, unités incompatibles, postes sans prix — fait le 2026-11-28 (onglet « Contrôles »)
