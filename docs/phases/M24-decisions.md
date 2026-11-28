@@ -4,6 +4,12 @@ Le 2026-11-27, l'utilisateur a demandé de réévaluer le plan et de **choisir �
 exigence : que ce soit **facile à utiliser** (« user friendly »). Choix de Claude, à contester à tout
 moment.
 
+**Mise à jour du 2026-11-28 (replanification).** Une seconde version du plan, écrite le même soir, avait
+remplacé `M24-plan.md` avec d'autres décisions numérotées elles aussi D24-1 à D24-4 (seuils plus larges,
+taille des imports, journal, sauvegarde) et rendait les seuils à l'utilisateur, contre sa demande. Elle
+est abandonnée. Ce fichier est la seule liste des décisions de M24. Ajouts du 2026-11-28 après relecture
+du code : précision sur les prix dans D24-3, puis D24-7 à D24-9.
+
 ## Principe directeur (D24-0)
 
 Chaque chose visible du jalon suit la même règle :
@@ -40,6 +46,9 @@ seulement que rien ne se fige (pas de seuil chiffré).
 
 - Un bouton **« Télécharger une sauvegarde »** par projet : un seul fichier `.fabrics` (plan, réglages,
   devis et ses versions figées), lisible par Fabrics seul.
+- **Prix (ajout du 2026-11-28)** : la sauvegarde ne contient les prix et montants du devis que si la
+  personne qui la télécharge est admin de l'espace du devis (même règle que l'export du DQE, 23.7).
+  Sinon, elle contient les quantités et les postes sans prix (D23-8).
 - Un bouton **« Exporter la bibliothèque »** : un fichier Excel que le bouton « Importer » sait relire
   (aller-retour sans perte).
 - **Restaurer ne remplace jamais rien** : une sauvegarde ouverte devient une copie nommée « … (restauré
@@ -65,3 +74,40 @@ nécessaires.
 Claude prépare **un seul dossier de revue** qui sert aux gates G3 (plans), G4 (métrés) et G7 : PDF des
 plans, métrés, DQE et IFC de deux projets, avec une grille simple à cocher. Le gate G7 reste **ouvert**
 tant que la revue n'est pas faite (comme G3 et G4) ; cela ne bloque pas M25.
+
+## D24-7 · Limites des fichiers importés (ajout du 2026-11-28)
+
+Les limites déjà en place sont gardées (aucune n'est abaissée) ; seule celle de l'IFC manque.
+
+| Fichier | Limite | Déjà en place ? |
+|---|---|---|
+| Image (PNG, JPEG, WebP, GIF ; jamais SVG) | 20 Mo | oui |
+| Fond DXF | 50 Mo et 20 000 traits | oui |
+| Classeur de prix XLSX ou CSV | 30 Mo ; 80 Mo une fois décompressé ; 2 millions de cellules | oui (M23) |
+| IFC | **100 Mo** ; au-delà de 30 Mo, prévenir que l'import peut prendre plusieurs minutes | **non** |
+| Sauvegarde `.fabrics` (D24-3) | 100 Mo ; contenu vérifié avant toute création de projet | nouveau |
+
+Chaque fichier est contrôlé **avant lecture** (taille, puis début du fichier : un PNG renommé en `.ifc`
+est refusé). Rien n'est jamais exécuté : pas de macro (les `.xlsm` ne sont pas acceptés), les formules
+d'un classeur ne sont pas calculées, les liens externes sont ignorés.
+
+## D24-8 · Ne rien perdre (ajout du 2026-11-28)
+
+On s'appuie sur ce qui existe : enregistrement 1 s après chaque modification et à la fermeture de
+l'onglet (`useAutosave.ts`), copie gardée sur l'appareil et renvoyée quand le réseau revient
+(`ResilientRepository.ts`). M24 ne refait pas ce mécanisme ; il le prouve par des tests (fermeture
+brutale pendant la saisie : au plus 1 s de travail perdu) et comble deux manques :
+- un enregistrement refusé pour une autre raison que le réseau (droits, données refusées) est gardé
+  sur l'appareil, avec un message « Pas enregistré : … » et deux boutons « Réessayer » et
+  « Télécharger une copie » ;
+- le bandeau « Reprendre là où vous en étiez ? » ne s'affiche que si l'appareil garde une version plus
+  récente que celle du serveur (cas rare ; jamais à chaque ouverture).
+
+## D24-9 · Exports sûrs (ajout du 2026-11-28)
+
+- **Fichier complet ou rien** : dans le navigateur, un fichier est fabriqué en entier avant d'être
+  proposé au téléchargement. M24 le vérifie par test (un export qui échoue en cours de route ne
+  télécharge rien et dit pourquoi) au lieu de construire un autre mécanisme.
+- **Aucune formule cachée** : dans un CSV exporté, un texte qui commence par `=`, `+`, `-` ou `@` (nom de
+  pièce, désignation de poste importée) est écrit comme du texte, pour qu'Excel ne l'exécute jamais.
+- Les noms saisis par l'utilisateur sont échappés dans les fichiers SVG, DXF et IFC (vérifié par test).

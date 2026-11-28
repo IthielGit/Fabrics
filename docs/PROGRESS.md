@@ -4,7 +4,7 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## État actuel
 
-- **Jalon en cours :** aucun ; M24 attend le feu vert de l'utilisateur. M23 Bibliothèque de prix et DQE **terminé et validé par l'utilisateur le 2026-11-27 : gate G6 validé** ; contrôle des scripts SQL ajouté à `npm run check:all` (PGlite). M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
+- **Jalon en cours :** aucun ; M24 replanifié le 2026-11-28 (`docs/phases/M24-plan.md`, décisions `M24-decisions.md`), attend le feu vert de l'utilisateur. M23 Bibliothèque de prix et DQE **terminé et validé par l'utilisateur le 2026-11-27 : gate G6 validé** ; contrôle des scripts SQL ajouté à `npm run check:all` (PGlite). M22 Échanges IFC **terminé et validé par l'utilisateur le 2026-11-24** (essai dans le navigateur et HOUSE-01 dans 2 visionneuses : **gate G5 validé**). M21 : sous-lots faits, essai de l'utilisateur OK le 2026-11-24 ; **gate G4 encore ouvert** (revue d'un métreur à faire). M20 : tous les sous-lots faits, essai de l'utilisateur OK le 2026-11-23 ; **gate G3 encore ouvert** (mesure à la règle confirmée et revue d'un professionnel à faire). M19 terminé, **gate G2 validé PASS par l'utilisateur le 2026-11-21**.
 - **Branche :** depuis le 2026-11-21, tout le travail Pascal se fait sur la branche `pascal` (commit + push sur `pascal`). `main` (version en ligne) n'est pas touché tant que l'utilisateur n'a pas déclaré les mises à jour Pascal terminées. Note : contrairement à ce que disent les entrées de M17 et M18, le travail de M17 à M19 n'est **pas** dans `main` (branche `pascal` partie de `8032c19`).
 - **Lot Performance :** lot 1 fait ; lots 2 et 3 remis à plus tard par l'utilisateur le 2026-11-18 (voir « Idées »).
 - **Mise en ligne de M18 :** base faite le 2026-11-18 (sauvegarde `supabase/m18-backup.sql` vérifiée à 10/10 projets et 40/40 versions ; projets tests supprimés, aucune conversion lancée). Commande de build Cloudflare Pages changée par l'utilisateur et essayée sur l'aperçu de la branche (`docs/05-INSTALLATION.md`). Les tables `projects_backup_m18` et `project_versions_backup_m18` restent dans Supabase jusqu'à décision de l'utilisateur.
@@ -52,6 +52,12 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 | M25 Assistant IA (G8) | à faire | |
 
 ## Journal
+
+### 2026-11-28 — M24 replanifié (en attente du feu vert)
+
+- Deux plans de M24 se contredisaient depuis le 2026-11-27 : la version « facile à utiliser » (décisions choisies par Claude à la demande de l'utilisateur) avait été écrasée deux minutes plus tard par une autre, avec d'autres décisions D24-1 à D24-4. Un seul plan maintenant : `docs/phases/M24-plan.md` ; une seule liste de décisions : `docs/phases/M24-decisions.md` (D24-0 à D24-9).
+- Corrigé après relecture du code : l'enregistrement toutes les secondes et la copie hors ligne existent déjà (M24 les prouve par test au lieu de les refaire) ; les limites d'import existantes sont gardées, seule celle de l'IFC manque (100 Mo) ; les prix ne sortent dans une sauvegarde que pour un admin de l'espace ; formules neutralisées dans les CSV exportés.
+- 6 sous-lots : 24.1 onglet « Contrôles », 24.2 imports et exports sûrs, 24.3 ne rien perdre (sauvegarde, restauration, journal), 24.4 plans d'essai et anti-régression (PDF et 3D), 24.5 performance, 24.6 dossier de revue et gate G7. Rien n'est codé.
 
 ### 2026-11-27 — Hors jalon · Code en double réduit (demande de l'utilisateur)
 
