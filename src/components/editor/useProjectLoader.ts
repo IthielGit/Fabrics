@@ -1,10 +1,13 @@
 import { useEffect, useState } from 'react'
+import { duplicateIds } from '../../features/measurements/controls'
 import { forgetCreated, peekCreated } from '../../features/persistence/justCreated'
+import { DuplicateElementIdError } from '../../features/scene/migrate/fromFabrics'
 import { repository } from '../../features/persistence/repository'
 import { useAuthStore } from '../../stores/authStore'
 import { useEditorStore } from '../../stores/editorStore'
 
-export type ProjectLoadState = 'loading' | 'ready' | 'not-found' | 'not-plan' | 'error'
+/** `duplicate-ids` : plan refusé, deux éléments portent le même identifiant (EDGE-01, M24 24.2). */
+export type ProjectLoadState = 'loading' | 'ready' | 'not-found' | 'not-plan' | 'duplicate-ids' | 'error'
 
 interface ProjectLoaderOptions {
   /**
@@ -45,11 +48,15 @@ export function useProjectLoader(
         if (cancelled) return
         if (!project) return setResult({ projectId, state: 'not-found' })
         if (planOnly && project.kind !== 'plan') return setResult({ projectId, state: 'not-plan' })
+        // Un ancien plan (sans scène) aux identifiants en double serait compté deux fois : refusé clairement.
+        if (project.kind === 'plan' && !project.scene && duplicateIds([...project.document.elements, ...(project.document.levels ?? [])]).length > 0) {
+          return setResult({ projectId, state: 'duplicate-ids' })
+        }
         loadProject(project)
         setResult({ projectId, state: 'ready' })
       })
-      .catch(() => {
-        if (!cancelled) setResult({ projectId, state: 'error' })
+      .catch((error: unknown) => {
+        if (!cancelled) setResult({ projectId, state: error instanceof DuplicateElementIdError ? 'duplicate-ids' : 'error' })
       })
     return () => {
       cancelled = true

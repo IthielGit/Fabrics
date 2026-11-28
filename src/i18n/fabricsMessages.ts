@@ -543,6 +543,9 @@ export const fabricsFr = {
 
   // Onglet « Contrôles » (M24, 24.1) : dire ce qui ne va pas, pourquoi, et quoi faire.
   'pascalEditor.tabControls': ['Contrôles'],
+  'pascalEditor.duplicateIds': [
+    'Ce plan ne peut pas être ouvert : deux de ses éléments portent le même identifiant, et ses métrés compteraient certains éléments deux fois. Rien n’a été modifié. Le fichier du projet est abîmé : gardez-le tel quel et signalez-le ; une version précédente pourra être restaurée.',
+  ],
   'controls.title': ['Contrôles'],
   'controls.intro': ['Tout ce qui peut fausser vos métrés, au même endroit. Rien n’est corrigé sans votre accord.'],
   'controls.scopeLabel': ['Étendue des contrôles'],

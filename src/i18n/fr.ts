@@ -1157,6 +1157,32 @@ export const fr = {
     choose: 'Choisir un fichier .ifc',
     working: (percent: number) => `Lecture du fichier… ${Math.round(percent)} %`,
     failed: 'Le fichier n’a pas pu être lu comme un IFC. Vérifiez qu’il s’agit bien d’un fichier .ifc (IFC2x3 ou IFC4).',
+    // Contrôles avant lecture (M24, 24.2, D24-7) : rien n'est converti si le fichier est refusé.
+    refused: {
+      empty: 'Ce fichier est vide. Exportez de nouveau l’IFC depuis votre logiciel, puis réessayez.',
+      tooLarge: (size: string, max: string) =>
+        `Ce fichier IFC fait ${size} ; la limite est ${max}. Essayez d’exporter un seul bâtiment ou un seul niveau.`,
+      otherFormat: (kind: string) =>
+        `Ce fichier n’est pas un IFC : c’est ${kind} renommé en .ifc. Choisissez le fichier .ifc exporté par votre logiciel.`,
+      notIfc: 'Ce fichier ne commence pas comme un IFC (texte « ISO-10303-21 »). Choisissez un fichier .ifc (IFC2x3 ou IFC4) ; les formats .ifcXML et .ifcZIP ne sont pas acceptés.',
+      truncated: 'Ce fichier IFC est incomplet : sa fin manque (copie ou téléchargement interrompu). Récupérez-le de nouveau, puis réessayez.',
+    },
+    kinds: {
+      png: 'une image PNG',
+      jpeg: 'une image JPEG',
+      gif: 'une image GIF',
+      webp: 'une image WebP',
+      pdf: 'un document PDF',
+      zip: 'une archive compressée (ZIP, ou .ifcZIP à décompresser d’abord)',
+      gzip: 'une archive compressée',
+      xml: 'un fichier XML (.ifcXML non accepté)',
+    },
+    slowTitle: 'Import long',
+    slow: (size: string) =>
+      `Ce fichier fait ${size} : l’import peut prendre plusieurs minutes. Vous pourrez l’annuler à tout moment ; aucun projet n’est créé avant la fin.`,
+    continue: 'Importer quand même',
+    cancelImport: 'Annuler l’import',
+    cancelled: 'Import annulé : aucun projet n’a été créé.',
     reportTitle: 'Bilan de l’import IFC',
     allGood: 'Tout le fichier a été repris comme éléments de plan.',
     open: 'Ouvrir le projet',

@@ -53,6 +53,14 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-28 — M24 · 24.2 Imports et exports sûrs : fait (essai à la fin du jalon)
+
+- **IFC** (`src/features/imports/fileGuard.ts`, D24-7) : avant toute lecture, seuls la taille et 4 Ko du début et de la fin du fichier sont lus. Refus avec une phrase qui dit quoi faire : fichier vide, plus de **100 Mo**, autre format reconnu (« c’est une image PNG renommée en .ifc », ZIP / .ifcZIP, PDF, .ifcXML), début qui n’est pas « ISO-10303-21 », fichier tronqué (fin manquante). Au-delà de **30 Mo**, une fenêtre prévient que l’import peut prendre plusieurs minutes. Pendant l’import : bouton **Annuler l’import** (aucun projet créé). Limite : la conversion de Pascal tourne toujours dans la page (pas de Web Worker dans ce jalon) ; l’annulation écarte le résultat.
+- **Identifiants en double à l’ouverture** (EDGE-01, gate) : un ancien plan dont deux éléments ou deux niveaux ont le même identifiant n’est pas ouvert ; message clair, rien n’est modifié (`useProjectLoader`, état `duplicate-ids`).
+- **Classeur de prix** : les fichiers autres que `.xlsx`, `.csv`, `.txt` (dont `.xlsm` à macros) sont refusés.
+- **Exports** : la neutralisation des formules dans les CSV et l’échappement des noms dans SVG et DXF existaient déjà ; l’IFC (exportateur de Pascal) double bien les apostrophes. Désormais **prouvés par test**.
+- Tests : `src/features/imports/fileSafety.test.ts` (12) : PNG renommé, IFC tronqué, IFC de 180 Mo (taille simulée), vide, texte, ifcXML, ifcZIP, DXF de 25 000 traits, bombe de décompression, `.xlsm`, `=HYPERLINK(…)` en CSV, `<script>` en SVG, retour à la ligne en DXF, apostrophe en IFC. Build, lint, 3 558 tests OK.
+
 ### 2026-11-28 — M24 · 24.1 Onglet « Contrôles » : fait (essai de l'utilisateur à la fin du jalon)
 
 - Feu vert de l'utilisateur pour M24. **Module** `src/features/measurements/controls.ts` : regroupe `warnings.ts`, `qualityChecks.ts` et les écarts de murs, ajoute les **identifiants en double** et les **points du DQE** (éléments sans poste, postes sans prix, lignes provisoires, remarques de règles). Trois groupes : **À corriger**, **À vérifier**, **Pour information** ; le groupe de chaque contrôle est une table typée (un nouveau contrôle non classé ne compile pas).

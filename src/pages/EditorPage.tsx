@@ -54,7 +54,7 @@ export default function EditorPage({ isOwner = true }: EditorPageProps) {
       <main className="pascal-shell p-8">
         <h1 className="text-2xl font-bold">{fr.editor.notFoundTitle}</h1>
         <p className="mt-2 text-muted-foreground">
-          {loadState === 'error' ? fr.editor.loadError : fr.editor.notFoundText}
+          {loadState === 'error' || loadState === 'duplicate-ids' ? fr.editor.loadError : fr.editor.notFoundText}
         </p>
         <Link to="/" className="mt-4 inline-block underline">
           {fr.editor.backToHome}

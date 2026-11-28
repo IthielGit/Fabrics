@@ -180,7 +180,11 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
       <main className="pascal-shell p-8">
         <h1 className="text-lg font-semibold">{t('pascalEditor.unavailableTitle')}</h1>
         <p className="mt-2 text-sm text-muted-foreground">
-          {loadState === 'error' ? t('pascalEditor.loadError') : t('pascalEditor.notFound')}
+          {loadState === 'duplicate-ids'
+            ? t('pascalEditor.duplicateIds')
+            : loadState === 'error'
+              ? t('pascalEditor.loadError')
+              : t('pascalEditor.notFound')}
         </p>
         <Link to="/" className="mt-4 inline-block text-sm underline">
           {t('auth.backToHome')}

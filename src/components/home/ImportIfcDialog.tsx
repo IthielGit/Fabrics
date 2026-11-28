@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+import { guardIfcFile, megabytes, readFileEnds, type IfcGuardResult } from '../../features/imports/fileGuard'
 import { importReportSections, importReportText, type ImportReportSection } from '../../features/ifc/importReport'
 import { downloadBlob } from '../../lib/download'
 import { fr } from '../../i18n/fr'
@@ -14,7 +15,8 @@ interface ImportIfcDialogProps {
 }
 
 type Step =
-  | { type: 'choose'; failed: boolean }
+  | { type: 'choose'; failed: boolean; message?: string }
+  | { type: 'slow'; file: File }
   | { type: 'working'; percent: number }
   | { type: 'done'; projectId: string; fileName: string; sections: ImportReportSection[]; clean: boolean }
 
@@ -22,8 +24,39 @@ type Step =
 export default function ImportIfcDialog({ onImport, onOpen, onClose }: ImportIfcDialogProps) {
   const [step, setStep] = useState<Step>({ type: 'choose', failed: false })
   const t = fr.importIfc
+  // Numéro de l'import en cours : un import annulé (ou remplacé) ne crée jamais de projet.
+  const run = useRef(0)
+
+  const refusal = (result: Exclude<IfcGuardResult, { ok: true }>): string => {
+    switch (result.reason) {
+      case 'empty':
+        return t.refused.empty
+      case 'tooLarge':
+        return t.refused.tooLarge(megabytes(result.sizeBytes), megabytes(result.maxBytes))
+      case 'otherFormat':
+        return t.refused.otherFormat(t.kinds[result.kind])
+      case 'notIfc':
+        return t.refused.notIfc
+      case 'truncated':
+        return t.refused.truncated
+    }
+  }
+
+  // Contrôle avant lecture : taille, début et fin du fichier seulement (D24-7).
+  const handleChosen = async (file: File) => {
+    const guard = guardIfcFile(await readFileEnds(file))
+    if (!guard.ok) return setStep({ type: 'choose', failed: true, message: refusal(guard) })
+    if (guard.slow) return setStep({ type: 'slow', file })
+    void handleFile(file)
+  }
+
+  const cancel = () => {
+    run.current++
+    setStep({ type: 'choose', failed: false, message: t.cancelled })
+  }
 
   const handleFile = async (file: File) => {
+    const id = ++run.current
     setStep({ type: 'working', percent: 0 })
     try {
       const bytes = new Uint8Array(await file.arrayBuffer())
@@ -34,8 +67,11 @@ export default function ImportIfcDialog({ onImport, onOpen, onClose }: ImportIfc
       ])
       const result = await importIfc(bytes, {
         locateWasmFile: locateWebIfcWasm,
-        onProgress: (percent) => setStep({ type: 'working', percent }),
+        onProgress: (percent) => {
+          if (run.current === id) setStep({ type: 'working', percent })
+        },
       })
+      if (run.current !== id) return
       const name = file.name.replace(/\.ifc$/i, '').trim() || file.name
       const projectId = await onImport(importedPlanProject(name, result.scene))
       setStep({
@@ -48,16 +84,33 @@ export default function ImportIfcDialog({ onImport, onOpen, onClose }: ImportIfc
     } catch (error) {
       // Gardé dans la console : sans lui, la vraie cause d'un échec est invisible.
       console.error('Import IFC échoué', error)
-      setStep({ type: 'choose', failed: true })
+      if (run.current === id) setStep({ type: 'choose', failed: true })
     }
   }
 
   if (step.type === 'working') {
     return (
-      <Modal title={t.title} onClose={() => {}}>
+      <Modal title={t.title} onClose={cancel}>
         <p role="status" className="text-sm text-muted-foreground">
           {t.working(step.percent)}
         </p>
+        <div className="mt-6 flex justify-end">
+          <Button onClick={cancel}>{t.cancelImport}</Button>
+        </div>
+      </Modal>
+    )
+  }
+
+  if (step.type === 'slow') {
+    return (
+      <Modal title={t.slowTitle} onClose={onClose}>
+        <p className="text-sm text-muted-foreground">{t.slow(megabytes(step.file.size))}</p>
+        <div className="mt-6 flex justify-end gap-2">
+          <Button onClick={onClose}>{fr.common.cancel}</Button>
+          <Button variant="primary" onClick={() => void handleFile(step.file)}>
+            {t.continue}
+          </Button>
+        </div>
       </Modal>
     )
   }
@@ -100,7 +153,12 @@ export default function ImportIfcDialog({ onImport, onOpen, onClose }: ImportIfc
       <p className="text-sm text-muted-foreground">{t.intro}</p>
       {step.failed && (
         <p role="alert" className="mt-2 text-sm text-destructive">
-          {t.failed}
+          {step.message ?? t.failed}
+        </p>
+      )}
+      {!step.failed && step.message && (
+        <p role="status" className="mt-2 text-sm text-muted-foreground">
+          {step.message}
         </p>
       )}
       <label className="mt-4 inline-flex cursor-pointer items-center rounded-md border px-3 py-2 text-sm hover:bg-accent">
@@ -111,7 +169,8 @@ export default function ImportIfcDialog({ onImport, onOpen, onClose }: ImportIfc
           className="sr-only"
           onChange={(event) => {
             const file = event.target.files?.[0]
-            if (file) void handleFile(file)
+            if (file) void handleChosen(file)
+            event.target.value = ''
           }}
         />
       </label>

@@ -38,7 +38,7 @@ export default function SharedProjectPage({ projectId }: { projectId: string }) 
   return (
     <main className="p-8">
       <h1 className="text-2xl font-bold">{fr.editor.notFoundTitle}</h1>
-      <p className="mt-2 text-slate-600">{state === 'error' ? fr.editor.loadError : fr.editor.notFoundText}</p>
+      <p className="mt-2 text-slate-600">{state === 'error' || state === 'duplicate-ids' ? fr.editor.loadError : fr.editor.notFoundText}</p>
       <Link to="/" className="mt-4 inline-block text-indigo-600 underline">
         {fr.editor.backToHome}
       </Link>

@@ -17,6 +17,8 @@ export function readPriceFile(fileName: string, bytes: Uint8Array, vatRateBp: nu
   if (/\.(csv|txt)$/i.test(fileName)) {
     return importCsv(new TextDecoder('utf-8').decode(bytes), vatRateBp)
   }
+  // Classeurs à macros (.xlsm, .xlsb…) refusés : rien n'est jamais exécuté (D24-7).
+  if (!/\.xlsx$/i.test(fileName)) return blocked('notXlsx')
   try {
     return importWorkbook(readXlsx(bytes), vatRateBp)
   } catch (error) {
