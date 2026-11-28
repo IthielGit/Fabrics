@@ -20,6 +20,8 @@ const ShareDialog = lazy(() => import('../components/editor/ShareDialog'))
 
 /** Identifiant de l'onglet Métrés dans la barre latérale de Pascal (`PascalEditorPage`). */
 export const METRES_TAB_ID = 'fabrics-metres'
+/** Identifiant de l'onglet Contrôles (M24, 24.1). */
+export const CONTROLS_TAB_ID = 'fabrics-controls'
 
 const CONTROL =
   'inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-lg px-2.5 text-sm font-medium ' +
@@ -84,7 +86,7 @@ export default function PascalNavbar({ isOwner }: { isOwner: boolean }) {
         <SaveIndicator />
         <CollabIndicator />
         <PresenceAvatars />
-        <PlanCheckBadge onOpen={() => showSidebarPanel(METRES_TAB_ID)} />
+        <PlanCheckBadge onOpen={() => showSidebarPanel(CONTROLS_TAB_ID)} />
       </div>
       <div className="ml-auto flex shrink-0 items-center gap-1.5">
         <div className="fabrics-on-dark">

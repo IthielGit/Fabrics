@@ -1,12 +1,8 @@
 import { AlertTriangle } from 'lucide-react'
 import type { MetresWarning } from '../../features/measurements/warnings'
-import { applyWallFix } from '../../features/geometry/wallContacts'
 import { fr } from '../../i18n/fr'
-import { useEditorStore } from '../../stores/editorStore'
-import { fitBoxView } from '../../features/geometry/navigation'
-import { pxPerUnit } from '../../features/units/scale'
-import { boxRing, warningFocusBox } from '../../features/measurements/warningFocus'
-import { metresWarningAdvice, metresWarningTargets, metresWarningText } from './metresWarningText'
+import { metresWarningAdvice, metresWarningText } from './metresWarningText'
+import { focusWarning, fixWarning } from './warningActions'
 
 /** Au-delà, la liste est raccourcie (« … et 3 autres »). */
 const MAX_SHOWN = 8
@@ -35,39 +31,9 @@ export default function MetresWarningList({
   if (warnings.length === 0) return null
   const shown = warnings.slice(0, MAX_SHOWN)
 
-  /** Affiche le niveau, sélectionne l'élément, entoure la zone et centre le plan dessus. */
   const handleClick = (warning: MetresWarning) => {
-    const state = useEditorStore.getState()
-    const elements = state.project?.document.elements
-    if (!elements || !state.project) return
-    if ('levelId' in warning && warning.levelId !== state.activeLevelId) state.setActiveLevel(warning.levelId)
-    const targets = metresWarningTargets(warning)
-    state.setSelection(targets)
-    const box = warningFocusBox(warning, targets, elements)
-    const levelId = 'levelId' in warning ? warning.levelId : state.activeLevelId
-    if (box && levelId) {
-      state.setSurfaceHighlight({
-        levelId,
-        rings: 'rings' in warning ? warning.rings : [boxRing(box)],
-        elements,
-      })
-      if (state.viewportSize.width > 0) {
-        const view = fitBoxView(box, state.viewportSize, pxPerUnit(state.project.document.unit))
-        state.setView({ zoom: view.zoom, stagePosition: { x: view.x, y: view.y } })
-      }
-    } else {
-      state.setSurfaceHighlight(null)
-    }
+    focusWarning(warning)
     onNavigate?.()
-  }
-
-  /** Applique la correction proposée (annulable avec Ctrl+Z) ; le contrôle se recalcule tout seul. */
-  const handleFix = (warning: MetresWarning) => {
-    if (!('fix' in warning) || !warning.fix) return
-    const { fix } = warning
-    const state = useEditorStore.getState()
-    state.updateElements([fix.wallId], (el) => (el.type === 'wall' ? applyWallFix(el, fix) : el))
-    state.setNotice(fr.measurements.warnings.fixed, 'success')
   }
   const t = fr.measurements.warnings
 
@@ -103,7 +69,7 @@ export default function MetresWarningList({
                 {'fix' in warning && warning.fix && (
                   <button
                     type="button"
-                    onClick={() => handleFix(warning)}
+                    onClick={() => fixWarning(warning)}
                     title={warning.kind === 'wallGap' ? t.fixGapHint : t.fixOverlapHint}
                     className="rounded border border-amber-500 bg-white px-1.5 py-px font-medium text-amber-900 hover:bg-amber-100"
                   >

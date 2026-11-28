@@ -9,11 +9,11 @@ import { buildCeilingTable, cellText } from '../../features/measurements/tables'
 import { type MetresWarning, isBlockingWarning, isSurfaceWarning, metresWarnings } from '../../features/measurements/warnings'
 import { formatArea, formatLength, formatVolume } from '../../features/units/format'
 import { fr } from '../../i18n/fr'
+import { useT } from '../../i18n/useT'
 import { useEditorStore } from '../../stores/editorStore'
 import Button from '../ui/Button'
 import { SEGMENTED_BAR, segmentClass } from '../ui/segmented'
 import { exportMetres } from './exportMetres'
-import MetresWarningList from './MetresWarningList'
 import SiteMeasuresTable from './SiteMeasuresTable'
 import SlabsTable from './SlabsTable'
 import QuantitiesSection from './QuantitiesSection'
@@ -21,15 +21,23 @@ import TakeoffRulesSection from './TakeoffRulesSection'
 import WallLayersTable from './WallLayersTable'
 import MeasureTable from './MeasureTable'
 
-/** À corriger (manque, débord : bloque l'export) en rouge, puis le reste à vérifier en orange. */
-function SurfaceWarnings({ warnings }: { warnings: readonly MetresWarning[] }) {
-  const blocking = warnings.filter(isBlockingWarning)
-  const others = warnings.filter((w) => !isBlockingWarning(w))
+/** Les points à vérifier ont leur onglet « Contrôles » : ici, seulement leur nombre et un bouton. */
+function SurfaceWarnings({ warnings, onOpenControls }: { warnings: readonly MetresWarning[]; onOpenControls?: () => void }) {
+  const t = useT()
+  if (warnings.length === 0 || !onOpenControls) return null
+  const blocked = warnings.some(isBlockingWarning)
   return (
-    <div className="space-y-2">
-      <MetresWarningList warnings={blocking} title={fr.measurements.warnings.toFix} tone="error" interactive />
-      <MetresWarningList warnings={others} title={fr.measurements.warnings.title} interactive />
-    </div>
+    <p
+      role="status"
+      className={`flex items-center justify-between gap-2 rounded border px-2 py-1.5 text-xs ${
+        blocked ? 'border-red-200 bg-red-50 text-red-800' : 'border-amber-200 bg-amber-50 text-amber-900'
+      }`}
+    >
+      {t('controls.summary', { count: warnings.length })}
+      <button type="button" onClick={onOpenControls} className="rounded border border-current px-1.5 py-px font-medium hover:bg-white/60">
+        {t('controls.openTab')}
+      </button>
+    </p>
   )
 }
 
@@ -51,7 +59,7 @@ function clientColumnOrder(columns: readonly { header: string; align: string }[]
 const NUMBER = 'whitespace-nowrap px-1 py-1 text-right tabular-nums'
 
 /** Panneau « Métrés » d'un plan : tableau des pièces, tableau des murs, totaux, export Excel et CSV. */
-export default function MeasurementsPanel() {
+export default function MeasurementsPanel({ onOpenControls }: { onOpenControls?: () => void } = {}) {
   const projectName = useEditorStore((state) => state.project?.name ?? '')
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
   const elements = useEditorStore((state) => state.project?.document.elements)
@@ -189,7 +197,7 @@ export default function MeasurementsPanel() {
       {version === 'client' && (
         <div className="mt-3 space-y-4">
           {buildingEmpty && <p className="text-sm text-slate-500">{fr.measurements.empty}</p>}
-          <SurfaceWarnings warnings={surfaceWarnings} />
+          <SurfaceWarnings warnings={surfaceWarnings} onOpenControls={onOpenControls} />
           {buildClientTables(building, fr.measurements.client).map((table) => {
             const order = clientColumnOrder(table.columns)
             return (
@@ -250,7 +258,7 @@ export default function MeasurementsPanel() {
 
       {levelWarnings.length > 0 && (
         <div className="mt-3">
-          <SurfaceWarnings warnings={levelWarnings} />
+          <SurfaceWarnings warnings={levelWarnings} onOpenControls={onOpenControls} />
         </div>
       )}
 

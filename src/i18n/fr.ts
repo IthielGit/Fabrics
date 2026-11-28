@@ -445,7 +445,7 @@ export const fr = {
   },
   planCheck: {
     badge: (count: number) => `${count} point${count > 1 ? 's' : ''} à vérifier`,
-    hint: 'Des murs ne se touchent pas ou se superposent. Cliquez pour voir où et les corriger.',
+    hint: 'Cliquez pour ouvrir l’onglet Contrôles : chaque point s’y voit sur le plan et se corrige.',
   },
   measurements: {
     title: 'Métrés',

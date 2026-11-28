@@ -1490,7 +1490,7 @@ rappelle s'il tourne sur un autre modèle).
 
 | Sous-lot | Contenu | Modèle |
 |---|---|---|
-| 24.1 Panneau de contrôles qualité | Un seul panneau (suite des « points à vérifier ») : géométrie, propriétés manquantes, unités, postes sans prix, cas EDGE-01 | `/model sonnet` |
+| 24.1 Onglet « Contrôles » — **fait le 2026-11-28** (`measurements/controls.ts`) | Un seul panneau (suite des « points à vérifier ») : géométrie, propriétés manquantes, unités, postes sans prix, cas EDGE-01 | `/model sonnet` |
 | 24.2 Régression visuelle | Comparaisons 2D, 3D et PDF ; tests par propriétés sur la géométrie et les quantités | `/model sonnet` |
 | 24.3 Épreuves | Maison simple, villa à plusieurs niveaux, petit immeuble, modèles invalides, IFC externes | `/model sonnet` |
 | 24.4 Performance | Seuils fixés avec l'utilisateur, puis mesures sur 1 000, 5 000 et 10 000 éléments : chargement, modification, recalcul, export | `/model opus` |
@@ -1498,8 +1498,8 @@ rappelle s'il tourne sur un autre modèle).
 | 24.6 Fiabilité | Exports atomiques, reprise après plantage, sauvegarde et restauration, journal d'audit | `/model opus` |
 | 24.7 Revue humaine et gate G7 | Dossiers pour un architecte ou dessinateur BIM et un métreur indépendant, revue documentée, rapport | `/model sonnet` |
 
-- [ ] Panneau unique de contrôles qualité (prolonge la pastille « points à vérifier ») : géométrie,
-      propriétés manquantes, unités incompatibles, postes sans prix
+- [x] Panneau unique de contrôles qualité (prolonge la pastille « points à vérifier ») : géométrie,
+      propriétés manquantes, unités incompatibles, postes sans prix — fait le 2026-11-28 (onglet « Contrôles »)
 - [ ] Régression visuelle 2D, 3D et PDF ; tests par propriétés sur la géométrie et les quantités
 - [ ] Épreuves : maison simple, villa à plusieurs niveaux, petit immeuble, modèles invalides, IFC externes
 - [ ] Performance mesurée sur 1 000, 5 000 et 10 000 éléments : chargement, modification, recalcul,

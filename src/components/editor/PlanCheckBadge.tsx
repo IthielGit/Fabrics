@@ -1,31 +1,34 @@
 import { AlertTriangle } from 'lucide-react'
-import { useMemo } from 'react'
-import { elementsOfLevel } from '../../features/documents/levels'
-import { wallIssues } from '../../features/geometry/wallContacts'
+import { useDeferredValue, useMemo } from 'react'
+import { countByGroup, planControls } from '../../features/measurements/controls'
+import { computeBuildingMeasurements } from '../../features/measurements/measurements'
 import { fr } from '../../i18n/fr'
 import { useEditorStore } from '../../stores/editorStore'
-import type { WallElement } from '../../types/document'
 
 /**
- * Pastille « N points à vérifier » : murs qui ne se touchent pas ou qui se superposent sur le niveau
- * affiché. Un clic ouvre le panneau Métrés, où chaque point se corrige en un clic.
+ * Pastille « N points à vérifier » : tous les points à corriger ou à vérifier du plan (pas les simples
+ * informations). Un clic ouvre l'onglet Contrôles, où chaque point se voit et se corrige.
  */
 interface PlanCheckBadgeProps {
-  /** Éditeur de Pascal (M19 A3) : ouvre son onglet Métrés au lieu de celui de l'ancien panneau. */
+  /** Éditeur de Pascal (M19 A3) : ouvre son onglet Contrôles au lieu de celui de l'ancien panneau. */
   onOpen?: () => void
 }
 
 export default function PlanCheckBadge({ onOpen }: PlanCheckBadgeProps = {}) {
   const isPlan = useEditorStore((state) => state.project?.kind === 'plan')
   const elements = useEditorStore((state) => state.project?.document.elements)
-  const activeLevelId = useEditorStore((state) => state.activeLevelId)
+  const levels = useEditorStore((state) => state.project?.document.levels)
+  const pascalQuantities = useEditorStore((state) => state.project?.document.pascalQuantities)
   const setSidePanelTab = useEditorStore((state) => state.setSidePanelTab)
+  // Recalculé un peu après la frappe : la pastille ne ralentit pas le glissement d'un mur.
+  const deferredElements = useDeferredValue(elements)
 
   const count = useMemo(() => {
-    if (!isPlan || !elements) return 0
-    const onLevel = activeLevelId ? elementsOfLevel(elements, activeLevelId) : elements
-    return wallIssues(onLevel.filter((el): el is WallElement => el.type === 'wall')).length
-  }, [isPlan, elements, activeLevelId])
+    if (!isPlan || !deferredElements) return 0
+    const document = { elements: deferredElements, levels, pascalQuantities }
+    const counts = countByGroup(planControls({ document, building: computeBuildingMeasurements(document) }))
+    return counts.fix + counts.check
+  }, [isPlan, deferredElements, levels, pascalQuantities])
 
   if (count === 0) return null
   return (

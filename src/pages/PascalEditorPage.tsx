@@ -1,9 +1,10 @@
-import { applySceneGraphToEditor, Editor, type SceneGraph } from '@pascal-app/editor'
+import { applySceneGraphToEditor, Editor, showSidebarPanel, type SceneGraph } from '@pascal-app/editor'
 import { EditorViewerToolbarLeft, EditorViewerToolbarRight } from '@pascal-app-host/viewer-toolbar'
-import { Calculator, Coins, History, MessageSquare } from 'lucide-react'
+import { Calculator, Coins, History, ListChecks, MessageSquare } from 'lucide-react'
 import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type ComponentType } from 'react'
 import { Link, useParams } from 'react-router'
 import HistoryPanel from '../components/editor/HistoryPanel'
+import ControlsPanel from '../components/editor/ControlsPanel'
 import MeasurementsPanel from '../components/editor/MeasurementsPanel'
 import DqePanel from '../components/pricing/DqePanel'
 import Notice from '../components/editor/Notice'
@@ -20,7 +21,7 @@ import { useT } from '../i18n/useT'
 import '../pascal/bootstrap'
 import type { WebXRFeature } from '../pascal/PascalWebXR'
 import PascalCommentsTab from '../pascal/PascalCommentsTab'
-import PascalNavbar, { METRES_TAB_ID } from '../pascal/PascalNavbar'
+import PascalNavbar, { CONTROLS_TAB_ID, METRES_TAB_ID } from '../pascal/PascalNavbar'
 import { pascalTabs, type PascalTab } from '../pascal/pascalTabs'
 import { usePascalLevelSync } from '../pascal/usePascalLevelSync'
 import { usePascalThumbnail } from '../pascal/usePascalThumbnail'
@@ -49,7 +50,8 @@ function fabricsPanel(Panel: ComponentType): ComponentType {
   }
 }
 
-const MetresTab = fabricsPanel(MeasurementsPanel)
+const ControlsTab = fabricsPanel(ControlsPanel)
+const MetresTab = fabricsPanel(() => <MeasurementsPanel onOpenControls={() => showSidebarPanel(CONTROLS_TAB_ID)} />)
 const HistoryTab = fabricsPanel(HistoryPanel)
 const DqeTab = fabricsPanel(DqePanel)
 
@@ -128,6 +130,13 @@ export default function PascalEditorPage({ isOwner = true }: { isOwner?: boolean
         icon: <Calculator className="h-5 w-5" />,
         mobileIcon: <Calculator className="h-5 w-5" />,
         component: MetresTab,
+      },
+      {
+        id: CONTROLS_TAB_ID,
+        label: t('pascalEditor.tabControls'),
+        icon: <ListChecks className="h-5 w-5" />,
+        mobileIcon: <ListChecks className="h-5 w-5" />,
+        component: ControlsTab,
       },
       {
         id: 'fabrics-dqe',

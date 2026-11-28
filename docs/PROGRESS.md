@@ -53,6 +53,15 @@ Tenu à jour par Claude à la fin de chaque tâche (voir `CLAUDE.md`).
 
 ## Journal
 
+### 2026-11-28 — M24 · 24.1 Onglet « Contrôles » : fait (essai de l'utilisateur à la fin du jalon)
+
+- Feu vert de l'utilisateur pour M24. **Module** `src/features/measurements/controls.ts` : regroupe `warnings.ts`, `qualityChecks.ts` et les écarts de murs, ajoute les **identifiants en double** et les **points du DQE** (éléments sans poste, postes sans prix, lignes provisoires, remarques de règles). Trois groupes : **À corriger**, **À vérifier**, **Pour information** ; le groupe de chaque contrôle est une table typée (un nouveau contrôle non classé ne compile pas).
+- **Onglet « Contrôles »** (`ControlsPanel.tsx`) dans la barre latérale de l'éditeur : pour chaque point, ce qui ne va pas, que faire, « Voir sur le plan » et « Corriger » (raccord de murs) ; filtre « Tout le projet / Ce niveau ». La pastille du haut compte maintenant tous les points à corriger ou à vérifier (pas seulement les murs) et ouvre cet onglet. L'onglet Métrés ne garde qu'une ligne « N points à examiner · Voir les contrôles » ; la liste de la section Quantitatif est retirée (aucun contrôle perdu : tous sont dans l'onglet). Actions partagées dans `warningActions.ts` (aussi utilisées par la fenêtre Exporter et les signaux du haut).
+- Tests : `controls.test.ts` (10) dont EDGE-01 (fenêtre hors du mur, chevauchement, hauteur nulle, matériau manquant, identifiant en double). Build, lint, 3 546 tests OK.
+- **Reste pour le gate** : EDGE-01 « identifiant en double » doit aussi donner un message clair **à l'ouverture** du projet (traité avec les imports, 24.2).
+- Pascal : ses contrôles `validate_scene` / `verify_scene` / `check_collisions` ne sont pas encore repris (décision au vu des plans d'essai de 24.4).
+- Réglage : autorisations sans confirmation pour les modifications de fichiers et les commandes npm / git du projet (`.claude/settings.local.json`, non versionné), à la demande de l'utilisateur.
+
 ### 2026-11-28 — M24 replanifié (en attente du feu vert)
 
 - Deux plans de M24 se contredisaient depuis le 2026-11-27 : la version « facile à utiliser » (décisions choisies par Claude à la demande de l'utilisateur) avait été écrasée deux minutes plus tard par une autre, avec d'autres décisions D24-1 à D24-4. Un seul plan maintenant : `docs/phases/M24-plan.md` ; une seule liste de décisions : `docs/phases/M24-decisions.md` (D24-0 à D24-9).
